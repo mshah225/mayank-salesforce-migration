@@ -1,8 +1,6 @@
 @isTest
-private class Test_HelpDeskController
-{
-    private static void setUpTest()
-    {
+private class Test_HelpDeskController {
+    private static void setUpTest() {
         List<Contact> testContacts = ContactService.createTestContacts(2);
 
         testContacts[0].Phone = '1111111111';
@@ -14,11 +12,10 @@ private class Test_HelpDeskController
         insert testContacts;
 
         TestDataFactory.createFunctionalGroup('Help Desk');
-
     }
 
-    @isTest static void testCreateContactCreateCaseSaveCase()
-    {
+    @isTest
+    private static void testCreateContactCreateCaseSaveCase() {
         setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
@@ -87,8 +84,8 @@ private class Test_HelpDeskController
         System.assertEquals(control.getUrl(), controller.saveCase().getUrl());
     }
 
-    @isTest static void testCreateCaseSaveAndClose()
-    {
+    @isTest
+    private static void testCreateCaseSaveAndClose() {
         setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
@@ -210,8 +207,7 @@ private class Test_HelpDeskController
 
         // Get index 1 for close status, so its not --Select--
         List<SelectOption> closeStatuses = controller.getcloseCaseStatusOptions();
-        controller.selectedCloseCaseStatusOption = closeStatuses[1].getValue();
-        controller.saveCloseCase();
+        controller.saveAndCloseCase();
 
         Test.stopTest();
 
@@ -231,8 +227,8 @@ private class Test_HelpDeskController
         }
     }
 
-    @isTest static void testSetAsCaseForArticlePop()
-    {
+    @isTest
+    private static void testSetAsCaseForArticlePop() {
         setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
@@ -311,8 +307,8 @@ private class Test_HelpDeskController
         System.assertEquals(control.getUrl(), controller.saveAndTransferCase().getUrl());
     }
 
-    @isTest static void testKnowledgeSearchAttachAndRemove()
-    {
+    @isTest
+    private static void testKnowledgeSearchAttachAndRemove() {
         setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
@@ -484,5 +480,301 @@ private class Test_HelpDeskController
        System.assertEquals('Not Visible Functional Group0', controller.functionalGroupOptions.get(0).getValue());
        System.assertEquals('--', controller.categoryOptions.get(0).getValue());
        System.assertEquals('--', controller.subCategoryOptions.get(0).getValue());
+    }
+
+    @isTest
+    private static void testCreateContactCreateCaseSaveCaseWithForwardToUnitError() {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        List<Case> caseList = CaseService.createTestCases(2, testContact);
+        insert caseList;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
+
+        controller.myCase.Subject = 'test';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+
+        Test.startTest();
+        controller.saveCase();
+        Test.stopTest();
+
+        Boolean foundError = false;
+        for (ApexPages.Message msg : ApexPages.getMessages()){
+            if (msg.getDetail().contains('Closed: Forwarded')) {
+                foundError = true;
+            }
+        }
+        System.assert(foundError, 'Forward to Unit is required, so the validation rule should have shown up as a Page error.');
+    }
+
+    @isTest
+    private static void testCreateContactCreateCaseSaveCaseWithForwardToEmailError() {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        List<Case> caseList = CaseService.createTestCases(2, testContact);
+        insert caseList;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
+
+        controller.myCase.Subject = 'test';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.myCase.Forward_To_Unit__c = 'Other Unit';
+
+        Test.startTest();
+        controller.saveCase();
+        Test.stopTest();
+
+        Boolean foundError = false;
+        for (ApexPages.Message msg : ApexPages.getMessages()) { 
+            if (msg.getDetail().contains('Closed: Forwarded')) {
+                foundError = true;
+            }
+        }
+        System.assert(foundError, 'Forward to Unit should have been required, so the validation rule should have shown up as a Page error.');
+    }
+
+    @isTest
+    private static void testCreateContactCreateCaseSaveCaseWithServiceNowError() {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        List<Case> caseList = CaseService.createTestCases(2, testContact);
+        insert caseList;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.selectedCaseId = caseList[0].Id;
+        controller.setAsCase();
+
+        controller.myCase.Subject = 'test';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.myCase.Forward_To_Unit__c = 'ServiceNow';
+
+        Test.startTest();
+        controller.saveCase();
+        Test.stopTest();
+
+        Boolean foundError = false;
+        for (ApexPages.Message msg : ApexPages.getMessages()) {
+            if (msg.getDetail().contains('ServiceNow')) {
+                foundError = true;
+            }
+        }
+        System.assert(foundError, 'ServiceNow Ticket Number field should have been required, so the validation rule should have shown up as a Page error.');
+    }
+    
+    @isTest
+    private static void createNewCaseCloseSaveAndTransferErrorBug() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.newCase();
+
+        controller.myCase.Subject = 'test';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.myCase.Forward_To_Unit__c = 'ServiceNow';
+        controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
+
+        Test.startTest();
+        PageReference page = controller.saveAndTransferCase();
+        Test.stopTest();
+
+        System.assertNotEquals(null, page);
+        System.assertEquals(page.getUrl(), '/apex/CaseTransfer?id=' + controller.myCase.Id);
+    }
+    
+    @isTest
+    private static void saveAndCloseCaseStatusChanged() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.newCase();
+
+        controller.myCase.Subject = 'test to close';
+        controller.myCase.Description = 'test';
+        
+        Test.startTest();
+        PageReference page = controller.saveAndCloseCase();
+        Test.stopTest();
+        
+        Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
+        
+        System.assertEquals('Closed: Resolved', savedCase.Status);
+    }
+    
+    @isTest
+    private static void saveAndCloseCaseStatusUnchangedWhenClosed() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.newCase();
+
+        controller.myCase.Subject = 'test to close';
+        controller.myCase.Description = 'test';
+        controller.myCase.Status = 'Closed: Forwarded';
+        controller.myCase.Forward_To_Unit__c = 'ServiceNow';
+        controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
+        
+        Test.startTest();
+        PageReference page = controller.saveAndCloseCase();
+        Test.stopTest();
+        
+        Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
+        
+        System.assertNotEquals('Closed: Resolved', savedCase.Status);
+        System.assertEquals(controller.myCase.Status, savedCase.Status);
+    }
+    
+    @isTest
+    private static void selectCaseEditCancelChangesCleared() {
+        setUpTest();
+        Test.setCurrentPage(Page.HelpDesk);
+
+        Contact testContact = [
+            SELECT Id, Name, Phone, EMPLID__c
+            FROM Contact
+            WHERE EMPLID__c = '1111111111'
+        ];
+        
+        CaseFactory.DefaultCase factory = new CaseFactory.DefaultCase();
+        factory.setRelatedObject('ContactId', testContact);
+        Integer numberOfCases = 2;
+        List<Case> cases = factory.create(numberOfCases);
+        insert cases;
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+
+        Id[] fixedSearchResults = new Id[1];
+        fixedSearchResults[0] = testContact.Id;
+        Test.setFixedSearchResults(fixedSearchResults);
+        
+        HelpDeskController controller = new HelpDeskController();
+        controller.selectedContactId = testContact.Id;
+        controller.setAsContact();
+        
+        controller.selectedCaseId = cases[0].Id;
+        controller.setAsCase();
+        
+        String originalSubject = controller.myCase.Subject;
+        String originalStatus = controller.myCase.Status;
+        
+        String testValue = 'TestStringValue Should Not Be Changed';
+        controller.myCase.Subject = testValue;
+        controller.myCase.Status = testValue;
+        
+        Test.startTest();
+        controller.cancelCase();
+        Test.stopTest();
+        
+        controller.selectedCaseId = cases[0].Id;
+        controller.setAsCase();
+        
+        System.assertNotEquals(testValue, controller.myCase.Subject);
+        System.assertNotEquals(testValue, controller.myCase.Status);
+        System.assertEquals(originalSubject, controller.myCase.Subject);
+        System.assertEquals(originalStatus, controller.myCase.Status);
+        
+        List<Case> totalCases = [SELECT Id FROM Case];
+        System.assertEquals(numberOfCases, totalCases.size());
     }
 }

@@ -1,8 +1,36 @@
 // Custom controller for the HelpDesk page
 public with sharing class HelpDeskController
 {
-    public Boolean isPageLoaded;
     private String soql { get; set; }
+    public Boolean isPageLoaded;
+    public static final String CLOSED_FORWARDED { get { return 'Closed: Forwarded'; } set; }
+    public static final String OTHER_UNIT { get { return 'Other Unit'; } set; }
+    public static final String SERVICE_NOW { get { return 'ServiceNow'; } set; }
+    
+    public Boolean isNewCaseSelected { get; set; }
+    public Boolean isArticleDetails { get; set; }
+    public Boolean isExistingCaseSelected { get; set; }
+    public Boolean isNewContactSelected { get; set; }
+    public Boolean isCloseCase { get; set; }
+    public Boolean isContactSet { get; set; }
+    public Boolean isKnowledgeSearch { get; set; }
+    public Boolean isKnowSearchBox { get; set; }
+    public Boolean isAttached { get; set; }
+    public Case myCase { get; set; }
+    public Contact mycontact { get; set; }
+    public FAQ__kav selectedFAQ { get; set; }
+    public List<Contact> contacts { get; set; }
+    public List<CaseWrapper> cases { get; set; }
+    public List<FAQ__kav> attachedFAQs { get; set; }
+    public List<FAQ__kav> faqList { get; set; }
+    public List<List<SObject>> knowledgeResults { get; set; }
+    public String selectedContactId { get; set; }
+    public String selectedCaseId { get; set; }
+    public String selectedKnowledgeArticleId { get; set; }
+    public String contactName { get; set; }
+    public String knowString { get; set; }
+
+    public Boolean savedAndClosed {get; set;}
 
     public Map<String, Case_Classification__c> allFunctionalGroups {
         get {
@@ -230,30 +258,6 @@ public with sharing class HelpDeskController
 
         set;
     }
-    public Boolean isNewCaseSelected { get; set; }
-    public Boolean isArticleDetails { get; set; }
-    public Boolean isExistingCaseSelected { get; set; }
-    public Boolean isNewContactSelected { get; set; }
-    public Boolean isCloseCase { get; set; }
-    public Boolean isContactSet { get; set; }
-    public Boolean isKnowledgeSearch { get; set; }
-    public Boolean isKnowSearchBox { get; set; }
-    public Boolean isAttached { get; set; }
-    public Case myCase { get; set; }
-    public Contact mycontact { get; set; }
-    public FAQ__kav selectedFAQ { get; set; }
-    public List<Contact> contacts { get; set; }
-    public List<CaseWrapper> cases { get; set; }
-    public List<FAQ__kav> attachedFAQs { get; set; }
-    public List<FAQ__kav> faqList { get; set; }
-    public List<List<SObject>> knowledgeResults { get; set; }
-    public String selectedContactId { get; set; }
-    public String selectedCaseId { get; set; }
-    public String selectedKnowledgeArticleId { get; set; }
-    public String contactName { get; set; }
-    public String knowString { get; set; }
-
-    public Boolean savedAndClosed {get; set;}
 
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions()
@@ -263,7 +267,7 @@ public with sharing class HelpDeskController
 
         for (CaseStatus cs: [Select Id, MasterLabel From CaseStatus Where IsClosed = true])
         {
-            if (!(cs.MasterLabel == 'Closed: Forwarded'))
+            if (!(cs.MasterLabel == CLOSED_FORWARDED))
             {
                 closeCaseStatusOptions.add(new SelectOption(cs.Id, cs.MasterLabel));
             }
@@ -281,8 +285,6 @@ public with sharing class HelpDeskController
         origins.add(new SelectOption('Chat', 'Chat'));
         return origins;
     }
-
-    public String selectedCloseCaseStatusOption { get; set; }
 
     // This represents the Contact search fields
     public Contact contactsrch
@@ -950,15 +952,16 @@ public with sharing class HelpDeskController
         }
 
         // query to get open cases for the contact
-        casesbase = Database.query(
-            'SELECT Id, Subject, Reason, Description, Status, Origin__c, Campus__c, ' +
-            'Affiliation__c, CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, CC_Functional_Group__r.Name, CC_Category__r.Name, CC_Category__r.Id, CC_Sub_Category__r.Name, Reporting_Category__c, ' +
-            'Private_Note_Help_Desk__c, ClosedDate, CaseNumber, CreatedDate ' +
-            'FROM Case ' +
-            'WHERE ContactId = :selectedContactId ' +
-            'ORDER BY Status, CreatedDate DESC ' +
-            'LIMIT 25'
-        );
+        casesbase = [
+            SELECT Id, Subject, Reason, Description, Status, Origin__c, Campus__c, Affiliation__c, 
+                CC_Functional_Group__c, CC_Category__c, CC_Sub_Category__c, CC_Functional_Group__r.Name, 
+                CC_Category__r.Name, CC_Category__r.Id, CC_Sub_Category__r.Name, Reporting_Category__c,
+                Private_Note_Help_Desk__c, Forward_To_Unit__c, ServiceNow_Ticket_Number__c, Forward_Case_Comments__c, 
+                Forward_To_Email__c, ClosedDate, CaseNumber, CreatedDate
+            FROM Case
+            WHERE ContactId = :selectedContactId
+            ORDER BY Status, CreatedDate DESC
+            LIMIT 25];
 
         if (cases == null)
         {
@@ -983,13 +986,14 @@ public with sharing class HelpDeskController
         isKnowledgeSearch = true;
         isKnowSearchBox = false;
         isArticleDetails = false;
-        Map<Id, CaseWrapper> m = new Map<Id, CaseWrapper>();
+        Map<Id, CaseWrapper> caseWrappers = new Map<Id, CaseWrapper>();
 
         for (CaseWrapper cas : cases) {
-            m.put(cas.Ca.Id, cas);
+            caseWrappers.put(cas.Ca.Id, cas);
         }
 
-        myCase = (Case) m.get(selectedCaseId).Ca;
+        Case orignalCase = (Case) caseWrappers.get(selectedCaseId).Ca;
+        myCase = orignalCase.clone(true, true, true, true);
 
         if (myCase.CC_Functional_Group__r.Name != NULL) {
             selectedFunctionalGroup = myCase.CC_Functional_Group__r.Name;
@@ -1026,59 +1030,55 @@ public with sharing class HelpDeskController
         }
     }
 
-    public PageReference saveCase()
-    {
-        if (!validCase(myCase)) {
-            ApexPages.addMessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You must enter both a Subject and Description to save the Case.'
-                )
-            );
-            return null;
-        }
+    public PageReference saveCase() {
+        Boolean isSaveSuccess = upsertCase();
+        return isSaveSuccess ? redirectPage(myCase) : null;
+    }
+    
+    public PageReference saveAndTransferCase() {
+        Boolean isSaveSuccess = upsertCase();
+        PageReference page = new PageReference('/apex/CaseTransfer?id=' + myCase.Id);
+        page.setRedirect(true);
+        return isSaveSuccess ? page : null;
+    }
+
+    public PageReference saveAndCloseCase() {
+        myCase.Status = myCase.Status.contains('Closed') ? myCase.Status : 'Closed: Resolved';
+        Boolean isSaveSuccess = upsertCase();
+        return isSaveSuccess ? redirectPage(myCase) : null;
+    }
+    
+    private Boolean upsertCase() {
         try {
             addCaseClassificationToCase();
-
             upsert myCase;
-
-            return redirectPage(myCase);
-        }
-        catch(DMLException e) {
-            if (e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
+            
+            return true;
+        } catch (DmlException e) {
+            if (e.getDmlType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
                 vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
                 vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
                 ErrorLogger.log(e,vars,false);
-                ApexPages.addMessage(
-                    new ApexPages.Message(
-                        ApexPages.Severity.ERROR,
-                        'Case has been logged with an admin due to ' + e.getMessage()
-                    )
-                );
+                ApexPages.addMessage(new ApexPages.Message(
+                    ApexPages.Severity.ERROR, 'Case has been logged with an admin due to ' + e.getMessage()));
+            } else {
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, e.getDmlMessage(0)));
             }
-            return null;
 
-        }
-        catch(Exception e) {
+            return false;
+        } catch(Exception e) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
             vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
             vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
             ErrorLogger.log(e,vars,false);
-            ApexPages.addMessage(
-                new ApexPages.Message(
-                    ApexPages.Severity.ERROR,
-                    'Case has been logged with an admin due to ' + e.getMessage()
-                )
-            );
-            return null;
-        }
-    }
+            ApexPages.addMessage(new ApexPages.Message(
+                ApexPages.Severity.ERROR, 'Case has been logged with an admin due to ' + e.getMessage()));
 
-    private boolean validCase(Case caseToValidate) {
-        return !String.isEmpty(caseToValidate.Subject) || !String.isEmpty(caseToValidate.Description);
+            return false;
+        }
     }
 
     private void addCaseClassificationToCase() {
@@ -1126,123 +1126,6 @@ public with sharing class HelpDeskController
         selectedCategory = null;
         selectedSubCategory = null;
         ApexPages.getMessages().clear();
-    }
-
-    public PageReference saveAndTransferCase()
-    {
-        boolean success = false;
-
-        if (String.isEmpty(myCase.Subject) || String.isEmpty(myCase.Description))
-        {
-            ApexPages.addMessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You must enter both a Subject and Description to save the Case.'
-                )
-            );
-
-            return null;
-        }
-        try{
-
-            addCaseClassificationToCase();
-            upsert myCase;
-
-            PageReference page = new PageReference('/apex/CaseTransfer?id=' + myCase.Id);
-            page.setRedirect(true);
-
-            return page;
-        }
-        catch(DMLException e) {
-            if (e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
-                vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
-                vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
-                ErrorLogger.log(e,vars,false);
-            }
-            return null;
-
-        }
-        catch(Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
-            vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
-            vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
-            ErrorLogger.log(e,vars,false);
-            return null;
-        }
-
-    }
-
-    // Upsert Case and set bool value to render the close status panel.
-    public void saveAndCloseCase()
-    {
-        if (String.isEmpty(myCase.Subject) || String.isEmpty(myCase.Description))
-        {
-            ApexPages.addMessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You must enter both a Subject and Description to save the Case.'
-                )
-            );
-            savedAndClosed = false;
-            return;
-        }
-
-        myCase.Status = 'Closed: Resolved';
-        try{
-            addCaseClassificationToCase();
-            upsert myCase;
-            savedAndClosed = true;
-            return;
-        }
-        catch(DMLException e) {
-            savedAndClosed = false;
-            if (e.getDMLType(0)!=StatusCode.FIELD_CUSTOM_VALIDATION_EXCEPTION) {
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('caseSubj',myCase.Subject));
-                vars.add(ErrorLogger.convertStringToJSON('caseDescription', myCase.Description));
-                vars.add(ErrorLogger.convertStringToJSON('Case Contact Id', myCase.ContactId));
-                ErrorLogger.log(e,vars,false);
-            }
-            return;
-
-        }
-        catch(Exception e) {
-            savedAndClosed = false;
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('caseSubj No DML',myCase.Subject));
-            vars.add(ErrorLogger.convertStringToJSON('caseDescription No DML', myCase.Description));
-            vars.add(ErrorLogger.convertStringToJSON('Case Contact Id No DML', myCase.ContactId));
-            ErrorLogger.log(e,vars,false);
-            return;
-        }
-    }
-
-    public PageReference saveCloseCase()
-    {
-        if (!(selectedCloseCaseStatusOption == null
-              || selectedCloseCaseStatusOption.length() == 0))
-        {
-            myCase.Status = [
-                SELECT MasterLabel
-                FROM CaseStatus
-                WHERE Id = :selectedCloseCaseStatusOption
-            ].MasterLabel;
-        }
-
-        try
-        {
-            upsert myCase;
-            return null;
-        }
-        catch (Exception e)
-        {
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.ERROR, e.getMessage()));
-            return null;
-        }
-
     }
 
     public void cancelCloseCase()

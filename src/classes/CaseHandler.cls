@@ -1,11 +1,10 @@
 public without sharing class CaseHandler implements ITrigger {
-    Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
-    Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
-    Map<Id, Group> groupNameMap = new Map<Id, Group>();
-    List<RecordType> recruitmentCaseRT;
-    Savepoint sp;
+    private Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
+    private Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
+    private Map<Id, Group> groupNameMap = new Map<Id, Group>();
+    private List<RecordType> recruitmentCaseRT;
+    private Savepoint sp;
     public Map<Id, String> mapCCIdToName;
-
     public final String RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('(Admin Only) ASU Advisor Outreach').getRecordTypeId();
     public final String RT_ASU_COACH_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Coach Outreach').getRecordTypeId();
     public final String RT_ASU_ADMISSION_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Admission Services').getRecordTypeId();
@@ -201,9 +200,9 @@ public without sharing class CaseHandler implements ITrigger {
                     if (tokenSplit.size() >= 2 && tokenSplit[1] != '') {
                         if (tokenSplit[0] == 'ASURITE') {
                             emplid = tokenSplit[1];
-                        }else if (tokenSplit[0] == 'First') {
+                        } else if (tokenSplit[0] == 'First') {
                             first = tokenSplit[1];
-                        }else if (tokenSplit[0] == 'Last') {
+                        } else if (tokenSplit[0] == 'Last') {
                             last = tokenSplit[1];
                         }
                     }
@@ -216,7 +215,7 @@ public without sharing class CaseHandler implements ITrigger {
                     List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
                     if (contactUsers != null && contactUsers.size() > 0) {
                         newCase.ContactId = contactUsers[0].Id;
-                    }else  {
+                    } else  {
                         conToCreate.EMPLID__c = emplid;
                     }
                 }
@@ -278,7 +277,6 @@ public without sharing class CaseHandler implements ITrigger {
                                     ownerSet = true;
                                 }
                             }
-                            // Case "newCase"
                             else if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
                                 if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
                                     newCase.OwnerId = opList[0].Enrollment_Coach__c;
@@ -399,7 +397,17 @@ public without sharing class CaseHandler implements ITrigger {
      * trigger. Always put field validation in the 'After' methods in case another trigger
      * has modified any values. The record is 'read only' by this point.
      */
-    public void afterInsert(SObject so) {
+    public void afterInsert(SObject newObject) {
+        Case newCase = (Case) newObject;
+
+        //Forward the email and attach any case attachments as well
+        if (newCase.Status == 'Closed: Forwarded') {
+            //Prevent recursive update and sending of mail
+            if (!CaseUtilities.emailForwarded) {
+                CaseUtilities.emailForwarded = true;
+                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
+            }
+        }
     }
 
     /**
@@ -413,17 +421,13 @@ public without sharing class CaseHandler implements ITrigger {
         Case oldCase = (Case) oldSo;
 
         //Forward the email and attach any case attachments as well
-        if (shouldForwardCase(newCase, oldCase)) {
+        if (newCase.Status == 'Closed: Forwarded' && oldCase.Status != 'Closed: Forwarded') {
             //Prevent recursive update and sending of mail
             if (!CaseUtilities.emailForwarded) {
-                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
                 CaseUtilities.emailForwarded = true;
+                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
             }
         }
-    }
-
-    private Boolean shouldForwardCase(Case newCase, Case oldCase) {
-        return newCase.Status == 'Closed: Forwarded' && oldCase.Status != 'Closed: Forwarded' && newCase.Forward_To_Unit__c != CaseUtilities.getForwardToUnit('ServiceNow');
     }
 
     /**

@@ -1,0 +1,140 @@
+<apex:page showHeader="false" controller="LiveAgentPostSurveyController">
+    <c:ASUWebStandards />
+    <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+    <h1>
+        <div style="background-color: black; width: 100%; height: 40px;">
+            <a class="btn btn-secondary" id="saveChat" onclick="getTranscript();">Save Chat</a>
+        </div>
+    </h1>
+    <apex:image url="{!$Resource.LiveAgentlogo}"/>
+
+    <br/>
+    <body style="background-color:#F5F5F5; overflow-x: hidden;">
+        <apex:outputPanel id="successfulChatBody">
+            <h2 style="font-size:30px">
+                &nbsp;Previous Conversation
+                <br/>
+            </h2>
+            <div id="chatTranscript" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
+                <apex:outputText style="display: none;" id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
+            </div>
+            <table class="nav" align="center">
+                <tr>
+                    <td>
+                        <div class="nav_button">
+                            <div class="b_left"></div>
+                            <a class="btn btn-primary btn-lg" onclick="goToSurvey();">Click Here For Survey</a>
+                            <div class="b_right"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </apex:outputPanel>
+        <apex:outputPanel id="failedChatBody">
+            <h2 style="font-size:30px">
+                &nbsp;Unable to Connect to an Agent
+                <br/>
+            </h2>
+            <div id="errorMessage" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
+                <apex:outputText value="{!agentOfflineMessage}"/>
+            </div>
+        </apex:outputPanel>
+    </body>
+    <script type='text/javascript'>
+    	var chatTranscript = document.getElementById('j_id0:transcript').innerHTML;
+    	if (!chatTranscript || 0 === chatTranscript.length) {
+            document.getElementById("j_id0:successfulChatBody").style.display = "none";
+            document.getElementById("saveChat").setAttribute('style', 'display:none !important');
+        } else {
+            document.getElementById("j_id0:failedChatBody").style.display = "none";
+        }
+        var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
+        cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var chatDetails = JSON.parse(cleanedString);
+        var mergeFieldObject = {
+            chat_key: '{!$CurrentPage.parameters.chatKey}',
+            chat_start_time: '{!$CurrentPage.parameters.startTime}',
+            chat_request_time: '{!$CurrentPage.parameters.requestTime}',
+            chat_agent_id: typeof chatDetails.agent !== 'undefined'
+                ? chatDetails.agent.userId
+                : '',
+            chat_agent_name: typeof chatDetails.agent !== 'undefined'
+                ? chatDetails.agent.agentName
+                : '',
+            chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
+            chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
+        };
+        var customDetails = {}
+        if (typeof chatDetails.customDetails !== 'undefined') {
+            customDetails = chatDetails.customDetails.reduce(function (memo, detail) {
+                memo['chat_custom_' + toSnakeCase(detail.label)] = detail.value;
+                return memo;
+            }, 
+            {});
+        }
+        Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'))
+        var mergeFields = [];
+        for (var prop in mergeFieldObject) {
+            mergeFields.push(prop + '=' + mergeFieldObject[prop])
+        }
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML));
+        document.body.appendChild(element);
+        var transcript = document.getElementById('j_id0:transcript').innerHTML;
+        document.getElementById('chatTranscript').innerHTML = transcript.replace(/\n/g, '<br/>');
+        createTimestampAndDisconnect();
+
+        function checkTime(i) {
+            return (i < 10) ? "0" + i : i;
+        }
+
+        function createTimestampAndDisconnect() {
+            var timeStamp = '(' + new Date().toLocaleTimeString() + ')';
+            if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
+                document.getElementById('chatTranscript').innerHTML += timeStamp + ':You have disconnected this chat';
+            } else {
+                document.getElementById('chatTranscript').innerHTML += timeStamp + ':Chat was disconnected by agent';
+            }
+        }
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        function getTranscript() {
+            var chatBody = document.getElementById('j_id0:transcript').innerHTML;
+            download("Transcript.txt", chatBody);
+        }
+        function goToSurvey() {
+            var parameters = mergeFields == undefined ? '' : mergeFields.join('&');
+            window.location = '{!postChatSurveyLink}?' + parameters;
+        }
+        function toSnakeCase(str) {
+            return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')
+        }
+    </script>
+    <style>
+        #saveChat {
+            margin-top: 3px !important;
+            margin-left: 12px !important;
+        	background-color: #dbdbdb !important;
+        	color: #2a2a2a !important;
+        	font-size: 12px !important;
+        }
+        .bottomSurvey {
+            margin-top: 10px !important;
+            max-width: 3000px !important;
+            width: 300px !important;
+            height: 15% !important;
+            font-size: 4vw !important;
+        }
+    </style>
+</apex:page>

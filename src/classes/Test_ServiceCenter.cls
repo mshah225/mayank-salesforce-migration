@@ -682,7 +682,16 @@ private class Test_ServiceCenter {
             vcc.submitReply();  
             Test.stopTest();
         }
-        System.assertEquals(vcc.caseReply, 'Test Message'); 
+        
+        System.assert(String.isEmpty(vcc.caseReply)); 
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean successMessageFound = false;
+        for(Apexpages.Message msg : msgs){
+            if (msg.getDetail().contains('Response to the case was submitted successfully')) {
+                successMessageFound = true;
+            }
+        }
+        System.assert(successMessageFound);
     }
     
     @isTest 
@@ -701,6 +710,15 @@ private class Test_ServiceCenter {
             vcc.submitReply();  
             Test.stopTest();
         }
-        System.assertEquals(vcc.caseReply, 'Test Message'); 
+        
+        System.assert(String.isEmpty(vcc.caseReply)); 
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean failureMessageFound = false;
+        for(Apexpages.Message msg : msgs){
+            if (msg.getDetail().contains('Could not add response to case. Please try again or contact system admin')) {
+                failureMessageFound = true;
+            }
+        }
+        System.assert(failureMessageFound);
     }
 }

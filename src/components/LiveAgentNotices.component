@@ -1,6 +1,5 @@
 <apex:component id="LiveAgentNotices" controller="LiveAgentNoticesController">
     <apex:slds />
-    <apex:stylesheet value="{!$Resource.slds}" />
     <apex:repeat value="{!noticeList}" var="notice">
         <div style="padding: 2px;">
             <div class="slds-notify_container slds-is-relative">

@@ -75,19 +75,6 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Engagement_Contact__c</fullName>
-        <externalId>false</externalId>
-        <label>Engagement Contact</label>
-        <referenceTo>Engagement_Contact__c</referenceTo>
-        <relationshipLabel>Engagement Messages</relationshipLabel>
-        <relationshipName>Engagement_Messages</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Engagement_Planned_Message__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -122,6 +109,19 @@
             </valueSetDefinition>
         </valueSet>
     </fields>
+    <fields>
+        <fullName>Engagement_Contact__c</fullName>
+        <externalId>false</externalId>
+        <label>Engagement Contact</label>
+        <referenceTo>Engagement_Contact__c</referenceTo>
+        <relationshipLabel>Engagement Messages</relationshipLabel>
+        <relationshipName>Engagement_Messages</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -129,6 +129,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

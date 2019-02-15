@@ -166,6 +166,15 @@
             <width>33</width>
         </listPlacement>
         <listRefreshMethod>none</listRefreshMethod>
+        <liveAgentConfig>
+            <enableLiveChat>true</enableLiveChat>
+            <openNewAccountSubtab>false</openNewAccountSubtab>
+            <openNewCaseSubtab>false</openNewCaseSubtab>
+            <openNewContactSubtab>false</openNewContactSubtab>
+            <openNewLeadSubtab>false</openNewLeadSubtab>
+            <openNewVFPageSubtab>false</openNewVFPageSubtab>
+            <showKnowledgeArticles>false</showKnowledgeArticles>
+        </liveAgentConfig>
         <whitelistedDomains>pitch.asuonline.asu.edu</whitelistedDomains>
     </consoleConfig>
     <defaultLandingTab>standard-home</defaultLandingTab>
@@ -199,7 +208,15 @@
     <tabs>standard-Macro</tabs>
     <tabs>New_Prospective_Student</tabs>
     <tabs>et4ae5__Business_Unit__c</tabs>
+    <tabs>LiveAgent_Custom_Message__c</tabs>
+    <tabs>standard-LiveChatTranscript</tabs>
+    <tabs>standard-LiveAgentSupervisor</tabs>
+    <tabs>standard-LiveChatVisitor</tabs>
+    <tabs>standard-LiveAgentSession</tabs>
     <workspaceConfig>
+        <mappings>
+            <tab>LiveAgent_Custom_Message__c</tab>
+        </mappings>
         <mappings>
             <tab>New_Prospective_Student</tab>
         </mappings>
@@ -224,6 +241,18 @@
         </mappings>
         <mappings>
             <tab>standard-KnowledgePublishing</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-LiveAgentSession</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-LiveAgentSupervisor</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-LiveChatTranscript</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-LiveChatVisitor</tab>
         </mappings>
         <mappings>
             <tab>standard-Macro</tab>

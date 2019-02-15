@@ -709,6 +709,7 @@ PS_ASU_SR0189_SBYT.ASU_STATE_UNT_TAK  + PS_ASU_SR0189_SBYT.ASU_NSTATE_UNT_TAK</d
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

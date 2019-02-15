@@ -41,6 +41,7 @@
     </actionOverrides>
     <fields>
         <fullName>Excluded_Email__c</fullName>
+        <caseSensitive>true</caseSensitive>
         <description>Email addresses to exclude from personal matching criteria</description>
         <externalId>true</externalId>
         <label>Excluded Email</label>
@@ -57,6 +58,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

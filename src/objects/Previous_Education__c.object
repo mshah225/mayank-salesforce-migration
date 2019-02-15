@@ -129,21 +129,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Contact__c</fullName>
-        <description>[??] - Relationship to the contact</description>
-        <externalId>false</externalId>
-        <label>Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Previous Education</relationshipLabel>
-        <relationshipName>Previous_Education</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>true</reparentableMasterDetail>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>true</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Degree_Type__c</fullName>
         <description>[??] - Examples include: Undergraduate, Graduate, Certificate, General Ed, Other</description>
         <externalId>false</externalId>
@@ -256,6 +241,21 @@
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <description>[??] - Relationship to the contact</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Previous Education</relationshipLabel>
+        <relationshipName>Previous_Education</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>true</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -264,6 +264,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

@@ -216,20 +216,6 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Contact__c</fullName>
-        <description>PS_Person_Checklst.common_ID</description>
-        <externalId>false</externalId>
-        <label>Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Checklist Items</relationshipLabel>
-        <relationshipName>Checklist_Items</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>true</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>true</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Item_Description__c</fullName>
         <description>PS_SCC_CKLSITM_TBL.Descr</description>
         <externalId>false</externalId>
@@ -265,6 +251,20 @@
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <description>PS_Person_Checklst.common_ID</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Checklist Items</relationshipLabel>
+        <relationshipName>Checklist_Items</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>true</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -272,6 +272,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

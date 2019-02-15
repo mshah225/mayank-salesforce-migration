@@ -40,20 +40,6 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
-        <fullName>Success_Pod__c</fullName>
-        <description>The success pod to associate a resource to.</description>
-        <externalId>false</externalId>
-        <label>Success Pod</label>
-        <referenceTo>Success_Pod__c</referenceTo>
-        <relationshipLabel>Success Resource Pod Associations</relationshipLabel>
-        <relationshipName>Success_Resource_Pod_Associations</relationshipName>
-        <relationshipOrder>1</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Success_Resource__c</fullName>
         <description>The success resource that is being associated to a success pod</description>
         <externalId>false</externalId>
@@ -89,6 +75,20 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Success_Pod__c</fullName>
+        <description>The success pod to associate a resource to.</description>
+        <externalId>false</externalId>
+        <label>Success Pod</label>
+        <referenceTo>Success_Pod__c</referenceTo>
+        <relationshipLabel>Success Resource Pod Associations</relationshipLabel>
+        <relationshipName>Success_Resource_Pod_Associations</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -97,6 +97,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

@@ -28,4 +28,5 @@
     <tabs>et4ae5__Configuration__c</tabs>
     <tabs>et4ae5__Business_Unit__c</tabs>
     <tabs>me3__c</tabs>
+    <tabs>LiveAgent_Custom_Message__c</tabs>
 </CustomApplication>

@@ -91,6 +91,16 @@
         <actionName>ViewSelfService</actionName>
         <type>Default</type>
     </actionOverrides>
+    <compactLayouts>
+        <fullName>Contacts</fullName>
+        <fields>Name</fields>
+        <fields>EMPLID__c</fields>
+        <fields>ASURite_ID__c</fields>
+        <fields>Email</fields>
+        <fields>HomePhone</fields>
+        <fields>MailingAddress</fields>
+        <label>Contacts</label>
+    </compactLayouts>
     <fields>
         <fullName>ASURite_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
@@ -5838,6 +5848,7 @@ IMAGE("/resource/Thunderbird_icon","Thunderbird Student",20,20),
     <recordTypes>
         <fullName>External_Mastered</fullName>
         <active>true</active>
+        <compactLayoutAssignment>Contacts</compactLayoutAssignment>
         <description>Contact record that is updated from an external source; the system of record is an external database.</description>
         <label>External Mastered</label>
         <picklistValues>
@@ -7395,6 +7406,7 @@ IMAGE("/resource/Thunderbird_icon","Thunderbird Student",20,20),
     <recordTypes>
         <fullName>SF_Mastered</fullName>
         <active>true</active>
+        <compactLayoutAssignment>Contacts</compactLayoutAssignment>
         <description>Contact record that exists only in Salesforce and is not updated from an external source</description>
         <label>SF Mastered</label>
         <picklistValues>
@@ -9172,5 +9184,25 @@ if(bAccessable == "true"){
         <openType>onClickJavaScript</openType>
         <protected>false</protected>
         <url>window.open('/apex/silverpop__SP_EngageContactLogin?id={!Contact.Id}', '_blank', 'height=700,width=1024,location=0,resizable=0,toolbar=0,status=0,menubar=no,scrollbars=1');</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Student_Profile2</fullName>
+        <availability>online</availability>
+        <description>Display Student Profile in lightning</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Student Profile</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>{! URLFOR( "/apex/StudentProfile", null, [ contactId = Contact.EMPLID__c ]) }</url>
     </webLinks>
 </CustomObject>

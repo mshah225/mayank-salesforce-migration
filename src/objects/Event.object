@@ -120,6 +120,9 @@
         <fullName>WhoId</fullName>
         <type>Lookup</type>
     </fields>
+    <fields>
+        <fullName>Attendees</fullName>
+    </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
     <sharingModel>ControlledByParent</sharingModel>

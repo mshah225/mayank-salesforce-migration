@@ -2,7 +2,7 @@
 <OrgPreferenceSettings xmlns="http://soap.sforce.com/2006/04/metadata">
     <preferences>
         <settingName>PathAssistantsEnabled</settingName>
-        <settingValue>false</settingValue>
+        <settingValue>true</settingValue>
     </preferences>
     <preferences>
         <settingName>SocialProfilesEnable</settingName>
@@ -105,6 +105,10 @@
         <settingValue>false</settingValue>
     </preferences>
     <preferences>
+        <settingName>PortalUserShareOnCase</settingName>
+        <settingValue>true</settingValue>
+    </preferences>
+    <preferences>
         <settingName>ReportDataCaptureEnabled</settingName>
         <settingValue>false</settingValue>
     </preferences>
@@ -122,6 +126,14 @@
     </preferences>
     <preferences>
         <settingName>LocalNames</settingName>
+        <settingValue>false</settingValue>
+    </preferences>
+    <preferences>
+        <settingName>CallDispositionEnabled</settingName>
+        <settingValue>false</settingValue>
+    </preferences>
+    <preferences>
+        <settingName>VoiceConferencingEnabled</settingName>
         <settingValue>false</settingValue>
     </preferences>
     <preferences>
@@ -161,7 +173,15 @@
         <settingValue>false</settingValue>
     </preferences>
     <preferences>
+        <settingName>ConsentManagementEnabled</settingName>
+        <settingValue>false</settingValue>
+    </preferences>
+    <preferences>
         <settingName>ApexApprovalLockUnlock</settingName>
+        <settingValue>false</settingValue>
+    </preferences>
+    <preferences>
+        <settingName>PRMAccRelPref</settingName>
         <settingValue>false</settingValue>
     </preferences>
     <preferences>
@@ -170,6 +190,6 @@
     </preferences>
     <preferences>
         <settingName>S1DesktopEnabled</settingName>
-        <settingValue>false</settingValue>
+        <settingValue>true</settingValue>
     </preferences>
 </OrgPreferenceSettings>

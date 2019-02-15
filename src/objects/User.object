@@ -594,6 +594,17 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
+    <fields>
+        <fullName>LiveAgentName__c</fullName>
+        <description>Display Name for Live Agent</description>
+        <externalId>false</externalId>
+        <label>LiveAgentName</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>

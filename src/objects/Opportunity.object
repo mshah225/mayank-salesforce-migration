@@ -1781,33 +1781,6 @@ ISPICKVAL(ForecastCategoryName, "Withdrawn/Denied")
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>External_Application_Source__c</fullName>
-        <description>New Export/Import from The Common App data from PS_ADM_APPL_RCR_CA</description>
-        <externalId>false</externalId>
-        <inlineHelpText>New Export/Import from The Common App data from PS_ADM_APPL_RCR_CA</inlineHelpText>
-        <label>External Application Source</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Common App</fullName>
-                    <default>false</default>
-                    <label>Common App</label>
-                </value>
-                <value>
-                    <fullName>Kaplan</fullName>
-                    <default>false</default>
-                    <label>Kaplan</label>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>First_Generation__c</fullName>
         <defaultValue>false</defaultValue>
         <description>[???] - Student is a first generation college student</description>
@@ -3342,11 +3315,6 @@ ISPICKVAL(ForecastCategoryName, "Withdrawn/Denied")
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>PartnerAccountId</fullName>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Payment_type__c</fullName>
@@ -5242,6 +5210,45 @@ Premium more than 5250</inlineHelpText>
         <trackTrending>false</trackTrending>
         <type>Url</type>
     </fields>
+    <fields>
+        <fullName>External_Application_Source__c</fullName>
+        <description>New Export/Import from The Common App data from PS_ADM_APPL_RCR_CA</description>
+        <externalId>false</externalId>
+        <inlineHelpText>New Export/Import from The Common App data from PS_ADM_APPL_RCR_CA</inlineHelpText>
+        <label>External Application Source</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Common App</fullName>
+                    <default>false</default>
+                    <label>Common App</label>
+                </value>
+                <value>
+                    <fullName>Common App Transfer</fullName>
+                    <default>false</default>
+                    <label>Common App Transfer</label>
+                </value>
+                <value>
+                    <fullName>Kaplan</fullName>
+                    <default>false</default>
+                    <label>Kaplan</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>PartnerAccountId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>true</enableFeeds>
@@ -6533,6 +6540,20 @@ Premium more than 5250</inlineHelpText>
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Default_Opportunity_Pipeline</fullName>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>LAST_N_MONTHS:3</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.RECORDTYPE</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Opportunity Pipeline</label>
     </listViews>
     <recordTypes>
         <fullName>Corporate_Relations_Opportunity</fullName>
@@ -8360,6 +8381,10 @@ Premium more than 5250</inlineHelpText>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Common App Transfer</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Kaplan</fullName>
                 <default>false</default>
             </values>
@@ -9120,6 +9145,10 @@ Premium more than 5250</inlineHelpText>
             <picklist>External_Application_Source__c</picklist>
             <values>
                 <fullName>Common App</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Common App Transfer</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -10025,6 +10054,10 @@ Premium more than 5250</inlineHelpText>
             <picklist>External_Application_Source__c</picklist>
             <values>
                 <fullName>Common App</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Common App Transfer</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -11166,6 +11199,10 @@ Premium more than 5250</inlineHelpText>
             <picklist>External_Application_Source__c</picklist>
             <values>
                 <fullName>Common App</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Common App Transfer</fullName>
                 <default>false</default>
             </values>
         </picklistValues>

@@ -660,6 +660,17 @@ NOW() - MIN( NOW() - LastModifiedDate , NOW() - Campaign.LastModifiedDate)))</fo
         <type>Number</type>
         <unique>true</unique>
     </fields>
+    <fields>
+        <fullName>Aventri_Attendee_ID__c</fullName>
+        <description>the source is Aventri Event Registration</description>
+        <externalId>true</externalId>
+        <inlineHelpText>the source is Aventri Event Registration</inlineHelpText>
+        <label>Aventri Attendee ID</label>
+        <length>18</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
     <sharingModel>ControlledByCampaign</sharingModel>

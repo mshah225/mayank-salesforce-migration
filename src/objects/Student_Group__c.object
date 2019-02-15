@@ -40,20 +40,6 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
-        <fullName>SG_Contact__c</fullName>
-        <description>[Peoplesoft] - Relationship to contact</description>
-        <externalId>false</externalId>
-        <label>Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Student Groups</relationshipLabel>
-        <relationshipName>Student_Groups_Contact</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>SG_Description__c</fullName>
         <description>[Peoplesoft] - Examples include: All Arizona Academic Team, CI reqs alt Sun Devil Success, CI requires Sun Devil Success, Denied Pathway Eligible Student, Eastern AZ College, HONORS GD STND LOW DIV &lt; 2107, HONORS GD, STND LOW DIV &gt;= 2107, HONORS GD STND UPP DIV &lt; 2107, HONORS GD STND UPP DIV &gt;= 2107, HONORS, PROV-LOWER DIVISION, HONORS, PROV-UPPER DIVISION, Huazhong Unv Sci&amp;Tech students (HUST), Lake Havasu, MLFTC ESP provisional admits, National Achievement Semifinalist, National Hispanic Scholar Finalist, National Merit Semifinalist, New College GAIN, Not Admissible recvd CC invite, Provisional Admt - NR students, RHHE, SDS 2013 - 11 credit hour option, SDS 2013 - 4 credit hour option, SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar), SDS 2013 Overall group, Sichun University, Sponsored International App, TA Prospect-Signed Agreement, W.P. Carey Provisional, WUE Western Undergrad Exchange</description>
         <externalId>false</externalId>
@@ -246,6 +232,20 @@
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
+    <fields>
+        <fullName>SG_Contact__c</fullName>
+        <description>[Peoplesoft] - Relationship to contact</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Student Groups</relationshipLabel>
+        <relationshipName>Student_Groups_Contact</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -254,6 +254,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

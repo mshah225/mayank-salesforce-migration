@@ -169,6 +169,41 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Campaign__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup field to be able to select the appropriate associated campaign for the recruitment call.</description>
+        <externalId>false</externalId>
+        <label>Campaign</label>
+        <lookupFilter>
+            <active>false</active>
+            <filterItems>
+                <field>Campaign.RecordType.Name</field>
+                <operation>equals</operation>
+                <value>Calling</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Campaign</referenceTo>
+        <relationshipLabel>Recruitment Calls</relationshipLabel>
+        <relationshipName>Recruitment_Calls</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Created_By_Role__c</fullName>
+        <description>Formula field that displays the role of the user who created the recruitment call record.</description>
+        <externalId>false</externalId>
+        <formula>CreatedBy.UserRole.Name</formula>
+        <label>Created By Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Call_Type__c</fullName>
         <description>Picklist field that allows users to select the type of phone call made.</description>
         <externalId>false</externalId>
@@ -221,6 +256,11 @@
                     <label>Admit (Enrollment Deposit Push)</label>
                 </value>
                 <value>
+                    <fullName>Admit (Enrollment Deposit Push 2)</fullName>
+                    <default>false</default>
+                    <label>Admit (Enrollment Deposit Push 2)</label>
+                </value>
+                <value>
                     <fullName>Admit (FA Package)</fullName>
                     <default>false</default>
                     <label>Admit (FA Package)</label>
@@ -229,6 +269,11 @@
                     <fullName>Admit (Housing Push)</fullName>
                     <default>false</default>
                     <label>Admit (Housing Push)</label>
+                </value>
+                <value>
+                    <fullName>Admit (Housing Push 2)</fullName>
+                    <default>false</default>
+                    <label>Admit (Housing Push 2)</label>
                 </value>
                 <value>
                     <fullName>Admit (New)</fullName>
@@ -259,6 +304,11 @@
                     <fullName>Admit (Orientation Push)</fullName>
                     <default>false</default>
                     <label>Admit (Orientation Push)</label>
+                </value>
+                <value>
+                    <fullName>Admit (Orientation Push 2)</fullName>
+                    <default>false</default>
+                    <label>Admit (Orientation Push 2)</label>
                 </value>
                 <value>
                     <fullName>Admit (PAR New Admit)</fullName>
@@ -394,41 +444,6 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Campaign__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <description>Lookup field to be able to select the appropriate associated campaign for the recruitment call.</description>
-        <externalId>false</externalId>
-        <label>Campaign</label>
-        <lookupFilter>
-            <active>false</active>
-            <filterItems>
-                <field>Campaign.RecordType.Name</field>
-                <operation>equals</operation>
-                <value>Calling</value>
-            </filterItems>
-            <isOptional>false</isOptional>
-        </lookupFilter>
-        <referenceTo>Campaign</referenceTo>
-        <relationshipLabel>Recruitment Calls</relationshipLabel>
-        <relationshipName>Recruitment_Calls</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Created_By_Role__c</fullName>
-        <description>Formula field that displays the role of the user who created the recruitment call record.</description>
-        <externalId>false</externalId>
-        <formula>CreatedBy.UserRole.Name</formula>
-        <label>Created By Role</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Opportunity__c</fullName>
         <description>Master-detail relationship to the opportunity object.</description>
         <externalId>false</externalId>
@@ -451,6 +466,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -631,11 +647,19 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Admit %28Enrollment Deposit Push 2%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Admit %28Enrollment Deposit Push%29</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Admit %28FA Package%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admit %28Housing Push 2%29</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -660,6 +684,10 @@
             </values>
             <values>
                 <fullName>Admit %28No FAFSA%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admit %28Orientation Push 2%29</fullName>
                 <default>false</default>
             </values>
             <values>

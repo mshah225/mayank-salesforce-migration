@@ -94,6 +94,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Student Financial Aid Status by Aid Year</description>
     <enableFeeds>false</enableFeeds>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <externalDataSource>asu_ps_lightning</externalDataSource>

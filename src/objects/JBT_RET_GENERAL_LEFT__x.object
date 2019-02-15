@@ -93,6 +93,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Data source script can be found here: https://docs.google.com/document/d/1BoG-WfksUyUOlQsSbtuOPdMoasBXjm9rd9cDFazt0mw/edit</description>
     <enableFeeds>false</enableFeeds>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <externalDataSource>asu_ps_lightning</externalDataSource>

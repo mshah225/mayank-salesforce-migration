@@ -205,6 +205,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Data source script can be found here: https://docs.google.com/spreadsheets/d/1bFjSsWNvNY04dkSXxMIuAaHKo1A4SQ9gaV1HBEq7s9w/edit#gid=0</description>
     <enableFeeds>false</enableFeeds>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <externalDataSource>asu_ps_lightning</externalDataSource>

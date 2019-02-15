@@ -262,6 +262,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Functional Documentation can be found here: https://docs.google.com/document/d/1w4Rx3o5mXo-sZzCTGeFh4EpEbVZD3h1aqDSnNeyUjK0/edit</description>
     <enableFeeds>false</enableFeeds>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <externalDataSource>asu_ps_lightning</externalDataSource>

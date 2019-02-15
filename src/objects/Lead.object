@@ -2162,10 +2162,6 @@ International_Student__c = True),False,True)</formula>
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>PartnerAccountId</fullName>
-        <type>Lookup</type>
-    </fields>
-    <fields>
         <fullName>Phone</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -2630,17 +2626,6 @@ International_Student__c = True),False,True)</formula>
                 </value>
             </valueSetDefinition>
         </valueSet>
-    </fields>
-    <fields>
-        <fullName>Secondary_Email__c</fullName>
-        <description>[import] - Secondary email address for the lead</description>
-        <externalId>false</externalId>
-        <label>Secondary Email</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Email</type>
-        <unique>true</unique>
     </fields>
     <fields>
         <fullName>Self_Reported_SES__c</fullName>
@@ -4541,6 +4526,24 @@ education, occupation, and household items.</description>
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>PartnerAccountId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Secondary_Email__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>[import] - Secondary email address for the lead</description>
+        <externalId>false</externalId>
+        <label>Secondary Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Email</type>
+        <unique>true</unique>
     </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>

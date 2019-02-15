@@ -1798,6 +1798,7 @@ If (TEXT(Rule_Type__c) = 'Default User',TEXT(Rule_Type__c)+'|'+TEXT(Opportunity_
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

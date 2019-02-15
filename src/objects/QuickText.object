@@ -39,6 +39,10 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <actionOverrides>
+        <actionName>Share</actionName>
+        <type>Default</type>
+    </actionOverrides>
     <fields>
         <fullName>Category</fullName>
         <inlineHelpText>Use this field to select the Functional Group to which the Quick Text message belongs to.</inlineHelpText>
@@ -6680,6 +6684,38 @@
             <role>S_Service</role>
             <role>UTO_University_Technology_Office</role>
             <roleAndSubordinatesInternal>SCI_Student_Centric_Initiatives_Manager</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Live_Agent_Case_QuickText</fullName>
+        <filterScope>Queue</filterScope>
+        <label>Live Agent (Case)</label>
+        <queue>Live_Agent_Case</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Live_Agent_QT_Messages</fullName>
+        <columns>Owner_Display__c</columns>
+        <columns>Category</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>Name</columns>
+        <columns>Message</columns>
+        <columns>CreatedDate</columns>
+        <columns>LastModifiedDate</columns>
+        <columns>Id</columns>
+        <columns>Channel</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category</field>
+            <operation>equals</operation>
+            <value>Live Agent</value>
+        </filters>
+        <label>Live Agent QT Messages</label>
+        <sharedTo>
+            <group>LiveAgent_Manager</group>
+            <group>UTO_Administration</group>
         </sharedTo>
     </listViews>
 </CustomObject>

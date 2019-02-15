@@ -998,6 +998,7 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -2277,32 +2278,6 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
             <value>Health Solutions</value>
         </filters>
         <label>CARs - Health Solutions</label>
-        <sharedTo>
-            <group>UTO_Administration</group>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>CARs_Help_Desk</fullName>
-        <columns>NAME</columns>
-        <columns>Priority__c</columns>
-        <columns>Email_Address__c</columns>
-        <columns>Case_Record_Type_Id__c</columns>
-        <columns>Customer_Notice_Email_From_Name__c</columns>
-        <columns>Functional_Group__c</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>Origin__c</columns>
-        <columns>Email_Template_ID__c</columns>
-        <columns>Email_Template_URL__c</columns>
-        <columns>Queue_ID__c</columns>
-        <columns>Queue_URL__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Functional_Group__c</field>
-            <operation>equals</operation>
-            <value>Help Desk</value>
-        </filters>
-        <label>CARs - Help Desk</label>
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>
@@ -3790,6 +3765,60 @@ HYPERLINK("/p/own/Queue/d?id="&amp;Queue_ID__c,"Click to View Associated Queue")
             <value>Financial Aid</value>
         </filters>
         <label>CARs - Financial Aid</label>
+        <sharedTo>
+            <group>UTO_Administration</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>CARs_Help_Desk</fullName>
+        <columns>NAME</columns>
+        <columns>Priority__c</columns>
+        <columns>Email_Address__c</columns>
+        <columns>Case_Record_Type_Id__c</columns>
+        <columns>Customer_Notice_Email_From_Name__c</columns>
+        <columns>Functional_Group__c</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>CTPVisible__c</columns>
+        <columns>CTPColumn__c</columns>
+        <columns>CTPGroup__c</columns>
+        <columns>Label__c</columns>
+        <columns>Origin__c</columns>
+        <columns>Email_Template_ID__c</columns>
+        <columns>Queue_ID__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Functional_Group__c</field>
+            <operation>equals</operation>
+            <value>Help Desk</value>
+        </filters>
+        <label>CARs - Help Desk</label>
+        <sharedTo>
+            <group>UTO_Administration</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>CARs_SESE</fullName>
+        <columns>NAME</columns>
+        <columns>Priority__c</columns>
+        <columns>Email_Address__c</columns>
+        <columns>Case_Record_Type_Id__c</columns>
+        <columns>Customer_Notice_Email_From_Name__c</columns>
+        <columns>Functional_Group__c</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>Origin__c</columns>
+        <columns>Email_Template_ID__c</columns>
+        <columns>Email_Template_URL__c</columns>
+        <columns>Queue_ID__c</columns>
+        <columns>Queue_URL__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Functional_Group__c</field>
+            <operation>equals</operation>
+            <value>CLAS - SESE</value>
+        </filters>
+        <label>CARs - SESE</label>
         <sharedTo>
             <group>UTO_Administration</group>
         </sharedTo>

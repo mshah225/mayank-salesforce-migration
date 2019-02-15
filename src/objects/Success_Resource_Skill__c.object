@@ -40,6 +40,18 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
+        <fullName>Success_Skill__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Success Skill</label>
+        <referenceTo>Success_Skill__c</referenceTo>
+        <relationshipLabel>Success Resource Skills</relationshipLabel>
+        <relationshipName>Success_Resource_Skills</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Success_Resource__c</fullName>
         <externalId>false</externalId>
         <label>Success Resource</label>
@@ -52,18 +64,6 @@
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
-    <fields>
-        <fullName>Success_Skill__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Success Skill</label>
-        <referenceTo>Success_Skill__c</referenceTo>
-        <relationshipLabel>Success Resource Skills</relationshipLabel>
-        <relationshipName>Success_Resource_Skills</relationshipName>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -71,6 +71,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

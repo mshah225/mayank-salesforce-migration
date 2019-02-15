@@ -40,21 +40,6 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
-        <fullName>Contact__c</fullName>
-        <description>[Peoplesoft] - Relationship to contact</description>
-        <externalId>false</externalId>
-        <label>Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Test Scores</relationshipLabel>
-        <relationshipName>Test_Scores_Contact</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>true</reparentableMasterDetail>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Integration_Source__c</fullName>
         <description>derived</description>
         <externalId>false</externalId>
@@ -857,6 +842,21 @@ pre-2016 SAT redesigned scoring structure.</description>
             </valueSetDefinition>
         </valueSet>
     </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <description>[Peoplesoft] - Relationship to contact</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Test Scores</relationshipLabel>
+        <relationshipName>Test_Scores_Contact</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -865,6 +865,7 @@ pre-2016 SAT redesigned scoring structure.</description>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

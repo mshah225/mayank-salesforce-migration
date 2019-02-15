@@ -139,6 +139,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -198,97 +199,6 @@
         <columns>Cause__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
-    </listViews>
-    <listViews>
-        <fullName>DL_LOST_EMAIL_TODAY_2</fullName>
-        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
-        <columns>CREATED_DATE</columns>
-        <columns>NAME</columns>
-        <columns>SPAM__c</columns>
-        <columns>RejectedAttachments__c</columns>
-        <columns>Subject__c</columns>
-        <columns>Sender__c</columns>
-        <columns>Recipient__c</columns>
-        <columns>Cause__c</columns>
-        <columns>LAST_UPDATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Subject__c</field>
-            <operation>notEqual</operation>
-            <value>ccc</value>
-        </filters>
-        <filters>
-            <field>Cause__c</field>
-            <operation>notContain</operation>
-            <value>Filtered Term:</value>
-        </filters>
-        <filters>
-            <field>Cause__c</field>
-            <operation>notContain</operation>
-            <value>Attachment is invalid</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterThan</operation>
-            <value>11/1/2018 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>SPAM__c</field>
-            <operation>equals</operation>
-            <value>0</value>
-        </filters>
-        <filters>
-            <field>RejectedAttachments__c</field>
-            <operation>equals</operation>
-            <value>0</value>
-        </filters>
-        <label>2 - Without Filtered Term or Attachment</label>
-        <sharedTo>
-            <group>UTO_Administration</group>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>DL_LOST_EMAIL_filtered_Term_exclsion2</fullName>
-        <booleanFilter>(1 and 2 and 3) AND (1 and 2 and 4) AND 5</booleanFilter>
-        <columns>CREATED_DATE</columns>
-        <columns>OBJECT_ID</columns>
-        <columns>NAME</columns>
-        <columns>SPAM__c</columns>
-        <columns>Subject__c</columns>
-        <columns>Cause__c</columns>
-        <columns>Sender__c</columns>
-        <columns>RejectedAttachments__c</columns>
-        <columns>Recipient__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterThan</operation>
-            <value>1/7/2019 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Cause__c</field>
-            <operation>contains</operation>
-            <value>@qq.com</value>
-        </filters>
-        <filters>
-            <field>Subject__c</field>
-            <operation>notContain</operation>
-            <value>604</value>
-        </filters>
-        <filters>
-            <field>Subject__c</field>
-            <operation>notContain</operation>
-            <value>８⒏</value>
-        </filters>
-        <filters>
-            <field>SPAM__c</field>
-            <operation>equals</operation>
-            <value>0</value>
-        </filters>
-        <label>1 - Filtered Term @qq excluding subjects</label>
-        <sharedTo>
-            <group>UTO_Administration</group>
-        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Last_Week_s_Lost_Emails</fullName>
@@ -358,6 +268,97 @@
             <value>TODAY</value>
         </filters>
         <label>Todays</label>
+    </listViews>
+    <listViews>
+        <fullName>DL_LOST_EMAIL_TODAY_2</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+        <columns>CREATED_DATE</columns>
+        <columns>NAME</columns>
+        <columns>SPAM__c</columns>
+        <columns>RejectedAttachments__c</columns>
+        <columns>Subject__c</columns>
+        <columns>Sender__c</columns>
+        <columns>Recipient__c</columns>
+        <columns>Cause__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Subject__c</field>
+            <operation>notEqual</operation>
+            <value>ccc</value>
+        </filters>
+        <filters>
+            <field>Cause__c</field>
+            <operation>notContain</operation>
+            <value>Filtered Term:</value>
+        </filters>
+        <filters>
+            <field>Cause__c</field>
+            <operation>notContain</operation>
+            <value>Attachment is invalid</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>2/13/2019 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>SPAM__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>RejectedAttachments__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>2 - Without Filtered Term or Attachment</label>
+        <sharedTo>
+            <group>UTO_Administration</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>X1_Filtered_Term_qq_excluding_subjects</fullName>
+        <booleanFilter>(1 and 2 and 3) AND (1 and 2 and 4) AND 5</booleanFilter>
+        <columns>CREATED_DATE</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>NAME</columns>
+        <columns>SPAM__c</columns>
+        <columns>Subject__c</columns>
+        <columns>Cause__c</columns>
+        <columns>Sender__c</columns>
+        <columns>RejectedAttachments__c</columns>
+        <columns>Recipient__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>2/14/2019 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Cause__c</field>
+            <operation>contains</operation>
+            <value>@qq.com</value>
+        </filters>
+        <filters>
+            <field>Subject__c</field>
+            <operation>notContain</operation>
+            <value>604</value>
+        </filters>
+        <filters>
+            <field>Subject__c</field>
+            <operation>notContain</operation>
+            <value>８⒏</value>
+        </filters>
+        <filters>
+            <field>SPAM__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>1 - Filtered Term @qq excluding subjects</label>
+        <sharedTo>
+            <group>UTO_Administration</group>
+        </sharedTo>
     </listViews>
     <webLinks>
         <fullName>Mass_Delete</fullName>

@@ -571,6 +571,7 @@
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
@@ -4604,6 +4605,15 @@
         <filterScope>Queue</filterScope>
         <label>UG CISA Mass Email - May 2017</label>
         <queue>UG_CISA_Mass_Email_May_2017</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>UGES74_Success_Pod</fullName>
+        <filterScope>Queue</filterScope>
+        <label>UGES74</label>
+        <queue>UGES74</queue>
         <sharedTo>
             <allInternalUsers></allInternalUsers>
         </sharedTo>

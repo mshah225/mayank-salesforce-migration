@@ -201,6 +201,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Source script = indicators_transcript_sent</description>
     <enableFeeds>false</enableFeeds>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <externalDataSource>asu_ps_lightning</externalDataSource>

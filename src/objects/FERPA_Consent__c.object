@@ -40,6 +40,16 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
+        <fullName>FERPA_Comments__c</fullName>
+        <description>[Peoplesoft] - General FERPA comments</description>
+        <externalId>false</externalId>
+        <label>FERPA Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
         <fullName>Contact__c</fullName>
         <description>[Peoplesoft] - Look up to the Contact</description>
         <externalId>false</externalId>
@@ -53,16 +63,6 @@
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
-    <fields>
-        <fullName>FERPA_Comments__c</fullName>
-        <description>[Peoplesoft] - General FERPA comments</description>
-        <externalId>false</externalId>
-        <label>FERPA Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>5</visibleLines>
-    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -71,6 +71,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

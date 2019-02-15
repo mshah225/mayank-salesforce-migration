@@ -40,21 +40,6 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
-        <fullName>Student_Program_Plan__c</fullName>
-        <description>Referencing the associated student program plan</description>
-        <externalId>false</externalId>
-        <label>Student Program Plan</label>
-        <referenceTo>Student_Program_Plan__c</referenceTo>
-        <relationshipLabel>Student Program Subplans</relationshipLabel>
-        <relationshipName>Student_Sub_Plans</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Subplan_Description__c</fullName>
         <description>Data sourced from PS_ACAD_SUBPLN_TBL.DESCR</description>
         <externalId>false</externalId>
@@ -102,6 +87,21 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Student_Program_Plan__c</fullName>
+        <description>Referencing the associated student program plan</description>
+        <externalId>false</externalId>
+        <label>Student Program Plan</label>
+        <referenceTo>Student_Program_Plan__c</referenceTo>
+        <relationshipLabel>Student Program Subplans</relationshipLabel>
+        <relationshipName>Student_Sub_Plans</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -110,6 +110,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>

@@ -92,19 +92,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Contact_Upload__c</fullName>
-        <externalId>false</externalId>
-        <label>Contact Upload</label>
-        <referenceTo>Contact_Upload__c</referenceTo>
-        <relationshipLabel>Contact Upload Details</relationshipLabel>
-        <relationshipName>Contact_Upload_Details</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Contact__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -272,6 +259,19 @@
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
+    <fields>
+        <fullName>Contact_Upload__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact Upload</label>
+        <referenceTo>Contact_Upload__c</referenceTo>
+        <relationshipLabel>Contact Upload Details</relationshipLabel>
+        <relationshipName>Contact_Upload_Details</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -280,6 +280,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

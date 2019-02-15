@@ -550,6 +550,7 @@ HYPERLINK("https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/ASU_STUDENT_REC
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

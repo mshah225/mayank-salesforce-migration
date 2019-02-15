@@ -40,19 +40,6 @@
         <type>Default</type>
     </actionOverrides>
     <fields>
-        <fullName>Engagement__c</fullName>
-        <externalId>false</externalId>
-        <label>Engagement</label>
-        <referenceTo>Engagement__c</referenceTo>
-        <relationshipLabel>Engagement Planned Messages</relationshipLabel>
-        <relationshipName>Engagement_Planned_Messages</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>true</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>Message_Template__c</fullName>
         <externalId>false</externalId>
         <label>Message Template</label>
@@ -175,6 +162,19 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Engagement__c</fullName>
+        <externalId>false</externalId>
+        <label>Engagement</label>
+        <referenceTo>Engagement__c</referenceTo>
+        <relationshipLabel>Engagement Planned Messages</relationshipLabel>
+        <relationshipName>Engagement_Planned_Messages</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -183,6 +183,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

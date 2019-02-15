@@ -1022,4 +1022,11 @@ Also, the package has changed the setting to prevent the creation of Contacts an
         <shortDescription>PrimaryRelationshipError</shortDescription>
         <value>A contact can only have two primary parents.</value>
     </labels>
+    <labels>
+        <fullName>PreSurveyQuestion</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>PreSurveyQuestion</shortDescription>
+        <value>How can we help?</value>
+    </labels>
 </CustomLabels>

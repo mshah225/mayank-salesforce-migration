@@ -218,6 +218,7 @@
     <description>Field mapping can be found here: https://docs.google.com/spreadsheets/d/1slPhrrUp047cYk0rP14uXmuJH0ddpc7GLBRtr65IJnw/edit#gid=0
 Query can be found here: https://docs.google.com/document/d/1BoG-WfksUyUOlQsSbtuOPdMoasBXjm9rd9cDFazt0mw/edit</description>
     <enableFeeds>false</enableFeeds>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
     <externalDataSource>asu_ps_lightning</externalDataSource>

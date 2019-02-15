@@ -51,20 +51,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>SI_Contact__c</fullName>
-        <description>[Peoplesoft] - Relationship to contact</description>
-        <externalId>false</externalId>
-        <label>Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Service Indicators</relationshipLabel>
-        <relationshipName>Service_Indicators_Contact</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>SI_Description__c</fullName>
         <description>[Peoplesoft] - Examples include: Academic Administrative Hold, Admin Hold, Administrative Hold, Admissions Hold, Admissions Hold 1 Semester, Admissions VIP, Advising Applied Arts &amp; Sci, Advising Business, Advising Design, Advising Education</description>
         <externalId>false</externalId>
@@ -139,6 +125,20 @@
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
+    <fields>
+        <fullName>SI_Contact__c</fullName>
+        <description>[Peoplesoft] - Relationship to contact</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Service Indicators</relationshipLabel>
+        <relationshipName>Service_Indicators_Contact</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -146,6 +146,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

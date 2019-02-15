@@ -304,6 +304,18 @@
         <fields>LastModifiedById</fields>
         <label>ASU Service Compact Layout</label>
     </compactLayouts>
+    <compactLayouts>
+        <fullName>Case_Compact_Layout</fullName>
+        <fields>ContactId</fields>
+        <fields>CaseNumber</fields>
+        <fields>CC_Functional_Group__c</fields>
+        <fields>CC_Category__c</fields>
+        <fields>Status</fields>
+        <fields>OwnerId</fields>
+        <fields>Origin__c</fields>
+        <fields>Subject</fields>
+        <label>Case Compact Layout</label>
+    </compactLayouts>
     <fields>
         <fullName>ADMIN_Case_Notes__c</fullName>
         <description>Private notes area for ADMIN cases received from Salesforce Support email.</description>
@@ -5936,63 +5948,6 @@ If Case Survey Received Date is not empty = “Survey Response Received”</inli
         </valueSet>
     </fields>
     <fields>
-        <fullName>Feedback_Link__c</fullName>
-        <description>List of Functional Groups who should not received the GetFeedback survey on closed cases.</description>
-        <externalId>false</externalId>
-        <formula>IF(OR(
-/* Check to see if the Case is not "Closed: Resolved"*/
-NOT(ISPICKVAL(Status,"Closed: Resolved")), IsClosedOnCreate == TRUE,
-/* Check to see if the case has been closed for more than 14 days */
-TODAY()-DATEVALUE(ClosedDate) &gt; 14,
-/*Check to see if the Case is associated with a Functional Group that should be excluded */
-CC_Functional_Group__r.Name = "Admission Services",
-CC_Functional_Group__r.Name = "Educational Outreach and Student Services",
-CC_Functional_Group__r.Name = "Enterprise Marketing Hub",
-CC_Functional_Group__r.Name = "ESM Online",
-CC_Functional_Group__r.Name = "External Unit",
-CC_Functional_Group__r.Name = "First in the World Grant",
-CC_Functional_Group__r.Name = "Office of the President",
-CC_Functional_Group__r.Name = "Office of the University Provost",
-CC_Functional_Group__r.Name = "Student Success Innovations",
-CC_Functional_Group__r.Name = "ASU Salesforce Support",
-CC_Functional_Group__r.Name = "ASU Advisor Outreach",
-CC_Functional_Group__r.Name = "ASU Coach Outreach",
-CC_Functional_Group__r.Name = "Enrollment Analysis",
-/*ISPICKVAL(Functional_Group__c,"Admission Services"),
-ISPICKVAL(Functional_Group__c,"Educational Outreach and Student Services"),
-ISPICKVAL(Functional_Group__c,"Enterprise Marketing Hub"),
-ISPICKVAL(Functional_Group__c,"ESM Online"),
-ISPICKVAL(Functional_Group__c,"External Unit"),
-ISPICKVAL(Functional_Group__c,"First in the World Grant"),
-ISPICKVAL(Functional_Group__c,"Office of the President"),
-ISPICKVAL(Functional_Group__c,"Office of the University Provost"),
-ISPICKVAL(Functional_Group__c,"Student Success Innovations"),
-ISPICKVAL(Functional_Group__c,"ASU Salesforce Support"),
-ISPICKVAL(Functional_Group__c,"ASU Advisor Outreach"),
-ISPICKVAL(Functional_Group__c,"ASU Coach Outreach"),
-ISPICKVAL(Functional_Group__c,"Enrollment Analysis"),*/
-ISBLANK(TEXT(Functional_Group__c)),
-/*Check to see if the Case is associated with a Category that should be excluded */
-CONTAINS(TEXT(Category__c), "Recruitment"),
-CONTAINS(TEXT(Sub_Category__c), "Recruitment"),
-CONTAINS(TEXT(Category__c), "Outreach")),
-/* If any of the above is true, display nothing.*/
-"",
-/*Else, check to see if the feedback has been provided*/
-IF(NOT(ISBLANK(Case_Survey_Received_Date__c)),
-/*If feedback has been provided, display that message*/
-"You have already provided feedback on this case. Thank you.",
-/*Else, show the Link. Note that the "_blank" parameter "Displays link in a new unnamed window."*/
-"Take a " + HYPERLINK("https://asu.getfeedback.com/r/fWD3ZfaE?Case_ID="&amp;Id&amp;"&amp;name="&amp;Contact.FirstName,"survey","_blank") + " to tell us how we did."))</formula>
-        <inlineHelpText>List of Functional Groups who should not received the GetFeedback survey on closed cases.</inlineHelpText>
-        <label>Feedback Link</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Followup_Date__c</fullName>
         <externalId>false</externalId>
         <label>Followup Date</label>
@@ -6071,87 +6026,6 @@ LEN(TEXT(Forward_To_Unit__c)) - FIND("(",TEXT(Forward_To_Unit__c))-1)
         <trackTrending>false</trackTrending>
         <type>Email</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Forward_To_Unit__c</fullName>
-        <description>[Internal] - Emails to departments that are not working or have access to this Salesforce org.</description>
-        <externalId>false</externalId>
-        <label>Forward To Unit</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>true</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-        <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Alumni Association (alumni@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>Alumni Association (alumni@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>AS PeopleSoft Systems (jira.esis@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>AS PeopleSoft Systems (jira.esis@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>ASU Human Resources Employee Service Center (HRESC@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>ASU Human Resources Employee Service Center (HRESC@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>ASU Online Admissions (enrollment@asuonline.asu.edu)</fullName>
-                    <default>false</default>
-                    <label>ASU Online Admissions (enrollment@asuonline.asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>ASU Online - Graduate Recruitment (gradenrollment@asuonline.asu.edu)</fullName>
-                    <default>false</default>
-                    <label>ASU Online - Graduate Recruitment (gradenrollment@asuonline.asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>Athletics (SparkyCares@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>Athletics (SparkyCares@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>Bookstores (sundevil@bkstr.com)</fullName>
-                    <default>false</default>
-                    <label>Bookstores (sundevil@bkstr.com)</label>
-                </value>
-                <value>
-                    <fullName>DARS (dars-q@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>DARS (dars-q@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>Global Launch (GlobalLaunch@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>Global Launch (GlobalLaunch@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>Immunization - Health Services (measles@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>Immunization - Health Services (measles@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>Other Unit</fullName>
-                    <default>false</default>
-                    <label>Other Unit</label>
-                </value>
-                <value>
-                    <fullName>W.P. Carey Graduate Recruitment (wpcareymasters@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>W.P. Carey Graduate Recruitment (wpcareymasters@asu.edu)</label>
-                </value>
-                <value>
-                    <fullName>FASS (FASSSFEscalations@asu.edu)</fullName>
-                    <default>false</default>
-                    <label>FASS (FASSSFEscalations@asu.edu)</label>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Functional_Group__c</fullName>
@@ -20065,7 +19939,153 @@ Empty responses are left blank.</inlineHelpText>
             </valueSetDefinition>
         </valueSet>
     </fields>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <fields>
+        <fullName>Feedback_Link__c</fullName>
+        <description>List of Functional Groups who should not received the GetFeedback survey on closed cases.</description>
+        <externalId>false</externalId>
+        <formula>IF(OR(
+/* Check to see if the Case is not "Closed: Resolved"*/
+NOT(ISPICKVAL(Status,"Closed: Resolved")), IsClosedOnCreate == TRUE,
+/* Check to see if the case has been closed for more than 14 days */
+TODAY()-DATEVALUE(ClosedDate) &gt; 14,
+/*Check to see if the Case is associated with a Functional Group that should be excluded */
+CC_Functional_Group__r.Name = "Admission Services",
+CC_Functional_Group__r.Name = "Educational Outreach and Student Services",
+CC_Functional_Group__r.Name = "Enterprise Marketing Hub",
+CC_Functional_Group__r.Name = "ESM Online",
+CC_Functional_Group__r.Name = "External Unit",
+CC_Functional_Group__r.Name = "First in the World Grant",
+CC_Functional_Group__r.Name = "Office of the President",
+CC_Functional_Group__r.Name = "Office of the University Provost",
+CC_Functional_Group__r.Name = "Student Success Innovations",
+CC_Functional_Group__r.Name = "ASU Salesforce Support",
+CC_Functional_Group__r.Name = "ASU Advisor Outreach",
+CC_Functional_Group__r.Name = "ASU Coach Outreach",
+CC_Functional_Group__r.Name = "Enrollment Analysis",
+ISBLANK(TEXT(Functional_Group__c)),
+/*Check for Origin Chat and exclude */
+ISPICKVAL(Origin__c , "Chat"),
+/*Check to see if the Case is associated with a Category that should be excluded */
+CONTAINS(TEXT(Category__c), "Recruitment"),
+CONTAINS(TEXT(Sub_Category__c), "Recruitment"),
+CONTAINS(TEXT(Category__c), "Outreach")),
+/* If any of the above is true, display nothing.*/
+"",
+/*Else, check to see if the feedback has been provided*/
+IF(NOT(ISBLANK(Case_Survey_Received_Date__c)),
+/*If feedback has been provided, display that message*/
+"You have already provided feedback on this case. Thank you.",
+/*Else, show the Link. Note that the "_blank" parameter "Displays link in a new unnamed window."*/
+"Take a " + HYPERLINK("https://asu.getfeedback.com/r/fWD3ZfaE?Case_ID="&amp;Id&amp;"&amp;name="&amp;Contact.FirstName,"survey","_blank") + " to tell us how we did."))</formula>
+        <inlineHelpText>List of Functional Groups who should not received the GetFeedback survey on closed cases.</inlineHelpText>
+        <label>Feedback Link</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Forward_To_Unit__c</fullName>
+        <description>[Internal] - Emails to departments that are not working or have access to this Salesforce org.</description>
+        <externalId>false</externalId>
+        <label>Forward To Unit</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Alumni Association (alumni@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>Alumni Association (alumni@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>AS PeopleSoft Systems (jira.esis@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>AS PeopleSoft Systems (jira.esis@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>ASU Human Resources Employee Service Center (HRESC@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>ASU Human Resources Employee Service Center (HRESC@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>ASU Online Admissions (enrollment@asuonline.asu.edu)</fullName>
+                    <default>false</default>
+                    <label>ASU Online Admissions (enrollment@asuonline.asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>ASU Online - Graduate Recruitment (gradenrollment@asuonline.asu.edu)</fullName>
+                    <default>false</default>
+                    <label>ASU Online - Graduate Recruitment (gradenrollment@asuonline.asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>Athletics (SparkyCares@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>Athletics (SparkyCares@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>Bookstores (sundevil@bkstr.com)</fullName>
+                    <default>false</default>
+                    <label>Bookstores (sundevil@bkstr.com)</label>
+                </value>
+                <value>
+                    <fullName>DARS (dars-q@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>DARS (dars-q@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>FASS (FASSSFEscalations@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>FASS (FASSSFEscalations@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>Global Launch (GlobalLaunch@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>Global Launch (GlobalLaunch@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>Immunization - Health Services (measles@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>Immunization - Health Services (measles@asu.edu)</label>
+                </value>
+                <value>
+                    <fullName>Other Unit</fullName>
+                    <default>false</default>
+                    <label>Other Unit</label>
+                </value>
+                <value>
+                    <fullName>ServiceNow</fullName>
+                    <default>false</default>
+                    <label>ServiceNow</label>
+                </value>
+                <value>
+                    <fullName>W.P. Carey Graduate Recruitment (wpcareymasters@asu.edu)</fullName>
+                    <default>false</default>
+                    <label>W.P. Carey Graduate Recruitment (wpcareymasters@asu.edu)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ServiceNow_Ticket_Number__c</fullName>
+        <description>This field is required for "Closed: Forward" and the "Forward to Unit" = ServiceNow. This field holds the ServiceNow ticket number for case it's attached to.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field is the ServiceNow ticket number related to this case and contact. This field is required if case status is Closed:Forward and Forward to Unit = ServiceNow.</inlineHelpText>
+        <label>ServiceNow Ticket Number</label>
+        <length>11</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <compactLayoutAssignment>Case_Compact_Layout</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>
     <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
@@ -20114,7 +20134,7 @@ Empty responses are left blank.</inlineHelpText>
         <searchResultsAdditionalFields>CASES.CREATED_DATE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>
-    <sharingModel>Private</sharingModel>
+    <sharingModel>Private</sharingModel><enableHistory>true</enableHistory>
     <listViews>
         <fullName>AISSS_Downtown_Phoenix_Appointments</fullName>
         <columns>CASES.CASE_NUMBER</columns>
@@ -23202,47 +23222,6 @@ Empty responses are left blank.</inlineHelpText>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>AS_Graduate_Recruitment</fullName>
-        <booleanFilter>1 AND (2 or 3)</booleanFilter>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Queue</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CC_Category__c</field>
-            <operation>equals</operation>
-            <value>Graduate Recruitment - AS</value>
-        </filters>
-        <filters>
-            <field>Category__c</field>
-            <operation>equals</operation>
-            <value>Graduate Recruitment - AS</value>
-        </filters>
-        <label>AS Graduate Recruitment</label>
-        <queue>Admission_Services_Undergrad_Case</queue>
-        <sharedTo>
-            <group>AS_Additional_Graduate_Recruiter_Case</group>
-            <group>AS_Graduate_Recruitment</group>
-            <group>Business_Operations_Case</group>
-            <group>ES_Information_Systems_Development_Team</group>
-            <group>Graduate_Education_Case</group>
-            <group>UTO_Administration</group>
-        </sharedTo>
-    </listViews>
-    <listViews>
         <fullName>AS_Graduate_Recruitment_GE_Queue</fullName>
         <booleanFilter>1 AND (2 or 3)</booleanFilter>
         <columns>CASES.CASE_NUMBER</columns>
@@ -23281,43 +23260,6 @@ Empty responses are left blank.</inlineHelpText>
             <group>ES_Information_Systems_Development_Team</group>
             <group>Graduate_Education_Case</group>
             <group>UTO_Administration</group>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>AS_Graduate_Recruitment_SF_Admin</fullName>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.ALIAS</field>
-            <operation>equals</operation>
-            <value>sfadmin</value>
-        </filters>
-        <filters>
-            <field>Opportunity_Type__c</field>
-            <operation>equals</operation>
-            <value>Masters,Doctoral,Juris Doctor,Non-Degree</value>
-        </filters>
-        <label>AS Graduate Recruitment - SF Admin</label>
-        <sharedTo>
-            <group>AS_Graduate_Recruitment</group>
-            <group>ES_Information_Systems_Development_Team</group>
-            <group>UTO_Administration</group>
-            <role>AS_Applicant_Services_Manager</role>
         </sharedTo>
     </listViews>
     <listViews>
@@ -26250,39 +26192,6 @@ Empty responses are left blank.</inlineHelpText>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>All_Open_Engineering_Dean_s_Office</fullName>
-        <columns>Case_Owner__c</columns>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>Functional_Group__c</field>
-            <operation>equals</operation>
-            <value>Engineering</value>
-        </filters>
-        <label>All Open - Engineering Dean's Office</label>
-        <sharedTo>
-            <group>UTO_Administration</group>
-            <role>ENG_Engineering_Dean_s_Office_Manager</role>
-            <role>ENG_Engineering_Dean_s_Office_Staff</role>
-            <role>S_Service</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
         <fullName>All_Open_Engineering_ECEE</fullName>
         <columns>Case_Owner__c</columns>
         <columns>CASES.CASE_NUMBER</columns>
@@ -26799,40 +26708,6 @@ Empty responses are left blank.</inlineHelpText>
         <sharedTo>
             <group>Additional_Fraternity_Sorority_Life_Case</group>
             <group>Fraternity_Sorority_Life_Case</group>
-            <group>UTO_Administration</group>
-            <role>S_Service</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>All_Open_Global_Freshman_Academy</fullName>
-        <columns>CAP__c</columns>
-        <columns>Case_Owner__c</columns>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>Intended_Recipient__c</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>Functional_Group__c</field>
-            <operation>equals</operation>
-            <value>Global Freshman Academy</value>
-        </filters>
-        <label>All Open - Global Freshman Academy</label>
-        <sharedTo>
-            <group>Global_Freshman_Academy_Case</group>
             <group>UTO_Administration</group>
             <role>S_Service</role>
         </sharedTo>
@@ -37592,39 +37467,6 @@ Empty responses are left blank.</inlineHelpText>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>Design_Herberger_Degree_Info_Req_Rec</fullName>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Queue</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>Category__c</field>
-            <operation>equals</operation>
-            <value>Herberger Degree Information Request (Recruitment)</value>
-        </filters>
-        <label>Design - Herberger Degree Info Req (Rec)</label>
-        <queue>Design_and_the_Arts_Case</queue>
-        <sharedTo>
-            <group>Design_and_the_Arts_Case</group>
-            <group>ES_Information_Systems_Development_Team</group>
-            <group>UTO_Administration</group>
-            <role>S_Service</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
         <fullName>Design_Herberger_General</fullName>
         <columns>CASES.CASE_NUMBER</columns>
         <columns>Category__c</columns>
@@ -38109,39 +37951,6 @@ Empty responses are left blank.</inlineHelpText>
         <queue>Design_and_the_Arts_Case</queue>
         <sharedTo>
             <group>Design_and_the_Arts_Case</group>
-            <group>UTO_Administration</group>
-            <role>S_Service</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>Design_Undergrad_Recruitment</fullName>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Queue</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>Category__c</field>
-            <operation>equals</operation>
-            <value>Undergraduate Recruitment</value>
-        </filters>
-        <label>Design - Undergrad Recruitment</label>
-        <queue>Design_and_the_Arts_Case</queue>
-        <sharedTo>
-            <group>Design_and_the_Arts_Case</group>
-            <group>ES_Information_Systems_Development_Team</group>
             <group>UTO_Administration</group>
             <role>S_Service</role>
         </sharedTo>
@@ -41903,43 +41712,6 @@ Empty responses are left blank.</inlineHelpText>
         </filters>
         <label>GFA - Earned Admission</label>
         <queue>Global_Freshman_Academy_Case</queue>
-        <sharedTo>
-            <group>Global_Freshman_Academy_Case</group>
-            <group>UTO_Administration</group>
-            <role>S_Service</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>GFA_Ed_Plus_Tier_3_Support</fullName>
-        <columns>CAP__c</columns>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>Category__c</columns>
-        <columns>Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CC_Category__c</field>
-            <operation>equals</operation>
-            <value>Ed Plus Tier 3 Support</value>
-        </filters>
-        <filters>
-            <field>OWNER_NAME</field>
-            <operation>equals</operation>
-            <value>Global Freshman Academy (Case)</value>
-        </filters>
-        <label>GFA - Ed Plus Tier 3 Support</label>
         <sharedTo>
             <group>Global_Freshman_Academy_Case</group>
             <group>UTO_Administration</group>
@@ -46418,43 +46190,6 @@ Empty responses are left blank.</inlineHelpText>
             <value>MSW Advising</value>
         </filters>
         <label>PS School of Social Work- MSW Advising</label>
-        <queue>Public_Service_Case</queue>
-        <sharedTo>
-            <group>Public_Service_Case</group>
-            <group>UTO_Administration</group>
-            <role>S_Service</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>PS_School_of_Social_Work_MSW_Online</fullName>
-        <columns>CASES.CASE_NUMBER</columns>
-        <columns>CC_Category__c</columns>
-        <columns>CC_Sub_Category__c</columns>
-        <columns>NAME</columns>
-        <columns>CASES.SUBJECT</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>CASES.PRIORITY</columns>
-        <columns>CASES.CREATED_DATE</columns>
-        <columns>CASES.LAST_UPDATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Total_Attachments__c</columns>
-        <filterScope>Queue</filterScope>
-        <filters>
-            <field>CASES.CLOSED</field>
-            <operation>notEqual</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CC_Category__c</field>
-            <operation>equals</operation>
-            <value>School of Social Work</value>
-        </filters>
-        <filters>
-            <field>CC_Sub_Category__c</field>
-            <operation>equals</operation>
-            <value>MSW Online</value>
-        </filters>
-        <label>PS School of Social Work- MSW Online</label>
         <queue>Public_Service_Case</queue>
         <sharedTo>
             <group>Public_Service_Case</group>
@@ -55813,60 +55548,506 @@ Empty responses are left blank.</inlineHelpText>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>X3_SF_Admin_Owner</fullName>
-        <columns>CASES.RECORDTYPE</columns>
+        <fullName>ASU_SFS_2_Lightning</fullName>
         <columns>CASES.CASE_NUMBER</columns>
-        <columns>CASES.STATUS</columns>
-        <columns>Functional_Group__c</columns>
-        <columns>CASES.CREATED_DATE</columns>
+        <columns>Category__c</columns>
+        <columns>NAME</columns>
         <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Lightning</value>
+        </filters>
+        <filters>
+            <field>CC_Functional_Group__c</field>
+            <operation>equals</operation>
+            <value>ASU Salesforce Support</value>
+        </filters>
+        <label>*ASU SFS 2 - Lightning</label>
+        <sharedTo>
+            <group>Student_Centric_Initiatives_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>AS_Graduate_Recruitment</fullName>
+        <booleanFilter>1 AND (((2 or 3) and 4) or (5 and 6))</booleanFilter>
+        <columns>CASES.CASE_NUMBER</columns>
         <columns>Category__c</columns>
         <columns>Sub_Category__c</columns>
         <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <columns>Opportunity_Type__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Graduate Recruitment - AS</value>
+        </filters>
+        <filters>
+            <field>Category__c</field>
+            <operation>equals</operation>
+            <value>Graduate Recruitment - AS</value>
+        </filters>
+        <filters>
+            <field>OWNER_NAME</field>
+            <operation>equals</operation>
+            <value>Admission Services (Case)</value>
+        </filters>
         <filters>
             <field>CORE.USERS.ALIAS</field>
             <operation>equals</operation>
             <value>sfadmin</value>
         </filters>
         <filters>
-            <field>CASES.CLOSED</field>
+            <field>Opportunity_Type__c</field>
             <operation>equals</operation>
-            <value>0</value>
+            <value>Masters,Doctoral,Juris Doctor,Non-Degree</value>
         </filters>
-        <label>3_SF Admin Owner</label>
+        <label>AS Graduate Recruitment</label>
         <sharedTo>
+            <group>AS_Additional_Graduate_Recruiter_Case</group>
+            <group>AS_Graduate_Recruitment</group>
+            <group>Business_Operations_Case</group>
             <group>ES_Information_Systems_Development_Team</group>
+            <group>Graduate_Education_Case</group>
             <group>UTO_Administration</group>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>asu_advisor_portal</fullName>
-        <columns>CASES.STATUS</columns>
+        <fullName>All_Open_Engineering_Dean_s_Office</fullName>
         <columns>Case_Owner__c</columns>
-        <columns>NAME</columns>
         <columns>CASES.CASE_NUMBER</columns>
-        <columns>CASES.SUBJECT</columns>
         <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
         <columns>CASES.CREATED_DATE</columns>
         <columns>CASES.LAST_UPDATE</columns>
         <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>CC_Functional_Group__c</columns>
+        <columns>Total_Attachments__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>OWNER_NAME</field>
-            <operation>equals</operation>
-            <value>UG Advisor Fallback Queue</value>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
         </filters>
         <filters>
-            <field>CASES.CLOSED</field>
+            <field>Functional_Group__c</field>
             <operation>equals</operation>
-            <value>0</value>
+            <value>Engineering</value>
         </filters>
-        <label>asu advisor portal*</label>
+        <label>All Open - Engineering Dean's Office</label>
         <sharedTo>
-            <group>ASU_SF_Support_Case</group>
+            <group>Engineering_Dean_s_Office_Case</group>
             <group>UTO_Administration</group>
+            <role>ENG_Engineering_Dean_s_Office_Manager</role>
+            <role>ENG_Engineering_Dean_s_Office_Staff</role>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>All_Open_Global_Freshman_Academy</fullName>
+        <columns>CAP__c</columns>
+        <columns>Case_Owner__c</columns>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>Intended_Recipient__c</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Functional_Group__c</field>
+            <operation>equals</operation>
+            <value>Global Freshman Academy</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>notEqual</operation>
+            <value>Ed Plus Tier 3 Support</value>
+        </filters>
+        <label>All Open - Global Freshman Academy</label>
+        <sharedTo>
+            <group>Global_Freshman_Academy_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>CLAS_Deans_Student_Engagement</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Student Engagement</value>
+        </filters>
+        <label>CLAS Deans - Student Engagement</label>
+        <queue>Liberal_Arts_Sciences_Case</queue>
+        <sharedTo>
+            <group>Liberal_Arts_and_Sciences_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>CLAS_SESE_Academics_Forms</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Academics Forms</value>
+        </filters>
+        <label>CLAS SESE - Academics Forms</label>
+        <queue>CLAS_SESE_Case</queue>
+        <sharedTo>
+            <group>CLAS_SESE_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>CLAS_SOLS_SOLS_Forms</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>SOLS Forms</value>
+        </filters>
+        <label>CLAS SOLS - SOLS Forms</label>
+        <queue>CLAS_SOLS_Case</queue>
+        <sharedTo>
+            <group>CLAS_SOLS_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Design_Recruitment</fullName>
+        <booleanFilter>1 AND (2 OR 3)</booleanFilter>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Category__c</field>
+            <operation>equals</operation>
+            <value>Herberger Degree Information Request (Recruitment)</value>
+        </filters>
+        <filters>
+            <field>Category__c</field>
+            <operation>equals</operation>
+            <value>Undergraduate Recruitment</value>
+        </filters>
+        <label>Design - Recruitment</label>
+        <queue>Design_and_the_Arts_Case</queue>
+        <sharedTo>
+            <group>Design_and_the_Arts_Case</group>
+            <group>ES_Information_Systems_Development_Team</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>GC_Intl_Fellowship</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Intl. Fellowship</value>
+        </filters>
+        <label>GC Intl. Fellowship</label>
+        <queue>Graduate_Education_Case</queue>
+        <sharedTo>
+            <group>Graduate_Education_Case</group>
+            <group>UTO_Administration</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>GFA_Ed_Plus_Tier_3_Support</fullName>
+        <columns>OWNER_NAME</columns>
+        <columns>CAP__c</columns>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Ed Plus Tier 3 Support</value>
+        </filters>
+        <label>GFA - Ed Plus Tier 3 Support</label>
+        <sharedTo>
+            <group>Global_Freshman_Academy_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Live_Agent_Case_Case</fullName>
+        <filterScope>Queue</filterScope>
+        <label>Live Agent (Case)</label>
+        <queue>Live_Agent_Case</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>PS_School_of_Social_Work_MSW_Online</fullName>
+        <columns>OWNER_NAME</columns>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>CC_Category__c</columns>
+        <columns>CC_Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>School of Social Work</value>
+        </filters>
+        <filters>
+            <field>CC_Sub_Category__c</field>
+            <operation>equals</operation>
+            <value>MSW Online</value>
+        </filters>
+        <label>PS School of Social Work- MSW Online</label>
+        <queue>Public_Service_Case</queue>
+        <sharedTo>
+            <group>Public_Service_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>PTVC_Payment_Issues</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>Sub_Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Payment Issues</value>
+        </filters>
+        <label>PTVC - Payment Issues</label>
+        <queue>Pat_Tillman_Veterans_Center_Case</queue>
+        <sharedTo>
+            <group>Pat_Tillman_Veterans_Center_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>SCI_Lightning</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>Lightning</value>
+        </filters>
+        <label>SCI Lightning</label>
+        <sharedTo>
+            <group>Student_Centric_Initiatives_Case</group>
+            <group>UTO_Administration</group>
+            <role>S_Service</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>SCI_User_Audit</fullName>
+        <columns>CASES.CASE_NUMBER</columns>
+        <columns>Category__c</columns>
+        <columns>NAME</columns>
+        <columns>CASES.SUBJECT</columns>
+        <columns>CASES.STATUS</columns>
+        <columns>CASES.PRIORITY</columns>
+        <columns>CASES.CREATED_DATE</columns>
+        <columns>CASES.LAST_UPDATE</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Total_Attachments__c</columns>
+        <filterScope>Queue</filterScope>
+        <filters>
+            <field>CASES.CLOSED</field>
+            <operation>notEqual</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CC_Category__c</field>
+            <operation>equals</operation>
+            <value>User Audit</value>
+        </filters>
+        <label>SCI User Audit</label>
+        <queue>Student_Centric_Initiatives_Case</queue>
+        <sharedTo>
+            <group>Additional_Stud_Success_Innov_Case</group>
+            <group>UTO_Administration</group>
+            <role>SCI_Student_Centric_Initiatives_Manager</role>
+            <role>SCI_Student_Centric_Initiatives_Staff</role>
         </sharedTo>
     </listViews>
     <recordTypes>
@@ -57945,6 +58126,10 @@ Empty responses are left blank.</inlineHelpText>
             </values>
             <values>
                 <fullName>Other Unit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ServiceNow</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -63855,6 +64040,10 @@ Empty responses are left blank.</inlineHelpText>
             </values>
             <values>
                 <fullName>Other Unit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ServiceNow</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -70667,6 +70856,10 @@ Empty responses are left blank.</inlineHelpText>
                 <default>false</default>
             </values>
             <values>
+                <fullName>ServiceNow</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>W%2EP%2E Carey Graduate Recruitment %28wpcareymasters%40asu%2Eedu%29</fullName>
                 <default>false</default>
             </values>
@@ -76644,6 +76837,10 @@ Empty responses are left blank.</inlineHelpText>
             </values>
             <values>
                 <fullName>Other Unit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ServiceNow</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -82731,6 +82928,10 @@ Empty responses are left blank.</inlineHelpText>
             </values>
             <values>
                 <fullName>Other Unit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ServiceNow</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -89889,6 +90090,10 @@ Empty responses are left blank.</inlineHelpText>
                 <default>false</default>
             </values>
             <values>
+                <fullName>ServiceNow</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>W%2EP%2E Carey Graduate Recruitment %28wpcareymasters%40asu%2Eedu%29</fullName>
                 <default>false</default>
             </values>
@@ -95124,6 +95329,10 @@ Empty responses are left blank.</inlineHelpText>
                 <fullName>Other Unit</fullName>
                 <default>false</default>
             </values>
+            <values>
+                <fullName>ServiceNow</fullName>
+                <default>false</default>
+            </values>
         </picklistValues>
         <picklistValues>
             <picklist>Functional_Group__c</picklist>
@@ -97267,17 +97476,6 @@ ISPICKVAL (Status, "Closed: Customer Unresponsive")
         <errorMessage>Please select a Location where the service is taking place.</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Require_Email_for_Closed_Forwarded</fullName>
-        <active>true</active>
-        <description>Forward Case To Email</description>
-        <errorConditionFormula>ISPICKVAL(Status,"Closed: Forwarded")
-&amp;&amp;
-ISBLANK(Forward_To_Email__c)
-&amp;&amp;
-ISBLANK(Forward_To_Email_Calculation__c)</errorConditionFormula>
-        <errorMessage>A "Closed: Forwarded" Case must have a recipient. Either Select a "Forward to Unit" or enter a "Forward To Email".</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>Require_Future_Followup_Date</fullName>
         <active>true</active>
         <errorConditionFormula>AND(
@@ -97473,6 +97671,29 @@ ISBLANK(  TEXT(Student_Intention__c)   )
     )</errorConditionFormula>
         <errorDisplayField>Sub_Category__c</errorDisplayField>
         <errorMessage>Please provide a Sub-Category when record is marked as Needs Attention (NAS).</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_Email_for_Closed_Forwarded</fullName>
+        <active>true</active>
+        <description>Forward Case To Email</description>
+        <errorConditionFormula>ISPICKVAL(Status,"Closed: Forwarded") 
+&amp;&amp; 
+ISBLANK(Forward_To_Email__c) 
+&amp;&amp; 
+ISBLANK(Forward_To_Email_Calculation__c) 
+&amp;&amp; 
+NOT(ISPICKVAL( Forward_To_Unit__c , 'ServiceNow') )</errorConditionFormula>
+        <errorMessage>A "Closed: Forwarded" Case must have a recipient. Either enter a "Forward to Unit" or enter "Other Unit" for 'Forward to Unit' and a forward Email.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_ServiceNow_Ticket_Number</fullName>
+        <active>true</active>
+        <description>Make sure ServiceNow Ticket Number field is populated when Status = "Closed: Forwarded" and "Forward to Unit" = "ServiceNow"</description>
+        <errorConditionFormula>ISPICKVAL( Status , 'Closed: Forwarded') &amp;&amp; 
+  ISPICKVAL( Forward_To_Unit__c , 'ServiceNow')  &amp;&amp;
+ ISBLANK( ServiceNow_Ticket_Number__c )</errorConditionFormula>
+        <errorDisplayField>ServiceNow_Ticket_Number__c</errorDisplayField>
+        <errorMessage>ServiceNow Ticket Number field is required when 'Status' = "Closed: Forwarded" and 'Forward to Unit' = "ServiceNow"</errorMessage>
     </validationRules>
     <webLinks>
         <fullName>Admission_Services_Case_Opportunity</fullName>
@@ -97743,5 +97964,25 @@ else {
 
   window.location.href = url; 
 }</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Student_Profile2</fullName>
+        <availability>online</availability>
+        <description>New Lightning compatible button</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Student Profile</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>{! URLFOR( "/apex/StudentProfile", null, [ contactId = Contact.EMPLID__c ]) }</url>
     </webLinks>
 </CustomObject>

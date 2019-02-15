@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SamlSsoConfig xmlns="http://soap.sforce.com/2006/04/metadata">
-    <attributeName>urn:oid:1.3.6.1.4.1.5923.1.1.1.6</attributeName>
-    <attributeNameIdFormat>urn:oasis:names:tc:SAML:2.0:attrname-format:uri</attributeNameIdFormat>
     <executionUserId>005d00000024Cmf</executionUserId>
-    <identityLocation>Attribute</identityLocation>
+    <identityLocation>SubjectNameId</identityLocation>
     <identityMapping>FederationId</identityMapping>
     <issuer>urn:mace:incommon:asu.edu</issuer>
     <loginUrl>https://shibboleth2.asu.edu/idp/profile/SAML2/Redirect/SSO</loginUrl>
@@ -12,7 +10,7 @@
     <oauthTokenEndpoint>https://asu.my.salesforce.com/services/oauth2/token?so=00Dd0000000hLoc</oauthTokenEndpoint>
     <redirectBinding>true</redirectBinding>
     <requestSignatureMethod>0</requestSignatureMethod>
-    <requestSigningCertId>0P10W000001UJHK</requestSigningCertId>
+    <requestSigningCertId>0P10W000001HjCe</requestSigningCertId>
     <salesforceLoginUrl>https://asu.my.salesforce.com?so=00Dd0000000hLoc</salesforceLoginUrl>
     <samlEntityId>https://myasu.force.com</samlEntityId>
     <samlJitHandlerId>01pd0000002zXyl</samlJitHandlerId>

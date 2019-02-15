@@ -310,21 +310,6 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Contact__c</fullName>
-        <description>[Peoplesoft] - Master detail relationship with contact</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Financial Aid Contact</inlineHelpText>
-        <label>Contact</label>
-        <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Financial Aid Packages</relationshipLabel>
-        <relationshipName>Financial_Aid_Packages</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>true</reparentableMasterDetail>
-        <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
-    </fields>
-    <fields>
         <fullName>EFC_Range__c</fullName>
         <description>[Peoplesoft] - Financial Aid EFC Range. Examples include: Very High, High, Moderate, Low, Very Low
 Note: Whatever is in the Help Text will display as a hover help text on the Student Profile VF page.</description>
@@ -487,6 +472,21 @@ Note: Whatever is in the Help Text will display as a hover help text on the Stud
             </valueSetDefinition>
         </valueSet>
     </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <description>[Peoplesoft] - Master detail relationship with contact</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Financial Aid Contact</inlineHelpText>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Financial Aid Packages</relationshipLabel>
+        <relationshipName>Financial_Aid_Packages</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -495,6 +495,7 @@ Note: Whatever is in the Help Text will display as a hover help text on the Stud
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>

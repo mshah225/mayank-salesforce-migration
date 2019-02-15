@@ -296,714 +296,6 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Category__c</fullName>
-        <externalId>false</externalId>
-        <label>Category</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <type>Picklist</type>
-        <valueSet>
-            <controllingField>Type</controllingField>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Admitted Student Day</fullName>
-                    <default>false</default>
-                    <label>Admitted Student Day</label>
-                </value>
-                <value>
-                    <fullName>Adult Workshop</fullName>
-                    <default>false</default>
-                    <label>Adult Workshop</label>
-                </value>
-                <value>
-                    <fullName>Alumni Sun Devil Send-Offs</fullName>
-                    <default>false</default>
-                    <label>Alumni Sun Devil Send-Offs</label>
-                </value>
-                <value>
-                    <fullName>American Dream Academy</fullName>
-                    <default>false</default>
-                    <label>American Dream Academy</label>
-                </value>
-                <value>
-                    <fullName>Arizona Fall Circuit</fullName>
-                    <default>false</default>
-                    <label>Arizona Fall Circuit</label>
-                </value>
-                <value>
-                    <fullName>ASU College On-Campus Event</fullName>
-                    <default>false</default>
-                    <label>ASU College On-Campus Event</label>
-                </value>
-                <value>
-                    <fullName>ASU College OOS Event</fullName>
-                    <default>false</default>
-                    <label>ASU College OOS Event</label>
-                </value>
-                <value>
-                    <fullName>ASU College Visit</fullName>
-                    <default>false</default>
-                    <label>ASU College Visit</label>
-                </value>
-                <value>
-                    <fullName>ASU Scholar Information Night</fullName>
-                    <default>false</default>
-                    <label>ASU Scholar Information Night</label>
-                </value>
-                <value>
-                    <fullName>AVID</fullName>
-                    <default>false</default>
-                    <label>AVID</label>
-                </value>
-                <value>
-                    <fullName>AZ Commission</fullName>
-                    <default>false</default>
-                    <label>AZ Commission</label>
-                </value>
-                <value>
-                    <fullName>Barrett</fullName>
-                    <default>false</default>
-                    <label>Barrett</label>
-                </value>
-                <value>
-                    <fullName>Barrett Summer Scholars</fullName>
-                    <default>false</default>
-                    <label>Barrett Summer Scholars</label>
-                </value>
-                <value>
-                    <fullName>Barrett Summer Scholars - 7th</fullName>
-                    <default>false</default>
-                    <label>Barrett Summer Scholars - 7th</label>
-                </value>
-                <value>
-                    <fullName>Barrett Summer Scholars - 8th</fullName>
-                    <default>false</default>
-                    <label>Barrett Summer Scholars - 8th</label>
-                </value>
-                <value>
-                    <fullName>Barrett Summer Scholars - 9th</fullName>
-                    <default>false</default>
-                    <label>Barrett Summer Scholars - 9th</label>
-                </value>
-                <value>
-                    <fullName>Barrett Summer Scholars - HS Alumni Engagement</fullName>
-                    <default>false</default>
-                    <label>Barrett Summer Scholars - HS Alumni Engagement</label>
-                </value>
-                <value>
-                    <fullName>Becoming a Sun Devil</fullName>
-                    <default>false</default>
-                    <label>Becoming a Sun Devil</label>
-                </value>
-                <value>
-                    <fullName>Campus Expo</fullName>
-                    <default>false</default>
-                    <label>Campus Expo</label>
-                </value>
-                <value>
-                    <fullName>College-Career Fair</fullName>
-                    <default>false</default>
-                    <label>College-Career Fair</label>
-                </value>
-                <value>
-                    <fullName>College Fair - Independent/School District</fullName>
-                    <default>false</default>
-                    <label>College Fair - Independent/School District</label>
-                </value>
-                <value>
-                    <fullName>College Fair - NACAC</fullName>
-                    <default>false</default>
-                    <label>College Fair - NACAC</label>
-                </value>
-                <value>
-                    <fullName>College Fair - Regional ACAC</fullName>
-                    <default>false</default>
-                    <label>College Fair - Regional ACAC</label>
-                </value>
-                <value>
-                    <fullName>College Session</fullName>
-                    <default>false</default>
-                    <label>College Session</label>
-                </value>
-                <value>
-                    <fullName>Community College Visit</fullName>
-                    <default>false</default>
-                    <label>Community College Visit</label>
-                </value>
-                <value>
-                    <fullName>Community Organization Events</fullName>
-                    <default>false</default>
-                    <label>Community Organization Events</label>
-                </value>
-                <value>
-                    <fullName>Concierge</fullName>
-                    <default>false</default>
-                    <label>Concierge</label>
-                </value>
-                <value>
-                    <fullName>Destination ASU</fullName>
-                    <default>false</default>
-                    <label>Destination ASU</label>
-                </value>
-                <value>
-                    <fullName>Dream it.Do it. EXPO</fullName>
-                    <default>false</default>
-                    <label>Dream it.Do it. EXPO</label>
-                </value>
-                <value>
-                    <fullName>Early Outreach</fullName>
-                    <default>false</default>
-                    <label>Early Outreach</label>
-                </value>
-                <value>
-                    <fullName>Earn to Learn</fullName>
-                    <default>false</default>
-                    <label>Earn to Learn</label>
-                </value>
-                <value>
-                    <fullName>Earth and Science Exploration</fullName>
-                    <default>false</default>
-                    <label>Earth and Science Exploration</label>
-                </value>
-                <value>
-                    <fullName>Experience ASU</fullName>
-                    <default>false</default>
-                    <label>Experience ASU</label>
-                </value>
-                <value>
-                    <fullName>Experience ASU - Self-guided Tour</fullName>
-                    <default>false</default>
-                    <label>Experience ASU - Self-guided Tour</label>
-                </value>
-                <value>
-                    <fullName>Experience ASU - Skateboard Tour</fullName>
-                    <default>false</default>
-                    <label>Experience ASU - Skateboard Tour</label>
-                </value>
-                <value>
-                    <fullName>Explore ASU</fullName>
-                    <default>false</default>
-                    <label>Explore ASU</label>
-                </value>
-                <value>
-                    <fullName>Extracurricular</fullName>
-                    <default>false</default>
-                    <label>Extracurricular</label>
-                </value>
-                <value>
-                    <fullName>Financial Aid Night</fullName>
-                    <default>false</default>
-                    <label>Financial Aid Night</label>
-                </value>
-                <value>
-                    <fullName>Finding Your Fit</fullName>
-                    <default>false</default>
-                    <label>Finding Your Fit</label>
-                </value>
-                <value>
-                    <fullName>Future Sun Devil Experience</fullName>
-                    <default>false</default>
-                    <label>Future Sun Devil Experience</label>
-                </value>
-                <value>
-                    <fullName>Future Sun Devil Families - 10th</fullName>
-                    <default>false</default>
-                    <label>Future Sun Devil Families - 10th</label>
-                </value>
-                <value>
-                    <fullName>Future Sun Devil Families - 11th</fullName>
-                    <default>false</default>
-                    <label>Future Sun Devil Families - 11th</label>
-                </value>
-                <value>
-                    <fullName>Future Sun Devil Families - 12th</fullName>
-                    <default>false</default>
-                    <label>Future Sun Devil Families - 12th</label>
-                </value>
-                <value>
-                    <fullName>Future Sun Devil Families - 9th</fullName>
-                    <default>false</default>
-                    <label>Future Sun Devil Families - 9th</label>
-                </value>
-                <value>
-                    <fullName>Graduate Event</fullName>
-                    <default>false</default>
-                    <label>Graduate Event</label>
-                </value>
-                <value>
-                    <fullName>Group Visit</fullName>
-                    <default>false</default>
-                    <label>Group Visit</label>
-                </value>
-                <value>
-                    <fullName>High School Visit</fullName>
-                    <default>false</default>
-                    <label>High School Visit</label>
-                </value>
-                <value>
-                    <fullName>Hispanic Mother Daughter Program</fullName>
-                    <default>false</default>
-                    <label>Hispanic Mother Daughter Program</label>
-                </value>
-                <value>
-                    <fullName>Homecoming</fullName>
-                    <default>false</default>
-                    <label>Homecoming</label>
-                </value>
-                <value>
-                    <fullName>Housing Tour</fullName>
-                    <default>false</default>
-                    <label>Housing Tour</label>
-                </value>
-                <value>
-                    <fullName>Information Session</fullName>
-                    <default>false</default>
-                    <label>Information Session</label>
-                </value>
-                <value>
-                    <fullName>International - College Fairs</fullName>
-                    <default>false</default>
-                    <label>International - College Fairs</label>
-                </value>
-                <value>
-                    <fullName>International - Event</fullName>
-                    <default>false</default>
-                    <label>International - Event</label>
-                </value>
-                <value>
-                    <fullName>International - High School Visit</fullName>
-                    <default>false</default>
-                    <label>International - High School Visit</label>
-                </value>
-                <value>
-                    <fullName>International - Other Event</fullName>
-                    <default>false</default>
-                    <label>International - Other Event</label>
-                </value>
-                <value>
-                    <fullName>International - Send-Off</fullName>
-                    <default>false</default>
-                    <label>International - Send-Off</label>
-                </value>
-                <value>
-                    <fullName>Junior Day</fullName>
-                    <default>false</default>
-                    <label>Junior Day</label>
-                </value>
-                <value>
-                    <fullName>Lake Havasu Events</fullName>
-                    <default>false</default>
-                    <label>Lake Havasu Events</label>
-                </value>
-                <value>
-                    <fullName>Mac-Ro-Rodel Foundation</fullName>
-                    <default>false</default>
-                    <label>Mac-Ro-Rodel Foundation</label>
-                </value>
-                <value>
-                    <fullName>Maroon and Gold</fullName>
-                    <default>false</default>
-                    <label>Maroon and Gold</label>
-                </value>
-                <value>
-                    <fullName>More to Explore</fullName>
-                    <default>false</default>
-                    <label>More to Explore</label>
-                </value>
-                <value>
-                    <fullName>Night of the Open Door</fullName>
-                    <default>false</default>
-                    <label>Night of the Open Door</label>
-                </value>
-                <value>
-                    <fullName>Non-Targeted Visits</fullName>
-                    <default>false</default>
-                    <label>Non-Targeted Visits</label>
-                </value>
-                <value>
-                    <fullName>One-time Event</fullName>
-                    <default>false</default>
-                    <label>One-time Event</label>
-                </value>
-                <value>
-                    <fullName>Overnight Experience</fullName>
-                    <default>false</default>
-                    <label>Overnight Experience</label>
-                </value>
-                <value>
-                    <fullName>Recharge</fullName>
-                    <default>false</default>
-                    <label>Recharge</label>
-                </value>
-                <value>
-                    <fullName>Road to the University</fullName>
-                    <default>false</default>
-                    <label>Road to the University</label>
-                </value>
-                <value>
-                    <fullName>Self-Facilitated</fullName>
-                    <default>false</default>
-                    <label>Self-Facilitated</label>
-                </value>
-                <value>
-                    <fullName>Senior Scholar Dinner</fullName>
-                    <default>false</default>
-                    <label>Senior Scholar Dinner</label>
-                </value>
-                <value>
-                    <fullName>Senior Scholar Event</fullName>
-                    <default>false</default>
-                    <label>Senior Scholar Event</label>
-                </value>
-                <value>
-                    <fullName>Senior Scholar Reception</fullName>
-                    <default>false</default>
-                    <label>Senior Scholar Reception</label>
-                </value>
-                <value>
-                    <fullName>Summer Enrichment Program</fullName>
-                    <default>false</default>
-                    <label>Summer Enrichment Program</label>
-                </value>
-                <value>
-                    <fullName>Sun Devil Days</fullName>
-                    <default>false</default>
-                    <label>Sun Devil Days</label>
-                </value>
-                <value>
-                    <fullName>Sun Devil Send Offs</fullName>
-                    <default>false</default>
-                    <label>Sun Devil Send Offs</label>
-                </value>
-                <value>
-                    <fullName>Thrive Time</fullName>
-                    <default>false</default>
-                    <label>Thrive Time</label>
-                </value>
-                <value>
-                    <fullName>TNT</fullName>
-                    <default>false</default>
-                    <label>TNT</label>
-                </value>
-                <value>
-                    <fullName>Tour of Majors</fullName>
-                    <default>false</default>
-                    <label>Tour of Majors</label>
-                </value>
-                <value>
-                    <fullName>Transfer Events</fullName>
-                    <default>false</default>
-                    <label>Transfer Events</label>
-                </value>
-                <value>
-                    <fullName>Transfer Friday</fullName>
-                    <default>false</default>
-                    <label>Transfer Friday</label>
-                </value>
-                <value>
-                    <fullName>Tri-University Programming</fullName>
-                    <default>false</default>
-                    <label>Tri-University Programming</label>
-                </value>
-                <value>
-                    <fullName>Workshop</fullName>
-                    <default>false</default>
-                    <label>Workshop</label>
-                </value>
-            </valueSetDefinition>
-            <valueSettings>
-                <controllingFieldValue>Campus Visit</controllingFieldValue>
-                <valueName>Future Sun Devil Experience</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Campus Visit</controllingFieldValue>
-                <valueName>Self-Facilitated</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>American Dream Academy</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Barrett Summer Scholars</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Earn to Learn</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Future Sun Devil Families - 10th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Future Sun Devil Families - 11th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Future Sun Devil Families - 12th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Future Sun Devil Families - 9th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Cohort</controllingFieldValue>
-                <valueName>Hispanic Mother Daughter Program</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>College Department Events</controllingFieldValue>
-                <valueName>Adult Workshop</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>College Department Events</controllingFieldValue>
-                <valueName>ASU College On-Campus Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>College Department Events</controllingFieldValue>
-                <valueName>ASU College OOS Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>College Department Events</controllingFieldValue>
-                <valueName>ASU College Visit</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>College Department Events</controllingFieldValue>
-                <valueName>Information Session</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>AVID</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>Earth and Science Exploration</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>Homecoming</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>Mac-Ro-Rodel Foundation</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>Night of the Open Door</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>Recharge</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>Thrive Time</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Special Event</controllingFieldValue>
-                <valueName>TNT</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Summer Program</controllingFieldValue>
-                <valueName>Barrett Summer Scholars - 7th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Summer Program</controllingFieldValue>
-                <valueName>Barrett Summer Scholars - 8th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Summer Program</controllingFieldValue>
-                <valueName>Barrett Summer Scholars - 9th</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Summer Program</controllingFieldValue>
-                <valueName>Barrett Summer Scholars - HS Alumni Engagement</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Summer Program</controllingFieldValue>
-                <valueName>Summer Enrichment Program</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Arizona Fall Circuit</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>AZ Commission</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>College Fair - Independent/School District</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>College Fair - NACAC</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>College Fair - Regional ACAC</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Community College Visit</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Community Organization Events</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Financial Aid Night</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>High School Visit</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>International - College Fairs</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>International - High School Visit</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>International - Other Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>International - Send-Off</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Sun Devil Send Offs</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Transfer Friday</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
-                <valueName>Tri-University Programming</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Admitted Student Day</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Becoming a Sun Devil</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Campus Expo</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>College Session</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Concierge</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Early Outreach</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Experience ASU</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Experience ASU - Self-guided Tour</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Experience ASU - Skateboard Tour</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Extracurricular</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Housing Tour</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Junior Day</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Maroon and Gold</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
-                <valueName>Sun Devil Days</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Destination ASU</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Dream it.Do it. EXPO</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Explore ASU</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Graduate Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Group Visit</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>International - Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Lake Havasu Events</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>More to Explore</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>One-time Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Overnight Experience</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Senior Scholar Dinner</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Senior Scholar Event</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Senior Scholar Reception</valueName>
-            </valueSettings>
-            <valueSettings>
-                <controllingFieldValue>Admission Services</controllingFieldValue>
-                <valueName>Transfer Events</valueName>
-            </valueSettings>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>Days_Until_Event__c</fullName>
         <description>DateValue( Event_Start_Date__c)- today()</description>
         <externalId>false</externalId>
@@ -2358,6 +1650,723 @@ External (e.g. List Purchase)</inlineHelpText>
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <externalId>false</externalId>
+        <label>Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Type</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Admitted Student Day</fullName>
+                    <default>false</default>
+                    <label>Admitted Student Day</label>
+                </value>
+                <value>
+                    <fullName>Adult Workshop</fullName>
+                    <default>false</default>
+                    <label>Adult Workshop</label>
+                </value>
+                <value>
+                    <fullName>Alumni Sun Devil Send-Offs</fullName>
+                    <default>false</default>
+                    <label>Alumni Sun Devil Send-Offs</label>
+                </value>
+                <value>
+                    <fullName>American Dream Academy</fullName>
+                    <default>false</default>
+                    <label>American Dream Academy</label>
+                </value>
+                <value>
+                    <fullName>Arizona Fall Circuit</fullName>
+                    <default>false</default>
+                    <label>Arizona Fall Circuit</label>
+                </value>
+                <value>
+                    <fullName>ASU College On-Campus Event</fullName>
+                    <default>false</default>
+                    <label>ASU College On-Campus Event</label>
+                </value>
+                <value>
+                    <fullName>ASU College OOS Event</fullName>
+                    <default>false</default>
+                    <label>ASU College OOS Event</label>
+                </value>
+                <value>
+                    <fullName>ASU College Visit</fullName>
+                    <default>false</default>
+                    <label>ASU College Visit</label>
+                </value>
+                <value>
+                    <fullName>ASU Scholar Information Night</fullName>
+                    <default>false</default>
+                    <label>ASU Scholar Information Night</label>
+                </value>
+                <value>
+                    <fullName>AVID</fullName>
+                    <default>false</default>
+                    <label>AVID</label>
+                </value>
+                <value>
+                    <fullName>AZ Commission</fullName>
+                    <default>false</default>
+                    <label>AZ Commission</label>
+                </value>
+                <value>
+                    <fullName>Barrett</fullName>
+                    <default>false</default>
+                    <label>Barrett</label>
+                </value>
+                <value>
+                    <fullName>Barrett Summer Scholars</fullName>
+                    <default>false</default>
+                    <label>Barrett Summer Scholars</label>
+                </value>
+                <value>
+                    <fullName>Barrett Summer Scholars - 7th</fullName>
+                    <default>false</default>
+                    <label>Barrett Summer Scholars - 7th</label>
+                </value>
+                <value>
+                    <fullName>Barrett Summer Scholars - 8th</fullName>
+                    <default>false</default>
+                    <label>Barrett Summer Scholars - 8th</label>
+                </value>
+                <value>
+                    <fullName>Barrett Summer Scholars - 9th</fullName>
+                    <default>false</default>
+                    <label>Barrett Summer Scholars - 9th</label>
+                </value>
+                <value>
+                    <fullName>Barrett Summer Scholars - HS Alumni Engagement</fullName>
+                    <default>false</default>
+                    <label>Barrett Summer Scholars - HS Alumni Engagement</label>
+                </value>
+                <value>
+                    <fullName>Becoming a Sun Devil</fullName>
+                    <default>false</default>
+                    <label>Becoming a Sun Devil</label>
+                </value>
+                <value>
+                    <fullName>Campus Expo</fullName>
+                    <default>false</default>
+                    <label>Campus Expo</label>
+                </value>
+                <value>
+                    <fullName>College-Career Fair</fullName>
+                    <default>false</default>
+                    <label>College-Career Fair</label>
+                </value>
+                <value>
+                    <fullName>College Fair - Independent/School District</fullName>
+                    <default>false</default>
+                    <label>College Fair - Independent/School District</label>
+                </value>
+                <value>
+                    <fullName>College Fair - NACAC</fullName>
+                    <default>false</default>
+                    <label>College Fair - NACAC</label>
+                </value>
+                <value>
+                    <fullName>College Fair - Regional ACAC</fullName>
+                    <default>false</default>
+                    <label>College Fair - Regional ACAC</label>
+                </value>
+                <value>
+                    <fullName>College Session</fullName>
+                    <default>false</default>
+                    <label>College Session</label>
+                </value>
+                <value>
+                    <fullName>Community College Visit</fullName>
+                    <default>false</default>
+                    <label>Community College Visit</label>
+                </value>
+                <value>
+                    <fullName>Community Organization Events</fullName>
+                    <default>false</default>
+                    <label>Community Organization Events</label>
+                </value>
+                <value>
+                    <fullName>Concierge</fullName>
+                    <default>false</default>
+                    <label>Concierge</label>
+                </value>
+                <value>
+                    <fullName>Destination ASU</fullName>
+                    <default>false</default>
+                    <label>Destination ASU</label>
+                </value>
+                <value>
+                    <fullName>Dream it.Do it. EXPO</fullName>
+                    <default>false</default>
+                    <label>Dream it.Do it. EXPO</label>
+                </value>
+                <value>
+                    <fullName>Early Outreach</fullName>
+                    <default>false</default>
+                    <label>Early Outreach</label>
+                </value>
+                <value>
+                    <fullName>Earn to Learn</fullName>
+                    <default>false</default>
+                    <label>Earn to Learn</label>
+                </value>
+                <value>
+                    <fullName>Earth and Science Exploration</fullName>
+                    <default>false</default>
+                    <label>Earth and Science Exploration</label>
+                </value>
+                <value>
+                    <fullName>Experience ASU</fullName>
+                    <default>false</default>
+                    <label>Experience ASU</label>
+                </value>
+                <value>
+                    <fullName>Experience ASU - Self-guided Tour</fullName>
+                    <default>false</default>
+                    <label>Experience ASU - Self-guided Tour</label>
+                </value>
+                <value>
+                    <fullName>Experience ASU - Skateboard Tour</fullName>
+                    <default>false</default>
+                    <label>Experience ASU - Skateboard Tour</label>
+                </value>
+                <value>
+                    <fullName>Explore ASU</fullName>
+                    <default>false</default>
+                    <label>Explore ASU</label>
+                </value>
+                <value>
+                    <fullName>Extracurricular</fullName>
+                    <default>false</default>
+                    <label>Extracurricular</label>
+                </value>
+                <value>
+                    <fullName>Financial Aid Night</fullName>
+                    <default>false</default>
+                    <label>Financial Aid Night</label>
+                </value>
+                <value>
+                    <fullName>Finding Your Fit</fullName>
+                    <default>false</default>
+                    <label>Finding Your Fit</label>
+                </value>
+                <value>
+                    <fullName>Future Sun Devil Chat</fullName>
+                    <default>false</default>
+                    <label>Future Sun Devil Chat</label>
+                </value>
+                <value>
+                    <fullName>Future Sun Devil Experience</fullName>
+                    <default>false</default>
+                    <label>Future Sun Devil Experience</label>
+                </value>
+                <value>
+                    <fullName>Future Sun Devil Families - 10th</fullName>
+                    <default>false</default>
+                    <label>Future Sun Devil Families - 10th</label>
+                </value>
+                <value>
+                    <fullName>Future Sun Devil Families - 11th</fullName>
+                    <default>false</default>
+                    <label>Future Sun Devil Families - 11th</label>
+                </value>
+                <value>
+                    <fullName>Future Sun Devil Families - 12th</fullName>
+                    <default>false</default>
+                    <label>Future Sun Devil Families - 12th</label>
+                </value>
+                <value>
+                    <fullName>Future Sun Devil Families - 9th</fullName>
+                    <default>false</default>
+                    <label>Future Sun Devil Families - 9th</label>
+                </value>
+                <value>
+                    <fullName>Graduate Event</fullName>
+                    <default>false</default>
+                    <label>Graduate Event</label>
+                </value>
+                <value>
+                    <fullName>Group Visit</fullName>
+                    <default>false</default>
+                    <label>Group Visit</label>
+                </value>
+                <value>
+                    <fullName>High School Visit</fullName>
+                    <default>false</default>
+                    <label>High School Visit</label>
+                </value>
+                <value>
+                    <fullName>Hispanic Mother Daughter Program</fullName>
+                    <default>false</default>
+                    <label>Hispanic Mother Daughter Program</label>
+                </value>
+                <value>
+                    <fullName>Homecoming</fullName>
+                    <default>false</default>
+                    <label>Homecoming</label>
+                </value>
+                <value>
+                    <fullName>Housing Tour</fullName>
+                    <default>false</default>
+                    <label>Housing Tour</label>
+                </value>
+                <value>
+                    <fullName>Information Session</fullName>
+                    <default>false</default>
+                    <label>Information Session</label>
+                </value>
+                <value>
+                    <fullName>International - College Fairs</fullName>
+                    <default>false</default>
+                    <label>International - College Fairs</label>
+                </value>
+                <value>
+                    <fullName>International - Event</fullName>
+                    <default>false</default>
+                    <label>International - Event</label>
+                </value>
+                <value>
+                    <fullName>International - High School Visit</fullName>
+                    <default>false</default>
+                    <label>International - High School Visit</label>
+                </value>
+                <value>
+                    <fullName>International - Other Event</fullName>
+                    <default>false</default>
+                    <label>International - Other Event</label>
+                </value>
+                <value>
+                    <fullName>International - Send-Off</fullName>
+                    <default>false</default>
+                    <label>International - Send-Off</label>
+                </value>
+                <value>
+                    <fullName>Junior Day</fullName>
+                    <default>false</default>
+                    <label>Junior Day</label>
+                </value>
+                <value>
+                    <fullName>Lake Havasu Events</fullName>
+                    <default>false</default>
+                    <label>Lake Havasu Events</label>
+                </value>
+                <value>
+                    <fullName>Mac-Ro-Rodel Foundation</fullName>
+                    <default>false</default>
+                    <label>Mac-Ro-Rodel Foundation</label>
+                </value>
+                <value>
+                    <fullName>Maroon and Gold</fullName>
+                    <default>false</default>
+                    <label>Maroon and Gold</label>
+                </value>
+                <value>
+                    <fullName>More to Explore</fullName>
+                    <default>false</default>
+                    <label>More to Explore</label>
+                </value>
+                <value>
+                    <fullName>Night of the Open Door</fullName>
+                    <default>false</default>
+                    <label>Night of the Open Door</label>
+                </value>
+                <value>
+                    <fullName>Non-Targeted Visits</fullName>
+                    <default>false</default>
+                    <label>Non-Targeted Visits</label>
+                </value>
+                <value>
+                    <fullName>One-time Event</fullName>
+                    <default>false</default>
+                    <label>One-time Event</label>
+                </value>
+                <value>
+                    <fullName>Overnight Experience</fullName>
+                    <default>false</default>
+                    <label>Overnight Experience</label>
+                </value>
+                <value>
+                    <fullName>Recharge</fullName>
+                    <default>false</default>
+                    <label>Recharge</label>
+                </value>
+                <value>
+                    <fullName>Road to the University</fullName>
+                    <default>false</default>
+                    <label>Road to the University</label>
+                </value>
+                <value>
+                    <fullName>Self-Facilitated</fullName>
+                    <default>false</default>
+                    <label>Self-Facilitated</label>
+                </value>
+                <value>
+                    <fullName>Senior Scholar Dinner</fullName>
+                    <default>false</default>
+                    <label>Senior Scholar Dinner</label>
+                </value>
+                <value>
+                    <fullName>Senior Scholar Event</fullName>
+                    <default>false</default>
+                    <label>Senior Scholar Event</label>
+                </value>
+                <value>
+                    <fullName>Senior Scholar Reception</fullName>
+                    <default>false</default>
+                    <label>Senior Scholar Reception</label>
+                </value>
+                <value>
+                    <fullName>Summer Enrichment Program</fullName>
+                    <default>false</default>
+                    <label>Summer Enrichment Program</label>
+                </value>
+                <value>
+                    <fullName>Sun Devil Days</fullName>
+                    <default>false</default>
+                    <label>Sun Devil Days</label>
+                </value>
+                <value>
+                    <fullName>Sun Devil Send Offs</fullName>
+                    <default>false</default>
+                    <label>Sun Devil Send Offs</label>
+                </value>
+                <value>
+                    <fullName>Thrive Time</fullName>
+                    <default>false</default>
+                    <label>Thrive Time</label>
+                </value>
+                <value>
+                    <fullName>TNT</fullName>
+                    <default>false</default>
+                    <label>TNT</label>
+                </value>
+                <value>
+                    <fullName>Tour of Majors</fullName>
+                    <default>false</default>
+                    <label>Tour of Majors</label>
+                </value>
+                <value>
+                    <fullName>Transfer Events</fullName>
+                    <default>false</default>
+                    <label>Transfer Events</label>
+                </value>
+                <value>
+                    <fullName>Transfer Friday</fullName>
+                    <default>false</default>
+                    <label>Transfer Friday</label>
+                </value>
+                <value>
+                    <fullName>Tri-University Programming</fullName>
+                    <default>false</default>
+                    <label>Tri-University Programming</label>
+                </value>
+                <value>
+                    <fullName>Workshop</fullName>
+                    <default>false</default>
+                    <label>Workshop</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Campus Visit</controllingFieldValue>
+                <valueName>Future Sun Devil Experience</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Campus Visit</controllingFieldValue>
+                <valueName>Self-Facilitated</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>American Dream Academy</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Barrett Summer Scholars</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Earn to Learn</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Future Sun Devil Families - 10th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Future Sun Devil Families - 11th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Future Sun Devil Families - 12th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Future Sun Devil Families - 9th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Cohort</controllingFieldValue>
+                <valueName>Hispanic Mother Daughter Program</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>College Department Events</controllingFieldValue>
+                <valueName>Adult Workshop</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>College Department Events</controllingFieldValue>
+                <valueName>ASU College On-Campus Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>College Department Events</controllingFieldValue>
+                <valueName>ASU College OOS Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>College Department Events</controllingFieldValue>
+                <valueName>ASU College Visit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>College Department Events</controllingFieldValue>
+                <valueName>Information Session</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>AVID</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>Earth and Science Exploration</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>Homecoming</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>Mac-Ro-Rodel Foundation</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>Night of the Open Door</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>Recharge</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>Thrive Time</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Special Event</controllingFieldValue>
+                <valueName>TNT</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Summer Program</controllingFieldValue>
+                <valueName>Barrett Summer Scholars - 7th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Summer Program</controllingFieldValue>
+                <valueName>Barrett Summer Scholars - 8th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Summer Program</controllingFieldValue>
+                <valueName>Barrett Summer Scholars - 9th</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Summer Program</controllingFieldValue>
+                <valueName>Barrett Summer Scholars - HS Alumni Engagement</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Summer Program</controllingFieldValue>
+                <valueName>Summer Enrichment Program</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Arizona Fall Circuit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>AZ Commission</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>College Fair - Independent/School District</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>College Fair - NACAC</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>College Fair - Regional ACAC</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Community College Visit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Community Organization Events</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Financial Aid Night</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Future Sun Devil Chat</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>High School Visit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>International - College Fairs</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>International - High School Visit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>International - Other Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>International - Send-Off</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Sun Devil Send Offs</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Transfer Friday</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Recruiter Events</controllingFieldValue>
+                <valueName>Tri-University Programming</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Admitted Student Day</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Becoming a Sun Devil</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Campus Expo</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>College Session</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Concierge</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Early Outreach</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Experience ASU</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Experience ASU - Self-guided Tour</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Experience ASU - Skateboard Tour</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Extracurricular</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Housing Tour</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Junior Day</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Maroon and Gold</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services Visit Managed</controllingFieldValue>
+                <valueName>Sun Devil Days</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Destination ASU</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Dream it.Do it. EXPO</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Explore ASU</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Graduate Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Group Visit</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>International - Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Lake Havasu Events</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>More to Explore</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>One-time Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Overnight Experience</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Senior Scholar Dinner</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Senior Scholar Event</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Senior Scholar Reception</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Admission Services</controllingFieldValue>
+                <valueName>Transfer Events</valueName>
+            </valueSettings>
+        </valueSet>
     </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>false</enableFeeds>
@@ -6979,800 +6988,6 @@ External (e.g. List Purchase)</inlineHelpText>
         </picklistValues>
     </recordTypes>
     <recordTypes>
-        <fullName>Event</fullName>
-        <active>true</active>
-        <description>Record type used for events both on and off campus.</description>
-        <label>Event</label>
-        <picklistValues>
-            <picklist>CBO__c</picklist>
-            <values>
-                <fullName>AZ Junior High School Council Association</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Aguila</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Be A Leader Foundation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Boys and Girls Club</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CoLLEGE Bound Mesa</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Girls Rule</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hermanas Conference</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Isaac Amaya Foundation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>JAG</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mac-Ro-Rodel Foundation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Maker Fair</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Navajo Housing Authority</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Southwest Behavior Health Community</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Stand for Children</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>The Harvard Club of Phoenix</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tumbleweed Learning Center</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>UMOM New Day Center</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>YMCA Y Achievers</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Yacuievers</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Career__c</picklist>
-            <values>
-                <fullName>Graduate</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Law</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Undergraduate</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Category__c</picklist>
-            <values>
-                <fullName>ASU College OOS Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ASU College On-Campus Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ASU College Visit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ASU Scholar Information Night</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>AZ Commission</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Admitted Student Day</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Adult Workshop</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Alumni Sun Devil Send-Offs</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Arizona Fall Circuit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Barrett</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Becoming a Sun Devil</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Campus Expo</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College Fair - Independent%2FSchool District</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College Fair - NACAC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College Fair - Regional ACAC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College Session</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College-Career Fair</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Community College Visit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Community Organization Events</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Concierge</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Destination ASU</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Dream it%2EDo it%2E EXPO</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Early Outreach</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Experience ASU</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Experience ASU - Self-guided Tour</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Experience ASU - Skateboard Tour</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Explore ASU</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Extracurricular</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Financial Aid Night</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Finding Your Fit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graduate Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Group Visit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>High School Visit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Housing Tour</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Information Session</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>International - College Fairs</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>International - Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>International - High School Visit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>International - Other Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>International - Send-Off</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Junior Day</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Lake Havasu Events</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Maroon and Gold</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>More to Explore</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>One-time Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Overnight Experience</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Senior Scholar Dinner</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Senior Scholar Event</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Senior Scholar Reception</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Summer Enrichment Program</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Sun Devil Days</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Sun Devil Send Offs</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Transfer Events</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Transfer Friday</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tri-University Programming</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Workshop</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>EOSS_Detail__c</picklist>
-            <values>
-                <fullName>Avid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Barrett Summer Scholars - 7th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Barrett Summer Scholars - 8th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Barrett Summer Scholars - 9th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Earn to Learn Recruitment Cycle Number</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Earth and Science Exploration</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Future Sun Devil Experience</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Future Sun Devil Families - 10th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Future Sun Devil Families - 12th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Future Sun Devil Families - 9th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>FutureSun Devil Families - 11th</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hispanic Mother Daughter Program</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Homecoming</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mac-Ro</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Night of the Open Door</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Non-Targeted Visits</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Road to the University</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Self-Facilitated</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Summer Enrichment Program</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TNT</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Thrive Time</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tour of Majors</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>IER_Privacy__c</picklist>
-            <values>
-                <fullName>Default</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Override as Private to Subscription Queue</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Override as Public</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Interest_Degree_Search_Bucket__c</picklist>
-            <values>
-                <fullName>ASU%27s degree search</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College of Health Solutions</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College of Liberal Arts %26 Sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College of Nursing %26 Health Innovation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College of Public Programs</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College of Technology %26 Innovation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute for Design and the Arts</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Ira A%2E Fulton Schools of Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mary Lou Fulton Teachers College</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>New College of Interdisciplinary Arts and Sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School of Letters %26 Sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School of Sustainability</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>W%2EP%2E Carey School of Business</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Walter Cronkite School of Journalism and Mass Communication</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>architecture and construction</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>arts</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>business</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>communication and media</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>computing and mathematics</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>education and teaching</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>engineering and technology</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>exploratory</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>health and wellness</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>humanities</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>interdisciplinary studies</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>law and justice</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>psychology</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>science</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>social and behavioral sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>sustainability</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Program_Recruitment__c</picklist>
-            <values>
-                <fullName>Barrett Summer Scholars</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Collegiate Scholars</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Earn to Learn</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Future Sun Devil Families</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hispanic Mother Daughter Program</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Summer Enrichment</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Requested__c</picklist>
-            <values>
-                <fullName>Barrett The Honors College</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Coll Technology %26 Innovation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College of Public Programs</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cronkite School-Journ%2FMassComm</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Enrollment Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graduate Education</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Health Solutions</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Art</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Dance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Digital Culture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Film</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Music</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Herberger Institute - Theatre</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Ira A Fulton Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Ira A Fulton Engineering - CBBG</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Ira A Fulton Engineering - FSE Outreach</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Ira A Fulton Engineering - Polytechnic</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Lake Havasu</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Liberal Arts %26 Sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MaryLouFulton Teachers College</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>New Interdis Arts %26 Sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Nursing %26 Health Innovation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>O%27Connor College of Law</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School for the Future of Innovation in Society</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School of Global Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School of Letters %26 Sciences</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>School of Sustainability</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>University College</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>W%2EP%2E Carey School of Business</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Source_Type__c</picklist>
-            <values>
-                <fullName>External</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Internal</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Status</picklist>
-            <values>
-                <fullName>Cancelled</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Completed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Confirmed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Planned</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>QA Completed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Registration Closed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Registration Open</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Scheduled</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Target_Population_Field__c</picklist>
-            <values>
-                <fullName>Native American</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Type</picklist>
-            <values>
-                <fullName>Admission Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Admission Services Recruiter Events</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Admission Services Visit Managed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College Department Events</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>College-Career Fair</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Corporate Relations</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
         <fullName>Interest</fullName>
         <active>true</active>
         <description>Record type used for prospective student interest tracking.</description>
@@ -11220,6 +10435,804 @@ External (e.g. List Purchase)</inlineHelpText>
             </values>
             <values>
                 <fullName>edX MOOC Course</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Event</fullName>
+        <active>true</active>
+        <description>Record type used for events both on and off campus.</description>
+        <label>Event</label>
+        <picklistValues>
+            <picklist>CBO__c</picklist>
+            <values>
+                <fullName>AZ Junior High School Council Association</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aguila</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Be A Leader Foundation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Boys and Girls Club</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CoLLEGE Bound Mesa</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Girls Rule</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hermanas Conference</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Isaac Amaya Foundation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>JAG</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mac-Ro-Rodel Foundation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maker Fair</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Navajo Housing Authority</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Southwest Behavior Health Community</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Stand for Children</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>The Harvard Club of Phoenix</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tumbleweed Learning Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UMOM New Day Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>YMCA Y Achievers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yacuievers</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Career__c</picklist>
+            <values>
+                <fullName>Graduate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Law</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Undergraduate</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Category__c</picklist>
+            <values>
+                <fullName>ASU College OOS Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ASU College On-Campus Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ASU College Visit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ASU Scholar Information Night</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AZ Commission</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admitted Student Day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Adult Workshop</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Alumni Sun Devil Send-Offs</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Arizona Fall Circuit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Barrett</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Becoming a Sun Devil</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Campus Expo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College Fair - Independent%2FSchool District</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College Fair - NACAC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College Fair - Regional ACAC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College Session</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College-Career Fair</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Community College Visit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Community Organization Events</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Concierge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Destination ASU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dream it%2EDo it%2E EXPO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Early Outreach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Experience ASU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Experience ASU - Self-guided Tour</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Experience ASU - Skateboard Tour</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Explore ASU</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Extracurricular</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Financial Aid Night</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finding Your Fit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Sun Devil Chat</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Graduate Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Group Visit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>High School Visit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Housing Tour</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Information Session</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>International - College Fairs</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>International - Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>International - High School Visit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>International - Other Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>International - Send-Off</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Junior Day</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lake Havasu Events</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maroon and Gold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>More to Explore</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>One-time Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overnight Experience</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Senior Scholar Dinner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Senior Scholar Event</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Senior Scholar Reception</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer Enrichment Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sun Devil Days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sun Devil Send Offs</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transfer Events</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transfer Friday</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tri-University Programming</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workshop</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EOSS_Detail__c</picklist>
+            <values>
+                <fullName>Avid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Barrett Summer Scholars - 7th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Barrett Summer Scholars - 8th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Barrett Summer Scholars - 9th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Earn to Learn Recruitment Cycle Number</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Earth and Science Exploration</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Sun Devil Experience</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Sun Devil Families - 10th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Sun Devil Families - 12th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Sun Devil Families - 9th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>FutureSun Devil Families - 11th</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hispanic Mother Daughter Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Homecoming</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mac-Ro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Night of the Open Door</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-Targeted Visits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Road to the University</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Self-Facilitated</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer Enrichment Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TNT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Thrive Time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tour of Majors</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>IER_Privacy__c</picklist>
+            <values>
+                <fullName>Default</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Override as Private to Subscription Queue</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Override as Public</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Interest_Degree_Search_Bucket__c</picklist>
+            <values>
+                <fullName>ASU%27s degree search</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College of Health Solutions</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College of Liberal Arts %26 Sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College of Nursing %26 Health Innovation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College of Public Programs</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College of Technology %26 Innovation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute for Design and the Arts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ira A%2E Fulton Schools of Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mary Lou Fulton Teachers College</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New College of Interdisciplinary Arts and Sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School of Letters %26 Sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School of Sustainability</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>W%2EP%2E Carey School of Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Walter Cronkite School of Journalism and Mass Communication</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>architecture and construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>arts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>communication and media</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>computing and mathematics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>education and teaching</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>engineering and technology</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>exploratory</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>health and wellness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>humanities</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>interdisciplinary studies</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>law and justice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>psychology</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>science</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>social and behavioral sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>sustainability</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Program_Recruitment__c</picklist>
+            <values>
+                <fullName>Barrett Summer Scholars</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Collegiate Scholars</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Earn to Learn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Future Sun Devil Families</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Hispanic Mother Daughter Program</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Summer Enrichment</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Requested__c</picklist>
+            <values>
+                <fullName>Barrett The Honors College</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Coll Technology %26 Innovation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College of Public Programs</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cronkite School-Journ%2FMassComm</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Enrollment Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Graduate Education</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Health Solutions</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Art</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Dance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Design</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Digital Culture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Film</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Music</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Herberger Institute - Theatre</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ira A Fulton Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ira A Fulton Engineering - CBBG</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ira A Fulton Engineering - FSE Outreach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ira A Fulton Engineering - Polytechnic</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lake Havasu</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liberal Arts %26 Sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MaryLouFulton Teachers College</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Interdis Arts %26 Sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nursing %26 Health Innovation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>O%27Connor College of Law</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School for the Future of Innovation in Society</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School of Global Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School of Letters %26 Sciences</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>School of Sustainability</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>University College</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>W%2EP%2E Carey School of Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Source_Type__c</picklist>
+            <values>
+                <fullName>External</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Internal</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Confirmed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planned</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>QA Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Registration Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Registration Open</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Target_Population_Field__c</picklist>
+            <values>
+                <fullName>Native American</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Admission Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admission Services Recruiter Events</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Admission Services Visit Managed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College Department Events</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>College-Career Fair</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Corporate Relations</fullName>
                 <default>false</default>
             </values>
         </picklistValues>

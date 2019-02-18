@@ -118,7 +118,7 @@
 
         function goToSurvey() {
             var parameters = mergeFields == undefined ? '' : mergeFields.join('&');
-            parameters += '&name=';
+            parameters += '&name={!contactName}';
             window.location = '{!postChatSurveyLink}?' + parameters;
         }
         function toSnakeCase(str) {

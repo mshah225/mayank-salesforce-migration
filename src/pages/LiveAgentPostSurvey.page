@@ -16,7 +16,7 @@
                 <br/>
             </h2>
             <div id="chatTranscript" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
-                <apex:outputText style="display: none;" id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
+                <apex:outputText id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
             </div>
             <table class="nav" align="center">
                 <tr>
@@ -49,7 +49,7 @@
             document.getElementById("j_id0:failedChatBody").style.display = "none";
         }
         var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
-        cleanedString = cleanedString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        cleanedString = cleanedString.replace(/[\n]/g, '').replace(/[\r]/g, '');
         var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',
@@ -64,6 +64,7 @@
             chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
             chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
         };
+
         var customDetails = {}
         if (typeof chatDetails.customDetails !== 'undefined') {
             customDetails = chatDetails.customDetails.reduce(function (memo, detail) {
@@ -110,11 +111,14 @@
         }
 
         function getTranscript() {
-            var chatBody = document.getElementById('j_id0:transcript').innerHTML;
+            var chatBody = document.getElementById('chatTranscript').innerHTML;
+            chatBody = chatBody.replace(/<br\s*[\/]?>/gi, "\n");
             download("Transcript.txt", chatBody);
         }
+
         function goToSurvey() {
             var parameters = mergeFields == undefined ? '' : mergeFields.join('&');
+            parameters += '&name=';
             window.location = '{!postChatSurveyLink}?' + parameters;
         }
         function toSnakeCase(str) {

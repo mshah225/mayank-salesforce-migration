@@ -24,7 +24,8 @@ private class CaseClassificationPicklistTest {
     private static void testChangeFunctionalGroup()
     {
         picklistService = new CaseClassificationPicklistService();
-        picklistService.selectedFunctionalGroup = 'Test Functional Group0';
+        Map<String, Case_Classification__c> caseClassificationMap = getCaseClassificationData();
+        picklistService.selectedFunctionalGroup = caseClassificationMap.get('Test Functional Group0').Id;
 
         System.assertEquals(2, picklistService.functionalGroupOptions.size());
         System.assertEquals(2, picklistService.categoryOptions.size());
@@ -36,7 +37,7 @@ private class CaseClassificationPicklistTest {
     {
         picklistService = new CaseClassificationPicklistService();
         Map<String, Case_Classification__c> caseClassificationMap = getCaseClassificationData();
-        picklistService.selectedFunctionalGroup = 'Test Functional Group0';
+        picklistService.selectedFunctionalGroup = caseClassificationMap.get('Test Functional Group0').Id;
         picklistService.selectedCategory = caseClassificationMap.get('Test Category0').Id;
         
         System.assertEquals(2, picklistService.functionalGroupOptions.size());
@@ -52,9 +53,9 @@ private class CaseClassificationPicklistTest {
         Case createdCase = (Case)caseMaker.create(1)[0];
         
         Map<String, Case_Classification__c> caseClassificationMap = getCaseClassificationData();
-        picklistService.selectedFunctionalGroup = 'Test Functional Group0';
+        picklistService.selectedFunctionalGroup = caseClassificationMap.get('Test Functional Group0').Id;
         picklistService.selectedCategory = caseClassificationMap.get('Test Category0').Id;
-        picklistService.selectedSubCategory = 'Test Sub Category0';
+        picklistService.selectedSubCategory = caseClassificationMap.get('Test Sub Category0').Id;
         picklistService.addCaseClassificationToCase(createdCase);
         
         System.assertEquals(createdCase.CC_Functional_Group__c, caseClassificationMap.get('Test Functional Group0').Id);

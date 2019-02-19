@@ -36,9 +36,9 @@ public without sharing class LiveAgentPostSurveyController {
         Map<String, Object> m = (Map<String, Object>)JSON.deserializeUntyped(parameterList);
         String contactId = (String)m.get('ContactId');
         if (contactId != null) {
-            Contact chatter = [SELECT Name FROM Contact WHERE Id =: contactId LIMIT 1];
-            if (chatter.Name != null && !chatter.Name.equals('Non-Authenticated Caller')) {
-               contactName = chatter.Name;
+            Contact chatter = [SELECT FirstName FROM Contact WHERE Id =: contactId LIMIT 1];
+            if (chatter.FirstName != null && !chatter.FirstName.equals('Non-Authenticated Caller')) {
+               contactName = chatter.FirstName;
             } else {
                 contactName = 'Visitor';
             }

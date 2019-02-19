@@ -85,6 +85,7 @@
                     var chatDeploymentId = '{!buttonConfig.Chat_Deployment__c}';
                     var chatButtonId = '{!buttonConfig.Chat_Button_Id__c}';
                     var chatEndpoint = '{!buttonConfig.Chat_Endpoint__c}';
+                    var descriptionAdded = false;
                     
                     (function() {
                         function handlePageLoad() {
@@ -98,15 +99,18 @@
                     liveagent.init(chatEndpoint, chatDeploymentId, orgId);
                     liveagent.details.preChatInit(chatEndpoint,'getCustomDetails');
                     
-                var customDetails = "<br>--- User Details ---<br>";
+                    var customDetails = "\n--- User Details ---\n";
                     var getCustomDetails = function (details) {
-                        for (var i = 0; i < details.customDetails.length; i++) {
-                            customDetails += details.customDetails[i].label + ': ' + details.customDetails[i].value + '<br>'
+                        if(!descriptionAdded) {
+                            descriptionAdded = true;
+                            for (var i = 0; i < details.customDetails.length; i++) {
+                                customDetails += details.customDetails[i].label + ': ' + details.customDetails[i].value + '\n'
+                            }
                         }
                     };
                     
                     var setCaseDescription = function() {
-                        document.getElementById('caseDescription').value = document.getElementById('caseDescriptionInput').value + '<br>' + customDetails;
+                        document.getElementById('caseDescription').value = document.getElementById('caseDescriptionInput').value + '\n' + customDetails;
                     }
                     
                     function setName() {

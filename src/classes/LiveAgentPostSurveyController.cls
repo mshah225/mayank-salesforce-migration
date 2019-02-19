@@ -37,7 +37,7 @@ public without sharing class LiveAgentPostSurveyController {
         String contactId = (String)m.get('ContactId');
         if (contactId != null) {
             Contact chatter = [SELECT FirstName FROM Contact WHERE Id =: contactId LIMIT 1];
-            if (chatter.FirstName != null && !chatter.FirstName.equals('Non-Authenticated Caller')) {
+            if (chatter.FirstName != null && !chatter.FirstName.equals('Non-Authenticated')) {
                contactName = chatter.FirstName;
             } else {
                 contactName = 'Visitor';

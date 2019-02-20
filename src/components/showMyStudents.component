@@ -1,9 +1,9 @@
 <apex:component controller="showMyStudentsController" allowDML="true">
     <apex:includeScript value="/support/console/42.0/integration.js"/>
     <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
-    <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudents.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudentsResources/showMyStudents.js')}"/>
     <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
-    <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }"/>
+    <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudentsResources/showMyStudents.css') }"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
 
     <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />

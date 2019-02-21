@@ -381,13 +381,17 @@ public with sharing class viewCaseController {
         return restStatusAndInfo;
     }
     
+    @TestVisible
     private String createJsonEmail() {
         User currentUser = [SELECT Id, Name, FirstName, LastName, Email FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
-        Case currentCase = [SELECT Id, Owner.Email FROM Case WHERE Id = :caseId LIMIT 1];
+        Case currentCase = [SELECT Id, Owner.Email, Intended_Recipient__c FROM Case WHERE Id = :caseId LIMIT 1];
         
         String ownerEmail = '';
-        if (currentCase.Owner.Email != null) {
-            ownerEmail = currentCase.Owner.Email;
+        if (currentCase.Intended_Recipient__c != null) {
+            ownerEmail = currentCase.Intended_Recipient__c;
+        } else {
+            Email_To_Case_Configuration__c defaultEmail = Email_To_Case_Configuration__c.getValues('Default Org Wide Email Address');
+            ownerEmail = defaultEmail.Value__c;
         }
         String emailSubject = 'Reply by ' + currentUser.FirstName + ' ' + currentUser.LastName + 
                 ' from the MyASU Service Center at ' + DateTime.now() + ':';

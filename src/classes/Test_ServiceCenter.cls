@@ -29,6 +29,9 @@ private class Test_ServiceCenter {
         List<Contact> testContactList = contactFactoy.create(4);
         testContactList[3].Affiliation_Alumni__c = 'Current';
         insert testContactList;
+        
+        Email_To_Case_Configuration__c defaultEmail = new Email_To_Case_Configuration__c(Name = 'Default Org Wide Email Address', Value__c = 'noEmail@test.com');
+        insert defaultEmail;
 
         UserFactory.DefaultUser userFactory = new UserFactory.DefaultUser();
         List<User> testUserList = userFactory.create(4);
@@ -721,4 +724,35 @@ private class Test_ServiceCenter {
         }
         System.assert(failureMessageFound);
     }
+    
+    @isTest 
+    private static void testCorrectReplyToEmail() {
+        loadTestDataWithUserByLastName('User0');
+        caseOnTestUser.Intended_Recipient__c = 'testEmail@test.com';
+        update caseOnTestUser;
+        setCurrentPageAsViewCase();
+        String jsonEmail;
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            Test.startTest();
+            jsonEmail = vcc.createJsonEmail();
+            Test.stopTest();
+        }
+        System.assert(jsonEmail.contains('testEmail@test.com')); 
+    }
+    
+    @isTest 
+    private static void testNoIntendedReplyToEmail() {
+        loadTestDataWithUserByLastName('User0');
+        setCurrentPageAsViewCase();
+        String jsonEmail;
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            Test.startTest();
+            jsonEmail = vcc.createJsonEmail();
+            Test.stopTest();
+        }
+        System.assert(jsonEmail.contains('noEmail@test.com')); 
+    }
+    
 }

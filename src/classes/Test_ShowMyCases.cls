@@ -305,4 +305,19 @@ public class Test_ShowMyCases {
         System.assert(outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up'));
         System.assert(outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down'));
     }
+
+    @isTest
+    private static void checkForNullCategoryOptions() {
+        ShowMyCasesController showMyCasesController = new ShowMyCasesController();
+        Case caseToTest = new Case();
+        showMyCasesController.caseList = new List<ShowMyCasesController.CaseWrapper>();
+        showMyCasesController.caseList.add(new ShowMyCasesController.CaseWrapper(caseToTest));
+
+        Test.startTest();
+        List<SelectOption> caseCategoryOptions = showMyCasesController.caseCategoryOptions;
+        Test.stopTest();
+
+        System.assertEquals(1,caseCategoryOptions.size());
+
+    }
 }

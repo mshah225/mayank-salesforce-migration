@@ -6,7 +6,7 @@
     standardStylesheets="false"
     docType="HTML-5.0"
     action="{!init}">
-    <apex:includeScript value="/support/console/38.0/integration.js"/>
+    <apex:includeScript value="/support/console/42.0/integration.js"/>
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
     <head>
         <title>{!theContact.FirstName}'s Student Profile</title>

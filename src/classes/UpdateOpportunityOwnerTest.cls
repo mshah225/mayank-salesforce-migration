@@ -42,8 +42,11 @@ private class UpdateOpportunityOwnerTest {
 		testAccount = new Account(Name = 'Test Account');
 		insert testAccount;
 
+        ContactFactory.DefaultContact contactMaker = new ContactFactory.DefaultContact();
+        List<Contact> contactsToInsert = contactMaker.create(10);
 		testContact = new Contact(FirstName = 'Test', LastName = 'Contact');
-		insert testContact;
+        contactsToInsert.add(testContact);
+		insert contactsToInsert;
 
 		testUser = new User();
     	testUser.FirstName = 'Test';
@@ -63,12 +66,13 @@ private class UpdateOpportunityOwnerTest {
 
 	private static void createOpportunities(Integer numOfOpps){
 		List<Opportunity> opps = new List<Opportunity>();
+        List<Contact> createdContacts = [SELECT Id FROM Contact LIMIT :numOfOpps];
 		Opportunity testOpp;
-
+		
 		for(Integer i = 0; i < numOfOpps; i++){
 			testOpp = new Opportunity();
 			testOpp.AccountId = testAccount.Id;
-			testOpp.Contact__c = testContact.Id;
+			testOpp.Contact__c = createdContacts[i].Id;
 			testOpp.RecordTypeId = '012d0000000x3xyAAA';
 			testOpp.StageName = 'Prospect';
 			testOpp.Name = 'TestOpp ' + i;

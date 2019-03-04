@@ -6,7 +6,7 @@
                     <tbody>
                         <tr style="display:none" id="caseDetailInlineButtons">
                             <td class="pbButton">
-                                <apex:commandButton action="{!saveCase}" value="Save"/>
+                                <apex:commandButton action="{!saveCase}" value="Save" oncomplete="reloadPage();"/>
                                 <apex:commandButton action="{!resetDetails}" value="Clear"/>
                             </td>
                         </tr>
@@ -68,6 +68,10 @@
     
     function hideButtons() {
         document.getElementById("caseDetailInlineButtons").style.display = "none"
+    }
+
+    function reloadPage() {
+        window.top.location.href = '/{!caseRecordId}';    
     }
     </script>
 </apex:page>

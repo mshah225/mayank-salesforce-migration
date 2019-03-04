@@ -15,6 +15,7 @@ public with sharing class NewCaseRecordTypeSelectionController {
     public String functionalGroupLookupFieldName;
     public String categoryLookupFieldName;
     public String subCategoryLookupFieldName;
+    public String contactId;
     public CaseClassificationPicklistService ccPicklist {get; set;}
 
     public NewCaseRecordTypeSelectionController(ApexPages.StandardController controller) {
@@ -26,6 +27,7 @@ public with sharing class NewCaseRecordTypeSelectionController {
         functionalGroupLookupFieldName = 'CF00N0W000008yd9U';
         categoryLookupFieldName = 'CF00N0W000008yd9T';
         subCategoryLookupFieldName = 'CF00N0W000008yd9W';
+        contactId = ApexPages.currentPage().getParameters().get('cas3_lkid');
     }
 
     public List<SelectOption> getRecordTypeOptions() {
@@ -64,6 +66,10 @@ public with sharing class NewCaseRecordTypeSelectionController {
         if (!ccPicklist.selectedSubCategory.equals('--')) {
             editPageURL.getParameters().put(subCategoryLookupFieldId, ccPicklist.selectedSubCategory);
             editPageURL.getParameters().put(subCategoryLookupFieldName, caseClassificationNames.get(ccPicklist.selectedSubCategory).Name);
+        }
+
+        if (!String.isEmpty(contactId)) {
+            editPageURL.getParameters().put('cas3_lkid', contactId);
         }
 
         editPageURL.setRedirect(true);

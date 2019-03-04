@@ -113,14 +113,14 @@ public without sharing class UserDeprovisioner {
             } else if (deprovisionConfigurationName.contains('RemoveValue')) {
                 Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(deprovisionConfigurationName);
                 if (userToDeprovision.get(configuration.Name__c) != null) {
-                    userToDeprovision.put(configuration.Name__c, null);
                     addToProcessingNotes('Removed value '+ userToDeprovision.get(configuration.Name__c) + ' for ' + configuration.Name__c);
+                    userToDeprovision.put(configuration.Name__c, null);
                 }
             }
         }
     }
 
     private void logRemovedGroupMemberships() {
-        addToProcessingNotes('Remove user from Public Groups: ' + groupMemberships);
+        addToProcessingNotes('Removed user from Public Groups: ' + groupMemberships);
     }
 }

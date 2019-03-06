@@ -4,7 +4,7 @@ global with sharing class StudentProfileController {
     private Boolean isContactId;
     private String contactId;
     private String aidYear;
-    
+
     public boolean urlParamsExistAndAreValid {get; set;}
     public String contactName { get; set; }
     public Contact theContact { get; set; }
@@ -568,6 +568,10 @@ global with sharing class StudentProfileController {
             classesData.classSessions.add('All');
         }
         return classesData;
+    }
+
+    public String getAidYear() {
+        return aidYear;
     }
 
     @RemoteAction

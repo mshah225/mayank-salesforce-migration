@@ -87,7 +87,7 @@ private class StudentProfileControllerTest {
         StudentProfileController controller = new StudentProfileController();
         controller.init();
 
-        System.assertEquals('2000', controller.aidYear);
+        System.assertEquals('2000', controller.getAidYear());
         System.assertEquals('Moderate', controller.financialAidPackage.EFC_Range__c);
 
     }

@@ -3,7 +3,8 @@ global with sharing class StudentProfileController {
 
     private Boolean isContactId;
     private String contactId;
-
+    private String aidYear;
+    
     public boolean urlParamsExistAndAreValid {get; set;}
     public String contactName { get; set; }
     public Contact theContact { get; set; }
@@ -30,7 +31,7 @@ global with sharing class StudentProfileController {
     public String currentTermName { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
-    public String aidYear { get; set; }
+    
 
     public Student_Program_Plan__c ugStudentProgram { get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];

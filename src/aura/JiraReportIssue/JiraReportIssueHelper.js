@@ -26,7 +26,7 @@
         })
         action.setCallback(this, function(response) {
         var state = response.getState();
-        if (state === "SUCCESS") {
+        if (state === "SUCCESS" && response.getReturnValue() != null) {
             var key = response.getReturnValue();
             component.set("v.message","Jira Issue Successfully Created");
             var link = "https://asudev.jira.com/browse/" + key;
@@ -52,5 +52,18 @@
     	var navigate = $A.get("e.force:navigateToURL");
         navigate.setParams({"url" : component.get("v.link")});
     	navigate.fire();
-	}
+	},
+    
+    validateRequiredFields : function (component) {
+        var questionOneValue = component.find("questionOneResponse").get("v.value");
+        var questionTwoValue = component.find("questionTwoResponse").get("v.value");
+        var questionThreeValue = component.find("questionThreeResponse").get("v.value");
+        var descriptionValue = component.find("descriptionResponse").get("v.value");
+        
+        if (questionOneValue && questionTwoValue && questionThreeValue && descriptionValue) {
+           this.submitIssueForm(component);
+        } else {
+        	component.set("v.message","Please complete the required forms below!");
+        }
+    }
 })

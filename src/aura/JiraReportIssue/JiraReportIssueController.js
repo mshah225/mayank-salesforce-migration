@@ -1,6 +1,6 @@
 ({
     submitIssueForm : function (component, event, helper) {
-        helper.submitIssueForm(component);
+        helper.validateRequiredFields(component);
 	},
     
     navigateToIssue: function(component, event, helper) {

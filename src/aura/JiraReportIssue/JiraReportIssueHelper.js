@@ -54,7 +54,7 @@
         navigate.fire();
     },
 
-    validateRequiredFields: function (component) {
+    validateRequiredFieldsAndSubmitForm: function (component) {
         var questionOneValue = component.find("questionOneResponse").get("v.value");
         var questionTwoValue = component.find("questionTwoResponse").get("v.value");
         var questionThreeValue = component.find("questionThreeResponse").get("v.value");

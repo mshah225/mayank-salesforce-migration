@@ -91,7 +91,7 @@ public with sharing class NewCaseRecordTypeSelectionController {
     }
     
     private void setContactId() {
-        if(ApexPages.currentPage().getParameters().get('cas3_lkid') != null) {
+        if (ApexPages.currentPage().getParameters().get('cas3_lkid') != null) {
             contactId = ApexPages.currentPage().getParameters().get('cas3_lkid');
         } else if (ApexPages.currentPage().getParameters().get('def_contact_id') != null) {
             contactId = ApexPages.currentPage().getParameters().get('def_contact_id');
@@ -99,7 +99,7 @@ public with sharing class NewCaseRecordTypeSelectionController {
     }
     
     private void setAccountId() {
-        if(ApexPages.currentPage().getParameters().get('def_account_id') != null) {
+        if (ApexPages.currentPage().getParameters().get('def_account_id') != null) {
             accountId = ApexPages.currentPage().getParameters().get('def_account_id');
         }
     }

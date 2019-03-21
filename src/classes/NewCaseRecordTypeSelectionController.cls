@@ -16,6 +16,7 @@ public with sharing class NewCaseRecordTypeSelectionController {
     public String categoryLookupFieldName;
     public String subCategoryLookupFieldName;
     public String contactId;
+    public String accountId;
     public CaseClassificationPicklistService ccPicklist {get; set;}
 
     public NewCaseRecordTypeSelectionController(ApexPages.StandardController controller) {
@@ -27,7 +28,8 @@ public with sharing class NewCaseRecordTypeSelectionController {
         functionalGroupLookupFieldName = 'CF00N0W000008yd9U';
         categoryLookupFieldName = 'CF00N0W000008yd9T';
         subCategoryLookupFieldName = 'CF00N0W000008yd9W';
-        contactId = ApexPages.currentPage().getParameters().get('cas3_lkid');
+        setContactId();
+        setAccountId();
     }
 
     public List<SelectOption> getRecordTypeOptions() {
@@ -52,7 +54,7 @@ public with sharing class NewCaseRecordTypeSelectionController {
         editPageURL.getParameters().put('retURL', ApexPages.currentPage().getParameters().get('retURL'));
         editPageURL.getParameters().put('nooverride', '1');
         editPageURL.getParameters().put('RecordType',selectedRecordType);
-
+        
         Map<Id, Case_Classification__c> caseClassificationNames = ccPicklist.getCCNames();
         
         editPageURL.getParameters().put(functionalGroupLookupFieldId, ccPicklist.selectedFunctionalGroup);
@@ -67,9 +69,13 @@ public with sharing class NewCaseRecordTypeSelectionController {
             editPageURL.getParameters().put(subCategoryLookupFieldId, ccPicklist.selectedSubCategory);
             editPageURL.getParameters().put(subCategoryLookupFieldName, caseClassificationNames.get(ccPicklist.selectedSubCategory).Name);
         }
-
+        
         if (!String.isEmpty(contactId)) {
             editPageURL.getParameters().put('cas3_lkid', contactId);
+        }
+        
+        if (!String.isEmpty(contactId)) {
+            editPageURL.getParameters().put('def_account_id', accountId);
         }
 
         editPageURL.setRedirect(true);
@@ -82,5 +88,19 @@ public with sharing class NewCaseRecordTypeSelectionController {
 
         returnURL = new PageReference(ApexPages.currentPage().getParameters().get('retURL'));
         return returnURL;
+    }
+    
+    private void setContactId() {
+        if(ApexPages.currentPage().getParameters().get('cas3_lkid') != null) {
+            contactId = ApexPages.currentPage().getParameters().get('cas3_lkid');
+        } else if (ApexPages.currentPage().getParameters().get('def_contact_id') != null) {
+            contactId = ApexPages.currentPage().getParameters().get('def_contact_id');
+        }
+    }
+    
+    private void setAccountId() {
+        if(ApexPages.currentPage().getParameters().get('def_account_id') != null) {
+            accountId = ApexPages.currentPage().getParameters().get('def_account_id');
+        }
     }
 }

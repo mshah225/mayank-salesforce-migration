@@ -86,11 +86,15 @@ global with sharing class CaseDetailWithClassificationController {
     private void createSelectOptions(List<String> optionsToAdd) {
         List<CaseStatus> nonClosedStatuses = [SELECT ApiName, MasterLabel FROM CaseStatus WHERE IsClosed = FALSE];
         List<String> availableStatuses = new List<String>();
+        statusOptions = new List<SelectOption>();
         availableStatuses.add(caseRecord.Status);
         for (CaseStatus nonClosedStatus : nonClosedStatuses) {
             availableStatuses.add(nonClosedStatus.ApiName);
         }
-        statusOptions = new List<SelectOption>();
+        if (!optionsToAdd.contains(caseRecord.Status)) {
+            optionsToAdd.add(caseRecord.Status);
+            optionsToAdd.sort();
+        }
         for (String optionName : optionsToAdd) {
             if (availableStatuses.contains(optionName)) {
             	statusOptions.add(new SelectOption(optionName, optionName, false));

@@ -128,10 +128,6 @@
                         p {
                             font-weight: bolder;
                         }
-                        
-                        
-
-                        
 
                         @media screen and (min-width: 600px) {
                             .mobile-toast {

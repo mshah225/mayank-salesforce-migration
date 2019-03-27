@@ -204,7 +204,7 @@ public without sharing class UserHandler implements ITrigger {
     public static Set<Id> collabUserIdsToDupeCheck(String groupName) {
         // Loop through and add the collab member Ids to a set to check against.
         Set <Id> dupeMemberIdSet = new Set<Id>();
-        if (dupeMemberCheckMap.get(groupName) != null) {
+	if (dupeMemberCheckMap.get(groupName) != null) {
             for (CollaborationGroupMember cgm : dupeMemberCheckMap.get(groupName)) {
                 dupeMemberIdSet.add(cgm.MemberId);
             }

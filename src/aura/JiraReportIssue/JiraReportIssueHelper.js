@@ -33,7 +33,7 @@
                 component.set("v.link", link);
                 this.clearInputs(component);
             } else {
-                component.set("v.message", "Jira Issue could not be created!");
+                component.set("v.message", "Cannot create JIRA ticket, please email your request to salesforce.development@asu.edu");
             }
             submitButton.set("v.disabled", false);
         });
@@ -59,11 +59,28 @@
         var questionTwoValue = component.find("questionTwoResponse").get("v.value");
         var questionThreeValue = component.find("questionThreeResponse").get("v.value");
         var descriptionValue = component.find("descriptionResponse").get("v.value");
+	    var errorFound = 0;
 
-        if (questionOneValue && questionTwoValue && questionThreeValue && descriptionValue) {
+	    errorFound += this.checkForErrors(component.find("questionOneResponse"));
+        errorFound += this.checkForErrors(component.find("questionTwoResponse"));
+        errorFound += this.checkForErrors(component.find("questionThreeResponse"));
+        errorFound += this.checkForErrors(component.find("descriptionResponse"));
+        
+        if (errorFound <= 0) {
             this.submitIssueForm(component);
         } else {
             component.set("v.message", "Please complete the required forms below!");
         }
+    },
+    
+    checkForErrors: function (componentName) {
+        if (!componentName.get("v.value")) {
+            $A.util.addClass(componentName, 'slds-has-error');
+            return 1;
+        } else {
+            $A.util.removeClass(componentName, 'slds-has-error');
+            return 0;
+        }
+
     }
 })

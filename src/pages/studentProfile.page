@@ -172,7 +172,7 @@
 
                     <div class="customErrorBox" style="{!IF(urlParamsExistAndAreValid, 'display: none', 'display:block')}">
                         <apex:outputPanel styleClass="customErrorMessage">
-                        	<apex:pageMessages></apex:pageMessages>
+                        	<apex:pageMessages ></apex:pageMessages>
                         </apex:outputPanel>
 
                     </div>
@@ -2116,8 +2116,8 @@
                                      ' alt="suncard photo" ' +
                                      ' class="img-responsive intro" ' +
                                      ' style="max-width:200px;width:100%;"/>';
-                        document.getElementById('sundevilImgDiv').innerHTML = html;
-                        cleanUpUndefined("sundevilImgDiv");
+                        document.getElementById('sunDevilImgDiv').innerHTML = html;
+                        cleanUpUndefined("sunDevilImgDiv");
                     } else {
                         jQuery('#sunImgSpinner').remove();
                     }

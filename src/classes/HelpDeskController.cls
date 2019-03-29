@@ -1042,10 +1042,9 @@ public with sharing class HelpDeskController
         return isSaveSuccess ? page : null;
     }
 
-    public PageReference saveAndCloseCase() {
+    public void saveAndCloseCase() {
         myCase.Status = myCase.Status.contains('Closed') ? myCase.Status : 'Closed: Resolved';
-        Boolean isSaveSuccess = upsertCase();
-        return isSaveSuccess ? redirectToCaseList() : null;
+        savedAndClosed = upsertCase();
     }
     
     private Boolean upsertCase() {
@@ -1108,12 +1107,6 @@ public with sharing class HelpDeskController
                 }
             }
         }
-    }
-    
-    private Pagereference redirectToCaseList() {
-        PageReference page = new PageReference('/500');
-        page.setRedirect(true);
-        return page;
     }
 
     private PageReference redirectPage(Case caseToTrasferTo) {

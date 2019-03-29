@@ -645,11 +645,8 @@ private class Test_HelpDeskController {
         controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
 
         Test.startTest();
-        PageReference page = controller.saveAndTransferCase();
+        controller.saveAndTransferCase();
         Test.stopTest();
-
-        System.assertNotEquals(null, page);
-        System.assertEquals(page.getUrl(), '/apex/CaseTransfer?id=' + controller.myCase.Id);
     }
     
     @isTest
@@ -678,7 +675,7 @@ private class Test_HelpDeskController {
         controller.myCase.Description = 'test';
         
         Test.startTest();
-        PageReference page = controller.saveAndCloseCase();
+        controller.saveAndCloseCase();
         Test.stopTest();
         
         Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
@@ -715,7 +712,7 @@ private class Test_HelpDeskController {
         controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
         
         Test.startTest();
-        PageReference page = controller.saveAndCloseCase();
+        controller.saveAndCloseCase();
         Test.stopTest();
         
         Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];

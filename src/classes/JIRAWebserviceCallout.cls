@@ -7,7 +7,7 @@ global class JIRAWebserviceCallout {
     WebService static String createNewIssue(String summary, String description, String addUsers, String type) {
         List<String> errorLoggerVars = new List<String>();
         String jiraKey;
-        
+        String alias = [SELECT alias FROM User WHERE Id =: UserInfo.getUserId()].alias;
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
@@ -18,7 +18,10 @@ global class JIRAWebserviceCallout {
             '{   "project":     {      "id": "17074"      }, ' +
             '"summary": "' + summary + '",  ' +
             '"description": { "type": "doc","version": 1,"content": [{"type": "paragraph","content": [{  "type": "text", "text": "' + description + '" }  ]  } ] },'+
-            ' "issuetype": {  "name": "' + type + '"     }'+
+            ' "issuetype": {  "name": "' + type + '"     }';
+        String bodyWithoutReporter = body + '   }}';
+        
+        body += ', "reporter": { "name": "' + alias + '"  }' +
             '   }}';
         
         setHeader(req);
@@ -27,6 +30,10 @@ global class JIRAWebserviceCallout {
         
         try {
             res = http.send(req);
+            if (res.getStatusCode() == 400) {
+                setBody(req, bodyWithoutReporter);
+                res = http.send(req);
+            }
             Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
             jiraKey = (String) m.get('key');
             if (type.equals('Bug')) {

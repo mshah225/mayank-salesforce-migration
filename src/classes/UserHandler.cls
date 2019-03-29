@@ -1,13 +1,14 @@
 public without sharing class UserHandler implements ITrigger {
 
-	public static Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap;
-	public void bulkBefore()
-	{
-		if(Trigger.isInsert)
-		{
-			List<User> newUsers = Trigger.new;
-			Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-			Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+    public static Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap;
+    private UserDeprovisionOrganizer userDeprovisionOrganizer;
+    public void bulkBefore()
+    {
+        if(Trigger.isInsert)
+        {
+            List<User> newUsers = Trigger.new;
+            Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+            Id communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
             List<String> asurites = new List<String>();
             Map<String, Contact> asuritesToContact = new Map<String, Contact>();
             Map<String, User> asuritesToUser = new Map<String, User>();
@@ -26,9 +27,9 @@ public without sharing class UserHandler implements ITrigger {
             }
 
             if(asurites.size() > 0)
-			{
+            {
                 List<Contact> newUserContactsByASURITE = [SELECT Id, ASURITE_Id__c, CAP__c FROM Contact WHERE ASURITE_Id__c IN :asurites];
-				for(Integer x = 0; x < newUserContactsByASURITE.size(); x++)
+                for(Integer x = 0; x < newUserContactsByASURITE.size(); x++)
                 {
                     Contact c = newUserContactsByASURITE.get(x);
                     asuritesToContact.put(c.ASURITE_Id__c, c);
@@ -45,62 +46,75 @@ public without sharing class UserHandler implements ITrigger {
 
                     if(c.CAP__c != null)
                     {
-						u.ProfileId = communityCapProfile;
+                        u.ProfileId = communityCapProfile;
                     }
                 }
-			}
+            }
 
             //throw new ContactServiceException('This is the Contact: ' + );
-		}
-	}
+        }
 
-	public void bulkAfter() {
-		Boolean needsBatch = (System.isBatch() || System.isFuture());
-    	/**
-    	* If we are running asyncronously, call Chatter add syncronously,
-    	* else call the future wrapper to run asyncronously.
-		 */
-		if (needsBatch)
-		{
-			addToChatterGroup(Trigger.newMap.keySet());
-		}
-		else
-		{
-			addToChatterGroupFuture(Trigger.newMap.keySet());
-		}
+        userDeprovisionOrganizer = new UserDeprovisionOrganizer();
 
-	}
+        if (Trigger.isUpdate) {
+            userDeprovisionOrganizer.setOldUsersMap(Trigger.oldMap);
+            userDeprovisionOrganizer.setNewUsers(Trigger.new);
+            userDeprovisionOrganizer.deprovisionUsersBeforeUpdate();
+            if (userDeprovisionOrganizer.getDeprovisionedUsersWithProcessingNotes().size() > 0) {
+                String deprovisionedUsersWithProcessingNotes =
+                    JSON.serialize(userDeprovisionOrganizer.getDeprovisionedUsersWithProcessingNotes());
+                updateDeprovisionedUserProcessingNotes(deprovisionedUsersWithProcessingNotes);
+            }
+        }
+    }
 
-	public void beforeInsert(SObject so) {}
+    public void bulkAfter() {
 
-	public void beforeUpdate(SObject oldSo, SObject so)
-	{
-		User updatedUser = (User) so;
-		User oldUser = (User) so;
+        Boolean needsBatch = (System.isBatch() || System.isFuture());
+        /**
+        * If we are running asyncronously, call Chatter add syncronously,
+        * else call the future wrapper to run asyncronously.
+         */
+        if (needsBatch)
+        {
+            addToChatterGroup(Trigger.newMap.keySet());
+        }
+        else
+        {
+            addToChatterGroupFuture(Trigger.newMap.keySet());
+        }
 
-		if (updatedUser.UserPermissionsKnowledgeUser)
-		{
-			updatedUser.Role_Knowledge__c = true;
-		}
-		else
-		{
-			updatedUser.Role_Knowledge__c = false;
-		}
-	}
+    }
 
-	public void beforeDelete(SObject so) {}
+    public void beforeInsert(SObject so) {
 
-	public void beforeFinally() {}
+    }
 
-	public void afterInsert(SObject so) {}
+    public void beforeUpdate(SObject oldSo, SObject so)
+    {
+        User updatedUser = (User) so;
+        User oldUser = (User) so;
 
-	public void afterUpdate(SObject oldSo, SObject so) {}
+        if (updatedUser.UserPermissionsKnowledgeUser) {
+            updatedUser.Role_Knowledge__c = true;
+        } else {
+            updatedUser.Role_Knowledge__c = false;
+        }
+    }
 
-	public void afterDelete(SObject so) {}
+    public void beforeDelete(SObject so) {}
 
-	public void andFinally() {}
+    public void beforeFinally() {}
 
-	/**
+    public void afterInsert(SObject so) {}
+
+    public void afterUpdate(SObject oldSo, SObject so) {}
+
+    public void afterDelete(SObject so) {}
+
+    public void andFinally() {}
+
+    /**
     * Adds user to the chatter group as collaborationmember with EmailNotification using Custom Setting
     * @param The userIds which needs to be added to the respective chatter groups based on their roles
     * @return void
@@ -211,6 +225,12 @@ public without sharing class UserHandler implements ITrigger {
     @future
     public static void addToChatterGroupFuture(Set<Id> userIds) {
         addToChatterGroup(userIds);
+    }
+
+    @future
+    public static void updateDeprovisionedUserProcessingNotes(String deprovisionedUsersWithProcessingNotes) {
+        List<User> deprovisionedUsers = (List<User>) JSON.deserialize(deprovisionedUsersWithProcessingNotes, List<User>.class);
+        update deprovisionedUsers;
     }
 
 }

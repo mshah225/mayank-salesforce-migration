@@ -131,7 +131,7 @@
 
                         @media screen and (min-width: 600px) {
                             .mobile-toast {
-                                font-size: 3vh;
+                                font-size: 3vw;
                             }
 
                             .mobileQuestion { 

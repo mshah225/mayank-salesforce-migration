@@ -30,7 +30,7 @@
                 </tr>
             </table>
         </apex:outputPanel>
-        <apex:outputPanel class="chat-body-mobile" id="failedChatBody">
+        <apex:outputPanel styleClass="chat-body-mobile" id="failedChatBody">
             <h2 class="header-title-mobile">
                 &nbsp;Unable to Connect to an Agent
                 <br/>

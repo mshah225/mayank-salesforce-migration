@@ -156,11 +156,15 @@
             .header-title-mobile {
                 font-size: 5vh;
             }
+        
+            #saveChat {
+            	margin-top: 1vh !important;
+            }
         }
 
         @media screen and (max-width: 600px) {
             #saveChat {
-                margin-top: 3px !important;
+                margin-top: 1vh !important;
                 margin-left: 12px !important;
                 background-color: #dbdbdb !important;
                 color: #2a2a2a !important;

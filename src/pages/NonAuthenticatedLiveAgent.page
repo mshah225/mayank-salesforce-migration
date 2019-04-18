@@ -1,6 +1,6 @@
 <apex:page showHeader="false" controller="NonAuthenticatedLiveAgentController">
     <h1>
-        <apex:image url="{!$Resource.LiveAgentlogo}" />        
+        <apex:image styleClass="mobileLogo" url="{!$Resource.LiveAgentlogo}" />        
         <c:ASUWebStandards />
     </h1>
     <script type='text/javascript'>
@@ -20,14 +20,14 @@
         <form method='post' id='prechatForm' >
             <div style="padding: 10px;">
                 <label for="contactFirstName">First Name*: </label>
-                <br /><input type='textarea' name='liveagent.prechat:First_Name' class='searchBox' style="width:100% !important;" id="contactFirstName" required="true"/><br />
+                <br /><input type='textarea' name='liveagent.prechat:First_Name' class='mobileResponse placeHolderFont searchBox' style="width:100% !important;" id="contactFirstName" required="true"/><br />
                 <label for="contactLastName">Last Name*: </label>
-                <br /><input type='textarea' name='liveagent.prechat:Last_Name' class='searchBox' style="width:100% !important;" id="contactLastName" required="true"/><br />
+                <br /><input type='textarea' name='liveagent.prechat:Last_Name' class='mobileResponse placeHolderFont searchBox' style="width:100% !important;" id="contactLastName" required="true"/><br />
                 <label for="contactAsurite">ASU Id Number or ASURITE: </label>
-                <br /><input type='textarea' name='liveagent.prechat:ASU_ID' class='searchBox' style="width:100% !important;" id="contactAsuriteOrEmplid"/><br />
+                <br /><input type='textarea' name='liveagent.prechat:ASU_ID' class='mobileResponse placeHolderFont searchBox' style="width:100% !important;" id="contactAsuriteOrEmplid"/><br />
                 <label for="caseProblem">{!presurveyQuestion}*</label>
-                <br /><input type='textarea' class='searchBox' style="width:100% !important;" name='liveagent.prechat:Case_Problem' id='caseProblem' required="true" placeholder="Enter a brief description of your issue."/><br />
-                <p>*Designates a required field.</p>
+                <br /><input type='textarea' class='mobileResponse placeHolderFont searchBox' style="width:100% !important;" name='liveagent.prechat:Case_Problem' id='caseProblem' required="true" placeholder="Enter a brief description of your issue."/><br />
+                <p class="mobileReminder">*Designates a required field.</p>
                 <input type='hidden' name='liveagent.prechat:CaseDescription' id="caseDescription" value=""/><br />
                 <input type="hidden" name="liveagent.prechat:CaseStatus" value="New" />
                 <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}" />
@@ -91,8 +91,51 @@
                     document.getElementById("firstName").value + " " + document.getElementById("lastName").value;
             }
             </script>
+
             <style type="text/css">
                 p {font-weight: bolder }
+
+                @media screen and (min-width: 600px) {
+                    .mobile-toast {
+                        font-size: 3vw;
+                    }
+
+                    .mobileQuestion { 
+                        font-size: 4.5vh;
+                    }
+
+                    .mobileReminder {
+                        font-size: 2vh;
+                    }
+
+                    .mobileResponse {
+                        font-size: 4vh !important;
+                        border-width: 1px;
+                    }
+                
+                    .mobileLogo {
+                        width: 500px;
+                    }
+                
+                    label {
+                        font-size: 4vh !important;
+                    }
+
+                    .placeHolderFont::-webkit-input-placeholder {
+                        font-size: 2vh;
+                    }
+                }
+
+                @media screen and (max-width: 600px) {
+                    .mobileQuestion {
+                        font-size: x-large;
+                    }
+                
+                    .placeHolderFont::-webkit-input-placeholder {
+                        font-size: .75em;
+                    }
+                }
+
             </style>
         </form>
     </body>

@@ -173,6 +173,7 @@
                             <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
+                            <apex:inputCheckbox label="Graduate" value="{!graduateCareer}"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="4">
                             <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>

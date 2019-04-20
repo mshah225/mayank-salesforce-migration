@@ -12,6 +12,7 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String caseSubject {get; set;}
+    public Boolean graduateCareer {get; set;}
     public String studentGroup {get; set;}
     public String campusFilter {get; set;}
     public String majorFilter {get; set;}
@@ -395,6 +396,7 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
         filter += createFilterStringForCategory();
+        filter += createFilterStringForCareer();
         return filter;
     }
 
@@ -526,6 +528,20 @@ public class showMyCasesController extends ListViewController {
             String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
             createdQuery += ' Change_Date__c <= ' + persistenceSearchEndDate + ' AND ';
         }
+        return createdQuery;
+    }
+
+    private String createFilterStringForCareer() {
+        String createdQuery = ' ';
+        if (graduateCareer == null) {
+            graduateCareer = false;
+        }
+        if (graduateCareer) {
+            createdQuery += ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Graduate\')) AND ';
+        } else {
+            createdQuery += ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Undergraduate\')) AND ';
+        }
+
         return createdQuery;
     }
 

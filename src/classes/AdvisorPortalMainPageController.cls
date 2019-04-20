@@ -317,6 +317,7 @@ public class AdvisorPortalMainPageController {
                 }
                 myProactiveQuery = myProactiveQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
+                    'AND (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Undergraduate\')) ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
             }
             return myProactiveQuery;
@@ -342,6 +343,7 @@ public class AdvisorPortalMainPageController {
                 myWatchlistQuery = myWatchlistQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
                     'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
+                    'AND (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Undergraduate\')) ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
             }
             return myWatchlistQuery;

@@ -3,12 +3,12 @@
     <apex:repeat value="{!noticeList}" var="notice">
         <div style="padding: 2px;">
             <div class="slds-notify_container slds-is-relative">
-                <div class="slds-notify slds-notify_toast slds-theme_info" style="float: left; background-color: #8C1D40 !important; width: 75% !important; min-width:50px !important;" role="status">
+                <div class="slds-notify slds-notify_toast slds-theme_info mobileElement" style="float: left; background-color: #8C1D40 !important; width: 75% !important; min-width:50px !important;" role="status">
                     <span class="slds-assistive-text">info</span>
                     <div class="slds-notify__content">
-                        <apex:repeat value="{!notice}" var="noticeLine">
-                            <ul style="list-style-type:none">
-                                <li style="padding: 5px 0px;">{!noticeLine}</li>
+                        <apex:repeat value="{!notice}" var="n">
+                            <ul style="list-style-type:none;">
+                                <li style="padding: 5px 0px; margin-left: 0;">{!n}</li>
                             </ul>
                         </apex:repeat>
                     </div>
@@ -18,5 +18,10 @@
         <div style="clear:both"/>
     </apex:repeat>
     <style>
+        @media screen and (min-width: 600px) {
+            .mobileElement {
+            	font-size: 3vh;
+            }
+        }
     </style>
 </apex:component>

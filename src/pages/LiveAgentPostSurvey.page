@@ -2,20 +2,20 @@
     <c:ASUWebStandards />
     <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
     <h1>
-        <div style="background-color: black; width: 100%; height: 40px;">
-            <a class="btn btn-secondary" id="saveChat" onclick="getTranscript();">Save Chat</a>
+        <div class="black-header-mobile">
+            <a class="save-chat-mobile btn btn-secondary" id="saveChat" onclick="getTranscript();">Save Chat</a>
         </div>
     </h1>
-    <apex:image url="{!$Resource.LiveAgentlogo}"/>
+    <apex:image styleClass="mobileLogo" url="{!$Resource.LiveAgentlogo}"/>
 
     <br/>
     <body style="background-color:#F5F5F5; overflow-x: hidden;">
-        <apex:outputPanel id="successfulChatBody">
-            <h2 style="font-size:30px">
+        <apex:outputPanel styleClass="chat-body-mobile" id="successfulChatBody">
+            <h2 class="header-title-mobile">
                 &nbsp;Previous Conversation
                 <br/>
             </h2>
-            <div id="chatTranscript" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
+            <div id="chatTranscript" style="overflow: auto; padding: 5px 15px 5px 15px;">
                 <apex:outputText id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
             </div>
             <table class="nav" align="center">
@@ -30,12 +30,12 @@
                 </tr>
             </table>
         </apex:outputPanel>
-        <apex:outputPanel id="failedChatBody">
-            <h2 style="font-size:30px">
+        <apex:outputPanel styleClass="chat-body-mobile" id="failedChatBody">
+            <h2 class="header-title-mobile">
                 &nbsp;Unable to Connect to an Agent
                 <br/>
             </h2>
-            <div id="errorMessage" style="max-height:200px; overflow: auto; padding: 5px 15px 5px 15px;">
+            <div id="errorMessage" class="chatTranscript" style="overflow: auto; padding: 5px 15px 5px 15px;">
                 <apex:outputText value="{!agentOfflineMessage}"/>
             </div>
         </apex:outputPanel>
@@ -126,19 +126,70 @@
         }
     </script>
     <style>
-        #saveChat {
-            margin-top: 3px !important;
-            margin-left: 12px !important;
-        	background-color: #dbdbdb !important;
-        	color: #2a2a2a !important;
-        	font-size: 12px !important;
+        
+
+        @media screen and (min-width: 600px) {
+            .black-header-mobile {
+                background-color: black; 
+                width: 100%; 
+                height: 9vh;
+                margin-left: 1% important;
+            }
+
+            .save-chat-mobile { 
+                font-size: 3vh !important;
+                margin-left: 1% !important;
+            }
+
+            .chat-body-mobile {
+                font-size: 4vh;
+            }
+
+            #chatTranscript {
+                max-height: 400px !important;
+            }
+        
+            .mobileLogo {
+                width: 500px;
+            }
+        
+            .header-title-mobile {
+                font-size: 5vh;
+            }
+        
+            #saveChat {
+            	margin-top: 1vh !important;
+            }
         }
-        .bottomSurvey {
-            margin-top: 10px !important;
-            max-width: 3000px !important;
-            width: 300px !important;
-            height: 15% !important;
-            font-size: 4vw !important;
+
+        @media screen and (max-width: 600px) {
+            #saveChat {
+                margin-top: 1vh !important;
+                margin-left: 12px !important;
+                background-color: #dbdbdb !important;
+                color: #2a2a2a !important;
+                font-size: 12px !important;
+            }
+            .bottomSurvey {
+                margin-top: 10px !important;
+                max-width: 3000px !important;
+                width: 300px !important;
+                height: 15% !important;
+                font-size: 4vw !important;
+            }
+            .black-header-mobile {
+                background-color: black; 
+                width: 100%; 
+                height: 40px;
+            }
+            
+            #chatTranscript {
+                max-height: 200px !important;
+            }
+
+            .header-title-mobile {
+                font-size: 30px;
+            }
         }
     </style>
 </apex:page>

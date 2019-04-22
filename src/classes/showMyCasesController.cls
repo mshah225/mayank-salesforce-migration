@@ -12,7 +12,7 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String caseSubject {get; set;}
-    public Boolean graduateCareer {get; set;}
+    
     public String studentGroup {get; set;}
     public String campusFilter {get; set;}
     public String majorFilter {get; set;}
@@ -36,6 +36,17 @@ public class showMyCasesController extends ListViewController {
     public String caseReasonNotReturningOther {get; set;}
 
     public String categoryFilter {get; set;}
+
+    public Boolean graduateCareer {
+        get {
+            if (graduateCareer == null) {
+                return false;
+            } else {
+                return graduateCareer;
+            }
+        } 
+        set;
+    }
 
     public String caseStatusFilter {
         get {
@@ -533,9 +544,6 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterStringForCareer() {
         String createdQuery = ' ';
-        if (graduateCareer == null) {
-            graduateCareer = false;
-        }
         if (graduateCareer) {
             createdQuery += ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Graduate\')) AND ';
         } else {
@@ -551,7 +559,7 @@ public class showMyCasesController extends ListViewController {
 
                 caseMassUpdateStatusOptions = new List<SelectOption>();
                 caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
-                
+
                 if (graduateCareer) {
                     caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
                     caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));

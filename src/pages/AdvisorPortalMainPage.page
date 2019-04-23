@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" controller="AdvisorPortalMainPageController" standardStylesheets="false"
-           showHeader="false" sidebar="false" id="thePage" applyBodyTag = "false">
+           showHeader="false" sidebar="false" id="thePage">
     <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <apex:stylesheet value="{!URLFOR($Resource.advisorCaseListContainerResources, 'advisorCaseListContainer.css')}"/>
 

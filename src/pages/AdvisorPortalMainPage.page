@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" controller="AdvisorPortalMainPageController" standardStylesheets="false"
-           showHeader="false" sidebar="false" id="thePage">
+           showHeader="false" sidebar="false" id="thePage" applyBodyTag="false">
     <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <apex:stylesheet value="{!URLFOR($Resource.advisorCaseListContainerResources, 'advisorCaseListContainer.css')}"/>
 
@@ -28,18 +28,19 @@
             <apex:actionFunction name="toggleCareer" action="{!toggleGraduateCareer}" />
             <apex:actionFunction name="rerenderTopPanel" rerender="rerenderMe" />
             <apex:actionFunction action="{!parseOwnerIdString}" name="resetOwnerIdList" reRender="rerenderMe" status="ASUAjaxStatus">
-            <apex:param name="ownerIdList" assignTo="{!ownerIdString}" value="{!ownerId}"/>
+                <apex:param name="ownerIdList" assignTo="{!ownerIdString}" value="{!ownerId}"/>
             </apex:actionFunction>
-                   <script>
-                   function resetOwnerIdListFunction() {
-                       resetOwnerIdList();
-                   }
-                   setOwnerIdList();
-                   </script>
+            <script>
+            function resetOwnerIdListFunction() {
+                resetOwnerIdList();
+            }
+            setOwnerIdList();
+            </script>
         </apex:form>
-                    <div style="padding-left:15px !important">
-                        <button id="careerButton" onclick="toggleCareerButton();">{!careerType}</button>
-                     </div>
+        <div style="padding-left:15px !important">
+            <span><b>Displaying Career Type: </b></span>
+            <button id="careerButton" onclick="toggleCareerButton();">{!careerType}</button>
+        </div>
         <apex:outputPanel id="rerenderMe">
             <apex:tabPanel styleClass="buffer" id="tabPanel">
                 <apex:tab label="My Proactive Cases" switchType="client"
@@ -73,7 +74,7 @@
     <apex:includeScript value="/support/console/38.0/integration.js"/>
     <c:ASUAjaxStatus suppressStop="true" />
     <script>
-    	function rerenderSection() {
+        function rerenderSection() {
             rerenderTopPanel();
         }
         

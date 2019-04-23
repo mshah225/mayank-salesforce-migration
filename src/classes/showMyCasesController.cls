@@ -407,7 +407,6 @@ public class showMyCasesController extends ListViewController {
         filter += createFilterStringForOutlookScore();
         filter += createFilterStringForOutlookDate();
         filter += createFilterStringForCategory();
-        filter += createFilterStringForCareer();
         return filter;
     }
 
@@ -542,41 +541,27 @@ public class showMyCasesController extends ListViewController {
         return createdQuery;
     }
 
-    private String createFilterStringForCareer() {
-        String createdQuery = ' ';
-        if (graduateCareer) {
-            createdQuery += ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Graduate\')) AND ';
-        } else {
-            createdQuery += ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Undergraduate\')) AND ';
-        }
-
-        return createdQuery;
-    }
-
     public List<SelectOption> caseMassUpdateStatusOptions {
         get {
-            if (caseMassUpdateStatusOptions == null) {
 
-                caseMassUpdateStatusOptions = new List<SelectOption>();
-                caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
+            caseMassUpdateStatusOptions = new List<SelectOption>();
+            caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
 
-                if (graduateCareer) {
-                    caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Unresponsive', 'Closed: Customer Unresponsive', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
-                } else {
-                    caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
-                    caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
-                }
-                
-
+            if (graduateCareer) {
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Unresponsive', 'Closed: Customer Unresponsive', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
+            } else {
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
             }
+
             return caseMassUpdateStatusOptions;
 
         }

@@ -1,10 +1,12 @@
 <apex:page docType="html-5.0" controller="AdvisorPortalMainPageController" standardStylesheets="false"
-           showHeader="false" sidebar="false" id="thePage" >
+           showHeader="false" sidebar="false" id="thePage" applyBodyTag = "false">
     <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <apex:stylesheet value="{!URLFOR($Resource.advisorCaseListContainerResources, 'advisorCaseListContainer.css')}"/>
 
     <apex:pageMessages />
 
+    
+    
     <div style="text-align:center;padding:25px;">
         <c:DynamicFeedbackButton carName="Advisor Portal" />
     </div>
@@ -23,6 +25,8 @@
             <apex:actionFunction action="{!parseOwnerIdString}" name="setOwnerIdList" reRender="tabPanel, rerenderMe" status="ASUAjaxStatus">
             <apex:param name="ownerIdList" assignTo="{!ownerIdString}" value="{!mimicIdList}"/>
             </apex:actionFunction>
+            <apex:actionFunction name="toggleCareer" action="{!toggleGraduateCareer}" />
+            <apex:actionFunction name="rerenderTopPanel" rerender="rerenderMe" />
             <apex:actionFunction action="{!parseOwnerIdString}" name="resetOwnerIdList" reRender="rerenderMe" status="ASUAjaxStatus">
             <apex:param name="ownerIdList" assignTo="{!ownerIdString}" value="{!ownerId}"/>
             </apex:actionFunction>
@@ -33,14 +37,16 @@
                    setOwnerIdList();
                    </script>
         </apex:form>
-
+                    <div style="padding-left:15px !important">
+                        <button id="careerButton" onclick="toggleCareerButton();">{!careerType}</button>
+                     </div>
         <apex:outputPanel id="rerenderMe">
             <apex:tabPanel styleClass="buffer" id="tabPanel">
                 <apex:tab label="My Proactive Cases" switchType="client"
                           styleClass="wsTabContent" id="proactiveTab">
                     <c:showMyCases id="proactiveList" queryString="{!myProactiveQuery}" transferOptions="{!viewAsOptions}"
                                    proactiveRTID="{!AdvisorProactiveCaseRTID}" emailRTID="{!advisorEmailRTID}"
-                                   showSelection="true" showName="true" showEMPLID="true" showSubject="true"
+                                   showSelection="true" showName="true" showEMPLID="true" showSubject="true" careerStatus="{!graduateCareer}"
                                    showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="true" showMassUpdate="true"
                                    showProactive="true" showReactive="true" showSearch="true" showRefresh="true" showCivitas="true"/>
                 </apex:tab>
@@ -48,7 +54,7 @@
                           styleClass="wsTabContent" id="watchlistTab">
                     <c:showMyCases id="watchlistList" queryString="{!myWatchlistQuery}" transferOptions="{!viewAsOptions}"
                                    proactiveRTID="{!AdvisorProactiveCaseRTID}" emailRTID="{!advisorEmailRTID}"
-                                   showSelection="true" showName="true" showEMPLID="true" showSubject="true"
+                                   showSelection="true" showName="true" showEMPLID="true" showSubject="true" careerStatus="{!graduateCareer}"
                                    showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="true" showMassUpdate="true"
                                    showProactive="true" showReactive="true" showSearch="true" showRefresh="true" showCivitas="true"/>
                 </apex:tab>
@@ -66,4 +72,13 @@
     <apex:includeScript value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"/>
     <apex:includeScript value="/support/console/38.0/integration.js"/>
     <c:ASUAjaxStatus suppressStop="true" />
+    <script>
+    	function rerenderSection() {
+            rerenderTopPanel();
+        }
+        
+        function toggleCareerButton() {
+            toggleCareer();
+        }
+    </script>
 </apex:page>

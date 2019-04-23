@@ -11,7 +11,7 @@
 <apex:attribute name="rerenderList" type="String" description="" />
 <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}"/>
 <apex:attribute name="emailRTID" type="Id" description="" assignTo="{!portalEmailRTID}" />
-
+<apex:attribute name="careerStatus" type="boolean" description="" assignTo="{!graduateCareer}"/>
 <apex:attribute name="showSelection" type="boolean" description="" default="false" />
 <apex:attribute name="showName" type="boolean" description="" default="false" />
 <apex:attribute name="showEMPLID" type="boolean" description="" default="false" />
@@ -173,7 +173,6 @@
                             <apex:selectList label="Outlook Change" value="{!outlookChangeFilter}" size="1" required="false">
                                 <apex:selectOptions value="{!outlookChangeOptions}"/>
                             </apex:selectList>
-                            <apex:inputCheckbox label="Graduate" value="{!graduateCareer}"/>
                         </apex:pageBlockSection>
                         <apex:pageBlockSection columns="4">
                             <apex:input styleClass="createdByStartDate" label="Persistence Change Date From: " value="{!persistenceStartDate}" type="auto"/>

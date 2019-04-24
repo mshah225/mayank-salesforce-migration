@@ -548,15 +548,15 @@
                                         <apex:selectList id="closedCaseStatus" style="margin: 10px;" value="{!caseStatus}" multiselect="false" size="1">
                                             <apex:selectOptions value="{!caseMassUpdateStatusOptions}"/>
                                         </apex:selectList>
-                                        <p title ="{!$ObjectType.Case.fields.Reason_Administratively_Closed__c.inlineHelpText}" align="right" style="margin-top:10px;">
+                                        <p title ="{!$ObjectType.Case.fields.Reason_Administratively_Closed__c.inlineHelpText}" align="right" style="margin-top:10px;" rendered="NOT({!graduateCareer}">
                                             Reason Administratively Closed: &nbsp;<br/>
                                         </p>
-                                        <apex:inputText id="caseReasonClosed" title="{!$ObjectType.Case.fields.Reason_Administratively_Closed__c.inlineHelpText}" style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}">
+                                        <apex:inputText id="caseReasonClosed" title="{!$ObjectType.Case.fields.Reason_Administratively_Closed__c.inlineHelpText}" style="margin: 10px;" value="{!caseReasonAdministrativelyClosed}" rendered="NOT({!graduateCareer}">
                                         </apex:inputText>
-                                        <p align="right" style="margin-top:10px;">
+                                        <p align="right" style="margin-top:10px;" rendered="NOT({!graduateCareer}">
                                             Recommended Action(s): &nbsp;<br/>
                                         </p>
-                                        <apex:selectList id="reccomendedActionsSelect" style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4">
+                                        <apex:selectList id="reccomendedActionsSelect" style="margin: 10px;" value="{!caseRecommendedActions}" multiselect="true" size="4" rendered="NOT({!graduateCareer}">
                                             <apex:selectOptions value="{!caseRecommendedActionOptions}"/>
                                         </apex:selectList>
                                         <p align="right" style="margin-top:10px;">
@@ -578,26 +578,26 @@
                                         <apex:selectList id="studentReturnTerm" style="margin: 10px;" value="{!caseStudentReturnTerm}" multiselect="false" size="1">
                                             <apex:selectOptions value="{!caseStudentReturnTermOptions}"/>
                                         </apex:selectList>
-                                        <p align="right" style="margin-top:10px;">
+                                        <p align="right" style="margin-top:10px;" rendered="NOT({!graduateCareer}">
                                             Student Presented Risk for: &nbsp;<br/>
                                         </p>
-                                        <apex:selectList id="studentRisk" style="margin: 10px;" value="{!caseStudentRisk}" multiselect="false" size="1">
+                                        <apex:selectList id="studentRisk" style="margin: 10px;" value="{!caseStudentRisk}" multiselect="false" size="1" rendered="NOT({!graduateCareer}">
                                             <apex:selectOptions value="{!caseStudentRiskOptions}"/>
                                         </apex:selectList>
                                         <p align="right" style="margin-top:10px;">
                                             Student Presented Risk for Other: &nbsp;<br/>
                                         </p>
                                         <apex:inputText id="studentRiskOther" style="margin: 10px;" value="{!caseStudentRiskOther}"/>
-                                        <p align="right" style="margin-top:10px;">
+                                        <p align="right" style="margin-top:10px;" rendered="NOT({!graduateCareer}">
                                             Reason(s) Not Returning &nbsp;<br/>
                                         </p>
-                                        <apex:selectList id="reasonNotReturning" style="margin: 10px;" value="{!caseReasonNotReturning}" multiselect="true" size="4">
+                                        <apex:selectList id="reasonNotReturning" style="margin: 10px;" value="{!caseReasonNotReturning}" multiselect="true" size="4" rendered="NOT({!graduateCareer}">
                                             <apex:selectOptions value="{!caseReasonNotReturningOptions}"/>
                                         </apex:selectList>
                                         <p align="right" style="margin-top:10px;">
                                             Reason(s) Not Returning Other: &nbsp;<br/>
                                         </p>
-                                        <apex:inputText id="reasonNotReturningOther" style="margin: 10px;" value="{!caseReasonNotReturningOther}"/>
+                                        <apex:inputText id="reasonNotReturningOther" style="margin: 10px;" value="{!caseReasonNotReturningOther}" rendered="NOT({!graduateCareer}"/>
                                     </apex:pageBlockSection>
                                </apex:pageBlock>
                                </div>

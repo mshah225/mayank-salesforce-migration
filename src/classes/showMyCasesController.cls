@@ -48,6 +48,17 @@ public class showMyCasesController extends ListViewController {
         set;
     }
 
+    public String displayCareer {
+        get {
+            if (graduateCareer) {
+                return 'none';
+            } else {
+                return 'block';
+            }
+        } 
+        set;
+    }
+
     public String caseStatusFilter {
         get {
             if (caseStatusFilter == null) {

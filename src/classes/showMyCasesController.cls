@@ -593,8 +593,8 @@ public class showMyCasesController extends ListViewController {
             studentIntentionOptions.add(new SelectOption('', '--'));
             if (graduateCareer) {
                 studentIntentionOptions.add(new SelectOption('Leave of Absence', 'Leave of Absence'));
-                studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
-                studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
+                studentIntentionOptions.add(new SelectOption('Not returning temporarily, will reapply in future', 'Not returning temporarily, will reapply in future'));
+                studentIntentionOptions.add(new SelectOption('Other', 'Other'));
             } else {
                 studentIntentionOptions.add(new SelectOption('Not returning ever', 'Not returning ever'));
                 studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));

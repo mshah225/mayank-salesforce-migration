@@ -588,13 +588,19 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> studentIntentionOptions {
         get {
-            if (studentIntentionOptions == null) {
-                studentIntentionOptions = new List<SelectOption>();
-                studentIntentionOptions.add(new SelectOption('', '--'));
+            
+            studentIntentionOptions = new List<SelectOption>();
+            studentIntentionOptions.add(new SelectOption('', '--'));
+            if (graduateCareer) {
+                studentIntentionOptions.add(new SelectOption('Leave of Absence', 'Leave of Absence'));
+                studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
+                studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
+            } else {
                 studentIntentionOptions.add(new SelectOption('Not returning ever', 'Not returning ever'));
                 studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
                 studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
             }
+            
             return studentIntentionOptions;
         }
 

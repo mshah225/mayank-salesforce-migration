@@ -802,15 +802,15 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
-                                        &nbsp;Active / Completed Programs and Plans
+                                        &nbsp;Active Programs and Plans
                                     </h4>
                                 </div>
 
                                 <div class="table-responsive">
                                     <apex:dataTable styleClass="table table-striped table-bordered"
-                                                    value="{!gradProgramPlans}"
+                                                    value="{!activeGradProgramPlans}"
                                                     var="app"
-                                                    rendered="{!IF(gradProgramPlans.size > 0,true,false)}">
+                                                    rendered="{!IF(activeGradProgramPlans.size > 0,true,false)}">
                                         <apex:column headerValue="Status"
                                                      value="{!app.Status__c}"/>
                                         <apex:column headerValue="Program"
@@ -840,7 +840,50 @@
                                     </apex:dataTable>
                                 </div>
 
-                                <apex:outputText rendered="{!IF(gradProgramPlans.size > 0, false, true)}" value="No graduate programs/plans found."/>
+                                <apex:outputText rendered="{!IF(activeGradProgramPlans.size > 0, false, true)}" value="No graduate programs/plans found."/>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Completed Programs and Plans
+                                    </h4>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <apex:dataTable styleClass="table table-striped table-bordered"
+                                                    value="{!completedGradProgramPlans}"
+                                                    var="app"
+                                                    rendered="{!IF(completedGradProgramPlans.size > 0,true,false)}">
+                                        <apex:column headerValue="Status"
+                                                        value="{!app.Status__c}"/>
+                                        <apex:column headerValue="Program"
+                                                        value="{!app.Program_Description__c}"/>
+                                        <apex:column headerValue="Plan">
+                                            <apex:outputLink value="/{!app.Id}"
+                                                                target="_blank">
+                                                <apex:outputField value="{!app.Plan_Description__c}"/>
+                                            </apex:outputLink>
+                                        </apex:column>
+                                        <apex:column headerValue="Sub-Plan">
+                                                <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
+                                                                    value="{!subPlanString}"/>
+                                                <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
+                                                                    value="--"/>
+                                        </apex:column>
+                                        <apex:column headerValue="Plan Type"
+                                                        value="{!app.Plan_Type_Text__c}"/>
+                                        <apex:column headerValue="Degree"
+                                                        value="{!app.Degree__c}"/>
+                                        <apex:column headerValue="Campus"
+                                                        value="{!app.Campus__r.Name}"/>
+                                        <apex:column headerValue="Grad Term"
+                                                        value="{!app.Completion_Term__c}"/>
+                                        <apex:column headerValue="Primary"
+                                                        value="{!app.Primary_Flag__c}"/>
+                                    </apex:dataTable>
+                                </div>
+
+                                <apex:outputText rendered="{!IF(completedGradProgramPlans.size > 0, false, true)}" value="No graduate programs/plans found."/>
 
                                 <div class="page-header-smaller">
                                     <h4>

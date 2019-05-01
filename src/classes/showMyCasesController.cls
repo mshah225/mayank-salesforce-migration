@@ -12,6 +12,7 @@ public class showMyCasesController extends ListViewController {
     public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
     public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
     public String caseSubject {get; set;}
+    
     public String studentGroup {get; set;}
     public String campusFilter {get; set;}
     public String majorFilter {get; set;}
@@ -35,6 +36,28 @@ public class showMyCasesController extends ListViewController {
     public String caseReasonNotReturningOther {get; set;}
 
     public String categoryFilter {get; set;}
+
+    public Boolean graduateCareer {
+        get {
+            if (graduateCareer == null) {
+                return false;
+            } else {
+                return graduateCareer;
+            }
+        } 
+        set;
+    }
+
+    public String displayCareer {
+        get {
+            if (graduateCareer) {
+                return 'none';
+            } else {
+                return 'block';
+            }
+        } 
+        set;
+    }
 
     public String caseStatusFilter {
         get {
@@ -531,17 +554,25 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> caseMassUpdateStatusOptions {
         get {
-            if (caseMassUpdateStatusOptions == null) {
 
-                caseMassUpdateStatusOptions = new List<SelectOption>();
-                caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
+            caseMassUpdateStatusOptions = new List<SelectOption>();
+            caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
+
+            if (graduateCareer) {
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Unresponsive', 'Closed: Customer Unresponsive', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
+            } else {
                 caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
                 caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
-
             }
+
             return caseMassUpdateStatusOptions;
 
         }
@@ -568,13 +599,19 @@ public class showMyCasesController extends ListViewController {
 
     public List<SelectOption> studentIntentionOptions {
         get {
-            if (studentIntentionOptions == null) {
-                studentIntentionOptions = new List<SelectOption>();
-                studentIntentionOptions.add(new SelectOption('', '--'));
+            
+            studentIntentionOptions = new List<SelectOption>();
+            studentIntentionOptions.add(new SelectOption('', '--'));
+            if (graduateCareer) {
+                studentIntentionOptions.add(new SelectOption('Leave of Absence', 'Leave of Absence'));
+                studentIntentionOptions.add(new SelectOption('Not returning temporarily, will reapply in future', 'Not returning temporarily, will reapply in future'));
+                studentIntentionOptions.add(new SelectOption('Other', 'Other'));
+            } else {
                 studentIntentionOptions.add(new SelectOption('Not returning ever', 'Not returning ever'));
                 studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
                 studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
             }
+            
             return studentIntentionOptions;
         }
 

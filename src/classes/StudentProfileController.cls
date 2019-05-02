@@ -217,7 +217,7 @@ global with sharing class StudentProfileController {
             } else {
                 if (programPlan.Status__c == 'Active in Program') {
                     activeGradProgramPlans.add(programPlan);
-                } else if (programPlan.Status__c == 'Completed Program') {
+                } else {
                     completedGradProgramPlans.add(programPlan);
                 }
             }

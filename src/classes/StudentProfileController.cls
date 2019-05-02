@@ -10,7 +10,8 @@ global with sharing class StudentProfileController {
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
-    public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
+    public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
+    public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
     public List<Service_Indicator__c> serviceIndicators { get; set; }
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
@@ -38,7 +39,7 @@ global with sharing class StudentProfileController {
     }
 
     public Student_Program_Plan__c gradStudentProgram { get {
-            return gradProgramPlans.isEmpty() ? new Student_Program_Plan__c() : gradProgramPlans[0];
+            return activeGradProgramPlans.isEmpty() ? new Student_Program_Plan__c() : activeGradProgramPlans[0];
         }
         set;
     }
@@ -52,7 +53,8 @@ global with sharing class StudentProfileController {
         }
         subPlanString = '';
         ugProgramPlans = new List<Student_Program_Plan__c>();
-        gradProgramPlans = new List<Student_Program_Plan__c>();
+        activeGradProgramPlans = new List<Student_Program_Plan__c>();
+        completedGradProgramPlans = new List<Student_Program_Plan__c>();
     }
 
     public void init() {
@@ -213,7 +215,11 @@ global with sharing class StudentProfileController {
             if (programPlan.Career__c == null || programPlan.Career__c == 'Undergraduate') {
                 ugProgramPlans.add(programPlan);
             } else {
-                gradProgramPlans.add(programPlan);
+                if (programPlan.Status__c == 'Active in Program') {
+                    activeGradProgramPlans.add(programPlan);
+                } else {
+                    completedGradProgramPlans.add(programPlan);
+                }
             }
 
             if (programPlan.Primary_Flag__c) {

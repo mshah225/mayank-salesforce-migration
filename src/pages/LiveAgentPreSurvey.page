@@ -90,7 +90,6 @@
                         var descriptionAdded = false;
 
                         document.getElementById('chatIdField').value = '{!uniqueKey}';
-                        console.log(document.getElementById('chatIdField').value);
                         
                         (function() {
                             function handlePageLoad() {

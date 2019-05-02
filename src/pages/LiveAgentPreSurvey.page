@@ -39,6 +39,7 @@
                         <p class="mobileReminder">*Designates a required field.</p>
                         <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}"/>
                         <input id="caseDescription" type="hidden" name="liveagent.prechat:CaseDescription"/>
+                        <input type='hidden' name='liveagent.prechat:caseChatID' id='chatIdField'/>
                         <input type="hidden" name="liveagent.prechat:CaseStatus" value="New"/>
                         <input type="hidden" name="liveagent.prechat:CaseOrigin" value="Chat"/>
                         <input type="hidden" name="liveagent.prechat:CaseRecordType" value="{!caseRecordType}"/>
@@ -87,6 +88,9 @@
                         var chatButtonId = '{!buttonConfig.Chat_Button_Id__c}';
                         var chatEndpoint = '{!buttonConfig.Chat_Endpoint__c}';
                         var descriptionAdded = false;
+
+                        document.getElementById('chatIdField').value = '{!uniqueKey}';
+                        console.log(document.getElementById('chatIdField').value);
                         
                         (function() {
                             function handlePageLoad() {

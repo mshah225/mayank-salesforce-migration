@@ -4,6 +4,7 @@ public class UnifiedProspectPageController
     private Id eventRecId;
     private Id eossRecId;
 
+    public CaseClassificationPicklistService ccPicklist {get; set;}
     public Boolean smsText { get; set; }
     public Boolean error { get; set; }
     public Contact contact;
@@ -36,6 +37,7 @@ public class UnifiedProspectPageController
     public String deptColl { get; set; }
 
     public UnifiedProspectPageController() {
+        ccPicklist = new CaseClassificationPicklistService();
         eventRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Event').getRecordTypeId();
         eossRecId =  Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('EOSS Event').getRecordTypeId();
         eventList = new List<Campaign>();
@@ -343,11 +345,12 @@ public class UnifiedProspectPageController
 
     public Boolean save() {
         getCaseC();
+        ccPicklist.addCaseClassificationToCase(caseC);
         List<CampaignMember> cams = new List<CampaignMember>();
         Savepoint spException = Database.setSavepoint();
         try {
             error = false;
-
+            
             if (contact.Phone == null && contact.MailingPostalCode == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(

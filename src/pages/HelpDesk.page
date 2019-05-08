@@ -484,37 +484,39 @@
                                         <apex:inputField value="{!mycase.Affiliation__c}"/>
   
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />
-</apex:pageBlockSection>
-                                    <apex:pageBlockSection columns="2"
-                                                           collapsible="false"
-                                                           id="wrapper">
-                                        <apex:pageBlockSectionItem >
-                                            <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
-                                            <apex:actionRegion >
-                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper, descriptionBox"/>
-                                                    <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
-                                        <apex:pageBlockSectionItem/>
-                                        <apex:pageBlockSectionItem >
-                                            <apex:outputLabel value="Case Category" for="categoryOptions" />
-                                            <apex:actionRegion >
-                                                <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="wrapper, descriptionBox"/>
-                                                    <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
-                                        <apex:pageBlockSectionItem >
-                                            <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
-                                            <apex:actionRegion >
-                                                <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
-                                                    <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                                        <apex:pageBlockSection columns="2" collapsible="false" id="wrapper">
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
+                                                <apex:actionRegion>
+                                                    <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
+                                                        size="1">
+                                                        <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:wrapper:categorySectionItem:categoryOptions, mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions"
+                                                        />
+                                                        <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}" />
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
+                                            <apex:pageBlockSectionItem />
+                                            <apex:pageBlockSectionItem id="categorySectionItem">
+                                                <apex:outputLabel value="Case Category" for="categoryOptions" />
+                                                <apex:actionRegion>
+                                                    <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
+                                                        <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions, mypage:myform:case:wrapper:descriptionField"
+                                                        />
+                                                        <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
+                                        
+                                            <apex:pageBlockSectionItem id="subCategorySectionItem">
+                                                <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
+                                                <apex:actionRegion>
+                                                    <apex:selectList id="subCategoryOptions" label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                                                        <apex:selectOptions value="{!ccPicklist.subCategoryOptions}" />
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
                                         <apex:pageBlockSectionItem />
 
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />

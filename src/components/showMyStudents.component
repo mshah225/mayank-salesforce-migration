@@ -1,9 +1,9 @@
 <apex:component controller="showMyStudentsController" allowDML="true">
-    <apex:includeScript value="/support/console/38.0/integration.js"/>
+    <apex:includeScript value="/support/console/42.0/integration.js"/>
     <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
-    <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudents.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudentsResources/showMyStudents.js')}"/>
     <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
-    <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }"/>
+    <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudentsResources/showMyStudents.css') }"/>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
 
     <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <apex:outputPanel id="pageSizeSection" layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
-                    <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
+                    <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                       style="float:left;" styleClass="standardLink" reRender="rerenderMe"
                                       status="ASUAjaxStatus" />
                     <apex:outputText value="Page Size " />
@@ -113,7 +113,7 @@
                     <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
                     <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
                     <apex:outputText value="{!setCon.ResultSize} Records" />
-                    <apex:commandLink action="{!setCon.next}" value="Next >>" rendered="{!setCon.HasNext}"
+                    <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
                                       style="float:right;" styleClass="standardLink" reRender="rerenderMe"
                                       status="ASUAjaxStatus" />
                 </apex:outputPanel>
@@ -307,7 +307,7 @@
         </apex:form>
         <apex:form >
             <div class="headerFooter">
-                <apex:commandLink action="{!setCon.previous}" value="<< Prev" rendered="{!setCon.HasPrevious}"
+                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}"
                                   style="float:left;" styleClass="standardLink" reRender="rerenderMe"
                                   status="ASUAjaxStatus" />
                 <apex:outputText value="Page Size " />
@@ -321,7 +321,7 @@
                 <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
                 <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
                 <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink action="{!setCon.next}" value="Next >>" rendered="{!setCon.HasNext}"
+                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}"
                                   style="float:right;" styleClass="standardLink" reRender="rerenderMe"
                                   status="ASUAjaxStatus" />
             </div>

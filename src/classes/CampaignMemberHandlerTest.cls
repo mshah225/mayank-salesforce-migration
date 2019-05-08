@@ -1269,12 +1269,10 @@ public class CampaignMemberHandlerTest {
     
     @isTest
     private static void mostRecentOppportunityAssigned() {
-        insert createContacts(2);
+        insert createContacts(6);
         List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
 
         List<Opportunity> testOpportunities = new List<Opportunity>();
-        testOpportunities.addAll(createOpportunities(testContacts));
-        testOpportunities.addAll(createOpportunities(testContacts));
         testOpportunities.addAll(createOpportunities(testContacts));
         insert testOpportunities;
         
@@ -1297,18 +1295,16 @@ public class CampaignMemberHandlerTest {
             FROM CampaignMember
         ];
         
-        System.assertEquals(testOpportunities[testOpportunities.size() - 2].Id, postTestMembers[0].Opportunity__c);
-        System.assertEquals(testOpportunities[testOpportunities.size() - 1].Id, postTestMembers[1].Opportunity__c);
+        System.assertEquals(testOpportunities[0].Id, postTestMembers[0].Opportunity__c);
+        System.assertEquals(testOpportunities[1].Id, postTestMembers[1].Opportunity__c);
     }
     
     @isTest
     private static void closedOpportunitiesAreNotAssigned() {
-        insert createContacts(2);
+        insert createContacts(6);
         List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
 
         List<Opportunity> testOpportunities = new List<Opportunity>();
-        testOpportunities.addAll(createOpportunities(testContacts));
-        testOpportunities.addAll(createOpportunities(testContacts));
         testOpportunities.addAll(createOpportunities(testContacts));
         insert testOpportunities;
         
@@ -1344,18 +1340,16 @@ public class CampaignMemberHandlerTest {
         System.assert(closedOpps.get(testOpportunities[testOpportunities.size() - 1].Id).IsClosed);
         System.assertNotEquals(testOpportunities[testOpportunities.size() - 2].Id, postTestMembers[0].Opportunity__c);
         System.assertNotEquals(testOpportunities[testOpportunities.size() - 1].Id, postTestMembers[1].Opportunity__c);
-        System.assertEquals(testOpportunities[testOpportunities.size() - 4].Id, postTestMembers[0].Opportunity__c);
-        System.assertEquals(testOpportunities[testOpportunities.size() - 3].Id, postTestMembers[1].Opportunity__c);
+        System.assertEquals(testOpportunities[0].Id, postTestMembers[0].Opportunity__c);
+        System.assertEquals(testOpportunities[1].Id, postTestMembers[1].Opportunity__c);
     }
     
     @isTest
     private static void noOpportunityAssignedIfAllClosed() {
-        insert createContacts(2);
+        insert createContacts(20);
         List<Contact> testContacts = [SELECT LastName, AccountId FROM Contact];
 
         List<Opportunity> testOpportunities = new List<Opportunity>();
-        testOpportunities.addAll(createOpportunities(testContacts));
-        testOpportunities.addAll(createOpportunities(testContacts));
         testOpportunities.addAll(createOpportunities(testContacts));
         insert testOpportunities;
         

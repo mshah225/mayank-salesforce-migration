@@ -97,17 +97,17 @@
         </style>
 
         <script>
-            var $ = jQuery.noConflict();
+            var $j = jQuery.noConflict();
             function validateReply() {
                 var filePresent = false;
                 var replyPresent = false;
-                $('input[id$=replyFile]').each( function() {
-                    if ($(this).val().length > 0)
+                $j('input[id$=replyFile]').each( function() {
+                    if ($j(this).val().length > 0)
                         filePresent = true;
                 });
 
-                $('textarea[id$=replyText]').each( function() {
-                    if ($(this).val().trim().length > 0)
+                $j('textarea[id$=replyText]').each( function() {
+                    if ($j(this).val().trim().length > 0)
                         replyPresent = true;
                 });
 
@@ -129,7 +129,7 @@
             function validateFile() {
                 var errorPresent = false;
                 document.getElementById('errorDiv').innerHTML = '';
-                $('input[type=file]').each(function() {
+                $j('input[type=file]').each(function() {
                     fileName = this.files[0].name;
                     fileSize = this.files[0].size/1000000;
                     var validFileTypes = ['.doc','.docx','.xls','.xlsx','.jpg', '.jpeg', '.gif', '.png', '.pdf', '.txt'];
@@ -174,7 +174,7 @@
                            viewingAs="{!viewingAs}"/>
 
         <script>
-            $(document).ready(function()
+            $j(document).ready(function()
             {
                 var showChar = 250;
                 var ellipsestext = "...";
@@ -182,9 +182,9 @@
                 var lesstext = 'Show Less <span class="dropup"><span class="caret"' +
                     'style="margin-bottom:2px;"></span></span>';
 
-                $("[id$=emailMore]").each(function()
+                $j("[id$=emailMore]").each(function()
                 {
-                    var content = $(this).clone().html();
+                    var content = $j(this).clone().html();
                     if (content.indexOf("Inline image") > 0)
                     {
                         content = content.replace(/\[[^\]]+\]/,'');
@@ -199,25 +199,25 @@
                             '&nbsp;</span><span class="morecontent"><span>' + h +
                             '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' +
                             moretext + '</a>';
-                        $(this).html(html);
+                        $j(this).html(html);
                     }
                 });
 
-                $(".emailToggle").click(function()
+                $j(".emailToggle").click(function()
                 {
-                    if ($(this).hasClass("less"))
+                    if ($j(this).hasClass("less"))
                     {
-                        $(this).removeClass("less");
-                        $(this).html(moretext);
-                        $(this).prevAll(".moreellipses:first").toggle();
+                        $j(this).removeClass("less");
+                        $j(this).html(moretext);
+                        $j(this).prevAll(".moreellipses:first").toggle();
                     }
                     else
                     {
-                        $(this).addClass("less");
-                        $(this).html(lesstext);
-                        $(this).prevAll(".moreellipses:first").toggle();
+                        $j(this).addClass("less");
+                        $j(this).html(lesstext);
+                        $j(this).prevAll(".moreellipses:first").toggle();
                     }
-                    $(this).prev().toggle();
+                    $j(this).prev().toggle();
                     return false;
                 });
             });
@@ -430,21 +430,19 @@
                             </div>
                             
                             <div class="content">
-                                <apex:repeat value="{!chatMessages}" var="cm">
+                                <apex:repeat value="{!chatMessages}" var="message">
                                     <div class="panel panel-default">
                                         <div class="panel-body">
                                             <div class="chatUserInfo">
-                                                <apex:outputText id="chatUserInfo" value="{!cm.bomgar__PerformedByValue__c}"/>
+                                                <apex:outputText id="chatUserInfo" value="{!message.performedBy}"/>
                                             </div>
-                                            <apex:outputText value="{!cm.bomgar__Text__c}"/>
+                                            <apex:outputText value="{!message.text}" escape="false"/>
                                         </div>
                                     </div>
                                 </apex:repeat>
                             </div>
                         </div>
                     </apex:outputPanel>
-
-                    
                 </div><!-- end col-md-8 -->
                 <div class="col-md-5">
                     <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}"
@@ -494,7 +492,7 @@
             var masqCookie = "{!masqScopeIdCookie}";
             var viewingAs = "{!viewingAs}";
             if (masqCookie != "" && viewingAs == "true") {
-                $("a").each(function() {
+                $j("a").each(function() {
                     var href = this.href;
                     if (href.indexOf("force") > -1)
                     {
@@ -504,7 +502,7 @@
                         else {
                             href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
                         }
-                        $(this).attr("href", href);
+                        $j(this).attr("href", href);
                     }
                 });
             }

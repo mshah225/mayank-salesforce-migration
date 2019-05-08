@@ -29,6 +29,9 @@ private class Test_ServiceCenter {
         List<Contact> testContactList = contactFactoy.create(4);
         testContactList[3].Affiliation_Alumni__c = 'Current';
         insert testContactList;
+        
+        Email_To_Case_Configuration__c defaultEmail = new Email_To_Case_Configuration__c(Name = 'Default Org Wide Email Address', Value__c = 'noEmail@test.com');
+        insert defaultEmail;
 
         UserFactory.DefaultUser userFactory = new UserFactory.DefaultUser();
         List<User> testUserList = userFactory.create(4);
@@ -177,6 +180,14 @@ private class Test_ServiceCenter {
             WHERE Contact__c = :testUser.ContactId
         ];
         
+    }
+    
+    private static void insertLiveAgentMessages(Integer num) {
+        List<Chat_Message__c> chatMessages = new List<Chat_Message__c>();
+        for (Integer i = 0; i < num; i++) {
+            chatMessages.add(new Chat_Message__c(Body__c = 'Test Body Message', Case__c = caseOnTestUser.Id));
+        }
+        insert chatMessages;
     }
 
     @isTest 
@@ -588,15 +599,38 @@ private class Test_ServiceCenter {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
         
-        List<bomgar__Event__c> fetchedBomgarEvent;
+        List<ChatMessage> fetchedChatMessages;
         Test.startTest();
         System.runAs(testUser) {
             vcc = new viewCaseController();
-            fetchedBomgarEvent = vcc.getChatMessages();
+            fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
         List<bomgar__Event__c> bomgarForAssert = [SELECT Id, bomgar__BomgarSession__r.bomgar__relatedcase__c from bomgar__Event__c LIMIT 1];
         System.assertEquals(bomgarForAssert[0].bomgar__BomgarSession__r.bomgar__relatedcase__c, caseOnTestUser.Id);
+    }
+    
+    @isTest
+    private static void correctNumberOfChatMessages() {
+        loadTestDataWithUserByLastName('User0');
+        insertLiveAgentMessages(1);
+        setCurrentPageAsViewCase();
+        
+        List<ChatMessage> fetchedChatMessages;
+        Test.startTest();
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            fetchedChatMessages = vcc.getChatMessages();
+        }
+        Test.stopTest();
+        List<bomgar__Event__c> bomgarForAssert = [SELECT bomgar__DestinationValue__c, bomgar__EventDateTime__c, bomgar__EventType__c, bomgar__PerformedByType__c,
+                bomgar__PerformedByValue__c, bomgar__Text__c, Id, Name, OwnerId
+            FROM bomgar__Event__c
+            WHERE bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+            AND(bomgar__PerformedByType__c = 'representative' OR bomgar__PerformedByType__c = 'customer')
+            AND bomgar__DestinationValue__c = 'everyone' order by bomgar__EventDateTime__c asc];
+        List<Chat_Message__c> chatMessages = [SELECT Body__c FROM Chat_Message__c];
+        System.assertEquals(bomgarForAssert.size() + chatMessages.size(), fetchedChatMessages.size());
     }
     
     @isTest
@@ -651,7 +685,16 @@ private class Test_ServiceCenter {
             vcc.submitReply();  
             Test.stopTest();
         }
-        System.assertEquals(vcc.caseReply, 'Test Message');
+        
+        System.assert(String.isEmpty(vcc.caseReply)); 
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean successMessageFound = false;
+        for(Apexpages.Message msg : msgs){
+            if (msg.getDetail().contains('Response to the case was submitted successfully')) {
+                successMessageFound = true;
+            }
+        }
+        System.assert(successMessageFound);
     }
     
     @isTest 
@@ -670,6 +713,46 @@ private class Test_ServiceCenter {
             vcc.submitReply();  
             Test.stopTest();
         }
-        System.assertEquals(vcc.caseReply, 'Test Message');
+        
+        System.assert(String.isEmpty(vcc.caseReply)); 
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean failureMessageFound = false;
+        for(Apexpages.Message msg : msgs){
+            if (msg.getDetail().contains('Could not add response to case. Please try again or contact system admin')) {
+                failureMessageFound = true;
+            }
+        }
+        System.assert(failureMessageFound);
     }
+    
+    @isTest 
+    private static void testCorrectReplyToEmail() {
+        loadTestDataWithUserByLastName('User0');
+        caseOnTestUser.Intended_Recipient__c = 'testEmail@test.com';
+        update caseOnTestUser;
+        setCurrentPageAsViewCase();
+        String jsonEmail;
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            Test.startTest();
+            jsonEmail = vcc.createJsonEmail();
+            Test.stopTest();
+        }
+        System.assert(jsonEmail.contains('testEmail@test.com')); 
+    }
+    
+    @isTest 
+    private static void testNoIntendedReplyToEmail() {
+        loadTestDataWithUserByLastName('User0');
+        setCurrentPageAsViewCase();
+        String jsonEmail;
+        System.runAs(testUser) {
+            vcc = new viewCaseController();
+            Test.startTest();
+            jsonEmail = vcc.createJsonEmail();
+            Test.stopTest();
+        }
+        System.assert(jsonEmail.contains('noEmail@test.com')); 
+    }
+    
 }

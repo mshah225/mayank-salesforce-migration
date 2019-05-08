@@ -56,6 +56,61 @@ public class Test_UserHandler
         System.assert(testUser.ProfileId == communityCapProfile.Id);
     }
 
+    @isTest
+    private static void bulkInsertCAPUsers() {
+        Account acc = new Account(Name='Test Account Name');
+        insert acc;
+
+        List<Contact> testContacts = new List<Contact>();
+        Contact testContact = ContactService.createTestContact();
+        testContact.FirstName = 'Test';
+        testContact.LastName = 'User';
+        testContact.ASURite_ID__c = 'testuser1';
+        testContact.CAP_Possible__c = TRUE;
+        testContact.AccountId = acc.Id;
+        testContacts.add(testContact);
+
+        testContact = ContactService.createTestContact();
+        testContact.FirstName = 'Test';
+        testContact.LastName = 'User';
+        testContact.ASURite_ID__c = 'testuser2';
+        testContact.CAP_Possible__c = TRUE;
+        testContact.ACcountId = acc.Id;
+        testContacts.add(testContact);
+
+        insert testContacts;
+
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> testUsers = (List<User>)userCreator.create(2);
+        testUsers[0].Username += 'community';
+        testUsers[1].Username += 'community';
+        testUsers[0].CommunityNickname += 'community';
+        testUsers[1].CommunityNickname += 'community';
+        Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+        testUsers[0].ProfileId = communityProfile;
+        testUsers[1].ProfileId = communityProfile;
+
+        testUsers[0].isActive = true;
+        testUsers[1].isActive = true;
+        testUsers[0].FederationIdentifier = 'testuser1@asu.edu';
+        testUsers[1].FederationIdentifier = 'testuser2@asu.edu';
+
+        Test.startTest();
+        insert testUsers;
+        Test.stopTest();
+
+        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        Set<Id> testUserIds = new Set<Id>();
+        testUserIds.add(testUsers[0].Id);
+        testUserIds.add(testUsers[1].Id);
+        testUsers = [SELECT ProfileId FROM User WHERE Id IN :testUserIds];
+
+        System.assertEquals(2, testUsers.size());
+        System.assert(testUsers[0].ProfileId == communityCapProfile.Id);
+        System.assert(testUsers[1].ProfileId == communityCapProfile.Id);
+
+    }
+
     @isTest static void insertNonCAPUser()
     {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();

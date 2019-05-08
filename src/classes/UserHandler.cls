@@ -12,22 +12,18 @@ public without sharing class UserHandler implements ITrigger {
             Map<String, Contact> asuritesToContact = new Map<String, Contact>();
             Map<String, User> asuritesToUser = new Map<String, User>();
 
-			for(Integer x = 0; x < newUsers.size(); x++)
-			{
-				User newUser = newUsers.get(0);
+            for (User newUser : newUsers) {
+                if (newUser.UserPermissionsKnowledgeUser)
+                {
+                    newUser.Role_Knowledge__c = true;
+                }
 
-				if (newUser.UserPermissionsKnowledgeUser)
-				{
-					newUser.Role_Knowledge__c = true;
-				}
-
-				if(newUser.FederationIdentifier != null && newUser.ProfileId == communityProfile)
-				{
+                if(newUser.FederationIdentifier != null && newUser.ProfileId == communityProfile) {
                     asurites.add(newUser.FederationIdentifier.split('@').get(0));
-					asuritesToUser.put(newUser.FederationIdentifier.split('@').get(0), newUser);
+                    asuritesToUser.put(newUser.FederationIdentifier.split('@').get(0), newUser);
                     System.debug(newUser.FederationIdentifier.split('@').get(0));
-				}
-			}
+                }
+            }
 
             if(asurites.size() > 0)
 			{
@@ -204,8 +200,10 @@ public without sharing class UserHandler implements ITrigger {
     public static Set<Id> collabUserIdsToDupeCheck(String groupName) {
         // Loop through and add the collab member Ids to a set to check against.
         Set <Id> dupeMemberIdSet = new Set<Id>();
-        for (CollaborationGroupMember cgm : dupeMemberCheckMap.get(groupName)) {
-            dupeMemberIdSet.add(cgm.MemberId);
+	if (dupeMemberCheckMap.get(groupName) != null) {
+            for (CollaborationGroupMember cgm : dupeMemberCheckMap.get(groupName)) {
+                dupeMemberIdSet.add(cgm.MemberId);
+            }
         }
         return dupeMemberIdSet;
     }

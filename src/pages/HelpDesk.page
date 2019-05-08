@@ -76,7 +76,7 @@
         }
 
         select {
-            width: 100%;
+            width: 80%;
         }
 
         .pbTitle {
@@ -515,13 +515,13 @@
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
-                                    </apex:pageBlockSection>
-                                    <apex:pageBlockSection columns="2"
-                                                           collapsible="false">
+                                        <apex:pageBlockSectionItem />
+
+                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
+
                                         <apex:inputField value="{!mycase.Status}">
                                             <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
                                         </apex:inputField>
-                                        
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel for="originSelect"
                                                               value="Origin"/>
@@ -531,6 +531,13 @@
                                                 <apex:selectOptions value="{!originOptions}"/>
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
+                                            <apex:outputLabel value="Forward To Unit" for="forwardToUnit"/>
+                                            <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width:100%;">
+                                                <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
+                                            </apex:inputField>
+                                        </apex:pageBlockSectionItem>
+
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward To Unit" for="forwardToUnit"/>
                                             <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width:100%;">
@@ -552,8 +559,11 @@
                                             <apex:outputLabel value="Service Now Ticket Number" for="serviceNowTicketNumber"/>
                                             <apex:inputField id="serviceNowTicketNumber" value="{!mycase.ServiceNow_Ticket_Number__c}"/>
                                         </apex:pageBlockSectionItem>
-                                        
+
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"/>
+
+                                        <apex:inputField value="{!mycase.Description}"
+                                                         style="width:90%;height:120px;"/>
 
                                         <apex:inputField id="descriptionBox" value="{!myCase.Description}"
                                                          style="width:95%;height:90px;"> 

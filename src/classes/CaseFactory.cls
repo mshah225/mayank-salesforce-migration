@@ -1,5 +1,19 @@
 @isTest
-public class CaseFactory {
+public class CaseFactory extends TestFactory {
+    public static final Case DEFAULT_CASE = new Case(
+        Subject = 'Test Subject',
+        Description = 'Test Description'
+    );
+    
+    public CaseFactory(Case templateCase) {
+        super(templateCase);
+        this.addToFieldsToIncrement('Subject');
+        this.addToFieldsToIncrement('Description');
+    }
+    
+    public Case createOne() {
+        return (Case) this.create()[0];
+    }
 
     public class DefaultCase extends TestFactory {
         public DefaultCase() {

@@ -726,7 +726,9 @@ public class showMyCasesController extends ListViewController {
             }
 
             for (Case_Classification__c categoryOption : caseCategorySet) {
+                if (categoryOption != null) {
                     caseCategoryOptions.add(new SelectOption(categoryOption.Id, categoryOption.Name));
+                }
             }
             caseCategoryOptions.sort();
             return caseCategoryOptions;

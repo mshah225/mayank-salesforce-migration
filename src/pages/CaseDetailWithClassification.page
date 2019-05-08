@@ -71,7 +71,11 @@
     }
 
     function reloadPage() {
-        window.top.location.href = '/{!caseRecordId}';    
-    }
+        if (sforce.console.isInConsole()) {
+           window.top.location.href = '/console';  
+        } else {
+            window.top.location.href = '/{!caseRecordId}'; 
+        }    
+    } 
     </script>
 </apex:page>

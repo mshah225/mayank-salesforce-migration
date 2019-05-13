@@ -821,7 +821,7 @@
                                     </h4>
                                 </div>
 
-                                <div class="activeGradTable">
+                                <div class="activeGradTable" rendered="{!IF(completedGradProgramPlans.size > 0, true, false)}">
                                     <table class="gradTable">
                                         <tr>
                                             <th class="gradTH">Program</th>
@@ -1104,7 +1104,7 @@
                                     </table>
                                 </div>
 
-                                <apex:outputText rendered="{!IF(activeGradProgramPlans.size > 0, false, true)}" value="No graduate programs/plans found."/>
+                                <apex:outputText rendered="{!IF(activeGradProgramPlans.size > 0, false, true)}" value="No active graduate programs/plans found."/>
 
                                 <div class="page-header-smaller">
                                     <h4>
@@ -1113,41 +1113,290 @@
                                     </h4>
                                 </div>
 
-                                <div class="table-responsive">
-                                    <apex:dataTable styleClass="table table-striped table-bordered"
-                                                    value="{!completedGradProgramPlans}"
-                                                    var="app"
-                                                    rendered="{!IF(completedGradProgramPlans.size > 0,true,false)}">
-                                        <apex:column headerValue="Status"
-                                                        value="{!app.Status__c}"/>
-                                        <apex:column headerValue="Program"
-                                                        value="{!app.Program_Description__c}"/>
-                                        <apex:column headerValue="Plan">
-                                            <apex:outputLink value="/{!app.Id}"
-                                                                target="_blank">
-                                                <apex:outputField value="{!app.Plan_Description__c}"/>
-                                            </apex:outputLink>
-                                        </apex:column>
-                                        <apex:column headerValue="Sub-Plan">
-                                                <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
-                                                                    value="{!subPlanString}"/>
-                                                <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
-                                                                    value="--"/>
-                                        </apex:column>
-                                        <apex:column headerValue="Plan Type"
-                                                        value="{!app.Plan_Type_Text__c}"/>
-                                        <apex:column headerValue="Degree"
-                                                        value="{!app.Degree__c}"/>
-                                        <apex:column headerValue="Campus"
-                                                        value="{!app.Campus__r.Name}"/>
-                                        <apex:column headerValue="Grad Term"
-                                                        value="{!app.Completion_Term__c}"/>
-                                        <apex:column headerValue="Primary"
-                                                        value="{!app.Primary_Flag__c}"/>
-                                    </apex:dataTable>
+                                <div class="completedGradTable" rendered="{!IF(completedGradProgramPlans.size > 0, true, false)}">
+                                    <table class="gradTable">
+                                        <tr>
+                                            <th class="gradTH">Program</th>
+                                            <th class="gradTH">Plan</th>
+                                            <th class="gradTH">Degree Level</th>
+                                            <th class="gradTH">Degree</th>
+                                            <th class="gradTH">Campus</th>
+                                            <th class="gradTH">Primary</th>
+                                        </tr>
+                                        <apex:repeat value="{!completedGradProgramPlans}" var="gradProgram">
+                                            <tr class="gradTR grad-row-toggle">
+                                                <td class="gradTD">
+                                                    <i class="fa fa-caret-right"></i>{!gradProgram.Plan_Type_Text__c}
+                                                </td>
+                                                <td class="gradTD"> 
+                                                    {!gradProgram.Plan_Description__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradProgram.Degree__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradProgram.Degree__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradProgram.Campus__r.Name}
+                                                </td>
+                                                <td class="gradTD">
+                                                    True
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Cumlative GPA
+                                                </th>
+                                                <td class="gradTD">
+                                                        2.8
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                        Document Type
+                                                </th>
+                                                <td class="gradTD">
+                                                    Dissertation
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Graduate GPA
+                                                </th>
+                                                <td class="gradTD">
+                                                    2.8
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Format Status Date
+                                                </th>
+                                                <td class="gradTD">
+                                                    Dissertation
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    iPOS GPA
+                                                </th>
+                                                <td class="gradTD">
+                                                    --
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Format Advisor
+                                                </th>
+                                                <td class="gradTD">
+                                                    Chasaty
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Defense Required
+                                                </th>
+                                                <td class="gradTD">
+                                                    Yes
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Format Status
+                                                </th>
+                                                <td class="gradTD">
+                                                    Format Approved
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                                <th colspan="2" class="gradTD">
+                                                    Format Status Last Updated
+                                                </th>
+                                                <td class="gradTD">
+                                                    11/27/2018
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                                <th colspan="2" class="gradTD">
+                                                    Advanced To Candidacy
+                                                </th>
+                                                <td class="gradTD">
+                                                    Y
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    IPOS Status
+                                                </th>
+                                                <td class="gradTD">
+                                                    Approved
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Defense Status
+                                                </th>
+                                                <td class="gradTD">
+                                                    Scheduled
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Specialization
+                                                </th>
+                                                <td class="gradTD">
+                                                    Helathcare Management
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Defense Date
+                                                </th>
+                                                <td class="gradTD">
+                                                    23/08/2019
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Culminating Event
+                                                </th>
+                                                <td class="gradTD">
+                                                    30 Credit Hours and a thesis
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Defense Time
+                                                </th>
+                                                <td class="gradTD">
+                                                    10:00 AM
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    IPOS Status Date
+                                                </th>
+                                                <td class="gradTD">
+                                                    10/29/2008
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Building
+                                                </th>
+                                                <td class="gradTD">
+                                                    ENGRC ENGINEERING Research Center
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Requirement Term
+                                                </th>
+                                                <td class="gradTD">
+                                                    2018 Fall
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Room
+                                                </th>
+                                                <td class="gradTD">
+                                                    593
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    ASU Hours Before Admit
+                                                </th>
+                                                <td class="gradTD">
+                                                    3
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Location
+                                                </th>
+                                                <td class="gradTD">
+                                                    Shanghai, China
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    ASU Hours After Admit
+                                                </th>
+                                                <td class="gradTD">
+                                                    12
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Final Defense Results Status
+                                                </th>
+                                                <td class="gradTD">
+                                                    --
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    IPOS Total Hours
+                                                </th>
+                                                <td class="gradTD">
+                                                    18
+                                                </td>
+                                                <th colspan="2" class="gradTD">
+                                                    Final Defense results Status Date/Time
+                                                </th>
+                                                <td class="gradTD">
+                                                    --
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Completed Academic Integrity
+                                                </th>
+                                                <td class="gradTD">
+                                                    Y
+                                                </td>
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Application Term
+                                                </th>
+                                                <td class="gradTD">
+                                                    2019 Spring
+                                                </td>
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Maximum Time Limit
+                                                </th>
+                                                <td class="gradTD">
+                                                    2029 Spring
+                                                </td>
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Estimated Grad Term
+                                                </th>
+                                                <td class="gradTD">
+                                                    2021 Spring
+                                                </td>
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Applied To graduate
+                                                </th>
+                                                <td class="gradTD">
+                                                    Y
+                                                </td>
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th colspan="2" class="gradTD">
+                                                    Graduation Checkout Status
+                                                </th>
+                                                <td class="gradTD">
+                                                    Pending
+                                                </td>
+                                                <th colspan="2" class="gradTD"></th>
+                                                <td class="gradTD"></td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </table>
                                 </div>
 
-                                <apex:outputText rendered="{!IF(completedGradProgramPlans.size > 0, false, true)}" value="No graduate programs/plans found."/>
+                                <apex:outputText rendered="{!IF(completedGradProgramPlans.size > 0, false, true)}" value="No completed graduate programs/plans found."/>
 
                                 <div class="page-header-smaller">
                                     <h4>

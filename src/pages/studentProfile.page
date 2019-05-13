@@ -1031,7 +1031,7 @@
                                                     IPOS Total Hours
                                                 </th>
                                                 <td class="gradTD">
-                                                    18
+                                                    {!gradProgram.Tot_Cumulative__c}
                                                 </td>
                                                 <th colspan="2" class="gradTD">
                                                     Final Defense results Status Date/Time
@@ -1323,7 +1323,7 @@
                                                     IPOS Total Hours
                                                 </th>
                                                 <td class="gradTD">
-                                                    18
+                                                    {!gradProgram.Tot_Cumulative__c}
                                                 </td>
                                                 <th colspan="2" class="gradTD">
                                                     Final Defense results Status Date/Time

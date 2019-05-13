@@ -67,6 +67,8 @@
             </div>
             <script type="text/javascript">
             
+            document.getElementById('chatIdField').value = '{!uniqueKey}';
+
             function setFields() {
                 setDescription();
                 setName();

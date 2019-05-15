@@ -564,9 +564,6 @@
 
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"/>
 
-                                        <apex:inputField value="{!mycase.Description}"
-                                                         style="width:90%;height:120px;"/>
-
                                         <apex:inputField id="descriptionBox" value="{!myCase.Description}"
                                                          style="width:95%;height:90px;"> 
                                             <apex:actionSupport event="onchange" action="{!saveDescription}" rerender="descriptionBox"/>

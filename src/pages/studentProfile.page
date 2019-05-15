@@ -1046,7 +1046,7 @@
                                                     Application Term
                                                 </th>
                                                 <td class="gradTD">
-                                                    2019 Spring
+                                                    {!gradProgram.Admit_Term__r.Name}
                                                 </td>
                                                 <th colspan="2" class="gradTD"></th>
                                                 <td class="gradTD"></td>

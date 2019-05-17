@@ -2323,7 +2323,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="https://www.asu.edu/go/cs/bo/?dest=/EMPLOYEE/CAMP/c/ASU_STUDENT_RECORDS.ASU_TSRQST_UNOFF.GBL?EMPLID={!theContact.EMPLID__c}"
+                                    <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD"
                                        target="_blank">
                                         WebXtender
                                     </a>
@@ -2344,7 +2344,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="https://webapp4.asu.edu/uachieve/student/search.html"
+                                    <a href="https://webapp4.asu.edu/gradapprev/"
                                        target="_blank">
                                         GAR
                                     </a>

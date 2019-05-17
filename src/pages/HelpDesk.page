@@ -28,6 +28,14 @@
             }
         }
 
+        function openStudentProfile(emplId, contactName) {
+            if (sforce.console.isInConsole()) {
+                sforce.console.openPrimaryTab(null, '/apex/studentProfile?contactId=' + emplId, true, contactName);
+            } else {
+                window.open('/apex/studentProfile?contactId=' + emplId);
+            }
+        }
+
         var closeSubtab = function closeSubtab(result) {
             //Now that we have the tab ID, we can close it
             var tabId = result.id;
@@ -43,6 +51,8 @@
                 window.open('/' + contactId);
             }
         }
+
+
 
         function openPage(url) {
             window.open(url);
@@ -455,6 +465,14 @@
                                                     styleClass="customActionBtn"
                                                     status="loadingStatus3"/>
 
+                                <apex:commandButton id="studentProfileButton"
+                                                    onclick="openStudentProfile('{!contactsrch.EMPLID__C}', '{!contactName}'); return false;"
+                                                    value="Student Profile"
+                                                    disabled="{!NOT(isContactSet && NOT(ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''))}"
+                                                    reRender="innersecond"
+                                                    styleClass="customActionBtn"
+                                                    status="loadingStatus3"/>
+
                                 <apex:actionStatus id="loadingStatus3" >
                                     <apex:facet name="start" >
                                         <i class="fa fa-spinner fa-spin"
@@ -598,6 +616,14 @@
                                                     value="Cancel"
                                                     immediate="true"
                                                     reRender="innersecond,results,messages"
+                                                    styleClass="customBtn"
+                                                    status="loadingStatus4"/>
+
+                                <apex:commandButton id="studentProfileButtonCase"
+                                                    onclick="openStudentProfile('{!contactsrch.EMPLID__C}', '{!contactName}'); return false;"
+                                                    value="Student Profile"
+                                                    disabled="{!ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''}"
+                                                    reRender="innersecond"
                                                     styleClass="customBtn"
                                                     status="loadingStatus4"/>
 

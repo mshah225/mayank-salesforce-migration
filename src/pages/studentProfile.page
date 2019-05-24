@@ -207,9 +207,9 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD"
+                                <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+{!theContact.EMPLID__c}"
                                    target="_blank">
-                                    WebXtender
+                                    AppXtender 
                                 </a>
                             </td>
                         </tr>

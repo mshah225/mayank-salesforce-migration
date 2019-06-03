@@ -12,7 +12,7 @@ public without sharing class NonAuthenticatedLiveAgentController {
     public String uniqueKey {
         set; 
         get {
-            String hashString = '1000' + String.valueOf(Datetime.now().formatGMT('yyyy-MM-dd HH:mm:ss.SSS'));
+            String hashString = String.valueOf(Math.random() * 100000) + String.valueOf(Datetime.now().formatGMT('yyyy-MM-dd HH:mm:ss.SSS'));
             Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(hashString));
             String hexDigest = EncodingUtil.convertToHex(hash);
             return hexDigest;

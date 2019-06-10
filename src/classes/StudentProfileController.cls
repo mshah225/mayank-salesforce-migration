@@ -9,6 +9,8 @@ global with sharing class StudentProfileController {
     public Contact theContact { get; set; }
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
+    public List<GraduateProgramPlanWrapper> activeGraduatePrograms {get; set;}
+    public List<GraduateProgramPlanWrapper> completedGraduatePrograms {get; set;}
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
     public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
     public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
@@ -16,6 +18,7 @@ global with sharing class StudentProfileController {
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
+    public Map<Id, List<Student_Program_Plan_Advisor__c>> gradStudentCommittees {get; set;}
     public Student_Account__c studentAccount { get; set; }
     public Financial_Aid_Package__c financialAidPackage { get; set; }
     public Me3__c me3Results { get; set; }
@@ -39,7 +42,7 @@ global with sharing class StudentProfileController {
     }
 
     public Student_Program_Plan__c gradStudentProgram { get {
-            return activeGradProgramPlans.isEmpty() ? new Student_Program_Plan__c() : activeGradProgramPlans[0];
+            return activeGraduatePrograms.isEmpty() ? new Student_Program_Plan__c() : activeGraduatePrograms[0].gradProgramPlan;
         }
         set;
     }
@@ -53,8 +56,8 @@ global with sharing class StudentProfileController {
         }
         subPlanString = '';
         ugProgramPlans = new List<Student_Program_Plan__c>();
-        activeGradProgramPlans = new List<Student_Program_Plan__c>();
-        completedGradProgramPlans = new List<Student_Program_Plan__c>();
+        activeGraduatePrograms = new List<GraduateProgramPlanWrapper>();
+        completedGraduatePrograms = new List<GraduateProgramPlanWrapper>();
     }
 
     public void init() {
@@ -189,6 +192,7 @@ global with sharing class StudentProfileController {
         setStudentProgramPlans();
         setUndergraduateStudentProgramPlanAdvisors();
         setGraduateStudentProgramPlanAdvisors();
+        setGraduateStudentProgramPlanCommittees();
     }
 
     private void setStudentProgramPlans() {
@@ -216,9 +220,13 @@ global with sharing class StudentProfileController {
                 ugProgramPlans.add(programPlan);
             } else {
                 if (programPlan.Status__c == 'Active in Program') {
-                    activeGradProgramPlans.add(programPlan);
+                    GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
+                    pgrm.gradProgramPlan = programPlan;
+                    activeGraduatePrograms.add(pgrm);
                 } else {
-                    completedGradProgramPlans.add(programPlan);
+                    GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
+                    pgrm.gradProgramPlan = programPlan;
+                    completedGraduatePrograms.add(pgrm);
                 }
             }
 
@@ -269,6 +277,30 @@ global with sharing class StudentProfileController {
             ORDER BY Name
         ];
     }
+
+    public void setGraduateStudentProgramPlanCommittees() {
+        List<Id> programPlansUsed = new List<Id>();
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            programPlansUsed.add(gppw.gradProgramPlan.Id);
+        }
+        List<Student_Program_Plan_Advisor__c> committees= [
+            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c
+            FROM Student_Program_Plan_Advisor__c
+            WHERE Student_Program_Plan__c IN: programPlansUsed AND Committee_Name__c <> NULL
+            ORDER BY Student_Program_Plan__c
+        ];
+
+        for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
+            gppw.gradCommittees = new List<Student_Program_Plan_Advisor__c>();
+            String programPlanId = gppw.gradProgramPlan.Id;
+            for (Student_Program_Plan_Advisor__c sppa : committees) {
+                if (programPlanId == sppa.Student_Program_Plan__c) {
+                    gppw.gradCommittees.add(sppa);
+                }
+            }
+        }
+    }
+    
 
     private void setTestScores() {
         setUndergradStudentTestScores();
@@ -624,6 +656,11 @@ global with sharing class StudentProfileController {
     global class CommentWrapper {
         public PS_ASU_SP_COMMNT_V__x comment {get; set;}
         public String commenterUserId {get; set;}
+    }
+
+    public class GraduateProgramPlanWrapper {
+        public Student_Program_Plan__c gradProgramPlan {get; set;}
+        public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
     }
 
     private class StudentProfileException extends Exception {}

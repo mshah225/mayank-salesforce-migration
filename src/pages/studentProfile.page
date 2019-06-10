@@ -1154,7 +1154,7 @@
                                 </h4>
                             </div>
 
-                            <div class="activeGradTable" rendered="{!IF(completedGradProgramPlans.size > 0, true, false)}">
+                            <div class="activeGradTable" rendered="{!IF(activeGraduatePrograms.size > 0, true, false)}">
                                 <table class="gradTable">
                                     <tr>
                                         <th class="gradTH">Program</th>
@@ -1164,22 +1164,22 @@
                                         <th class="gradTH">Campus</th>
                                         <th class="gradTH">Primary</th>
                                     </tr>
-                                    <apex:repeat value="{!activeGradProgramPlans}" var="gradProgram">
+                                    <apex:repeat value="{!activeGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
                                             <td class="gradTD">
-                                                <i class="fa fa-caret-right"></i>{!gradProgram.Plan_Type_Text__c}
+                                                <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Plan_Type_Text__c}
                                             </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Plan_Description__c}
+                                                    {!gradProgram.gradProgramPlan.Plan_Description__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Degree__c}
+                                                    {!gradProgram.gradProgramPlan.Degree__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Degree__c}
+                                                    {!gradProgram.gradProgramPlan.Degree__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Campus__r.Name}
+                                                    {!gradProgram.gradProgramPlan.Campus__r.Name}
                                                 </td>
                                             <td class="gradTD">
                                                 True
@@ -1364,7 +1364,7 @@
                                                 IPOS Total Hours
                                             </th>
                                             <td class="gradTD">
-                                                    {!gradProgram.Tot_Cumulative__c}
+                                                    {!gradProgram.gradProgramPlan.Tot_Cumulative__c}
                                                 </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense results Status Date/Time
@@ -1388,7 +1388,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                    {!gradProgram.Admit_Term__r.Name}
+                                                    {!gradProgram.gradProgramPlan.Admit_Term__r.Name}
                                                 </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -1433,11 +1433,52 @@
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
+                                        
+                                        <tr class="gradTR committee-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
+                                            <td>
+                                                <i class="fa fa-caret-right"></i>Committee Members
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr class="committeeExtraInfo hide">
+                                            <th colspan="1.5" class="gradTD">
+                                                Name
+                                            </th>
+                                            <th colspan="1.5" class="gradTD">
+                                                Committee Role
+                                            </th>
+                                            <th colspan="1.5" class="gradTD">
+                                                Title
+                                            </th>
+                                            <th colspan="1.5" class="gradTD">
+                                                Department
+                                            </th>
+                                        </tr>
+                                        
+                                        <apex:repeat value="{!gradProgram.gradCommittees}" var="gradCommittee">
+                                            <tr class="committeeExtraInfo hide">
+                                                <td class="gradTD">
+                                                    {!gradCommittee.Advisor_Name__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradCommittee.Advisor_Role__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradCommittee.Business_Title__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradCommittee.Company_Description__c}
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                        <tr class="committeeExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
+                                            <td class="gradTD" style="background: white; border: 0px !important;"></td>
+                                        </tr>
                                     </apex:repeat>
                                 </table>
                             </div>
 
-                            <apex:outputText rendered="{!IF(activeGradProgramPlans.size > 0, false, true)}"
+                            <apex:outputText rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
                                              value="No active graduate programs/plans found."/>
 
                             <div class="page-header-smaller">
@@ -1448,7 +1489,7 @@
                             </div>
 
                             <div class="completedGradTable"
-                                 rendered="{!IF(completedGradProgramPlans.size > 0, true, false)}">
+                                 rendered="{!IF(completedGraduatePrograms.size > 0, true, false)}">
                                 <table class="gradTable">
                                     <tr>
                                         <th class="gradTH">Program</th>
@@ -1458,22 +1499,22 @@
                                         <th class="gradTH">Campus</th>
                                         <th class="gradTH">Primary</th>
                                     </tr>
-                                    <apex:repeat value="{!completedGradProgramPlans}" var="gradProgram">
+                                    <apex:repeat value="{!completedGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
                                             <td class="gradTD">
-                                                <i class="fa fa-caret-right"></i>{!gradProgram.Plan_Type_Text__c}
+                                                <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Plan_Type_Text__c}
                                             </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Plan_Description__c}
+                                                    {!gradProgram.gradProgramPlan.Plan_Description__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Degree__c}
+                                                    {!gradProgram.gradProgramPlan.Degree__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Degree__c}
+                                                    {!gradProgram.gradProgramPlan.Degree__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.Campus__r.Name}
+                                                    {!gradProgram.gradProgramPlan.Campus__r.Name}
                                                 </td>
                                             <td class="gradTD">
                                                 True
@@ -1658,7 +1699,7 @@
                                                 IPOS Total Hours
                                             </th>
                                             <td class="gradTD">
-                                                    {!gradProgram.Tot_Cumulative__c}
+                                                    {!gradProgram.gradProgramPlan.Tot_Cumulative__c}
                                                 </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense results Status Date/Time
@@ -1731,7 +1772,7 @@
                                 </table>
                             </div>
 
-                            <apex:outputText rendered="{!IF(completedGradProgramPlans.size > 0, false, true)}"
+                            <apex:outputText rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
                                              value="No completed graduate programs/plans found."/>
 
                             <div class="page-header-smaller">
@@ -2839,12 +2880,32 @@
             var container = $j(this);
             var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
             if (arrow.hasClass('fa-caret-down')) {
-                while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('gradExtraInfo')) {
+                while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') || container.next()[0].classList.contains('committeeExtraInfo'))) {
                     container = container.next();
                     container.slideUp().addClass('hide');
                 }
             } else if (arrow.hasClass('fa-caret-right')) {
-                while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('gradExtraInfo')) {
+                while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') )) {
+                    container = container.next();
+                    container.removeClass('hide').slideDown();
+                }
+            }
+
+            arrow.toggleClass('fa-caret-right');
+            arrow.toggleClass('fa-caret-down');
+        });
+
+        // Arrow Functionality
+        $j(".committee-row-toggle").click(function () {
+            var container = $j(this);
+            var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
+            if (arrow.hasClass('fa-caret-down')) {
+                while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('committeeExtraInfo')) {
+                    container = container.next();
+                    container.slideUp().addClass('hide');
+                }
+            } else if (arrow.hasClass('fa-caret-right')) {
+                while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('committeeExtraInfo')) {
                     container = container.next();
                     container.removeClass('hide').slideDown();
                 }

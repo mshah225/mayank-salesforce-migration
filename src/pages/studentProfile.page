@@ -1315,7 +1315,7 @@
                                                 Requirement Term
                                             </th>
                                             <td class="gradTD">
-                                                2018 Fall
+                                                {!gradProgram.gradProgramPlan.Requirement_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Room

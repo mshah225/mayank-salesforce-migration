@@ -928,10 +928,7 @@
                                                     <th>Cumulative GPA</th>
                                                     <td id="ugap_gpa">
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                            {!IF(ISBLANK(ugStudentProgram.Cum_GPA__c), '--', '')}
-                                                            <apex:outputText value="{0,number,####.###}">
-                                                                <apex:param value="{!ugStudentProgram.Cum_GPA__c}"/>
-                                                            </apex:outputText>
+                                                            <c:sp_GPA gpa="{!ugStudentProgram.Cum_GPA__c}"/>
                                                         </a>
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank"
                                                            class="fa fa-calculator" aria-hidden="true"></a>
@@ -1191,6 +1188,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 2.8
+                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Document Type
@@ -1205,6 +1203,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 2.8
+                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Date
@@ -1219,6 +1218,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 --
+                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Advisor
@@ -1526,6 +1526,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 2.8
+                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Document Type
@@ -1540,6 +1541,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 2.8
+                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Date
@@ -1554,6 +1556,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 --
+                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Advisor
@@ -1790,10 +1793,7 @@
                                                 <th>Cumulative GPA</th>
                                                 <td id="grad_cumulative_gpa">
                                                     <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                        {!IF(ISBLANK(gradStudentProgram.Cum_GPA__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####.###}">
-                                                            <apex:param value="{!gradStudentProgram.Cum_GPA__c}"/>
-                                                        </apex:outputText>
+                                                        <c:sp_GPA gpa="{!gradStudentProgram.Cum_GPA__c}"/>
                                                     </a>
                                                     <a href="https://students.asu.edu/gpa-calculator" target="_blank"
                                                        class="fa fa-calculator" aria-hidden="true"></a>
@@ -1802,19 +1802,13 @@
                                             <tr>
                                                 <th>Graduate GPA</th>
                                                 <td id="grad_grad_gpa">
-                                                    {!IF(ISBLANK(gradStudentProgram.ASU_AA_OVRL_GPA__c), '--', '')}
-                                                    <apex:outputText value="{0,number,####.###}">
-                                                        <apex:param value="{!gradStudentProgram.ASU_AA_OVRL_GPA__c}"/>
-                                                    </apex:outputText>
+                                                    <c:sp_GPA gpa="{!gradStudentProgram.ASU_AA_OVRL_GPA__c}"/>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th>iPOS GPA</th>
                                                 <td id="grad_ipos_gpa">
-                                                    {!IF(ISBLANK(gradStudentProgram.ASU_AA_POS_GPA__c), '--', '')}
-                                                    <apex:outputText value="{0,number,####.###}">
-                                                        <apex:param value="{!gradStudentProgram.ASU_AA_POS_GPA__c}"/>
-                                                    </apex:outputText>
+                                                    <c:sp_GPA gpa="{!gradStudentProgram.ASU_AA_POS_GPA__c}"/>
                                                 </td>
                                             </tr>
                                             <tr>

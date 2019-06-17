@@ -2100,7 +2100,7 @@
                                             </td>
                                         </tr>
 
-                                        <tr class="committeeExtraInfo hide">
+                                        <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
                                             <th colspan="1.5" class="gradTD">
                                                 Name
                                             </th>
@@ -2116,7 +2116,7 @@
                                         </tr>
 
                                         <apex:repeat value="{!gradProgram.gradCommittees}" var="gradCommittee">
-                                            <tr class="committeeExtraInfo hide">
+                                            <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
                                                 <td class="gradTD">
                                                     {!gradCommittee.Advisor_Name__c}
                                                 </td>
@@ -2131,7 +2131,36 @@
                                                 </td>
                                             </tr>
                                         </apex:repeat>
-                                        <tr class="committeeExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
+                                        <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
+                                            <td class="gradTD" style="background: white; border: 0px !important;"></td>
+                                        </tr>
+
+                                        <tr class="gradTR advisor-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
+                                            <td>
+                                                <i class="fa fa-caret-right"></i>Advisors
+                                            </td>
+                                        </tr>
+
+                                        <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
+                                            <th colspan="1.5" class="gradTD">
+                                                Name
+                                            </th>
+                                            <th colspan="1.5" class="gradTD">
+                                                Title
+                                            </th>
+                                        </tr>
+
+                                        <apex:repeat value="{!gradProgram.gradAdvisors}" var="gradAdvisors">
+                                            <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
+                                                <td class="gradTD">
+                                                    {!gradAdvisors.Advisor_Name__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradAdvisors.Business_Title__c}
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                        <tr class="advisorExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
                                             <td class="gradTD" style="background: white; border: 0px !important;"></td>
                                         </tr>
                                     </apex:repeat>
@@ -2942,14 +2971,16 @@
             var container = $j(this);
             var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
             if (arrow.hasClass('fa-caret-down')) {
-                while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') || container.next()[0].classList.contains('committeeExtraInfo'))) {
+                while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') || container.next()[0].classList.contains('committeeExtraInfo') || container.next()[0].classList.contains('advisorExtraInfo'))) {
                     container = container.next();
                     container.slideUp().addClass('hide');
                 }
             } else if (arrow.hasClass('fa-caret-right')) {
                 while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') )) {
                     container = container.next();
-                    container.removeClass('hide').slideDown();
+                    if (!container[0].classList.contains('hideOnStart')) {
+                        container.removeClass('hide').slideDown();
+                    }
                 }
             }
 
@@ -2957,7 +2988,7 @@
             arrow.toggleClass('fa-caret-down');
         });
 
-        // Arrow Functionality
+        // Committee Arrow Functionality
         $j(".committee-row-toggle").click(function () {
             var container = $j(this);
             var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
@@ -2968,6 +2999,26 @@
                 }
             } else if (arrow.hasClass('fa-caret-right')) {
                 while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('committeeExtraInfo')) {
+                    container = container.next();
+                    container.removeClass('hide').slideDown();
+                }
+            }
+
+            arrow.toggleClass('fa-caret-right');
+            arrow.toggleClass('fa-caret-down');
+        });
+
+        // Advisor Arrow Functionality
+        $j(".advisor-row-toggle").click(function () {
+            var container = $j(this);
+            var arrow = $j(this).find('.fa-caret-down, .fa-caret-right');
+            if (arrow.hasClass('fa-caret-down')) {
+                while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('advisorExtraInfo')) {
+                    container = container.next();
+                    container.slideUp().addClass('hide');
+                }
+            } else if (arrow.hasClass('fa-caret-right')) {
+                while (container.next() != null && container.next().size() > 0 && container.next()[0].classList.contains('advisorExtraInfo')) {
                     container = container.next();
                     container.removeClass('hide').slideDown();
                 }

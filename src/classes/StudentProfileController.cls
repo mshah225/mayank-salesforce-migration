@@ -192,7 +192,7 @@ global with sharing class StudentProfileController {
         setStudentProgramPlans();
         setUndergraduateStudentProgramPlanAdvisors();
         setGraduateStudentProgramPlanAdvisors();
-        setGraduateStudentProgramPlanCommittees();
+        setGraduateStudentProgramPlanCommitteesAndAdvisors();
     }
 
     private void setStudentProgramPlans() {
@@ -278,24 +278,28 @@ global with sharing class StudentProfileController {
         ];
     }
 
-    public void setGraduateStudentProgramPlanCommittees() {
+    public void setGraduateStudentProgramPlanCommitteesAndAdvisors() {
         List<Id> programPlansUsed = new List<Id>();
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
             programPlansUsed.add(gppw.gradProgramPlan.Id);
         }
-        List<Student_Program_Plan_Advisor__c> committees= [
-            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c
+        List<Student_Program_Plan_Advisor__c> committeesAndAdvisors = [
+            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c, Committee_Type__c
             FROM Student_Program_Plan_Advisor__c
-            WHERE Student_Program_Plan__c IN: programPlansUsed AND Committee_Name__c <> NULL
+            WHERE Student_Program_Plan__c IN: programPlansUsed
+            AND (Student_Program_Plan__r.Career__c = 'Graduate')
             ORDER BY Student_Program_Plan__c
         ];
 
         for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
             gppw.gradCommittees = new List<Student_Program_Plan_Advisor__c>();
+            gppw.gradAdvisors = new List<Student_Program_Plan_Advisor__c>();
             String programPlanId = gppw.gradProgramPlan.Id;
-            for (Student_Program_Plan_Advisor__c sppa : committees) {
-                if (programPlanId == sppa.Student_Program_Plan__c) {
+            for (Student_Program_Plan_Advisor__c sppa : committeesAndAdvisors) {
+                if (programPlanId == sppa.Student_Program_Plan__c && sppa.Committee_Type__c != 'GRADFAC') {
                     gppw.gradCommittees.add(sppa);
+                } else if (programPlanId == sppa.Student_Program_Plan__c) {
+                    gppw.gradAdvisors.add(sppa);
                 }
             }
         }
@@ -661,6 +665,7 @@ global with sharing class StudentProfileController {
     public class GraduateProgramPlanWrapper {
         public Student_Program_Plan__c gradProgramPlan {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
+        public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}
     }
 
     private class StudentProfileException extends Exception {}

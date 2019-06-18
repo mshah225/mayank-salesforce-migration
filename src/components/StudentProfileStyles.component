@@ -358,6 +358,16 @@
             overflow-y: scroll;
         }
 
+        .program-indicator-count {
+            background: #fed039;
+            padding: 1px 5px;
+            color: #fff;
+            font-size: 14px;
+            border-radius: 2px;
+            margin: 0 3px;
+            display: inline-block;
+        }
+
         @media screen and (max-width: 1170px) {
             .mainCont {
                 padding: 24px 35px 20px 35px !important;

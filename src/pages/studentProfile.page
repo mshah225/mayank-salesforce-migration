@@ -357,11 +357,20 @@
                             </h4>
 
                             <div class="pull-right">
-                                <a href="#"
-                                   onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}','All Cases');return false"
-                                   class="pull-right sideBoxMoreLink" style="font-size: 11pt;margin-top: 2px;">
-                                    See all cases...
-                                </a>
+                                <apex:outputPanel rendered="{!$User.UITheme == 'Theme3'}">
+                                    <a href="#"
+                                       onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}', 'All Cases');return false"
+                                       class="pull-right sideBoxMoreLink" style="font-size: 11pt;margin-top: 2px;">
+                                        See all cases...
+                                    </a>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!CONTAINS($User.UITheme, 'Theme4')}">
+                                    <a href="#"
+                                       onclick="openNewSubtab('/lightning/r/{!theContact.Id}/related/Cases/view', 'All Cases');return false"
+                                       class="pull-right sideBoxMoreLink" style="font-size: 11pt;margin-top: 2px;">
+                                        See all cases...
+                                    </a>
+                                </apex:outputPanel>
                             </div>
                         </div>
 
@@ -471,11 +480,20 @@
                             </h4>
 
                             <div class="pull-right">
-                                <a href="#"
-                                   onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
-                                   class="pull-right sideBoxMoreLink" style="margin-top: 2px;">
-                                    See all {!sGroupList.size}...
-                                </a>
+                                <apex:outputPanel rendered="{!$User.UITheme == 'Theme3'}">
+                                    <a href="#"
+                                       onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
+                                       class="pull-right sideBoxMoreLink" style="margin-top: 2px;">
+                                        See all {!sGroupList.size}...
+                                    </a>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!CONTAINS($User.UITheme, 'Theme4')}">
+                                    <a href="#"
+                                       onclick="openNewSubtab('/lightning/r/{!theContact.Id}/related/Student_Groups_Contact__r/view','Student Groups');return false"
+                                       class="pull-right sideBoxMoreLink" style="margin-top: 2px;">
+                                        See all {!sGroupList.size}...
+                                    </a>
+                                </apex:outputPanel>
                             </div>
                         </div>
 
@@ -2967,6 +2985,10 @@
 
             arrow.toggleClass('fa-caret-right');
             arrow.toggleClass('fa-caret-down');
+        });
+
+        $j(".sideBoxMoreLink").click(function (e) {
+            e.stopPropagation();
         });
 
         // Arrow Functionality

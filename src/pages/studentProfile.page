@@ -2116,8 +2116,9 @@
                                         </tr>
 
                                         <tr class="gradTR committee-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
-                                            <td>
-                                                <i class="fa fa-caret-right"></i>Committee Members
+                                            <td style="padding:20px 0px 10px 0px;">
+                                                <i class="fa fa-caret-right"></i>
+                                                &nbsp;Committee Members
                                             </td>
                                         </tr>
 
@@ -2157,8 +2158,9 @@
                                         </tr>
 
                                         <tr class="gradTR advisor-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
-                                            <td>
-                                                <i class="fa fa-caret-right"></i>Advisors
+                                            <td style="padding:10px 0;">
+                                                <i class="fa fa-caret-right"></i>
+                                                &nbsp;Advisors
                                             </td>
                                         </tr>
 
@@ -2999,6 +3001,7 @@
                 while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') || container.next()[0].classList.contains('committeeExtraInfo') || container.next()[0].classList.contains('advisorExtraInfo'))) {
                     container = container.next();
                     container.slideUp().addClass('hide');
+                    container.find('.fa-caret-down').toggleClass('fa-caret-down fa-caret-right');
                 }
             } else if (arrow.hasClass('fa-caret-right')) {
                 while (container.next() != null && container.next().size() > 0 && (container.next()[0].classList.contains('gradExtraInfo') )) {

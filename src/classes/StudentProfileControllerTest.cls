@@ -75,11 +75,30 @@ private class StudentProfileControllerTest {
         StudentProfileController controller = new StudentProfileController();
         controller.init();
     }
+
+    @isTest
+    private static void financialNeedLevelDisplaySuccess() {
+        createTestData();
+        
+        PageReference studentProfile = Page.StudentProfile;
+        studentProfile.getParameters().put('contactId',  studentProfileContact.Id);
+        Test.setCurrentPage(studentProfile);
+        
+        StudentProfileController controller = new StudentProfileController();
+        controller.init();
+
+        System.assertEquals('2000', controller.getAidYear());
+        System.assertEquals('Moderate', controller.financialAidPackage.EFC_Range__c);
+
+    }
     
     private static void createTestData() {
         ContactFactory.DefaultContact contactBuilder = new ContactFactory.DefaultContact();
         studentProfileContact = (Contact) contactBuilder.create()[0];
         insert studentProfileContact;
+        insert new StudentTerm__c(CurrTerm__c = '2000', PrevTerm__c = '1000', NextTerm__c = '3000'); 
+        insert new Term__c(Name = 'Test 2000', PeopleSoft_Code__c = '2000', Year__c = '2019', Aid_Year__c = '2000');
+        insert new Financial_Aid_Package__c(Aid_Year__c = '2000', Contact__c = studentProfileContact.Id, EFC_Range__c = 'Moderate');
     }
     
     @isTest

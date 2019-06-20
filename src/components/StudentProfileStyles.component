@@ -104,6 +104,7 @@
             margin-right: -0.25rem;
             width: 100%;
             text-align: center;
+            margin-left: 0;
         }
 
         .nav-tabs>li.active>a,
@@ -215,8 +216,11 @@
                 font-size: 11pt;
             }
 
-                .sideBox a:hover {
+                .sideBox a:hover,
+                .sideBox a:focus {
                     text-decoration: underline;
+                    color: #9f2b50;
+                    font-size: 11pt;
                 }
 
             .sideBoxTable {

@@ -2863,19 +2863,24 @@
         }
 
         function openNewSubtab(subtabUrl, subtabTitle) {
-
             var openSubtab = function (result) {
-                if (subtabTitle != 'null')
-                    sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
-                else
-                    sforce.console.openSubtab(result.id, subtabUrl, true);
+                if (result.id === 'null') {
+                    window.open(subtabUrl);
+                    return;
+                }
 
+                if (subtabTitle !== 'null') {
+                    sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
+                } else {
+                    sforce.console.openSubtab(result.id, subtabUrl, true);
+                }
             };
 
-            if (inConsole)
+            if (inConsole) {
                 sforce.console.getEnclosingPrimaryTabId(openSubtab);
-            else
+            } else {
                 window.open(subtabUrl);
+            }
         }
 
         Visualforce.remoting.timeout = 120000;

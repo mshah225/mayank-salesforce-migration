@@ -1865,11 +1865,10 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Cumlative GPA
+                                                Cumulative GPA
                                             </th>
                                             <td class="gradTD">
-                                                2.8
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Document Type
@@ -2322,7 +2321,7 @@
                                                 Defense Status
                                             </th>
                                             <td class="gradTD">
-                                                Scheduled
+                                                {!gradProgram.gradMilestone.Descr__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2336,7 +2335,7 @@
                                                 Defense Date
                                             </th>
                                             <td class="gradTD">
-                                                23/08/2019
+                                                {!gradProgram.gradMilestone.Defense_Date__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2350,7 +2349,7 @@
                                                 Defense Time
                                             </th>
                                             <td class="gradTD">
-                                                10:00 AM
+                                                    {!gradProgram.gradMilestone.Defense_Time__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2364,7 +2363,7 @@
                                                 Building
                                             </th>
                                             <td class="gradTD">
-                                                ENGRC ENGINEERING Research Center
+                                                {!gradProgram.gradMilestone.Defense_Building__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2378,7 +2377,7 @@
                                                 Room
                                             </th>
                                             <td class="gradTD">
-                                                593
+                                                {!gradProgram.gradMilestone.Defense_Room__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2392,7 +2391,7 @@
                                                 Location
                                             </th>
                                             <td class="gradTD">
-                                                Shanghai, China
+                                                {!gradProgram.gradMilestone.Defense_Location__c}  
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2406,7 +2405,7 @@
                                                 Final Defense Results Status
                                             </th>
                                             <td class="gradTD">
-                                                --
+                                                {!gradProgram.gradMilestone.Grad_Format_Final_Defense_Results_Status__c}  
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2420,7 +2419,7 @@
                                                 Final Defense results Status Date/Time
                                             </th>
                                             <td class="gradTD">
-                                                --
+                                                {!gradProgram.gradMilestone.Grad_Format_Status_Last_Updated__c}  
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

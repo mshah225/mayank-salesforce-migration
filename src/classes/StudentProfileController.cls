@@ -3,6 +3,7 @@ global with sharing class StudentProfileController {
 
     private Boolean isContactId;
     private String contactId;
+    private String aidYear;
 
     public boolean urlParamsExistAndAreValid {get; set;}
     public String contactName { get; set; }
@@ -34,6 +35,7 @@ global with sharing class StudentProfileController {
     public String currentTermName { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
+    
 
     public Student_Program_Plan__c ugStudentProgram { get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];
@@ -152,7 +154,7 @@ global with sharing class StudentProfileController {
         currentTerm = currentTermData.CurrTerm__c;
 
         List<TERM__c> termList = [
-            SELECT Name, PeopleSoft_Code__c
+            SELECT Name, PeopleSoft_Code__c, Aid_Year__c
             FROM   TERM__c
             WHERE  PeopleSoft_Code__c = :currentTerm
             OR  PeopleSoft_Code__c = :nextTermPeoplesoftCode
@@ -161,6 +163,7 @@ global with sharing class StudentProfileController {
         for (TERM__c term : termList) {
             if (term.PeopleSoft_Code__c == currentTerm) {
                 currentTermName = term.Name;
+                aidYear = term.Aid_Year__c;
             } else if (term.PeopleSoft_Code__c == nextTermPeoplesoftCode) {
                 nextTermName = term.Name;
             }
@@ -385,7 +388,7 @@ global with sharing class StudentProfileController {
                    Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp
             FROM Financial_Aid_Package__c
             WHERE Contact__c = :theContact.Id
-            AND Aid_Year__c = :String.valueOf(Date.today().addMonths(6).year())
+            AND Aid_Year__c =: aidYear
             LIMIT 1
         ];
         financialAidPackage = financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];
@@ -607,6 +610,10 @@ global with sharing class StudentProfileController {
             classesData.classSessions.add('All');
         }
         return classesData;
+    }
+
+    public String getAidYear() {
+        return aidYear;
     }
 
     @RemoteAction

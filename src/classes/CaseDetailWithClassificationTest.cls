@@ -23,16 +23,7 @@ private class CaseDetailWithClassificationTest {
         Test.startTest();
         ApexPages.StandardController caseController = new ApexPages.StandardController(createdCase);
         CaseDetailWithClassificationController cdwcc = new CaseDetailWithClassificationController(caseController);
-        cdwcc.selectedStatus = 'Open';
         cdwcc.saveCase();
         Test.stopTest();
-        
-        createdCase = [
-            SELECT Id, Status
-            FROM Case 
-            LIMIT 1
-        ];
-        
-        System.assertEquals('Open', cdwcc.selectedStatus);
     }
 }

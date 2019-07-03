@@ -13,14 +13,6 @@
                     </tbody>
                 </table>
             </div>
-            
-            <apex:outputLabel value="Case Status: " for="statusOptions" />
-            <apex:actionRegion >
-                <apex:selectList id="statusOptions" label="Case Status" value="{!selectedStatus}" size="1" onchange="showButtons();">
-                    <apex:selectOptions value="{!statusOptions}"/>
-                </apex:selectList>
-            </apex:actionRegion>
-            <br />
             <br />
             <apex:outputPanel id="wrapper">
                 <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />

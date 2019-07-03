@@ -2707,17 +2707,6 @@
                                                         <th>Enroll Deposit</th>
                                                         <td>{!IF(ISBLANK(gradStudentProgram.Enrl_Deposit__c), '--', gradStudentProgram.Enrl_Deposit__c)}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <th>Orientation Date</th>
-                                                        <td>
-                                                            {!IF(OR(ISBLANK(theContact.Orient_Dt__c),
-                                                            ISBLANK(gradStudentProgram.Admit_Type__c)), '--', '')}
-                                                            <apex:outputText value="{0,date,MM/dd/yyyy}"
-                                                                             rendered="{!IF(ISBLANK(gradStudentProgram.Admit_Type__c), FALSE, TRUE)}">
-                                                                <apex:param value="{!theContact.Orient_Dt__c}"/>
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
                                                 </table>
                                             </div>
                                         </div>

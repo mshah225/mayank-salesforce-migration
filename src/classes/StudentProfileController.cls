@@ -208,7 +208,7 @@ global with sharing class StudentProfileController {
                 Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
                 Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
                 Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c,
-                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c
+                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
             ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c DESC, Plan_Description__c

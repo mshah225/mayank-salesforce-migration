@@ -2731,7 +2731,7 @@
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
                                                 <th>Leave of Absence</th>
-                                                <td id="gr_leaveOfAbsence"></td>
+                                                <td id="gr_leaveOfAbsence">{!IF(theContact.Grad_Student_LOA__c, 'Y', 'N')}</td>
                                             </tr>
                                             <tr>
                                                 <th>Continuous Enrollment</th>

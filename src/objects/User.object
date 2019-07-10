@@ -605,6 +605,23 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>Deprovision_User__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Deprovision User</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Processing_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Processing Notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>

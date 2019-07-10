@@ -687,6 +687,26 @@ global with sharing class StudentProfileController {
 
     public class GraduateProgramPlanWrapper {
         public Student_Milestone__c gradMilestone {get; set;}
+        public String defenseDate {
+            get {
+                if (gradMilestone.Defense_Date_Time__c == null) {
+                    return '--';
+                } else {
+                    return String.valueOf(Date.newInstance(gradMilestone.Defense_Date_Time__c.year(), gradMilestone.Defense_Date_Time__c.month(), gradMilestone.Defense_Date_Time__c.day()));
+                }
+            }
+            set;
+        }
+        public String defenseTime {
+            get {
+                if (gradMilestone.Defense_Date_Time__c == null) {
+                    return '--';
+                } else {
+                    return gradMilestone.Defense_Date_Time__c.format('HH:mm:ss');
+                }
+            }
+            set;
+        }
         public Student_Program_Plan__c gradProgramPlan {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}

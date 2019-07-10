@@ -118,7 +118,9 @@ public with sharing class ServiceCenter
         }
 
         suggestAnArticle.Subject = 'Suggest An Article';
-        suggestAnArticle.Description = suggestedArticleDescription;
+        if (suggestedArticleDescription != null) {
+            suggestAnArticle.Description = suggestedArticleDescription;
+        }
         suggestAnArticle.ContactId = userContact.Id;
         suggestAnArticle.CC_Functional_Group__c = [
             SELECT Id 

@@ -65,6 +65,99 @@
                 }
             }
 
+            @media screen and (max-width:991px) {
+              #ps_enrolled_classes .table,
+              #ps_dropped_withdrawn_classes .table {
+                margin: 0 auto;
+                width: 100%;
+                border-spacing: 0;
+                border: none;
+              }
+
+              #ps_enrolled_classes .table thead,
+              #ps_dropped_withdrawn_classes .table thead {
+                position: absolute;
+                clip: rect(1px, 1px, 1px, 1px);
+                padding: 0;
+                border: 0;
+                height: 1px;
+                width: 1px;
+                overflow: hidden;
+              }
+
+              #ps_enrolled_classes .table tbody,
+              #ps_enrolled_classes .table tr,
+              #ps_enrolled_classes .table th,
+              #ps_enrolled_classes .table td,
+              #ps_dropped_withdrawn_classes .table tbody,
+              #ps_dropped_withdrawn_classes .table tr,
+              #ps_dropped_withdrawn_classes .table th,
+              #ps_dropped_withdrawn_classes .table td {
+                display: inline-block;
+                padding: 0;
+                text-align: left;
+                white-space: normal;
+              }
+
+              #ps_enrolled_classes .table tr td,
+              #ps_enrolled_classes .table tr th,
+              #ps_dropped_withdrawn_classes .table tr td,
+              #ps_dropped_withdrawn_classes .table tr th {
+                padding: 2em 1em;
+                vertical-align: middle;
+                overflow: hidden;
+                position: relative;
+                vertical-align: top;
+                border-top: none;
+                width: 100%;
+                white-space: normal;
+              }
+
+              #ps_enrolled_classes .table th[scope="row"],
+              #ps_dropped_withdrawn_classes .table th[scope="row"] {
+                width: 100%;
+                text-align: center;
+                display: block;
+                background-color: #8C1D40;
+                color: white;
+                margin: 0 auto;
+                padding: .5em 0;
+              }
+
+              #ps_enrolled_classes .table td[data-header]:before,
+              #ps_dropped_withdrawn_classes .table td[data-header]:before {
+                content: attr(data-header);
+                display: block;
+                float: left;
+                width: 50%;
+                color: #000000;
+                font-weight: bold;
+                text-align: left;
+              }
+
+              #ps_enrolled_classes .table td[data-header]>*,
+              #ps_dropped_withdrawn_classes .table td[data-header]>* {
+                display: block;
+                width: 50%;
+                float: right;
+                clear: right;
+                padding-left: 1em;
+                margin-top: 0;
+              }
+
+              #ps_enrolled_classes .table td[data-header]:after,
+              #ps_dropped_withdrawn_classes .table td[data-header]:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 50%;
+                border-right: 1px solid #EDF0F1;
+                padding-bottom: 200%;
+                display: block;
+              }
+            }
+
             @media screen and (min-width: 992px) and (max-width: 1115px) {
                 .browser {
                     padding: 8px !important;
@@ -205,7 +298,7 @@
                             <td>
                                 <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+{!theContact.EMPLID__c}"
                                    target="_blank">
-                                    AppXtender 
+                                    AppXtender
                                 </a>
                             </td>
                         </tr>
@@ -4015,62 +4108,62 @@
                                             var html = "" +
                                                 "<div class='table-responsive'>" +
                                                 "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
-                                                "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                "<th onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
-                                                "<th onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
-                                                "<th>ASR</th>" +
-                                                "</tr>" +
-                                                "</thead>" +
-                                                "<tbody>";
-                                            for (var i = 0; i < result.enrolledClasses.length; i++) {
-                                                var asrValue = '--';
+                                                    "<thead>" +
+                                                        "<tr style=\"cursor:pointer\">" +
+                                                            "<th scope=\"row\" onclick=\"sortEnrolledOnClick('Term')\">Term</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Session')\">Session</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Class')\">Class</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Course')\">Course</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Title')\">Title</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Topic')\">Topic</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Units')\">Units</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Instructor')\">Instructor(s)</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Days')\">Days</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Times')\">Times</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Dates')\">Dates</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Location')\">Location</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortEnrolledOnClick('Grade')\">Grade</th>" +
+                                                            "<th scope=\"col\">ASR</th>" +
+                                                        "</tr>" +
+                                                    "</thead>" +
+                                                    "<tbody>";
+                                        for (var i = 0; i < result.enrolledClasses.length; i++) {
+                                            var asrValue = '--';
 
-                                                //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' +
-                                                //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
-                                                //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
-                                                //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;ugIndicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
-                                                //}
+                                            //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' +
+                                            //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                                            //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
+                                            //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;ugIndicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
+                                            //}
 
-                                                html += "" +
-                                                    "<tr>" +
-                                                    "<td>" + result.enrolledClasses[i].TERM_DESCR30__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].SESSION_CODE__c + "</td>" +
-                                                    "<td>" + Math.floor(result.enrolledClasses[i].CLASS_NBR__c) + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].SUBJECT__c + " " + result.enrolledClasses[i].CATALOG_NBR__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].CLASS_DESCR__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].UNT_TAKEN__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].FT_FULL_NAME__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].SCH_HTML_DAY1__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].SCH_DAILY_TIME__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].ASU_SCH_DATES__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].SSR_MTG_LOC_LONG__c + "</td>" +
-                                                    "<td>" + result.enrolledClasses[i].CRSE_GRADE_OFF__c + "</td>" +
+                                            html += "" +
+                                                "<tr>" +
+                                                    "<th scope=\"row\">" + result.enrolledClasses[i].TERM_DESCR30__c + "</td>" +
+                                                    "<td data-header=\"Session\">" + result.enrolledClasses[i].SESSION_CODE__c + "</td>" +
+                                                    "<td data-header=\"Class\">" + Math.floor(result.enrolledClasses[i].CLASS_NBR__c) + "</td>" +
+                                                    "<td data-header=\"Course\">" + result.enrolledClasses[i].SUBJECT__c + " " + result.enrolledClasses[i].CATALOG_NBR__c + "</td>" +
+                                                    "<td data-header=\"Title\">" + result.enrolledClasses[i].CLASS_DESCR__c + "</td>" +
+                                                    "<td data-header=\"Topic\">" + result.enrolledClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                                    "<td data-header=\"Units\">" + result.enrolledClasses[i].UNT_TAKEN__c + "</td>" +
+                                                    "<td data-header=\"Instructor(s)\">" + result.enrolledClasses[i].FT_FULL_NAME__c + "</td>" +
+                                                    "<td data-header=\"Days\">" + result.enrolledClasses[i].SCH_HTML_DAY1__c + "</td>" +
+                                                    "<td data-header=\"Times\">" + result.enrolledClasses[i].SCH_DAILY_TIME__c + "</td>" +
+                                                    "<td data-header=\"Dates\">" + result.enrolledClasses[i].ASU_SCH_DATES__c + "</td>" +
+                                                    "<td data-header=\"Location\">" + result.enrolledClasses[i].SSR_MTG_LOC_LONG__c + "</td>" +
+                                                    "<td data-header=\"Grade\">" + result.enrolledClasses[i].CRSE_GRADE_OFF__c + "</td>" +
                                                     "<td style='display:none'>" + result.enrolledClasses[i].EARN_CREDIT__c + "" + result.enrolledClasses[i].VALID_ATTEMPT__c + "</td>" +
                                                     "<td style='display:none'>" + result.enrolledClasses[i].CUR_GPA__c + "</td>" +
                                                     "<td style='display:none'>" + result.enrolledClasses[i].CUM_GPA__c + "</td>" +
                                                     "<td style='display:none'>" + result.enrolledClasses[i].STRM__c + "</td>";
 
-                                                if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' +
-                                                    result.enrolledClasses[i].SESSION_CODE__c + '|' +
-                                                    result.enrolledClasses[i].CLASS_NBR__c) > -1) {
-                                                    // ASR link opens Undergraduate Indicators tab when clicked
-                                                    html += "<td>" + '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' + "</td>"
-                                                } else {
-                                                    html += "<td>--</td>";
-                                                }
+                                            if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' +
+                                                result.enrolledClasses[i].SESSION_CODE__c + '|' +
+                                                result.enrolledClasses[i].CLASS_NBR__c) > -1) {
+                                                // ASR link opens Undergraduate Indicators tab when clicked
+                                                html += "<td data-header=\"ASR\">" + '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' + "</td>"
+                                            } else {
+                                                html += "<td data-header=\"ASR\">--</td>";
+                                            }
 
                                                 html += "</tr>";
 
@@ -4096,34 +4189,33 @@
                                             var html = "" +
                                                 "<div class='table-responsive'>" +
                                                 "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
-                                                "<thead>" +
-                                                "<tr style=\"cursor:pointer\">" +
-                                                "<th onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Sessioj')\">Session</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
-                                                "<th onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
-                                                "<th>ASR</th>" +
-                                                "</tr>" +
-                                                "</thead>" +
-                                                "<tbody>";
+                                                    "<thead>" +
+                                                        "<tr style=\"cursor:pointer\">" +
+                                                            "<th scope=\"row\" onclick=\"sortDroppedOnClick('Term')\">Term</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Session')\">Session</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Class')\">Class</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Course')\">Course</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Title')\">Title</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Topic')\">Topic</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Units')\">Units</th>" +
+                                                            "<th scope=\"col\" onclick=\"sortDroppedOnClick('Status')\">Status</th>" +
+                                                            "<th scope=\"col\">ASR</th>" +
+                                                        "</tr>" +
+                                                    "</thead>" +
+                                                    "<tbody>";
 
                                             for (var i = 0; i < result.droppedClasses.length; i++) {
-
                                                 html += "" +
                                                     "<tr>" +
-                                                    "<td>" + result.droppedClasses[i].TERM_DESCR30__c + "</td>" +
-                                                    "<td>" + result.droppedClasses[i].SESSION_CODE__c + "</td>" +
-                                                    "<td>" + Math.floor(result.droppedClasses[i].CLASS_NBR__c) + "</td>" +
-                                                    "<td>" + result.droppedClasses[i].SUBJECT__c + " " + result.droppedClasses[i].CATALOG_NBR__c + "</td>" +
-                                                    "<td>" + result.droppedClasses[i].CLASS_DESCR__c + "</td>" +
-                                                    "<td>" + result.droppedClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
-                                                    "<td>" + result.droppedClasses[i].UNT_TAKEN__c + "</td>" +
-                                                    "<td>" + result.droppedClasses[i].ENRL_STATUS_REASON__c + "</td>" +
-                                                    "<td>" + "--" + "</td>" +
+                                                        "<th scope=\"row\">" + result.droppedClasses[i].TERM_DESCR30__c + "</td>" +
+                                                        "<td data-header=\"Session\">" + result.droppedClasses[i].SESSION_CODE__c + "</td>" +
+                                                        "<td data-header=\"Class\">" + Math.floor(result.droppedClasses[i].CLASS_NBR__c) + "</td>" +
+                                                        "<td data-header=\"Course\">" + result.droppedClasses[i].SUBJECT__c + " " + result.droppedClasses[i].CATALOG_NBR__c + "</td>" +
+                                                        "<td data-header=\"Title\">" + result.droppedClasses[i].CLASS_DESCR__c + "</td>" +
+                                                        "<td data-header=\"Topic\">" + result.droppedClasses[i].SSR_CLSTOPIC_DESCR__c + "</td>" +
+                                                        "<td data-header=\"Units\">" + result.droppedClasses[i].UNT_TAKEN__c + "</td>" +
+                                                        "<td data-header=\"Status\">" + result.droppedClasses[i].ENRL_STATUS_REASON__c + "</td>" +
+                                                        "<td data-header=\"ASR\">" + "--" + "</td>" +
                                                     "</tr>";
                                             }
 
@@ -4131,9 +4223,9 @@
 
                                             document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
                                             cleanUpUndefined("ps_dropped_withdrawn_classes");
+
                                         } else {
-                                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML =
-                                                'No dropped or withdrawn classes found.';
+                                            document.getElementById("psDroppedWithdrawnClassesErrors").innerHTML = 'No dropped or withdrawn classes found.';
                                         }
 
                                         filterClasses();

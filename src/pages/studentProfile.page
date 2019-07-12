@@ -885,23 +885,33 @@
                             <div class="row">
                                 <apex:outputPanel id="generalStatus">
                                     <div class="col-sm-6">
-                                        <table class="table table-striped asu-detail-table">
+                                        <table id="generalStatusTable" class="table table-striped asu-detail-table">
                                             <tr>
                                                 <th>Current Academic Level</th>
                                                 <td id="profileHeaderTD">{!IF(ISBLANK(studentProgram.Cohort__c), '--', studentProgram.Cohort__c)}</td>
                                             </tr>
-                                            <tr>
-                                                <th>{!currentTermName} Term Enrolled Hours</th>
-                                                <td id="currentTermEnrolled">
+                                            <tr id="currentTermEnrolledHours" class="grad-row-toggle">
+                                                <th>
+                                                    <span class="hide" style="margin-right:5px;color:#990033;">
+                                                        <i class="fa fa-caret-right"></i>
+                                                    </span>
+                                                    {!currentTermName} Term Enrolled Hours
+                                                </th>
+                                                <td id="currentTermEnrolled" style="font-weight:bold;">
                                                     {!IF(ISBLANK(studentProgram.Enrl_Hrs__c), '--', '')}
                                                     <apex:outputText value="{0,number,####}">
                                                         <apex:param value="{!studentProgram.Enrl_Hrs__c}"/>
                                                     </apex:outputText>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <th>{!nextTermName} Term Enrolled Hours</th>
-                                                <td id="nextTermEnrolled">
+                                            <tr id="nextTermEnrolledHours" class="grad-row-toggle">
+                                                <th>
+                                                    <span class="hide" style="margin-right:5px;color:#990033;">
+                                                        <i class="fa fa-caret-right"></i>
+                                                    </span>
+                                                    {!nextTermName} Term Enrolled Hours
+                                                </th>
+                                                <td id="nextTermEnrolled" style="font-weight:bold;">
                                                     {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')}
                                                     <apex:outputText value="{0,number,####}">
                                                         <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}"/>
@@ -4052,11 +4062,59 @@
                         if (errorAsr) {
                             document.getElementById("psAdvisingNotesResponseErrors").innerHTML = errorAsr;
                         } else {
-                            var classResponse = response.records;
-                            var asrResponse = responseAsr.records;
+                            let classResponse = response.records;
+                            let asrResponse = responseAsr.records;
+                            let currentTermClassSessionMap = new Map();
+                            let currentTermEnrolled = 0;
+                            let nextTermClassSessionMap = new Map();
+                            let nextTermEnrolled = 0;
+
                             classResponse.forEach(function (record) {
                                 delete record.attributes;
+
+                                if (record.STDNT_ENRL_STATUS__c === "E" && record.ENRL_STATUS_REASON__c === "ENRL") {
+                                    if (record.STRM__c === "{!currentTerm}") {
+                                        currentTermEnrolled += record.UNT_TAKEN__c;
+                                        if (!currentTermClassSessionMap.has(record.SESSION_CODE__c)) {
+                                            currentTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
+                                        } else {
+                                            currentTermClassSessionMap.set(record.SESSION_CODE__c, (currentTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
+                                        }
+                                    } else if (record.STRM__c === "{!nextTerm}") {
+                                        nextTermEnrolled += record.UNT_TAKEN__c;
+                                        if (!nextTermClassSessionMap.has(record.SESSION_CODE__c)) {
+                                            nextTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
+                                        } else {
+                                            nextTermClassSessionMap.set(record.SESSION_CODE__c, (nextTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
+                                        }
+                                    }
+                                }
                             });
+
+                            buildSessionRows(currentTermClassSessionMap, "#currentTermEnrolledHours", "#currentTermEnrolled", currentTermEnrolled);
+                            buildSessionRows(nextTermClassSessionMap, "#nextTermEnrolledHours", "#nextTermEnrolled", nextTermEnrolled);
+
+                            function buildSessionRows(sessionMap, termHoursId, termEnrolledId, termEnrolledHours) {
+                                let termRowHTML = "";
+
+                                new Map([...sessionMap.entries()].sort()).forEach(function(value, key) {
+                                    termRowHTML += "" +
+                                        "<tr class=\"gradExtraInfo hide\">\n" +
+                                            "<th class=\"gradTD\" style=\"border-right:none;\">\n" +
+                                                "<span style=\"margin-left:3rem;\">Session " + key + "</span>\n" +
+                                            "</th>\n" +
+                                            "<td class=\"gradTD\" style=\"border-left:none;\">\n" +
+                                                "" + value + "\n" +
+                                            "</td>\n" +
+                                        "</tr>";
+                                });
+
+                                if (currentTermEnrolled > 0) {
+                                    $j(termHoursId).after(termRowHTML).find("span.hide").removeClass("hide");
+                                    $j(termEnrolledId).html(termEnrolledHours);
+                                }
+                            }
+
                             asrResponse.forEach(function (record) {
                                 delete record.attributes;
                             });

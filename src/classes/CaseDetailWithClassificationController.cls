@@ -12,7 +12,6 @@ global with sharing class CaseDetailWithClassificationController {
         ];
         ccPicklist = new CaseClassificationPicklistService();
         ccPicklist.setCurrentCaseClassification(caseRecord);
-        buildCaseStatusPicklist();
     }
     
     public void saveCase() {

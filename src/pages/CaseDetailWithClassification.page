@@ -7,7 +7,7 @@
                         <tr style="display:none" id="caseDetailInlineButtons">
                             <td class="pbButton">
                                 <apex:commandButton action="{!saveCase}" value="Save" oncomplete="reloadPage();"/>
-                                <apex:commandButton action="{!resetDetails}" value="Clear"/>
+                                <apex:commandButton action="{!resetDetails}" value="Clear" reRender="wrapper" oncomplete="clearCaseClassificationDetails();"/>
                             </td>
                         </tr>
                     </tbody>

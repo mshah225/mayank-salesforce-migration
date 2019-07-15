@@ -33,6 +33,7 @@ global with sharing class StudentProfileController {
     public String deceased { get; set; }
     public String currentTerm { get; set; }
     public String currentTermName { get; set; }
+    public String nextTerm { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
     
@@ -152,6 +153,7 @@ global with sharing class StudentProfileController {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         String nextTermPeoplesoftCode = currentTermData.NextTerm__c;
         currentTerm = currentTermData.CurrTerm__c;
+        nextTerm = currentTermData.NextTerm__c;
 
         List<TERM__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c

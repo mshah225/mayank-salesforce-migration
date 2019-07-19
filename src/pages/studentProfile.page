@@ -1113,7 +1113,7 @@
                                         <div class="col-sm-12">
                                             <table class="table table-striped">
                                                 <tr>
-                                                    <th>Past Due TIP</th>
+                                                    <th title="Tuition Installment Plan">Past Due TIP</th>
                                                     <td id="account_balance_past_due_tip">
                                                         {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
                                                         <apex:outputText value="{0, number, currency}">
@@ -1861,7 +1861,7 @@
                                     <div class="col-sm-6">
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
-                                                <th>Past Due TIP</th>
+                                                <th title="Tuition Installment Plan">Past Due TIP</th>
                                                 <td id="sr_past_due_tip"></td>
                                             </tr>
                                             <tr>
@@ -1986,8 +1986,7 @@
                                                 Graduate GPA
                                             </th>
                                             <td class="gradTD">
-                                                2.8
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Date
@@ -2001,8 +2000,7 @@
                                                 iPOS GPA
                                             </th>
                                             <td class="gradTD">
-                                                --
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Advisor
@@ -2355,8 +2353,7 @@
                                                 Graduate GPA
                                             </th>
                                             <td class="gradTD">
-                                                2.8
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Date
@@ -2370,8 +2367,7 @@
                                                 iPOS GPA
                                             </th>
                                             <td class="gradTD">
-                                                --
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Advisor
@@ -2852,7 +2848,7 @@
 
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
-                                                <th>Past Due Tip</th>
+                                                <th title="Tuition Installment Plan">Past Due Tip</th>
                                                 <td id="gr_pastDueTip"></td>
                                             </tr>
                                             <tr>

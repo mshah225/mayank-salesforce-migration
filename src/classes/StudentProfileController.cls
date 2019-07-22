@@ -53,13 +53,14 @@ global with sharing class StudentProfileController {
     public String completedAcadmicIntegrity {
         get {
             if (completedAcadmicIntegrity == null) {
-                Checklist_Item__c academicIntegrity = [
+                List<Checklist_Item__c> academicIntegrity = [
                     SELECT Checklist_Item_Status__c
                     FROM Checklist_Item__c
                     WHERE Checklist_Code__c = 'SRACIN' AND Checklist_Item_Status__c != 'X'
                     AND Contact__c =: theContact.Id
+                    LIMIT 1
                 ];
-                if (academicIntegrity != null && academicIntegrity.Checklist_Item_Status__c.equals('Completed')) {
+                if (!academicIntegrity.isEmpty() && academicIntegrity[0].Checklist_Item_Status__c.equals('Completed')) {
                     completedAcadmicIntegrity = 'Completed';
                 } else {
                     completedAcadmicIntegrity = 'No';

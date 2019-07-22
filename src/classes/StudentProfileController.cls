@@ -50,6 +50,26 @@ global with sharing class StudentProfileController {
         set;
     }
 
+    public String completedAcadmicIntegrity {
+        get {
+            if (completedAcadmicIntegrity == null) {
+                Checklist_Item__c academicIntegrity = [
+                    SELECT Checklist_Item_Status__c
+                    FROM Checklist_Item__c
+                    WHERE Checklist_Code__c = 'SRACIN' AND Checklist_Item_Status__c != 'X'
+                    AND Contact__c =: theContact.Id
+                ];
+                if (academicIntegrity != null && academicIntegrity.Checklist_Item_Status__c.equals('Completed')) {
+                    completedAcadmicIntegrity = 'Completed';
+                } else {
+                    completedAcadmicIntegrity = 'No';
+                }
+            }
+            return completedAcadmicIntegrity;
+        }
+        set;
+    }
+
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');

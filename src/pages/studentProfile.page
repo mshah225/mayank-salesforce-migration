@@ -2157,16 +2157,6 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Completed Academic Integrity
-                                            </th>
-                                            <td class="gradTD">
-                                                Y
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
@@ -2875,6 +2865,10 @@
                                             <tr>
                                                 <th>Cumulative GPA</th>
                                                 <td id="gr_cumulativeGPA"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Completed Academic Integrity</th>
+                                                <td id="gr_academicIntegrity">{!completedAcadmicIntegrity}</td>
                                             </tr>
                                         </table>
                                     </div>

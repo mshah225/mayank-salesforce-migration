@@ -790,8 +790,18 @@
                                         <div class="col-sm-6">
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
-                                                    <th>WUE</th>
+                                                    <th title="Western Undergraduate Exchange">
+                                                        WUE
+                                                        <i class="fa fa-question-circle"></i>
+                                                    </th>
                                                     <td>{!IF(theContact.WUE__c, 'Y', 'N')}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th title="Western Interstate Commission for Higher Educations">
+                                                        WICHE
+                                                        <i class="fa fa-question-circle"></i>
+                                                    </th>
+                                                    <td>{!IF(WICHE, 'Y', 'N')}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Residency</th>

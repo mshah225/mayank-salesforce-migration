@@ -117,6 +117,18 @@ global with sharing class StudentProfileController {
         contactName = ApexPages.currentPage().getParameters().get('contactName');
     }
 
+    public Boolean getWICHE() {
+        Boolean WICHE = false;
+
+        for (Student_Group__c sg : sGroupList) {
+            if (sg.SG_Status__c && sg.SG_PeopleSoft_Code__c.equals('WRGP')) {
+                WICHE = true;
+            }
+        }
+
+        return WICHE;
+    }
+    
     private void setContactRecord() {
 
         if (Validator.validateId(contactId, Contact.class)) {

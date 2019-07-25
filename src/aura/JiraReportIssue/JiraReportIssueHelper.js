@@ -11,11 +11,13 @@
         var answerTwo = component.get("v.answerTwo").replace(/\n/g, "\\n");
         var answerThree = component.get("v.answerThree").replace(/\n/g, "\\n");
         var watchers = component.get("v.watchers");
+        var requestForm = component.get("v.requestForm");
         var type = component.get("v.type");
 
         var problemDescription = questionOne + '\\n' + answerOne + '\\n'
             + questionTwo + '\\n' + answerTwo + '\\n'
-            + questionThree + '\\n' + answerThree + '\\n';
+            + questionThree + '\\n' + answerThree + '\\n'
+            + 'Request Form: ' + '\\n' + requestForm + '\\n';
 
 
         var action = component.get('c.callout');
@@ -47,6 +49,7 @@
         component.set("v.answerTwo", "");
         component.set("v.answerThree", "");
         component.set("v.watchers", "");
+        component.set("v.requestForm", "");
     },
 
     navigateToIssue: function (component) {

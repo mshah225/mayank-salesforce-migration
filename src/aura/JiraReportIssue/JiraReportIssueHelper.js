@@ -16,10 +16,12 @@
 
         var problemDescription = questionOne + '\\n' + answerOne + '\\n'
             + questionTwo + '\\n' + answerTwo + '\\n'
-            + questionThree + '\\n' + answerThree + '\\n'
-            + 'Request Form: ' + '\\n' + requestForm + '\\n';
-
-
+            + questionThree + '\\n' + answerThree + '\\n';
+        
+        if (requestForm != undefined) {
+            problemDescription += 'Request Form: ' + '\\n' + requestForm + '\\n';
+        }
+        
         var action = component.get('c.callout');
         action.setParams({
             'title': title,

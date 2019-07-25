@@ -7,15 +7,16 @@
         var questionOne = component.get("v.questionOne");
         var questionTwo = component.get("v.questionTwo");
         var questionThree = component.get("v.questionThree");
-        var answerOne = component.get("v.answerOne").replace("\n", "\\n");
-        var answerTwo = component.get("v.answerTwo").replace("\n", "\\n");
-        var answerThree = component.get("v.answerThree").replace("\n", "\\n");
+        var answerOne = component.get("v.answerOne").replace(/\n/g, "\\n");
+        var answerTwo = component.get("v.answerTwo").replace(/\n/g, "\\n");
+        var answerThree = component.get("v.answerThree").replace(/\n/g, "\\n");
         var watchers = component.get("v.watchers");
         var type = component.get("v.type");
 
         var problemDescription = questionOne + '\\n' + answerOne + '\\n'
             + questionTwo + '\\n' + answerTwo + '\\n'
             + questionThree + '\\n' + answerThree + '\\n';
+
 
         var action = component.get('c.callout');
         action.setParams({

@@ -9,12 +9,12 @@
             "c:JiraAddCommentForm",
             {
                 "aura:id": "findableAuraId",
-                "ticketKey": event.target.id,
+                "ticketKey": event.target.getAttribute('name'),
                 "questionOne": "What environment will be used for testing?",
                 "questionTwo": "Test plan (including test cases):",
                 "questionThree": "Tester(s):",
                 "questionFour" : "What configuration changes need to be made?",
-                "status": "Ready For QA Testing",
+                "status": "In Testing",
                 "modalHeader" : "Testing Form for " + event.target.getAttribute('name')
             },
             function(newModal, status, errorMessage){
@@ -38,15 +38,15 @@
             "c:JiraAddCommentForm",
             {
                 "aura:id": "findableAuraId",
-                "ticketKey": event.target.id,
+                "ticketKey": event.target.getAttribute('name'),
                 "questionOne": "Brief summary of the changes:",
                 "questionTwo": "What was the QA Test Plan?",
                 "questionThree": "Name of Admin who tested and signed off:",
                 "questionFour": "Name of stakeholder representative who signed off:",
                 "questionFive": "What metadata needs to be migrated?",
                 "questionSix": "What configuration and security changes need to be made before or after deploy?",
-                "status": "2nd Technical Review",
-                "modalHeader" : "Second Tech Form for " + event.target.getAttribute('name')
+                "status": "Technical Review",
+                "modalHeader" : "Tech Form for " + event.target.getAttribute('name')
             },
             function(newModal, status, errorMessage) {
                 if (status === "SUCCESS") {

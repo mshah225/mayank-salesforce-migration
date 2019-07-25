@@ -129,7 +129,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue%22%26Status%21%3DMigrated%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D"Close%20Issue"%26Status!%3DMigrated%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);
@@ -189,16 +189,16 @@ global class JIRAWebserviceCallout {
         String statusKey;
         switch on statusName {
             when 'Open' {
-                statusKey = '11';
+                statusKey = '131';
             }	
-            when 'Ready For QA Testing' {
-                statusKey = '401';
+            when 'In Testing' {
+                statusKey = '81';
             }
-            when '2nd Technical Review' {
-                statusKey = '121';
+            when 'Technical Review' {
+                statusKey = '91';
             }
             when 'New Development Request' {
-                statusKey = '161';
+                statusKey = '11';
             }
             when 'New' {
                 statusKey = '3';

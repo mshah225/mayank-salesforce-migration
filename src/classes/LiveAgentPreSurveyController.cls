@@ -8,15 +8,6 @@ public class LiveAgentPreSurveyController {
     public String caseSubject {set; get;}
     public String presurveyQuestion {set; get;}
     public String agentOfflineMessage {set; get;}
-    public String uniqueKey {
-        set; 
-        get {
-            String hashString = String.valueOf(Math.random() * 100000) + String.valueOf(Datetime.now().formatGMT('yyyy-MM-dd HH:mm:ss.SSS'));
-            Blob hash = Crypto.generateDigest('MD5', Blob.valueOf(hashString));
-            String hexDigest = EncodingUtil.convertToHex(hash);
-            return hexDigest;
-        }
-    }
     public Live_Agent_Button__c buttonConfig {set; get;}
     
     public LiveAgentPreSurveyController() {

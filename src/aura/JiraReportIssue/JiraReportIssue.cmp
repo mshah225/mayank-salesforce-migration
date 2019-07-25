@@ -31,11 +31,14 @@
             <p class="fieldDescription">FIELD LIMIT: This field must be less than 255 characters.</p>
 
             <lightning:textarea aura:id="questionOneResponse" label="{!v.questionOne}" value="{!v.answerOne}"
-                required="true" />
+                maxlength="3000" required="true" />
+            <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
             <lightning:textarea aura:id="questionTwoResponse" label="{!v.questionTwo}" value="{!v.answerTwo}"
-                required="true" />
+                maxlength="3000" required="true" />
+            <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
             <lightning:textarea aura:id="questionThreeResponse" label="{!v.questionThree}" value="{!v.answerThree}"
-                required="true" />
+                maxlength="3000" required="true" />
+            <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
             <lightning:textarea label="Watchers for the ticket: " value="{!v.watchers}" />
             <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE
                 must be separated with a comma.</p>

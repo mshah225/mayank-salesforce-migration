@@ -465,7 +465,7 @@
                                                     status="loadingStatus3"/>
 
                                 <apex:commandButton id="studentProfileButton"
-                                                    onclick="openStudentProfile('{!contactsrch.EMPLID__C}', '{!contactName}'); return false;"
+                                                    onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
                                                     value="Student Profile"
                                                     disabled="{!NOT(isContactSet && NOT(ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''))}"
                                                     reRender="innersecond"
@@ -632,7 +632,7 @@
                                                     status="loadingStatus4"/>
 
                                 <apex:commandButton id="studentProfileButtonCase"
-                                                    onclick="openStudentProfile('{!contactsrch.EMPLID__C}', '{!contactName}'); return false;"
+                                                    onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
                                                     value="Student Profile"
                                                     disabled="{!ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''}"
                                                     reRender="innersecond"

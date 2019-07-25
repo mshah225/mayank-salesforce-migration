@@ -28,7 +28,6 @@
                 <label for="caseProblem">{!presurveyQuestion}*</label>
                 <br /><input type='textarea' class='mobileResponse placeHolderFont searchBox' style="width:100% !important;" name='liveagent.prechat:Case_Problem' id='caseProblem' required="true" placeholder="Enter a brief description of your issue."/><br />
                 <p class="mobileReminder">*Designates a required field.</p>
-                <input type='hidden' name='liveagent.prechat:caseChatID' id='chatIdField'/>
                 <input type='hidden' name='liveagent.prechat:CaseDescription' id="caseDescription" value=""/><br />
                 <input type="hidden" name="liveagent.prechat:CaseStatus" value="New" />
                 <input type="hidden" name="liveagent.prechat:CaseSubject" value="{!caseSubject}" />
@@ -42,10 +41,10 @@
                 <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!contactId}'/>
                 <input type='hidden' name='liveagent.prechat:Contact_Name' id='contactName' value='Non-Authenticated Caller'/>
                 <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId; Name, contactName" />
-                <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory; ChatCaseID__c,caseChatID;" />       
+                <input type="hidden" name="liveagent.prechat.findorcreate.map:Case" value="Subject,CaseSubject; Description, CaseDescription; Status,CaseStatus;Origin__c,CaseOrigin;RecordTypeId,CaseRecordType; OwnerId, CaseOwner; CC_Functional_Group__c, CaseFunctionalGroup; CC_Category__c, CaseCategory; CC_Sub_Category__c, CaseSubCategory;" />       
                 <input type="hidden" name="liveagent.prechat.findorcreate.map.doFind:Contact" value="Id,true" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.map.isExactMatch:Contact" value="Id,true;" />
-                <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Subject,true; Description, true; Status,true;Origin__c,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true; ChatCaseID__c,true;" />
+                <input type="hidden" name="liveagent.prechat.findorcreate.map.doCreate:Case" value="Subject,true; Description, true; Status,true;Origin__c,true;RecordTypeId,true; OwnerId, true; CC_Functional_Group__c, true; CC_Category__c, true; CC_Sub_Category__c, true;" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.linkToEntity:Contact" value="Case,ContactId" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Contact" value="true" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.showOnCreate:Case" value="true" />
@@ -67,8 +66,6 @@
             </div>
             <script type="text/javascript">
             
-            document.getElementById('chatIdField').value = '{!uniqueKey}';
-
             function setFields() {
                 setDescription();
                 setName();

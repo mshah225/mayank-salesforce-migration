@@ -36,6 +36,7 @@
                 component.set("v.message", "Jira Issue Successfully Created");
                 var link = "https://asudev.jira.com/browse/" + key;
                 component.set("v.link", link);
+                component.set("v.displayLink", true);
                 this.clearInputs(component);
             } else {
                 component.set("v.message", "Cannot create JIRA ticket, please email your request to salesforce.development@asu.edu");

@@ -7,6 +7,7 @@
 
     <aura:attribute name="message" type="String" />
     <aura:attribute name="link" type="String" />
+    <aura:attribute name="displayLink" type="Boolean" default="false"/>
     <aura:attribute name="title" type="String" />
     <aura:attribute name="answerOne" type="String" />
     <aura:attribute name="answerTwo" type="String" />
@@ -25,6 +26,7 @@
             <center>{!v.message}</center>
         </h3>
         <h3 style="color:blue;" class="slds-text-link_faux slds-align_absolute-center" onclick="{!c.navigateToIssue}">{!v.link}</h3>
+        <h3 style="color:blue; border-bottom: 0px !important; text-decoration:underline;" class="slds-text-link_faux slds-align_absolute-center" onclick="{!c.navigateToIssue}" rendered="{!v.displayLink}">{!v.link}</h3>
 
         <form class="slds-form--stacked">
             <lightning:textarea aura:id="descriptionResponse" label="Summary of the issue (Title): " value="{!v.title}"

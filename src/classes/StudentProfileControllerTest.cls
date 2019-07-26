@@ -172,4 +172,33 @@ private class StudentProfileControllerTest {
 
         System.assert(result, 'WICHE was not detected correctly');
     }
+
+    @IsTest
+    private static void getAccelerated() {
+        Contact testContact = new Contact(
+                FirstName = 'Super',
+                LastName = 'Gary',
+                EMPLID__c = '1234567890'
+        );
+        Database.insert(testContact);
+
+        Student_Group__c testGroup = new Student_Group__c(
+                SG_Contact__c = testContact.Id,
+                SG_PeopleSoft_Code__c = 'GRAI',
+                SG_Status__c = true
+        );
+        Database.insert(testGroup);
+
+        Test.startTest();
+        Test.setCurrentPage(Page.studentProfile);
+        ApexPages.currentPage().getParameters().put(
+                'contactId', testContact.Id
+        );
+        StudentProfileController profile = new StudentProfileController();
+        profile.init();
+        Boolean result = profile.getAccelerated();
+        Test.stopTest();
+
+        System.assert(result, 'Accelerated  was not detected correctly');
+    }
 }

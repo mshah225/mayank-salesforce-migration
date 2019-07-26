@@ -364,6 +364,13 @@
 
         .program-indicator-count {
             background: #fed039;
+        }
+
+        .accelerated-indicator {
+            background: #00A3E0;
+        }
+
+        .program-indicator-count, .accelerated-indicator {
             padding: 1px 5px;
             color: #fff;
             font-size: 14px;

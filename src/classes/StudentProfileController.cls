@@ -128,6 +128,18 @@ global with sharing class StudentProfileController {
 
         return WICHE;
     }
+
+    public Boolean getAccelerated() {
+        Boolean accelerated = false;
+
+        for (Student_Group__c sg: sGroupList) {
+            if (sg.SG_Status__c && sg.SG_PeopleSoft_Code__c.equals('GRAI')) {
+                accelerated = true;
+            }
+        }
+
+        return accelerated;
+    }
     
     private void setContactRecord() {
 

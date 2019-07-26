@@ -1985,8 +1985,7 @@
                                                 Cumlative GPA
                                             </th>
                                             <td class="gradTD">
-                                                2.8
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Document Type
@@ -2342,8 +2341,7 @@
                                                 Cumlative GPA
                                             </th>
                                             <td class="gradTD">
-                                                2.8
-                                                <!--<c:sp_GPA gpa="{!ENTER_GPA_FIELD_HERE__C}"/>-->
+                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Document Type

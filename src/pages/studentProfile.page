@@ -390,7 +390,7 @@
                             </div>
 
                             <td>
-                                <a href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
+                                <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ACADEMIC_ADVISING_STAFF.ASU_AA_POS_SRCH_FL.GBL?EMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     IPOS
                                 </a>

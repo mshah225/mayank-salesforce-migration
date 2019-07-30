@@ -357,7 +357,7 @@ global with sharing class StudentProfileController {
     }
 
     public void setGraduateStudentProgramPlanMilestone() {
-        List<Id> planCode = new List<Id>();
+        List<String> planCode = new List<String>();
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
             planCode.add(gppw.gradProgramPlan.Plan_Code__c);
         }
@@ -743,7 +743,7 @@ global with sharing class StudentProfileController {
         public Student_Milestone__c gradMilestone {get; set;}
         public String defenseDate {
             get {
-                if (gradMilestone.Defense_Date_Time__c == null) {
+                if (gradMilestone == null || gradMilestone.Defense_Date_Time__c == null) {
                     return '--';
                 } else {
                     return String.valueOf(Date.newInstance(gradMilestone.Defense_Date_Time__c.year(), gradMilestone.Defense_Date_Time__c.month(), gradMilestone.Defense_Date_Time__c.day()));
@@ -753,7 +753,7 @@ global with sharing class StudentProfileController {
         }
         public String defenseTime {
             get {
-                if (gradMilestone.Defense_Date_Time__c == null) {
+                if (gradMilestone == null || gradMilestone.Defense_Date_Time__c == null) {
                     return '--';
                 } else {
                     return gradMilestone.Defense_Date_Time__c.format('HH:mm:ss');

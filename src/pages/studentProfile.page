@@ -2091,7 +2091,7 @@
                                                 IPOS Status Date
                                             </th>
                                             <td class="gradTD">
-                                                10/29/2008
+                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Building
@@ -2427,7 +2427,7 @@
                                                 IPOS Status Date
                                             </th>
                                             <td class="gradTD">
-                                                10/29/2008
+                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Building
@@ -2537,7 +2537,7 @@
                                                 Applied To graduate
                                             </th>
                                             <td class="gradTD">
-                                                Y
+                                                {!gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

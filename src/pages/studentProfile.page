@@ -2139,7 +2139,7 @@
                                                 Final Defense Results Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Grad_Format_Final_Defense_Results_Status__c} 
+                                                {!gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2475,7 +2475,7 @@
                                                 Final Defense Results Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Grad_Format_Final_Defense_Results_Status__c}  
+                                                {!gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c}  
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

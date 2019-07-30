@@ -359,7 +359,7 @@ global with sharing class StudentProfileController {
     public void setGraduateStudentProgramPlanMilestone() {
         List<Id> planCode = new List<Id>();
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
-            programPlansUsed.add(gppw.gradProgramPlan.Plan_Code__c);
+            planCode.add(gppw.gradProgramPlan.Plan_Code__c);
         }
         List<Student_Milestone__c> defenseMilestones = [
             SELECT Defense_Building__c, Defense_Date__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c, Defense_Time__c

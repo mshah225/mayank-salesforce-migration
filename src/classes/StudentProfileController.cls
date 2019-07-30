@@ -243,6 +243,7 @@ global with sharing class StudentProfileController {
         setUndergraduateStudentProgramPlanAdvisors();
         setGraduateStudentProgramPlanAdvisors();
         setGraduateStudentProgramPlanCommitteesAndAdvisors();
+        setGraduateStudentProgramPlanMilestone();
     }
 
     private void setStudentProgramPlans() {
@@ -350,6 +351,28 @@ global with sharing class StudentProfileController {
                     gppw.gradCommittees.add(sppa);
                 } else if (programPlanId == sppa.Student_Program_Plan__c) {
                     gppw.gradAdvisors.add(sppa);
+                }
+            }
+        }
+    }
+
+    public void setGraduateStudentProgramPlanMilestone() {
+        List<Id> planCode = new List<Id>();
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            programPlansUsed.add(gppw.gradProgramPlan.Plan_Code__c);
+        }
+        List<Student_Milestone__c> defenseMilestones = [
+            SELECT Defense_Building__c, Defense_Date__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c, Defense_Time__c
+            Grad_Format_Final_Defense_Results_Status__c, Grad_Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c
+            FROM Student_Milestone__c
+            WHERE Contact__c =: gppw.gradProgramPlan.Contact__c
+            AND Acad_Plan__r.Plan_Code__c IN: planCode AND Milestone__c = 'GRDEFENSE'
+        ];
+
+        for (Student_Milestone__c milestone : defenseMilestones) {
+            for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
+                if (milestone.Acad_Plan__r.Plan_Code__c == gppw.gradProgramPlan.Plan_Code__c) {
+                    gppw.gradMilestone = milestone;
                 }
             }
         }
@@ -717,6 +740,27 @@ global with sharing class StudentProfileController {
     }
 
     public class GraduateProgramPlanWrapper {
+        public Student_Milestone__c gradMilestone {get; set;}
+        public String defenseDate {
+            get {
+                if (gradMilestone.Defense_Date_Time__c == null) {
+                    return '--';
+                } else {
+                    return String.valueOf(Date.newInstance(gradMilestone.Defense_Date_Time__c.year(), gradMilestone.Defense_Date_Time__c.month(), gradMilestone.Defense_Date_Time__c.day()));
+                }
+            }
+            set;
+        }
+        public String defenseTime {
+            get {
+                if (gradMilestone.Defense_Date_Time__c == null) {
+                    return '--';
+                } else {
+                    return gradMilestone.Defense_Date_Time__c.format('HH:mm:ss');
+                }
+            }
+            set;
+        }
         public Student_Program_Plan__c gradProgramPlan {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}

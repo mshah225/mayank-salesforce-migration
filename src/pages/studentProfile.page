@@ -1982,7 +1982,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Cumlative GPA
+                                                Cumulative GPA
                                             </th>
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
@@ -1991,7 +1991,7 @@
                                                 Document Type
                                             </th>
                                             <td class="gradTD">
-                                                Dissertation
+                                                {!gradProgram.gradMilestone.Format_Document_Type__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2002,10 +2002,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status Date
+                                                Format Status
                                             </th>
                                             <td class="gradTD">
-                                                Dissertation
+                                                {!gradProgram.gradMilestone.Format_Status__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2016,10 +2016,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Advisor
+                                                Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
-                                                Chasaty
+                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2030,31 +2030,19 @@
                                                 Yes
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status
-                                            </th>
-                                            <td class="gradTD">
-                                                Format Approved
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                            <th colspan="2" class="gradTD">
-                                                Format Status Last Updated
-                                            </th>
-                                            <td class="gradTD">
-                                                11/27/2018
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                            <th colspan="2" class="gradTD">
                                                 Advanced To Candidacy
                                             </th>
                                             <td class="gradTD">
                                                 Y
                                             </td>
+                                        </tr>
+                                        <tr class="gradExtraInfo hide">
+                                            <th colspan="2" class="gradTD"></th>
+                                            <td class="gradTD"></td>
+                                        </tr>
+                                        <tr class="gradExtraInfo hide">
+                                            <th colspan="2" class="gradTD"></th>
+                                            <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
@@ -2067,7 +2055,7 @@
                                                 Defense Status
                                             </th>
                                             <td class="gradTD">
-                                                Scheduled
+                                                {!gradProgram.gradMilestone.Defense_Status__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2081,7 +2069,7 @@
                                                 Defense Date
                                             </th>
                                             <td class="gradTD">
-                                                23/08/2019
+                                                {!gradProgram.defenseDate} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2095,7 +2083,7 @@
                                                 Defense Time
                                             </th>
                                             <td class="gradTD">
-                                                10:00 AM
+                                                {!gradProgram.defenseTime}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2109,7 +2097,7 @@
                                                 Building
                                             </th>
                                             <td class="gradTD">
-                                                ENGRC ENGINEERING Research Center
+                                                {!gradProgram.gradMilestone.Defense_Building__c}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2123,7 +2111,7 @@
                                                 Room
                                             </th>
                                             <td class="gradTD">
-                                                593
+                                                {!gradProgram.gradMilestone.Defense_Room__c}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2137,7 +2125,7 @@
                                                 Location
                                             </th>
                                             <td class="gradTD">
-                                                Shanghai, China
+                                                {!gradProgram.gradMilestone.Defense_Location__c}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2151,7 +2139,7 @@
                                                 Final Defense Results Status
                                             </th>
                                             <td class="gradTD">
-                                                --
+                                                {!gradProgram.gradMilestone.Grad_Format_Final_Defense_Results_Status__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2165,7 +2153,7 @@
                                                 Final Defense results Status Date/Time
                                             </th>
                                             <td class="gradTD">
-                                                --
+                                                {!gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2347,7 +2335,7 @@
                                                 Document Type
                                             </th>
                                             <td class="gradTD">
-                                                Dissertation
+                                                {!gradProgram.gradMilestone.Format_Document_Type__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2358,10 +2346,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status Date
+                                                Format Status
                                             </th>
                                             <td class="gradTD">
-                                                Dissertation
+                                                {!gradProgram.gradMilestone.Format_Status__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2372,10 +2360,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Advisor
+                                                Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
-                                                Chasaty
+                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2385,26 +2373,6 @@
                                             <td class="gradTD">
                                                 Yes
                                             </td>
-                                            <th colspan="2" class="gradTD">
-                                                Format Status
-                                            </th>
-                                            <td class="gradTD">
-                                                Format Approved
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                            <th colspan="2" class="gradTD">
-                                                Format Status Last Updated
-                                            </th>
-                                            <td class="gradTD">
-                                                11/27/2018
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
                                             <th colspan="2" class="gradTD">
                                                 Advanced To Candidacy
                                             </th>
@@ -2417,13 +2385,13 @@
                                                 IPOS Status
                                             </th>
                                             <td class="gradTD">
-                                                Approved
+                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Status
                                             </th>
                                             <td class="gradTD">
-                                                Scheduled
+                                                {!gradProgram.gradMilestone.Defense_Status__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2437,7 +2405,7 @@
                                                 Defense Date
                                             </th>
                                             <td class="gradTD">
-                                                23/08/2019
+                                                {!gradProgram.defenseDate}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2451,7 +2419,7 @@
                                                 Defense Time
                                             </th>
                                             <td class="gradTD">
-                                                10:00 AM
+                                                {!gradProgram.defenseTime}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2465,7 +2433,7 @@
                                                 Building
                                             </th>
                                             <td class="gradTD">
-                                                ENGRC ENGINEERING Research Center
+                                                {!gradProgram.gradMilestone.Defense_Building__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2479,7 +2447,7 @@
                                                 Room
                                             </th>
                                             <td class="gradTD">
-                                                593
+                                                {!gradProgram.gradMilestone.Defense_Room__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2493,7 +2461,7 @@
                                                 Location
                                             </th>
                                             <td class="gradTD">
-                                                Shanghai, China
+                                                {!gradProgram.gradMilestone.Defense_Location__c}  
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2507,7 +2475,7 @@
                                                 Final Defense Results Status
                                             </th>
                                             <td class="gradTD">
-                                                --
+                                                {!gradProgram.gradMilestone.Grad_Format_Final_Defense_Results_Status__c}  
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2518,10 +2486,10 @@
                                                 {!gradProgram.gradProgramPlan.Tot_Cumulative__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Final Defense results Status Date/Time
+                                                Final Defense Results Status Date/Time
                                             </th>
                                             <td class="gradTD">
-                                                --
+                                                {!gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c}   
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

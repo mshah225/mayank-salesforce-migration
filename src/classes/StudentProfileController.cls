@@ -187,7 +187,7 @@ global with sharing class StudentProfileController {
         studentMilestonesGrad = [
             SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c,
                 Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
-                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c
+                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
             AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
             ORDER BY Effdt__c DESC
@@ -249,14 +249,15 @@ global with sharing class StudentProfileController {
     private void setStudentProgramPlans() {
         List<Student_Program_Plan__c> allProgramPlans = [
             SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c,
-                Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c,
+                Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Admission_Type_Description__c, Appt_Dt__c,
                 Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c,
                 Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c, Grad_Applied_to_Graduate_Term__c,
                 Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
                 Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
                 Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
                 Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c,
-                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c
+                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c, Degree_Checkout_Status_Name__c,
+                Grad_Culminating_Event__c, Grad_Advanced_To_Candidacy__c, Degree_Level__c, Grad_Continuous_Enrollment__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
             ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c DESC, Plan_Description__c
@@ -363,7 +364,7 @@ global with sharing class StudentProfileController {
         }
         List<Student_Milestone__c> defenseMilestones = [
             SELECT Defense_Building__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c,
-            Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c
+            Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c
             WHERE Contact__c =: theContact.Id
             AND Acad_Plan__r.Plan_Code__c IN: planCode AND Milestone__c = 'GRDEFENSE'

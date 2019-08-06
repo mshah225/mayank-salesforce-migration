@@ -342,7 +342,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
+                                <a href="https://asucstst.psdev.asu.edu/asucstst/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSTST/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     G Portal
                                 </a>
@@ -1968,7 +1968,7 @@
                                                     {!gradProgram.gradProgramPlan.Plan_Description__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Degree__c}
+                                                    {!gradProgram.gradProgramPlan.Degree_Level__c}
                                                 </td>
                                             <td class="gradTD">
                                                     {!gradProgram.gradProgramPlan.Degree__c}
@@ -2002,10 +2002,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status
+                                                Format Advisor
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Status__c} 
+                                                {!gradProgram.gradMilestone.Grad_Format_Advisor__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2016,10 +2016,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status Last Updated
+                                                Format Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
+                                                {!gradProgram.gradMilestone.Format_Status__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2030,15 +2030,21 @@
                                                 Yes
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Advanced To Candidacy
+                                                Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
-                                                Y
+                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
+                                            <th colspan="2" class="gradTD">
+                                                Advanced To Candidacy
+                                            </th>
+                                            <td class="gradTD">
+                                                {!gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}
+                                            </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD"></th>
@@ -2077,7 +2083,7 @@
                                                 Culminating Event
                                             </th>
                                             <td class="gradTD">
-                                                30 Credit Hours and a thesis
+                                                {!gradProgram.gradProgramPlan.Grad_Culminating_Event__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Time
@@ -2201,7 +2207,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                Pending
+                                                {!gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2312,7 +2318,7 @@
                                                     {!gradProgram.gradProgramPlan.Plan_Description__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Degree__c}
+                                                    {!gradProgram.gradProgramPlan.Degree_Level__c}
                                                 </td>
                                             <td class="gradTD">
                                                     {!gradProgram.gradProgramPlan.Degree__c}
@@ -2346,10 +2352,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status
+                                                Format Advisor
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Status__c} 
+                                                {!gradProgram.gradMilestone.Grad_Format_Advisor__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2360,10 +2366,10 @@
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Format Status Last Updated
+                                                Format Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
+                                                {!gradProgram.gradMilestone.Format_Status__c} 
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2374,10 +2380,20 @@
                                                 Yes
                                             </td>
                                             <th colspan="2" class="gradTD">
+                                                Format Status Last Updated
+                                            </th>
+                                            <td class="gradTD">
+                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
+                                            </td>
+                                        </tr>
+                                        <tr class="gradExtraInfo hide">
+                                            <th colspan="2" class="gradTD"></th>
+                                            <td class="gradTD"></td>
+                                            <th colspan="2" class="gradTD">
                                                 Advanced To Candidacy
                                             </th>
                                             <td class="gradTD">
-                                                Y
+                                                {!gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2413,7 +2429,7 @@
                                                 Culminating Event
                                             </th>
                                             <td class="gradTD">
-                                                30 Credit Hours and a thesis
+                                                {!gradProgram.gradProgramPlan.Grad_Culminating_Event__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Time
@@ -2547,7 +2563,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                Pending
+                                                {!gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2745,7 +2761,7 @@
                                                 <table class='table table-striped'>
                                                     <tr>
                                                         <th>Application Admit Type</th>
-                                                        <td>{!IF(ISBLANK(gradStudentProgram.Admit_Type__c), '--', gradStudentProgram.Admit_Type__c)}</td>
+                                                        <td>{!IF(ISBLANK(gradStudentProgram.Admission_Type_Description__c), '--', gradStudentProgram.Admission_Type_Description__c)}</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Applied Program</th>
@@ -2804,7 +2820,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Continuous Enrollment</th>
-                                                <td id="gr_continuousEnrollment"></td>
+                                                <td id="gr_continuousEnrollment">{!gradStudentProgram.Grad_Continuous_Enrollment__c}</td>
                                             </tr>
                                             <tr>
                                                 <th>Academic Status Report</th>

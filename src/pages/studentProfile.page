@@ -2125,7 +2125,7 @@
                                                 ASU Hours Before Admit
                                             </th>
                                             <td class="gradTD">
-                                                3
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}  
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
@@ -2139,7 +2139,7 @@
                                                 ASU Hours After Admit
                                             </th>
                                             <td class="gradTD">
-                                                12
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status
@@ -2167,7 +2167,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Admit_Term__r.Name}
+                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2471,7 +2471,7 @@
                                                 ASU Hours Before Admit
                                             </th>
                                             <td class="gradTD">
-                                                3
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}                                                
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
@@ -2485,7 +2485,7 @@
                                                 ASU Hours After Admit
                                             </th>
                                             <td class="gradTD">
-                                                12
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status
@@ -2523,7 +2523,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                2019 Spring
+                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

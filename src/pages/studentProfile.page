@@ -2194,7 +2194,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Applied To graduate
+                                                Applied To Graduate
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c}

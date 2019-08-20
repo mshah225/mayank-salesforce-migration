@@ -259,7 +259,7 @@
 
                             <h4 class="intro" style="color:#6e7d83 !important;">
                                 &nbsp;{!studentProgram.Plan_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
-                                <apex:outputPanel rendered="{!activeGraduatePrograms.size > 0}">
+                                <apex:outputPanel rendered="{!activeGraduatePrograms.size > 1}">
                                     <div class="program-indicator-count" title="Count of Enrolled Active Plans">{!activeGraduatePrograms.size}</div>
                                 </apex:outputPanel>
                                 <apex:outputPanel rendered="{!accelerated}">
@@ -2125,7 +2125,7 @@
                                                 ASU Hours Before Admit
                                             </th>
                                             <td class="gradTD">
-                                                3
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}  
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
@@ -2139,7 +2139,7 @@
                                                 ASU Hours After Admit
                                             </th>
                                             <td class="gradTD">
-                                                12
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status
@@ -2167,7 +2167,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Admit_Term__r.Name}
+                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2177,7 +2177,7 @@
                                                 Maximum Time Limit
                                             </th>
                                             <td class="gradTD">
-                                                2029 Spring
+                                                {!gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2187,7 +2187,7 @@
                                                 Estimated Grad Term
                                             </th>
                                             <td class="gradTD">
-                                                2021 Spring
+                                                {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2197,7 +2197,7 @@
                                                 Applied To Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2207,7 +2207,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c}
+                                                {!gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2332,7 +2332,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Cumlative GPA
+                                                Cumulative GPA
                                             </th>
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
@@ -2457,7 +2457,7 @@
                                                 Requirement Term
                                             </th>
                                             <td class="gradTD">
-                                                2018 Fall
+                                                {!gradProgram.gradProgramPlan.Requirement_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Room
@@ -2471,7 +2471,7 @@
                                                 ASU Hours Before Admit
                                             </th>
                                             <td class="gradTD">
-                                                3
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}                                                
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
@@ -2485,7 +2485,7 @@
                                                 ASU Hours After Admit
                                             </th>
                                             <td class="gradTD">
-                                                12
+                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status
@@ -2512,9 +2512,7 @@
                                             <th colspan="2" class="gradTD">
                                                 Completed Academic Integrity
                                             </th>
-                                            <td class="gradTD">
-                                                Y
-                                            </td>
+                                            <td id="gr_academicIntegrity">{!completedAcadmicIntegrity}</td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
@@ -2523,7 +2521,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                2019 Spring
+                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2543,17 +2541,17 @@
                                                 Estimated Grad Term
                                             </th>
                                             <td class="gradTD">
-                                                2021 Spring
+                                                {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Applied To graduate
+                                                Applied To Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2563,7 +2561,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c}
+                                                {!gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

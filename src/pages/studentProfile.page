@@ -2177,7 +2177,7 @@
                                                 Maximum Time Limit
                                             </th>
                                             <td class="gradTD">
-                                                2029 Spring
+                                                {!gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2187,7 +2187,7 @@
                                                 Estimated Grad Term
                                             </th>
                                             <td class="gradTD">
-                                                2021 Spring
+                                                {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2197,7 +2197,7 @@
                                                 Applied To Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2332,7 +2332,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Cumlative GPA
+                                                Cumulative GPA
                                             </th>
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
@@ -2543,17 +2543,17 @@
                                                 Estimated Grad Term
                                             </th>
                                             <td class="gradTD">
-                                                2021 Spring
+                                                {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Applied To graduate
+                                                Applied To Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

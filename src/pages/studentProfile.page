@@ -259,7 +259,7 @@
 
                             <h4 class="intro" style="color:#6e7d83 !important;">
                                 &nbsp;{!studentProgram.Plan_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
-                                <apex:outputPanel rendered="{!activeGraduatePrograms.size > 0}">
+                                <apex:outputPanel rendered="{!activeGraduatePrograms.size > 1}">
                                     <div class="program-indicator-count" title="Count of Enrolled Active Plans">{!activeGraduatePrograms.size}</div>
                                 </apex:outputPanel>
                                 <apex:outputPanel rendered="{!accelerated}">
@@ -2207,7 +2207,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c}
+                                                {!gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2457,7 +2457,7 @@
                                                 Requirement Term
                                             </th>
                                             <td class="gradTD">
-                                                2018 Fall
+                                                {!gradProgram.gradProgramPlan.Requirement_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Room
@@ -2512,9 +2512,7 @@
                                             <th colspan="2" class="gradTD">
                                                 Completed Academic Integrity
                                             </th>
-                                            <td class="gradTD">
-                                                Y
-                                            </td>
+                                            <td id="gr_academicIntegrity">{!completedAcadmicIntegrity}</td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
@@ -2563,7 +2561,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c}
+                                                {!gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

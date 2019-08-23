@@ -56,7 +56,7 @@ global with sharing class StudentProfileController {
                 List<Checklist_Item__c> academicIntegrity = [
                     SELECT Checklist_Item_Status__c
                     FROM Checklist_Item__c
-                    WHERE Checklist_Code__c = 'SRACIN' AND Checklist_Item_Status__c != 'X'
+                    WHERE Checklist_Item_Code__c = 'SRACIN' AND Checklist_Item_Status__c != 'X'
                     AND Contact__c =: theContact.Id
                     LIMIT 1
                 ];

@@ -61,7 +61,7 @@ global with sharing class StudentProfileController {
                     LIMIT 1
                 ];
                 if (!academicIntegrity.isEmpty() && academicIntegrity[0].Checklist_Item_Status__c.equals('Completed')) {
-                    completedAcadmicIntegrity = 'Completed';
+                    completedAcadmicIntegrity = 'Yes';
                 } else {
                     completedAcadmicIntegrity = 'No';
                 }

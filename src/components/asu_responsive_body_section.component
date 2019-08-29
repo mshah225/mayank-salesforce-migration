@@ -10,7 +10,7 @@
                     </a>
             </div><!-- /#asu_logo  -->
     
-            <img src="//www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_white.png" height="32" width="203" id="asu_print_logo" />
+            <img src="//www.asu.edu/asuthemes/4.8/assets/full_logo.png" height="32" width="203" id="asu_print_logo" />
 
         <div id="asu_mobile_button" class="asuhide"><a href="javascript:toggleASU();">Menu</a></div>
     </div><!-- /#asu_mobile_header  -->

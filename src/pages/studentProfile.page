@@ -2711,10 +2711,6 @@
                                                         <th>Admit Term</th>
                                                         <td>{!IF(ISBLANK(gradStudentProgram.Admit_Term__r.Name), '--', gradStudentProgram.Admit_Term__r.Name)}</td>
                                                     </tr>
-                                                    <tr>
-                                                        <th>Admit Type</th>
-                                                        <td>{!IF(ISBLANK(gradStudentProgram.Admit_Type__c), '--', gradStudentProgram.Admit_Type__c)}</td>
-                                                    </tr>
                                                 </table>
                                             </div>
                                             <div class='col-sm-6'>
@@ -2783,7 +2779,7 @@
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
                                                 <th>iPOS Status</th>
-                                                <td id="gr_iPOSStatus"></td>
+                                                <td id="gr_iPOSStatus">{!gradStudentProgram.Grad_iPOS_Status__c}</td>
                                             </tr>
                                             <tr>
                                                 <th>Enrolled in Next Term</th>

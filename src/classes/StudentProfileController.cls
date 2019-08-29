@@ -36,6 +36,7 @@ global with sharing class StudentProfileController {
     public String nextTerm { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
+    public Map<String, String> termToName { get; set;}
     
 
     public Student_Program_Plan__c ugStudentProgram { get {
@@ -268,6 +269,8 @@ global with sharing class StudentProfileController {
             return;
         }
 
+        List<String> allTerms = new List<String>();
+
         for (Student_Program_Plan__c programPlan : allProgramPlans) {
             if (programPlan.Career__c == null || programPlan.Career__c == 'Undergraduate') {
                 ugProgramPlans.add(programPlan);
@@ -286,8 +289,40 @@ global with sharing class StudentProfileController {
             if (programPlan.Primary_Flag__c) {
                 studentProgram = programPlan;
             }
+            if (!String.isEmpty(programPlan.Requirement_Term__c)) {
+                allTerms.add(programPlan.Requirement_Term__c);
+            }
         }
+
+        setTermMap(allTerms);
+
+        for (Student_Program_Plan__c programPlan : allProgramPlans) {
+            if (programPlan == null || programPlan.Requirement_Term__c == null) {
+                    programPlan.Requirement_Term__c = '--';
+                } else {
+                    programPlan.Requirement_Term__c = termToName.get(programPlan.Requirement_Term__c);
+                }
+        }
+
         setSubplanString();
+    }
+
+    private void setTermMap(List<String> terms) {
+        if (terms.isEmpty()) {
+            return;
+        }
+        List<Term__c> termNames = [SELECT Name, PeopleSoft_Code__c FROM Term__c WHERE PeopleSoft_Code__c IN: terms];
+
+        termToName = new Map<String, String>();
+
+        if (termNames.isEmpty()) {
+            return;
+        }
+
+        for (Term__c term : termNames) {
+            termToName.put(term.PeopleSoft_Code__c, term.Name);
+        }
+
     }
 
     private void setSubplanString() {
@@ -295,7 +330,7 @@ global with sharing class StudentProfileController {
             return;
         }
         List<Student_Program_Subplan__c> subplans = [
-            SELECT Subplan_description__c
+            SELECT Subplan_description__c, Student_Program_Plan__c
             FROM Student_Program_Subplan__c
             WHERE Student_Program_Plan__c =: studentProgram.Id
         ];
@@ -303,9 +338,10 @@ global with sharing class StudentProfileController {
             return;
         }
         for (Student_Program_Subplan__c subplan : subplans) {
-            subPlanString += subplan.Subplan_description__c + ', ';
+            if (subPlan.Student_Program_Plan__c == studentProgram.Id) {
+                subPlanString = subplan.Subplan_description__c;
+            }
         }
-        subPlanString = subPlanString.removeEnd(', ');
     }
 
     public void setUndergraduateStudentProgramPlanAdvisors() {
@@ -763,6 +799,7 @@ global with sharing class StudentProfileController {
             }
             set;
         }
+
         public Student_Program_Plan__c gradProgramPlan {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}

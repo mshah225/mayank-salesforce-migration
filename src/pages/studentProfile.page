@@ -342,7 +342,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="https://asucstst.psdev.asu.edu/asucstst/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSTST/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
+                                <a href="https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSDEV/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     G Portal
                                 </a>

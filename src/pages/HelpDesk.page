@@ -76,7 +76,7 @@
         }
 
         #first {
-            width: 550px;
+            width: 480px;
             float: left; /* add this */
             padding-right: 10px;
         }
@@ -165,8 +165,7 @@
     <div id="bgWrapper">
            <c:customAlerts alerts="{!alerts.alerts}" />
     </div>-->
-    <apex:outputPanel id="wrapper"
-                      layout="block"
+    <apex:outputPanel layout="block"
                       style="margin-top:10px;min-width:1300px;overflow:auto;padding:10px;">
         <apex:form id="myform" html-novalidate="novalidate">
             <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />
@@ -415,7 +414,7 @@
                                               && NOT(isExistingCaseSelected)
                                               && NOT(isCloseCase)}">
                         <apex:pageBlock title="Cases" id="opencasespb">
-                            <div style="height:335px;overflow-y:auto;border-bottom: solid 1px
+                            <div style="height:330px;overflow-y:auto;border-bottom: solid 1px
                             #ccc;">
                                 <apex:pageBlockTable value="{!cases}"
                                                      var="case"
@@ -488,56 +487,58 @@
                                       layout="block"
                                       rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}">
                         <apex:pageBlock title="Case Details - {!mycase.CaseNumber}" id="case">
-                            <div style="height:335px;overflow-y:auto;margin:-10px;">
+                            <div style="height:350px;overflow-y:auto;margin:-10px;">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2"
                                                            collapsible="false"
                                                            id="pageSection">
-
+                                    
                                         <apex:inputField value="{!mycase.Subject}"
                                                          html-autofocus="true"
-                                                         style="width:90%;"/>
+                                                         style="width:95%;"/>
 
                                         <apex:inputField value="{!mycase.Campus__c}"/>
 
                                         <apex:inputField value="{!mycase.Affiliation__c}"/>
-
-                                        <apex:pageBlockSectionItem >
-                                            <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
-                                            <apex:actionRegion >
-                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!selectedFunctionalGroup}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateCategoryAndSubCategory}" />
-                                                    <apex:selectOptions value="{!functionalGroupOptions}"/>
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
-                                        <apex:pageBlockSectionItem >
-                                            <apex:outputLabel value="Case Category" for="categoryOptions" />
-                                            <apex:actionRegion >
-                                                <apex:selectList id="categoryOptions" value="{!selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" />
-                                                    <apex:selectOptions value="{!categoryOptions}"/>
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
-
-                                        <apex:pageBlockSectionItem >
-                                            <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
-                                            <apex:actionRegion >
-                                                <apex:selectList label="Case Sub Category" value="{!selectedSubCategory}" size="1">
-                                                    <apex:selectOptions id="subCategoryOptions" value="{!subCategoryOptions}"/>
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
-
-                                        <apex:pageBlockSectionItem />
-
+  
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />
+                                        </apex:pageBlockSection>
+                                        <apex:pageBlockSection columns="2" collapsible="false" id="wrapper">
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
+                                                <apex:actionRegion>
+                                                    <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
+                                                        size="1">
+                                                        <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:wrapper:categorySectionItem:categoryOptions, mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions"
+                                                        />
+                                                        <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}" />
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
+                                            <apex:pageBlockSectionItem />
+                                            <apex:pageBlockSectionItem id="categorySectionItem">
+                                                <apex:outputLabel value="Case Category" for="categoryOptions" />
+                                                <apex:actionRegion>
+                                                    <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
+                                                        <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions, mypage:myform:case:wrapper:descriptionBox"
+                                                        />
+                                                        <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
+                                        
+                                            <apex:pageBlockSectionItem id="subCategorySectionItem">
+                                                <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
+                                                <apex:actionRegion>
+                                                    <apex:selectList id="subCategoryOptions" label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                                                        <apex:selectOptions value="{!ccPicklist.subCategoryOptions}" />
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
 
                                         <apex:inputField value="{!mycase.Status}">
                                             <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
                                         </apex:inputField>
-
                                         <apex:pageBlockSectionItem >
                                             <apex:outputLabel for="originSelect"
                                                               value="Origin"/>
@@ -547,7 +548,6 @@
                                                 <apex:selectOptions value="{!originOptions}"/>
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
-
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward To Unit" for="forwardToUnit"/>
                                             <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width:100%;">
@@ -572,12 +572,14 @@
 
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"/>
 
-                                        <apex:inputField value="{!mycase.Description}"
-                                                         style="width:90%;height:120px;"/>
-
+                                        <apex:inputField id="descriptionBox" value="{!myCase.Description}"
+                                                         style="width:95%;height:90px;"> 
+                                            <apex:actionSupport event="onchange" action="{!saveDescription}" rerender="descriptionBox"/>
+                                        </apex:inputField>
                                         <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}"
-                                                         style="width:90%;height:120px;"/>
+                                                         style="width:95%;height:90px;"/>
                                     </apex:pageBlockSection>
+                                    
                                 </fieldset>
                             </div>
 

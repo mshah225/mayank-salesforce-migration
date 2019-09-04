@@ -3,13 +3,13 @@
         var submitButton = component.find("submitButton");
         submitButton.set("v.disabled", true);
 
-        var title = component.get("v.title");
+        var title = component.get("v.title").replace(/\n/g, " ").replace(/"/g,"\\\"");
         var questionOne = component.get("v.questionOne");
         var questionTwo = component.get("v.questionTwo");
         var questionThree = component.get("v.questionThree");
-        var answerOne = component.get("v.answerOne").replace(/\n/g, "\\n");
-        var answerTwo = component.get("v.answerTwo").replace(/\n/g, "\\n");
-        var answerThree = component.get("v.answerThree").replace(/\n/g, "\\n");
+        var answerOne = component.get("v.answerOne").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
+        var answerTwo = component.get("v.answerTwo").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
+        var answerThree = component.get("v.answerThree").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
         var watchers = component.get("v.watchers");
         var requestForm = component.get("v.requestForm");
         var type = component.get("v.type");

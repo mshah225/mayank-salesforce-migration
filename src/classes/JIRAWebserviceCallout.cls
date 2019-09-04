@@ -12,12 +12,12 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL + '/rest/api/3/issue';
+        String endPoint = JIRA_URL + '/rest/api/2/issue';
         
         String body = '{"fields":' +
             '{   "project":     {      "id": "17074"      }, ' +
             '"summary": "' + summary + '",  ' +
-            '"description": { "type": "doc","version": 1,"content": [{"type": "paragraph","content": [{  "type": "text", "text": "' + description + '" }  ]  } ] },'+
+            '"description": "' + description + '",  ' +
             ' "issuetype": {  "name": "' + type + '"     }';
         String bodyWithoutReporter = body + '   }}';
         
@@ -129,7 +129,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D"Close%20Issue"%26Status!%3DMigrated%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D"Close%20Issue"%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);
@@ -153,7 +153,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%20!%3D%20'+ asurite + '%20AND%20watcher%20%3D%20' + asurite + '%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue%22%26Status%21%3DMigrated%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+        String endPoint = JIRA_URL +'/rest/api/2/search?jql=watcher%20%3D%20' + asurite + '%20AND%20(assignee%20%3D%20NULL%20OR%20assignee%20!%3D%20' + asurite + ')%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue"%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);

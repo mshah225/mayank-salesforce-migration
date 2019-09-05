@@ -3422,6 +3422,8 @@
                 var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
                 document.getElementById("psTranscriptErrors").innerHTML =
                     "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                document.getElementById("grpsTranscriptErrors").innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
                 var transcriptQuery = 'SELECT EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c, ' +
                     'ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c, ' +
@@ -3434,11 +3436,17 @@
                         if (err) {
                             document.getElementById("psTranscriptErrors").innerHTML =
                                 err;
+                            document.getElementById("grpsTranscriptErrors").innerHTML =
+                                err;
                         } else {
                             document.getElementById("psTranscriptErrors").innerHTML =
                                 "";
+                            document.getElementById("grpsTranscriptErrors").innerHTML =
+                                "";
                             if (!response.totalSize == 0) {
                                 document.getElementById("ps_transcript").style.display =
+                                    "initial";
+                                document.getElementById("gr_psTranscript").style.display =
                                     "initial";
 
                                 var html = "" +
@@ -3498,11 +3506,15 @@
                                     "</div>";
 
                                 document.getElementById('ps_transcript').innerHTML = html;
+                                document.getElementById('gr_psTranscript').innerHTML = html;
                                 cleanUpUndefined("ps_transcript");
+                                cleanUpUndefined("gr_psTranscript");
                                 transcriptsLoaded = true;
 
                             } else {
                                 document.getElementById("ps_transcript").innerHTML =
+                                    'No transcripts found.';
+                                document.getElementById("gr_psTranscript").innerHTML =
                                     'No transcripts found.';
                                 transcriptsLoaded = true;
                             }

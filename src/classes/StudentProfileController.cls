@@ -386,9 +386,9 @@ global with sharing class StudentProfileController {
             String programPlanId = gppw.gradProgramPlan.Id;
             for (Student_Program_Plan_Advisor__c sppa : committeesAndAdvisors) {
                 if (programPlanId == sppa.Student_Program_Plan__c && sppa.Committee_Type__c != 'GRADFAC') {
-                    gppw.gradCommittees.add(sppa);
-                } else if (programPlanId == sppa.Student_Program_Plan__c) {
                     gppw.gradAdvisors.add(sppa);
+                } else if (programPlanId == sppa.Student_Program_Plan__c) {
+                    gppw.gradCommittees.add(sppa);
                 }
             }
         }

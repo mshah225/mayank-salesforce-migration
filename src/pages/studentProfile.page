@@ -2750,10 +2750,6 @@
                                                 <td id="gr_continuousEnrollment">{!gradStudentProgram.Grad_Continuous_Enrollment__c}</td>
                                             </tr>
                                             <tr>
-                                                <th>Academic Status Report</th>
-                                                <td id="gr_acadStatusReport"></td>
-                                            </tr>
-                                            <tr>
                                                 <th>Enrollment Holds</th>
                                                 <td id="gr_enrollmentHolds"></td>
                                             </tr>

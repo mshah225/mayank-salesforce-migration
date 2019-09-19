@@ -344,7 +344,7 @@
                             <td>
                                 <a href="https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSDEV/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
-                                    G Portal
+                                    Gportal
                                 </a>
                             </td>
                         </tr>
@@ -392,7 +392,7 @@
                             <td>
                                 <a href="https://asucsdev.psdev.asu.edu/psc/asucsdev/EMPLOYEE/CAMP/c/ASU_ACADEMIC_ADVISING_STAFF.ASU_AA_POS_SRCH_FL.GBL?EMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
-                                    IPOS
+                                    iPOS
                                 </a>
                             </td>
                             <td>
@@ -2040,7 +2040,7 @@
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                             <th colspan="2" class="gradTD">
-                                                Advanced To Candidacy
+                                                Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}
@@ -2052,7 +2052,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                IPOS Status
+                                                iPOS Status
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_iPOS_Status__c}
@@ -2080,7 +2080,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Culminating Event
+                                                Degree Requirements
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_Culminating_Event__c}
@@ -2094,7 +2094,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                IPOS Status Date
+                                                iPOS Status Date
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
@@ -2142,7 +2142,7 @@
                                                 {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Final Defense Results Status
+                                                Final Defense Results
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c} 
@@ -2150,13 +2150,13 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                IPOS Total Hours
+                                                iPOS Total Hours
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Tot_Cumulative__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Final Defense results Status Date/Time
+                                                Final Defense Results Status Date/Time
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c} 
@@ -2184,7 +2184,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Estimated Grad Term
+                                                Anticipated Grad Term
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
@@ -2194,7 +2194,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Applied To Graduate
+                                                Applied to Graduate
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
@@ -2216,7 +2216,7 @@
                                         <tr class="gradTR committee-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
                                             <td style="padding:20px 0px 10px 0px;">
                                                 <i class="fa fa-caret-right"></i>
-                                                &nbsp;Committee Members
+                                                &nbsp;Faculty Committee
                                             </td>
                                         </tr>
 
@@ -2258,7 +2258,7 @@
                                         <tr class="gradTR advisor-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
                                             <td style="padding:10px 0;">
                                                 <i class="fa fa-caret-right"></i>
-                                                &nbsp;Advisors
+                                                &nbsp;Staff Advisors
                                             </td>
                                         </tr>
 
@@ -2390,7 +2390,7 @@
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                             <th colspan="2" class="gradTD">
-                                                Advanced To Candidacy
+                                                Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}
@@ -2398,7 +2398,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                IPOS Status
+                                                iPOS Status
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_iPOS_Status__c}
@@ -2426,7 +2426,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Culminating Event
+                                                Degree Requirements
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_Culminating_Event__c}
@@ -2440,7 +2440,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                IPOS Status Date
+                                                iPOS Status Date
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
@@ -2488,7 +2488,7 @@
                                                 {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Final Defense Results Status
+                                                Final Defense Results
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c}  
@@ -2496,7 +2496,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                IPOS Total Hours
+                                                iPOS Total Hours
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Tot_Cumulative__c}
@@ -2538,7 +2538,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Estimated Grad Term
+                                                Anticipated Grad Term
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
@@ -2548,7 +2548,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Applied To Graduate
+                                                Applied to Graduate
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}

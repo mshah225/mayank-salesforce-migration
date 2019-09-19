@@ -377,7 +377,7 @@ global with sharing class StudentProfileController {
             FROM Student_Program_Plan_Advisor__c
             WHERE Student_Program_Plan__c IN: programPlansUsed
             AND (Student_Program_Plan__r.Career__c = 'Graduate')
-            ORDER BY Student_Program_Plan__c
+            ORDER BY Student_Program_Plan__c, Advisor_Role__c, Advisor_Name__c
         ];
 
         for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {

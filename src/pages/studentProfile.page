@@ -2066,10 +2066,10 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Specialization
+                                                iPOS Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Graduate_Specialization__c}
+                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Date
@@ -2080,11 +2080,12 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Degree Requirements
+                                                Specialization
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Culminating_Event__c}
+                                                {!gradProgram.gradProgramPlan.Graduate_Specialization__c}
                                             </td>
+                                            
                                             <th colspan="2" class="gradTD">
                                                 Defense Time
                                             </th>
@@ -2094,10 +2095,10 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                iPOS Status Date
+                                                Degree Requirements
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
+                                                {!gradProgram.gradProgramPlan.Grad_Culminating_Event__c}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Building
@@ -2412,7 +2413,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                    iPOS Status Date
+                                                iPOS Status Date
                                             </th>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
@@ -2518,16 +2519,6 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Application Term
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
                                                 Maximum Time Limit
                                             </th>
                                             <td class="gradTD">
@@ -2552,6 +2543,16 @@
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
+                                            </td>
+                                            <th colspan="2" class="gradTD"></th>
+                                            <td class="gradTD"></td>
+                                        </tr>
+                                        <tr class="gradExtraInfo hide">
+                                            <th colspan="2" class="gradTD">
+                                                Application Term
+                                            </th>
+                                            <td class="gradTD">
+                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

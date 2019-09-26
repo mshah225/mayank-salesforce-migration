@@ -1991,7 +1991,7 @@
                                                 Document Type
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c}==null, '--', gradProgram.gradMilestone.Format_Document_Type__c})}
+                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c==null, '--', gradProgram.gradMilestone.Format_Document_Type__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2005,7 +2005,7 @@
                                                 Format Advisor
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Grad_Format_Advisor__c}==null, '--', gradProgram.gradMilestone.Grad_Format_Advisor__c})}
+                                                {!IF(gradProgram.gradMilestone.Grad_Format_Advisor__c==null, '--', gradProgram.gradMilestone.Grad_Format_Advisor__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2019,7 +2019,7 @@
                                                 Format Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Status__c}==null, '--', gradProgram.gradMilestone.Format_Status__c})}
+                                                {!IF(gradProgram.gradMilestone.Format_Status__c==null, '--', gradProgram.gradMilestone.Format_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2033,7 +2033,7 @@
                                                 Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Status_Last_Updated__c}==null, '--', gradProgram.gradMilestone.Format_Status_Last_Updated__c})}
+                                                {!IF(gradProgram.gradMilestone.Format_Status_Last_Updated__c==null, '--', gradProgram.gradMilestone.Format_Status_Last_Updated__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2043,7 +2043,7 @@
                                                 Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}==null, '--', gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c==null, '--', gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2055,13 +2055,13 @@
                                                 iPOS Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c}==null, 'Not Applicable', gradProgram.gradProgramPlan.Grad_iPOS_Status__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, 'Not Applicable', gradProgram.gradProgramPlan.Grad_iPOS_Status__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Defense_Status__c}==null, '--', gradProgram.gradProgramPlan.Defense_Status__c})}
+                                                {!IF(gradProgram.gradMilestone.Defense_Status__c==null, '--', gradProgram.gradMilestone.Defense_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2069,13 +2069,13 @@
                                                 iPOS Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}==null, '--', gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null, '--', gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.defenseDate}==null, '--', gradProgram.gradProgramPlan.defenseDate})}
+                                                {!IF(gradProgram.defenseDate==null, '--', gradProgram.defenseDate)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2083,14 +2083,14 @@
                                                 Specialization
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c}==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
                                             </td>
                                             
                                             <th colspan="2" class="gradTD">
                                                 Defense Time
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.defenseTime}==null, '--', gradProgram.gradProgramPlan.defenseTime})}
+                                                {!IF(gradProgram.defenseTime==null, '--', gradProgram.defenseTime)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2098,13 +2098,13 @@
                                                 Degree Requirements
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c}==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Building
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Defense_Building__c}==null, '--', gradProgram.gradProgramPlan.Defense_Building__c})}
+                                                {!IF(gradProgram.gradMilestone.Defense_Building__c==null, '--', gradProgram.gradMilestone.Defense_Building__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2112,13 +2112,13 @@
                                                 Requirement Term
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Requirement_Term__c}==null, '--', gradProgram.gradProgramPlan.Requirement_Term__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Requirement_Term__c==null, '--', gradProgram.gradProgramPlan.Requirement_Term__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Room
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Defense_Room__c}==null, '--', gradProgram.gradMilestone.Defense_Room__c})}
+                                                {!IF(gradProgram.gradMilestone.Defense_Room__c==null, '--', gradProgram.gradMilestone.Defense_Room__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2126,13 +2126,13 @@
                                                 ASU Hours Before Admit
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}==null, '--', gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c==null, '--', gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Defense_Location__c}==null, '--', gradProgram.gradMilestone.Defense_Location__c})}
+                                                {!IF(gradProgram.gradMilestone.Defense_Location__c==null, '--', gradProgram.gradMilestone.Defense_Location__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2140,13 +2140,13 @@
                                                 ASU Hours After Admit
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}==null, '--', gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c==null, '--', gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c}==null, '--', gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c})}
+                                                {!IF(gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c==null, '--', gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2154,13 +2154,13 @@
                                                 iPOS Total Hours
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c}==null, '--', gradProgram.gradProgramPlan.Tot_Cumulative__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c==null, '--', gradProgram.gradProgramPlan.Tot_Cumulative__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status Date/Time
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c}==null, '--', gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c})}
+                                                {!IF(gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2168,7 +2168,7 @@
                                                 Maximum Time Limit
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c}==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2178,7 +2178,7 @@
                                                 Anticipated Grad Term
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name})}
+                                                {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2198,7 +2198,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}==null, '--', gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c==null, '--', gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2208,7 +2208,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}==null, '--', gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c==null, '--', gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2239,16 +2239,16 @@
                                         <apex:repeat value="{!gradProgram.gradCommittees}" var="gradCommittee">
                                             <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
                                                 <td class="gradTD">
-                                                    {!IF(gradCommittee.Advisor_Name__c}==null, '--', gradCommittee.Advisor_Name__c})}
+                                                    {!IF(gradCommittee.Advisor_Name__c==null, '--', gradCommittee.Advisor_Name__c)}
                                                 </td>
                                                 <td class="gradTD">
-                                                    {!IF(gradCommittee.Advisor_Role__c}==null, '--', gradCommittee.Advisor_Role__c})}
+                                                    {!IF(gradCommittee.Advisor_Role__c==null, '--', gradCommittee.Advisor_Role__c)}
                                                 </td>
                                                 <td class="gradTD">
-                                                    {!IF(gradCommittee.Business_Title__c}==null, '--', gradCommittee.Business_Title__c})}
+                                                    {!IF(gradCommittee.Business_Title__c==null, '--', gradCommittee.Business_Title__c)}
                                                 </td>
                                                 <td class="gradTD">
-                                                    {!IF(gradCommittee.Company_Description__c}==null, '--', gradCommittee.Company_Description__c})}
+                                                    {!IF(gradCommittee.Company_Description__c==null, '--', gradCommittee.Company_Description__c)}
                                                 </td>
                                             </tr>
                                         </apex:repeat>
@@ -2275,10 +2275,10 @@
                                         <apex:repeat value="{!gradProgram.gradAdvisors}" var="gradAdvisors">
                                             <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
                                                 <td class="gradTD">
-                                                    {!IF(gradAdvisors.Advisor_Name__c}==null, '--', gradAdvisors.Advisor_Name__c})}
+                                                    {!IF(gradAdvisors.Advisor_Name__c==null, '--', gradAdvisors.Advisor_Name__c)}
                                                 </td>
                                                 <td class="gradTD">
-                                                    {!IF(gradAdvisors.Business_Title__c}==null, '--', gradAdvisors.Business_Title__c})}
+                                                    {!IF(gradAdvisors.Business_Title__c==null, '--', gradAdvisors.Business_Title__c)}
                                                 </td>
                                             </tr>
                                         </apex:repeat>
@@ -2430,7 +2430,7 @@
                                                 Specialization
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c}==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Time
@@ -2444,7 +2444,7 @@
                                                 Degree Requirements
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c}==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c})}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Building

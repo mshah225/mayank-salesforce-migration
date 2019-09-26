@@ -1965,19 +1965,19 @@
                                                 <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Plan_Type_Text__c}
                                             </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Plan_Description__c}
+                                                {!gradProgram.gradProgramPlan.Plan_Description__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Degree_Level__c}
+                                                {!gradProgram.gradProgramPlan.Degree_Level__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Degree__c}
+                                                {!gradProgram.gradProgramPlan.Degree__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Campus__r.Name}
+                                                {!gradProgram.gradProgramPlan.Campus__r.Name}
                                                 </td>
                                             <td class="gradTD">
-                                                True
+                                                <img src="{!IF(gradProgram.gradProgramPlan.Primary_Flag__c, '/img/checkbox_checked.gif', '/img/checkbox_unchecked.gif')}" width="21" height="16" class="checkImg"/>
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

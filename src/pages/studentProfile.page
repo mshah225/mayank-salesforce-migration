@@ -2030,7 +2030,7 @@
                                                 Defense Required
                                             </th>
                                             <td class="gradTD">
-                                                Yes
+                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c==null, '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Last Updated
@@ -2046,7 +2046,7 @@
                                                 Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c==null, '--', gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c)}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c=='--', 'No', Yes)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2129,11 +2129,9 @@
                                                 ASU Hours Before Admit
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c), '--', '')}
                                                 <apex:outputText value="{0,number,###.##}">
                                                     <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"/>
                                                 </apex:outputText>
-                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c==null, '--', gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c)}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
@@ -2147,7 +2145,9 @@
                                                 ASU Hours After Admit
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c==null, '--', gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c)}
+                                                <apex:outputText value="{0,number,###.##}">
+                                                    <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"/>
+                                                </apex:outputText>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results
@@ -2161,7 +2161,9 @@
                                                 iPOS Total Hours
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c==null, '--', gradProgram.gradProgramPlan.Tot_Cumulative__c)}
+                                                <apex:outputText value="{0,number,###.##}">
+                                                    <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"/>
+                                                </apex:outputText>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status Date/Time
@@ -2195,7 +2197,7 @@
                                                 Applied to Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'No', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2385,7 +2387,7 @@
                                                 Defense Required
                                             </th>
                                             <td class="gradTD">
-                                                Yes
+                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c==null, '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Last Updated
@@ -2549,7 +2551,7 @@
                                                 Applied to Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'N', 'Y')}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'No', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

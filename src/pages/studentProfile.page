@@ -2046,7 +2046,7 @@
                                                 Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c=='--', 'No', Yes)}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c=='--', 'No', 'Yes')}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2072,7 +2072,10 @@
                                                 iPOS Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null, '--', gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c)}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, '--', '')}
+                                                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}" />
+                                                </apex:outputText>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Defense Date

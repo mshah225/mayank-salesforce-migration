@@ -81,16 +81,44 @@ public class showMyCoachCasesController extends ListViewController {
      * </p>
      */
     public override void resetRecordList() {
-        Case tempCase;
-
-        caseList = new List<CaseWrapper>();
-        for (SObject so : setCon.getRecords()) {
-            tempCase = (Case) so;
-            caseList.add(new CaseWrapper(tempCase));
+        List<Case> cases = (List<Case>) setCon.getRecords();
+        Map<Id, String> timeZones = this.getTimeZones(cases);
+        this.caseList = new List<CaseWrapper>();
+        for (Case c : cases) {
+            CaseWrapper cw = new CaseWrapper(c);
+            cw.timeZone = timeZones.get(cw.obj.ContactId);
+            this.caseList.add(cw);
         }
-
         resetCaseCounts();
+    }
 
+    /**
+     *  Given a list of Cases, generates a map from Contact ID to Time Zone
+     *  for the Contacts associated with the given Cases.
+     */
+    private Map<Id, String> getTimeZones(List<Case> cases) {
+        List<Id> contactIds = this.getContactIds(cases);
+        List<Contact> contacts = [
+            SELECT (SELECT Time_Zone__c FROM Success_Students__r)
+            FROM Contact
+            WHERE Id IN :contactIds
+        ];
+        Map<Id, String> timeZones = new Map<Id, String>();
+        for (Contact c : contacts) {
+            timeZones.put(c.Id, c.Success_Students__r[0].Time_Zone__c);
+        }
+        return timeZones;
+    }
+
+    /**
+     *  Gets a list of Contact IDs associated with the given list of Cases.
+     */
+    private List<Id> getContactIds(List<Case> cases) {
+        List<Id> contactIds = new List<Id>();
+        for (Case c : cases) {
+            contactIds.add(c.ContactId);
+        }
+        return contactIds;
     }
 
     /*
@@ -197,6 +225,7 @@ public class showMyCoachCasesController extends ListViewController {
         public Case obj {get; set;}
         public String changeDir {get; set;}
         public String imageName {get; set;}
+        public String timeZone {get; set;}
 
         public caseWrapper (Case wrappedCase) {
             selected = false;

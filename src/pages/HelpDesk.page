@@ -500,7 +500,7 @@
                                         <apex:inputField value="{!mycase.Campus__c}"/>
 
                                         <apex:inputField value="{!mycase.Affiliation__c}"/>
-  
+ 
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />
                                         </apex:pageBlockSection>
                                         <apex:pageBlockSection columns="2" collapsible="false" id="wrapper">
@@ -520,7 +520,7 @@
                                                 <apex:outputLabel value="Case Category" for="categoryOptions" />
                                                 <apex:actionRegion>
                                                     <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
-                                                        <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions, mypage:myform:case:wrapper:descriptionField"
+                                                        <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions, mypage:myform:case:wrapper:descriptionBox"
                                                         />
                                                         <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
                                                     </apex:selectList>
@@ -535,9 +535,6 @@
                                                     </apex:selectList>
                                                 </apex:actionRegion>
                                             </apex:pageBlockSectionItem>
-                                        <apex:pageBlockSectionItem />
-
-                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
                                         <apex:inputField value="{!mycase.Status}">
                                             <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
@@ -551,13 +548,7 @@
                                                 <apex:selectOptions value="{!originOptions}"/>
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
-                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
-                                            <apex:outputLabel value="Forward To Unit" for="forwardToUnit"/>
-                                            <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width:100%;">
-                                                <apex:actionSupport event="onchange" reRender="innersecondNewCase"/>
-                                            </apex:inputField>
-                                        </apex:pageBlockSectionItem>
-
+                                        
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward To Unit" for="forwardToUnit"/>
                                             <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width:100%;">

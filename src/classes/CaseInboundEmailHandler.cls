@@ -328,6 +328,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     OR Personal_Email__c = :cleanFromAddress
                     OR Preferred_Email__c = :cleanFromAddress
                     OR Corporate_Relations_Email__c = :cleanFromAddress
+                    ORDER BY RecordType.Name
                 ];
 
                 if (contacts.size() > 1)

@@ -9,7 +9,8 @@ private class Test_UnifiedProspectPageController
 
     @testSetup static void setUpTest()
     {
-        TestDataFactory.createFunctionalGroup('Test Group');
+        CaseClassificationFactory ccMaker = new CaseClassificationFactory();
+        ccMaker.createAndInsertSetOfCaseClassification();
 
         Account testAccount = new Account(
             Name = 'Test School'
@@ -156,8 +157,7 @@ private class Test_UnifiedProspectPageController
         contact.Phone = '4803805555';
         contact.MobilePhone = '4803806666';
         uppc.smsText = TRUE;
-
-        fgroup = TestDataFactory.createFunctionalGroup('TestFG');
+        fGroup = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Functional Group0' LIMIT 1];
     }
 
     private static testmethod void testUndergradCaseCreationCaseNoInterest()
@@ -565,6 +565,7 @@ private class Test_UnifiedProspectPageController
 
         System.assert(c.Subject == 'Test');
     }
+    
     private static testmethod void testGetContact()
     {
         Test.startTest();

@@ -1,0 +1,100 @@
+<apex:page standardController="Case" extensions="NewCaseRecordTypeSelectionController">
+    <apex:pageMessages />
+    <script type="text/javascript">
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script>
+    <div>
+        <div class="content">
+            <img src="/img/s.gif" alt="Case" class="pageTitleIcon" title="Case"/>
+            <h1 class="pageType">New Case</h1>
+            <br/>
+        </div>
+        <div class="content">
+            <h2 class="pageDescription"> Select Case Record Type</h2>
+            <div class="blank">&nbsp;</div>
+        </div>
+    </div>
+    <apex:form id="caseDetailsForm">
+        <div class="bPageBlock brandSecondaryBrd bEditBlock bLayoutBlock secondaryPalette" id="ep">
+            <div class="pbHeader">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td class="pbTitle">
+                                <h2 class="mainTitle">Select Case Record Type</h2>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pbBody">
+                <div class="pbError" id="errorDiv_ep" style="display: none">Error: Invalid Data.
+                    <br/>Review all error messages below to correct your data.
+                </div>
+                <div class="pbSubsection" style="width: 30%; margin: 0 auto;">
+                    <apex:outputPanel>
+                        <apex:outputLabel value="Record Type of new record: " for="ecord Types" />
+                        <apex:actionRegion >
+                            <apex:selectList label="Record Types" value="{!selectedRecordType}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!recordTypeOptions}"/>
+                            </apex:selectList>
+                        </apex:actionRegion>
+                        <br />
+                        <br />
+                    </apex:outputPanel>
+                    <apex:outputPanel id="wrapper">
+                        <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />
+                        <apex:actionRegion >
+                            <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
+                                <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
+                                <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
+                            </apex:selectList>
+                        </apex:actionRegion>
+                        <br />
+                        <br />
+                        
+                        <apex:outputLabel value="Case Category: " for="categoryOptions" />
+                        <apex:actionRegion >
+                            <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
+                                <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
+                                <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
+                            </apex:selectList>
+                        </apex:actionRegion>
+                        <br />
+                        <br />
+                        <apex:outputLabel value="Case Sub Category: " for="subCategoryOptions" />
+                        <apex:actionRegion >
+                            <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                                <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
+                            </apex:selectList>
+                        </apex:actionRegion>
+                        <br />
+                        <br />
+                    </apex:outputPanel>
+                </div>
+            </div>
+            <div class="pbBottomButtons">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td class="pbButtonb" id="bottomButtonRow" align="center">
+                                <apex:commandButton value="Continue" action="{!redirect}"/>
+                                <apex:commandButton value="Cancel" action="{!cancel}"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pbFooter secondaryPalette">
+                <div class="bg">
+                </div>
+            </div>
+        </div>
+    </apex:form>
+
+
+    <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"/>
+	<apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
+    <apex:includeScript value="/support/console/43.0/integration.js"/>
+
+</apex:page>

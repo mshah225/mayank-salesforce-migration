@@ -2320,7 +2320,7 @@
                                         <th class="gradTH">Degree Level</th>
                                         <th class="gradTH">Degree</th>
                                         <th class="gradTH">Campus</th>
-                                        <th class="gradTH">Primary</th>
+                                        <th class="gradTH">Grad Term</th>
                                     </tr>
                                     <apex:repeat value="{!completedGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
@@ -2328,19 +2328,19 @@
                                                 <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Plan_Type_Text__c}
                                             </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Plan_Description__c}
+                                                {!gradProgram.gradProgramPlan.Plan_Description__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Degree_Level__c}
+                                                {!gradProgram.gradProgramPlan.Degree_Level__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Degree__c}
+                                                {!gradProgram.gradProgramPlan.Degree__c}
                                                 </td>
                                             <td class="gradTD">
-                                                    {!gradProgram.gradProgramPlan.Campus__r.Name}
+                                                {!gradProgram.gradProgramPlan.Campus__r.Name}
                                                 </td>
                                             <td class="gradTD">
-                                                True
+                                                {!gradProgram.gradProgramPlan.Completion_Term__c}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2350,234 +2350,6 @@
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                             </td>
-                                            <th colspan="2" class="gradTD">
-                                                Document Type
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Document_Type__c} 
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Graduate GPA
-                                            </th>
-                                            <td class="gradTD">
-                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Format Advisor
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Grad_Format_Advisor__c} 
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                iPOS GPA
-                                            </th>
-                                            <td class="gradTD">
-                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Format Status
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Status__c} 
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Defense Required
-                                            </th>
-                                            <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c==null, '--', 'Yes')}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Format Status Last Updated
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Status_Last_Updated__c} 
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                            <th colspan="2" class="gradTD">
-                                                Advanced to Candidacy
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                iPOS Status
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Defense Status
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Defense_Status__c}   
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                iPOS Status Date
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Defense Date
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.defenseDate}   
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Specialization
-                                            </th>
-                                            <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Defense Time
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.defenseTime}   
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Degree Requirements
-                                            </th>
-                                            <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Building
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Defense_Building__c}   
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Requirement Term
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Requirement_Term__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Room
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Defense_Room__c}   
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                ASU Hours Before Admit
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}                                                
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Location
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Defense_Location__c}  
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                ASU Hours After Admit
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Final Defense Results
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c}  
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                iPOS Total Hours
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Tot_Cumulative__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD">
-                                                Final Defense Results Status Date/Time
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c}   
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Completed Academic Integrity
-                                            </th>
-                                            <td id="gr_academicIntegrity">{!completedAcadmicIntegrity}</td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Maximum Time Limit
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Anticipated Grad Term
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name}
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Applied to Graduate
-                                            </th>
-                                            <td class="gradTD">
-                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'No', 'Yes')}
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Application Term
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Grad_Anticipated_Term__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Graduation Checkout Status
-                                            </th>
-                                            <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c}
-                                            </td>
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
                                         </tr>
                                     </apex:repeat>
                                 </table>
@@ -2585,65 +2357,6 @@
 
                             <apex:outputText rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
                                              value="No completed graduate programs/plans found."/>
-
-                            <div class="page-header-smaller">
-                                <h4>
-                                    <i class="fa fa-caret-down"></i>
-                                    &nbsp;Academic Progress
-                                </h4>
-                            </div>
-
-                            <div id="ps_acad_progress_section_grad">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <table class="table table-striped">
-                                            <tr>
-                                                <th>Cumulative GPA</th>
-                                                <td id="grad_cumulative_gpa">
-                                                    <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                        <c:sp_GPA gpa="{!gradStudentProgram.Cum_GPA__c}"/>
-                                                    </a>
-                                                    <a href="https://students.asu.edu/gpa-calculator" target="_blank"
-                                                       class="fa fa-calculator" aria-hidden="true"></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Graduate GPA</th>
-                                                <td id="grad_grad_gpa">
-                                                    <c:sp_GPA gpa="{!gradStudentProgram.ASU_AA_OVRL_GPA__c}"/>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>iPOS GPA</th>
-                                                <td id="grad_ipos_gpa">
-                                                    <c:sp_GPA gpa="{!gradStudentProgram.ASU_AA_POS_GPA__c}"/>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Cumulative Hours</th>
-                                                <td id="grad_cumulative_hours">
-                                                    {!IF(ISBLANK(gradStudentProgram.Tot_Cumulative__c), '--', '')}
-                                                    <apex:outputText value="{0,number,####.###}">
-                                                        <apex:param value="{!gradStudentProgram.Tot_Cumulative__c}"/>
-                                                    </apex:outputText>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Advisors</th>
-                                                <td id="grad_advisors">
-                                                    {!IF(gradStudentProgramAdvisors.size > 0, '', '--')}
-                                                    <apex:repeat value="{!gradStudentProgramAdvisors}" var="advisors">
-                                                        <a href="mailto:{!advisors.Advisor_Email__c}">
-                                                            {!advisors.Advisor_Name__c} </a><br/>
-                                                    </apex:repeat>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="psAcadProgressErrorsGrad"></div>
 
                             <div class="page-header-smaller">
                                 <h4>
@@ -2785,11 +2498,7 @@
                                     </div>
 
                                     <div class="col-sm-6">
-                                        <table class="table table-striped asu-detail-table">
-                                            <tr>
-                                                <th>iPOS Status</th>
-                                                <td id="gr_iPOSStatus">{!gradStudentProgram.Grad_iPOS_Status__c}</td>
-                                            </tr>
+                                        <table class="table table-striped asu-detail-table">                                            
                                             <tr>
                                                 <th>Enrolled in Next Term</th>
                                                 <td id="gr_enrolledInNextTerm"></td>

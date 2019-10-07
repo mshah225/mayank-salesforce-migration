@@ -25,7 +25,18 @@ public class CaseFactory extends TestFactory {
             this.addToFieldsToIncrement('Description');
         }
     }
-
+    
+    public class DefaultCaseWithStatus extends TestFactory {
+        public DefaultCaseWithStatus() {
+            super(new Case(
+                Subject = 'Test Subject',
+                Description = 'Test Description',
+                Status = 'New'
+            ));
+            this.addToFieldsToIncrement('Subject');
+            this.addToFieldsToIncrement('Description');
+        }
+    }
 
     public class ClosedWebformCase extends TestFactory {
         public ClosedWebformCase() {

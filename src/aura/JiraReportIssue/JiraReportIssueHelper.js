@@ -3,21 +3,25 @@
         var submitButton = component.find("submitButton");
         submitButton.set("v.disabled", true);
 
-        var title = component.get("v.title");
+        var title = component.get("v.title").replace(/\n/g, " ").replace(/"/g,"\\\"");
         var questionOne = component.get("v.questionOne");
         var questionTwo = component.get("v.questionTwo");
         var questionThree = component.get("v.questionThree");
-        var answerOne = component.get("v.answerOne").replace(/\n/g, "\\n");
-        var answerTwo = component.get("v.answerTwo").replace(/\n/g, "\\n");
-        var answerThree = component.get("v.answerThree").replace(/\n/g, "\\n");
+        var answerOne = component.get("v.answerOne").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
+        var answerTwo = component.get("v.answerTwo").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
+        var answerThree = component.get("v.answerThree").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
         var watchers = component.get("v.watchers");
+        var requestForm = component.get("v.requestForm");
         var type = component.get("v.type");
 
         var problemDescription = questionOne + '\\n' + answerOne + '\\n'
             + questionTwo + '\\n' + answerTwo + '\\n'
             + questionThree + '\\n' + answerThree + '\\n';
-
-
+        
+        if (requestForm != undefined) {
+            problemDescription += 'Request Form: ' + '\\n' + requestForm + '\\n';
+        }
+        
         var action = component.get('c.callout');
         action.setParams({
             'title': title,
@@ -32,6 +36,7 @@
                 component.set("v.message", "Jira Issue Successfully Created");
                 var link = "https://asudev.jira.com/browse/" + key;
                 component.set("v.link", link);
+                component.set("v.displayLink", true);
                 this.clearInputs(component);
             } else {
                 component.set("v.message", "Cannot create JIRA ticket, please email your request to salesforce.development@asu.edu");
@@ -47,6 +52,7 @@
         component.set("v.answerTwo", "");
         component.set("v.answerThree", "");
         component.set("v.watchers", "");
+        component.set("v.requestForm", "");
     },
 
     navigateToIssue: function (component) {

@@ -5,7 +5,7 @@ global class JiraHttpMockCallout implements HttpCalloutMock{
             return addWatchers();
         } else if (req.getMethod().equals('PUT')) {
             return addComment();
-        } else if (req.getEndpoint().contains('api/3/issue')) {
+        } else if (req.getEndpoint().contains('api/2/issue')) {
             return createNewIssueResponse();
         } else if (req.getEndpoint().contains('transitions')) {
             return updateStatus();

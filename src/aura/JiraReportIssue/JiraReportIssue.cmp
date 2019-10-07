@@ -7,11 +7,13 @@
 
     <aura:attribute name="message" type="String" />
     <aura:attribute name="link" type="String" />
+    <aura:attribute name="displayLink" type="Boolean" default="false"/>
     <aura:attribute name="title" type="String" />
     <aura:attribute name="answerOne" type="String" />
     <aura:attribute name="answerTwo" type="String" />
     <aura:attribute name="answerThree" type="String" />
     <aura:attribute name="watchers" type="String" />
+    <aura:attribute name="requestForm" type="String" />
 
 
     <html>
@@ -23,7 +25,7 @@
         <h3 style="color:DarkOrange;">
             <center>{!v.message}</center>
         </h3>
-        <h3 style="color:blue;" class="slds-text-link_faux slds-align_absolute-center" onclick="{!c.navigateToIssue}">{!v.link}</h3>
+        <h3 style="color:blue; border-bottom: 0px !important; text-decoration:underline;" class="slds-text-link_faux slds-align_absolute-center" onclick="{!c.navigateToIssue}" rendered="{!v.displayLink}">{!v.link}</h3>
 
         <form class="slds-form--stacked">
             <lightning:textarea aura:id="descriptionResponse" label="Summary of the issue (Title): " value="{!v.title}"
@@ -39,6 +41,9 @@
             <lightning:textarea aura:id="questionThreeResponse" label="{!v.questionThree}" value="{!v.answerThree}"
                 maxlength="3000" required="true" />
             <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
+            <a target="_blank" href="https://docs.google.com/document/d/1V4rHxTw0vCAz7tAV-7mq0ht6TVqYjK7i_9q73ZWb-W0/edit?usp=sharing">Development Request Template</a>
+            <label></label>
+            <lightning:textarea label="Please include the link to your shared document with your request details. A template for your request details is above." value="{!v.requestForm}" />
             <lightning:textarea label="Watchers for the ticket: " value="{!v.watchers}" />
             <p class="fieldDescription">Enter the ASURITES for each user you want to watch this ticket. Each ASURITE
                 must be separated with a comma.</p>

@@ -414,40 +414,46 @@
                                                          size="1"
                                                          multiselect="false">
                                             <apex:selectOption itemValue="--Select--" />
-
+                                            
                                             <apex:selectOption itemValue="Email" />
-
+                                            
                                             <apex:selectOption itemValue="In Person" />
-
+                                            
                                             <apex:selectOption itemValue="Incoming Call" />
                                         </apex:selectList>
                                         <br />
                                         <br />
-                                        <apex:outputLabel for="cFuncGroup">
-                                            Functional Group:
-                                        </apex:outputLabel>
-                                        <br />
-                                        <apex:inputField id="cFuncGroup"
-                                                         value="{!caseC.CC_Functional_Group__c}"/>
-                                        <br />
-                                        <br />
-                                        <apex:inputField id="cStatus" 
-                                                         value="{!caseC.Status}"
-                                                         style="display:none;"/>
-
-                                        <apex:outputLabel for="cCate">Category:</apex:outputLabel>
-                                        <br />
-                                        <apex:inputField id="cCate" value="{!caseC.CC_Category__c}"/>
-                                        <br />
-                                        <br />
-                                        <apex:outputLabel for="cSubCate">
-                                            Sub-Category:
-                                        </apex:outputLabel>
-                                        <br />
-                                        <apex:inputField id="cSubCate"
-                                                         value="{!caseC.CC_Sub_Category__c}"/>
-                                        <br />
-                                        <br />
+                                        
+                                        <apex:outputPanel id="wrapper">
+                                            <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
+                                            <apex:actionRegion >
+                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1">
+                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
+                                                    <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                            <br />
+                                            <br />
+                                            
+                                            <apex:outputLabel value="Case Category" for="categoryOptions" />
+                                            <apex:actionRegion >
+                                                <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
+                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
+                                                    <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                            <br />
+                                            <br />
+                                            <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
+                                            <apex:actionRegion >
+                                                <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                                                    <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                            <br />
+                                            <br />
+                                        </apex:outputPanel>
+                                        
                                     </td>
 
                                     <td style="padding-left:20px;border-left:solid 1px #ccc;width:80%;">

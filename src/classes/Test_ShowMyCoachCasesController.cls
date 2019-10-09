@@ -28,7 +28,7 @@ public with sharing class Test_ShowMyCoachCasesController {
             } else {
                 timeZone = 'Hawaii-Hilo (HI)';
             }
-            Success_Student__c student = new Success_Student__c(Student__c=con.Id, Time_Zone__c='Arizona (AZ)');
+            Success_Student__c student = new Success_Student__c(Student__c=con.Id, Time_Zone__c=timeZone);
             students.add(student);
             expectedTimeZone.put(con.Id, student.Time_Zone__c);  // Store Time_Zone__c in map
         }
@@ -45,6 +45,7 @@ public with sharing class Test_ShowMyCoachCasesController {
                 Origin__c='In Person',
                 Subject='Test subject'
             );
+            cases.add(c);
         }
 
         insert cases;
@@ -54,14 +55,17 @@ public with sharing class Test_ShowMyCoachCasesController {
         ShowMyCoachCasesController controller = new ShowMyCoachCasesController();
         // Needed for myProactiveQuery attribute
         CoachPortalMainPageController mainController = new CoachPortalMainPageController();
-
-        // Must set query before calling this method by setting queryAttr to myProactiveQuery
+        // Must set query before calling resetRecordList
         controller.queryAttr = mainController.myProactiveQuery;
         controller.resetRecordList();
         Test.stopTest();
 
+        // Check that 3 cases were added to controller.caseList
+        System.assertEquals(3, controller.caseList.size());
+
         // Check that the time zones in the case wrapper match the expected time zones
         for (ShowMyCoachCasesController.CaseWrapper cw : controller.caseList) {
+            System.debug('' + cw.obj.Contact.Name + ': ' + cw.timeZone);
             String expected = expectedTimeZone.get(cw.obj.ContactId);
             String actual = cw.timeZone;
             System.assertEquals(expected, actual);

@@ -804,7 +804,7 @@ global with sharing class StudentProfileController {
             get {
                 if (gradProgramPlan.Degree__c != 'DMA' && gradProgramPlan.Degree__c != 'EDD' && gradProgramPlan.Degree__c != 'PHD' && gradProgramPlan.Degree__c != 'DBA') {
                     return '--';
-                } else {}
+                } else {
                     return gradProgramPlan.Grad_Advanced_To_Candidacy__c;
                 }
             }

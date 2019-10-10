@@ -2046,7 +2046,7 @@
                                                 Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c=='--', 'No', 'Yes')}
+                                                {!gradProgram.advancedToCandidacy}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

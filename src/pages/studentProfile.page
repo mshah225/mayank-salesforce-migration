@@ -2072,7 +2072,7 @@
                                                 iPOS Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, '--', '')}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null, '--', '')}
                                                 <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
                                                     <apex:param value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}" />
                                                 </apex:outputText>

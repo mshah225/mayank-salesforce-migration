@@ -1,25 +1,29 @@
 @isTest
 public with sharing class Test_ShowMyCoachCasesController {
+    // Map from Case.ContactId to Success_Student__c.Time_Zone__c
+    private static Map<Id, String> expectedTimeZone = new Map<Id, String>();
 
-    @isTest static void testPopulateTimeZone() {
-        // Map from Case.ContactId to Success_Student__c.Time_Zone__c
-        Map<Id, String> expectedTimeZone = new Map<Id, String>();
+    static void setup() {
+        ContactFactory.DefaultContact contactFact = new ContactFactory.DefaultContact();
+        SuccessStudentFactory.DefaultAdvisingStudent successStudentFact = new SuccessStudentFactory.DefaultAdvisingStudent();
+        CaseFactory caseFact = new CaseFactory(
+            new Case(
+                RecordTypeId='012d00000021xGLAAY',  // Set as ASU Coach Outreach Case
+                Status='In Progress',
+                Origin__c='In Person',
+                Subject='Test Subject',
+                Description='Test Description'
+            )
+        );
 
-        // Test data that needs to be created
-        List<Contact> contacts = new List<Contact>();
-        List<Success_Student__c> students = new List<Success_Student__c>();
-        List<Case> cases = new List<Case>();
+        List<Contact> contacts = (List<Contact>) contactFact.create(3);
+        insert contacts;  // Populate Contact IDs
 
-        // Create 3 test contacts
-        for (Integer i = 1; i <= 3; i++) {
-            contacts.add(new Contact(FirstName='Success' + i, LastName='Student' + i, EMPLID__c='' + i));
-        }
-
-        insert contacts;  // Populate IDs for contacts
-
-        // Create 3 test success students with different time zones using the 3 contacts
+        List<Success_Student__c> students = (List<Success_Student__c>) successStudentFact.create(3);
+        // Link to Contacts and set different time zones for each student
         for (Integer i = 0; i < 3; i++) {
             Contact con = contacts.get(i);
+            Success_Student__c student = students.get(i);
             String timeZone;
             if (i == 0) {
                 timeZone = 'Arizona (AZ)';
@@ -28,29 +32,24 @@ public with sharing class Test_ShowMyCoachCasesController {
             } else {
                 timeZone = 'Hawaii-Hilo (HI)';
             }
-            Success_Student__c student = new Success_Student__c(Student__c=con.Id, Time_Zone__c=timeZone);
-            students.add(student);
+            student.Student__c = con.Id;
+            student.Time_Zone__c = timeZone;
             expectedTimeZone.put(con.Id, student.Time_Zone__c);  // Store Time_Zone__c in map
         }
-
         insert students;
 
-        // Create 3 test Cases for each of the students using the 3 contacts
+        List<Case> cases = (List<Case>) caseFact.create(3);
+        // Link cases to Contacts
         for (Integer i = 0; i < 3; i++) {
+            Case cse = cases.get(i);
             Contact con = contacts.get(i);
-            Case c = new Case(
-                RecordTypeId='012d00000021xGLAAY',  // Set as ASU Coach Outreach Case
-                ContactId=con.Id,
-                Status='In Progress',
-                Origin__c='In Person',
-                Subject='Test subject'
-            );
-            cases.add(c);
+            cse.ContactId = con.Id;
         }
-
         insert cases;
+    }
 
-        // Now that we have all test data required, we can start the test
+    @isTest static void testPopulateTimeZone() {
+        setup();
         Test.startTest();
         ShowMyCoachCasesController controller = new ShowMyCoachCasesController();
         // Needed for myProactiveQuery attribute

@@ -15,7 +15,7 @@ public class TestHelpdeskProfileCallCenter
             LanguageLocaleKey = 'en_US',
             ReceivesInfoEmails = false,
             ProfileId = profileID
-        );
+        ); 
         
         return newUser;
     }
@@ -36,19 +36,6 @@ public class TestHelpdeskProfileCallCenter
         return '00ed00000019yKB';
     }
     
-    static testmethod void TestInsertHelpdeskProfile()
-    {
-        String helpDeskProfileId = getHelpdeskProfileId();
-        User helpDeskUser = createUserWithProfile(helpDeskProfileId);
-
-        Test.startTest();
-        insert helpDeskUser;
-        Test.stopTest();
-                
-        User insertedUser = [SELECT ProfileId, CallCenterId FROM User WHERE Id = :helpDeskUser.Id LIMIT 1];
-        System.assert(insertedUser.CallCenterId == getCallCenterId());
-    }
-    
     static testmethod void TestInsertNonHelpdeskProfile()
     {
         User helpDeskUser = createUserWithProfile(getNonHelpdeskProfileId());
@@ -59,23 +46,6 @@ public class TestHelpdeskProfileCallCenter
                 
         User insertedUser = [SELECT ProfileId, CallCenterId FROM User WHERE Id = :helpDeskUser.Id LIMIT 1];
         System.assert(insertedUser.CallCenterId != getCallCenterId());
-    }
-    
-    static testmethod void TestUpdateHelpdeskProfile()
-    {
-        String helpDeskProfileId = getHelpdeskProfileId();
-        User helpDeskUser = createUserWithProfile(getNonHelpdeskProfileId());
-        insert helpDeskUser;
-        User insertedUser = [SELECT ProfileId, CallCenterId FROM User WHERE Id = :helpDeskUser.Id LIMIT 1];
-        System.assert(insertedUser.CallCenterId != getCallCenterId());
-                
-        Test.startTest();
-        insertedUser.ProfileId = helpDeskProfileId;
-        update insertedUser;
-        Test.stopTest();
-                
-        User updatedUser = [SELECT ProfileId, CallCenterId FROM User WHERE Id = :insertedUser.Id LIMIT 1];
-        System.assert(updatedUser.CallCenterId == getCallCenterId());
     }
     
     static testmethod void TestUpdateNonHelpdeskProfile()

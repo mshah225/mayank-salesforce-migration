@@ -15,7 +15,7 @@ public class TestHelpdeskProfileCallCenter
             LanguageLocaleKey = 'en_US',
             ReceivesInfoEmails = false,
             ProfileId = profileID
-        );
+        ); 
         
         return newUser;
     }

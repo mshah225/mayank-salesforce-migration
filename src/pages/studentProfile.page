@@ -2190,7 +2190,7 @@
                                                 Anticipated Grad Term
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Anticipated_Term__c==null, '--', gradProgram.gradProgramPlan.Grad_Anticipated_Term__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2200,7 +2200,7 @@
                                                 Applied to Graduate
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c), 'No', 'Yes')}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), 'No', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2210,7 +2210,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c==null, '--', gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c)}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c==null, '--', gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2220,7 +2220,7 @@
                                                 Graduation Checkout Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c==null, '--', gradProgram.gradProgramPlan.Degree_Chkout_Stat_Code__c)}
+                                                {!IF(gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c==null, '--', gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

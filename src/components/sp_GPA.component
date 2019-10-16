@@ -7,7 +7,7 @@
     <apex:attribute name="gpa" type="Decimal" description="The passed in GPA value to display."/>
 
     {!IF(ISBLANK(gpa), '--', '')}
-    <apex:outputText value="{0,number,####.###}" style="{!IF(AND(NOT(ISBLANK(gpa)), gpa < 3.0), 'font-weight:bold;color:#8a6d3b;', '')}">
+    <apex:outputText value="{0,number,####.###}" style="{!IF(AND(NOT(ISBLANK(gpa)), gpa < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
         <apex:param value="{!gpa}"/>
     </apex:outputText>
 </apex:component>

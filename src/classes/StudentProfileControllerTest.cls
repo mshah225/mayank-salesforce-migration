@@ -8,7 +8,7 @@ private class StudentProfileControllerTest {
         ApexPages.currentPage().getParameters().put('contactId', '1203436008');
 
         StudentProfileController controller = new StudentProfileController();
-        ContactService.createTestContacts(2);
+        new ContactFactory.WithRequiredFields().createMany(2);
         ContactService.generateRandomPin(Date.today());
         ContactService.isPinValid(444, Date.Today());
         CaseService.CaseFieldsToString();
@@ -108,7 +108,6 @@ private class StudentProfileControllerTest {
         System.debug(controller.openCases);
         System.debug(controller.sGroupList);
         System.debug(controller.ugProgramPlans);
-        System.debug(controller.gradProgramPlans);
         System.debug(controller.studentProgram);
         System.debug(controller.ugStudentProgram);
         System.debug(controller.gradStudentProgram);

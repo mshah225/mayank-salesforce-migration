@@ -2473,7 +2473,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Continuous Enrollment</th>
-                                                <td id="gr_continuousEnrollment">{!gradStudentProgram.Grad_Continuous_Enrollment__c}</td>
+                                                <td id="gr_continuousEnrollment">{!IF(ISBLANK(gradStudentProgram.Grad_Continuous_Enrollment__c), '--', gradStudentProgram.Grad_Continuous_Enrollment__c)}</td>
                                             </tr>
                                             <tr>
                                                 <th>Enrollment Holds</th>

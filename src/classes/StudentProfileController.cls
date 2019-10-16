@@ -259,7 +259,7 @@ global with sharing class StudentProfileController {
                 Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c,
                 ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c, Degree_Checkout_Status_Name__c,
                 Grad_Culminating_Event__c, Grad_Advanced_To_Candidacy__c, Degree_Level__c, Grad_Continuous_Enrollment__c,
-                Grad_Anticipated_Term__c, Grad_ASU_Hours_After__c, Grad_ASU_Hours_Before__c, Degree_Chkout_Stat_Code__c
+                Grad_Anticipated_Term__c, Grad_Anticipated_Term__r.Name, Grad_ASU_Hours_After__c, Grad_ASU_Hours_Before__c, Degree_Chkout_Stat_Code__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
             ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c DESC, Plan_Description__c

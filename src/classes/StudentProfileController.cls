@@ -400,8 +400,8 @@ global with sharing class StudentProfileController {
             planCode.add(gppw.gradProgramPlan.Plan_Code__c);
         }
         List<Student_Milestone__c> defenseMilestones = [
-            SELECT Defense_Building__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c,
-            Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
+            SELECT Defense_Building__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c, Format_Document_Type__c, Format_Status__c, Defense_Status__c,
+            Final_Defense_Results_Status_DtTm__c, Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c
             WHERE Contact__c =: theContact.Id
             AND Acad_Plan__r.Plan_Code__c IN: planCode AND Milestone__c = 'GRDEFENSE'

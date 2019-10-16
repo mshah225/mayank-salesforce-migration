@@ -800,18 +800,6 @@ global with sharing class StudentProfileController {
             set;
         }
 
-        public String advancedToCandidacy {
-            get {
-                if (gradProgramPlan.Degree__c != 'DMA' && gradProgramPlan.Degree__c != 'EDD' && gradProgramPlan.Degree__c != 'PHD' && gradProgramPlan.Degree__c != 'DBA') {
-                    return '--';
-                } else {
-                    return gradProgramPlan.Grad_Advanced_To_Candidacy__c;
-                }
-            }
-
-            set;
-        }
-
         public Student_Program_Plan__c gradProgramPlan {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
         public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}

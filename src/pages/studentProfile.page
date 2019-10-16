@@ -2046,7 +2046,7 @@
                                                 Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
-                                                {!gradProgram.advancedToCandidacy}
+                                                {!gradProgram.gradProgramPlan.Grad_Advanced_To_Candidacy__c}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

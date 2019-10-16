@@ -1,27 +1,5 @@
 public class AdvisorPortalMainPageController {
     public AdvisorPortalMainPageController() {}
-    
-    public Boolean graduateCareer {
-        get {
-            if (graduateCareer == null) {
-                return false;
-            } else {
-                return graduateCareer;
-            }
-        } 
-        set;
-    }
-    
-    public String careerType {
-        get {
-            if (graduateCareer) {
-                return 'Graduate';
-            } else {
-                return 'Undergraduate';
-            }
-        }
-        set;
-    }
 
     public Id ownerId {
         get {
@@ -238,6 +216,8 @@ public class AdvisorPortalMainPageController {
                 	WHERE Resource__c = :UserInfo.getUserId()
                 	AND IsActive__c = true
                 	AND RecordTypeId = :AdvisorResourceRTID];
+
+            System.debug(myResources);
             }
             return myResources;
         }
@@ -336,13 +316,8 @@ public class AdvisorPortalMainPageController {
                     whereClause = '(WHERE OwnerId = \'' + ownerId + '\' ';
                 }
                 myProactiveQuery = myProactiveQuery + whereClause +
-                    ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ';
-                if (graduateCareer) {
-                    myProactiveQuery += 'AND (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Graduate\')) ';
-                } else {
-                    myProactiveQuery += 'AND (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Undergraduate\')) ';
-                }
-                myProactiveQuery += 'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
+                    ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
             }
             return myProactiveQuery;
         }
@@ -366,13 +341,8 @@ public class AdvisorPortalMainPageController {
                 }
                 myWatchlistQuery = myWatchlistQuery + whereClause +
                     ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
-                    'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ';
-                if (graduateCareer) {
-                    myWatchlistQuery += 'AND (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Graduate\')) ';
-                } else {
-                    myWatchlistQuery += 'AND (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = \'Undergraduate\')) ';
-                }    
-                myWatchlistQuery += 'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
+                    'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
             }
             return myWatchlistQuery;
         }
@@ -414,14 +384,12 @@ public class AdvisorPortalMainPageController {
      */
     public boolean hasViewAs {
         get {
-            return viewAsOptions.size() > 0 ? true : false;
+            // Has view as if the list of select options is greater than 1 (should always have
+            // the current user).
+            return viewAsOptions.size() > 1 ? true : false;
         }
 
         set;
-    }
-    
-    public void toggleGraduateCareer() {
-        graduateCareer = !graduateCareer;
     }
 
     public List<SelectOption> sortSelectOptionList(List<SelectOption> source)

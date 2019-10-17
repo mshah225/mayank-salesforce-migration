@@ -22,7 +22,7 @@
               type='text/css'/>
         <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
                 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
-        <c:StudentProfileStyles/>
+        <c:StudentProfileStyles />
         <style>
             .gradTable {
                 font-family: arial, sans-serif;
@@ -31,13 +31,27 @@
             }
 
             .gradTD, .gradTH {
-                border: 1px solid #dddddd;
+                
                 text-align: left;
                 padding: 8px;
             }
 
+            .gradTD {
+                border: 0px !important;
+            }
+
             .gradTR {
-                background-color: #dddddd;
+            	border: 1px solid #ddd;
+            }
+
+            .innerHeaders {
+                border-bottom: 2px solid #333 !important;
+            	border-top: 1px solid #ddd;
+            }
+            
+            .gradTH {
+            	border-bottom: 2px solid #333 !important;
+            	border-top: 1px solid #ddd;
             }
 
             .mobile {
@@ -207,7 +221,7 @@
         <div class="row intro">
             <div class="col-xs-4 col-md-2 intro" style="margin-bottom:20px;">
                 <apex:outputPanel id="photoRerenderPanel" layout="none">
-                    <apex:form>
+                    <apex:form >
                         <div id="sunDevilImgDiv"
                              style="{!IF(urlParamsExistAndAreValid, 'display:block', 'display:none')}">
                             <img id="studentPhotoImg2"
@@ -247,8 +261,7 @@
                             &nbsp;{!theContact.ASURite_ID__c}
                         </h4>
 
-                        <apex:outputPanel
-                                rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}">
+                        <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}">
                             <h4 class="intro" style="color:#6e7d83 !important;">
                                 &nbsp;{!studentProgram.Career__c}
                             </h4>
@@ -439,7 +452,7 @@
 
         <div class="customErrorBox" style="{!IF(urlParamsExistAndAreValid, 'display: none', 'display:block')}">
             <apex:outputPanel styleClass="customErrorMessage">
-                <apex:pageMessages></apex:pageMessages>
+                <apex:pageMessages ></apex:pageMessages>
             </apex:outputPanel>
         </div>
 
@@ -1150,8 +1163,7 @@
                                                         {!IF(ISBLANK(studentAccount.Account_Balance__c +
                                                         studentAccount.Future_Balance__c),'--','')}
                                                         <apex:outputText value="{0, number, currency}">
-                                                            <apex:param
-                                                                    value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"/>
+                                                            <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"/>
                                                         </apex:outputText>
                                                     </td>
                                                 </tr>
@@ -1385,8 +1397,7 @@
                                                     <th>Test Completion Date</th>
                                                     <td id="me3_hs_completion_date">
                                                         <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                            <apex:param
-                                                                    value="{!me3HighSchoolResults.Test_Completed_Date__c}"/>
+                                                            <apex:param value="{!me3HighSchoolResults.Test_Completed_Date__c}"/>
                                                         </apex:outputText>
                                                     </td>
                                                 </tr>
@@ -1632,8 +1643,7 @@
                                                     </td>
                                                 </tr>
                                             </apex:repeat>
-                                            <apex:outputPanel
-                                                    rendered="{!IF(testUndergradScoreList.size > 0, false, true)}">
+                                            <apex:outputPanel rendered="{!IF(testUndergradScoreList.size > 0, false, true)}">
                                                 <div>No undergraduate test scores found.</div>
                                             </apex:outputPanel>
                                             </tbody>
@@ -1671,8 +1681,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <apex:outputPanel
-                                                        rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
+                                                <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
                                                     <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
                                                         <tr>
                                                             <td>{!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}</td>
@@ -1699,8 +1708,7 @@
                                                         </tr>
                                                     </apex:repeat>
                                                 </apex:outputPanel>
-                                                <apex:outputPanel
-                                                        rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}">
+                                                <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}">
                                                     <div>No undergraduate milestones found.</div>
                                                 </apex:outputPanel>
                                                 </tbody>
@@ -1785,7 +1793,7 @@
                             </div>
 
                             <div style="overflow:auto; max-height:310px; height: 310px">
-                                <c:CivitasPersistenceData/>
+                                <c:CivitasPersistenceData />
                             </div>
 
                             <div class="page-header-smaller">
@@ -1952,12 +1960,12 @@
                             <div class="activeGradTable" rendered="{!IF(activeGraduatePrograms.size > 0, true, false)}">
                                 <table class="gradTable">
                                     <tr>
-                                        <th class="gradTH">Program</th>
+                                        <th class="gradTH" style="border-left: 1px solid #ddd;">Program</th>
                                         <th class="gradTH">Plan</th>
                                         <th class="gradTH">Degree Level</th>
                                         <th class="gradTH">Degree</th>
                                         <th class="gradTH">Campus</th>
-                                        <th class="gradTH">Primary</th>
+                                        <th class="gradTH" style="border-right: 1px solid #ddd;">Primary</th>
                                     </tr>
                                     <apex:repeat value="{!activeGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
@@ -2234,16 +2242,16 @@
                                         </tr>
 
                                         <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.5" class="gradTD">
+                                            <th colspan="1.5" class="gradTD innerHeaders">
                                                 Name
                                             </th>
-                                            <th colspan="1.5" class="gradTD">
+                                            <th colspan="1.5" class="gradTD innerHeaders">
                                                 Committee Role
                                             </th>
-                                            <th colspan="1.5" class="gradTD">
+                                            <th colspan="1.5" class="gradTD innerHeaders">
                                                 Title
                                             </th>
-                                            <th colspan="1.5" class="gradTD">
+                                            <th colspan="1.5" class="gradTD innerHeaders">
                                                 Department
                                             </th>
                                         </tr>
@@ -2276,10 +2284,10 @@
                                         </tr>
 
                                         <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.5" class="gradTD">
+                                            <th colspan="1.5" class="gradTD innerHeaders">
                                                 Name
                                             </th>
-                                            <th colspan="1.5" class="gradTD">
+                                            <th colspan="1.5" class="gradTD innerHeaders">
                                                 Title
                                             </th>
                                         </tr>
@@ -2536,6 +2544,27 @@
                                 <div id="gr_psTranscript" style="display:none;"></div>
 
                                 <div id="grpsTranscriptErrors"></div>
+                            </div>
+
+                            <div class="page-header-smaller">
+                                <h4>
+                                    <i class="fa fa-caret-down"></i>
+                                    &nbsp;Indicators History
+                                </h4>
+                            </div>
+
+                            <div style="overflow:auto;max-height:400px;">
+                                <div style="margin-bottom: 10px;">
+                                    <button class="btn btn-default btn-adjust">
+                                        <a href="#">
+                                            Load Indicators History
+                                            &nbsp;&nbsp;<i class="fa"></i>
+                                        </a>
+                                    </button>
+                                </div>
+                                <div id="grps_retention_snp" style="display:none;"></div>
+
+                                <div id="grpsRetentionSNPErrors"></div>
                             </div>
                         </apex:pageBlock>
                     </div>

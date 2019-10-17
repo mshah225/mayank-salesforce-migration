@@ -2323,12 +2323,12 @@
                                  rendered="{!IF(completedGraduatePrograms.size > 0, true, false)}">
                                 <table class="gradTable">
                                     <tr>
-                                        <th class="gradTH">Program</th>
+                                        <th class="gradTH" style="border-left: 1px solid #ddd;">Program</th>
                                         <th class="gradTH">Plan</th>
                                         <th class="gradTH">Degree Level</th>
                                         <th class="gradTH">Degree</th>
                                         <th class="gradTH">Campus</th>
-                                        <th class="gradTH">Grad Term</th>
+                                        <th class="gradTH" style="border-right: 1px solid #ddd;">Grad Term</th>
                                     </tr>
                                     <apex:repeat value="{!completedGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">

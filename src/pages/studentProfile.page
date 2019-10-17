@@ -2545,27 +2545,6 @@
 
                                 <div id="grpsTranscriptErrors"></div>
                             </div>
-
-                            <div class="page-header-smaller">
-                                <h4>
-                                    <i class="fa fa-caret-down"></i>
-                                    &nbsp;Indicators History
-                                </h4>
-                            </div>
-
-                            <div style="overflow:auto;max-height:400px;">
-                                <div style="margin-bottom: 10px;">
-                                    <button class="btn btn-default btn-adjust">
-                                        <a href="#">
-                                            Load Indicators History
-                                            &nbsp;&nbsp;<i class="fa"></i>
-                                        </a>
-                                    </button>
-                                </div>
-                                <div id="grps_retention_snp" style="display:none;"></div>
-
-                                <div id="grpsRetentionSNPErrors"></div>
-                            </div>
                         </apex:pageBlock>
                     </div>
                 </div>

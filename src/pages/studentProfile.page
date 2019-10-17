@@ -2218,7 +2218,7 @@
                                                 Application Term
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__c==null, '--', gradProgram.gradProgramPlan.Grad_Applied_to_Graduate_Term__r.Name)}
+                                                {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__c==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>

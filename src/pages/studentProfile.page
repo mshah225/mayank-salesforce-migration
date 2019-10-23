@@ -313,7 +313,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+{!theContact.EMPLID__c}"
+                                <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     AppXtender
                                 </a>
@@ -2089,7 +2089,10 @@
                                                 Defense Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.defenseDate==null, '--', gradProgram.defenseDate)}
+                                                {!IF(gradProgram.defenseDate==null, '--', '')}
+                                                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!gradProgram.defenseDate}" />
+                                                </apex:outputText>
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2188,7 +2191,7 @@
                                                 Maximum Time Limit
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c)}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2242,17 +2245,20 @@
                                         </tr>
 
                                         <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.5" class="gradTD innerHeaders">
+                                            <th colspan="1.2" class="gradTD innerHeaders">
                                                 Name
                                             </th>
-                                            <th colspan="1.5" class="gradTD innerHeaders">
+                                            <th colspan="1.2" class="gradTD innerHeaders">
                                                 Committee Role
                                             </th>
-                                            <th colspan="1.5" class="gradTD innerHeaders">
+                                            <th colspan="1.2" class="gradTD innerHeaders">
                                                 Title
                                             </th>
-                                            <th colspan="1.5" class="gradTD innerHeaders">
+                                            <th colspan="1.2" class="gradTD innerHeaders">
                                                 Department
+                                            </th>
+                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                                Attendance Method
                                             </th>
                                         </tr>
 
@@ -2269,6 +2275,9 @@
                                                 </td>
                                                 <td class="gradTD">
                                                     {!IF(gradCommittee.Company_Description__c==null, '--', gradCommittee.Company_Description__c)}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!IF(gradCommittee.Committee_Member_Attend_Method__c==null, '--', gradCommittee.Committee_Member_Attend_Method__c)}
                                                 </td>
                                             </tr>
                                         </apex:repeat>

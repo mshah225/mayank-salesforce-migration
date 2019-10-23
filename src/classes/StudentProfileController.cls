@@ -253,7 +253,7 @@ global with sharing class StudentProfileController {
                 Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Admission_Type_Description__c, Appt_Dt__c,
                 Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, Education_Level__c,
                 Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c,
-                Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
+                Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_Max_Time_Limit__r.Name, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
                 Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
                 Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
                 Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c,
@@ -373,7 +373,7 @@ global with sharing class StudentProfileController {
             programPlansUsed.add(gppw.gradProgramPlan.Id);
         }
         List<Student_Program_Plan_Advisor__c> committeesAndAdvisors = [
-            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c, Committee_Type__c
+            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c, Committee_Type__c, Committee_Member_Attend_Method__c
             FROM Student_Program_Plan_Advisor__c
             WHERE Student_Program_Plan__c IN: programPlansUsed
             AND (Student_Program_Plan__r.Career__c = 'Graduate')
@@ -779,12 +779,12 @@ global with sharing class StudentProfileController {
 
     public class GraduateProgramPlanWrapper {
         public Student_Milestone__c gradMilestone {get; set;}
-        public String defenseDate {
+        public Date defenseDate {
             get {
                 if (gradMilestone == null || gradMilestone.Defense_Date_Time__c == null) {
-                    return '--';
+                    return null;
                 } else {
-                    return String.valueOf(Date.newInstance(gradMilestone.Defense_Date_Time__c.year(), gradMilestone.Defense_Date_Time__c.month(), gradMilestone.Defense_Date_Time__c.day()));
+                    return Date.newInstance(gradMilestone.Defense_Date_Time__c.year(), gradMilestone.Defense_Date_Time__c.month(), gradMilestone.Defense_Date_Time__c.day());
                 }
             }
             set;
@@ -794,7 +794,7 @@ global with sharing class StudentProfileController {
                 if (gradMilestone == null || gradMilestone.Defense_Date_Time__c == null) {
                     return '--';
                 } else {
-                    return gradMilestone.Defense_Date_Time__c.format('HH:mm:ss');
+                    return gradMilestone.Defense_Date_Time__c.format('h:mm a');
                 }
             }
             set;

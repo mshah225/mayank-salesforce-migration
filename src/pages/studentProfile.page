@@ -2486,7 +2486,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Enrollment Holds</th>
-                                                <td id="gr_enrollmentHolds"{!IF(ISBLANK(theContact.Enrolled_Hold_Count__c), '--', theContact.Enrolled_Hold_Count__c)}></td>
+                                                <td id="gr_enrollmentHolds">{!IF(ISBLANK(theContact.Enrolled_Hold_Count__c), '--', theContact.Enrolled_Hold_Count__c)}</td>
                                             </tr>
                                         </table>
 

@@ -2342,7 +2342,7 @@
                                     <apex:repeat value="{!completedGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
                                             <td class="gradTD">
-                                                <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Plan_Type_Text__c}
+                                                {!gradProgram.gradProgramPlan.Plan_Type_Text__c}
                                             </td>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Plan_Description__c}
@@ -2358,14 +2358,6 @@
                                                 </td>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Completion_Term__c}
-                                            </td>
-                                        </tr>
-                                        <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
-                                                Cumulative GPA
-                                            </th>
-                                            <td class="gradTD">
-                                                <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                             </td>
                                         </tr>
                                     </apex:repeat>
@@ -2494,22 +2486,22 @@
                                             </tr>
                                             <tr>
                                                 <th>Enrollment Holds</th>
-                                                <td id="gr_enrollmentHolds"></td>
+                                                <td id="gr_enrollmentHolds"{!IF(ISBLANK(theContact.Enrolled_Hold_Count__c), '--', theContact.Enrolled_Hold_Count__c)}></td>
                                             </tr>
                                         </table>
 
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
                                                 <th title="Tuition Installment Plan">Past Due Tip</th>
-                                                <td id="gr_pastDueTip"></td>
+                                                <td id="gr_pastDueTip">{!IF(ISBLANK(theContact.Past_Due_Tip__c), '--', theContact.Past_Due_Tip__c)}</td>
                                             </tr>
                                             <tr>
                                                 <th>Financial Hold</th>
-                                                <td id="gr_financialHold"></td>
+                                                <td id="gr_financialHold">{!theContact.Financial_Hold__c}</td>
                                             </tr>
                                             <tr>
                                                 <th>Financial Aid Issue</th>
-                                                <td id="gr_financialAidIssue"></td>
+                                                <td id="gr_financialAidIssue">{!IF(ISBLANK(theContact.Financial_Aid_Indicator__c), '--', theContact.Financial_Aid_Indicator__c)}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -2518,7 +2510,7 @@
                                         <table class="table table-striped asu-detail-table">                                            
                                             <tr>
                                                 <th>Enrolled in Next Term</th>
-                                                <td id="gr_enrolledInNextTerm"></td>
+                                                <td id="gr_enrolledInNextTerm">{!IF(ISBLANK(gradStudentProgram.Enrolled_Next_Term__c), '--', gradStudentProgram.Enrolled_Next_Term__c)}</td>
                                             </tr>
                                             <tr>
                                                 <th>Cumulative GPA</th>
@@ -3754,10 +3746,10 @@
                                         "</tr>";
                                 });
 
-                                if (currentTermEnrolled > 0) {
+                                if (termEnrolledHours > 0) {
                                     $j(termHoursId).after(termRowHTML).find("span.hide").removeClass("hide");
-                                    $j(termEnrolledId).html(termEnrolledHours);
                                 }
+                                $j(termEnrolledId).html(termEnrolledHours);
                             }
 
                             asrResponse.forEach(function (record) {

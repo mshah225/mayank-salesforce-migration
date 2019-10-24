@@ -252,7 +252,7 @@ global with sharing class StudentProfileController {
             SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c,
                 Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Admission_Type_Description__c, Appt_Dt__c,
                 Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, Education_Level__c,
-                Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c,
+                Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c, Enrolled_Next_Term__c,
                 Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_Max_Time_Limit__r.Name, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
                 Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
                 Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,

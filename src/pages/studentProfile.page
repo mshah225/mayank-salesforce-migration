@@ -3418,7 +3418,6 @@
                                                     "</div>" +
                                                     "<hr class='comments-hr'/>";
                                             }
-
                                             document.getElementById('ps_advising_notes_section').innerHTML = html;
                                             cleanUpUndefined("ps_advising_notes_section");
                                             advisorNotesLoaded = true;
@@ -3437,6 +3436,10 @@
                                 },
                                 {buffer: false, escape: true, timeout: 120000}
                             );
+                        } else {
+                            document.getElementById("psAdvisingNotesResponseErrors").innerHTML =
+                                'No advising notes found.';
+                            advisorNotesLoaded = true;
                         }
                     }
                 });

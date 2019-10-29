@@ -99,13 +99,15 @@ public class showMyCoachCasesController extends ListViewController {
     private Map<Id, String> getTimeZones(List<Case> cases) {
         List<Id> contactIds = this.getContactIds(cases);
         List<Contact> contacts = [
-            SELECT (SELECT Time_Zone__c FROM Success_Students__r)
+            SELECT (SELECT Time_Zone__c FROM Success_Students__r WHERE Coaching_Student__c = true ORDER BY Time_Zone__c DESC NULLs Last)
             FROM Contact
             WHERE Id IN :contactIds
         ];
         Map<Id, String> timeZones = new Map<Id, String>();
         for (Contact c : contacts) {
-            timeZones.put(c.Id, c.Success_Students__r[0].Time_Zone__c);
+            if (c.Success_Students__r != null && c.Success_Students__r.size() >= 1) {
+                timeZones.put(c.Id, c.Success_Students__r[0].Time_Zone__c);
+            }
         }
         return timeZones;
     }

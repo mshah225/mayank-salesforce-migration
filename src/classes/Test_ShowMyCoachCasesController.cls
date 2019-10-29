@@ -4,6 +4,24 @@ public with sharing class Test_ShowMyCoachCasesController {
     private static Map<Id, String> expectedTimeZone = new Map<Id, String>();
 
     static void setup() {
+        // Case classification test objects necessary to set student.Coaching_Student__c to true
+        Case_Classification__c asuCoachOutreach = new Case_Classification__c(
+            Name = 'ASU Coach Outreach',
+            RecordTypeId = [SELECT Name, Id FROM RecordType WHERE Name = 'Functional Group' LIMIT 1].Id,
+            Active__c = true,
+            Visible__c = true
+        );
+        insert asuCoachOutreach;  // Populate ID
+
+        Case_Classification__c adHoc = new Case_Classification__c(
+            Name = 'Ad Hoc',
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Category'].Id,
+            Parent__c = asuCoachOutreach.Id,
+            Active__c = true,
+            Visible__c = true
+        );
+        insert adHoc;
+
         ContactFactory.DefaultContact contactFact = new ContactFactory.DefaultContact();
         SuccessStudentFactory.DefaultAdvisingStudent successStudentFact = new SuccessStudentFactory.DefaultAdvisingStudent();
         CaseFactory caseFact = new CaseFactory(
@@ -19,23 +37,41 @@ public with sharing class Test_ShowMyCoachCasesController {
         List<Contact> contacts = (List<Contact>) contactFact.create(3);
         insert contacts;  // Populate Contact IDs
 
-        List<Success_Student__c> students = (List<Success_Student__c>) successStudentFact.create(3);
+        List<Success_Student__c> students = (List<Success_Student__c>) successStudentFact.create(4);
         // Link to Contacts and set different time zones for each student
-        for (Integer i = 0; i < 3; i++) {
-            Contact con = contacts.get(i);
+        for (Integer i = 0; i < 4; i++) {
+            Contact con;
+            if (i < 3) {
+                con = contacts.get(i);
+            } else {
+                // 4th test success student will be associated with
+                // the third contact
+                con = contacts.get(2);
+            }
             Success_Student__c student = students.get(i);
-            String timeZone;
+            String timeZone = null;
             if (i == 0) {
                 timeZone = 'Arizona (AZ)';
             } else if (i == 1) {
                 timeZone = 'Alaska (AK)';
-            } else {
+            } else if (i == 2) {
                 timeZone = 'Hawaii-Hilo (HI)';
             }
             student.Student__c = con.Id;
             student.Time_Zone__c = timeZone;
-            expectedTimeZone.put(con.Id, student.Time_Zone__c);  // Store Time_Zone__c in map
+            if (i != 1) {
+                student.Coaching_Student__c = true;
+            } else {
+                // Set 2nd coaching student's Coaching_Student__c
+                // Because of this, the 2nd coaching student's time zone
+                // should not be retrieved even though it is defined as Alaska (AK)
+                student.Coaching_Student__c = false;
+            }
+            if (i == 0 || i == 2) {
+                expectedTimeZone.put(con.Id, student.Time_Zone__c);  // Store Time_Zone__c in map
+            }
         }
+
         insert students;
 
         List<Case> cases = (List<Case>) caseFact.create(3);

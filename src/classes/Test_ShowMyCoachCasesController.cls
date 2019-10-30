@@ -68,7 +68,7 @@ public with sharing class Test_ShowMyCoachCasesController {
         student.Time_Zone__c = 'Hawaii-Hilo (HI)';
         student.Coaching_Student__c = true;
         student.Is_Active__c = false;
-        expectedTimeZone.put(con.Id, null);  // TODO: Fix
+        expectedTimeZone.put(con.Id, null);
 
         // 4th Student - No Time Zone
         student = students.get(3);
@@ -98,9 +98,9 @@ public with sharing class Test_ShowMyCoachCasesController {
 
         insert students;
 
-        List<Case> cases = (List<Case>) caseFact.create(3);
+        List<Case> cases = (List<Case>) caseFact.create(5);  // One for each Contact
         // Link cases to Contacts
-        for (Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 5; i++) {
             Case cse = cases.get(i);
             Contact ct = contacts.get(i);
             cse.ContactId = ct.Id;
@@ -119,8 +119,8 @@ public with sharing class Test_ShowMyCoachCasesController {
         controller.resetRecordList();
         Test.stopTest();
 
-        // Check that 3 cases were added to controller.caseList
-        System.assertEquals(3, controller.caseList.size());
+        // Check that 5 cases were added to controller.caseList
+        System.assertEquals(5, controller.caseList.size());
 
         // Check that the time zones in the case wrapper match the expected time zones
         for (ShowMyCoachCasesController.CaseWrapper cw : controller.caseList) {

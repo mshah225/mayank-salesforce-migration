@@ -34,43 +34,67 @@ public with sharing class Test_ShowMyCoachCasesController {
             )
         );
 
-        List<Contact> contacts = (List<Contact>) contactFact.create(3);
+        List<Contact> contacts = (List<Contact>) contactFact.create(5);
         insert contacts;  // Populate Contact IDs
 
-        List<Success_Student__c> students = (List<Success_Student__c>) successStudentFact.create(4);
-        // Link to Contacts and set different time zones for each student
-        for (Integer i = 0; i < 4; i++) {
-            Contact con;
-            if (i < 3) {
-                con = contacts.get(i);
-            } else {
-                // 4th test success student will be associated with
-                // the third contact
-                con = contacts.get(2);
-            }
-            Success_Student__c student = students.get(i);
-            String timeZone = null;
-            if (i == 0) {
-                timeZone = 'Arizona (AZ)';
-            } else if (i == 1) {
-                timeZone = 'Alaska (AK)';
-            } else if (i == 2) {
-                timeZone = 'Hawaii-Hilo (HI)';
-            }
-            student.Student__c = con.Id;
-            student.Time_Zone__c = timeZone;
-            if (i != 1) {
-                student.Coaching_Student__c = true;
-            } else {
-                // Set 2nd coaching student's Coaching_Student__c
-                // Because of this, the 2nd coaching student's time zone
-                // should not be retrieved even though it is defined as Alaska (AK)
-                student.Coaching_Student__c = false;
-            }
-            if (i == 0 || i == 2) {
-                expectedTimeZone.put(con.Id, student.Time_Zone__c);  // Store Time_Zone__c in map
-            }
-        }
+        List<Success_Student__c> students = (List<Success_Student__c>) successStudentFact.create(6);
+        // Test cases:
+        // -----------
+        Success_Student__c student;
+        Contact con;
+
+        // 1st Student - General Case
+        student = students.get(0);
+        con = contacts.get(0);
+        student.Student__c = con.Id;
+        student.Time_Zone__c = 'Arizona (AZ)';
+        student.Coaching_Student__c = true;
+        student.Is_Active__c= true;
+        expectedTimeZone.put(con.Id, student.Time_Zone__c);
+
+        // 2nd Student - Not Coaching Student
+        student = students.get(1);
+        con = contacts.get(1);
+        student.Student__c = con.Id;
+        student.Time_Zone__c = 'Alaska (AK)';
+        student.Coaching_Student__c = false;
+        student.Is_Active__c = true;
+        expectedTimeZone.put(con.Id, null);
+
+        // 3rd Student - Not Active
+        student = students.get(2);
+        con = contacts.get(2);
+        student.Student__c = con.Id;
+        student.Time_Zone__c = 'Hawaii-Hilo (HI)';
+        student.Coaching_Student__c = true;
+        student.Is_Active__c = false;
+        expectedTimeZone.put(con.Id, null);  // TODO: Fix
+
+        // 4th Student - No Time Zone
+        student = students.get(3);
+        con = contacts.get(3);
+        student.Student__c = con.Id;
+        student.Time_Zone__c = null;
+        student.Coaching_Student__c = true;
+        student.Is_Active__c = true;
+        expectedTimeZone.put(con.Id, null);
+
+
+        // 5th/6th Students - Multiple Students Associated with Single Contact
+        // Should only display Mountain (MST)
+        student = students.get(4);
+        con = contacts.get(4);
+        student.Student__c = con.Id;
+        student.Time_Zone__c = null;
+        student.Coaching_Student__c = true;
+        student.Is_Active__c = true;
+
+        student = students.get(5);
+        student.Student__c = con.Id;
+        student.Time_Zone__c = 'Mountain (MST)';
+        student.Coaching_Student__c = true;
+        student.Is_Active__c = true;
+        expectedTimeZone.put(con.Id, student.Time_Zone__c);
 
         insert students;
 
@@ -78,8 +102,8 @@ public with sharing class Test_ShowMyCoachCasesController {
         // Link cases to Contacts
         for (Integer i = 0; i < 3; i++) {
             Case cse = cases.get(i);
-            Contact con = contacts.get(i);
-            cse.ContactId = con.Id;
+            Contact ct = contacts.get(i);
+            cse.ContactId = ct.Id;
         }
         insert cases;
     }

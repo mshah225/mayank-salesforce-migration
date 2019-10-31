@@ -4,5 +4,5 @@
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <description>Students can search through the knowledge base for helpful articles and give feedback on them.</description>
-    <label>akb</label>
+    <label>authkb</label>
 </ApexPage>

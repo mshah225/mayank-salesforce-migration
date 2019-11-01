@@ -199,7 +199,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!articleList.id}">
+                                                    <apex:outputLink value="/authkb?id={!articleList.id}">
                                                             {!articleList.title}
                                                     </apex:outputLink>
                                                 </td>
@@ -358,7 +358,7 @@
                                             &#8226;&nbsp;
                                         </td>
                                         <td>
-                                            <apex:outputLink value="/akb?id={!relatedart.id}">
+                                            <apex:outputLink value="/authkb?id={!relatedart.id}">
                                                     {!relatedart.title}
                                             </apex:outputLink>
 

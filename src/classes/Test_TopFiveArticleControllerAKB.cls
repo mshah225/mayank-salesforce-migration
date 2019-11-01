@@ -89,7 +89,7 @@ public with sharing class Test_TopFiveArticleControllerAKB
         for (Integer x = 0; x < 5; x++)
         {
             TopFiveArticleControllerAKB.ArticleInfo ai = postResults6.get(x);
-            System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + 'akb?id=' + ai.id);
+            System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + 'authkb?id=' + ai.id);
         }
     }
 

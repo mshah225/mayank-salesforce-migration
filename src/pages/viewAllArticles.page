@@ -167,7 +167,7 @@
                                                            keyword="{!searchString}"
                                                            pageSize="{!pageSize}"
                                                            sortBy="mostViewed">
-                                        <apex:outputLink value="/akb?id={!article.Id}">
+                                        <apex:outputLink value="/authkb?id={!article.Id}">
                                             &#8226;&nbsp;{!article.title}
                                         </apex:outputLink>
 

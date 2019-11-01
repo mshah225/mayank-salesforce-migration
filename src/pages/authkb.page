@@ -484,7 +484,7 @@
             var articleLinks = []
 
             for (i = 0; i < links.length; i++) {
-                if (links[i].href.indexOf('/articles') > -1) {
+                if (links[i].href.startsWith(window.location.protocol + '//' + window.location.hostname + '/articles')) {
                     articleLinks.push(links[i]);
                 }
             }
@@ -505,7 +505,7 @@
             var arr = [];
 
             for (i = 0; i < links.length; i++) {
-                if (links[i].href.indexOf('/articles') > -1) {
+                if (links[i].href.startsWith(window.location.protocol + '//' + window.location.hostname + '/articles')) {
                     articleLinks.push(links[i]);
                 }
             }

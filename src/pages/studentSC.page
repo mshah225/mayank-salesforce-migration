@@ -182,7 +182,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <apex:outputLink value="/akb?id={!article.id}">
+                                                    <apex:outputLink value="/authkb?id={!article.id}">
                                                             {!article.title}
                                                     </apex:outputLink>
                                                 </td>

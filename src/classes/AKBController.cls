@@ -95,7 +95,7 @@ public without sharing class AKBController
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference(
-            '/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes'
+            '/authkb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes'
         );
         confirmPage.setRedirect(true);
 
@@ -131,7 +131,7 @@ public without sharing class AKBController
         insert feedbackHelpful;
         
         PageReference confirmPage = new PageReference(
-            '/akb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes'
+            '/authkb?id=' + ApexPages.currentPage().getParameters().get('id') + '&Feedback=yes'
         );
         confirmPage.setRedirect(true);
 
@@ -177,7 +177,7 @@ public without sharing class AKBController
                 articleId = null;
             }
 
-            newLink = '/akb?id=' + articleId;
+            newLink = '/authkb?id=' + articleId;
             fixedLinks.add(newLink);
         }
 

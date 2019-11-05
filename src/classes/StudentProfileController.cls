@@ -57,11 +57,13 @@ global with sharing class StudentProfileController {
                 List<Checklist_Item__c> academicIntegrity = [
                     SELECT Checklist_Item_Status__c
                     FROM Checklist_Item__c
-                    WHERE Checklist_Item_Code__c = 'SRACIN' AND Checklist_Status__c != 'Initiated'
+                    WHERE Checklist_Item_Code__c = 'SRACIN'
                     AND Contact__c =: theContact.Id
                     LIMIT 1
                 ];
-                if (!academicIntegrity.isEmpty() && academicIntegrity[0].Checklist_Item_Status__c.equals('Completed')) {
+                if (academicIntegrity.isEmpty()) {
+                    completedAcadmicIntegrity = '--';
+                } else if (academicIntegrity[0].Checklist_Item_Status__c.equals('Completed')) {
                     completedAcadmicIntegrity = 'Yes';
                 } else {
                     completedAcadmicIntegrity = 'No';

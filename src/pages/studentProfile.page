@@ -2180,7 +2180,7 @@
                                                 </apex:outputText>
                                             </td>
                                             <th colspan="2" class="gradTD">
-                                                Final Defense Results Status Date/Time
+                                                Final Defense Results Status Date
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c)}

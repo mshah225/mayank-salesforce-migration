@@ -2002,7 +2002,7 @@
                                                 Document Type
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c==null, '--', gradProgram.gradMilestone.Format_Document_Type__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Format_Document_Type__c==null, '--', gradProgram.gradMilestoneFormat.Format_Document_Type__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2016,7 +2016,7 @@
                                                 Format Advisor
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Grad_Format_Advisor__c==null, '--', gradProgram.gradMilestone.Grad_Format_Advisor__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c==null, '--', gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2030,7 +2030,7 @@
                                                 Format Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Status__c==null, '--', gradProgram.gradMilestone.Format_Status__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Format_Status__c==null, '--', gradProgram.gradMilestoneFormat.Format_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2038,13 +2038,13 @@
                                                 Defense Required
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Document_Type__c==null, '--', 'Yes')}
+                                                {!IF(gradProgram.gradMilestoneFormat.Format_Document_Type__c==null, '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Status_Last_Updated__c==null, '--', gradProgram.gradMilestone.Format_Status_Last_Updated__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, '--', gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2072,7 +2072,7 @@
                                                 Defense Status
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Defense_Status__c==null, '--', gradProgram.gradMilestone.Defense_Status__c)}
+                                                {!IF(gradProgram.gradMilestoneDefense.Defense_Status__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2121,7 +2121,7 @@
                                                 Building
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Defense_Building__c==null, '--', gradProgram.gradMilestone.Defense_Building__c)}
+                                                {!IF(gradProgram.gradMilestoneDefense.Defense_Building__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Building__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2135,7 +2135,7 @@
                                                 Room
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Defense_Room__c==null, '--', gradProgram.gradMilestone.Defense_Room__c)}
+                                                {!IF(gradProgram.gradMilestoneDefense.Defense_Room__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Room__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2151,7 +2151,7 @@
                                                 Location
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Defense_Location__c==null, '--', gradProgram.gradMilestone.Defense_Location__c)}
+                                                {!IF(gradProgram.gradMilestoneDefense.Defense_Location__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Location__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2167,7 +2167,7 @@
                                                 Final Defense Results
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c==null, '--', gradProgram.gradMilestone.Format_Final_Defense_Results_Status__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Format_Final_Defense_Results_Status__c==null, '--', gradProgram.gradMilestoneFormat.Format_Final_Defense_Results_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2183,7 +2183,7 @@
                                                 Final Defense Results Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestone.Final_Defense_Results_Status_DtTm__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestoneFormat.Final_Defense_Results_Status_DtTm__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

@@ -406,14 +406,18 @@ global with sharing class StudentProfileController {
             Final_Defense_Results_Status_DtTm__c, Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c
             WHERE Contact__c =: theContact.Id
-            AND Acad_Plan__r.Plan_Code__c IN: planCode AND Milestone__c = 'GRDEFENSE'
+            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS')
         ];
 
         for (Student_Milestone__c milestone : defenseMilestones) {
             for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
                 if (milestone.Acad_Plan__r.Plan_Code__c == gppw.gradProgramPlan.Plan_Code__c) {
-                    gppw.gradMilestone = milestone;
-                }
+                    if (milestone.Milestone__c == 'GRDEFENSE') {
+                        gppw.gradMilestoneDefense = milestone;
+                    } else if (milestone.Milestone__c = 'GRDISSERT' || milestone.Milestone__c = 'GRTHESIS') {
+                        gppw.gradMilestoneFormat = milestone;
+                    }
+                } 
             }
         }
     }
@@ -780,23 +784,25 @@ global with sharing class StudentProfileController {
     }
 
     public class GraduateProgramPlanWrapper {
-        public Student_Milestone__c gradMilestone {get; set;}
+        public Student_Milestone__c gradMilestoneDefense {get; set;}
+        public Student_Milestone__c gradMilestoneFormat {get; set;}
+
         public Date defenseDate {
             get {
-                if (gradMilestone == null || gradMilestone.Defense_Date_Time__c == null) {
+                if (gradMilestoneDefense == null || gradMilestoneDefense.Defense_Date_Time__c == null) {
                     return null;
                 } else {
-                    return Date.newInstance(gradMilestone.Defense_Date_Time__c.year(), gradMilestone.Defense_Date_Time__c.month(), gradMilestone.Defense_Date_Time__c.day());
+                    return Date.newInstance(gradMilestoneDefense.Defense_Date_Time__c.year(), gradMilestoneDefense.Defense_Date_Time__c.month(), gradMilestoneDefense.Defense_Date_Time__c.day());
                 }
             }
             set;
         }
         public String defenseTime {
             get {
-                if (gradMilestone == null || gradMilestone.Defense_Date_Time__c == null) {
+                if (gradMilestoneDefense == null || gradMilestoneDefense.Defense_Date_Time__c == null) {
                     return '--';
                 } else {
-                    return gradMilestone.Defense_Date_Time__c.format('h:mm a');
+                    return gradMilestoneDefense.Defense_Date_Time__c.format('h:mm a');
                 }
             }
             set;

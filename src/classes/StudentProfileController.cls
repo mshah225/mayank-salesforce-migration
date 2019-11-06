@@ -414,7 +414,7 @@ global with sharing class StudentProfileController {
                 if (milestone.Acad_Plan__r.Plan_Code__c == gppw.gradProgramPlan.Plan_Code__c) {
                     if (milestone.Milestone__c == 'GRDEFENSE') {
                         gppw.gradMilestoneDefense = milestone;
-                    } else if (milestone.Milestone__c = 'GRDISSERT' || milestone.Milestone__c = 'GRTHESIS') {
+                    } else if (milestone.Milestone__c == 'GRDISSERT' || milestone.Milestone__c == 'GRTHESIS') {
                         gppw.gradMilestoneFormat = milestone;
                     }
                 } 

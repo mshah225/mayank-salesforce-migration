@@ -406,7 +406,8 @@ global with sharing class StudentProfileController {
             Final_Defense_Results_Status_DtTm__c, Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c
             WHERE Contact__c =: theContact.Id
-            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS')
+            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS' OR Milestone__c = 'GRFORMAT')
+            ORDER BY Effdt__c ASC
         ];
 
         for (Student_Milestone__c milestone : defenseMilestones) {
@@ -415,6 +416,8 @@ global with sharing class StudentProfileController {
                     if (milestone.Milestone__c == 'GRDEFENSE') {
                         gppw.gradMilestoneDefense = milestone;
                     } else if (milestone.Milestone__c == 'GRDISSERT' || milestone.Milestone__c == 'GRTHESIS') {
+                        gppw.gradMilestoneDiss = milestone;
+                    } else if (milestone.Milestone__c == 'GRFORMAT') {
                         gppw.gradMilestoneFormat = milestone;
                     }
                 } 
@@ -786,6 +789,7 @@ global with sharing class StudentProfileController {
     public class GraduateProgramPlanWrapper {
         public Student_Milestone__c gradMilestoneDefense {get; set;}
         public Student_Milestone__c gradMilestoneFormat {get; set;}
+        public Student_Milestone__c gradMilestoneDiss {get; set;}
 
         public Date defenseDate {
             get {

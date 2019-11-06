@@ -2002,7 +2002,7 @@
                                                 Document Type
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneFormat.Format_Document_Type__c==null, '--', gradProgram.gradMilestoneFormat.Format_Document_Type__c)}
+                                                {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', gradProgram.gradMilestoneDiss.Format_Document_Type__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2167,7 +2167,7 @@
                                                 Final Defense Results
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneFormat.Format_Final_Defense_Results_Status__c==null, '--', gradProgram.gradMilestoneFormat.Format_Final_Defense_Results_Status__c)}
+                                                {!IF(gradProgram.gradMilestoneDiss.Format_Final_Defense_Results_Status__c==null, '--', gradProgram.gradMilestoneDiss.Format_Final_Defense_Results_Status__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2183,7 +2183,7 @@
                                                 Final Defense Results Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneFormat.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestoneFormat.Final_Defense_Results_Status_DtTm__c)}
+                                                {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c)}
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

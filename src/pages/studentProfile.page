@@ -2044,7 +2044,10 @@
                                                 Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, '--', gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c)}
+                                                {!IF(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, '--', '')}
+                                                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}" />
+                                                </apex:outputText>
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
@@ -2183,7 +2186,10 @@
                                                 Final Defense Results Status Date
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null, '--', gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c)}
+                                                {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null, '--', '')}
+                                                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                                    <apex:param value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}" />
+                                                </apex:outputText>
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">

@@ -2302,18 +2302,12 @@
                                             <th colspan="1.5" class="gradTD innerHeaders">
                                                 Name
                                             </th>
-                                            <th colspan="1.5" class="gradTD innerHeaders">
-                                                Title
-                                            </th>
                                         </tr>
 
                                         <apex:repeat value="{!gradProgram.gradAdvisors}" var="gradAdvisors">
                                             <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
                                                 <td class="gradTD">
                                                     {!IF(gradAdvisors.Advisor_Name__c==null, '--', gradAdvisors.Advisor_Name__c)}
-                                                </td>
-                                                <td class="gradTD">
-                                                    {!IF(gradAdvisors.Business_Title__c==null, '--', gradAdvisors.Business_Title__c)}
                                                 </td>
                                             </tr>
                                         </apex:repeat>

@@ -2038,7 +2038,7 @@
                                                 Defense Required
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneFormat.Format_Document_Type__c==null, '--', 'Yes')}
+                                                {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Last Updated

@@ -2492,9 +2492,14 @@
                                             </tr>
                                             <tr>
                                                 <th>Enrollment Holds</th>
-                                                <td id="gr_enrollmentHolds">{!IF(ISBLANK(theContact.Enrolled_Hold_Count__c), '--', theContact.Enrolled_Hold_Count__c)}</td>
+                                                <td id="gr_en_holds"></td>
                                             </tr>
                                         </table>
+                                        
+                                        <div class='overflow:auto;max-height:400px;'>
+                                            <table id="gr_en_holds_info_table"
+                                                   class="table table-striped table-bordered"></table>
+                                        </div>
 
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
@@ -2875,8 +2880,14 @@
                                         "<span style='color:red'>" +
                                         result.ENRL_HOLD_COUNT__c +
                                         "</span>";
+                                    document.getElementById('gr_en_holds').innerHTML =
+                                        "<span style='color:red'>" +
+                                        result.ENRL_HOLD_COUNT__c +
+                                        "</span>";
                                 } else {
                                     document.getElementById('sr_en_holds').innerHTML =
+                                        result.ENRL_HOLD_COUNT__c;
+                                    document.getElementById('gr_en_holds').innerHTML =
                                         result.ENRL_HOLD_COUNT__c;
                                 }
                                 document.getElementById('sr_ci_index').innerHTML =
@@ -3090,9 +3101,16 @@
                         } else {
                             document.getElementById('sr_en_holds').innerHTML =
                                 "<span style='color:black'>0</span>";
+                            document.getElementById('gr_en_holds').innerHTML =
+                                "<span style='color:black'>0</span>";
                             if (!response.totalSize == 0) {
                                 var result = response.records;
                                 document.getElementById('sr_en_holds').innerHTML =
+                                    "<span style='color:red'>" +
+                                    result.length
+                                "</span>";
+
+                                document.getElementById('gr_en_holds').innerHTML =
                                     "<span style='color:red'>" +
                                     result.length
                                 "</span>";
@@ -3119,6 +3137,9 @@
                                 html += "</tbody>";
                                 document.getElementById("sr_en_holds_info_table").innerHTML = html;
                                 document.getElementById("sr_en_holds_info_tr").style.display = "table-row";
+
+                                document.getElementById("gr_en_holds_info_table").innerHTML = html;
+                                document.getElementById("gr_en_holds_info_tr").style.display = "table-row";
                             }
                         }
                     },

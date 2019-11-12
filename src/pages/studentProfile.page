@@ -2876,19 +2876,26 @@
                                 document.getElementById('sr_asr').innerHTML =
                                     result.ASR_INDICATOR__c;
                                 if (result.ENRL_HOLD_COUNT__c > 0) {
-                                    document.getElementById('sr_en_holds').innerHTML =
-                                        "<span style='color:red'>" +
-                                        result.ENRL_HOLD_COUNT__c +
-                                        "</span>";
-                                    document.getElementById('gr_en_holds').innerHTML =
-                                        "<span style='color:red'>" +
-                                        result.ENRL_HOLD_COUNT__c +
-                                        "</span>";
+                                    if ("{!studentProgram.Career__c}" == "Graduate") {
+                                        document.getElementById('gr_en_holds').innerHTML =
+                                            "<span style='color:red'>" +
+                                            result.ENRL_HOLD_COUNT__c +
+                                            "</span>";
+                                    } else {
+                                        document.getElementById('sr_en_holds').innerHTML =
+                                            "<span style='color:red'>" +
+                                            result.ENRL_HOLD_COUNT__c +
+                                            "</span>";
+                                    }
                                 } else {
-                                    document.getElementById('sr_en_holds').innerHTML =
-                                        result.ENRL_HOLD_COUNT__c;
-                                    document.getElementById('gr_en_holds').innerHTML =
-                                        result.ENRL_HOLD_COUNT__c;
+                                    if ("{!studentProgram.Career__c}" == "Graduate") {
+                                        document.getElementById('gr_en_holds').innerHTML =
+                                            result.ENRL_HOLD_COUNT__c;
+                                    }
+                                    else {
+                                        document.getElementById('sr_en_holds').innerHTML =
+                                            result.ENRL_HOLD_COUNT__c;
+                                    }
                                 }
                                 document.getElementById('sr_ci_index').innerHTML =
                                     result.CI_INDEX_INDICATOR__c;
@@ -3099,21 +3106,26 @@
                         if (err) {
                             errorHtml += err;
                         } else {
-                            document.getElementById('sr_en_holds').innerHTML =
-                                "<span style='color:black'>0</span>";
-                            document.getElementById('gr_en_holds').innerHTML =
-                                "<span style='color:black'>0</span>";
+                            if ("{!studentProgram.Career__c}" == "Graduate") {
+                                document.getElementById('gr_en_holds').innerHTML =
+                                    "<span style='color:black'>0</span>";
+                            } else {
+                                document.getElementById('sr_en_holds').innerHTML =
+                                    "<span style='color:black'>0</span>";
+                            }
                             if (!response.totalSize == 0) {
                                 var result = response.records;
-                                document.getElementById('sr_en_holds').innerHTML =
-                                    "<span style='color:red'>" +
-                                    result.length
-                                "</span>";
-
-                                document.getElementById('gr_en_holds').innerHTML =
-                                    "<span style='color:red'>" +
-                                    result.length
-                                "</span>";
+                                if ("{!studentProgram.Career__c}" == "Graduate") {
+                                    document.getElementById('gr_en_holds').innerHTML =
+                                        "<span style='color:red'>" +
+                                        result.length
+                                    "</span>";
+                                } else {
+                                    document.getElementById('sr_en_holds').innerHTML =
+                                        "<span style='color:red'>" +
+                                        result.length
+                                    "</span>";
+                                }
 
                                 var html = "" +
                                     "<thead>" +
@@ -3135,11 +3147,14 @@
                                         "</tr>";
                                 }
                                 html += "</tbody>";
-                                document.getElementById("sr_en_holds_info_table").innerHTML = html;
-                                document.getElementById("sr_en_holds_info_tr").style.display = "table-row";
 
-                                document.getElementById("gr_en_holds_info_table").innerHTML = html;
-                                document.getElementById("gr_en_holds_info_tr").style.display = "table-row";
+                                if ("{!studentProgram.Career__c}" == "Graduate") {
+                                    document.getElementById("gr_en_holds_info_table").innerHTML = html;
+                                    document.getElementById("gr_en_holds_info_tr").style.display = "table-row";
+                                } else {
+                                    document.getElementById("sr_en_holds_info_table").innerHTML = html;
+                                    document.getElementById("sr_en_holds_info_tr").style.display = "table-row";
+                                }
                             }
                         }
                     },

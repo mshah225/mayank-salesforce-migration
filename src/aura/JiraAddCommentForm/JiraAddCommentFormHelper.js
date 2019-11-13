@@ -39,8 +39,9 @@
     },
     
     addToTicketComment : function (question, answer, comment) {
+        var regExpression = new RegExp('[\r\n\'"]+/g');
         if (question != undefined && answer != undefined) {
-            return question + '\\n' + answer.replace(/[\r\n]/g, "\\r") + '\\n';
+            return question + '\\n' + answer.replace(regExpression, '') + '\\n';
         } else {
             return '';
         }

@@ -2510,7 +2510,7 @@
                                             </tr>
                                             <tr>
                                                 <th>Financial Hold</th>
-                                                <td id="gr_financialHold">{!theContact.Financial_Hold__c}</td>
+                                                <td id="gr_financialHold">{!IF(theContact.Financial_Hold__c, 'Y', 'N')}</td>
                                             </tr>
                                             <tr>
                                                 <th>Financial Aid Issue</th>

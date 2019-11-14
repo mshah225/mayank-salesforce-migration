@@ -30,6 +30,10 @@
                 width: 100%;
             }
 
+            .planMargin {
+                margin-left: 75px;
+            }
+
             .gradTD, .gradTH {
                 
                 text-align: left;
@@ -41,11 +45,12 @@
             }
 
             .gradTR {
+                background-color: rgba(140, 29, 64, 0.5);
             	border: 1px solid #ddd;
             }
 
             .innerHeaders {
-                border-bottom: 2px solid #333 !important;
+                font-size: 1.15em;
             	border-top: 1px solid #ddd;
             }
             
@@ -1990,7 +1995,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Cumulative GPA
+                                                <div class = "planMargin">Cumulative GPA</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
@@ -2007,7 +2012,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Graduate GPA
+                                                <div class = "planMargin">Graduate GPA</div>
                                             </th>
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
@@ -2021,7 +2026,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                iPOS GPA
+                                                <div class = "planMargin">iPOS GPA</div>
                                             </th>
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
@@ -2035,7 +2040,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Defense Required
+                                                <div class = "planMargin">Defense Required</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', 'Yes')}
@@ -2066,7 +2071,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                iPOS Status
+                                                <div class = "planMargin">iPOS Status</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, 'Not Applicable', gradProgram.gradProgramPlan.Grad_iPOS_Status__c)}
@@ -2080,7 +2085,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                iPOS Status Date
+                                                <div class = "planMargin">iPOS Status Date</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null, '--', '')}
@@ -2100,7 +2105,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Specialization
+                                                <div class = "planMargin">Specialization</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
@@ -2115,7 +2120,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Degree Requirements
+                                                <div class = "planMargin">Degree Requirements</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
@@ -2129,7 +2134,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Requirement Term
+                                                <div class = "planMargin">Requirement Term</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Requirement_Term__c==null, '--', gradProgram.gradProgramPlan.Requirement_Term__c)}
@@ -2143,7 +2148,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                ASU Hours Before Admit
+                                                <div class = "planMargin">ASU Hours Before Admit</div>
                                             </th>
                                             <td class="gradTD">
                                                 <apex:outputText value="{0,number,###.##}">
@@ -2159,7 +2164,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                ASU Hours After Admit
+                                                <div class = "planMargin">ASU Hours After Admit</div>
                                             </th>
                                             <td class="gradTD">
                                                 <apex:outputText value="{0,number,###.##}">
@@ -2175,7 +2180,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                iPOS Total Hours
+                                                <div class = "planMargin">iPOS Total Hours</div>
                                             </th>
                                             <td class="gradTD">
                                                 <apex:outputText value="{0,number,###.##}">
@@ -2194,7 +2199,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Maximum Time Limit
+                                                <div class = "planMargin">Maximum Time Limit</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__r.Name)}
@@ -2204,7 +2209,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Anticipated Grad Term
+                                                <div class = "planMargin">Anticipated Grad Term</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_Anticipated_Term__c==null, '--', gradProgram.gradProgramPlan.Grad_Anticipated_Term__r.Name)}
@@ -2214,7 +2219,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Applied to Graduate
+                                                <div class = "planMargin">Applied to Graduate</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), 'No', 'Yes')}
@@ -2224,7 +2229,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Application Term
+                                                <div class = "planMargin">Application Term</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__c==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
@@ -2234,7 +2239,7 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                Graduation Checkout Status
+                                                <div class = "planMargin">Graduation Checkout Status</div>
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c==null, '--', gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c)}
@@ -2244,14 +2249,14 @@
                                         </tr>
 
                                         <tr class="gradTR committee-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
-                                            <td style="padding:20px 0px 10px 0px;">
+                                            <td style="padding:20px 0px 10px 75px;">
                                                 <i class="fa fa-caret-right"></i>
                                                 &nbsp;Faculty Committee
                                             </td>
                                         </tr>
 
                                         <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th colspan="1.2" class="gradTD innerHeaders" style="padding-left: 75px;">
                                                 Name
                                             </th>
                                             <th colspan="1.2" class="gradTD innerHeaders">
@@ -2267,11 +2272,12 @@
                                                 Attendance Method
                                             </th>
                                         </tr>
-
                                         <apex:repeat value="{!gradProgram.gradCommittees}" var="gradCommittee">
                                             <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
-                                                <td class="gradTD">
-                                                    {!IF(gradCommittee.Advisor_Name__c==null, '--', gradCommittee.Advisor_Name__c)}
+                                                <td class="gradTD planMargin">
+                                                    <div class="planMargin">
+                                                        {!IF(gradCommittee.Advisor_Name__c==null, '--', gradCommittee.Advisor_Name__c)}
+                                                    </div>
                                                 </td>
                                                 <td class="gradTD">
                                                     {!IF(gradCommittee.Advisor_Role__c==null, '--', gradCommittee.Advisor_Role__c)}
@@ -2292,14 +2298,14 @@
                                         </tr>
 
                                         <tr class="gradTR advisor-row-toggle gradExtraInfo hide" style="background: white; border: 0px !important; color: #9f2b50; font-size: 16px !important; font-weight: 16px; padding-top:">
-                                            <td style="padding:10px 0;">
+                                            <td style="padding:10px 75px;">
                                                 <i class="fa fa-caret-right"></i>
                                                 &nbsp;Staff Advisors
                                             </td>
                                         </tr>
 
                                         <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.5" class="gradTD innerHeaders">
+                                            <th colspan="1.5" class="gradTD innerHeaders" style="padding-left: 75px;">
                                                 Name
                                             </th>
                                         </tr>
@@ -2307,7 +2313,9 @@
                                         <apex:repeat value="{!gradProgram.gradAdvisors}" var="gradAdvisors">
                                             <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
                                                 <td class="gradTD">
-                                                    {!IF(gradAdvisors.Advisor_Name__c==null, '--', gradAdvisors.Advisor_Name__c)}
+                                                    <div class="planMargin">
+                                                        {!IF(gradAdvisors.Advisor_Name__c==null, '--', gradAdvisors.Advisor_Name__c)}
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </apex:repeat>

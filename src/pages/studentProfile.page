@@ -45,7 +45,7 @@
             }
 
             .gradTR {
-                background-color: rgba(140, 29, 64, 0.5);
+                background-color: rgba(140, 29, 64, 0.2);
             	border: 1px solid #ddd;
             }
 

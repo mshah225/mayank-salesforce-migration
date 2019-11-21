@@ -1147,7 +1147,7 @@
                                                 <tr>
                                                     <th>
                                                         Past Due TIP
-                                                        <i class="fa fa-question-circle " title="Tuition Installment Plan"></i>
+                                                        <i class="fa fa-question-circle " title="Tuition Installment Plan" data-placement='right'></i>
                                                     </th>
                                                     <td id="account_balance_past_due_tip">
                                                         {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}

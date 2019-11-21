@@ -1145,7 +1145,10 @@
                                         <div class="col-sm-12">
                                             <table class="table table-striped">
                                                 <tr>
-                                                    <th title="Tuition Installment Plan">Past Due TIP</th>
+                                                    <th>
+                                                        Past Due TIP
+                                                        <i class="fa fa-question-circle " title="Tuition Installment Plan"></i>
+                                                    </th>
                                                     <td id="account_balance_past_due_tip">
                                                         {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
                                                         <apex:outputText value="{0, number, currency}">
@@ -1888,7 +1891,10 @@
                                     <div class="col-sm-6">
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
-                                                <th title="Tuition Installment Plan">Past Due TIP</th>
+                                                <th>
+                                                    Past Due TIP
+                                                    <i class="fa fa-question-circle " title="Tuition Installment Plan"></i>
+                                                </th>
                                                 <td id="sr_past_due_tip"></td>
                                             </tr>
                                             <tr>
@@ -2026,7 +2032,10 @@
                                         </tr>
                                         <tr class="gradExtraInfo hide">
                                             <th colspan="2" class="gradTD">
-                                                <div class = "planMargin">iPOS GPA</div>
+                                                <div class = "planMargin">
+                                                    iPOS GPA
+                                                    <i class="fa fa-question-circle " title="Please note that the iPOS GPA is not calculated until iPOS is approved."></i>
+                                                </div>
                                             </th>
                                             <td class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
@@ -2505,7 +2514,10 @@
 
                                         <table class="table table-striped asu-detail-table">
                                             <tr>
-                                                <th title="Tuition Installment Plan">Past Due Tip</th>
+                                                <th>
+                                                    Past Due Tip
+                                                    <i class="fa fa-question-circle " title="Tuition Installment Plan"></i>
+                                                </th>
                                                 <td id="gr_pastDueTip">{!IF(ISBLANK(theContact.Past_Due_Tip__c), '--', theContact.Past_Due_Tip__c)}</td>
                                             </tr>
                                             <tr>

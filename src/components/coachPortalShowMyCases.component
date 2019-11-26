@@ -25,6 +25,7 @@
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
     <apex:attribute name="showRefresh" type="boolean" description="" default="false" />
     <apex:attribute name="showCivitas" type="boolean" description="" default="false"/>
+    <apex:attribute name="showTimeZone" type="boolean" description="" default="false"/>
 
 
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
@@ -215,6 +216,11 @@
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
+                </apex:column>
+
+                <!-- Unsortable for now -->
+                <apex:column headerValue="Time Zone" value="{! c.timeZone }" rendered="{! showTimeZone }"
+                             headerClass="ASUColumnHead" styleClass="ASUColumn">
                 </apex:column>
 
                 <apex:column headerValue="Proactive" value="{!caseCounts[c.obj.contactId].proactiveCount}" rendered="{! showProactive}"

@@ -2315,7 +2315,12 @@
 
                                         <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
                                             <th colspan="1.5" class="gradTD innerHeaders" style="padding-left: 75px;">
-                                                Name
+                                                <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'block', 'none')}">
+                                                    Name
+                                                </div>
+                                                <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'none', 'block')}">
+                                                    There are no Staff Advisors for {!theContact.Name}.
+                                                </div>
                                             </th>
                                         </tr>
 

@@ -68,7 +68,8 @@
                                    emailRTID="{!CoachEmailRTID}"
                                    showSelection="true" showName="true" showEMPLID="true" showSubject="true"
                                    showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="false"
-                                   showProactive="false" showReactive="false" showSearch="true" showRefresh="true"/>
+                                   showProactive="false" showReactive="false" showSearch="true" showRefresh="true"
+                                   showTimeZone="true"/>
                 </apex:tab>
 
                 <apex:tab label="Success Tools"

@@ -80,7 +80,7 @@
                     <div class="slds-truncate" title="Testing Form">Testing Form</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Second Tech Form">Second Tech Form</div>
+                    <div class="slds-truncate" title="Second Tech Form">Technical Review Form</div>
                 </th>
             </tr>
         </thead>
@@ -106,7 +106,7 @@
                     </td>
                     <td data-label="Second Tech">
                         <div class="slds-truncate">
-                            <button class="slds-button slds-button_brand" id="{!issue.issueId}" name="{!issue.key}" label="2nd Tech Form" onclick="{!c.openSecondTech}">2nd Tech Form</button>
+                            <button class="slds-button slds-button_brand" id="{!issue.issueId}" name="{!issue.key}" label="2nd Tech Form" onclick="{!c.openSecondTech}">Tech Review Form</button>
                         </div>
                     </td>
                 </tr>

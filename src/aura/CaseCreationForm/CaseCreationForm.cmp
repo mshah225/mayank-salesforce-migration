@@ -8,6 +8,7 @@
     <aura:attribute name="usingDefaultDescription" type="Boolean" access="public" />
 
     <aura:attribute name="providedSubject" type="String" />
+    <aura:attribute name="message" type="String" />
     <aura:attribute name="providedDescription" type="String" />
 
 
@@ -17,16 +18,26 @@
         <h1>
             <center>{!v.formName}</center>
         </h1>
+        <h3 style="color:DarkOrange;">
+            <center>{!v.message}</center>
+        </h3>
 
-        <lightning:textarea aura:id="subjectResponse" label="Case Subject" value="{!v.providedSubject}"
-                maxlength="254" required="true" />
-            <p class="fieldDescription">FIELD LIMIT: This field must be less than 255 characters.</p>
-
-        <lightning:textarea aura:id="descriptionResponse" label="Case Description" value="{!v.providedDescription}"
-            maxlength="254" required="false" />
-        <p class="fieldDescription">FIELD LIMIT: This field must be less than 255 characters.</p>
         <form class="slds-form--stacked">
-           
+            
+            <aura:if isTrue="{!v.usingDefaultSubject}">
+                <aura:set attribute="else">
+                    <lightning:textarea aura:id="subjectResponse" label="Case Subject" value="{!v.providedSubject}"
+                                        required="true"/>
+                </aura:set>
+            </aura:if>
+
+            <aura:if isTrue="{!v.usingDefaultDescription}">
+                <aura:set attribute="else">
+                    <lightning:textarea aura:id="descriptionResponse" label="Case Description" value="{!v.providedDescription}"
+                                        required="true" />
+                </aura:set>  
+            </aura:if>
+            <lightning:button aura:id="submitButton" label="Submit" onclick="{!c.createCase}" />
         </form>
     </body>
 

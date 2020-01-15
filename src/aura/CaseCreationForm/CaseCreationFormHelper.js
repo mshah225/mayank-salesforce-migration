@@ -1,45 +1,40 @@
 ({
-    submitIssueForm: function (component) {
+    validateAndCreateCase: function (component) {
         var submitButton = component.find("submitButton");
         submitButton.set("v.disabled", true);
 
-        var title = component.get("v.title").replace(/\n/g, " ").replace(/"/g,"\\\"");
-        var questionOne = component.get("v.questionOne");
-        var questionTwo = component.get("v.questionTwo");
-        var questionThree = component.get("v.questionThree");
-        var answerOne = component.get("v.answerOne").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
-        var answerTwo = component.get("v.answerTwo").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
-        var answerThree = component.get("v.answerThree").replace(/\n/g,"\\n").replace(/"/g,"\\\"");
-        var watchers = component.get("v.watchers");
-        var requestForm = component.get("v.requestForm");
-        var type = component.get("v.type");
+        var caseSubject;
+        var caseDescription;
+        var caseCar;
 
-        var problemDescription = questionOne + '\\n' + answerOne + '\\n'
-            + questionTwo + '\\n' + answerTwo + '\\n'
-            + questionThree + '\\n' + answerThree + '\\n';
-        
-        if (requestForm != undefined) {
-            problemDescription += 'Request Form: ' + '\\n' + requestForm + '\\n';
+        var defaultSubject = component.get("v.usingDefaultSubject");
+        if (defaultSubject) {
+            caseSubject = component.get("v.defaultSubject");
+        } else {
+            caseSubject = component.get("v.providedSubject");
+        }
+
+        var defaultDescription = component.get("v.usingDefaultDescription");
+        if (defaultDescription) {
+            caseDescription = component.get("v.defaultDescription");
+        } else {
+            caseDescription = component.get("v.providedDescription");
         }
         
-        var action = component.get('c.callout');
+        var action = component.get('c.createFeedbackCase');
         action.setParams({
-            'title': title,
-            'description': problemDescription,
-            'watchers': watchers,
-            'type': type
+            'carName': caseCar,
+            'subject': caseSubject,
+            'description': caseDescription
         })
         action.setCallback(this, function (response) {
             var state = response.getState();
             if (state === "SUCCESS" && response.getReturnValue() != null) {
                 var key = response.getReturnValue();
-                component.set("v.message", "Jira Issue Successfully Created");
-                var link = "https://asudev.jira.com/browse/" + key;
-                component.set("v.link", link);
-                component.set("v.displayLink", true);
                 this.clearInputs(component);
+                component.set("v.message", "Case was successfully created!");
             } else {
-                component.set("v.message", "Cannot create JIRA ticket, please email your request to salesforce.development@asu.edu");
+                component.set("v.message", "Failed to Create the Case.");
             }
             submitButton.set("v.disabled", false);
         });
@@ -47,47 +42,7 @@
     },
 
     clearInputs: function (component) {
-        component.set("v.title", "");
-        component.set("v.answerOne", "");
-        component.set("v.answerTwo", "");
-        component.set("v.answerThree", "");
-        component.set("v.watchers", "");
-        component.set("v.requestForm", "");
-    },
-
-    navigateToIssue: function (component) {
-        var navigate = $A.get("e.force:navigateToURL");
-        navigate.setParams({ "url": component.get("v.link") });
-        navigate.fire();
-    },
-
-    validateRequiredFieldsAndSubmitForm: function (component) {
-        var questionOneValue = component.find("questionOneResponse").get("v.value");
-        var questionTwoValue = component.find("questionTwoResponse").get("v.value");
-        var questionThreeValue = component.find("questionThreeResponse").get("v.value");
-        var descriptionValue = component.find("descriptionResponse").get("v.value");
-	    var errorFound = 0;
-
-	    errorFound += this.checkForErrors(component.find("questionOneResponse"));
-        errorFound += this.checkForErrors(component.find("questionTwoResponse"));
-        errorFound += this.checkForErrors(component.find("questionThreeResponse"));
-        errorFound += this.checkForErrors(component.find("descriptionResponse"));
-        
-        if (errorFound <= 0) {
-            this.submitIssueForm(component);
-        } else {
-            component.set("v.message", "Please complete the required forms below!");
-        }
-    },
-    
-    checkForErrors: function (componentName) {
-        if (!componentName.get("v.value")) {
-            $A.util.addClass(componentName, 'slds-has-error');
-            return 1;
-        } else {
-            $A.util.removeClass(componentName, 'slds-has-error');
-            return 0;
-        }
-
+        component.set("v.providedSubject", "");
+        component.set("v.providedDescription", "");
     }
 })

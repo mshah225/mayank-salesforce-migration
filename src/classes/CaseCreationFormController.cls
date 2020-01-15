@@ -1,10 +1,7 @@
 public with sharing class CaseCreationFormController {
-    public CaseCreationFormController() {
-
-    }
 
     @AuraEnabled
-    public static String createCase(String carName, String subject, String description) {
+    public static String createFeedbackCase(String carName, String subject, String description) {
         Case caseToCreate = new Case();
 
         caseToCreate.Status = 'New';
@@ -44,8 +41,13 @@ public with sharing class CaseCreationFormController {
     private static void setContact(Case caseToModify) {
         String userId = UserInfo.getUserId();
 
-        User userWithContactId = [SELECT ContactId FROM User Where Id =: userId LIMIT 1];
+        User userWithAlias = [SELECT Alias FROM User Where Id =: userId LIMIT 1];
 
-        caseToModify.ContactId = userWithContactId.ContactId;
+        List<User> usersWithContact = [SELECT ContactId FROM User WHERE Alias =: userWithAlias.Alias];
+
+        if (!usersWithContact.isEmpty()) {
+            caseToModify.ContactId = usersWithContact[0].ContactId;
+        }
+
     }
 }

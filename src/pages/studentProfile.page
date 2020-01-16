@@ -2894,28 +2894,6 @@
                                     result.FA_INDICATOR__c;
                                 document.getElementById('sr_asr').innerHTML =
                                     result.ASR_INDICATOR__c;
-                                if (result.ENRL_HOLD_COUNT__c > 0) {
-                                    if ("{!studentProgram.Career__c}" == "Graduate") {
-                                        document.getElementById('gr_en_holds').innerHTML =
-                                            "<span style='color:red'>" +
-                                            result.ENRL_HOLD_COUNT__c +
-                                            "</span>";
-                                    } else {
-                                        document.getElementById('sr_en_holds').innerHTML =
-                                            "<span style='color:red'>" +
-                                            result.ENRL_HOLD_COUNT__c +
-                                            "</span>";
-                                    }
-                                } else {
-                                    if ("{!studentProgram.Career__c}" == "Graduate") {
-                                        document.getElementById('gr_en_holds').innerHTML =
-                                            result.ENRL_HOLD_COUNT__c;
-                                    }
-                                    else {
-                                        document.getElementById('sr_en_holds').innerHTML =
-                                            result.ENRL_HOLD_COUNT__c;
-                                    }
-                                }
                                 document.getElementById('sr_ci_index').innerHTML =
                                     result.CI_INDEX_INDICATOR__c;
                                 document.getElementById('sr_eadvisor').innerHTML =

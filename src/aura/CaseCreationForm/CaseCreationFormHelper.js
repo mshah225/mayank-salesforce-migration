@@ -5,7 +5,8 @@
 
         var caseSubject;
         var caseDescription;
-        var caseCar;
+
+        var caseCar = component.get("v.caseAssignmentRule");
 
         var defaultSubject = component.get("v.usingDefaultSubject");
         if (defaultSubject) {

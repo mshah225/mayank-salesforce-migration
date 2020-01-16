@@ -1981,7 +1981,7 @@
                                     <apex:repeat value="{!activeGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
                                             <td class="gradTD">
-                                                <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Plan_Type_Text__c}
+                                                <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Program_Description__c}
                                             </td>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Plan_Description__c}
@@ -2364,7 +2364,7 @@
                                     <apex:repeat value="{!completedGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
                                             <td class="gradTD">
-                                                {!gradProgram.gradProgramPlan.Plan_Type_Text__c}
+                                                {!gradProgram.gradProgramPlan.Program_Description__c}
                                             </td>
                                             <td class="gradTD">
                                                 {!gradProgram.gradProgramPlan.Plan_Description__c}

@@ -25,7 +25,7 @@ public with sharing class CaseCreationFormController {
                 WHERE Name =: CarName
             ];
 
-            caseToModify.Origin = carToAssignTo.Origin__c;
+            caseToModify.Origin__c = carToAssignTo.Origin__c;
             caseToModify.CC_Functional_Group__c = carToAssignTo.CC_Functional_Group__c;
             caseToModify.CC_Category__c = carToAssignTo.CC_Category__c;
             caseToModify.CC_Sub_Category__c = carToAssignTo.CC_Sub_Category__c;

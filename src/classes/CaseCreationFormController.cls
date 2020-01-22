@@ -41,12 +41,12 @@ public with sharing class CaseCreationFormController {
     private static void setContact(Case caseToModify) {
         String userId = UserInfo.getUserId();
 
-        User userWithAlias = [SELECT Alias FROM User Where Id =: userId LIMIT 1];
+        User userWithAsurite = [SELECT ASURITE_for_External_ID__c FROM User Where Id =: userId LIMIT 1];
 
-        List<User> usersWithContact = [SELECT ContactId FROM User WHERE Alias =: userWithAlias.Alias];
+        List<Contact> contactFromUser = [SELECT Id FROM Contact WHERE ASURITE_ID__c =: userWithAsurite.ASURITE_for_External_ID__c];
 
-        if (!usersWithContact.isEmpty()) {
-            caseToModify.ContactId = usersWithContact[0].ContactId;
+        if (!contactFromUser.isEmpty()) {
+            caseToModify.ContactId = contactFromUser[0].Id;
         }
 
     }

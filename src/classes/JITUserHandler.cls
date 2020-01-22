@@ -1,30 +1,43 @@
 global class JITUserHandler implements Auth.SamlJitHandler
 {
+    private static final boolean DEBUG = false; // Toggle debug error reporting
+
     global User createUser(Id samlSsoProviderId, Id communityId, Id portalId,
             String federationIdentifier, Map<String, String> attributes, String assertion)
     {
-        String fedId = attributes.get('User.FederationIdentifier');
-        String[] fedIdSplit = fedId.split('@');
-        String asurite = fedIdSplit[0];
-        String searchFedId = asurite + '@admin.asu.edu';
+        List<String> errorLogVars = new List<String>();
 
-        List<User> dupeCheck = [
-            SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
-                EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier
-            FROM User
-            WHERE FederationIdentifier = :searchFedId
-        ];
+        try {
+            String fedId = attributes.get('User.FederationIdentifier');
+            String[] fedIdSplit = fedId.split('@');
+            String asurite = fedIdSplit[0];
+            String searchFedId = asurite + '@admin.asu.edu';
 
-        if (dupeCheck.size() < 1)
-        {
-            User u = new User();
-            handleJit(true, u, samlSsoProviderId, communityId, portalId,
+            List<User> dupeCheck = [
+                SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
+                    EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier
+                FROM User
+                WHERE FederationIdentifier = :searchFedId
+            ];
+
+            if (dupeCheck.size() < 1) {
+                User u = new User();
+                handleJit(true, u, samlSsoProviderId, communityId, portalId,
                     federationIdentifier, attributes, assertion);
-            return u;
-        }
-        else
-        {
-            return dupeCheck[0];
+                return u;
+            } else {
+                return dupeCheck[0];
+            }
+        } catch (Exception ex) {
+            errorLogVars.add(ErrorLogger.convertIdToJSON('samlSsoProviderId', samlSsoProviderId));
+            errorLogVars.add(ErrorLogger.convertIdToJSON('communityId', communityId));
+            errorLogVars.add(ErrorLogger.convertIdToJSON('portalId', portalId));
+            errorLogVars.add(ErrorLogger.convertStringToJSON('federationIdentifier', federationIdentifier));
+            errorLogVars.add(ErrorLogger.convertMapToJSON('attributes', attributes));
+            errorLogVars.add(ErrorLogger.convertStringToJSON('assertion', assertion));
+            ErrorLogger.log(ex, errorLogVars, debug);
+
+            return null;
         }
     }
 
@@ -84,7 +97,7 @@ global class JITUserHandler implements Auth.SamlJitHandler
                 if(splitArray[0].contains('--'))
                 {
                     String[] finalArray = splitArray[0].split('--');
-                    system.debug(finalArray[1]);
+                    System.debug(finalArray[1]);
 
                     u.UserName = asurite + '@asu.edu.' + finalArray[1];
                 }
@@ -104,6 +117,7 @@ global class JITUserHandler implements Auth.SamlJitHandler
             else
             {
                 System.debug('!!!! NO FEDERATION IDENTIFIER PRESENT');
+                throw new JITUserHandler.JitException('!!!! NO FEDERATION IDENTIFIER PRESENT');
             }
         }
     }

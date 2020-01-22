@@ -44,4 +44,39 @@ private class Test_JITUserHandler
         System.debug(runTestUser);
         System.assertNotEquals(null, runTestUser);
     }
+
+    @isTest static void testErrorLoggerDuplicate() {
+        Map<String, String> attributes = new Map<String, String>();
+        attributes.put('User.FederationIdentifier', 'testjit@asu.edu');
+        attributes.put('User.FirstName', 'Testing');
+        attributes.put('User.LastName', 'User');
+        Map<String, String> attributesForDuplicate = new Map<String, String>();
+        attributesForDuplicate.put('User.FederationIdentifier', 'testjit@asu.edu');
+        JITUserHandler jit = new JITUserHandler();
+
+        Integer oldSizeOfUsers = [Select Id FROM User].size();
+
+        User runTestUser = jit.createUser(null, null, null, null, attributes, null);
+        Database.upsert(runTestUser);
+
+        User runTestUserDuplicate = jit.createUser(null, null, null, null, attributesForDuplicate, null);
+        Database.upsert(runTestUserDuplicate);
+
+        System.assertEquals(1, [Select Id FROM User].size()-oldSizeOfUsers);
+        System.assertEquals(runTestUser, runTestUserDuplicate);
+
+        System.debug(runTestUser);
+        System.debug(runTestUserDuplicate);
+    }
+
+    @isTest static void testUserCreationNoFedID() {
+        Map<String, String> attributes = new Map<String, String>();
+
+        JITUserHandler jit = new JITUserHandler();
+
+        User runTestUser = jit.createUser(null, null, null, null, attributes, null);
+
+        System.debug(runTestUser);
+        System.assertEquals(null, runTestUser);
+    }
 }

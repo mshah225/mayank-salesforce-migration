@@ -20,7 +20,7 @@ public with sharing class CaseCreationFormController {
         try {
             Case_Assignment_Rule__c carToAssignTo = [
                 SELECT CC_Category__c, CC_Functional_Group__c, CC_Sub_Category__c,
-                Case_Record_Type_Id__c, Origin__c, OwnerId
+                Case_Record_Type_Id__c, Origin__c, Queue_ID__c
                 FROM Case_Assignment_Rule__c
                 WHERE Name =: CarName
             ];
@@ -30,7 +30,7 @@ public with sharing class CaseCreationFormController {
             caseToModify.CC_Category__c = carToAssignTo.CC_Category__c;
             caseToModify.CC_Sub_Category__c = carToAssignTo.CC_Sub_Category__c;
             caseToModify.RecordTypeId = carToAssignTo.Case_Record_Type_Id__c;
-            caseToModify.OwnerId = carToAssignTo.OwnerId;
+            caseToModify.OwnerId = carToAssignTo.Queue_ID__c;
 
         } catch (Exception e) {
 

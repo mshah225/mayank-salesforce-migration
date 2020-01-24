@@ -1117,17 +1117,13 @@
                                     <!-- Sent Date/Time -->
                                     <apex:column >
                                         <apex:facet name="header">Sent Date/Time</apex:facet>
-                                        <apex:outputText value="{0,date,E MMM dd HH:mm:ss 'MST' yyyy}">
-                                            <apex:param value="{!message.timeSent-(7/24)}" /> <!-- 7 hours back because we want MST -->
-                                        </apex:outputText><br/>
+                                        <apex:outputText value=" {!message.timeSent}" />
                                     </apex:column>
 
                                     <!-- Open Date/Time -->
                                     <apex:column >
                                         <apex:facet name="header">Open Date/Time</apex:facet>
-                                        <apex:outputText value="{0,date,E MMM dd HH:mm:ss 'MST' yyyy}">
-                                            <apex:param value="{!message.timeOpened-(7/24)}" /> <!-- 7 hours back because we want MST -->
-                                        </apex:outputText><br/>
+                                        <apex:outputText value=" {!message.timeOpened}" />
                                     </apex:column>
 
                                     <!-- Unique Clicks -->

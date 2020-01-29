@@ -34,7 +34,7 @@ public class LiveAgentPreSurveyController {
         orgId = buttonConfig.Org_Id__c;
         chatDeploymentId = buttonConfig.Chat_Deployment__c;
         chatButtonId = buttonConfig.Chat_Button_Id__c;
-        buttonConfig = buttonConfig.Chat_Endpoint__c;
+        chatEndpoint = buttonConfig.Chat_Endpoint__c;
     }
     
     private void setCaseDetails() {

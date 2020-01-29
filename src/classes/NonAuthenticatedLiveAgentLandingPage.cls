@@ -11,7 +11,7 @@ public class NonAuthenticatedLiveAgentLandingPage {
         orgId = nonAuthenticatedButton.Org_Id__c;
         chatDeploymentId = nonAuthenticatedButton.Chat_Deployment__c;
         chatButtonId = nonAuthenticatedButton.Chat_Button_Id__c;
-        buttonConfig = nonAuthenticatedButton.Chat_Endpoint__c;
+        chatEndpoint = nonAuthenticatedButton.Chat_Endpoint__c;
         setAgentOfflineMessage();
     }
     

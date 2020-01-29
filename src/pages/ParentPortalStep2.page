@@ -1,0 +1,66 @@
+<apex:page controller="ParentPortalController" tabStyle="Opportunity">
+    <script>
+        function confirmCancel() {
+            var isCancel = confirm("Are you sure you wish to cancel?");
+            if (isCancel) return true;
+
+            return false;
+        }  
+    </script>
+
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
+                'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+        <style>
+            .mainPage {
+                padding: 15px;
+            }
+    
+            h1 {
+                font-size: 18pt;
+            }
+    
+            h2 {
+                font-size: 12pt;
+            }
+    
+            a {
+                font-weight: 900;
+            }
+    
+            .caseBtn {
+                text-decoration: none !important;
+                transition: all 0.25s ease-in-out !important;
+                background: #a30046 !important;
+                border: solid 1px #820038 !important;
+                font-weight: 200 !important;
+                color: white !important;
+                padding: 8px !important;
+                border-radius: 2px !important;
+                font-size: 10pt !important;
+                margin-top: 10px !important;
+                box-shadow: 0 1px 2px 0 #adadad;
+            }
+    
+            .caseBtn:hover {
+                background: #d23153 !important;
+            }
+        </style>
+    </head>
+
+    <apex:sectionHeader title="ASU Parent Portal" subtitle="Step 2 of 5" />
+    <apex:form>
+        <apex:pageBlock title="Who are you?" mode="edit">
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!parentPortalStep3}" value="Next" />
+                <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Please fill out your information below.">
+                <apex:inputField id="contactFirstName" value="{!contact.FirstName}" />
+                <apex:inputField id="contactLastName" value="{!contact.LastName}" />
+                <apex:inputField id="contactEmail" value="{!contact.Email}" />
+                <apex:inputField id="contactMailingZip" value="{!contact.MailingPostalCode}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

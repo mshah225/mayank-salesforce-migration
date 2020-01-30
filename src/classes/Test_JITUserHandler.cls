@@ -1,8 +1,6 @@
 @IsTest
-private class Test_JITUserHandler
-{
-    @testSetup static void createTestData()
-    {
+private class Test_JITUserHandler {
+    @testSetup static void createTestData() {
         Profile p = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
@@ -17,8 +15,7 @@ private class Test_JITUserHandler
         insert testContact;
     }
 
-    @isTest static void testUserCreation()
-    {
+    @isTest static void testUserCreation() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
         attributes.put('User.FirstName', 'Testing');
@@ -32,8 +29,7 @@ private class Test_JITUserHandler
         System.assertNotEquals(null, runTestUser);
     }
 
-    @isTest static void testUserCreationNoName()
-    {
+    @isTest static void testUserCreationNoName() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
 
@@ -47,14 +43,13 @@ private class Test_JITUserHandler
 
     @isTest static void testErrorLoggerDuplicate() {
         Map<String, String> attributes = new Map<String, String>();
-        attributes.put('User.FederationIdentifier', 'testjit@asu.edu');
+        attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
         attributes.put('User.FirstName', 'Testing');
         attributes.put('User.LastName', 'User');
         Map<String, String> attributesForDuplicate = new Map<String, String>();
-        attributesForDuplicate.put('User.FederationIdentifier', 'testjit@asu.edu');
+        attributesForDuplicate.put('User.FederationIdentifier', 'testJIT@asu.edu');
         JITUserHandler jit = new JITUserHandler();
 
-        Integer oldSizeOfUsers = [Select Id FROM User].size();
 
         User runTestUser = jit.createUser(null, null, null, null, attributes, null);
         Database.upsert(runTestUser);
@@ -62,8 +57,7 @@ private class Test_JITUserHandler
         User runTestUserDuplicate = jit.createUser(null, null, null, null, attributesForDuplicate, null);
         Database.upsert(runTestUserDuplicate);
 
-        System.assertEquals(1, [Select Id FROM User].size()-oldSizeOfUsers);
-        System.assertEquals(runTestUser, runTestUserDuplicate);
+        System.assertEquals(runTestUser.Id, runTestUserDuplicate.Id);
 
         System.debug(runTestUser);
         System.debug(runTestUserDuplicate);
@@ -77,6 +71,6 @@ private class Test_JITUserHandler
         User runTestUser = jit.createUser(null, null, null, null, attributes, null);
 
         System.debug(runTestUser);
-        System.assertEquals(null, runTestUser);
+        System.assertEquals(null, runTestUser);        
     }
 }

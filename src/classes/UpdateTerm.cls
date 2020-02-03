@@ -11,15 +11,13 @@ public class UpdateTerm implements Schedulable {
                     ORDER BY PeopleSoft_Code__c ASC 
                     LIMIT 1
         ];
+        
         currentTermData.CurrTerm__c = currentTermInfo.PeopleSoft_Code__c;
         if (currentTermInfo.PeopleSoft_Code__c.right(1) == '1') {
             currentTermData.PrevTerm__c = String.valueOf(Integer.valueOf(currentTermInfo.PeopleSoft_Code__c) - 4);
-        } else {
-            currentTermData.PrevTerm__c = String.valueOf(Integer.valueOf(currentTermInfo.PeopleSoft_Code__c) - 6);
-        }
-        if (currentTermInfo.PeopleSoft_Code__c.right(1) == '1') {
             currentTermData.NextTerm__c = String.valueOf(Integer.valueOf(currentTermInfo.PeopleSoft_Code__c) + 6);
         } else {
+            currentTermData.PrevTerm__c = String.valueOf(Integer.valueOf(currentTermInfo.PeopleSoft_Code__c) - 6);
             currentTermData.NextTerm__c = String.valueOf(Integer.valueOf(currentTermInfo.PeopleSoft_Code__c) + 4);
         }
 

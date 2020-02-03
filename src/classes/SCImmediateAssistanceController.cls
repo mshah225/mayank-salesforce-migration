@@ -23,6 +23,6 @@ public without sharing class SCImmediateAssistanceController {
         studentServicesChatButton = studentServicesChatLAB.Chat_Button_Id__c;
         studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
         technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
-        technicalSupportDisplayName = studentServicesChatLAB.Display_Name__c;
+        technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
     }
 }

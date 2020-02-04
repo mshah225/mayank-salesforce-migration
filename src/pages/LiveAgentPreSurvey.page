@@ -48,7 +48,7 @@
                         <input type="hidden" name="liveagent.prechat:CaseOwner" value="{!caseOwnerId}"/>
                         <input type="hidden" name="liveagent.prechat.name" id="prechat_field_name"/>
                         <input type='hidden' name='liveagent.prechat:ContactId' id='contactId' value='{!$User.ContactId}'/>
-                        <input type='hidden' name='liveagent.prechat:ContactName' id='contactName' value='{!$User.FirstName} {!$User.LastName}'/>
+                        <input type='hidden' name='liveagent.prechat:ContactName' id='contactName' value="{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}"/>
                         <input type="hidden" name="liveagent.prechat.findorcreate.map:Contact" value="Id, ContactId; Name, contactName"/>
                         <input
                             type="hidden"
@@ -115,7 +115,7 @@
                         }
                         
                         function setName() {
-                            document.getElementById("prechat_field_name").value = '{!$User.FirstName} {!$User.LastName}';
+                            document.getElementById("prechat_field_name").value = "{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}";
                         }
                         
                         if (!window._laq) { window._laq = []; }

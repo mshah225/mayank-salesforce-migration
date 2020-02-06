@@ -30,7 +30,7 @@
 
         ASUHeader.site_menu.site_name = "Student Service Center";
         ASUHeader.user_signedin = true;
-        ASUHeader.user_displayname = "{!JSENCODE($User.FirstName)}";
+        ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
     </script>
     <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
     <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->

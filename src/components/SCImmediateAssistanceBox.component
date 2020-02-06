@@ -16,7 +16,7 @@
         var studentServiceChatId = '{!studentServicesChatButton.Chat_Button_Id__c}';
         var techSupportChatId = '{!technicalSupportChatButton.Chat_Button_Id__c}';
         
-        liveagent.setName("{!JSENCODE($User.FirstName)} {!JSENCODE($User.FirstName)}");
+        liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
     </script>
 

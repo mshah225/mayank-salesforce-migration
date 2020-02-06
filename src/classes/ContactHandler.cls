@@ -13,7 +13,9 @@ public without sharing class ContactHandler implements ITrigger
     private Map<Id, Id> contactToAccountRTIdMap = new Map<Id, Id>();
     private Map<Id, Id> accountIdsByContactId = new Map<Id, Id>();
     private static Map<Contact,Account> newContactToNewAccountMap;
+    private Map<Id, User> contactIdToUserMap = new Map<Id, User>();
     private List<Account> accountsToUpdate = new List<Account>();
+    private List<User> usersToUpdate = new List<User>();
     private List<Contact> contactsToCheckIfUpdate = new List<Contact>();
     private List<Relationship__c> bizcardRelationships = new List<Relationship__c>();
     private Map<String, List<CampaignMember>> bizcardCampaignMembers = new Map<String, List<CampaignMember>>();
@@ -170,7 +172,28 @@ public without sharing class ContactHandler implements ITrigger
                     WHERE Id IN :existingAccountIds
                 ]);
             }
-        }  
+        }
+
+        // Get map of <Id,User> to update users' first/last names
+        if (Trigger.IsUpdate) {
+            List<Id> contactIdsToUpdateRelatedUsers = new List<Id>();
+
+            for (SObject so : Trigger.new) {
+                Contact c = (Contact) so;
+                if (c.RecordTypeId == ExtMasteredContactRTId            // Only External Mastered Type contacts
+                    && (c.FirstName != ((Contact)Trigger.oldMap.get(c.Id)).FirstName   // With name changes
+                       || c.LastName != ((Contact)Trigger.oldMap.get(c.Id)).LastName )) {  
+                    contactIdsToUpdateRelatedUsers.add(so.Id);
+                }
+            }
+
+            usersToUpdate = [SELECT ContactId,FirstName,LastName FROM User WHERE ContactId IN :contactIdsToUpdateRelatedUsers];
+
+            // store in map so we can update later as we update each contact
+            for (User u : usersToUpdate) {
+                contactIdToUserMap.put(u.ContactId, u);
+            }
+        }
     }
     
     public void beforeInsert(SObject so) {
@@ -200,6 +223,15 @@ public without sharing class ContactHandler implements ITrigger
             a.Contact__c = c.Id;
 
             accountsToUpdate.add(a);
+        }
+
+        // Get the user we will be updating
+        User u = contactIdToUserMap.get(c.Id);
+
+        // Update the user's first and last name to match
+        if (u != null) {
+            u.FirstName = c.FirstName;
+            u.LastName = c.LastName;
         }
     }
 
@@ -353,7 +385,13 @@ public without sharing class ContactHandler implements ITrigger
 
     public void afterDelete(SObject so) { }
 
-    public void andFinally() { }
+    public void andFinally() {
+        if (Trigger.IsUpdate) {
+            if (usersToUpdate != null && usersToUpdate.size() > 0) { 
+                update usersToUpdate;
+            }
+        }
+    }
 
     private Account createAccount(Contact c) {
         // Create the new 1:1 Account record for this Contact

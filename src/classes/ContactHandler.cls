@@ -178,20 +178,20 @@ public without sharing class ContactHandler implements ITrigger
         if (Trigger.IsUpdate) {
             List<Id> contactIdsToUpdateRelatedUsers = new List<Id>();
 
-            for (SObject so : Trigger.new) {
-                Contact c = (Contact) so;
-                if (c.RecordTypeId == ExtMasteredContactRTId            // Only External Mastered Type contacts
-                    && (c.FirstName != ((Contact)Trigger.oldMap.get(c.Id)).FirstName   // With name changes
-                       || c.LastName != ((Contact)Trigger.oldMap.get(c.Id)).LastName )) {  
-                    contactIdsToUpdateRelatedUsers.add(so.Id);
+            for (SObject updatedObject : Trigger.new) {
+                Contact updatedContact = (Contact) updatedObject;
+                if (updatedContact.RecordTypeId == ExtMasteredContactRTId            // Only External Mastered Type contacts
+                    && (updatedContact.FirstName != ((Contact)Trigger.oldMap.get(updatedContact.Id)).FirstName   // With name changes
+                       || updatedContact.LastName != ((Contact)Trigger.oldMap.get(updatedContact.Id)).LastName )) {  
+                    contactIdsToUpdateRelatedUsers.add(updatedContact.Id);
                 }
             }
 
             usersToUpdate = [SELECT ContactId,FirstName,LastName FROM User WHERE ContactId IN :contactIdsToUpdateRelatedUsers];
 
             // store in map so we can update later as we update each contact
-            for (User u : usersToUpdate) {
-                contactIdToUserMap.put(u.ContactId, u);
+            for (User userToSearchForLater : usersToUpdate) {
+                contactIdToUserMap.put(userToSearchForLater.ContactId, userToSearchForLater);
             }
         }
     }
@@ -204,34 +204,34 @@ public without sharing class ContactHandler implements ITrigger
     
     public void beforeUpdate(SObject oldSo, SObject so) {
         // Store the triggering sObject as a Contact
-        Contact c = (Contact) so;
+        Contact alteredContact = (Contact) so;
 
         // Store the Account ID of the triggering Contact
-        Account a = existingAccountMap.get(c.AccountId);
+        Account associatedAccount = existingAccountMap.get(alteredContact.AccountId);
 
         // If an Account exists for the triggering contact, and its information doesn't match up
         // with the Contact, add it to our set of Accounts to update
-        if (a != null && 
-            (a.Name != c.FirstName + ' ' + c.LastName 
-                || a.OwnerId != c.OwnerId
-                || a.RecordTypeId != contactToAccountRTIdMap.get(c.RecordTypeID)
-                || a.Contact__c != c.Id
+        if (associatedAccount != null && 
+            (associatedAccount.Name != alteredContact.FirstName + ' ' + alteredContact.LastName 
+                || associatedAccount.OwnerId != alteredContact.OwnerId
+                || associatedAccount.RecordTypeId != contactToAccountRTIdMap.get(alteredContact.RecordTypeID)
+                || associatedAccount.Contact__c != alteredContact.Id
             )) {
-            a.Name = c.FirstName + ' ' + c.LastName;
-            a.OwnerId = c.OwnerId;
-            a.RecordTypeId = contactToAccountRTIdMap.get(c.RecordTypeID);
-            a.Contact__c = c.Id;
+            associatedAccount.Name = alteredContact.FirstName + ' ' + alteredContact.LastName;
+            associatedAccount.OwnerId = alteredContact.OwnerId;
+            associatedAccount.RecordTypeId = contactToAccountRTIdMap.get(alteredContact.RecordTypeID);
+            associatedAccount.Contact__c = alteredContact.Id;
 
-            accountsToUpdate.add(a);
+            accountsToUpdate.add(associatedAccount);
         }
 
         // Get the user we will be updating
-        User u = contactIdToUserMap.get(c.Id);
+        User associatedUser = contactIdToUserMap.get(alteredContact.Id);
 
         // Update the user's first and last name to match
-        if (u != null) {
-            u.FirstName = c.FirstName;
-            u.LastName = c.LastName;
+        if (associatedUser != null) {
+            associatedUser.FirstName = alteredContact.FirstName;
+            associatedUser.LastName = alteredContact.LastName;
         }
     }
 

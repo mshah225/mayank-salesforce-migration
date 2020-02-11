@@ -48,8 +48,8 @@
         } else {
             document.getElementById("j_id0:failedChatBody").style.display = "none";
         }
-        var cleanedString = '{!$CurrentPage.parameters.chatDetails}';
-        cleanedString = cleanedString.replace(/[\n]/g, '').replace(/[\r]/g, '');
+        var cleanedString = '{!JSENCODE($CurrentPage.parameters.chatDetails)}';
+        cleanedString = cleanedString.replace(/[\n]/g, '').replace(/[\r]/g, '').replace(/[\\]*\'/g, '\'';
         var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',
@@ -118,7 +118,7 @@
 
         function goToSurvey() {
             var parameters = mergeFields == undefined ? '' : mergeFields.join('&');
-            parameters += '&name={!contactName}';
+            parameters += '&name={!JSENCODE(contactName)}';
             window.location = '{!postChatSurveyLink}?' + parameters;
         }
         function toSnakeCase(str) {

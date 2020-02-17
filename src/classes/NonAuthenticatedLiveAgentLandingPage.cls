@@ -1,9 +1,17 @@
 public class NonAuthenticatedLiveAgentLandingPage {
     public Live_Agent_Button__c nonAuthenticatedButton {get; set;}
+    public String orgId {set; get;}
+    public String chatDeploymentId {set; get;}
+    public String chatButtonId {set; get;}
+    public String chatEndpoint {set; get;}
     public String agentOfflineMessage {get; set;}
         
     public NonAuthenticatedLiveAgentLandingPage() {
         nonAuthenticatedButton = Live_Agent_Button__c.getInstance('Non_Authenticated_Live_Chat');
+        orgId = nonAuthenticatedButton.Org_Id__c;
+        chatDeploymentId = nonAuthenticatedButton.Chat_Deployment__c;
+        chatButtonId = nonAuthenticatedButton.Chat_Button_Id__c;
+        chatEndpoint = nonAuthenticatedButton.Chat_Endpoint__c;
         setAgentOfflineMessage();
     }
     

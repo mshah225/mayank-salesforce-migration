@@ -8,6 +8,10 @@ public class LiveAgentPreSurveyController {
     public String caseSubject {set; get;}
     public String presurveyQuestion {set; get;}
     public String agentOfflineMessage {set; get;}
+    public String orgId {set; get;}
+    public String chatDeploymentId {set; get;}
+    public String chatButtonId {set; get;}
+    public String chatEndpoint {set; get;}
     public Live_Agent_Button__c buttonConfig {set; get;}
     
     public LiveAgentPreSurveyController() {
@@ -27,6 +31,10 @@ public class LiveAgentPreSurveyController {
     
     private void setButtonInformation() {
         buttonConfig = Live_Agent_Button__c.getInstance(buttonPressed);
+        orgId = buttonConfig.Org_Id__c;
+        chatDeploymentId = buttonConfig.Chat_Deployment__c;
+        chatButtonId = buttonConfig.Chat_Button_Id__c;
+        chatEndpoint = buttonConfig.Chat_Endpoint__c;
     }
     
     private void setCaseDetails() {

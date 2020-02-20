@@ -1,10 +1,5 @@
 @isTest
 private class JiraWebserviceCalloutTest {
-
-    @testSetup
-    private static void setUp() {        
-        insert new ApiUser__c(Name = 'Jira', Username__c = 'TestUser', Password__c = 'Password', Url__c = '.com');
-    }
     
     @isTest
     private static void createNewIssue() {
@@ -50,6 +45,17 @@ private class JiraWebserviceCalloutTest {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
         Test.startTest();
         String issues = JIRAWebserviceCallout.getIssues('asurite');
+        Test.stopTest();
+        Map<String, Object> mapOfIssues = (Map<String, Object>)JSON.deserializeUntyped(issues);
+        Integer numberOfIssues = (Integer)mapOfIssues.get('total');
+        System.assertEquals(5, numberOfIssues);
+    }
+
+    @isTest
+    private static void getWatchedIssues() {
+        Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
+        Test.startTest();
+        String issues = JIRAWebserviceCallout.getWatchedIssues('asurite');
         Test.stopTest();
         Map<String, Object> mapOfIssues = (Map<String, Object>)JSON.deserializeUntyped(issues);
         Integer numberOfIssues = (Integer)mapOfIssues.get('total');

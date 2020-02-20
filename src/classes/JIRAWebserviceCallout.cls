@@ -12,7 +12,7 @@ global class JIRAWebserviceCallout {
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
         
         String body = '{"fields":' +
-            '{   "project":     {      "id": "10000"      }, ' +
+            '{   "project":     {      "id": "17074"      }, ' +
             '"summary": "' + summary + '",  ' +
             '"description": "' + description + '",  ' +
             ' "issuetype": {  "name": "' + type + '"     }';
@@ -186,13 +186,13 @@ global class JIRAWebserviceCallout {
                 statusKey = '131';
             }	
             when 'In Testing' {
-                statusKey = '111';
+                statusKey = '81';
             }
             when 'Technical Review' {
-                statusKey = '121';
+                statusKey = '91';
             }
             when 'New Development Request' {
-                statusKey = '51';
+                statusKey = '11';
             }
             when 'New' {
                 statusKey = '3';
@@ -207,7 +207,7 @@ global class JIRAWebserviceCallout {
                 statusKey = '5';
             }
             when 'Ready For Work' {
-                statusKey = '91';
+                statusKey = '351';
             }
             when else {
                 statusKey = '11';

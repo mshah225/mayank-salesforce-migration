@@ -1,8 +1,5 @@
 global class JIRAWebserviceCallout {
     private static final Boolean DEBUG = false;
-    private static final String USERNAME = ApiUser__c.getValues('Jira').Username__c;
-    private static final String PASSWORD = ApiUser__c.getValues('Jira').Password__c;
-    private static final String JIRA_URL = ApiUser__c.getValues('Jira').Url__c;
     
     WebService static String createNewIssue(String summary, String description, String addUsers, String type) {
         List<String> errorLoggerVars = new List<String>();
@@ -12,10 +9,10 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL + '/rest/api/2/issue';
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
         
         String body = '{"fields":' +
-            '{   "project":     {      "id": "17074"      }, ' +
+            '{   "project":     {      "id": "10000"      }, ' +
             '"summary": "' + summary + '",  ' +
             '"description": "' + description + '",  ' +
             ' "issuetype": {  "name": "' + type + '"     }';
@@ -60,7 +57,7 @@ global class JIRAWebserviceCallout {
         Http http = new Http();
 		HttpRequest req = new HttpRequest();
         
-        String endpoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey + '/watchers';
+        String endpoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '/watchers';
         
         String[] watchersToAdd = watchers.split(',');
         try {
@@ -68,7 +65,7 @@ global class JIRAWebserviceCallout {
             for (Integer i = 0 ; i < watchersToAdd.size(); i++) {
                 setHeader(req);
                 setEndPoint(req, endPoint, 'POST');
-                setBody(req, '"' + watchersToAdd[i] + '"');
+                setBody(req, '"' + getUserId(watchersToAdd[i]) + '"');
                 res = http.send(req);
             }
         } catch(System.CalloutException e) {
@@ -84,7 +81,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         HttpRequest req = new HttpRequest();
-        String endPoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey;  
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey;  
         String body = '{"update": { "comment": [ { "add": { "body": "' + comment + '" }}]}}';
         
         try {
@@ -105,7 +102,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         HttpRequest req = new HttpRequest();
-        String endPoint = JIRA_URL + '/rest/api/2/issue/' + jiraKey + '/transitions';
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '/transitions';
         String body = '{"transition": {"id": "' + getStatusKey(status) + '"}}';
         
         try {
@@ -129,7 +126,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL +'/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D"Close%20Issue"%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/search?jql=assignee%3D' + asurite + '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);
@@ -153,7 +150,7 @@ global class JIRAWebserviceCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         
-        String endPoint = JIRA_URL +'/rest/api/2/search?jql=watcher%20%3D%20' + asurite + '%20AND%20(assignee%20%3D%20NULL%20OR%20assignee%20!%3D%20' + asurite + ')%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue"%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/search?jql=watcher%20%3D%20' + asurite + '%20AND%20(assignee%20%3D%20NULL%20OR%20assignee%20!%3D%20' + asurite + ')%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);
@@ -170,9 +167,6 @@ global class JIRAWebserviceCallout {
     }
     
     private static void setHeader(HttpRequest req) {
-        Blob headerValue = Blob.valueOf(USERNAME + ':' + PASSWORD);
-        String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
-        req.setHeader('Authorization', authorizationHeader);
         req.setHeader('Content-Type','application/json');
     }
     
@@ -192,13 +186,13 @@ global class JIRAWebserviceCallout {
                 statusKey = '131';
             }	
             when 'In Testing' {
-                statusKey = '81';
+                statusKey = '111';
             }
             when 'Technical Review' {
-                statusKey = '91';
+                statusKey = '121';
             }
             when 'New Development Request' {
-                statusKey = '11';
+                statusKey = '51';
             }
             when 'New' {
                 statusKey = '3';
@@ -213,12 +207,41 @@ global class JIRAWebserviceCallout {
                 statusKey = '5';
             }
             when 'Ready For Work' {
-                statusKey = '351';
+                statusKey = '91';
             }
             when else {
                 statusKey = '11';
             }
         }
         return statusKey;
+    }
+
+    private static String getUserId(String username){
+        List<String> errorLoggerVars = new List<String>();
+        String userId;
+        
+        HttpRequest req = new HttpRequest();
+        HttpResponse res = new HttpResponse();
+        Http http = new Http();
+        
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/jql/pdcleaner';
+
+        try {
+            setHeader(req);
+            setEndPoint(req, endPoint, 'POST');
+            setBody(req, '{"queryStrings": ["assignee = '+username+'"]}');
+            res = http.send(req);
+
+            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+            List<Object> queryStringList = (List<Object>) responseMap.get('queryStrings');
+            userId = queryStringList[0].toString().split(' = ')[1];
+        } catch(System.CalloutException e) {
+            errorLoggerVars.add(res.toString());
+            errorLoggerVars.add(req.toString());
+            errorLoggerVars.add(endPoint);
+            ErrorLogger.log(e, errorLoggerVars, DEBUG);
+        }
+
+        return userId;
     }
 }

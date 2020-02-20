@@ -34,7 +34,7 @@
             if (state === "SUCCESS" && response.getReturnValue() != null) {
                 var key = response.getReturnValue();
                 component.set("v.message", "Jira Issue Successfully Created");
-                var link = "https://asudev.jira.com/browse/" + key;
+                var link = "https://rnordmandev.atlassian.net/browse/" + key;
                 component.set("v.link", link);
                 component.set("v.displayLink", true);
                 this.clearInputs(component);

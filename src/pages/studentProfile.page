@@ -2052,7 +2052,7 @@
                                                 <div class = "planMargin">Defense Required</div>
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', 'Yes')}
+                                                {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, 'No', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Last Updated

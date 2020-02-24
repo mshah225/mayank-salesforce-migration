@@ -2,9 +2,11 @@ public with sharing class AutoSubscriberService {
     List<sObject> recordsToProcess {get; set;}
     String typeOfObject;
     Map<Auto_Subscriber_Setting__mdt, List<String>> settingToSubscription;
+    Map<Id, List<Subscriber__c>> contactToSubscriber;
 
     public AutoSubscriberService(List<sObject> recordsToProcess, String typeOfObject) {
         settingToSubscription = new Map<Auto_Subscriber_Setting__mdt, List<String>>();
+        contactToSubscriber = new Map<Id, List<Subscriber__c>>();
         this.recordsToProcess = recordsToProcess;
         this.typeOfObject = typeOfObject;
 
@@ -33,6 +35,7 @@ public with sharing class AutoSubscriberService {
     public void processStudentProgramPlanRecords() {
         List<Student_Program_Plan__c> convertedRecordsToProcess = (List<Student_Program_Plan__c>) recordsToProcess;
         List<Subscriber__c> subsToCreate = new List<Subscriber__c>();
+        buildContactToSubscriberMapWithProgramPlan(convertedRecordsToProcess);
 
         for (Student_Program_Plan__c programPlan : convertedRecordsToProcess) {
             for (Auto_Subscriber_Setting__mdt subSetting : settingToSubscription.keyset()) {
@@ -43,7 +46,7 @@ public with sharing class AutoSubscriberService {
         }
 
         if (!subsToCreate.isEmpty()) {
-            insert subsToCreate;
+            upsert subsToCreate;
         }
     }
 
@@ -56,10 +59,63 @@ public with sharing class AutoSubscriberService {
             subFromProgramPlan.Contact__c = programPlan.Contact__c;
             subFromProgramPlan.Subscriber_Status__c = 'Subscribed';
 
-            subsToCreate.add(subFromProgramPlan);
+            if (shouldNewSubBeUpserted(subFromProgramPlan)) {
+                subsToCreate.add(subFromProgramPlan);
+            }
+            
         }
         
         
         return subsToCreate;
+    }
+
+    private void buildContactToSubscriberMapWithProgramPlan(List<Student_Program_Plan__c> programPlans) {
+        Set<Id> contactsFromPlans = new Set<Id>();
+        for (Student_Program_Plan__c plan : programPlans) {
+            contactsFromPlans.add(plan.Contact__c);
+        }
+
+        List<Subscriber__c> subsForContacts = [
+            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c
+            FROM Subscriber__c
+            WHERE Contact__c IN: contactsFromPlans
+            ORDER BY Contact__c
+        ];
+        
+        if (!subsForContacts.isEmpty()) {
+            Id currentContact = subsForContacts[0].Contact__c;
+            List<Subscriber__c> subsForSpecificContact = new List<Subscriber__c>();
+            for (Subscriber__c sub : subsForContacts) {
+                if (currentContact == sub.Contact__c) {
+                    subsForSpecificContact.add(sub);
+                } else {
+                    contactToSubscriber.put(currentContact, subsForSpecificContact);
+                    subsForSpecificContact = new List<Subscriber__c>();
+                    subsForSpecificContact.add(sub);
+                }
+            }
+            contactToSubscriber.put(currentContact, subsForSpecificContact);
+        }
+    }
+
+    private Boolean shouldNewSubBeUpserted(Subscriber__c newSub) {
+        List<Subscriber__c> currentSubsForContact = contactToSubscriber.get(newSub.Contact__c);
+
+        if (currentSubsForContact == null || currentSubsForContact.isEmpty()) {
+            return true;
+        }
+
+        for (Subscriber__c sub : currentSubsForContact) {
+            if (newSub.Subscription__c == sub.Subscription__c) {
+                if (sub.Subscriber_Status__c == 'No Preference') {
+                    newSub.Id = sub.Id;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

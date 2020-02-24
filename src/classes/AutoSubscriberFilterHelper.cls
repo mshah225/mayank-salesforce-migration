@@ -11,6 +11,18 @@ public with sharing class AutoSubscriberFilterHelper {
         }
 
     }
+
+    public static Boolean filterCampaignMember(String methodTocall, CampaignMember memberToCheck) {
+        switch on methodToCall {
+            when 'Access_Asu' {
+                return accessAsuForCampaignMember(memberToCheck);
+            }
+            when else {
+                return false;
+            }
+        }
+
+    }
     
     public static Boolean graduateCollegeForStudentProgramPlan (Student_Program_Plan__c planToCheck) {
 
@@ -19,6 +31,16 @@ public with sharing class AutoSubscriberFilterHelper {
             planToCheck.Plan_Code__c != 'PRISEPGR' && planToCheck.Plan_Code__c != 'GRPLUS' && 
             !planToCheck.Plan_Code__c.contains('%GERT%') &&
             !planToCheck.Plan_Description__c.contains('%UG%')
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean accessAsuForCampaignMember (CampaignMember memberToCheck) {
+
+        if (true
         ) {
             return true;
         } else {

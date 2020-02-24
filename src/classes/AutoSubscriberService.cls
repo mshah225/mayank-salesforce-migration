@@ -50,6 +50,24 @@ public with sharing class AutoSubscriberService {
         }
     }
 
+    public void processCampaignMemberRecords() {
+        List<CampaignMember> convertedRecordsToProcess = (List<CampaignMember>) recordsToProcess;
+        List<Subscriber__c> subsToCreate = new List<Subscriber__c>();
+        buildContactToSubscriberMapWithCampaignMember(convertedRecordsToProcess);
+
+        for (CampaignMember member : convertedRecordsToProcess) {
+            for (Auto_Subscriber_Setting__mdt subSetting : settingToSubscription.keyset()) {
+                if (AutoSubscriberFilterHelper.filterCampaignMember(subSetting.DeveloperName, member)) {
+                    subsToCreate.addAll(createSubscriberForCampaignMember(member, settingToSubscription.get(subSetting)));
+                }
+            }
+        }
+
+        if (!subsToCreate.isEmpty()) {
+            upsert subsToCreate;
+        }
+    }
+
     private List<Subscriber__c> createSubscriberForProgramPlan(Student_Program_Plan__c programPlan, List<String> subList) {
         List<Subscriber__c> subsToCreate = new List<Subscriber__c>();
 
@@ -69,6 +87,27 @@ public with sharing class AutoSubscriberService {
         return subsToCreate;
     }
 
+    private List<Subscriber__c> createSubscriberForCampaignMember(CampaignMember member, List<String> subList) {
+        List<Subscriber__c> subsToCreate = new List<Subscriber__c>();
+
+        for (String subscriptionId : subList) {
+            if (member.ContactId != null) {
+                Subscriber__c subFromProgramPlan = new Subscriber__c();
+                subFromProgramPlan.Subscription__c = subscriptionId;
+                subFromProgramPlan.Contact__c = member.ContactId;
+                subFromProgramPlan.Subscriber_Status__c = 'Subscribed';
+
+                if (shouldNewSubBeUpserted(subFromProgramPlan)) {
+                    subsToCreate.add(subFromProgramPlan);
+                }
+            }
+            
+        }
+        
+        
+        return subsToCreate;
+    }
+
     private void buildContactToSubscriberMapWithProgramPlan(List<Student_Program_Plan__c> programPlans) {
         Set<Id> contactsFromPlans = new Set<Id>();
         for (Student_Program_Plan__c plan : programPlans) {
@@ -79,6 +118,35 @@ public with sharing class AutoSubscriberService {
             SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c
             FROM Subscriber__c
             WHERE Contact__c IN: contactsFromPlans
+            ORDER BY Contact__c
+        ];
+        
+        if (!subsForContacts.isEmpty()) {
+            Id currentContact = subsForContacts[0].Contact__c;
+            List<Subscriber__c> subsForSpecificContact = new List<Subscriber__c>();
+            for (Subscriber__c sub : subsForContacts) {
+                if (currentContact == sub.Contact__c) {
+                    subsForSpecificContact.add(sub);
+                } else {
+                    contactToSubscriber.put(currentContact, subsForSpecificContact);
+                    subsForSpecificContact = new List<Subscriber__c>();
+                    subsForSpecificContact.add(sub);
+                }
+            }
+            contactToSubscriber.put(currentContact, subsForSpecificContact);
+        }
+    }
+
+    private void buildContactToSubscriberMapWithCampaignMember(List<CampaignMember> campaignMemberList) {
+        Set<Id> contactsFromCampaignMembers = new Set<Id>();
+        for (CampaignMember member : campaignMemberList) {
+            contactsFromCampaignMembers.add(member.ContactId);
+        }
+
+        List<Subscriber__c> subsForContacts = [
+            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c
+            FROM Subscriber__c
+            WHERE Contact__c IN: contactsFromCampaignMembers
             ORDER BY Contact__c
         ];
         

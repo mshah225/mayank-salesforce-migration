@@ -39,8 +39,8 @@ public with sharing class AutoSubscriberFilterHelper {
     }
 
     public static Boolean accessAsuForCampaignMember (CampaignMember memberToCheck) {
-
-        if (true
+        if (AutoSubscriberHelper.campaignToRecordTypeName.get(memberToCheck.CampaignId) == 'EOSS Event' && 
+            AutoSubscriberHelper.contactToCareer.get(memberToCheck.ContactId) == 'Undergraduate'
         ) {
             return true;
         } else {

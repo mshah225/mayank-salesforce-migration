@@ -55,7 +55,9 @@ public with sharing class AutoSubscriberHelper {
     public void buildContactToSubscriberMapWithProgramPlan(List<Student_Program_Plan__c> programPlans) {
         Set<Id> contactsFromPlans = new Set<Id>();
         for (Student_Program_Plan__c plan : programPlans) {
-            contactsFromPlans.add(plan.Contact__c);
+            if (plan.Contact__c != null) {
+                contactsFromPlans.add(plan.Contact__c);
+            }
         }
 
         List<Subscriber__c> subsForContacts = [
@@ -84,7 +86,9 @@ public with sharing class AutoSubscriberHelper {
     public void buildContactToSubscriberMapWithCampaignMember(List<CampaignMember> campaignMemberList) {
         Set<Id> contactsFromCampaignMembers = new Set<Id>();
         for (CampaignMember member : campaignMemberList) {
-            contactsFromCampaignMembers.add(member.Contact.Id);
+            if (member.ContactId != null) {
+                contactsFromCampaignMembers.add(member.ContactId);
+            }
         }
 
         List<Subscriber__c> subsForContacts = [
@@ -114,8 +118,13 @@ public with sharing class AutoSubscriberHelper {
         Set<Id> contactsFromCampaignMembers = new Set<Id>();
         Set<Id> campaignFromCampaignMembers = new Set<Id>();
         for (CampaignMember member : campaignMemberList) {
-            contactsFromCampaignMembers.add(member.ContactId);
-            campaignFromCampaignMembers.add(member.CampaignId);
+            if (member.ContactId != null) {
+                contactsFromCampaignMembers.add(member.ContactId);
+            }
+            if (member.CampaignId != null) {
+                campaignFromCampaignMembers.add(member.CampaignId);
+            }
+            
         }
 
         setCareerFromOpportunity(contactsFromCampaignMembers);

@@ -29,8 +29,8 @@ public with sharing class AutoSubscriberFilterHelper {
         if (planToCheck.Career__c == 'Graduate' && 
             planToCheck.Status__c == 'Active In Program' &&
             planToCheck.Plan_Code__c != 'PRISEPGR' && planToCheck.Plan_Code__c != 'GRPLUS' && 
-            !planToCheck.Plan_Code__c.contains('%GERT%') &&
-            !planToCheck.Plan_Description__c.contains('%UG%')
+            !planToCheck.Plan_Code__c.contains('GERT') &&
+            !planToCheck.Plan_Description__c.contains('UG')
         ) {
             return true;
         } else {

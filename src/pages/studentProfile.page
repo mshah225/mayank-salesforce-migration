@@ -312,7 +312,7 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSDEV/c/ASU_STUDENT_RECORDS.ASU_TSRQST_UNOFF.GBL?EMPLID={!theContact.EMPLID__c}"
+                                <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_STUDENT_RECORDS.ASU_TSRQST_UNOFF.GBL?EMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     Unofficial Transcript
                                 </a>
@@ -354,13 +354,13 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSDEV/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
+                                <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     Student's PeopleSoft
                                 </a>
                             </td>
                             <td>
-                                <a href="https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSDEV/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
+                                <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     Gportal
                                 </a>
@@ -408,7 +408,7 @@
                             </div>
 
                             <td>
-                                <a href="https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSDEV/c/ASU_ACADEMIC_ADVISING_STAFF.ASU_AA_POS_SRCH_FL.GBL?EMPLID={!theContact.EMPLID__c}"
+                                <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ACADEMIC_ADVISING_STAFF.ASU_AA_POS_SRCH_FL.GBL?EMPLID={!theContact.EMPLID__c}"
                                    target="_blank">
                                     iPOS
                                 </a>

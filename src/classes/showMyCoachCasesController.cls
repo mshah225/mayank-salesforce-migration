@@ -1,5 +1,4 @@
 public class showMyCoachCasesController extends ListViewController {
-
     private boolean debug = false;
 
     // Properties with standard getters/setters
@@ -46,7 +45,7 @@ public class showMyCoachCasesController extends ListViewController {
         get {
             if (tempEmail == null) {
                 tempEmail = new Portal_Email__c(
-                	RecordTypeId = portalEmailRTID,
+                    RecordTypeId = portalEmailRTID,
                     Subject__c = 'A Message from your College and Department'
                 );
             }
@@ -58,12 +57,10 @@ public class showMyCoachCasesController extends ListViewController {
     }
 
     /*
-    * Method that will clear tempemail when user exits the mass email modal
-    */
+     * Method that will clear tempemail when user exits the mass email modal
+     */
     public void clearTempEmail() {
-
-            tempEmail = null;
-
+        tempEmail = null;
     }
 
     // Methods
@@ -86,10 +83,23 @@ public class showMyCoachCasesController extends ListViewController {
         this.caseList = new List<CaseWrapper>();
         for (Case c : cases) {
             CaseWrapper cw = new CaseWrapper(c);
+            cw.termSession = parseTermSession(c);
             cw.timeZone = timeZones.get(cw.obj.ContactId);
             this.caseList.add(cw);
         }
         resetCaseCounts();
+    }
+
+    private String parseTermSession(Case currentCase) {
+        String termSession = '';
+        if (currentCase.STRM__c != null) {
+            termSession += currentCase.STRM__c;
+        }
+        if (currentCase.Session__c != null) {
+            termSession += currentCase.Session__c;
+        }
+
+        return termSession;
     }
 
     /**
@@ -99,11 +109,11 @@ public class showMyCoachCasesController extends ListViewController {
     private Map<Id, String> getTimeZones(List<Case> cases) {
         List<Id> contactIds = this.getContactIds(cases);
         List<Contact> contacts = [
-            SELECT (
-                SELECT Time_Zone__c
-                FROM Success_Students__r
-                WHERE Coaching_Student__c = true AND Is_Active__c = true
-                ORDER BY Time_Zone__c DESC NULLs Last
+            SELECT(
+            SELECT Time_Zone__c
+            FROM Success_Students__r
+            WHERE Coaching_Student__c = true AND Is_Active__c = true
+            ORDER BY Time_Zone__c DESC NULLs Last
             )
             FROM Contact
             WHERE Id IN :contactIds
@@ -114,6 +124,7 @@ public class showMyCoachCasesController extends ListViewController {
                 timeZones.put(c.Id, c.Success_Students__r[0].Time_Zone__c);
             }
         }
+
         return timeZones;
     }
 
@@ -125,12 +136,13 @@ public class showMyCoachCasesController extends ListViewController {
         for (Case c : cases) {
             contactIds.add(c.ContactId);
         }
+
         return contactIds;
     }
 
     /*
-	* Resets the caseCounts map
-	*/
+     * Resets the caseCounts map
+     */
     public void resetCaseCounts() {
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
@@ -141,30 +153,28 @@ public class showMyCoachCasesController extends ListViewController {
             }
 
             for (Contact c : [SELECT id,
-                              (SELECT RecordTypeId
-                               FROM Cases
-                               WHERE isClosed = false)
-                              FROM Contact
-                              WHERE Id IN :ContactIds]) {
-                                  caseCounts.put(c.id, new relatedCases());
-                                  for (Case cc : c.cases) {
-                                      if (cc.recordTypeId == proactiveCaseRTID) {
-                                          caseCounts.get(c.Id).proactiveCount++;
-                                      } else {
-                                          caseCounts.get(c.Id).reactiveCount++;
-                                      }
-                                  }
-                              }
+                (SELECT RecordTypeId
+                FROM Cases
+                WHERE isClosed = false)
+                FROM Contact
+                WHERE Id IN :ContactIds]) {
+                caseCounts.put(c.id, new relatedCases());
+                for (Case cc : c.cases) {
+                    if (cc.recordTypeId == proactiveCaseRTID) {
+                        caseCounts.get(c.Id).proactiveCount++;
+                    } else {
+                        caseCounts.get(c.Id).reactiveCount++;
+                    }
+                }
+            }
         }
-
     }
 
     /*
      * Transfer Cases
      */
     public void transferCases() {
-
-        for (case c : selectedCases) {
+        for (case c: selectedCases) {
             c.ownerId = ownerId;
         }
 
@@ -179,7 +189,7 @@ public class showMyCoachCasesController extends ListViewController {
     public void massEmail() {
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
 
-        for (case c : selectedCases) {
+        for (case c: selectedCases) {
             emails.add(new Portal_Email__c(
                 Case__c = c.Id,
                 Contact__c = c.contactId,
@@ -218,7 +228,7 @@ public class showMyCoachCasesController extends ListViewController {
         public Integer reactiveCount {get; set;}
         public Integer proactiveCount {get; set;}
 
-        public relatedCases () {
+        public relatedCases() {
             reactiveCount = 0;
             proactiveCount = 0;
         }
@@ -233,6 +243,7 @@ public class showMyCoachCasesController extends ListViewController {
         public String changeDir {get; set;}
         public String imageName {get; set;}
         public String timeZone {get; set;}
+        public String termSession {get; set;}
 
         public caseWrapper (Case wrappedCase) {
             selected = false;
@@ -242,14 +253,14 @@ public class showMyCoachCasesController extends ListViewController {
                 changeDir = 'Up';
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
                 changeDir = 'Down';
-            } else if(obj.Most_Recent_Outlook_Change_Direction__c == 0){
+            } else if (obj.Most_Recent_Outlook_Change_Direction__c == 0) {
                 changeDir = ' ';
             } else {
                 changeDir = ' ';
             }
 
             if (obj.Curr_Cont_Prediction_Level__c < 4) {
-               imageName = 'icon-1.png';
+                imageName = 'icon-1.png';
             } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
                 imageName = 'icon-2.png';
             } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
@@ -259,37 +270,36 @@ public class showMyCoachCasesController extends ListViewController {
             } else {
                 imageName = 'icon-5.png';
             }
-
         }
     }
 
     /*
      * Indicates whether the string has been previously searched
      */
-    public boolean searched{
-        get{
-            if(query == NULL || !query.contains('LIKE')){
+    public boolean searched {
+        get {
+            if (query == NULL || !query.contains('LIKE')) {
                 searched = false;
-            }
-            else{
+            } else {
                 searched = true;
             }
+
             return searched;
         }
         set;
     }
 
     /**
-	*Used to modify the query based on search parameter inputted by user
-	*
-	*/
-    public string searchString{
-        get{
+     * Used to modify the query based on search parameter inputted by user
+     *
+     */
+    public string searchString {
+        get {
             return searchString;
         }
-        set{
+        set {
             searchString = value;
-            if(searchString != NULL){
+            if (searchString != NULL) {
                 String tempQuery = removeSearchString();
                 Integer loc = tempQuery.indexOf('WHERE');
                 String tempQueryLeft = tempQuery.substring(0, loc + 5);
@@ -298,10 +308,10 @@ public class showMyCoachCasesController extends ListViewController {
                 tempQueryRight = tempQueryRight.trim();
 
                 String searchCon = value.trim();
-                String tmp = tempQueryLeft +' (' +
+                String tmp = tempQueryLeft + ' (' +
                     'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
                     'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                ') AND ' + tempQueryRight;
+                    ') AND ' + tempQueryRight;
 
                 query = tmp;
             }
@@ -311,7 +321,7 @@ public class showMyCoachCasesController extends ListViewController {
     /*
      * Used to refresh the list to it's orignal state
      */
-    public void resetSearch(){
+    public void resetSearch() {
         searchString = NULL;
         query = removeSearchString();
     }
@@ -320,14 +330,15 @@ public class showMyCoachCasesController extends ListViewController {
      * Trims the query to remove any specific searches
      */
     @TestVisible
-    private string removeSearchString(){
+    private string removeSearchString() {
         String tmpQuery = query;
-        if(searched){
+        if (searched) {
             Integer loc = tmpQuery.indexOf('AND');
-            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE')+6);
-            String right = tmpQuery.substring(loc+3);
+            String left = tmpQuery.substring(0, tmpQuery.indexOf('WHERE') + 6);
+            String right = tmpQuery.substring(loc + 3);
             tmpQuery = left + right;
         }
+
         return tmpQuery;
     }
 }

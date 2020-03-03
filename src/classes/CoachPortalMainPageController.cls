@@ -1,10 +1,10 @@
 /*****************************************
-* File: CoachPortalMainPageController
-* Author: meruff, adapted from AdvisingPortalMainPageController.cls
-* Description: Controller for CoachPortalMainPage
-******************************************/
+ * File: CoachPortalMainPageController
+ * Author: meruff, adapted from AdvisingPortalMainPageController.cls
+ * Description: Controller for CoachPortalMainPage
+ ******************************************/
 public with sharing class CoachPortalMainPageController {
-    public CoachPortalMainPageController() { }
+    public CoachPortalMainPageController() {}
 
     /*
      * The ID provided by the view as component to be passed to the view as Body
@@ -137,14 +137,14 @@ public with sharing class CoachPortalMainPageController {
             mySubordinates = new Map<Id, String>();
 
             for (Success_Resource__c sr : [
-                SELECT Id, Name, Resource__r.Name, Resource_Name__c
-                FROM Success_Resource__c
-                WHERE RecordTypeId = :CoachResourceRTID
-                AND Success_POD__c = :mySuccessPod
-                AND Resource__c != :ownerId
-                AND isActive__c = true
-                ORDER BY Name ASC
-            ]) {
+                    SELECT Id, Name, Resource__r.Name, Resource_Name__c
+                    FROM Success_Resource__c
+                    WHERE RecordTypeId = :CoachResourceRTID
+                    AND Success_POD__c = :mySuccessPod
+                    AND Resource__c != :ownerId
+                    AND isActive__c = true
+                    ORDER BY Name ASC
+                ]) {
                 mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);
             }
 
@@ -207,7 +207,7 @@ public with sharing class CoachPortalMainPageController {
             if (ownerId != null) {
                 myProactiveQuery = '' +
                     'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, ' +
-                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, STRM__c, Session__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' + ownerId + '\' ' +
                     'AND Category__c != \'Watchlist\' ' +

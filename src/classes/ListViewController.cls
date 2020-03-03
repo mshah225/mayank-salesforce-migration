@@ -105,6 +105,7 @@ public virtual class ListViewController {
     public Integer pageSize {
         get {
             pageSize = integer.valueOf(getPageSizeCookie().getValue());
+
             return pageSize;
         }
 
@@ -207,7 +208,19 @@ public virtual class ListViewController {
                     tempQuery = tempQuery.trim();
                 }
 
-                tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
+                // if value from component contains a comma, handle multiple values
+                if (value.contains(',')) {
+                    List<String> split = value.split('\\s*,\\s*');
+
+                    tempQuery += ' ORDER BY';
+                    for (String s: split) {
+                        tempQuery += ' ' + s + ' ' + sortDir + ' NULLS LAST,';
+                    }
+                    tempQuery = tempQuery.removeEnd(',');
+                } else {
+                    tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
+                }
+
                 query = tempQuery;
             }
         }

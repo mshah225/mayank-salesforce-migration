@@ -61,7 +61,8 @@ public with sharing class AutoSubscriberHelper {
         }
 
         List<Subscriber__c> subsForContacts = [
-            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c
+            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c, Subscription__r.Id,
+            Subscription__r.Parent_Subscription__c, Subscription__r.Subscription_Type__c
             FROM Subscriber__c
             WHERE Contact__c IN: contactsFromPlans
             ORDER BY Contact__c
@@ -92,7 +93,8 @@ public with sharing class AutoSubscriberHelper {
         }
 
         List<Subscriber__c> subsForContacts = [
-            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c
+            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c, Subscription__r.Id,
+            Subscription__r.Parent_Subscription__c, Subscription__r.Subscription_Type__c
             FROM Subscriber__c
             WHERE Contact__c IN: contactsFromCampaignMembers
             ORDER BY Contact__c
@@ -159,11 +161,22 @@ public with sharing class AutoSubscriberHelper {
     private Boolean shouldNewSubBeUpserted(Subscriber__c newSub) {
         List<Subscriber__c> currentSubsForContact = contactToSubscriber.get(newSub.Contact__c);
 
+        List<Id> unsubscribedParentIds = new List<Id>();
+
         if (currentSubsForContact == null || currentSubsForContact.isEmpty()) {
             return true;
         }
 
         for (Subscriber__c sub : currentSubsForContact) {
+            if (sub.Subscription__r.Subscription_Type__c == 'Business Unit' && sub.Subscriber_Status__c == 'Unsubscribed') {
+                unsubscribedParentIds.add(sub.Subscription__r.Id);
+            }
+        }
+
+        for (Subscriber__c sub : currentSubsForContact) {
+            if (unsubscribedParentIds.contains(sub.Subscription__r.Id)) {
+                return false;
+            }
             if (newSub.Subscription__c == sub.Subscription__c) {
                 if (sub.Subscriber_Status__c == 'No Preference') {
                     newSub.Id = sub.Id;

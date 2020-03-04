@@ -1,5 +1,6 @@
 public without sharing class ContactUploadSearcher {
     private List<Contact_Upload_Detail__c> detailsToSearch;
+    private List<ConstituentDetail> constituentDetailsToSearch;
     private Map<String, Contact_Upload_Detail__c> emplIdToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Map<String, Contact_Upload_Detail__c> asuriteToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Map<String, Contact_Upload_Detail__c> firstNameAndEmailToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
@@ -17,18 +18,36 @@ public without sharing class ContactUploadSearcher {
 
     public ContactUploadSearcher(List<Contact_Upload_Detail__c> detailsToSearch) {
         this.detailsToSearch = detailsToSearch;
+        translateContactUploadDetailToConstituentDetail();
+    }
+
+    public void translateContactUploadDetailToConstituentDetail() {
+        List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
+        for (Contact_Upload_Detail__c contactUploadDetail : detailsToSearch) {
+            Map<String, String> detailFieldsMap = new Map<String, String>();
+            detailFieldsMap.put('asuriteId', contactUploadDetail.ASURITE__c);
+            detailFieldsMap.put('emplid', contactUploadDetail.EMPLID__c);
+            detailFieldsMap.put('firstName', contactUploadDetail.First_Name__c);
+            detailFieldsMap.put('lastName', contactUploadDetail.Last_Name__c);
+            detailFieldsMap.put('email', contactUploadDetail.Email__c);
+            
+            ConstituentDetail constituentDetail = new ConstituentDetail(detailFieldsMap);
+            listOfConstituents.add(constituentDetail);
+        }
+        this.constituentDetailsToSearch = listOfConstituents;
     }
 
     public void searchAndCreateContacts() {
-        searchForContacts();
+        ConstituentMatcher matcher = new ConstituentMatcher(constituentDetailsToSearch);
+        matcher.searchContacts();
         insertContactsForUnmatchedDetails();
     }
 
-    public void searchForContacts() {
-        createDataMappingForSearch();
-        getContactsMatchedByMappedValues();
-        associateDetailsWithMatchedContacts();
-    }
+    // public void searchForContacts() {
+    //     createDataMappingForSearch();
+    //     getContactsMatchedByMappedValues();
+    //     associateDetailsWithMatchedContacts();
+    // }
 
     public void searchContactsToMatch() {
         createDataMappingForSearch();

@@ -8,7 +8,7 @@ private class StudentProfileControllerTest {
         ApexPages.currentPage().getParameters().put('contactId', '1203436008');
 
         StudentProfileController controller = new StudentProfileController();
-        ContactService.createTestContacts(2);
+        new ContactFactory.WithRequiredFields().createMany(2);
         ContactService.generateRandomPin(Date.today());
         ContactService.isPinValid(444, Date.Today());
         CaseService.CaseFieldsToString();
@@ -108,7 +108,6 @@ private class StudentProfileControllerTest {
         System.debug(controller.openCases);
         System.debug(controller.sGroupList);
         System.debug(controller.ugProgramPlans);
-        System.debug(controller.gradProgramPlans);
         System.debug(controller.studentProgram);
         System.debug(controller.ugStudentProgram);
         System.debug(controller.gradStudentProgram);
@@ -142,5 +141,63 @@ private class StudentProfileControllerTest {
         
         SortableCreditByExam exam = new SortableCreditByExam(new PS_ASU_SP_TRNSFR_V__x(), '');
         exam.compareTo(exam);
+    }
+
+    @IsTest
+    private static void getWICHE() {
+        Contact testContact = new Contact(
+                FirstName = 'Super',
+                LastName = 'Gary',
+                EMPLID__c = '1234567890'
+        );
+        Database.insert(testContact);
+
+        Student_Group__c testGroup = new Student_Group__c(
+                SG_Contact__c = testContact.Id,
+                SG_PeopleSoft_Code__c = 'WRGP',
+                SG_Status__c = true
+        );
+        Database.insert(testGroup);
+
+        Test.startTest();
+        Test.setCurrentPage(Page.studentProfile);
+        ApexPages.currentPage().getParameters().put(
+                'contactId', testContact.Id
+        );
+        StudentProfileController profile = new StudentProfileController();
+        profile.init();
+        Boolean result = profile.getWICHE();
+        Test.stopTest();
+
+        System.assert(result, 'WICHE was not detected correctly');
+    }
+
+    @IsTest
+    private static void getAccelerated() {
+        Contact testContact = new Contact(
+                FirstName = 'Super',
+                LastName = 'Gary',
+                EMPLID__c = '1234567890'
+        );
+        Database.insert(testContact);
+
+        Student_Group__c testGroup = new Student_Group__c(
+                SG_Contact__c = testContact.Id,
+                SG_PeopleSoft_Code__c = 'GRAI',
+                SG_Status__c = true
+        );
+        Database.insert(testGroup);
+
+        Test.startTest();
+        Test.setCurrentPage(Page.studentProfile);
+        ApexPages.currentPage().getParameters().put(
+                'contactId', testContact.Id
+        );
+        StudentProfileController profile = new StudentProfileController();
+        profile.init();
+        Boolean result = profile.getAccelerated();
+        Test.stopTest();
+
+        System.assert(result, 'Accelerated  was not detected correctly');
     }
 }

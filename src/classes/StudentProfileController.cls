@@ -10,12 +10,16 @@ global with sharing class StudentProfileController {
     public Contact theContact { get; set; }
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
+    public List<GraduateProgramPlanWrapper> activeGraduatePrograms {get; set;}
+    public List<GraduateProgramPlanWrapper> completedGraduatePrograms {get; set;}
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
-    public List<Student_Program_Plan__c> gradProgramPlans { get; set; }
+    public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
+    public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
     public List<Service_Indicator__c> serviceIndicators { get; set; }
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
+    public Map<Id, List<Student_Program_Plan_Advisor__c>> gradStudentCommittees {get; set;}
     public Student_Account__c studentAccount { get; set; }
     public Financial_Aid_Package__c financialAidPackage { get; set; }
     public Me3__c me3Results { get; set; }
@@ -29,8 +33,10 @@ global with sharing class StudentProfileController {
     public String deceased { get; set; }
     public String currentTerm { get; set; }
     public String currentTermName { get; set; }
+    public String nextTerm { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
+    public Map<String, String> termToName { get; set;}
     
 
     public Student_Program_Plan__c ugStudentProgram { get {
@@ -40,7 +46,30 @@ global with sharing class StudentProfileController {
     }
 
     public Student_Program_Plan__c gradStudentProgram { get {
-            return gradProgramPlans.isEmpty() ? new Student_Program_Plan__c() : gradProgramPlans[0];
+            return activeGraduatePrograms.isEmpty() ? new Student_Program_Plan__c() : activeGraduatePrograms[0].gradProgramPlan;
+        }
+        set;
+    }
+
+    public String completedAcadmicIntegrity {
+        get {
+            if (completedAcadmicIntegrity == null) {
+                List<Checklist_Item__c> academicIntegrity = [
+                    SELECT Checklist_Item_Status__c
+                    FROM Checklist_Item__c
+                    WHERE Checklist_Item_Code__c = 'SRACIN'
+                    AND Contact__c =: theContact.Id
+                    LIMIT 1
+                ];
+                if (academicIntegrity.isEmpty()) {
+                    completedAcadmicIntegrity = '--';
+                } else if (academicIntegrity[0].Checklist_Item_Status__c.equals('Completed')) {
+                    completedAcadmicIntegrity = 'Yes';
+                } else {
+                    completedAcadmicIntegrity = 'No';
+                }
+            }
+            return completedAcadmicIntegrity;
         }
         set;
     }
@@ -54,7 +83,8 @@ global with sharing class StudentProfileController {
         }
         subPlanString = '';
         ugProgramPlans = new List<Student_Program_Plan__c>();
-        gradProgramPlans = new List<Student_Program_Plan__c>();
+        activeGraduatePrograms = new List<GraduateProgramPlanWrapper>();
+        completedGraduatePrograms = new List<GraduateProgramPlanWrapper>();
     }
 
     public void init() {
@@ -90,6 +120,30 @@ global with sharing class StudentProfileController {
         contactName = ApexPages.currentPage().getParameters().get('contactName');
     }
 
+    public Boolean getWICHE() {
+        Boolean WICHE = false;
+
+        for (Student_Group__c sg : sGroupList) {
+            if (sg.SG_Status__c && sg.SG_PeopleSoft_Code__c.equals('WRGP')) {
+                WICHE = true;
+            }
+        }
+
+        return WICHE;
+    }
+
+    public Boolean getAccelerated() {
+        Boolean accelerated = false;
+
+        for (Student_Group__c sg: sGroupList) {
+            if (sg.SG_Status__c && (sg.SG_PeopleSoft_Code__c.equals('GRAI') || (sg.SG_PeopleSoft_Code__c.equals('ADIP') && studentProgram.Education_Level__c == '17'))) {
+                accelerated = true;
+            }
+        }
+
+        return accelerated;
+    }
+    
     private void setContactRecord() {
 
         if (Validator.validateId(contactId, Contact.class)) {
@@ -136,7 +190,7 @@ global with sharing class StudentProfileController {
         studentMilestonesGrad = [
             SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c,
                 Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
-                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c
+                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
             AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
             ORDER BY Effdt__c DESC
@@ -147,6 +201,7 @@ global with sharing class StudentProfileController {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         String nextTermPeoplesoftCode = currentTermData.NextTerm__c;
         currentTerm = currentTermData.CurrTerm__c;
+        nextTerm = currentTermData.NextTerm__c;
 
         List<TERM__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c
@@ -190,19 +245,23 @@ global with sharing class StudentProfileController {
         setStudentProgramPlans();
         setUndergraduateStudentProgramPlanAdvisors();
         setGraduateStudentProgramPlanAdvisors();
+        setGraduateStudentProgramPlanCommitteesAndAdvisors();
+        setGraduateStudentProgramPlanMilestone();
     }
 
     private void setStudentProgramPlans() {
         List<Student_Program_Plan__c> allProgramPlans = [
             SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c,
-                Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Appt_Dt__c,
-                Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c,
-                Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c,
-                Residency__c, Cum_GPA__c,
-                Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c,
+                Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Admission_Type_Description__c, Appt_Dt__c,
+                Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, Education_Level__c,
+                Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c, Enrolled_Next_Term__c,
+                Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_Max_Time_Limit__r.Name, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
+                Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
                 Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
-                Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c,
-                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c
+                Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c,
+                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c, Degree_Checkout_Status_Name__c,
+                Grad_Culminating_Event__c, Grad_Advanced_To_Candidacy__c, Degree_Level__c, Grad_Continuous_Enrollment__c,
+                Grad_Anticipated_Term__c, Grad_Anticipated_Term__r.Name, Grad_ASU_Hours_After__c, Grad_ASU_Hours_Before__c, Degree_Chkout_Stat_Code__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
             ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c DESC, Plan_Description__c
@@ -212,18 +271,60 @@ global with sharing class StudentProfileController {
             return;
         }
 
+        List<String> allTerms = new List<String>();
+
         for (Student_Program_Plan__c programPlan : allProgramPlans) {
             if (programPlan.Career__c == null || programPlan.Career__c == 'Undergraduate') {
                 ugProgramPlans.add(programPlan);
             } else {
-                gradProgramPlans.add(programPlan);
+                if (programPlan.Status__c == 'Active in Program') {
+                    GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
+                    pgrm.gradProgramPlan = programPlan;
+                    activeGraduatePrograms.add(pgrm);
+                } else {
+                    GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
+                    pgrm.gradProgramPlan = programPlan;
+                    completedGraduatePrograms.add(pgrm);
+                }
             }
 
             if (programPlan.Primary_Flag__c) {
                 studentProgram = programPlan;
             }
+            if (!String.isEmpty(programPlan.Requirement_Term__c)) {
+                allTerms.add(programPlan.Requirement_Term__c);
+            }
         }
+
+        setTermMap(allTerms);
+
+        for (Student_Program_Plan__c programPlan : allProgramPlans) {
+            if (programPlan == null || programPlan.Requirement_Term__c == null) {
+                    programPlan.Requirement_Term__c = '--';
+                } else {
+                    programPlan.Requirement_Term__c = termToName.get(programPlan.Requirement_Term__c);
+                }
+        }
+
         setSubplanString();
+    }
+
+    private void setTermMap(List<String> terms) {
+        if (terms.isEmpty()) {
+            return;
+        }
+        List<Term__c> termNames = [SELECT Name, PeopleSoft_Code__c FROM Term__c WHERE PeopleSoft_Code__c IN: terms];
+
+        termToName = new Map<String, String>();
+
+        if (termNames.isEmpty()) {
+            return;
+        }
+
+        for (Term__c term : termNames) {
+            termToName.put(term.PeopleSoft_Code__c, term.Name);
+        }
+
     }
 
     private void setSubplanString() {
@@ -231,7 +332,7 @@ global with sharing class StudentProfileController {
             return;
         }
         List<Student_Program_Subplan__c> subplans = [
-            SELECT Subplan_description__c
+            SELECT Subplan_description__c, Student_Program_Plan__c
             FROM Student_Program_Subplan__c
             WHERE Student_Program_Plan__c =: studentProgram.Id
         ];
@@ -239,9 +340,10 @@ global with sharing class StudentProfileController {
             return;
         }
         for (Student_Program_Subplan__c subplan : subplans) {
-            subPlanString += subplan.Subplan_description__c + ', ';
+            if (subPlan.Student_Program_Plan__c == studentProgram.Id) {
+                subPlanString = subplan.Subplan_description__c;
+            }
         }
-        subPlanString = subPlanString.removeEnd(', ');
     }
 
     public void setUndergraduateStudentProgramPlanAdvisors() {
@@ -266,6 +368,63 @@ global with sharing class StudentProfileController {
             ORDER BY Name
         ];
     }
+
+    public void setGraduateStudentProgramPlanCommitteesAndAdvisors() {
+        List<Id> programPlansUsed = new List<Id>();
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            programPlansUsed.add(gppw.gradProgramPlan.Id);
+        }
+        List<Student_Program_Plan_Advisor__c> committeesAndAdvisors = [
+            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c, Committee_Type__c, Committee_Member_Attend_Method__c
+            FROM Student_Program_Plan_Advisor__c
+            WHERE Student_Program_Plan__c IN: programPlansUsed
+            AND (Student_Program_Plan__r.Career__c = 'Graduate')
+            ORDER BY Student_Program_Plan__c, Advisor_Role__c, Advisor_Name__c
+        ];
+
+        for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
+            gppw.gradCommittees = new List<Student_Program_Plan_Advisor__c>();
+            gppw.gradAdvisors = new List<Student_Program_Plan_Advisor__c>();
+            String programPlanId = gppw.gradProgramPlan.Id;
+            for (Student_Program_Plan_Advisor__c sppa : committeesAndAdvisors) {
+                if (programPlanId == sppa.Student_Program_Plan__c && sppa.Committee_Type__c != 'GRADFAC') {
+                    gppw.gradAdvisors.add(sppa);
+                } else if (programPlanId == sppa.Student_Program_Plan__c) {
+                    gppw.gradCommittees.add(sppa);
+                }
+            }
+        }
+    }
+
+    public void setGraduateStudentProgramPlanMilestone() {
+        List<String> planCode = new List<String>();
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            planCode.add(gppw.gradProgramPlan.Plan_Code__c);
+        }
+        List<Student_Milestone__c> defenseMilestones = [
+            SELECT Defense_Building__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c, Format_Document_Type__c, Format_Status__c, Defense_Status__c, Milestone__c,
+            Final_Defense_Results_Status_DtTm__c, Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
+            FROM Student_Milestone__c
+            WHERE Contact__c =: theContact.Id
+            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS' OR Milestone__c = 'GRFORMAT')
+            ORDER BY Effdt__c ASC
+        ];
+
+        for (Student_Milestone__c milestone : defenseMilestones) {
+            for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
+                if (milestone.Acad_Plan__r.Plan_Code__c == gppw.gradProgramPlan.Plan_Code__c) {
+                    if (milestone.Milestone__c == 'GRDEFENSE') {
+                        gppw.gradMilestoneDefense = milestone;
+                    } else if (milestone.Milestone__c == 'GRDISSERT' || milestone.Milestone__c == 'GRTHESIS') {
+                        gppw.gradMilestoneDiss = milestone;
+                    } else if (milestone.Milestone__c == 'GRFORMAT') {
+                        gppw.gradMilestoneFormat = milestone;
+                    }
+                } 
+            }
+        }
+    }
+    
 
     private void setTestScores() {
         setUndergradStudentTestScores();
@@ -625,6 +784,37 @@ global with sharing class StudentProfileController {
     global class CommentWrapper {
         public PS_ASU_SP_COMMNT_V__x comment {get; set;}
         public String commenterUserId {get; set;}
+    }
+
+    public class GraduateProgramPlanWrapper {
+        public Student_Milestone__c gradMilestoneDefense {get; set;}
+        public Student_Milestone__c gradMilestoneFormat {get; set;}
+        public Student_Milestone__c gradMilestoneDiss {get; set;}
+
+        public Date defenseDate {
+            get {
+                if (gradMilestoneDefense == null || gradMilestoneDefense.Defense_Date_Time__c == null) {
+                    return null;
+                } else {
+                    return Date.newInstance(gradMilestoneDefense.Defense_Date_Time__c.year(), gradMilestoneDefense.Defense_Date_Time__c.month(), gradMilestoneDefense.Defense_Date_Time__c.day());
+                }
+            }
+            set;
+        }
+        public String defenseTime {
+            get {
+                if (gradMilestoneDefense == null || gradMilestoneDefense.Defense_Date_Time__c == null) {
+                    return '--';
+                } else {
+                    return gradMilestoneDefense.Defense_Date_Time__c.format('h:mm a');
+                }
+            }
+            set;
+        }
+
+        public Student_Program_Plan__c gradProgramPlan {get; set;}
+        public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
+        public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}
     }
 
     private class StudentProfileException extends Exception {}

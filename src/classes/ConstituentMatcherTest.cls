@@ -1,19 +1,14 @@
 @isTest
 public with sharing class ConstituentMatcherTest {
 
-    private static String getFirstNameWildcardForTests(String firstName) {
-        String firstNameWildcard;
-        if (firstName.length() > 0) {
-            firstNameWildcard = firstName.substring(0, firstName.length()) + '%';
-        }
-        return firstNameWildcard;
-    }
-
     @isTest
-    private static void testMatcherWithSingleConstituentWithEmplid() {
+    private static void testMatcherWithSingleConstituent() {
         // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
+        Contact originalContact = new Contact(
+        	FirstName = 'Tester',
+            LastName = 'Contact',
+            EMPLID__c = '12345611'
+        );
         insert originalContact;
 
         // Create map of field values from contact to search on
@@ -21,475 +16,18 @@ public with sharing class ConstituentMatcherTest {
         detailFieldsMap.put('emplid', originalContact.EMPLID__c);
         detailFieldsMap.put('firstName', originalContact.FirstName);
         detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
+        
+        // Create new constituent detail from field map values
         ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
 
-        // Pass detail to constituent matcher and return matched contact if any
+        // Pass constituent detail to constituent matcher
         ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
         matcher.searchContacts();
+        
+        // Return matched contacts
         List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
 
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithAsuriteId() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.ASURITE_ID__c = 'tcontact10';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('asuriteId', originalContact.ASURITE_ID__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Email);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndLeadEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.Lead_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Lead_Email__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndLeadSecondaryEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.Lead_Secondary_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Lead_Secondary_Email__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndPersonalEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.Personal_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Personal_Email__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndAsuGmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.ASU_Gmail__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.ASU_Gmail__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndEpoEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.EPO_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.EPO_Email__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameAndAsuEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.ASU_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.ASU_Email__c);
-        detailFieldsMap.put('firstName', originalContact.FirstName);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Email);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndLeadEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.Lead_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Lead_Email__c);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndLeadSecondaryEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.Lead_Secondary_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Lead_Secondary_Email__c);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndPersonalEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.Personal_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.Personal_Email__c);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndAsuGmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.ASU_Gmail__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.ASU_Gmail__c);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndEpoEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.EPO_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.EPO_Email__c);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
-        ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
-
-        // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
-    }
-
-    @isTest
-    private static void testMatcherWithSingleConstituentWithFirstNameWildcardAndAsuEmail() {
-        // Create a test contact
-        ContactFactory.DefaultContact defaultContactCreator = new ContactFactory.DefaultContact();
-        Contact originalContact = (Contact) defaultContactCreator.create(1)[0];
-        originalContact.ASU_Email__c = originalContact.Email;
-        originalContact.Email = '';
-        insert originalContact;
-
-        String firstNameWildcard = getFirstNameWildcardForTests(originalContact.FirstName);
-
-        // Create map of field values from contact to search on
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('email', originalContact.ASU_Email__c);
-        detailFieldsMap.put('firstName', firstNameWildcard);
-        detailFieldsMap.put('lastName', originalContact.LastName);
-
-        // Pass field map to consituent detail and return detail
-        ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
-
-        // Pass detail to constituent matcher and return matched contact if any
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
-
-        // Force grab first list item since we're expecting only one
+        // Force grab first list item since we're expecting only one contact
         ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
 
         // Validate that the returned detail with contact ID and the original contact ID are the same
@@ -498,37 +36,90 @@ public with sharing class ConstituentMatcherTest {
 
     @isTest
     private static void testMatcherWithMultipleConstituents() {
-        // Create test contacts
+        // Create list for test contacts
         List<Contact> listOfOriginalContacts = new List<Contact>();
-        Integer numberOfContactsToCreate = 5;
+        Integer numberOfContactsToCreate = 16;
 
         for (Integer i = 1; i <= numberOfContactsToCreate; i++) {
-            Contact con = new Contact();
-            con.FirstName = 'Test' + i;
-            con.LastName = 'Contact' + i;
-            con.Email = 'test' + i + '@test.com';
-            con.EmplId__c = '123456' + i;
-            con.ASURITE_ID__c = 'tcontact' + i;
+            Contact con = new Contact(
+            	FirstName = 'Tester' + i,
+                LastName = 'Contact' + i
+            );
+
+            // Vary details assigned to contacts as we iterate to explore different matching scenarios
+            switch on i {
+                when 1 {
+                    con.EmplId__c = '123456' + i;
+                }
+                when 2 {
+                    con.ASURITE_ID__c = 'tcontact' + i;
+                }
+                when 3, 10 {
+                    con.Email = 'tcontact' + i + '@test.com';
+                }
+                when 4, 11 {
+                    con.Lead_Email__c = 'tcontact' + i + '@test.com';
+                }
+                when 5, 12 {
+                    con.Lead_Secondary_Email__c = 'tcontact' + i + '@test.com';
+                }
+                when 6, 13 {
+                    con.Personal_Email__c = 'tcontact' + i + '@test.com';
+                }
+                when 7, 14 {
+                    con.ASU_Gmail__c = 'tcontact' + i + '@test.com';
+                }
+                when 8, 15 {
+                    con.EPO_Email__c = 'tcontact' + i + '@test.com';
+                }
+                when 9, 16 {
+                    con.ASU_Email__c = 'tcontact' + i + '@test.com';
+                }
+            }
             listOfOriginalContacts.add(con);
         }
+
         insert listOfOriginalContacts;
+
+        // Give contact #10-16 a nickname after insertion to test wildcard search
+        for (Integer i = 10; i <= numberOfContactsToCreate; i++) {
+            listOfOriginalContacts[i - 1].FirstName = 'Test';    
+        }
 
         // Create map of field values from contact to search on
         List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
         for (Contact originalContact : listOfOriginalContacts) {
             Map<String, String> detailFieldsMap = new Map<String, String>();
             detailFieldsMap.put('asuriteId', originalContact.ASURITE_ID__c);
-            detailFieldsMap.put('email', originalContact.Email);
             detailFieldsMap.put('emplid', originalContact.EMPLID__c);
             detailFieldsMap.put('firstName', originalContact.FirstName);
             detailFieldsMap.put('lastName', originalContact.LastName);
+
+            if (originalContact.Email != null) {
+                detailFieldsMap.put('email', originalContact.Email);
+            } else if (originalContact.Lead_Email__c != null) {
+                detailFieldsMap.put('email', originalContact.Lead_Email__c);
+            } else if (originalContact.Lead_Secondary_Email__c != null) {
+                detailFieldsMap.put('email', originalContact.Lead_Secondary_Email__c);
+            } else if (originalContact.Personal_Email__c != null) {
+                detailFieldsMap.put('email', originalContact.Personal_Email__c);
+            } else if (originalContact.ASU_Gmail__c != null) {
+                detailFieldsMap.put('email', originalContact.ASU_Gmail__c);
+            } else if (originalContact.EPO_Email__c != null) {
+                detailFieldsMap.put('email', originalContact.EPO_Email__c);
+            } else if (originalContact.ASU_Email__c != null) {
+                detailFieldsMap.put('email', originalContact.ASU_Email__c);
+            }
+            
             ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
             listOfConstituents.add(originalContactDetail);
         }
 
-        // Pass constituent details to constituent matcher and return matched contact if any
+        // Pass constituent details to constituent matcher
         ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents);
         matcher.searchContacts();
+        
+        // Return matched contacts
         List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
 
         // Validate that the returned detail list contains the same number of inserted contacts

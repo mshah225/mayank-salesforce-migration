@@ -11,7 +11,9 @@ public class ConstituentMatcher {
     private Set<String> firstNameWildcardSet = new Set<String>();
 
     public ConstituentMatcher(ConstituentDetail detailToSearch) {
-        this.detailsToSearch.add(detailToSearch);
+        List<ConstituentDetail> singleDetailToList = new List<ConstituentDetail>();
+        singleDetailToList.add(detailToSearch);
+        this.detailsToSearch = singleDetailToList;
     }
 
     public ConstituentMatcher(List<ConstituentDetail> detailsToSearch) {
@@ -73,9 +75,12 @@ public class ConstituentMatcher {
             originalContactDetails = firstNameWildcardAndEmailWithDetail.get(email);
             originalFirstName = originalContactDetails.firstName;
         }
-        if (originalFirstName.length() > 0) {
-            firstNameWildcard = firstName.substring(0, originalFirstName.length()) + '%';
+        if (originalFirstName.length() >= 3) {
+            firstNameWildcard = firstName.substring(0, 3) + '%';
+        } else if (firstName.length() < 3) {
+            firstNameWildcard = firstName.substring( 0, originalFirstName.length() ) + '%';
         }
+
         return firstNameWildcard;
     }
 

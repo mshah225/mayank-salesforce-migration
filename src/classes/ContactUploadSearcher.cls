@@ -1,6 +1,7 @@
 public without sharing class ContactUploadSearcher {
     private List<Contact_Upload_Detail__c> detailsToSearch;
     private List<ConstituentDetail> constituentDetailsToSearch;
+    private ConstituentMatcher matcher;
     private Map<String, Contact_Upload_Detail__c> emplIdToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Map<String, Contact_Upload_Detail__c> asuriteToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Map<String, Contact_Upload_Detail__c> firstNameAndEmailToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
@@ -41,7 +42,7 @@ public without sharing class ContactUploadSearcher {
     }
 
     public void searchAndCreateContacts() {
-        ConstituentMatcher matcher = new ConstituentMatcher(constituentDetailsToSearch);
+        matcher = new ConstituentMatcher(constituentDetailsToSearch);
         matcher.searchContacts();
         insertContactsForUnmatchedDetails();
     }

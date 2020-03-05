@@ -21,7 +21,7 @@ public with sharing class AutoSubscriberService {
         }
 
         if (!subsToCreate.isEmpty()) {
-            upsert subsToCreate;
+            Database.upsert(subsToCreate, Subscriber__c.Unique_Key__c, false);
         }
     }
 
@@ -39,7 +39,7 @@ public with sharing class AutoSubscriberService {
         }
 
         if (!subsToCreate.isEmpty()) {
-            upsert subsToCreate;
+            Database.upsert(subsToCreate, Subscriber__c.Unique_Key__c, false);
         }
     }
 }

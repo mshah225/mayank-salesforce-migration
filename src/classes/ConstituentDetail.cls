@@ -1,15 +1,26 @@
 public class ConstituentDetail {
     public String asuriteId {get; set;}
+    public Date birthdate {get; set;}
     public String email {get; set;}
     public String emplid {get; set;}
     public String firstName {get; set;}
     public String lastName {get; set;}
+    public String mailingStreet {get; set;}
+    public String mailingCity {get; set;}
+    public String mailingCountry {get; set;}
+    public String mailingPostalCode {get; set;}
+    public String mailingState {get; set;}
+    public String phone {get; set;}
     public Id contactId {get; set;}
     public String processingNotes {get; set;}
+    public String status {get; set;}
 
     public ConstituentDetail(Map<String, String> constituentDetailMap) {
         if (constituentDetailMap.containsKey('asuriteId')) {
             this.asuriteId = constituentDetailMap.get('asuriteId');
+        }
+        if (constituentDetailMap.containsKey('birthdate')) {
+            this.birthdate = Date.valueOf(constituentDetailMap.get('birthdate'));
         }
         if (constituentDetailMap.containsKey('email')) {
             this.email = constituentDetailMap.get('email');
@@ -23,8 +34,38 @@ public class ConstituentDetail {
         if (constituentDetailMap.containsKey('lastName')) {
             this.lastName = constituentDetailMap.get('lastName');
         }
-        if (processingNotes == null) {
-            processingNotes = '';
+        if (constituentDetailMap.containsKey('mailingStreet')) {
+            this.mailingStreet = constituentDetailMap.get('mailingStreet');
+        }
+        if (constituentDetailMap.containsKey('mailingCity')) {
+            this.mailingCity = constituentDetailMap.get('mailingCity');
+        }
+        if (constituentDetailMap.containsKey('mailingCountry')) {
+            this.mailingCountry = constituentDetailMap.get('mailingCountry');
+        }
+        if (constituentDetailMap.containsKey('mailingPostalCode')) {
+            this.mailingPostalCode = constituentDetailMap.get('mailingPostalCode');
+        }
+        if (constituentDetailMap.containsKey('mailingState')) {
+            this.mailingState = constituentDetailMap.get('mailingState');
+        }
+        if (constituentDetailMap.containsKey('phone')) {
+            this.phone = constituentDetailMap.get('phone');
+        }
+        if (constituentDetailMap.containsKey('contactId')) {
+            this.contactId = constituentDetailMap.get('contactId');
+        }
+
+        if (constituentDetailMap.containsKey('processingNotes')) {
+            this.contactId = (Id) constituentDetailMap.get('processingNotes');
+        } else {
+            this.processingNotes = '';
+        }
+
+        if (constituentDetailMap.containsKey('status')) {
+            this.status = constituentDetailMap.get('status');
+        } else {
+            this.status = '';
         }
     }
 }

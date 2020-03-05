@@ -1,14 +1,14 @@
 public class ConstituentMatcher {
-    private List<ConstituentDetail> detailsToSearch {get; set;}
-    private List<ConstituentDetail> detailsToReturn = new List<ConstituentDetail>();
-    private List<Contact> matchedContacts = new List<Contact>();
-    private Map<String, ConstituentDetail> asuriteWithDetail = new Map<String, ConstituentDetail>();
-    private Map<String, ConstituentDetail> emplidWithDetail = new Map<String, ConstituentDetail>();
-    private Map<String, ConstituentDetail> firstNameAndEmailWithDetail = new Map<String, ConstituentDetail>();
-    private Map<String, ConstituentDetail> firstNameWildcardAndEmailWithDetail = new Map<String, ConstituentDetail>();
-    private Set<String> emailSet = new Set<String>();
-    private Set<String> firstNameSet = new Set<String>();
-    private Set<String> firstNameWildcardSet = new Set<String>();
+    public List<ConstituentDetail> detailsToSearch {get; set;}
+    public List<ConstituentDetail> detailsToReturn = new List<ConstituentDetail>();
+    public List<Contact> matchedContacts = new List<Contact>();
+    public Map<String, ConstituentDetail> asuriteWithDetail = new Map<String, ConstituentDetail>();
+    public Map<String, ConstituentDetail> emplidWithDetail = new Map<String, ConstituentDetail>();
+    public Map<String, ConstituentDetail> firstNameAndEmailWithDetail = new Map<String, ConstituentDetail>();
+    public Map<String, ConstituentDetail> firstNameWildcardAndEmailWithDetail = new Map<String, ConstituentDetail>();
+    public Set<String> emailSet = new Set<String>();
+    public Set<String> firstNameSet = new Set<String>();
+    public Set<String> firstNameWildcardSet = new Set<String>();
 
     public ConstituentMatcher(ConstituentDetail detailToSearch) {
         List<ConstituentDetail> singleDetailToList = new List<ConstituentDetail>();
@@ -24,13 +24,33 @@ public class ConstituentMatcher {
         return detailsToReturn;
     }
 
+    public Map<String, ConstituentDetail> getAsuriteWithDetailMap() {
+        return asuriteWithDetail;
+    }
+
+    public Map<String, ConstituentDetail> getEmplidWithDetailMap() {
+        return emplidWithDetail;
+    }
+
+    public Set<String> getEmailSet() {
+        return emailSet;
+    }
+
+    public Set<String> getfirstNameSet() {
+        return firstNameSet;
+    }
+
+    public Set<String> getFirstNameWildcardSet() {
+        return firstNameWildcardSet;
+    }
+
     public void searchContacts() {
         createDataMappingForSearch();
         getContactsMatchedByMappedValues();
         associateDetailsWithMatchedContacts();
     }
 
-    private void createDataMappingForSearch() {
+    public void createDataMappingForSearch() {
         for (ConstituentDetail detail : detailsToSearch) {
             mapEmplidIfPresent(detail);
             mapAsuRiteIfPresent(detail);
@@ -84,7 +104,7 @@ public class ConstituentMatcher {
         return firstNameWildcard;
     }
 
-    private void getContactsMatchedByMappedValues() {
+    public void getContactsMatchedByMappedValues() {
         matchedContacts = [
             SELECT Id, EMPLID__c, ASURITE_ID__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
                 ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
@@ -107,7 +127,7 @@ public class ConstituentMatcher {
         ];
     }
 
-    private void associateDetailsWithMatchedContacts() {
+    public void associateDetailsWithMatchedContacts() {
         contactsWithoutInitialMatch = new List<Contact>();
         Integer matchesFound = 0;
         for (Contact contactMatch : matchedContacts) {

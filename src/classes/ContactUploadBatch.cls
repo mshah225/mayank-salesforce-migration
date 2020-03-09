@@ -59,7 +59,9 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
 
         Map<String, Id> uniqueKeyToSubscriberId = new Map<String, Id>();
         for (Subscriber__c upsertedSubscriber : subscriberList) {
-            uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
+            if (upsertedSubscriber.Id != null) { 
+                uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
+            }
         }
 
         for (Contact_Upload_Detail__c uploadDetail: detailsToProcess) {

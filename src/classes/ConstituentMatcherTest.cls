@@ -35,8 +35,8 @@ public with sharing class ConstituentMatcherTest {
     }
 
     @isTest
-    private static void testMatcherWithMultipleLeadAndContactConstituents() {
-        // Create list to store combined contact + lead constituents for matching
+    private static void testMatcherWithMultipleContactConstituents() {
+        // Create list to store contact constituents for matching
         List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
 
         // Create list for test contacts
@@ -89,7 +89,6 @@ public with sharing class ConstituentMatcherTest {
         }
 
         // Create map of field values from contact to search on
-        
         for (Contact originalContact : listOfOriginalContacts) {
             Map<String, String> detailFieldsMap = new Map<String, String>();
             detailFieldsMap.put('asuriteId', originalContact.ASURITE_ID__c);
@@ -116,6 +115,22 @@ public with sharing class ConstituentMatcherTest {
             ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
             listOfConstituents.add(originalContactDetail);
         }
+
+        // Pass constituent details to constituent matcher
+        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents, 'Contact');
+        matcher.searchConstituents();
+        
+        // Return matched constituents
+        List<ConstituentDetail> matchedDetailsWithConstituents = matcher.getListOfConstituentsWithMatches();
+
+        // Validate that the returned detail list contains the same number of inserted contacts
+        System.assertEquals(numberOfContactsToCreate, matchedDetailsWithConstituents.size());
+    }
+
+    @isTest
+    private static void testMatcherWithMultipleLeadConstituents() {
+        // Create list to store lead constituents for matching
+        List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
 
         // Create list for test leads
         List<Lead> listOfOriginalLeads = new List<Lead>();
@@ -171,13 +186,13 @@ public with sharing class ConstituentMatcherTest {
         }
 
         // Pass constituent details to constituent matcher
-        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents);
+        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents, 'Lead');
         matcher.searchConstituents();
         
         // Return matched constituents
         List<ConstituentDetail> matchedDetailsWithConstituents = matcher.getListOfConstituentsWithMatches();
 
         // Validate that the returned detail list contains the same number of inserted contacts
-        System.assertEquals(numberOfContactsToCreate + numberOfLeadsToCreate, matchedDetailsWithConstituents.size());
+        System.assertEquals(numberOfLeadsToCreate, matchedDetailsWithConstituents.size());
     }
 }

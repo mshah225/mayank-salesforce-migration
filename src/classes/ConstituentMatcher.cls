@@ -1,4 +1,5 @@
 public class ConstituentMatcher {
+    public String constituentType;
     public List<ConstituentDetail> detailsToSearch {get; set;}
     public List<ConstituentDetail> detailsToReturn = new List<ConstituentDetail>();
     public List<SObject> matchedConstituents = new List<SObject>();
@@ -10,14 +11,14 @@ public class ConstituentMatcher {
     public Set<String> firstNameSet = new Set<String>();
     public Set<String> partialFirstNameSet = new Set<String>();
 
-    public ConstituentMatcher(ConstituentDetail detailToSearch) {
-        List<ConstituentDetail> singleDetailToList = new List<ConstituentDetail>();
-        singleDetailToList.add(detailToSearch);
-        this.detailsToSearch = singleDetailToList;
+    public ConstituentMatcher(ConstituentDetail detailToSearch, String constituentType) {
+        this.detailsToSearch = new List<ConstituentDetail>(detailToSearch);
+        this.constituentType = constituentType.toLowerCase();
     }
 
-    public ConstituentMatcher(List<ConstituentDetail> detailsToSearch) {
+    public ConstituentMatcher(List<ConstituentDetail> detailsToSearch, String constituentType) {
         this.detailsToSearch = detailsToSearch;
+        this.constituentType = constituentType.toLowerCase();
     }
 
     public List<ConstituentDetail> getListOfConstituentsWithMatches() {
@@ -44,16 +45,19 @@ public class ConstituentMatcher {
         return partialFirstNameSet;
     }
 
-    public String getSObjectType(SObject sObjectOfUnknownType) {
-        String sObjectType = sObjectOfUnknownType.getRecord().getSObjectType().getDescribe().getName();
-        return sObjectType;
+    public String getConstituentType() {
+        return constituentType;
     }
 
     public void searchConstituents() {
         createDataMappingForSearch();
-        getContactsMatchedByMappedValues();
-        getLeadsMatchedByMappedValues();
-        associateDetailsWithMatchedContacts();
+        if (constituentType == 'contact') {
+            getContactsMatchedByMappedValues();
+            associateDetailsWithMatchedConstituentContacts();
+        } else if (constituentType == 'lead'){
+            getLeadsMatchedByMappedValues();
+            associateDetailsWithMatchedConstituentLeads();
+        }
     }
 
     public void createDataMappingForSearch() {
@@ -159,56 +163,37 @@ public class ConstituentMatcher {
         }
     }
 
-    public void associateDetailsWithMatchedContacts() {
+    public void associateDetailsWithMatchedConstituentContacts() {
         Integer constituentMatchesFound = 0;
         constituentsWithoutInitialMatch = new List<SObject>();
 
         for (SObject matchedConstituent : matchedConstituents) {
-            String sObjectType = getSObjectType(matchedConstituent);
-            
             if (matchConstituentByEmplId(matchedConstituent)) {
                 constituentMatchesFound++;
             }
-
-            if (sObjectType == 'Contact') {
-                if (matchContactByAsurite(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-            }
-
-            if (matchConstituentByFirstNameAndEmail(matchedConstituent)) {
+            if (matchContactByAsurite(matchedConstituent)) {
                 constituentMatchesFound++;
             }
-            
-            if (sObjectType == 'Contact') {
-                if (matchConstituentByFirstNameAndEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchContactByFirstNameAndLeadEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchContactByFirstNameAndLeadSecondaryEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchContactByFirstNameAndPersonalEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchContactByFirstNameAndAsuGmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchContactByFirstNameAndEpoEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchContactByFirstNameAndAsuEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-            } else if (sObjectType == 'Lead') {
-                if (matchLeadByFirstNameAndSecondaryEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
-                if (matchLeadByFirstNameAndRecruitingEmail(matchedConstituent)) {
-                    constituentMatchesFound++;
-                }
+            if (matchConstituentByFirstNameAndEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }  
+            if (matchContactByFirstNameAndLeadEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchContactByFirstNameAndLeadSecondaryEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchContactByFirstNameAndPersonalEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchContactByFirstNameAndAsuGmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchContactByFirstNameAndEpoEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchContactByFirstNameAndAsuEmail(matchedConstituent)) {
+                constituentMatchesFound++;
             }
 
             if (constituentMatchesFound == 0) {
@@ -217,25 +202,48 @@ public class ConstituentMatcher {
 
             for (SObject unmatchedConstituent : constituentsWithoutInitialMatch) {
                 matchConstituentByPartialFirstNameAndEmail(unmatchedConstituent);
-                if (sObjectType == 'Contact') {
-                    matchContactByPartialFirstNameAndLeadEmail(unmatchedConstituent);
-                    matchContactByPartialFirstNameAndLeadSecondaryEmail(unmatchedConstituent);
-                    matchContactByPartialFirstNameAndPersonalEmail(unmatchedConstituent);
-                    matchContactByPartialFirstNameAndAsuGmail(unmatchedConstituent);
-                    matchContactByPartialFirstNameAndEpoEmail(unmatchedConstituent);
-                    matchContactByPartialFirstNameAndAsuEmail(unmatchedConstituent);
-                } else if (sObjectType == 'Lead') {
-                    matchLeadByPartialFirstNameAndSecondaryEmail(unmatchedConstituent);
-                    matchLeadByPartialFirstNameAndRecruitingEmail(unmatchedConstituent);
-                }
+                matchContactByPartialFirstNameAndLeadEmail(unmatchedConstituent);
+                matchContactByPartialFirstNameAndLeadSecondaryEmail(unmatchedConstituent);
+                matchContactByPartialFirstNameAndPersonalEmail(unmatchedConstituent);
+                matchContactByPartialFirstNameAndAsuGmail(unmatchedConstituent);
+                matchContactByPartialFirstNameAndEpoEmail(unmatchedConstituent);
+                matchContactByPartialFirstNameAndAsuEmail(unmatchedConstituent);
+            }
+        }
+    }
+
+    public void associateDetailsWithMatchedConstituentLeads() {
+        Integer constituentMatchesFound = 0;
+        constituentsWithoutInitialMatch = new List<SObject>();
+
+        for (SObject matchedConstituent : matchedConstituents) {
+            if (matchConstituentByEmplId(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchConstituentByFirstNameAndEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchLeadByFirstNameAndSecondaryEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            if (matchLeadByFirstNameAndRecruitingEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+
+            if (constituentMatchesFound == 0) {
+                constituentsWithoutInitialMatch.add(matchedConstituent);
+            }
+
+            for (SObject unmatchedConstituent : constituentsWithoutInitialMatch) {
+                matchConstituentByPartialFirstNameAndEmail(unmatchedConstituent);
+                matchLeadByPartialFirstNameAndSecondaryEmail(unmatchedConstituent);
+                matchLeadByPartialFirstNameAndRecruitingEmail(unmatchedConstituent);
             }
         }
     }
 
     private Boolean matchConstituentByEmplId(SObject constituentMatch) {
-        String sObjectType = getSObjectType(constituentMatch);
-
-        if (sObjectType == 'Contact') {
+        if (constituentType == 'contact') {
             Contact contactMatch = (Contact) constituentMatch;
             if (contactMatch.EMPLID__c != null && emplidWithDetail.containsKey((contactMatch.EMPLID__c).toLowerCase())) {
                 ConstituentDetail matchedDetail = emplidWithDetail.get((contactMatch.EMPLID__c).toLowerCase());
@@ -244,12 +252,12 @@ public class ConstituentMatcher {
                 }
                 matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
-                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
-                    new String[] {sObjectType, contactMatch.Id, contactMatch.EMPLID__c});
+                    String.format('Found existing Contact ID: {1} based on Emplid match: {2} \n',
+                    new String[] {contactMatch.Id, contactMatch.EMPLID__c});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
-        } else if (sObjectType == 'Lead') {
+        } else if (constituentType == 'lead') {
             Lead leadMatch = (Lead) constituentMatch;
             if (leadMatch.EMPLID__c != null && emplidWithDetail.containsKey((leadMatch.EMPLID__c).toLowerCase())) {
                 ConstituentDetail matchedDetail = emplidWithDetail.get((leadMatch.EMPLID__c).toLowerCase());
@@ -258,13 +266,12 @@ public class ConstituentMatcher {
                 }
                 matchedDetail.constituentId = (Id) leadMatch.Id;
                 matchedDetail.processingNotes +=
-                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
-                    new String[] {sObjectType, leadMatch.Id, leadMatch.EMPLID__c});
+                    String.format('Found existing Lead ID: {0} based on Emplid match: {1} \n',
+                    new String[] {leadMatch.Id, leadMatch.EMPLID__c});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
         }
-
         return false;
     }
 
@@ -288,7 +295,7 @@ public class ConstituentMatcher {
     private Boolean matchConstituentByFirstNameAndEmail(SObject constituentMatch) {
         String sObjectType = getSObjectType(constituentMatch);
 
-        if (sObjectType == 'Contact') {
+        if (constituentType == 'contact') {
             Contact contactMatch = (Contact) constituentMatch;
             if (contactMatch.FirstName != null && contactMatch.Email != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.Email).toLowerCase())) {
                 ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.Email).toLowerCase());
@@ -297,12 +304,12 @@ public class ConstituentMatcher {
                 }
                 matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
-                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
-                    new String[] {sObjectType, contactMatch.Id, contactMatch.EMPLID__c});
+                    String.format('Found existing Contact ID: {0} based on Emplid match: {1} \n',
+                    new String[] {contactMatch.Id, contactMatch.EMPLID__c});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
-        } else if (sObjectType == 'Lead') {
+        } else if (constituentType == 'lead') {
             Lead leadMatch = (Lead) constituentMatch;
             if (leadMatch.FirstName != null && leadMatch.Email != null && firstNameAndEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Email).toLowerCase())) {
                 ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((leadMatch.FirstName + leadMatch.Email).toLowerCase());
@@ -311,13 +318,12 @@ public class ConstituentMatcher {
                 }
                 matchedDetail.constituentId = (Id) leadMatch.Id;
                 matchedDetail.processingNotes +=
-                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
-                    new String[] {sObjectType, leadMatch.Id, leadMatch.EMPLID__c});
+                    String.format('Found existing Lead ID: {0} based on Emplid match: {1} \n',
+                    new String[] {leadMatch.Id, leadMatch.EMPLID__c});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
         }
-
         return false;
     }
 

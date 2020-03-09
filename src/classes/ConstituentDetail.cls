@@ -4,7 +4,7 @@ public class ConstituentDetail {
     public String emplid {get; set;}
     public String firstName {get; set;}
     public String lastName {get; set;}
-    public Id contactId {get; set;}
+    public Id constituentId {get; set;}
     public String processingNotes {get; set;}
 
     public ConstituentDetail(Map<String, String> constituentDetailMap) {

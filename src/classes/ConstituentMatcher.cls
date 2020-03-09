@@ -1,14 +1,14 @@
 public class ConstituentMatcher {
-    private List<ConstituentDetail> detailsToSearch {get; set;}
-    private List<ConstituentDetail> detailsToReturn = new List<ConstituentDetail>();
-    private List<Contact> matchedContacts = new List<Contact>();
-    private Map<String, ConstituentDetail> asuriteWithDetail = new Map<String, ConstituentDetail>();
-    private Map<String, ConstituentDetail> emplidWithDetail = new Map<String, ConstituentDetail>();
-    private Map<String, ConstituentDetail> firstNameAndEmailWithDetail = new Map<String, ConstituentDetail>();
-    private Map<String, ConstituentDetail> firstNameWildcardAndEmailWithDetail = new Map<String, ConstituentDetail>();
-    private Set<String> emailSet = new Set<String>();
-    private Set<String> firstNameSet = new Set<String>();
-    private Set<String> firstNameWildcardSet = new Set<String>();
+    public List<ConstituentDetail> detailsToSearch {get; set;}
+    public List<ConstituentDetail> detailsToReturn = new List<ConstituentDetail>();
+    public List<SObject> matchedConstituents = new List<SObject>();
+    public Map<String, ConstituentDetail> asuriteWithDetail = new Map<String, ConstituentDetail>();
+    public Map<String, ConstituentDetail> emplidWithDetail = new Map<String, ConstituentDetail>();
+    public Map<String, ConstituentDetail> firstNameAndEmailWithDetail = new Map<String, ConstituentDetail>();
+    public Map<String, ConstituentDetail> partialFirstNameAndEmailWithDetail = new Map<String, ConstituentDetail>();
+    public Set<String> emailSet = new Set<String>();
+    public Set<String> firstNameSet = new Set<String>();
+    public Set<String> partialFirstNameSet = new Set<String>();
 
     public ConstituentMatcher(ConstituentDetail detailToSearch) {
         List<ConstituentDetail> singleDetailToList = new List<ConstituentDetail>();
@@ -24,13 +24,39 @@ public class ConstituentMatcher {
         return detailsToReturn;
     }
 
+    public Map<String, ConstituentDetail> getAsuriteWithDetailMap() {
+        return asuriteWithDetail;
+    }
+
+    public Map<String, ConstituentDetail> getEmplidWithDetailMap() {
+        return emplidWithDetail;
+    }
+
+    public Set<String> getEmailSet() {
+        return emailSet;
+    }
+
+    public Set<String> getfirstNameSet() {
+        return firstNameSet;
+    }
+
+    public Set<String> getPartialFirstNameSet() {
+        return partialFirstNameSet;
+    }
+
+    private String getSObjectType(SObject sObjectOfUnknownType) {
+        String sObjectType = sObjectOfUnknownType.getRecord().getSObjectType().getDescribe().getName();
+        return sObjectType;
+    }
+
     public void searchContacts() {
         createDataMappingForSearch();
         getContactsMatchedByMappedValues();
-        pairDetailsWithMatchedContacts();
+        getLeadsMatchedByMappedValues();
+        associateDetailsWithMatchedContacts();
     }
 
-    private void createDataMappingForSearch() {
+    public void createDataMappingForSearch() {
         for (ConstituentDetail detail : detailsToSearch) {
             mapEmplidIfPresent(detail);
             mapAsuRiteIfPresent(detail);
@@ -51,48 +77,69 @@ public class ConstituentMatcher {
     }
 
     private void mapFirstNameAndEmailIfPresent(ConstituentDetail detail) {
-        String firstNameWildcard;
+        String partialFirstName;
         if (String.isNotBlank(detail.firstName) && String.isNotBlank(detail.email)) {
             firstNameAndEmailWithDetail.put((detail.firstName + detail.email).toLowerCase(), detail);
             firstNameSet.add(detail.firstName);
             emailSet.add(detail.email);
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(detail.firstName), String.valueOf(detail.email));
-            firstNameWildcardAndEmailWithDetail.put((detail.email).toLowerCase(), detail);
-            firstNameWildcardSet.add(firstNameWildcard);
+            partialFirstName = getPartialFirstName(String.valueOf(detail.firstName), String.valueOf(detail.email));
+            partialFirstNameAndEmailWithDetail.put((detail.email).toLowerCase(), detail);
+            partialFirstNameSet.add(partialFirstName);
         }
     }
 
-   public String getFirstNameWildcard(String firstName, String email) {
+   public String getPartialFirstName(String firstName, String email) {
         String originalFirstName = firstName;
-        String firstNameWildcard;
+        String partialFirstName;
 
         Map<String, String> detailFieldsMap = new Map<String, String>();
         detailFieldsMap.put('email', email);
         detailFieldsMap.put('firstName', firstName);
         ConstituentDetail originalContactDetails = new ConstituentDetail(detailFieldsMap);
 
-        if (firstNameWildcardAndEmailWithDetail.containsKey(email)) {
-            originalContactDetails = firstNameWildcardAndEmailWithDetail.get(email);
+        if (partialFirstNameAndEmailWithDetail.containsKey(email)) {
+            originalContactDetails = partialFirstNameAndEmailWithDetail.get(email);
             originalFirstName = originalContactDetails.firstName;
         }
         if (originalFirstName.length() >= 3) {
-            firstNameWildcard = firstName.substring(0, 3) + '%';
+            partialFirstName = firstName.substring(0, 3) + '%';
         } else if (firstName.length() < 3) {
-            firstNameWildcard = firstName.substring( 0, originalFirstName.length() ) + '%';
+            partialFirstName = firstName.substring(0, originalFirstName.length()) + '%';
         }
 
-        return firstNameWildcard;
+        return partialFirstName;
     }
 
-    private void getContactsMatchedByMappedValues() {
-        matchedContacts = [
-            SELECT Id, EMPLID__c, ASURITE_ID__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, Personal_Email__c,
-                ASU_Email__c, ASU_Gmail__c, EPO_Email__c, LastName, Birthdate, MailingPostalCode, HomePhone,
-                MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
+    public void getLeadsMatchedByMappedValues() {
+        List<Contact> matchedLeads = [
+            SELECT Id, EMPLID__c, ASURITE_ID__c, FirstName, Email, Lead_Email__c, Lead_Secondary_Email__c, 
+                Personal_Email__c, LastName, MailingStreet, MailingPostalCode, MobilePhone, Phone
+            FROM Lead
+            WHERE (
+                (FirstName IN :firstNameSet
+                    OR FirstName LIKE :partialFirstNameSet)
+                AND (Email IN :emailSet
+                    OR Secondary_Email__c IN :emailSet
+                    OR Recruiting_Email__c IN :emailSet
+                )
+            )
+            OR EMPLID__c IN :emplidWithDetail.keySet()
+        ];
+        
+        if (matchedLeads.size() > 0) {
+            List<SObject> matchedLeadsGeneric = (List<SObject>) matchedLeads;
+            matchedConstituents.add(matchedLeadsGeneric);
+        }
+    }
+
+    public void getContactsMatchedByMappedValues() {
+        List<Lead> matchedContacts = [
+            SELECT Id, EMPLID__c, FirstName, Email, Secondary_Email__c, Recruiting_Email__c,
+                Birthdate, MailingPostalCode, HomePhone, MobilePhone, SF_Mobile__c, Phone, OtherPhone, MailingStreet
             FROM Contact
             WHERE (
                 (FirstName IN :firstNameSet
-                    OR FirstName LIKE :firstNameWildcardSet)
+                    OR FirstName LIKE :partialFirstNameSet)
                 AND (Email IN :emailSet
                     OR Lead_Email__c IN :emailSet
                     OR Lead_Secondary_Email__c IN :emailSet
@@ -105,46 +152,137 @@ public class ConstituentMatcher {
             OR ASURITE_ID__c IN :asuriteWithDetail.keySet()
             OR EMPLID__c IN :emplidWithDetail.keySet()
         ];
-    }
 
-    private void pairDetailsWithMatchedContacts() {
-        for (Contact contactMatch : matchedContacts) {
-            if (matchByEmplid(contactMatch)) {} 
-            else if (matchByAsurite(contactMatch)) {} 
-            else if (matchByFirstNameAndEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndLeadEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndLeadSecondaryEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndPersonalEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndAsuGmail(contactMatch)) {} 
-            else if (matchByFirstNameAndEpoEmail(contactMatch)) {} 
-            else if (matchByFirstNameAndAsuEmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndEmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndLeadEmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndLeadSecondaryEmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndPersonalEmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndAsuGmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndEpoEmail(contactMatch)) {} 
-            else if (matchByFirstNameWildcardAndAsuEmail(contactMatch)) {}
+        if (matchedContacts.size() > 0) {
+            List<SObject> matchedContactsGeneric = (List<SObject>) matchedContacts;
+            matchedConstituents.add(matchedContactsGeneric);
         }
     }
 
-    private Boolean matchByEmplid(Contact contactMatch) {
-        if (contactMatch.EMPLID__c != null && emplidWithDetail.containsKey((contactMatch.EMPLID__c).toLowerCase())) {
-            ConstituentDetail matchedDetail = emplidWithDetail.get((contactMatch.EMPLID__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
-            matchedDetail.processingNotes +=
-                String.format('Found existing Contact ID: {0} based on Emplid match: {1} \n',
-                new String[] {contactMatch.Id, contactMatch.EMPLID__c});
-            detailsToReturn.add(matchedDetail);
-            return true;
+    public void associateDetailsWithMatchedContacts() {
+        Integer constituentMatchesFound = 0;
+        constituentsWithoutInitialMatch = new List<SObject>();
+
+        for (SObject matchedConstituent : matchedConstituents) {
+            String sObjectType = getSObjectType(matchedConstituent);
+            
+            if (matchConstituentByEmplId(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+
+            if (sObjectType == 'Contact') {
+                if (matchContactByAsurite(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+            }
+
+            if (matchConstituentByFirstNameAndEmail(matchedConstituent)) {
+                constituentMatchesFound++;
+            }
+            
+            if (sObjectType == 'Contact') {
+                if (matchConstituentByFirstNameAndEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchContactByFirstNameAndLeadEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchContactByFirstNameAndLeadSecondaryEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchContactByFirstNameAndPersonalEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchContactByFirstNameAndAsuGmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchContactByFirstNameAndEpoEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchContactByFirstNameAndAsuEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+            }
+
+            if (sObjectType == 'Lead') {
+                if (matchLeadByFirstNameAndSecondaryEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+                if (matchLeadByFirstNameAndRecruitingEmail(matchedConstituent)) {
+                    constituentMatchesFound++;
+                }
+            }
+
+            if (constituentMatchesFound == 0) {
+                constituentsWithoutInitialMatch.add(matchedConstituent);
+            }
+
+            for (SObject unmatchedConstituent : constituentsWithoutInitialMatch) {
+                matchConstituentByPartialFirstNameAndEmail(unmatchedConstituent);
+
+                if (sObjectType == 'Contact') {
+                    matchContactByPartialFirstNameAndLeadEmail(unmatchedConstituent);
+                    matchContactByPartialFirstNameAndLeadSecondaryEmail(unmatchedConstituent);
+                    matchContactByPartialFirstNameAndPersonalEmail(unmatchedConstituent);
+                    matchContactByPartialFirstNameAndAsuGmail(unmatchedConstituent);
+                    matchContactByPartialFirstNameAndEpoEmail(unmatchedConstituent);
+                    matchContactByPartialFirstNameAndAsuEmail(unmatchedConstituent);
+                }
+                
+                if (sObjectType == 'Lead') {
+                    matchLeadByPartialFirstNameAndSecondaryEmail(unmatchedConstituent);
+                    matchLeadByPartialFirstNameAndRecruitingEmail(unmatchedConstituent);
+                }
+            }
         }
+    }
+
+    private Boolean matchConstituentByEmplId(SObject constituentMatch) {
+        String sObjectType = getSObjectType(constituentMatch);
+
+        if (sObjectType == 'Contact') {
+            Contact contactMatch = (Contact) constituentMatch;
+            if (contactMatch.EMPLID__c != null && emplidWithDetail.containsKey((contactMatch.EMPLID__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = emplidWithDetail.get((contactMatch.EMPLID__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
+                matchedDetail.processingNotes +=
+                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
+                    new String[] {sObjectType, contactMatch.Id, contactMatch.EMPLID__c});
+                detailsToReturn.add(matchedDetail);
+                return true;
+            }
+        }
+
+        if (sObjectType == 'Lead') {
+            Lead leadMatch = (Lead) constituentMatch;
+            if (leadMatch.EMPLID__c != null && emplidWithDetail.containsKey((leadMatch.EMPLID__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = emplidWithDetail.get((leadMatch.EMPLID__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) leadMatch.Id;
+                matchedDetail.processingNotes +=
+                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
+                    new String[] {sObjectType, leadMatch.Id, leadMatch.EMPLID__c});
+                detailsToReturn.add(matchedDetail);
+                return true;
+            }
+        }
+
         return false;
     }
 
-    private Boolean matchByAsurite(Contact contactMatch) {
+    private Boolean matchContactByAsurite(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.ASURITE_ID__c != null && asuriteWithDetail.containsKey((contactMatch.ASURITE_ID__c).toLowerCase())) {
             ConstituentDetail matchedDetail = asuriteWithDetail.get((contactMatch.ASURITE_ID__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on ASURITE match: {1} \n',
                 new String[] {contactMatch.Id, contactMatch.ASURITE_ID__c});
@@ -154,23 +292,52 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameAndEmail(Contact contactMatch) {
-        if (contactMatch.FirstName != null && contactMatch.Email != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.Email).toLowerCase())) {
-            ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.Email).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
-            matchedDetail.processingNotes +=
-                String.format('Found existing Contact ID: {0} based on email match: {1} and name match: {2} \n',
-                new String[] {contactMatch.Id, contactMatch.Email, contactMatch.FirstName});
-            detailsToReturn.add(matchedDetail);
-            return true;
+    private Boolean matchConstituentByFirstNameAndEmail(SObject constituentMatch) {
+        String sObjectType = getSObjectType(constituentMatch);
+
+        if (sObjectType == 'Contact') {
+            Contact contactMatch = (Contact) constituentMatch;
+            if (contactMatch.FirstName != null && contactMatch.Email != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.Email).toLowerCase())) {
+                ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.Email).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
+                matchedDetail.processingNotes +=
+                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
+                    new String[] {sObjectType, contactMatch.Id, contactMatch.EMPLID__c});
+                detailsToReturn.add(matchedDetail);
+                return true;
+            }
         }
+
+        if (sObjectType == 'Lead') {
+            Lead leadMatch = (Lead) constituentMatch;
+            if (leadMatch.FirstName != null && leadMatch.Email != null && firstNameAndEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Email).toLowerCase())) {
+                ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((leadMatch.FirstName + leadMatch.Email).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) leadMatch.Id;
+                matchedDetail.processingNotes +=
+                    String.format('Found existing {0} ID: {1} based on Emplid match: {2} \n',
+                    new String[] {sObjectType, leadMatch.Id, leadMatch.EMPLID__c});
+                detailsToReturn.add(matchedDetail);
+                return true;
+            }
+        }
+
         return false;
     }
 
-    private Boolean matchByFirstNameAndLeadEmail(Contact contactMatch) {
+    private Boolean matchContactByFirstNameAndLeadEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.FirstName != null && contactMatch.Lead_Email__c != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase())) {
             ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.Lead_Email__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on lead email match: {1} and name match: {2} \n',
                 new String[] {contactMatch.Id, contactMatch.Lead_Email__c, contactMatch.FirstName});
@@ -180,10 +347,14 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameAndLeadSecondaryEmail(Contact contactMatch) {
+    private Boolean matchContactByFirstNameAndLeadSecondaryEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.FirstName != null && contactMatch.Lead_Secondary_Email__c != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase())) {
             ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.Lead_Secondary_Email__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on lead secondary email match: {1} and name match: {2} \n',
                 new String[] {contactMatch.Id, contactMatch.Lead_Secondary_Email__c, contactMatch.FirstName});
@@ -193,10 +364,14 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameAndPersonalEmail(Contact contactMatch) {
+    private Boolean matchContactByFirstNameAndPersonalEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.FirstName != null && contactMatch.Personal_Email__c != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase())) {
             ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.Personal_Email__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on personal email match: {1} and name match: {2} \n',
                 new String[] {contactMatch.Id, contactMatch.Personal_Email__c, contactMatch.FirstName});
@@ -206,10 +381,14 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameAndAsuGmail(Contact contactMatch) {
+    private Boolean matchContactByFirstNameAndAsuGmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.FirstName != null && contactMatch.ASU_Gmail__c != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase())) {
             ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.ASU_Gmail__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on ASU Gmail email match: {1} and name match: {2} \n',
                 new String[] {contactMatch.Id, contactMatch.ASU_Gmail__c, contactMatch.FirstName});
@@ -219,10 +398,14 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameAndEpoEmail(Contact contactMatch) {
+    private Boolean matchContactByFirstNameAndEpoEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.FirstName != null && contactMatch.EPO_Email__c != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase())) {
             ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.EPO_Email__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on EPO email match: {1} and name match: {2} \n',
                 new String[] {contactMatch.Id, contactMatch.EPO_Email__c, contactMatch.FirstName});
@@ -232,10 +415,14 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameAndAsuEmail(Contact contactMatch) {
+    private Boolean matchContactByFirstNameAndAsuEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
         if (contactMatch.FirstName != null && contactMatch.ASU_Email__c != null && firstNameAndEmailWithDetail.containsKey((contactMatch.FirstName + contactMatch.ASU_Email__c).toLowerCase())) {
             ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((contactMatch.FirstName + contactMatch.ASU_Email__c).toLowerCase());
-            matchedDetail.contactId = (Id) contactMatch.Id;
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes +=
                 String.format('Found existing Contact ID: {0} based on ASU email match: {1} and name match: {2} \n',
                 new String[] {contactMatch.Id, contactMatch.ASU_Email__c, contactMatch.FirstName});
@@ -245,33 +432,97 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndEmail(Contact contactMatch) {
-        String firstNameWildcard;
-        if (contactMatch.FirstName != null && contactMatch.Email != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Email));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.Email).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.Email).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
-                matchedDetail.processingNotes +=
-                    String.format('Found existing Contact ID: {0} based on email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.Email, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
-                detailsToReturn.add(matchedDetail);
-                return true;
+    private Boolean matchLeadByFirstNameAndSecondaryEmail(SObject constituentMatch) {
+        Lead leadMatch = (Lead) constituentMatch;
+        if (leadMatch.FirstName != null && leadMatch.Secondary_Email__c != null && firstNameAndEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Secondary_Email__c).toLowerCase())) {
+            ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((leadMatch.FirstName + leadMatch.Secondary_Email__c).toLowerCase());
+            if (matchedDetail.constituentId != null) {
+                return false;
             }
+            matchedDetail.constituentId = (Id) leadMatch.Id;
+            matchedDetail.processingNotes +=
+                String.format('Found existing Lead ID: {0} based on secondary email match: {1} and name match: {2} \n',
+                new String[] {leadMatch.Id, leadMatch.Secondary_Email__c, leadMatch.FirstName});
+            detailsToReturn.add(matchedDetail);
+            return true;
         }
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndLeadEmail(Contact contactMatch) {
-        String firstNameWildcard;
+    private Boolean matchLeadByFirstNameAndRecruitingEmail(SObject constituentMatch) {
+        Lead leadMatch = (Lead) constituentMatch;
+        if (leadMatch.FirstName != null && leadMatch.Recruiting_Email__c != null && firstNameAndEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Recruiting_Email__c).toLowerCase())) {
+            ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((leadMatch.FirstName + leadMatch.Recruiting_Email__c).toLowerCase());
+            if (matchedDetail.constituentId != null) {
+                return false;
+            }
+            matchedDetail.constituentId = (Id) leadMatch.Id;
+            matchedDetail.processingNotes +=
+                String.format('Found existing Lead ID: {0} based on recruiting email match: {1} and name match: {2} \n',
+                new String[] {leadMatch.Id, leadMatch.Recruiting_Email__c, leadMatch.FirstName});
+            detailsToReturn.add(matchedDetail);
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean matchConstituentByPartialFirstNameAndEmail(SObject constituentMatch) {
+        String partialFirstName;
+        String sObjectType = getSObjectType(constituentMatch);
+
+        if (sObjectType == 'Contact') {
+            if (contactMatch.FirstName != null && contactMatch.Email != null) {
+                partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Email));
+                if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.Email).toLowerCase())) {
+                    ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.Email).toLowerCase());
+                    if (matchedDetail.constituentId != null) {
+                        return false;
+                    }
+                    matchedDetail.constituentId = (Id) contactMatch.Id;
+                    matchedDetail.processingNotes +=
+                        String.format('Found existing {0} ID: {1} based on email match: {2} and first {3} character(s) of first name match: {4} \n',
+                        new String[] {sObjectType, contactMatch.Id, contactMatch.Email, String.valueOf(partialFirstName.length() - 1), partialFirstName});
+                    detailsToReturn.add(matchedDetail);
+                    return true;
+                }
+            }
+        }
+
+        if (sObjectType == 'Lead') {
+            if (leadMatch.FirstName != null && leadMatch.Email != null) {
+                partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName), String.valueOf(leadMatch.Email));
+                if (partialFirstNameAndEmailWithDetail.containsKey((leadMatch.Email).toLowerCase())) {
+                    ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((leadMatch.Email).toLowerCase());
+                    if (matchedDetail.constituentId != null) {
+                        return false;
+                    }
+                    matchedDetail.constituentId = (Id) leadMatch.Id;
+                    matchedDetail.processingNotes +=
+                        String.format('Found existing {0} ID: {1} based on email match: {2} and first {3} character(s) of first name match: {4} \n',
+                        new String[] {sObjectType, leadMatch.Id, leadMatch.Email, String.valueOf(partialFirstName.length() - 1), partialFirstName});
+                    detailsToReturn.add(matchedDetail);
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    private Boolean matchContactByPartialFirstNameAndLeadEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
+        String partialFirstName;
         if (contactMatch.FirstName != null && contactMatch.Lead_Email__c != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Lead_Email__c));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.Lead_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.Lead_Email__c).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
+            partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Lead_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.Lead_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.Lead_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
                     String.format('Found existing Contact ID: {0} based on lead email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.Lead_Email__c, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
+                    new String[] {contactMatch.Id, contactMatch.Lead_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
@@ -279,16 +530,20 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndLeadSecondaryEmail(Contact contactMatch) {
-        String firstNameWildcard;
+    private Boolean matchContactByPartialFirstNameAndLeadSecondaryEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
+        String partialFirstName;
         if (contactMatch.FirstName != null && contactMatch.Lead_Secondary_Email__c != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Lead_Secondary_Email__c));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.Lead_Secondary_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.Lead_Secondary_Email__c).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
+            partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Lead_Secondary_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.Lead_Secondary_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.Lead_Secondary_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
                     String.format('Found existing Contact ID: {0} based on lead secondary email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.Lead_Secondary_Email__c, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
+                    new String[] {contactMatch.Id, contactMatch.Lead_Secondary_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
@@ -296,16 +551,20 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndPersonalEmail(Contact contactMatch) {
-        String firstNameWildcard;
+    private Boolean matchContactByPartialFirstNameAndPersonalEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
+        String partialFirstName;
         if (contactMatch.FirstName != null && contactMatch.Personal_Email__c != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Personal_Email__c));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.Personal_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.Personal_Email__c).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
+            partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.Personal_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.Personal_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.Personal_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
                     String.format('Found existing Contact ID: {0} based on personal email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.Personal_Email__c, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
+                    new String[] {contactMatch.Id, contactMatch.Personal_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
@@ -313,16 +572,20 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndAsuGmail(Contact contactMatch) {
-        String firstNameWildcard;
+    private Boolean matchContactByPartialFirstNameAndAsuGmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
+        String partialFirstName;
         if (contactMatch.FirstName != null && contactMatch.ASU_Gmail__c != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.ASU_Gmail__c));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.ASU_Gmail__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.ASU_Gmail__c).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
+            partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.ASU_Gmail__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.ASU_Gmail__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.ASU_Gmail__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
                     String.format('Found existing Contact ID: {0} based on ASU Gmail match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.ASU_Gmail__c, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
+                    new String[] {contactMatch.Id, contactMatch.ASU_Gmail__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
@@ -330,16 +593,20 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndEpoEmail(Contact contactMatch) {
-        String firstNameWildcard;
+    private Boolean matchContactByPartialFirstNameAndEpoEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
+        String partialFirstName;
         if (contactMatch.FirstName != null && contactMatch.EPO_Email__c != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.EPO_Email__c));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.EPO_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.EPO_Email__c).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
+            partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.EPO_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.EPO_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.EPO_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
                     String.format('Found existing Contact ID: {0} based on EPO email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.EPO_Email__c, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
+                    new String[] {contactMatch.Id, contactMatch.EPO_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
@@ -347,16 +614,62 @@ public class ConstituentMatcher {
         return false;
     }
 
-    private Boolean matchByFirstNameWildcardAndAsuEmail(Contact contactMatch) {
-        String firstNameWildcard;
+    private Boolean matchContactByPartialFirstNameAndAsuEmail(SObject constituentMatch) {
+        Contact contactMatch = (Contact) constituentMatch;
+        String partialFirstName;
         if (contactMatch.FirstName != null && contactMatch.ASU_Email__c != null) {
-            firstNameWildcard = getFirstNameWildcard(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.ASU_Email__c));
-            if (firstNameWildcardAndEmailWithDetail.containsKey((contactMatch.ASU_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = firstNameWildcardAndEmailWithDetail.get((contactMatch.ASU_Email__c).toLowerCase());
-                matchedDetail.contactId = (Id) contactMatch.Id;
+            partialFirstName = getPartialFirstName(String.valueOf(contactMatch.FirstName), String.valueOf(contactMatch.ASU_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((contactMatch.ASU_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((contactMatch.ASU_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) contactMatch.Id;
                 matchedDetail.processingNotes +=
                     String.format('Found existing Contact ID: {0} based on ASU email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new String[] {contactMatch.Id, contactMatch.ASU_Email__c, String.valueOf(firstNameWildcard.length() - 1), firstNameWildcard});
+                    new String[] {contactMatch.Id, contactMatch.ASU_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
+                detailsToReturn.add(matchedDetail);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Boolean matchLeadByPartialFirstNameAndSecondaryEmail(SObject constituentMatch) {
+        Contact leadMatch = (Contact) constituentMatch;
+        String partialFirstName;
+        if (leadMatch.FirstName != null && leadMatch.Secondary_Email__c != null) {
+            partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName), String.valueOf(leadMatch.Secondary_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((leadMatch.Secondary_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((leadMatch.Secondary_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) leadMatch.Id;
+                matchedDetail.processingNotes +=
+                    String.format('Found existing Lead ID: {0} based on secondary email match: {1} and first {2} character(s) of first name match: {3} \n',
+                    new String[] {leadMatch.Id, leadMatch.Secondary_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
+                detailsToReturn.add(matchedDetail);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Boolean matchLeadByPartialFirstNameAndRecruitingEmail(SObject constituentMatch) {
+        Contact leadMatch = (Contact) constituentMatch;
+        String partialFirstName;
+        if (leadMatch.FirstName != null && leadMatch.Recruiting_Email__c != null) {
+            partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName), String.valueOf(leadMatch.Recruiting_Email__c));
+            if (partialFirstNameAndEmailWithDetail.containsKey((leadMatch.Recruiting_Email__c).toLowerCase())) {
+                ConstituentDetail matchedDetail = partialFirstNameAndEmailWithDetail.get((leadMatch.Recruiting_Email__c).toLowerCase());
+                if (matchedDetail.constituentId != null) {
+                    return false;
+                }
+                matchedDetail.constituentId = (Id) leadMatch.Id;
+                matchedDetail.processingNotes +=
+                    String.format('Found existing Lead ID: {0} based on recruiting email match: {1} and first {2} character(s) of first name match: {3} \n',
+                    new String[] {leadMatch.Id, leadMatch.Recruiting_Email__c, String.valueOf(partialFirstName.length() - 1), partialFirstName});
                 detailsToReturn.add(matchedDetail);
                 return true;
             }

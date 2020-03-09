@@ -1,6 +1,7 @@
 public class ConstituentDetail {
     public String asuriteId {get; set;}
     public Date birthdate {get; set;}
+    public Id constituentId {get; set;}
     public String email {get; set;}
     public String emplid {get; set;}
     public String firstName {get; set;}
@@ -11,7 +12,6 @@ public class ConstituentDetail {
     public String mailingPostalCode {get; set;}
     public String mailingState {get; set;}
     public String phone {get; set;}
-    public Id constituentId {get; set;}
     public String processingNotes {get; set;}
     public String status {get; set;}
 
@@ -21,6 +21,9 @@ public class ConstituentDetail {
         }
         if (constituentDetailMap.containsKey('birthdate')) {
             this.birthdate = Date.valueOf(constituentDetailMap.get('birthdate'));
+        }
+        if (constituentDetailMap.containsKey('constituentId')) {
+            this.constituentId = constituentDetailMap.get('constituentId');
         }
         if (constituentDetailMap.containsKey('email')) {
             this.email = constituentDetailMap.get('email');
@@ -52,12 +55,9 @@ public class ConstituentDetail {
         if (constituentDetailMap.containsKey('phone')) {
             this.phone = constituentDetailMap.get('phone');
         }
-        if (constituentDetailMap.containsKey('constituentId')) {
-            this.constituentId = constituentDetailMap.get('constituentId');
-        }
 
         if (constituentDetailMap.containsKey('processingNotes')) {
-            this.contactId = (Id) constituentDetailMap.get('processingNotes');
+            this.processingNotes = constituentDetailMap.get('processingNotes');
         } else {
             this.processingNotes = '';
         }

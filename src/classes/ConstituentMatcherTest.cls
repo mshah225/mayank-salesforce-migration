@@ -22,7 +22,7 @@ public with sharing class ConstituentMatcherTest {
 
         // Pass constituent detail to constituent matcher
         ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
-        matcher.searchContacts();
+        matcher.searchConstituents();
         
         // Return matched contacts
         List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
@@ -31,17 +31,20 @@ public with sharing class ConstituentMatcherTest {
         ConstituentDetail matchedDetailWithContact = matchedDetailsWithContacts[0];
 
         // Validate that the returned detail with contact ID and the original contact ID are the same
-        System.assertEquals(originalContact.Id, matchedDetailWithContact.contactId);
+        System.assertEquals(originalContact.Id, matchedDetailWithContact.constituentId);
     }
 
     @isTest
-    private static void testMatcherWithMultipleConstituents() {
+    private static void testMatcherWithMultipleLeadAndContactConstituents() {
+        // Create list to store combined contact + lead constituents for matching
+        List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
+
         // Create list for test contacts
         List<Contact> listOfOriginalContacts = new List<Contact>();
         Integer numberOfContactsToCreate = 16;
 
         for (Integer i = 1; i <= numberOfContactsToCreate; i++) {
-            Contact con = new Contact(
+            Contact testContact = new Contact(
             	FirstName = 'Tester' + i,
                 LastName = 'Contact' + i
             );
@@ -49,45 +52,44 @@ public with sharing class ConstituentMatcherTest {
             // Vary details assigned to contacts as we iterate to explore different matching scenarios
             switch on i {
                 when 1 {
-                    con.EmplId__c = '123456' + i;
+                    testContact.EmplId__c = '123456' + i;
                 }
                 when 2 {
-                    con.ASURITE_ID__c = 'tcontact' + i;
+                    testContact.ASURITE_ID__c = 'tcontact' + i;
                 }
                 when 3, 10 {
-                    con.Email = 'tcontact' + i + '@test.com';
+                    testContact.Email = 'tcontact' + i + '@test.com';
                 }
                 when 4, 11 {
-                    con.Lead_Email__c = 'tcontact' + i + '@test.com';
+                    testContact.Lead_Email__c = 'tcontact' + i + '@test.com';
                 }
                 when 5, 12 {
-                    con.Lead_Secondary_Email__c = 'tcontact' + i + '@test.com';
+                    testContact.Lead_Secondary_Email__c = 'tcontact' + i + '@test.com';
                 }
                 when 6, 13 {
-                    con.Personal_Email__c = 'tcontact' + i + '@test.com';
+                    testContact.Personal_Email__c = 'tcontact' + i + '@test.com';
                 }
                 when 7, 14 {
-                    con.ASU_Gmail__c = 'tcontact' + i + '@test.com';
+                    testContact.ASU_Gmail__c = 'tcontact' + i + '@test.com';
                 }
                 when 8, 15 {
-                    con.EPO_Email__c = 'tcontact' + i + '@test.com';
+                    testContact.EPO_Email__c = 'tcontact' + i + '@test.com';
                 }
                 when 9, 16 {
-                    con.ASU_Email__c = 'tcontact' + i + '@test.com';
+                    testContact.ASU_Email__c = 'tcontact' + i + '@test.com';
                 }
             }
-            listOfOriginalContacts.add(con);
+            listOfOriginalContacts.add(testContact);
         }
-
         insert listOfOriginalContacts;
 
-        // Give contact #10-16 a nickname after insertion to test wildcard search
+        // Give contact #10-16 a nickname after insertion to test partial name search
         for (Integer i = 10; i <= numberOfContactsToCreate; i++) {
             listOfOriginalContacts[i - 1].FirstName = 'Test';    
         }
 
         // Create map of field values from contact to search on
-        List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
+        
         for (Contact originalContact : listOfOriginalContacts) {
             Map<String, String> detailFieldsMap = new Map<String, String>();
             detailFieldsMap.put('asuriteId', originalContact.ASURITE_ID__c);
@@ -115,14 +117,67 @@ public with sharing class ConstituentMatcherTest {
             listOfConstituents.add(originalContactDetail);
         }
 
+        // Create list for test leads
+        List<Lead> listOfOriginalLeads = new List<Lead>();
+        Integer numberOfLeadsToCreate = 7;
+
+        for (Integer i = 1; i <= numberOfLeadsToCreate; i++) {
+            Lead testLead = new Lead(
+            	FirstName = 'Tester' + i,
+                LastName = 'Lead' + i
+            );
+
+            // Vary details assigned to leads as we iterate to explore different matching scenarios
+            switch on i {
+                when 1 {
+                    testLead.EmplId__c = '123456' + i;
+                }
+                when 2, 5 {
+                    testLead.Email = 'tlead' + i + '@test.com';
+                }
+                when 3, 6 {
+                    testLead.Secondary_Email__c = 'tlead' + i + '@test.com';
+                }
+                when 4, 7 {
+                    testLead.Recruiting_Email__c = 'tlead' + i + '@test.com';
+                }
+            }
+            listOfOriginalLeads.add(testLead);
+        }
+        insert listOfOriginalLeads;
+
+        // Give lead #5-7 a nickname after insertion to test partial name search
+        for (Integer i = 5; i <= numberOfContactsToCreate; i++) {
+            listOfOriginalLeads[i - 1].FirstName = 'Test';    
+        }
+
+        // Create map of field values from lead to search on
+        for (Lead originalLead : listOfOriginalLeads) {
+            Map<String, String> detailFieldsMap = new Map<String, String>();
+            detailFieldsMap.put('emplid', originalLead.EMPLID__c);
+            detailFieldsMap.put('firstName', originalLead.FirstName);
+            detailFieldsMap.put('lastName', originalLead.LastName);
+
+            if (originalLead.Email != null) {
+                detailFieldsMap.put('email', originalLead.Email);
+            } else if (originalLead.Secondary_Email__c != null) {
+                detailFieldsMap.put('email', originalLead.Secondary_Email__c);
+            } else if (originalLead.Recruiting_Email__c != null) {
+                detailFieldsMap.put('email', originalLead.Recruiting_Email__c);
+            }
+            
+            ConstituentDetail originalLeadDetail = new ConstituentDetail(detailFieldsMap);
+            listOfConstituents.add(originalLeadDetail);
+        }
+
         // Pass constituent details to constituent matcher
         ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents);
-        matcher.searchContacts();
+        matcher.searchConstituents();
         
-        // Return matched contacts
-        List<ConstituentDetail> matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
+        // Return matched constituents
+        List<ConstituentDetail> matchedDetailsWithConstituents = matcher.getListOfConstituentsWithMatches();
 
         // Validate that the returned detail list contains the same number of inserted contacts
-        System.assertEquals(numberOfContactsToCreate, matchedDetailsWithContacts.size());
+        System.assertEquals(numberOfContactsToCreate + numberOfLeadsToCreate, matchedDetailsWithConstituents.size());
     }
 }

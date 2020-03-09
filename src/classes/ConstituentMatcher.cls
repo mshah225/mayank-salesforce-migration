@@ -44,12 +44,12 @@ public class ConstituentMatcher {
         return partialFirstNameSet;
     }
 
-    private String getSObjectType(SObject sObjectOfUnknownType) {
+    public String getSObjectType(SObject sObjectOfUnknownType) {
         String sObjectType = sObjectOfUnknownType.getRecord().getSObjectType().getDescribe().getName();
         return sObjectType;
     }
 
-    public void searchContacts() {
+    public void searchConstituents() {
         createDataMappingForSearch();
         getContactsMatchedByMappedValues();
         getLeadsMatchedByMappedValues();
@@ -202,9 +202,7 @@ public class ConstituentMatcher {
                 if (matchContactByFirstNameAndAsuEmail(matchedConstituent)) {
                     constituentMatchesFound++;
                 }
-            }
-
-            if (sObjectType == 'Lead') {
+            } else if (sObjectType == 'Lead') {
                 if (matchLeadByFirstNameAndSecondaryEmail(matchedConstituent)) {
                     constituentMatchesFound++;
                 }
@@ -219,7 +217,6 @@ public class ConstituentMatcher {
 
             for (SObject unmatchedConstituent : constituentsWithoutInitialMatch) {
                 matchConstituentByPartialFirstNameAndEmail(unmatchedConstituent);
-
                 if (sObjectType == 'Contact') {
                     matchContactByPartialFirstNameAndLeadEmail(unmatchedConstituent);
                     matchContactByPartialFirstNameAndLeadSecondaryEmail(unmatchedConstituent);
@@ -227,9 +224,7 @@ public class ConstituentMatcher {
                     matchContactByPartialFirstNameAndAsuGmail(unmatchedConstituent);
                     matchContactByPartialFirstNameAndEpoEmail(unmatchedConstituent);
                     matchContactByPartialFirstNameAndAsuEmail(unmatchedConstituent);
-                }
-                
-                if (sObjectType == 'Lead') {
+                } else if (sObjectType == 'Lead') {
                     matchLeadByPartialFirstNameAndSecondaryEmail(unmatchedConstituent);
                     matchLeadByPartialFirstNameAndRecruitingEmail(unmatchedConstituent);
                 }
@@ -254,9 +249,7 @@ public class ConstituentMatcher {
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
-        }
-
-        if (sObjectType == 'Lead') {
+        } else if (sObjectType == 'Lead') {
             Lead leadMatch = (Lead) constituentMatch;
             if (leadMatch.EMPLID__c != null && emplidWithDetail.containsKey((leadMatch.EMPLID__c).toLowerCase())) {
                 ConstituentDetail matchedDetail = emplidWithDetail.get((leadMatch.EMPLID__c).toLowerCase());
@@ -309,9 +302,7 @@ public class ConstituentMatcher {
                 detailsToReturn.add(matchedDetail);
                 return true;
             }
-        }
-
-        if (sObjectType == 'Lead') {
+        } else if (sObjectType == 'Lead') {
             Lead leadMatch = (Lead) constituentMatch;
             if (leadMatch.FirstName != null && leadMatch.Email != null && firstNameAndEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Email).toLowerCase())) {
                 ConstituentDetail matchedDetail = firstNameAndEmailWithDetail.get((leadMatch.FirstName + leadMatch.Email).toLowerCase());
@@ -486,9 +477,7 @@ public class ConstituentMatcher {
                     return true;
                 }
             }
-        }
-
-        if (sObjectType == 'Lead') {
+        } else if (sObjectType == 'Lead') {
             if (leadMatch.FirstName != null && leadMatch.Email != null) {
                 partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName), String.valueOf(leadMatch.Email));
                 if (partialFirstNameAndEmailWithDetail.containsKey((leadMatch.Email).toLowerCase())) {

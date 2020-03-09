@@ -636,7 +636,7 @@ public class ConstituentMatcher {
     }
 
     private Boolean matchLeadByPartialFirstNameAndSecondaryEmail(SObject constituentMatch) {
-        Contact leadMatch = (Contact) constituentMatch;
+        Lead leadMatch = (Lead) constituentMatch;
         String partialFirstName;
         if (leadMatch.FirstName != null && leadMatch.Secondary_Email__c != null) {
             partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName), String.valueOf(leadMatch.Secondary_Email__c));
@@ -657,7 +657,7 @@ public class ConstituentMatcher {
     }
 
     private Boolean matchLeadByPartialFirstNameAndRecruitingEmail(SObject constituentMatch) {
-        Contact leadMatch = (Contact) constituentMatch;
+        Lead leadMatch = (Lead) constituentMatch;
         String partialFirstName;
         if (leadMatch.FirstName != null && leadMatch.Recruiting_Email__c != null) {
             partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName), String.valueOf(leadMatch.Recruiting_Email__c));

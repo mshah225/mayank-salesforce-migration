@@ -5,6 +5,7 @@ public with sharing class AutoSubscriberHelper {
     Map<Id, List<Subscriber__c>> contactToSubscriber;
     public static Map<Id, String> campaignToRecordTypeName;
     public static Map<Id, String> contactToCareer;
+    public static Map<Id, String> subscriptionToParent;
 
 
     public AutoSubscriberHelper(String typeOfObject) {
@@ -32,6 +33,22 @@ public with sharing class AutoSubscriberHelper {
             }
 
             settingToSubscription.put(subSetting, subscriptionIds);
+        }
+    }
+
+    public void createSubscriptionParentMap(List<Id> subscriptionIds) {
+        subscriptionToParent = new Map<Id, String>();
+        List<Subscription__c> subscriptionsForSubs = [
+            SELECT Id, Parent_Subscription__c
+            FROM Subscription__c
+            WHERE Id IN: subscriptionIds
+        ];
+
+        for (Subscription__c sub : subscriptionsForSubs) {
+            if (sub.Parent_Subscription__c != null) {
+                subscriptionToParent.put(sub.Id, sub.Parent_Subscription__c);
+            }
+            
         }
     }
 
@@ -163,6 +180,8 @@ public with sharing class AutoSubscriberHelper {
 
         List<Id> unsubscribedParentIds = new List<Id>();
 
+        //This Debug Statement is like a magic spell. If you remove it, everything breaks. Reason is currently unknown
+        System.debug(unsubscribedParentIds);
         if (currentSubsForContact == null || currentSubsForContact.isEmpty()) {
             return true;
         }
@@ -173,11 +192,14 @@ public with sharing class AutoSubscriberHelper {
             }
         }
 
+        if (unsubscribedParentIds.contains(subscriptionToParent.get(newSub.Subscription__c))) {
+            return false;
+        }
+        
         for (Subscriber__c sub : currentSubsForContact) {
-            if (unsubscribedParentIds.contains(sub.Subscription__r.Id)) {
-                return false;
-            }
+            
             if (newSub.Subscription__c == sub.Subscription__c) {
+                        System.debug(sub.Subscriber_Status__c);
                 if (sub.Subscriber_Status__c == 'No Preference') {
                     newSub.Id = sub.Id;
                     return true;

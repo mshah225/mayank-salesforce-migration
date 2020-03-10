@@ -17,10 +17,10 @@ public without sharing class ContactUploadSearcher {
 
     public ContactUploadSearcher(List<Contact_Upload_Detail__c> detailsToSearch) {
         this.detailsToSearch = detailsToSearch;
-        translateContactUploadDetailToConstituentDetail();
+        translateContactUploadDetailsToConstituentDetails();
     }
 
-    public void translateContactUploadDetailToConstituentDetail() {
+    public void translateContactUploadDetailsToConstituentDetails() {
         List<ConstituentDetail> listOfConstituents = new List<ConstituentDetail>();
         for (Contact_Upload_Detail__c contactUploadDetail : detailsToSearch) {
             Map<String, String> detailFieldsMap = new Map<String, String>();
@@ -44,14 +44,14 @@ public without sharing class ContactUploadSearcher {
     }
 
     public void searchAndCreateContacts() {
-        matcher = new ConstituentMatcher(constituentDetailsToSearch);
-        matcher.searchContacts();
+        matcher = new ConstituentMatcher(constituentDetailsToSearch, 'Contact');
+        matcher.searchConstituents();
         matchedDetailsWithContacts = matcher.getListOfConstituentsWithMatches();
         insertContactsForUnmatchedDetails();
     }
 
     public void searchContactsToMatch() {
-        matcher = new ConstituentMatcher(constituentDetailsToSearch);
+        matcher = new ConstituentMatcher(constituentDetailsToSearch, 'Contact');
         matcher.createDataMappingForSearch();
         searchContactsForMappedValues();
         matcher.associateDetailsWithMatchedContacts();
@@ -66,8 +66,8 @@ public without sharing class ContactUploadSearcher {
     }
 
     private void getContactsMatchedByMappedValuesAndSubscriptionId() {
-        asuriteWithDetail = matcher.getAsuriteWithDetailMap;
-        emplidWithDetail = matcher.getEmplidWithDetailMap;
+        asuriteWithDetail = matcher.getAsuriteWithDetailMap();
+        emplidWithDetail = matcher.getEmplidWithDetailMap();
         emailSet = matcher.getEmailSet();
         firstNameSet = matcher.getfirstNameSet();
         firstNameWildcardSet = matcher.getFirstNameWildcardSet();
@@ -98,7 +98,7 @@ public without sharing class ContactUploadSearcher {
 
     private void markUnmatchedDetails() {
         for (ConstituentDetail processedDetail : constituentDetailsToSearch) {
-            if (processedDetail.contactId == null) {
+            if (processedDetail.constituentId == null) {
                 unmatchedDetails.add(processedDetail);
             }
         }
@@ -108,7 +108,7 @@ public without sharing class ContactUploadSearcher {
         List<Contact> newUnmatchedContacts = new List<Contact>();
         List<ConstituentDetail> unmatchedDetails = new List<ConstituentDetail>();
         for (ConstituentDetail processedDetail : constituentDetailsToSearch) {
-            if (processedDetail.contactId == null) {
+            if (processedDetail.constituentId == null) {
                 Contact createdContact = createContact(processedDetail);
                 newUnmatchedContacts.add(createdContact);
                 unmatchedDetails.add(processedDetail);
@@ -152,11 +152,11 @@ public without sharing class ContactUploadSearcher {
             if (unmatchedDetail.status == 'Error') {
                 continue;
             }
-            unmatchedDetail.contactId = unmappedDetailToContact.get(unmatchedDetail).contactId;
+            unmatchedDetail.constituentId = unmappedDetailToContact.get(unmatchedDetail).constituentId;
             if (unmatchedDetail.emplid != null) {
-                unmatchedDetail.processingNotes += ' No matching EMPLID; Created new SF Mastered Contact: ' + unmatchedDetail.contactId + ' \n';
+                unmatchedDetail.processingNotes += ' No matching EMPLID; Created new SF Mastered Contact: ' + unmatchedDetail.constituentId + ' \n';
             } else {
-                unmatchedDetail.processingNotes += ' Created new Contact: ' + unmatchedDetail.contactId + ' \n';
+                unmatchedDetail.processingNotes += ' Created new Contact: ' + unmatchedDetail.constituentId + ' \n';
             }
         }
     }

@@ -1,6 +1,6 @@
 public class ConstituentMatcher {
     public String constituentType;
-    public List<ConstituentDetail> detailsToSearch {get; set;}
+    public List<ConstituentDetail> detailsToSearch;
     public List<ConstituentDetail> detailsToReturn = new List<ConstituentDetail>();
     public List<SObject> matchedConstituents = new List<SObject>();
     public Map<String, ConstituentDetail> asuriteWithDetail = new Map<String, ConstituentDetail>();

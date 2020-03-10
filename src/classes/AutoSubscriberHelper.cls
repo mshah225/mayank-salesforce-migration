@@ -178,10 +178,8 @@ public with sharing class AutoSubscriberHelper {
     private Boolean shouldNewSubBeUpserted(Subscriber__c newSub) {
         List<Subscriber__c> currentSubsForContact = contactToSubscriber.get(newSub.Contact__c);
 
-        List<Id> unsubscribedParentIds = new List<Id>();
+        Set<Id> unsubscribedParentIds = new Set<Id>();
 
-        //This Debug Statement is like a magic spell. If you remove it, everything breaks. Reason is currently unknown
-        System.debug(unsubscribedParentIds);
         if (currentSubsForContact == null || currentSubsForContact.isEmpty()) {
             return true;
         }

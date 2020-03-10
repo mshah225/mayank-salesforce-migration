@@ -199,7 +199,6 @@ public with sharing class AutoSubscriberHelper {
         for (Subscriber__c sub : currentSubsForContact) {
             
             if (newSub.Subscription__c == sub.Subscription__c) {
-                        System.debug(sub.Subscriber_Status__c);
                 if (sub.Subscriber_Status__c == 'No Preference') {
                     newSub.Id = sub.Id;
                     return true;

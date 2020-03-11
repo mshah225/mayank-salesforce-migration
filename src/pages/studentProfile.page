@@ -3504,7 +3504,7 @@
                 var commentQuery = 'SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c, ' +
                     'COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c ' +
                     'FROM PS_ASU_SP_COMMNT_V__x ' +
-                    'WHERE EMPLID__c = \'{!theContact.EMPLID__c}\' AND CMNT_CATEGORY__c != \'GRGCPS\' AND CMNT_CATEGORY__c != \'GRPOS\' ' +
+                    'WHERE EMPLID__c = \'{!theContact.EMPLID__c}\' ' +
                     'ORDER BY COMMENT_DTTM__c DESC';
                 var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
                 conn.query(commentQuery, function (err, response) {

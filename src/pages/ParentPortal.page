@@ -39,17 +39,25 @@
         </style>
     </head>
 
-    <apex:sectionHeader title="ASU Parent Portal" subtitle="Step 3 of 5" />
+    <apex:sectionHeader title="ASU Parent Portal" subtitle="Step 1 of 5" />
     <apex:form>
-        <apex:pageBlock title="I want to learn about...">
-            <apex:pageBlockButtons location="bottom">
-                <apex:commandButton action="{!parentPortalStep4}" value="Next" />
-            </apex:pageBlockButtons>
-            <apex:pageBlockSection title="Topics">
-                <apex:selectCheckboxes layout="PageDirection" value="{!chosenTopics}">
-                    <apex:selectOptions value="{!topicOptions}"></apex:selectOptions>
-                </apex:selectCheckboxes>
-            </apex:pageBlockSection>
-        </apex:pageBlock>
+        <div class="parent-portal-step-2-header" style="text-align:center;">
+            <h1>Welcome to the ASU Portal for Family Members!</h1><br /><br />
+            <h2>Do you have an ASURITE ID? If not, please click 'Sign up' below.</h2><br /><br />
+        </div>
+        <div class="parent-portal-step-2-buttons" style="text-align:center;">
+            <apex:commandLink 
+                action="{!parentPortalStep2}" 
+                styleClass="caseBtn" 
+                style="margin-right:20px;display:inline-block;width:90px;text-align:center;">
+                    Sign up
+            </apex:commandLink>
+            <apex:commandLink 
+                action="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--mgilardi.my.salesforce.com/apex/ParentPortalStep3"
+                styleClass="caseBtn" 
+                style="margin-right:20px;display:inline-block;width:90px;text-align:center;">
+                    Login
+            </apex:commandLink>
+        </div>
     </apex:form>
 </apex:page>

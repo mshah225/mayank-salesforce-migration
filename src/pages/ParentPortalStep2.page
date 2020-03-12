@@ -1,13 +1,4 @@
 <apex:page controller="ParentPortalController" tabStyle="Opportunity">
-    <script>
-        function confirmCancel() {
-            var isCancel = confirm("Are you sure you wish to cancel?");
-            if (isCancel) return true;
-
-            return false;
-        }  
-    </script>
-
     <head>
         <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
                 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
@@ -50,17 +41,19 @@
 
     <apex:sectionHeader title="ASU Parent Portal" subtitle="Step 2 of 5" />
     <apex:form>
-        <apex:pageBlock title="Who are you?" mode="edit">
-            <apex:pageBlockButtons>
-                <apex:commandButton action="{!parentPortalStep3}" value="Next" />
-                <apex:commandButton action="{!cancel}" value="Cancel" onclick="return confirmCancel()" immediate="true" />
+        <apex:pageBlock title="Who are you?">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="https://isearch.asu.edu/profile-edit" value="Edit Profile" styleClass="caseBtn" />
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="Please fill out your information below.">
-                <apex:inputField id="contactFirstName" value="{!contact.FirstName}" />
-                <apex:inputField id="contactLastName" value="{!contact.LastName}" />
-                <apex:inputField id="contactEmail" value="{!contact.Email}" />
-                <apex:inputField id="contactMailingZip" value="{!contact.MailingPostalCode}" />
+                <apex:inputText label="First Name" value="{!parentFirstName}" id="parent-first-name" required="true" />
+                <apex:inputText label="Last Name" value="{!parentLastName}" id="parent-last-name" required="true" />
+                <apex:inputText label="Email Address" value="{!parentEmailAddress}" id="parent-email-address" required="true" />
+                <apex:inputText label="Zip Code" value="{!parentZipCode}" id="parent-zip-code" required="true" />
             </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!parentPortalStep3}" value="Next" styleClass="caseBtn" />
+            </apex:pageBlockButtons>
         </apex:pageBlock>
     </apex:form>
 </apex:page>

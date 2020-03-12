@@ -18,7 +18,7 @@
 
     <apex:sectionHeader title="ASU Parent Portal" subtitle="Step 4 of 5" />
     <apex:form>
-        <apex:pageBlock title="Confirmation">
+        <apex:pageBlock title="I'm a family member or guardian of...">
             <apex:pageBlockButtons>
                 <apex:commandButton action="{!parentPortalStep3}" value="Previous" />
                 <apex:commandButton action="{!parentPortalStep5}" value="Next" />

@@ -2005,7 +2005,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
-                                                <apex:outputText value="{0,number,####.##}" style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
+                                                <apex:outputText value="{0,number,####.00}" style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
                                                     <apex:param value="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                                 </apex:outputText>
                                             </td>
@@ -2163,7 +2163,7 @@
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c), '--', '')}
                                                 {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}">
-                                                    <apex:outputText value="{0,number,###.##}">
+                                                    <apex:outputText value="{0,number,###.00}">
                                                         <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"/>
                                                     </apex:outputText>
                                                 </span>
@@ -2183,7 +2183,7 @@
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c), '--', '')}
                                                 {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}">
-                                                    <apex:outputText value="{0,number,###.##}">
+                                                    <apex:outputText value="{0,number,###.00}">
                                                         <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"/>
                                                     </apex:outputText>
                                                 </span>
@@ -2202,7 +2202,7 @@
                                             <td class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
-                                                    <apex:outputText value="{0,number,###.##}">
+                                                    <apex:outputText value="{0,number,###.00}">
                                                         <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"/>
                                                     </apex:outputText>
                                                 </span>

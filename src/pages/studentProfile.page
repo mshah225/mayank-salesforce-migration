@@ -2200,6 +2200,7 @@
                                                 <div class = "planMargin">iPOS Total Hours</div>
                                             </th>
                                             <td class="gradTD">
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--', '')}
                                                 {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
                                                     <apex:outputText value="{0,number,###.00}">

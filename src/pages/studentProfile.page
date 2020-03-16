@@ -2005,7 +2005,7 @@
                                             </th>
                                             <td class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
-                                                <apex:outputText value="{0,number,####.##}" style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
+                                                <apex:outputText value="{0,number,####.00}" style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
                                                     <apex:param value="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                                 </apex:outputText>
                                             </td>
@@ -2052,7 +2052,7 @@
                                                 <div class = "planMargin">Defense Required</div>
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, 'No', 'Yes')}
+                                                {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Format Status Last Updated
@@ -2160,9 +2160,13 @@
                                                 <div class = "planMargin">ASU Hours Before Admit</div>
                                             </th>
                                             <td class="gradTD">
-                                                <apex:outputText value="{0,number,###.##}">
-                                                    <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"/>
-                                                </apex:outputText>
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c), '--', '')}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, '--', '')}
+                                                <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}">
+                                                    <apex:outputText value="{0,number,###.00}">
+                                                        <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"/>
+                                                    </apex:outputText>
+                                                </span>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Location
@@ -2176,9 +2180,13 @@
                                                 <div class = "planMargin">ASU Hours After Admit</div>
                                             </th>
                                             <td class="gradTD">
-                                                <apex:outputText value="{0,number,###.##}">
-                                                    <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"/>
-                                                </apex:outputText>
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c), '--', '')}
+                                                {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, '--', '')}
+                                                <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}">
+                                                    <apex:outputText value="{0,number,###.00}">
+                                                        <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"/>
+                                                    </apex:outputText>
+                                                </span>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results
@@ -2192,9 +2200,13 @@
                                                 <div class = "planMargin">iPOS Total Hours</div>
                                             </th>
                                             <td class="gradTD">
-                                                <apex:outputText value="{0,number,###.##}">
-                                                    <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"/>
-                                                </apex:outputText>
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--', '')}
+                                                {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, '--', '')}
+                                                <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
+                                                    <apex:outputText value="{0,number,###.00}">
+                                                        <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"/>
+                                                    </apex:outputText>
+                                                </span>
                                             </td>
                                             <th colspan="2" class="gradTD">
                                                 Final Defense Results Status Date
@@ -2231,7 +2243,7 @@
                                                 <div class = "planMargin">Applied to Graduate</div>
                                             </th>
                                             <td class="gradTD">
-                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), 'No', 'Yes')}
+                                                {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
@@ -2266,19 +2278,32 @@
 
                                         <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
                                             <th colspan="1.2" class="gradTD innerHeaders" style="padding-left: 75px;">
-                                                Name
+                                                <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
+                                                    Name
+                                                </div>
+                                                <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'none', 'block')}">
+                                                    There are no Faculty Committee Members for {!theContact.Name}.
+                                                </div>
                                             </th>
                                             <th colspan="1.2" class="gradTD innerHeaders">
-                                                Committee Role
+                                                <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
+                                                    Committee Role
+                                                </div>
                                             </th>
                                             <th colspan="1.2" class="gradTD innerHeaders">
-                                                Title
+                                                <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
+                                                    Title
+                                                </div>
                                             </th>
                                             <th colspan="1.2" class="gradTD innerHeaders">
-                                                Department
+                                                <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
+                                                    Department
+                                                </div>
                                             </th>
                                             <th colspan="1.2" class="gradTD innerHeaders">
-                                                Attendance Method
+                                                <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
+                                                    Attendance Method
+                                                </div>
                                             </th>
                                         </tr>
                                         <apex:repeat value="{!gradProgram.gradCommittees}" var="gradCommittee">

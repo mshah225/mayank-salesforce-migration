@@ -72,6 +72,8 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         updateOpportunities();
         updateLeads();
         updateCampaignMembers(campaignMembersToUpdate);
+        AutoSubscriberService autoSubService = new AutoSubscriberService(Trigger.New, 'CampaignMember');
+        autoSubService.processCampaignMemberRecords();
         clearDataAfter();
     }
         

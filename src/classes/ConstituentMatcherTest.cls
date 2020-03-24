@@ -21,7 +21,7 @@ public with sharing class ConstituentMatcherTest {
         ConstituentDetail originalContactDetail = new ConstituentDetail(detailFieldsMap);
 
         // Pass constituent detail to constituent matcher
-        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail);
+        ConstituentMatcher matcher = new ConstituentMatcher(originalContactDetail, 'Contact');
         matcher.searchConstituents();
         
         // Return matched contacts

@@ -1,0 +1,27 @@
+<apex:page controller="FamilyPortalController" standardStylesheets="false">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.FamilyPortal, 'FamilyPortal/FamilyPortal.css')}" />
+    </head>
+    
+    <h2 class="family-portal-page-title">ASU Family Portal</h2>
+    <apex:form>
+        <div class="family-portal-2-container">
+            <apex:pageBlock>
+                <h3>Who are you?</h3>
+                <apex:pageBlockSection columns="2">
+                    <apex:inputField value="{!familyPortalGuardian.First_Name__c}" />
+                    <apex:inputField value="{!familyPortalGuardian.Last_Name__c}" />
+                    <apex:inputField value="{!familyPortalGuardian.Email__c}" />
+                    <apex:inputField value="{!familyPortalGuardian.Zip_Code__c}" />
+                </apex:pageBlockSection>
+                <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
+                    Next
+                </apex:commandLink>
+            </apex:pageBlock>
+        </div>
+        <apex:iframe id="family-portal-help-block" src="/apex/FamilyPortalHelpBlock" />
+    </apex:form>
+</apex:page>

@@ -1,0 +1,53 @@
+<apex:page controller="FamilyPortalController" standardStylesheets="false">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.FamilyPortal, 'FamilyPortal/FamilyPortal.css')}" />
+    </head>
+
+    <h2 class="family-portal-page-title">ASU Family Portal</h2>
+    <apex:form>
+        <div class="family-portal-4-container">
+            <apex:pageBlock>
+                <h3>I'm a family member or guardian of...</h3>
+                <apex:dataTable value="{!studentWrapperList}" var="srl" id="family-portal-student-page-block" >
+                    <apex:column headerValue="Student">
+                        <strong>First Name</strong>
+                        <apex:inputField value="{!srl.familyPortalStudentObj.First_Name__c}" />
+                        <strong>Email Address</strong>
+                        <apex:inputField value="{!srl.familyPortalStudentObj.Email__c}" />
+                        <strong>Enrollment Status</strong>
+                        <apex:inputField value="{!srl.familyPortalStudentObj.Enrollment_Status__c}" />
+                    </apex:column>
+                    <apex:column>
+                        <strong>Last Name</strong>
+                        <apex:inputField value="{!srl.familyPortalStudentObj.Last_Name__c}" />
+                        <strong>Phone Number</strong>
+                        <apex:inputField value="{!srl.familyPortalStudentObj.Phone__c}" />
+                        <strong>Expected Graduation Year</strong>
+                        <apex:inputField value="{!srl.familyPortalStudentObj.Enrollment_Status_Year__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Action"> 
+                        <apex:commandButton action="{!removeStudentRow}" value="Remove" styleClass="btn btn-secondary" reRender="family-portal-student-page-block">
+                            <apex:param value="{!srl.studentIndex}" name="index" />
+                        </apex:commandButton>
+                    </apex:column>
+                </apex:dataTable>         
+                <div class="family-portal-double-button-container">
+                    <div class="family-portal-double-button">
+                        <apex:commandLink action="{!addStudentRow}" styleClass="btn btn-secondary btn-block" reRender="family-portal-student-page-block">
+                            Add New Student
+                        </apex:commandLink>
+                    </div>
+                    <div class="family-portal-double-button">
+                        <apex:commandLink action="{!familyPortalStep5}" styleClass="btn btn-primary btn-block">
+                            Next
+                        </apex:commandLink>
+                    </div>
+                </div>
+            </apex:pageBlock>
+        </div>
+        <apex:iframe id="family-portal-help-block" src="/apex/FamilyPortalHelpBlock" />
+    </apex:form>
+</apex:page>

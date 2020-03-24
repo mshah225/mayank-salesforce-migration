@@ -3,5 +3,5 @@
     <apiVersion>47.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>ParentPortalStep2</label>
+    <label>FamilyPortalStep5</label>
 </ApexPage>

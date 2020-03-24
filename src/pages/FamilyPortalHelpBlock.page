@@ -1,0 +1,16 @@
+<apex:page standardStylesheets="false">
+    <head>
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.FamilyPortal, 'FamilyPortal/FamilyPortal.css')}" />
+    </head>
+
+    <div class="family-portal-help-block">
+        <img width="100%" src="https://asunow.asu.edu/sites/default/files/edited_0.jpg" />
+        <div class="well">
+            <p class="lead"><strong>Have Questions?</strong></p>
+            <p>Please email us at <strong>questions@asu.edu</strong> or give us a call at <strong>(602) 555-8990</strong>.</p>
+        </div>
+    </div>
+</apex:page>

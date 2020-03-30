@@ -9,7 +9,7 @@
             <apex:pageBlock>
                 <h3>I want to learn about...</h3>
                 <apex:inputField value="{!familyPortalGuardianInterest.Interest__c}" />   
-                <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
+                <apex:commandLink action="{!familyPortalStep4a}" styleClass="btn btn-primary btn-block">
                     Next
                 </apex:commandLink>
             </apex:pageBlock>

@@ -9,10 +9,10 @@
             <apex:pageBlock>
                 <h3>Who are you?</h3>
                 <apex:pageBlockSection columns="2">
-                    <apex:inputField value="{!familyPortalGuardian.First_Name__c}" />
-                    <apex:inputField value="{!familyPortalGuardian.Last_Name__c}" />
-                    <apex:inputField value="{!familyPortalGuardian.Email__c}" />
-                    <apex:inputField value="{!familyPortalGuardian.Zip_Code__c}" />
+                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.First_Name__c}" />
+                    <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Last_Name__c}"/>
+                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Email__c}" />
+                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Zip_Code__c}" />
                 </apex:pageBlockSection>
                 <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
                     Next

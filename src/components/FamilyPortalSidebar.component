@@ -5,7 +5,7 @@
         <img width="100%" src="https://asunow.asu.edu/sites/default/files/edited_0.jpg" />
         <div class="well">
             <p class="lead"><strong>Have Questions?</strong></p>
-            <p>Please email us at <strong>questions@asu.edu</strong> or give us a call at <strong>(602) 555-8990</strong>.</p>
+            <p>Please email us at <strong><a href="mailto:questions@asu.edu" target="_blank">questions@asu.edu</a></strong> or give us a call at <strong><a href="tel:6025558990" target="_blank">(602) 555-8990</a></strong>.</p>
         </div>
     </div>
 </apex:component>

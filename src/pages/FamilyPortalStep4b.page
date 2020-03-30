@@ -8,26 +8,18 @@
         <div class="family-portal-4-container">
             <apex:pageBlock>
                 <h3>I'm a family member or guardian of...</h3>
-                <apex:dataTable value="{!studentWrapperList}" var="srl" id="family-portal-student-page-block" >
+                <apex:dataTable value="{!studentWrapperList}" var="swl" id="family-portal-student-page-block" >
                     <apex:column headerValue="Student">
-                        <strong>First Name</strong>
-                        <apex:inputField value="{!srl.familyPortalStudentObj.First_Name__c}" />
-                        <strong>Email Address</strong>
-                        <apex:inputField value="{!srl.familyPortalStudentObj.Email__c}" />
-                        <strong>Enrollment Status</strong>
-                        <apex:inputField value="{!srl.familyPortalStudentObj.Enrollment_Status__c}" />
+                        <strong>Status</strong>
+                        <apex:inputField value="{!swl.familyPortalStudentObj.Enrollment_Status__c}" />
                     </apex:column>
                     <apex:column>
-                        <strong>Last Name</strong>
-                        <apex:inputField value="{!srl.familyPortalStudentObj.Last_Name__c}" />
-                        <strong>Phone Number</strong>
-                        <apex:inputField value="{!srl.familyPortalStudentObj.Phone__c}" />
-                        <strong>Expected Graduation Year</strong>
-                        <apex:inputField value="{!srl.familyPortalStudentObj.Enrollment_Status_Year__c}" />
+                        <strong>Graduation Year</strong>
+                        <apex:inputField value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" />
                     </apex:column>
                     <apex:column headerValue="Action"> 
                         <apex:commandButton action="{!removeStudentRow}" value="Remove" styleClass="btn btn-secondary" reRender="family-portal-student-page-block">
-                            <apex:param value="{!srl.studentIndex}" name="index" />
+                            <apex:param value="{!swl.studentIndex}" name="index" />
                         </apex:commandButton>
                     </apex:column>
                 </apex:dataTable>         

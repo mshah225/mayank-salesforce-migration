@@ -1,9 +1,6 @@
 public with sharing class FamilyPortalController {
-    public String guardianUserId {get; set;}
-    public String guardianFirstName {get; set;}
-    public String guardianLastName {get; set;}
-    public String guardianEmailAddress {get; set;}
-    public String guardianZipCode {get; set;}
+    public String existingGuardianUserAsuriteId {get; set;}
+    public String existingGuardianUserEmplid {get; set;}
     public Family_Portal_Guardian__c familyPortalGuardian {get; set;}
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
     public List<String> guardianChosenInterests {get; set;}
@@ -14,12 +11,14 @@ public with sharing class FamilyPortalController {
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
-        guardianFirstName = familyPortalGuardian.Name;
-        guardianEmailAddress = familyPortalGuardian.Email__c;
-        guardianZipCode = familyPortalGuardian.Zip_Code__c;
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         familyPortalStudentList = new List<Family_Portal_Student__c>();
         addStudentRow();
+    }
+
+    public User getGuardianDataFromExistingUser() {
+        User existingGuardianUser = [SELECT FirstName, LastName, Email, PostalCode, EmployeeNumber, ASURITE_for_External_ID__c, Id FROM User WHERE Id =: UserInfo.getUserId()];
+        return existingGuardianUser;
     }
 
     public PageReference addStudentRow() {
@@ -38,16 +37,6 @@ public with sharing class FamilyPortalController {
         return null;
     }
 
-    public class FamilyPortalStudentWrapper {
-        public Family_Portal_Student__c familyPortalStudentObj {get;set;}
-        public Integer studentIndex {get;set;}
-        
-        public FamilyPortalStudentWrapper(Family_Portal_Student__c familyPortalStudentObj, Integer studentIndex) {
-            this.familyPortalStudentObj = familyPortalStudentObj;
-            this.studentIndex = studentIndex;
-        }
-    }
-
     public PageReference familyPortal() {
         return Page.FamilyPortal;
     }
@@ -60,8 +49,34 @@ public with sharing class FamilyPortalController {
         return Page.FamilyPortalStep3;
     }
 
-    public PageReference familyPortalStep4() {
-        return Page.FamilyPortalStep4;
+    public PageReference familyPortalStep4a() {
+        User existingGuardianUser;
+        if (UserInfo.getUserId() != null && familyPortalGuardian.First_Name__c == null && familyPortalGuardian.Last_Name__c == null && familyPortalGuardian.Email__c == null) {
+            existingGuardianUser = getGuardianDataFromExistingUser();
+            if (existingGuardianUser.FirstName != null) {
+                familyPortalGuardian.First_Name__c = existingGuardianUser.FirstName;
+            }
+            if (existingGuardianUser.LastName != null) {
+                familyPortalGuardian.Last_Name__c = existingGuardianUser.LastName;
+            }
+            if (existingGuardianUser.Email != null) {
+                familyPortalGuardian.Email__c = existingGuardianUser.Email;
+            }
+            if (existingGuardianUser.PostalCode != null) {
+                familyPortalGuardian.Zip_Code__c = existingGuardianUser.PostalCode;
+            }
+            if (existingGuardianUser.EmployeeNumber != null) {
+                existingGuardianUserEmplid = existingGuardianUser.EmployeeNumber;
+            }
+            if (existingGuardianUser.ASURITE_for_External_ID__c != null) {
+                existingGuardianUserAsuriteId = existingGuardianUser.ASURITE_for_External_ID__c;
+            }
+        }
+        return Page.FamilyPortalStep4a;
+    }
+
+    public PageReference familyPortalStep4b() {
+        return Page.FamilyPortalStep4b;
     }
 
     public PageReference familyPortalStep5() {
@@ -72,18 +87,9 @@ public with sharing class FamilyPortalController {
             }
         }
 
-        System.debug(familyPortalGuardian);
-
-        if (familyPortalGuardianInterest != null) {
-            System.debug(familyPortalGuardianInterest);
-        }
-
-        if (!familyPortalStudentList.isEmpty()) {
-            System.debug(familyPortalStudentList);
-        }
-
         Map<String, String> detailFieldsMap = new Map<String, String>();
-        //detailFieldsMap.put('asuriteId', guardianUserId);
+        detailFieldsMap.put('emplid', existingGuardianUserEmplid);
+        detailFieldsMap.put('asuriteId', existingGuardianUserAsuriteId);
         detailFieldsMap.put('firstName', familyPortalGuardian.First_Name__c);
         detailFieldsMap.put('lastName', familyPortalGuardian.Last_Name__c);
         detailFieldsMap.put('email', familyPortalGuardian.Email__c);
@@ -104,7 +110,10 @@ public with sharing class FamilyPortalController {
         }
 
         insert familyPortalGuardian;
-        familyPortalGuardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+
+        if (familyPortalGuardianInterest.Interest__c != null) {
+            familyPortalGuardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+        }
         insert familyPortalGuardianInterest;
 
         for (Family_Portal_Student__c reportedStudent : familyPortalStudentList) {
@@ -113,5 +122,15 @@ public with sharing class FamilyPortalController {
         insert familyPortalStudentList;
 
         return Page.FamilyPortalStep5;
+    }
+
+    public class FamilyPortalStudentWrapper {
+        public Family_Portal_Student__c familyPortalStudentObj {get;set;}
+        public Integer studentIndex {get;set;}
+        
+        public FamilyPortalStudentWrapper(Family_Portal_Student__c familyPortalStudentObj, Integer studentIndex) {
+            this.familyPortalStudentObj = familyPortalStudentObj;
+            this.studentIndex = studentIndex;
+        }
     }
 }

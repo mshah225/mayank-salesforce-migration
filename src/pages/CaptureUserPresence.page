@@ -1,0 +1,13 @@
+<apex:page Controller="UserPresenceController" >
+    <apex:form >
+        <apex:pageBlock id="main">
+            <apex:pageMessages escape="false"></apex:pageMessages>
+            <apex:outputLabel value="Available on Omni Channel"/><br/>
+            <apex:inputCheckbox label="Online on Omni Channel" value="{!ooo}" /><br/><br/><br/>
+            <apex:outputLabel value="Out Of Office Message"/><br/>
+            <apex:inputTextarea label="Out of Office Message" cols="40" rows="6" value="{!oooMessage}" /><br/><br/><br/><br/>
+            
+            <apex:commandButton title="Save" value=" Save " action="{!saveOOOM}" rerender="main"/>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

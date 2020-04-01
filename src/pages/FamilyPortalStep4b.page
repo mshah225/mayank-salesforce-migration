@@ -5,9 +5,11 @@
 
     <h2 class="family-portal-page-title">ASU Family Portal</h2>
     <apex:form>
-        <div class="family-portal-4-container">
+        <div class="family-portal-4b-container">
             <apex:pageBlock>
-                <h3>I'm a family member or guardian of...</h3>
+                <div class="family-portal-4b-header">
+                    <h3>I'm a family member or guardian of...</h3>
+                </div>
                 <apex:dataTable value="{!studentWrapperList}" var="swl" id="family-portal-student-page-block" >
                     <apex:column headerValue="Student">
                         <strong>Status</strong>
@@ -31,7 +33,7 @@
                     </div>
                     <div class="family-portal-double-button">
                         <apex:commandLink action="{!familyPortalStep5}" styleClass="btn btn-primary btn-block">
-                            Next
+                            Submit
                         </apex:commandLink>
                     </div>
                 </div>

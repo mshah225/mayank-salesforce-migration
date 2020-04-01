@@ -5,8 +5,10 @@
 
     <h2 class="family-portal-page-title">ASU Family Portal</h2>
     <apex:form>
-        <div class="family-portal-4-container">
-            <h3>Would you like to include any students?</h3>
+        <div class="family-portal-4a-container">
+            <div class="family-portal-4a-header">
+                <h3>Would you like to include any students?</h3>
+            </div>
             <div class="family-portal-double-button-container">
                 <div class="family-portal-double-button">
                     <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep4b}">

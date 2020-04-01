@@ -7,7 +7,9 @@
     <apex:form>
         <div class="family-portal-2-container">
             <apex:pageBlock>
-                <h3>Who are you?</h3>
+                <div class="family-portal-2-header">
+                    <h3>Who are you?</h3>
+                </div>
                 <apex:pageBlockSection columns="2">
                     <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.First_Name__c}" />
                     <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Last_Name__c}"/>

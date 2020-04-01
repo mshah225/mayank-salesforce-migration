@@ -6,22 +6,24 @@
     <h2 class="family-portal-page-title">ASU Family Portal</h2>
     <apex:form>
         <div class="family-portal-1-container">
-            <div class="family-portal-1-header">
-                <h3>Welcome to the ASU portal for family members.</h3>
-                <h4>Do you have an ASURITE ID? If not, please sign up below.</h4>
-            </div>
-            <div class="family-portal-double-button-container">
-                <div class="family-portal-double-button">
-                    <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep2}">
-                        Sign up
-                    </apex:commandLink>
+            <apex:pageBlock>
+                <div class="family-portal-1-header">
+                    <h2>Welcome to the ASU portal for family members.</h2>
+                    <p class="lead">Do you have an ASURITE ID? If not, please sign up below.</p>
                 </div>
-                <div class="family-portal-double-button">
-                    <apex:commandLink styleClass="btn btn-secondary btn-block" action="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3">
-                        Login
-                    </apex:commandLink>
+                <div class="family-portal-double-button-container">
+                    <div class="family-portal-double-button">
+                        <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep2}">
+                            Sign up
+                        </apex:commandLink>
+                    </div>
+                    <div class="family-portal-double-button">
+                        <apex:commandLink styleClass="btn btn-secondary btn-block" action="https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3">
+                            Login
+                        </apex:commandLink>
+                    </div>
                 </div>
-            </div>
+            </apex:pageBlock>
         </div>
         <c:FamilyPortalSidebar />
     </apex:form>

@@ -7,8 +7,10 @@
     <apex:form>
         <div class="family-portal-3-container">
             <apex:pageBlock>
-                <h3>I want to learn about...</h3>
-                <apex:inputField value="{!familyPortalGuardianInterest.Interest__c}" />   
+                <div class="family-portal-3-header">
+                    <h3>I want to learn about...</h3>
+                </div>
+                <apex:inputField value="{!familyPortalGuardianInterest.Interest_Choices__c}" />   
                 <apex:commandLink action="{!familyPortalStep4a}" styleClass="btn btn-primary btn-block">
                     Next
                 </apex:commandLink>

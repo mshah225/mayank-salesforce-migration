@@ -6,8 +6,11 @@
     <h2 class="family-portal-page-title">ASU Family Portal</h2>
     <apex:form>
         <div class="family-portal-5-container">
-            <h3>Confirmation</h3><br />
-            <h4>Thank you for your submission! An email confirmation will be sent. In the future, you can edit your interests by clicking the link provided in the confirmation email.</h4>
+            <div class="family-portal-5-header">
+                <h3>Confirmation</h3>
+            </div>
+            <br />
+            <p>Thank you for your submission! An email confirmation will be sent. In the future, you can edit your interests by clicking the link provided in the confirmation email.</p>
         </div>
         <c:FamilyPortalSidebar />
     </apex:form>

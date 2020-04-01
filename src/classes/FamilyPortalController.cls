@@ -3,8 +3,6 @@ public with sharing class FamilyPortalController {
     public String existingGuardianUserEmplid {get; set;}
     public Family_Portal_Guardian__c familyPortalGuardian {get; set;}
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
-    public List<String> guardianChosenInterests {get; set;}
-    public List<Family_Portal_Student__c> familyPortalStudentList {get; set;}
     public List<FamilyPortalStudentWrapper> studentWrapperList {get;set;}
     private Integer studentRowCount = 0;
 
@@ -12,7 +10,6 @@ public with sharing class FamilyPortalController {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
-        familyPortalStudentList = new List<Family_Portal_Student__c>();
         addStudentRow();
     }
 
@@ -80,6 +77,8 @@ public with sharing class FamilyPortalController {
     }
 
     public PageReference familyPortalStep5() {
+        List<Family_Portal_Student__c> familyPortalStudentList = new List<Family_Portal_Student__c>();
+
         if (!studentWrapperList.isEmpty()) {
             for (FamilyPortalStudentWrapper studentWrapper : studentWrapperList) {
                 Family_Portal_Student__c reportedStudent = studentWrapper.familyPortalStudentObj;
@@ -100,21 +99,32 @@ public with sharing class FamilyPortalController {
         List<ConstituentDetail> matchedDetailsWithContacts = contactMatcher.getListOfConstituentsWithMatches();
         for (ConstituentDetail matchedDetailWithContact : matchedDetailsWithContacts) {
             familyPortalGuardian.Contact__c = matchedDetailWithContact.constituentId;
+            break;
         }
 
-        ConstituentMatcher leadMatcher = new ConstituentMatcher(guardianDetail, 'Lead');
-        leadMatcher.searchConstituents();
-        List<ConstituentDetail> matchedDetailsWithLeads = leadMatcher.getListOfConstituentsWithMatches();
-        for (ConstituentDetail matchedDetailWithLead : matchedDetailsWithLeads) {
-            familyPortalGuardian.Lead__c = matchedDetailWithLead.constituentId;
+        if (familyPortalGuardian.Contact__c == null) {
+            Contact newGuardianContact = new Contact();
+            newGuardianContact.FirstName = familyPortalGuardian.First_Name__c;
+            newGuardianContact.LastName = familyPortalGuardian.Last_Name__c;
+            newGuardianContact.Email = familyPortalGuardian.Email__c;
+            
+            insert newGuardianContact;
+            familyPortalGuardian.Contact__c = newGuardianContact.Id;
         }
-
         insert familyPortalGuardian;
 
-        if (familyPortalGuardianInterest.Interest__c != null) {
-            familyPortalGuardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+        if (familyPortalGuardianInterest.Interest_Choices__c != null) {
+            List<Family_Portal_Guardian_Interest__c> familyPortalGuardianInterestList = new List<Family_Portal_Guardian_Interest__c>();
+            List<String> guardianChosenInterestsFromPicklist = familyPortalGuardianInterest.Interest_Choices__c.split(';');
+
+            for (String guardianChosenInterest : guardianChosenInterestsFromPicklist) {
+                Family_Portal_Guardian_Interest__c guardianInterest = new Family_Portal_Guardian_Interest__c();
+                guardianInterest.Chosen_Interest__c = guardianChosenInterest;
+                guardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+                familyPortalGuardianInterestList.add(guardianInterest);
+            }
+            insert familyPortalGuardianInterestList;
         }
-        insert familyPortalGuardianInterest;
 
         for (Family_Portal_Student__c reportedStudent : familyPortalStudentList) {
             reportedStudent.Family_Portal_Guardian__c = familyPortalGuardian.Id;

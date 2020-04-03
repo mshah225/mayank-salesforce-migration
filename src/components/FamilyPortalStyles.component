@@ -1,0 +1,150 @@
+<apex:component> 
+    <style> 
+        .family-portal-page-title,
+        .mainTitle {
+            margin-left: 1em !important;
+        }
+
+        .mainTitle {
+            font-size: 1.5em !important;
+        }
+
+        .family-portal-1-container,
+        .family-portal-2-container,
+        .family-portal-3-container,
+        .family-portal-4a-container,
+        .family-portal-4b-container,
+        .family-portal-5-container {
+            width: 45% !important;
+            display: inline-block !important;
+            vertical-align: top !important;
+            margin-top: 3em !important;
+            /* margin-left: 5em !important; */
+        }
+
+        .family-portal-1-container table > tbody > tr:nth-child(2n+1),
+        .family-portal-2-container table > tbody > tr:nth-child(2n+1),
+        .family-portal-3-container table > tbody > tr:nth-child(2n+1),
+        .family-portal-4a-container table > tbody > tr:nth-child(2n+1),
+        .family-portal-5-container table > tbody > tr:nth-child(2n+1) {
+            background-color: unset !important;
+        }
+
+        .family-portal-2-container .pbSubsection table td,
+        .family-portal-2-container .pbSubsection table th,
+        .family-portal-3-container .pbSubsection table td,
+        .family-portal-3-container .pbSubsection table th,
+        .family-portal-4b-container .pbSubsection table td,
+        .family-portal-4b-container .pbSubsection table th {
+            border: 0 !important;
+        }
+
+        .family-portal-2-container .pbSubsection .assistiveText,
+        .family-portal-3-container .pbSubsection .assistiveText,
+        .family-portal-4b-container .pbSubsection .assistiveText {
+            display: none !important;
+        }
+
+        .family-portal-3-container table > tbody > tr > td {
+            border-top: unset !important;
+        }
+
+        .family-portal-3-container table > tbody > tr:first-child > td {
+            display: none !important;
+        }
+
+        .family-portal-5-container {
+            text-align: center !important;
+            margin-top: 10em !important;
+        }
+
+        /* .family-portal-1-header,
+        .family-portal-4a-header, */
+        .family-portal-double-button-container {
+            text-align: center !important;
+        }
+
+        .family-portal-1-header h2 {
+            font-size: 30px !important;
+        }
+
+        .family-portal-double-button {
+            text-align: center !important;
+            width: 49% !important;
+            display: inline-block !important;
+        }
+
+        .family-portal-sidebar {
+            width: 40% !important;
+            float: right !important;
+            margin-bottom: 3em;
+        }
+
+        .family-portal-3-container .multiSelectPicklistRow {
+            text-align: center !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistRow select {
+            width: 9em !important !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistCell img {
+            display: none !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistCell > a {
+            font-size: 2em !important;
+            border-bottom: none !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistCell > a:link {
+            color: #8C1D40 !important;
+            text-decoration: none !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistCell > a:hover {
+            color: #D23178 !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistCell > a:first-child:after {
+            content: '\2B95' !important;
+        }
+
+        .family-portal-3-container .multiSelectPicklistCell > a:last-child:after {
+            content: '\2B05' !important;
+        }
+
+        .family-portal-sidebar .well {
+            margin-top: 2em !important;
+            padding-left: 2em !important;
+            padding-right: 2em !important;
+        }
+
+        .bPageBlock .requiredInput {
+            position: relative !important;
+            height: 100% !important;
+        }
+
+        .bPageBlock .requiredInput .requiredBlock {
+            background-color: #c00 !important;
+            position: absolute !important;
+            left: -4px !important;
+            width: 3px !important;
+            top: 1px !important;
+            bottom: 1px !important;
+        }
+
+        .bPageBlock .detailList .error {
+            border: 2px solid #c00 !important;
+        }
+
+        p, select, input, textarea, .lead {
+            font-weight: 400 !important;
+        }
+
+        .family-portal-1-page-container {
+            max-width: 1170px;
+            margin: auto;
+        }
+    </style>
+</apex:component>

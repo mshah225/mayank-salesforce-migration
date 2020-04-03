@@ -18,8 +18,6 @@
             width: 45% !important;
             display: inline-block !important;
             vertical-align: top !important;
-            margin-top: 3em !important;
-            /* margin-left: 5em !important; */
         }
 
         .family-portal-1-container table > tbody > tr:nth-child(2n+1),
@@ -142,7 +140,7 @@
             font-weight: 400 !important;
         }
 
-        .family-portal-1-page-container {
+        .family-portal-body-container {
             max-width: 1170px;
             margin: auto;
         }

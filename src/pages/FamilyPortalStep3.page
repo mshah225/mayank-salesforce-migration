@@ -1,21 +1,32 @@
 <apex:page controller="FamilyPortalController" standardStylesheets="false">
-    <head>
-        <c:FamilyPortalResources />
-    </head>
+    <title>ASU | Family Portal</title>
+    <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
-    <h2 class="family-portal-page-title">ASU Family Portal</h2>
+    <c:ASUBrandHeader />
+    <div class="myasu-header-seo-container">
+        <div>
+            <div id="myasu-header-seo" class="myasu-cont">
+                <a href="https://webapp4.asu.edu/myasu">Family Portal</a>
+            </div>
+        </div>
+    </div>   
+    
+    <c:FamilyPortalResources />
     <apex:form>
-        <div class="family-portal-3-container">
-            <apex:pageBlock>
-                <div class="family-portal-3-header">
-                    <h3>I want to learn about...</h3>
-                </div>
-                <apex:inputField value="{!familyPortalGuardianInterest.Interest_Choices__c}" />   
-                <apex:commandLink action="{!familyPortalStep4a}" styleClass="btn btn-primary btn-block">
-                    Next
-                </apex:commandLink>
-            </apex:pageBlock>
-        </div> 
-        <c:FamilyPortalSidebar />
+        <div class="family-portal-body-container">
+            <div class="family-portal-3-container">
+                <apex:pageBlock>
+                    <div class="family-portal-3-header">
+                        <h3>I want to learn about...</h3>
+                    </div>
+                    <apex:inputField value="{!familyPortalGuardianInterest.Interest_Choices__c}" />   
+                    <apex:commandLink action="{!familyPortalStep4a}" styleClass="btn btn-primary btn-block">
+                        Next
+                    </apex:commandLink>
+                </apex:pageBlock>
+            </div> 
+            <c:FamilyPortalSidebar />
+        </div>
     </apex:form>
+    <c:ASUBrandFooter />
 </apex:page>

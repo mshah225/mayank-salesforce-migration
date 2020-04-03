@@ -1,10 +1,8 @@
 <apex:page controller="FamilyPortalController" standardStylesheets="false">
-
     <title>ASU | Family Portal</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
     <c:ASUBrandHeader />
-
     <div class="myasu-header-seo-container">
         <div>
             <div id="myasu-header-seo" class="myasu-cont">
@@ -14,9 +12,8 @@
     </div>   
     
     <c:FamilyPortalResources />
-
     <apex:form>
-        <div class="family-portal-1-page-container">
+        <div class="family-portal-body-container">
             <div class="family-portal-1-container">
                 <apex:pageBlock>
                     <div class="family-portal-1-header">

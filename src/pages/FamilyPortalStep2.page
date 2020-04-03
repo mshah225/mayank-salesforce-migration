@@ -1,26 +1,37 @@
 <apex:page controller="FamilyPortalController" standardStylesheets="false">
-    <head>
-        <c:FamilyPortalResources />
-    </head>
-    
-    <h2 class="family-portal-page-title">ASU Family Portal</h2>
-    <apex:form>
-        <div class="family-portal-2-container">
-            <apex:pageBlock>
-                <div class="family-portal-2-header">
-                    <h3>Who are you?</h3>
-                </div>
-                <apex:pageBlockSection columns="2">
-                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.First_Name__c}" />
-                    <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Last_Name__c}"/>
-                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Email__c}" />
-                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Zip_Code__c}" />
-                </apex:pageBlockSection>
-                <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
-                    Next
-                </apex:commandLink>
-            </apex:pageBlock>
+    <title>ASU | Family Portal</title>
+    <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
+
+    <c:ASUBrandHeader />
+    <div class="myasu-header-seo-container">
+        <div>
+            <div id="myasu-header-seo" class="myasu-cont">
+                <a href="https://webapp4.asu.edu/myasu">Family Portal</a>
+            </div>
         </div>
-        <c:FamilyPortalSidebar />
+    </div>   
+    
+    <c:FamilyPortalResources />
+    <apex:form>
+        <div class="family-portal-body-container">
+            <div class="family-portal-2-container">
+                <apex:pageBlock>
+                    <div class="family-portal-2-header">
+                        <h3>Who are you?</h3>
+                    </div>
+                    <apex:pageBlockSection columns="2">
+                        <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.First_Name__c}" />
+                        <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Last_Name__c}"/>
+                        <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Email__c}" />
+                        <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Zip_Code__c}" />
+                    </apex:pageBlockSection>
+                    <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
+                        Next
+                    </apex:commandLink>
+                </apex:pageBlock>
+            </div>
+            <c:FamilyPortalSidebar />
+        </div>
     </apex:form>
+    <c:ASUBrandFooter />
 </apex:page>

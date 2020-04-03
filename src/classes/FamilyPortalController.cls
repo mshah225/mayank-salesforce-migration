@@ -20,6 +20,26 @@ public with sharing class FamilyPortalController {
         return existingGuardianUser;
     }
 
+    public void sendConfirmationEmail() {
+        Messaging.reserveSingleEmailCapacity(2);
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+
+        String[] toAddresses = new String[] {familyPortalGuardian.Email__c}; 
+        mail.setToAddresses(toAddresses);
+
+        mail.setReplyTo('salesforce.support@asu.edu');
+        mail.setSenderDisplayName('ASU Salesforce Support');
+
+        mail.setSubject('New family portal submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
+        mail.setBccSender(false);
+        mail.setUseSignature(false);
+        mail.setPlainTextBody('Your family portal submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' +' has been created. Please edit your interest preferences at my.asu.edu.');
+        mail.setHtmlBody('Your family portal submission for <b>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + '</b> has been created.<p>' +
+            'To view your submission, <a href=https://asu--mgilardi.my.salesforce.com/' + familyPortalGuardian.Id + '>click here.</a> Please edit your interest preferences at <a href="https://my.asu.edu">MyASU</a>.');
+
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+    }
+
     public PageReference addStudentRow() {
         studentRowCount++;
         studentWrapperList.add(new FamilyPortalStudentWrapper(new Family_Portal_Student__c(), studentRowCount));
@@ -143,6 +163,10 @@ public with sharing class FamilyPortalController {
             reportedStudent.Family_Portal_Guardian__c = familyPortalGuardian.Id;
         }
         insert familyPortalStudentList;
+
+
+        // @TODO - ENABLE FOR DEV/PROD (sandbox doesn't have email perms)
+        //sendConfirmationEmail();
 
         return Page.FamilyPortalStep5;
     }

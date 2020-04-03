@@ -5,11 +5,13 @@ public with sharing class FamilyPortalController {
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
     public List<FamilyPortalStudentWrapper> studentWrapperList {get;set;}
     private Integer studentRowCount = 0;
+    private String businessUnitFromUrl;
 
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
+        businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
         addStudentRow();
     }
 
@@ -32,6 +34,13 @@ public with sharing class FamilyPortalController {
             }
         }
         return null;
+    }
+
+    public PageReference generateLoginLink() {
+        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3?bu=' + businessUnitFromUrl;
+        PageReference loginLink = new PageReference(loginLinkString);
+        loginLink.setRedirect(true);
+        return loginLink;
     }
 
     public PageReference familyPortal() {
@@ -110,6 +119,10 @@ public with sharing class FamilyPortalController {
             
             insert newGuardianContact;
             familyPortalGuardian.Contact__c = newGuardianContact.Id;
+        }
+
+        if (businessUnitFromUrl != null) {
+            familyPortalGuardian.Business_Unit_Source__c = businessUnitFromUrl;
         }
         insert familyPortalGuardian;
 

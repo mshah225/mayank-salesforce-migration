@@ -62,8 +62,7 @@ global with sharing class CustomSenderService implements Callable {
                                                                          smagicinteract__SenderId_Lookup__r.smagicinteract__Email_Notification_Template__c,
                                                                          smagicinteract__SenderId_Lookup__r.smagicinteract__Notification_Recipient__c
                                                                          from smagicinteract__SenderId_Profile_Map__c 
-                                                                         where smagicinteract__SenderId_Lookup__r.IsEnterpriseUser__c = true
-                                                                         and (smagicinteract__User__c = :UserInfo.getUserId() 
+                                                                         where (smagicinteract__User__c = :UserInfo.getUserId() 
                                                                          or smagicinteract__Profile_Id__c = :UserInfo.getProfileId())
                                                                          order by smagicinteract__User__c ASC NULLS last]) {
             if(String.isNotBlank(senderProfileMap.smagicinteract__SenderId_Lookup__r.smagicinteract__senderId__c)) {

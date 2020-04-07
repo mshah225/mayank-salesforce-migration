@@ -16,7 +16,7 @@
              */
             var evt = $A.get("e.force:navigateToComponent");
             var urlEvent = $A.get("e.force:navigateToURL");
-            var sanitizedUrl = '/apex/BulkSMS_Contact?selected='+ids+'&objectName=Contact';
+            var sanitizedUrl = '/apex/BulkSMSEnterprise_Contact?selected='+ids+'&objectName=Contact';
             
             if (evt) {
                 evt.setParams({

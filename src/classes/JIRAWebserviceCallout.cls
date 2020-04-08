@@ -223,6 +223,8 @@ global class JIRAWebserviceCallout {
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
+
+        username = username.replace('\n', '').replace('\r', '');
         
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/jql/pdcleaner';
 

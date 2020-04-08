@@ -17,8 +17,11 @@ global with sharing class CustomSenderService implements Callable {
         Set<Id> convIds = new Set<Id>();
         List<smagicinteract__SMS_SenderId__c> senderIds = new List<smagicinteract__SMS_SenderId__c>();
         System.debug('@@--Ids passed : '+ ids);
+        if (ids == null || ids.isEmpty()) {
+            return getDefaultSenderIds();
+        }
         for(Id record : ids) {
-            if(smagicinteract__Conversation__c.sObjectType == record.getsobjecttype()) {
+            if(record != null && smagicinteract__Conversation__c.sObjectType == record.getsobjecttype()) {
                 convIds.add(record);
             }
         }

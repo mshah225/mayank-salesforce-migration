@@ -13,19 +13,21 @@
     
     <c:FamilyPortalResources />
     <apex:form>
-        <div class="family-portal-body-container">
-            <div class="family-portal-3-container">
-                <apex:pageBlock>
-                    <div class="family-portal-3-header">
-                        <h3>I want to learn about...</h3>
-                    </div>
-                    <apex:inputField value="{!familyPortalGuardianInterest.Interest_Choices__c}" />   
-                    <apex:commandLink action="{!familyPortalStep4a}" styleClass="btn btn-primary btn-block">
-                        Next
-                    </apex:commandLink>
-                </apex:pageBlock>
-            </div> 
-            <c:FamilyPortalSidebar />
+        <div id="accessible-body">
+            <div class="family-portal-body-container">
+                <div class="family-portal-3-container">
+                    <apex:pageBlock>
+                        <div class="family-portal-3-header">
+                            <h3>I want to learn about...</h3>
+                        </div>
+                        <apex:inputField value="{!familyPortalGuardianInterest.Interest_Choices__c}" />   
+                        <apex:commandLink action="{!familyPortalStep4a}" styleClass="btn btn-primary btn-block">
+                            Next
+                        </apex:commandLink>
+                    </apex:pageBlock>
+                </div> 
+                <c:FamilyPortalSidebar />
+            </div>
         </div>
     </apex:form>
     <c:ASUBrandFooter />

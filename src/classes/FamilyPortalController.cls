@@ -20,7 +20,7 @@ public with sharing class FamilyPortalController {
         return existingGuardianUser;
     }
 
-    public void sendConfirmationEmail() {
+    private void sendConfirmationEmail() {
         Messaging.reserveSingleEmailCapacity(2);
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
@@ -42,42 +42,7 @@ public with sharing class FamilyPortalController {
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }
 
-    public PageReference addStudentRow() {
-        studentRowCount++;
-        studentWrapperList.add(new FamilyPortalStudentWrapper(new Family_Portal_Student__c(), studentRowCount));
-        return null;
-    }
-    
-    public PageReference removeStudentRow() {
-        Integer indexToRemove = Integer.valueOf(Apexpages.currentpage().getParameters().get('index'));
-        for(Integer i = 0; i < studentWrapperList.size(); i++) {
-            if(studentWrapperList[i].studentIndex == indexToRemove ) {
-                studentWrapperList.remove(i);     
-            }
-        }
-        return null;
-    }
-
-    public PageReference generateLoginLink() {
-        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3?bu=' + businessUnitFromUrl;
-        PageReference loginLink = new PageReference(loginLinkString);
-        loginLink.setRedirect(true);
-        return loginLink;
-    }
-
-    public PageReference familyPortal() {
-        return Page.FamilyPortal;
-    }
-
-    public PageReference familyPortalStep2() {
-        return Page.FamilyPortalStep2;
-    }
-
-    public PageReference familyPortalStep3() {
-        return Page.FamilyPortalStep3;
-    }
-
-    public PageReference familyPortalStep4a() {
+    private void doFamilyPortalStep4a() {
         User existingGuardianUser;
         if (UserInfo.getUserId() != null && familyPortalGuardian.First_Name__c == null && familyPortalGuardian.Last_Name__c == null && familyPortalGuardian.Email__c == null) {
             existingGuardianUser = getGuardianDataFromExistingUser();
@@ -100,14 +65,9 @@ public with sharing class FamilyPortalController {
                 existingGuardianUserAsuriteId = existingGuardianUser.ASURITE_for_External_ID__c;
             }
         }
-        return Page.FamilyPortalStep4a;
     }
 
-    public PageReference familyPortalStep4b() {
-        return Page.FamilyPortalStep4b;
-    }
-
-    public PageReference familyPortalStep5() {
+    private void doFamilyPortalStep5() {
         List<Family_Portal_Student__c> familyPortalStudentList = new List<Family_Portal_Student__c>();
 
         if (!studentWrapperList.isEmpty()) {
@@ -166,10 +126,59 @@ public with sharing class FamilyPortalController {
         }
         insert familyPortalStudentList;
 
+        try {
+            sendConfirmationEmail();
+        } catch(Exception e) {
+            System.debug('The following exception occured while attempting to send an email: ' + e.getMessage());
+        }
+    }
 
-        // @TODO - ENABLE FOR DEV/PROD (sandbox doesn't have email perms)
-        //sendConfirmationEmail();
+    public PageReference addStudentRow() {
+        studentRowCount++;
+        studentWrapperList.add(new FamilyPortalStudentWrapper(new Family_Portal_Student__c(), studentRowCount));
+        return null;
+    }
+    
+    public PageReference removeStudentRow() {
+        Integer indexToRemove = Integer.valueOf(Apexpages.currentpage().getParameters().get('index'));
+        for(Integer i = 0; i < studentWrapperList.size(); i++) {
+            if(studentWrapperList[i].studentIndex == indexToRemove ) {
+                studentWrapperList.remove(i);     
+            }
+        }
+        return null;
+    }
 
+    public PageReference generateLoginLink() {
+        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3?bu=' + businessUnitFromUrl;
+        PageReference loginLink = new PageReference(loginLinkString);
+        loginLink.setRedirect(true);
+        return loginLink;
+    }
+
+    public PageReference familyPortal() {
+        return Page.FamilyPortal;
+    }
+
+    public PageReference familyPortalStep2() {
+        return Page.FamilyPortalStep2;
+    }
+
+    public PageReference familyPortalStep3() {
+        return Page.FamilyPortalStep3;
+    }
+
+    public PageReference familyPortalStep4a() {
+        doFamilyPortalStep4a();
+        return Page.FamilyPortalStep4a;
+    }
+
+    public PageReference familyPortalStep4b() {
+        return Page.FamilyPortalStep4b;
+    }
+
+    public PageReference familyPortalStep5() {
+        doFamilyPortalStep5();
         return Page.FamilyPortalStep5;
     }
 

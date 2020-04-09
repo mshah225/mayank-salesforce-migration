@@ -13,15 +13,17 @@
     
     <c:FamilyPortalResources />
     <apex:form>
-        <div class="family-portal-body-container">
-            <div class="family-portal-5-container">
-                <div class="family-portal-5-header">
-                    <h3>Confirmation</h3>
+        <div id="accessible-body">
+            <div class="family-portal-body-container">
+                <div class="family-portal-5-container">
+                    <div class="family-portal-5-header">
+                        <h3>Confirmation</h3>
+                    </div>
+                    <br />
+                    <p>Thank you for your submission! An email confirmation will be sent. In the future, you can edit your interests by clicking the link provided in the confirmation email.</p>
                 </div>
-                <br />
-                <p>Thank you for your submission! An email confirmation will be sent. In the future, you can edit your interests by clicking the link provided in the confirmation email.</p>
+                <c:FamilyPortalSidebar />
             </div>
-            <c:FamilyPortalSidebar />
         </div>
     </apex:form>
     <c:ASUBrandFooter />

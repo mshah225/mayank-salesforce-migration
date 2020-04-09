@@ -1,38 +1,11 @@
 <apex:component controller="ASUBrandHeaderController">
-	<style>
-		#asu_universal_nav ul a,
-		#myasu-header-seo a {
-			border-bottom: none;
-		}
-		.myasu-cont {
-            max-width:1170px !important;
-            margin:auto !important;
-        }
-        #myasu-header-seo {
-            margin-bottom: 2px !important;
-            margin-top: -2px !important
-        }
-
-        #myasu-header-seo a {
-            font-size: 24px !important;
-            font-weight: 700 !important;
-            color: #000 !important
-        }
-        #myasu-header-seo a:active,
-        #myasu-header-seo a:focus,
-        #myasu-header-seo a:hover {
-            text-decoration: none!important
-        }
-        .myasu-header-seo-container {
-            font-size: 24px;
-            padding: 0 0 12px 1em !important;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-	</style>
+	<c:ASUBrandHeaderStyles />
 
     <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
     <div id="headCSSWrap">
+		<div class="accessibility-hide">
+			<a href="#accessible-body" id="skip-to-content">Skip to Main Page Content</a>
+		</div>
 	    <div id="asu_hdr" class="asu_hdr_white myasu-cont">
 	        <div id="asu_mobile_hdr">
 	            <div id="asu_logo">
@@ -69,9 +42,10 @@
 						<li>{!$User.FirstName}</li>
 						<li id="asu_hdr_ssi" class="end">
 						<a target="_top" href="https://webapp4.asu.edu/myasu/Signout"
-						onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
-						onfocus="this.href = ASUHeader.alterLoginHref(this.href);"
-						onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN OUT</a>
+							onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
+							onfocus="this.href = ASUHeader.alterLoginHref(this.href);"
+							onclick="this.href = ASUHeader.alterLoginHref(this.href);"
+						>SIGN OUT</a>
 						</li>
 					</ul>
 	                <!--Do not render if user is not logged in-->

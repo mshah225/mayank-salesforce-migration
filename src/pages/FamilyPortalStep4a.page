@@ -13,25 +13,27 @@
     
     <c:FamilyPortalResources />
     <apex:form>
-        <div class="family-portal-body-container">
-            <div class="family-portal-4a-container">
-                <div class="family-portal-4a-header">
-                    <h3>Would you like to include any students?</h3>
-                </div>
-                <div class="family-portal-double-button-container">
-                    <div class="family-portal-double-button">
-                        <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep4b}">
-                            Yes
-                        </apex:commandLink>
+        <div id="accessible-body">
+            <div class="family-portal-body-container">
+                <div class="family-portal-4a-container">
+                    <div class="family-portal-4a-header">
+                        <h3>Would you like to include any students?</h3>
                     </div>
-                    <div class="family-portal-double-button">
-                        <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!familyPortalStep5}">
-                            No
-                        </apex:commandLink>
+                    <div class="family-portal-double-button-container">
+                        <div class="family-portal-double-button">
+                            <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep4b}">
+                                Yes
+                            </apex:commandLink>
+                        </div>
+                        <div class="family-portal-double-button">
+                            <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!familyPortalStep5}">
+                                No
+                            </apex:commandLink>
+                        </div>
                     </div>
                 </div>
+                <c:FamilyPortalSidebar />
             </div>
-            <c:FamilyPortalSidebar />
         </div>
     </apex:form>
     <c:ASUBrandFooter />

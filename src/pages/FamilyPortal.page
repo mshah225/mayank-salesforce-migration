@@ -13,28 +13,30 @@
     
     <c:FamilyPortalResources />
     <apex:form>
-        <div class="family-portal-body-container">
-            <div class="family-portal-1-container">
-                <apex:pageBlock>
-                    <div class="family-portal-1-header">
-                        <h2>Welcome to the ASU portal for family members.</h2>
-                        <p class="lead">Do you have an ASURITE ID? If not, please sign up below.</p>
-                    </div>
-                    <div class="family-portal-double-button-container">
-                        <div class="family-portal-double-button">
-                            <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep2}">
-                                Sign up
-                            </apex:commandLink>
+        <div id="accessible-body">
+            <div class="family-portal-body-container">
+                <div class="family-portal-1-container">
+                    <apex:pageBlock>
+                        <div class="family-portal-1-header">
+                            <h2>Welcome to the ASU portal for family members.</h2>
+                            <p class="lead">Do you have an ASURITE ID? If not, please sign up below.</p>
                         </div>
-                        <div class="family-portal-double-button">
-                            <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!generateLoginLink}">
-                                Login
-                            </apex:commandLink>
+                        <div class="family-portal-double-button-container">
+                            <div class="family-portal-double-button">
+                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep2}">
+                                    Sign up
+                                </apex:commandLink>
+                            </div>
+                            <div class="family-portal-double-button">
+                                <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!generateLoginLink}">
+                                    Login
+                                </apex:commandLink>
+                            </div>
                         </div>
-                    </div>
-                </apex:pageBlock>
+                    </apex:pageBlock>
+                </div>
+                <c:FamilyPortalSidebar />
             </div>
-            <c:FamilyPortalSidebar />
         </div>
     </apex:form>
     <c:ASUBrandFooter />

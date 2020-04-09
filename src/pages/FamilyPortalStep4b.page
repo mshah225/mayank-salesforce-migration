@@ -13,42 +13,44 @@
     
     <c:FamilyPortalResources />
     <apex:form>
-        <div class="family-portal-body-container">
-            <div class="family-portal-4b-container">
-                <apex:pageBlock>
-                    <div class="family-portal-4b-header">
-                        <h3>I'm a family member or guardian of...</h3>
-                    </div>
-                    <apex:dataTable value="{!studentWrapperList}" var="swl" id="family-portal-student-page-block" >
-                        <apex:column headerValue="Student">
-                            <strong>Status</strong>
-                            <apex:inputField value="{!swl.familyPortalStudentObj.Enrollment_Status__c}" />
-                        </apex:column>
-                        <apex:column>
-                            <strong>Graduation Year</strong>
-                            <apex:inputField value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" />
-                        </apex:column>
-                        <apex:column headerValue="Action"> 
-                            <apex:commandButton action="{!removeStudentRow}" value="Remove" styleClass="btn btn-secondary" reRender="family-portal-student-page-block">
-                                <apex:param value="{!swl.studentIndex}" name="index" />
-                            </apex:commandButton>
-                        </apex:column>
-                    </apex:dataTable>         
-                    <div class="family-portal-double-button-container">
-                        <div class="family-portal-double-button">
-                            <apex:commandLink action="{!addStudentRow}" styleClass="btn btn-secondary btn-block" reRender="family-portal-student-page-block">
-                                Add New Student
-                            </apex:commandLink>
+        <div id="accessible-body">
+            <div class="family-portal-body-container">
+                <div class="family-portal-4b-container">
+                    <apex:pageBlock>
+                        <div class="family-portal-4b-header">
+                            <h3>I'm a family member or guardian of...</h3>
                         </div>
-                        <div class="family-portal-double-button">
-                            <apex:commandLink action="{!familyPortalStep5}" styleClass="btn btn-primary btn-block">
-                                Submit
-                            </apex:commandLink>
+                        <apex:dataTable value="{!studentWrapperList}" var="swl" id="family-portal-student-page-block" >
+                            <apex:column headerValue="Student">
+                                <strong>Status</strong>
+                                <apex:inputField value="{!swl.familyPortalStudentObj.Enrollment_Status__c}" />
+                            </apex:column>
+                            <apex:column>
+                                <strong>Graduation Year</strong>
+                                <apex:inputField value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" />
+                            </apex:column>
+                            <apex:column headerValue="Action"> 
+                                <apex:commandButton action="{!removeStudentRow}" value="Remove" styleClass="btn btn-secondary" reRender="family-portal-student-page-block">
+                                    <apex:param value="{!swl.studentIndex}" name="index" />
+                                </apex:commandButton>
+                            </apex:column>
+                        </apex:dataTable>         
+                        <div class="family-portal-double-button-container">
+                            <div class="family-portal-double-button">
+                                <apex:commandLink action="{!addStudentRow}" styleClass="btn btn-secondary btn-block" reRender="family-portal-student-page-block">
+                                    Add New Student
+                                </apex:commandLink>
+                            </div>
+                            <div class="family-portal-double-button">
+                                <apex:commandLink action="{!familyPortalStep5}" styleClass="btn btn-primary btn-block">
+                                    Submit
+                                </apex:commandLink>
+                            </div>
                         </div>
-                    </div>
-                </apex:pageBlock>
+                    </apex:pageBlock>
+                </div>
+                <c:FamilyPortalSidebar />
             </div>
-            <c:FamilyPortalSidebar />
         </div>
     </apex:form>
     <c:ASUBrandFooter />

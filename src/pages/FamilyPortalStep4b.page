@@ -1,4 +1,4 @@
-<apex:page controller="FamilyPortalController" standardStylesheets="false">
+<apex:page controller="FamilyPortalController" standardStylesheets="false" showHeader="false" html-lang="en-US">
     <title>ASU | Family Portal</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 

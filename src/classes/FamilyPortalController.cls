@@ -24,8 +24,7 @@ public with sharing class FamilyPortalController {
         Messaging.reserveSingleEmailCapacity(2);
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
-        String[] toAddresses = new String[] {familyPortalGuardian.Email__c}; 
-        mail.setToAddresses(toAddresses);
+        mail.setToAddresses(new List<String> {familyPortalGuardian.Email__c});
 
         mail.setReplyTo('salesforce.support@asu.edu');
         mail.setSenderDisplayName('ASU Salesforce Support');
@@ -33,11 +32,14 @@ public with sharing class FamilyPortalController {
         mail.setSubject('New family portal submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
         mail.setBccSender(false);
         mail.setUseSignature(false);
-        mail.setPlainTextBody('Your family portal submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' +' has been created. Please edit your interest preferences at my.asu.edu.');
-        mail.setHtmlBody('Your family portal submission for <b>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + '</b> has been created.<p>' +
-            'To view your submission, <a href=https://asu--mgilardi.my.salesforce.com/' + familyPortalGuardian.Id + '>click here.</a> Please edit your interest preferences at <a href="https://my.asu.edu">MyASU</a>.');
+        mail.setPlainTextBody('Your family portal submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
+            'If you have an ASURITE ID, you view your submission record at https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '. ' + 
+            'You can also change your interests at any time by revisiting the ASU Family Portal at families.asu.edu.');
+        mail.setHtmlBody('Your family portal submission for <b>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</b> has been created.<p>' +
+            'If you have an ASURITE ID, you view your <a href=https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '>submission record</a>. ' + 
+            'You can also change your interests at any time by revisiting the <a href="https://families.asu.edu">ASU Family Portal</a>.');
 
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }
 
     public PageReference addStudentRow() {

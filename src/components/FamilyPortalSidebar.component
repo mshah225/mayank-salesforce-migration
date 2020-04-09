@@ -1,6 +1,6 @@
 <apex:component>
     <div class="family-portal-sidebar">
-        <img width="100%" src="https://drive.google.com/uc?id=1eBxeEJt1h0Sw2uAkqwx3-t6PcnEXabAU" />
+        <img width="100%" src="https://drive.google.com/uc?id=1eBxeEJt1h0Sw2uAkqwx3-t6PcnEXabAU" alt="ASU family at graduation signing pitchforks with their hands"/>
         <div class="well">
             <p class="lead"><strong>Have Questions?</strong></p>
             <p>Please email us at <strong><a href="mailto:questions@asu.edu" target="_blank">questions@asu.edu</a></strong> or give us a call at <strong><a href="tel:6025558990" target="_blank">(602) 555-8990</a></strong>.</p>

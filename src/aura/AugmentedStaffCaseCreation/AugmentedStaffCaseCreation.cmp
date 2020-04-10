@@ -57,7 +57,11 @@
             <lightning:textarea aura:id="descriptionResponse" label="Case Description" value="{!v.description}"
                 maxlength="3000" required="true" />
             <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
-            <lightning:input type="toggle" aura:id="caseClosed" label="Close Case" value="{!v.caseClosed}" />
+         
+            <p style="font-size: 24px !important;">Close Case?
+                <ui:inputcheckbox class="checkbox" aura:id="caseClosed" value="{!v.caseClosed}" />
+            </p>
+            
 
             <lightning:button aura:id="submitButton" disabled="false" label="Submit" class="RED" variant="brand"
                 onclick="{!c.createCase}" />

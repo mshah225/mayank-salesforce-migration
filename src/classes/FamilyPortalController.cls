@@ -1,48 +1,123 @@
 public with sharing class FamilyPortalController {
-    public String existingGuardianUserAsuriteId {get; set;}
-    public String existingGuardianUserEmplid {get; set;}
+    private String existingGuardianUserAsuriteId {get; set;}
+    private String existingGuardianUserEmplid {get; set;}
     public Family_Portal_Guardian__c familyPortalGuardian {get; set;}
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
-    public List<FamilyPortalStudentWrapper> studentWrapperList {get;set;}
+    public List<FamilyPortalStudentWrapper> studentWrapperList {get; set;}
     private Integer studentRowCount = 0;
-    private String businessUnitFromUrl;
+    public String businessUnitFromUrl;
+    public String hashedIdFromUrl;
 
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
+        hashedIdFromUrl = ApexPages.currentPage().getParameters().get('id');
         addStudentRow();
     }
 
-    public User getGuardianDataFromExistingUser() {
-        User existingGuardianUser = [SELECT FirstName, LastName, Email, PostalCode, EmployeeNumber, ASURITE_for_External_ID__c, Id FROM User WHERE Id =: UserInfo.getUserId()];
-        return existingGuardianUser;
+    public PageReference addStudentRow() {
+        studentRowCount++;
+        studentWrapperList.add(new FamilyPortalStudentWrapper(new Family_Portal_Student__c(), studentRowCount));
+        return null;
+    }
+    
+    public PageReference removeStudentRow() {
+        Integer indexToRemove = Integer.valueOf(Apexpages.currentpage().getParameters().get('index'));
+        for(Integer i = 0; i < studentWrapperList.size(); i++) {
+            if(studentWrapperList[i].studentIndex == indexToRemove ) {
+                studentWrapperList.remove(i);     
+            }
+        }
+        return null;
     }
 
-    private void sendConfirmationEmail() {
-        Messaging.reserveSingleEmailCapacity(2);
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-
-        mail.setToAddresses(new List<String> {familyPortalGuardian.Email__c});
-
-        mail.setReplyTo('salesforce.support@asu.edu');
-        mail.setSenderDisplayName('ASU Salesforce Support');
-
-        mail.setSubject('New family portal submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
-        mail.setBccSender(false);
-        mail.setUseSignature(false);
-        mail.setPlainTextBody('Your family portal submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
-            'If you have an ASURITE ID, you view your submission record at https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '. ' + 
-            'You can also change your interests at any time by revisiting the ASU Family Portal at families.asu.edu.');
-        mail.setHtmlBody('Your family portal submission for <b>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</b> has been created.<p>' +
-            'If you have an ASURITE ID, you view your <a href=https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '>submission record</a>. ' + 
-            'You can also change your interests at any time by revisiting the <a href="https://families.asu.edu">ASU Family Portal</a>.');
-
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+    public PageReference generateLoginLink() {
+        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3?bu=' + businessUnitFromUrl;
+        if (hashedIdFromUrl != null) {
+            loginLinkString += '?id=' + hashedIdFromUrl;
+        }
+        PageReference loginLink = new PageReference(loginLinkString);
+        loginLink.setRedirect(true);
+        return loginLink;
     }
 
-    private void doFamilyPortalStep4a() {
+    public PageReference familyPortal() {
+        return Page.FamilyPortal;
+    }
+
+    public PageReference familyPortalStep2() {
+        return Page.FamilyPortalStep2;
+    }
+
+    public PageReference familyPortalStep3() {
+        try {
+            prefillFormFromHashedId();
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+        }
+        return Page.FamilyPortalStep3;
+    }
+
+    private void prefillFormFromHashedId() {
+        if (hashedIdFromUrl != null) {
+            List<Family_Portal_Guardian__c> guardian = [
+                SELECT Id
+                FROM Family_Portal_Guardian__c
+                WHERE Hashed_ID__c =: hashedIdFromUrl
+            ];
+            
+            List<Family_Portal_Guardian_Interest__c> guardianInterests = [
+                SELECT Id, Chosen_Interest__c
+                FROM Family_Portal_Guardian_Interest__c
+                WHERE Family_Portal_Guardian__c =: guardian[0].Id
+            ];
+
+            String interestString = '';
+            for (Family_Portal_Guardian_Interest__c interest : guardianInterests) {
+                if (interestString == null) {
+                    interestString += (String) interest.Chosen_Interest__c;
+                } else {
+                    interestString += ';' + (String) interest.Chosen_Interest__c;
+                }
+            }
+            if (interestString != null) {
+                familyPortalGuardianInterest.Interest_Choices__c = interestString;
+            }
+
+            List<Family_Portal_Student__c> students = [
+                SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c
+                FROM Family_Portal_Student__c
+                WHERE Family_Portal_Guardian__c =: guardian[0].Id
+            ];
+
+
+            for (Family_Portal_Student__c student : students) {
+                studentRowCount++;
+                studentWrapperList.add(
+                    new FamilyPortalStudentWrapper(
+                        new Family_Portal_Student__c(
+                            Enrollment_Status__c = student.Enrollment_Status__c,
+                            Enrollment_Status_Year__c = student.Enrollment_Status_Year__c
+                        ), 
+                        studentRowCount
+                    )
+                );
+            }
+        }
+    }
+
+    public PageReference familyPortalStep4a() {
+        try {
+            setExistingUserData();
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+        }
+        return Page.FamilyPortalStep4a;
+    }
+
+    private void setExistingUserData() {
         User existingGuardianUser;
         if (UserInfo.getUserId() != null && familyPortalGuardian.First_Name__c == null && familyPortalGuardian.Last_Name__c == null && familyPortalGuardian.Email__c == null) {
             existingGuardianUser = getGuardianDataFromExistingUser();
@@ -67,16 +142,29 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    private void doFamilyPortalStep5() {
-        List<Family_Portal_Student__c> familyPortalStudentList = new List<Family_Portal_Student__c>();
+    private User getGuardianDataFromExistingUser() {
+        User existingGuardianUser = [SELECT FirstName, LastName, Email, PostalCode, EmployeeNumber, ASURITE_for_External_ID__c, Id FROM User WHERE Id =: UserInfo.getUserId()];
+        return existingGuardianUser;
+    }
 
-        if (!studentWrapperList.isEmpty()) {
-            for (FamilyPortalStudentWrapper studentWrapper : studentWrapperList) {
-                Family_Portal_Student__c reportedStudent = studentWrapper.familyPortalStudentObj;
-                familyPortalStudentList.add(reportedStudent);
-            }
+    public PageReference familyPortalStep4b() {
+        return Page.FamilyPortalStep4b;
+    }
+
+    public PageReference familyPortalStep5() {
+        try {
+            matchGuardianToExistingContact();
+            insertGuardian();
+            insertGuardianInterests();
+            insertStudents();
+            sendConfirmationEmail();
+        } catch (Exception e) {
+            System.debug(e.getMessage());
         }
+        return Page.FamilyPortalStep5;
+    }
 
+    private void matchGuardianToExistingContact() {
         Map<String, String> detailFieldsMap = new Map<String, String>();
         detailFieldsMap.put('emplid', existingGuardianUserEmplid);
         detailFieldsMap.put('asuriteId', existingGuardianUserAsuriteId);
@@ -102,12 +190,26 @@ public with sharing class FamilyPortalController {
             insert newGuardianContact;
             familyPortalGuardian.Contact__c = newGuardianContact.Id;
         }
+    }
 
+    private void insertGuardian() {
         if (businessUnitFromUrl != null) {
             familyPortalGuardian.Business_Unit_Source__c = businessUnitFromUrl;
         }
-        insert familyPortalGuardian;
 
+        if (hashedIdFromUrl == null) {
+            Blob cryptoKey = Crypto.generateAesKey(128);
+            Blob hashedData = Blob.valueOf(familyPortalGuardian.First_Name__c + familyPortalGuardian.Email__c);
+            Blob hashedId = Crypto.encryptWithManagedIV('AES128', cryptoKey, hashedData);
+            System.debug(hashedId);
+            familyPortalGuardian.Hashed_ID__c = EncodingUtil.base64Encode(hashedId);
+        } else {
+            familyPortalGuardian.Hashed_ID__c = hashedIdFromUrl;
+        }
+        insert familyPortalGuardian;
+    }
+
+    private void insertGuardianInterests() {
         if (familyPortalGuardianInterest.Interest_Choices__c != null) {
             List<Family_Portal_Guardian_Interest__c> familyPortalGuardianInterestList = new List<Family_Portal_Guardian_Interest__c>();
             List<String> guardianChosenInterestsFromPicklist = familyPortalGuardianInterest.Interest_Choices__c.split(';');
@@ -120,66 +222,39 @@ public with sharing class FamilyPortalController {
             }
             insert familyPortalGuardianInterestList;
         }
+    }
+
+    private void insertStudents() {
+        List<Family_Portal_Student__c> familyPortalStudentList = new List<Family_Portal_Student__c>();
+        for (FamilyPortalStudentWrapper studentWrapper : studentWrapperList) {
+            Family_Portal_Student__c reportedStudent = studentWrapper.familyPortalStudentObj;
+            familyPortalStudentList.add(reportedStudent);
+        }
 
         for (Family_Portal_Student__c reportedStudent : familyPortalStudentList) {
             reportedStudent.Family_Portal_Guardian__c = familyPortalGuardian.Id;
         }
         insert familyPortalStudentList;
-
-        try {
-            sendConfirmationEmail();
-        } catch(Exception e) {
-            System.debug('The following exception occured while attempting to send an email: ' + e.getMessage());
-        }
     }
 
-    public PageReference addStudentRow() {
-        studentRowCount++;
-        studentWrapperList.add(new FamilyPortalStudentWrapper(new Family_Portal_Student__c(), studentRowCount));
-        return null;
-    }
-    
-    public PageReference removeStudentRow() {
-        Integer indexToRemove = Integer.valueOf(Apexpages.currentpage().getParameters().get('index'));
-        for(Integer i = 0; i < studentWrapperList.size(); i++) {
-            if(studentWrapperList[i].studentIndex == indexToRemove ) {
-                studentWrapperList.remove(i);     
-            }
-        }
-        return null;
-    }
+    private void sendConfirmationEmail() {
+        Messaging.reserveSingleEmailCapacity(2);
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
-    public PageReference generateLoginLink() {
-        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortalStep3?bu=' + businessUnitFromUrl;
-        PageReference loginLink = new PageReference(loginLinkString);
-        loginLink.setRedirect(true);
-        return loginLink;
-    }
+        mail.setToAddresses(new List<String> {familyPortalGuardian.Email__c});
+        mail.setReplyTo('salesforce.support@asu.edu');
+        mail.setSenderDisplayName('ASU Salesforce Support');
+        mail.setSubject('New family portal submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
+        mail.setBccSender(false);
+        mail.setUseSignature(false);
+        mail.setPlainTextBody('Your family portal submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
+            'If you have an ASURITE ID, you can view your submission record directly at https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '. ' + 
+            'You can also change your chosen interests or student preferences at any time by revisiting the ASU Family Portal at https://families.asu.edu/apex/FamilyPortalStep3?id=' + familyPortalGuardian.Hashed_ID__c + '.');
+        mail.setHtmlBody('Your family portal submission for <strong>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</strong> has been created.<p>' +
+            'If you have an ASURITE ID, you view your <a href=https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '>submission record</a>. ' + 
+            'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://families.asu.edu?id=' + familyPortalGuardian.Hashed_ID__c + '">ASU Family Portal</a></strong>.');
 
-    public PageReference familyPortal() {
-        return Page.FamilyPortal;
-    }
-
-    public PageReference familyPortalStep2() {
-        return Page.FamilyPortalStep2;
-    }
-
-    public PageReference familyPortalStep3() {
-        return Page.FamilyPortalStep3;
-    }
-
-    public PageReference familyPortalStep4a() {
-        doFamilyPortalStep4a();
-        return Page.FamilyPortalStep4a;
-    }
-
-    public PageReference familyPortalStep4b() {
-        return Page.FamilyPortalStep4b;
-    }
-
-    public PageReference familyPortalStep5() {
-        doFamilyPortalStep5();
-        return Page.FamilyPortalStep5;
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }
 
     public class FamilyPortalStudentWrapper {

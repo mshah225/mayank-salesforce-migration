@@ -12,7 +12,7 @@
     },
  
     createCase: function (component, event, helper) {
-        if (!component.get('v.foundStudent') || component.get('v.description') == null) {
+        if (!component.get('v.foundStudent') || component.get('v.description') == null || component.get('v.description') === "") {
             component.set("v.message", "Please ensure that the ASURITE/EMPLID is Valid, and that the required fields are complete.");
         } else {
             helper.createACase(component);

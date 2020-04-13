@@ -24,6 +24,9 @@
         <h1>
             <center>Create A Case</center>
         </h1>
+        <p>
+            <center>This form is to be used by the Experience Center Augmented Staff. Cases created by this form will be submitted to the Help Desk for documentation purposes only.</center>
+        </p>
         <h3 style="color:DarkOrange;">
             <center>{!v.message}</center>
         </h3>
@@ -39,10 +42,10 @@
                     <center>EMPLID/ASURITE was not found!</center>
                 </h3>
             </aura:if>
-            <lightning:input aura:id="idResponse" label="EMPLID/ASURITE" value="{!v.studentID}" oncommit="{!c.checkValidId}"
+            <lightning:input aura:id="idResponse" label="Caller's EMPLID/ASURITE" value="{!v.studentID}" oncommit="{!c.checkValidId}"
                 maxlength="20" required="true" />
 
-            <lightning:input aura:id="phoneNumberResponse" label="Phone Number" value="{!v.phoneNumber}"
+            <lightning:input aura:id="phoneNumberResponse" label="Best Phone Number" value="{!v.phoneNumber}"
                 maxlength="15" />
             <lightning:select aura:id="categorySelect" name="select" label="Category" required="true" value="{!v.category}" onchange="{!c.updateDynamicFieldVisibility}">
                 <aura:iteration items="{!v.categoryOptions}" var="categoryOption">

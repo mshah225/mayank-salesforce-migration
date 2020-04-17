@@ -1,4 +1,13 @@
 ({
+
+    getPermissions : function(component) {
+        var action = component.get('c.doesUserHavePermission');
+        action.setCallback(this, function (response) {
+            component.set("v.properPermission", response.getReturnValue());
+        });
+        $A.enqueueAction(action);
+    },
+
     getCategoryOptions : function(component) {
         var action = component.get('c.getCategories');
         action.setCallback(this, function (response) {

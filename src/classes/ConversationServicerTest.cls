@@ -61,7 +61,7 @@ private class ConversationServicerTest {
     
     @isTest
     public static void testErrorLogging() {
-        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{new smagicinteract__Conversation__c()}, false);
+        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{new smagicinteract__Conversation__c(smagicinteract__Inbound_Number__c ='123456789123456789123456789')}, false);
         ConversationServicer uc = new ConversationServicer();
         uc.checkForErrors(lsr);
         

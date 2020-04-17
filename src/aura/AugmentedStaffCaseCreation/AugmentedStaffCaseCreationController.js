@@ -1,5 +1,6 @@
 ({
     onInit: function (component, event, helper) {
+        helper.getPermissions(component);
         helper.getCategoryOptions(component);
     },
 

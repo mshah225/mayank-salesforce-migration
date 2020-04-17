@@ -1,4 +1,20 @@
-public with sharing class AugmentedStaffCaseController {
+public without sharing class AugmentedStaffCaseController {
+
+    @AuraEnabled
+    public static Boolean doesUserHavePermission() {
+        List<PermissionSetAssignment> lstcurrentUserPerSet = [
+            SELECT Id, PermissionSet.Name,AssigneeId
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :Userinfo.getUserId() 
+        ];
+        for (PermissionSetAssignment psa: lstcurrentUserPerSet) {
+            if (psa.PermissionSet.Name.equals('Augmented_Staff_Case_Creation'))
+                return true;
+        }
+
+        return false;
+    }
+
     @AuraEnabled
     public static Map<String, List<String>> categoryToSubCategoryMap {
         get {

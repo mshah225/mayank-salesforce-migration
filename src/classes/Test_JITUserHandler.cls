@@ -41,7 +41,7 @@ private class Test_JITUserHandler {
         System.assertNotEquals(null, runTestUser);
     }
 
-    @isTest static void testErrorLoggerDuplicate() {
+    @isTest static void testDuplicateUser() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
         attributes.put('User.FirstName', 'Testing');

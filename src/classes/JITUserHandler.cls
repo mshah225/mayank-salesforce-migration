@@ -1,10 +1,9 @@
-global class JITUserHandler implements Auth.SamlJitHandler
-{
+global class JITUserHandler implements Auth.SamlJitHandler {
     private static final boolean DEBUG = false; // Toggle debug error reporting
 
     global User createUser(Id samlSsoProviderId, Id communityId, Id portalId,
-            String federationIdentifier, Map<String, String> attributes, String assertion)
-    {
+            String federationIdentifier, Map<String, String> attributes, String assertion) {
+                
         List<String> errorLogVars = new List<String>();
 
         try {
@@ -52,38 +51,29 @@ global class JITUserHandler implements Auth.SamlJitHandler
             String federationIdentifier, Map<String, String> attributes, String assertion) { }
 
     private void handleJit(boolean create, User u, Id samlSsoProviderId, Id communityId, Id portalId,
-            String federationIdentifier, Map<String, String> attributes, String assertion)
-    {
-        if (communityId != null || portalId != null)
-        {
+            String federationIdentifier, Map<String, String> attributes, String assertion) {
+        if (communityId != null || portalId != null) {
             handleUser(create, u, attributes, federationIdentifier, false);
-        }
-        else
-        {
+        } else {
             handleUser(create, u, attributes, federationIdentifier, true);
         }
     }
 
     private void handleUser(boolean create, User u, Map<String, String> attributes,
-            String federationIdentifier, boolean isStandard)
-    {
-        if (create)
-        {
-            if (attributes.containsKey('User.FederationIdentifier'))
-            {
+            String federationIdentifier, boolean isStandard) {
+        if (create) {
+            if (attributes.containsKey('User.FederationIdentifier')) {
                 String fedId = attributes.get('User.FederationIdentifier');
                 String[] fedIdSplit = fedId.split('@');
                 String asurite = fedIdSplit[0];
                 u.FederationIdentifier = asurite + '@admin.asu.edu';
 
                 if (attributes.containsKey('User.FirstName')
-                        && attributes.containsKey('User.LastName'))
-                {
+                        && attributes.containsKey('User.LastName')) {
+
                     u.FirstName = attributes.get('User.FirstName');
                     u.LastName = attributes.get('User.LastName');
-                }
-                else
-                {
+                } else {
                     List<Contact> contactLookup = [
                         SELECT FirstName, LastName
                         FROM Contact
@@ -101,14 +91,12 @@ global class JITUserHandler implements Auth.SamlJitHandler
                 String[] splitArray = fullURL.split('\\.');
                 System.debug(splitArray[0]);
 
-                if(splitArray[0].contains('--'))
-                {
+                if(splitArray[0].contains('--')) {
                     String[] finalArray = splitArray[0].split('--');
                     System.debug(finalArray[1]);
 
                     u.UserName = asurite + '@asu.edu.' + finalArray[1];
-                }
-                else {
+                } else {
                     u.UserName = asurite + '@asu.edu';
                 }
 
@@ -120,9 +108,7 @@ global class JITUserHandler implements Auth.SamlJitHandler
                 u.LocaleSidKey = 'en_US';
                 u.EmailEncodingKey = 'ISO-8859-1';
                 u.LanguageLocaleKey = 'en_US';
-            }
-            else
-            {
+            } else {
                 System.debug('!!!! NO FEDERATION IDENTIFIER PRESENT');
                 throw new JITUserHandler.JitException('!!!! NO FEDERATION IDENTIFIER PRESENT');
             }

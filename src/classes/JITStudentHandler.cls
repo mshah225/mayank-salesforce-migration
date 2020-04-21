@@ -1,29 +1,51 @@
 global class JITStudentHandler implements Auth.SamlJitHandler
 {
+    private static final boolean DEBUG = false; // Toggle debug error reporting
+
     global User createUser(Id samlSsoProviderId, Id communityId, Id portalId,
             String federationIdentifier, Map<String, String> attributes, String assertion)
     {
-        String fedId = attributes.get('User.FederationIdentifier');
+        List<String> errorLogVars = new List<String>();
 
-        List<User> dupeCheck = new List<User>();
-        dupeCheck = [
-            SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
-                EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier,
-                CommunityNickname
-            FROM User
-            WHERE FederationIdentifier = :fedId
-        ];
+        try {
+            String fedId;
+            
+            if (attributes.containsKey('User.FederationIdentifier')) {
+                fedId = attributes.get('User.FederationIdentifier');
+            } else {
+                throw new JITStudentHandler.JitException('!!!! NO FEDERATION IDENTIFIER PRESENT');
+            }
 
-        if (dupeCheck.size() < 1)
-        {
-            User u = new User();
-            handleJit(true, u, samlSsoProviderId, communityId, portalId,
-                    federationIdentifier, attributes, assertion);
-            return u;
-        }
-        else
-        {
-            return dupeCheck[0];
+            List<User> dupeCheck = new List<User>();
+            dupeCheck = [
+                SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
+                    EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier,
+                    CommunityNickname
+                FROM User
+                WHERE FederationIdentifier = :fedId
+            ];
+
+            if (dupeCheck.size() < 1)
+            {
+                User u = new User();
+                handleJit(true, u, samlSsoProviderId, communityId, portalId,
+                        federationIdentifier, attributes, assertion);
+                return u;
+            }
+            else
+            {
+                return dupeCheck[0];
+            }
+        } catch (Exception ex) {
+            errorLogVars.add(ErrorLogger.convertIdToJSON('samlSsoProviderId', samlSsoProviderId));
+            errorLogVars.add(ErrorLogger.convertIdToJSON('communityId', communityId));
+            errorLogVars.add(ErrorLogger.convertIdToJSON('portalId', portalId));
+            errorLogVars.add(ErrorLogger.convertStringToJSON('federationIdentifier', federationIdentifier));
+            errorLogVars.add(ErrorLogger.convertMapToJSON('attributes', attributes));
+            errorLogVars.add(ErrorLogger.convertStringToJSON('assertion', assertion));
+            ErrorLogger.log(ex, errorLogVars, debug);
+
+            return null;
         }
     }
 
@@ -97,6 +119,7 @@ global class JITStudentHandler implements Auth.SamlJitHandler
             else
             {
                 System.debug('!!!! NO FEDERATION IDENTIFIER PRESENT');
+                throw new JITStudentHandler.JitException('!!!! NO FEDERATION IDENTIFIER PRESENT');
             }
         }
     }

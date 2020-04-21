@@ -36,4 +36,38 @@ public with sharing class Test_JITStudentHandler
         System.debug(testUser);
         System.assertNotEquals(null, testUser);
     }
+
+
+    @isTest static void testErrorLoggerDuplicate() {
+        Map<String, String> attributes = new Map<String, String>();
+        attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
+        attributes.put('User.FirstName', 'Testing');
+        attributes.put('User.LastName', 'User');
+        Map<String, String> attributesForDuplicate = new Map<String, String>();
+        attributesForDuplicate.put('User.FederationIdentifier', 'testJIT@asu.edu');
+        JITStudentHandler jit = new JITStudentHandler();
+
+
+        User runTestUser = jit.createUser(null, null, null, null, attributes, null);
+        Database.upsert(runTestUser);
+
+        User runTestUserDuplicate = jit.createUser(null, null, null, null, attributesForDuplicate, null);
+        Database.upsert(runTestUserDuplicate);
+
+        System.assertEquals(runTestUser.Id, runTestUserDuplicate.Id);
+
+        System.debug(runTestUser);
+        System.debug(runTestUserDuplicate);
+    }
+
+    @isTest static void testUserCreationNoFedID() {
+        Map<String, String> attributes = new Map<String, String>();
+
+        JITStudentHandler jit = new JITStudentHandler();
+
+        User runTestUser = jit.createUser(null, null, null, null, attributes, null);
+
+        System.debug(runTestUser);
+        System.assertEquals(null, runTestUser);        
+    }
 }

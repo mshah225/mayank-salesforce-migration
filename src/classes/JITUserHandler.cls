@@ -8,7 +8,14 @@ global class JITUserHandler implements Auth.SamlJitHandler
         List<String> errorLogVars = new List<String>();
 
         try {
-            String fedId = attributes.get('User.FederationIdentifier');
+            String fedId;
+            
+            if (attributes.containsKey('User.FederationIdentifier')) {
+                fedId = attributes.get('User.FederationIdentifier');
+            } else {
+                throw new JITUserHandler.JitException('!!!! NO FEDERATION IDENTIFIER PRESENT');
+            }
+
             String[] fedIdSplit = fedId.split('@');
             String asurite = fedIdSplit[0];
             String searchFedId = asurite + '@admin.asu.edu';

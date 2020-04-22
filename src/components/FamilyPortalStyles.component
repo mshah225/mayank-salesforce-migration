@@ -56,8 +56,6 @@
             margin-top: 10em !important;
         }
 
-        /* .family-portal-1-header,
-        .family-portal-4a-header, */
         .family-portal-double-button-container {
             text-align: center !important;
         }
@@ -143,6 +141,84 @@
         .family-portal-body-container {
             max-width: 1170px;
             margin: auto;
+        }
+
+        .family-portal-1-forgot-password {
+            margin-top: 1em;
+            text-align: right;
+            font-size: .75em;
+            font-weight: 600;
+        }
+
+        .family-portal-1-body p {
+            font-weight: 500 !important;
+        }
+
+        .slds-scope .slds-progress-bar__value_success {
+            background: #8C1D40 !important;
+        }
+
+        .slds-scope .slds-gutters .slds-col {
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+        }
+
+        @media only screen and (max-width: 768px) {
+            #innovation-footer .footer-menu ul li {
+                clear: left !important;
+            }
+
+            #asu_footer ul li {
+                display: list-item !important;
+                margin-left: 2em !important;
+                margin-bottom: .5em !important;
+            }
+
+            .myasu-header-seo-container {
+                padding: 12px .9375em !important;
+                background: #505558;
+            }
+
+            .myasu-header-seo-container a {
+                font-size: .9375em;
+                color: #fff;
+                font-weight: 600;
+            }
+        }
+
+        @media only screen and (max-width: 990px) {
+            #innovation-bar .innovation-hidden {
+                display: none !important;
+            }
+
+            #innovation-bar .innovation-status {
+                width: 95% !important;
+            }
+
+            #asu_footer ul {
+                padding-left: unset !important;
+            }
+
+            #asu_footer ul li {
+                margin-left: 1em !important;
+                margin-right: unset !important;
+            }
+        }
+
+        @media only screen and (max-width: 1190px) {
+            .family-portal-body-container {
+                margin-left: 2em;
+                margin-right: 2em;
+            }
+
+            #asu_footer .innovation-mobile-only {
+                margin-left: 2em;
+            }
+
+            #asu_footer .no-border {
+                margin-right: 2em;
+            }
+
         }
     </style>
 </apex:component>

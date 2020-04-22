@@ -1,17 +1,42 @@
 <apex:page controller="FamilyPortalController" action="{!familyPortalOnLoad}" standardStylesheets="false" showHeader="false" html-lang="en-US">
-    <title>ASU | Family Portal</title>
+    <title>ASU | Welcome ASU Families - Step 1</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
     <c:ASUBrandHeader />
     <div class="myasu-header-seo-container">
         <div>
             <div id="myasu-header-seo" class="myasu-cont">
-                <a href="https://webapp4.asu.edu/myasu">Family Portal</a>
+                <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
             </div>
         </div>
-    </div>   
-    
+    </div>
+
     <c:FamilyPortalResources />
+    <apex:slds />
+    <c:SLDSRemoveGlobalStyles />
+    
+    <apex:variable var="pbc" value="{!progressBarController}" />
+    <apex:form id="family-portal-upper-container" styleClass="slds-scope">
+        <div class="progress-container well" style="margin-bottom: 3em;">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-3" style="width: 100%; max-width: 1170px !important; margin: auto;">
+                    <span style="font-weight:700;">Form Progress</span>
+                    <div style="display: block;" class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                        <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
+                            <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
+                        </span>
+                    </div>
+                    <div class="slds-grid slds-grid_align-spread slds-p-bottom_x-small" id="progress-bar-label-id-6">
+                        <span></span>
+                        <span aria-hidden="true">
+                            <strong>{!pbc.progressCounter}% Complete</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+
     <apex:form>
         <div id="accessible-body">
             <div class="family-portal-body-container">
@@ -19,19 +44,25 @@
                     <apex:pageBlock>
                         <div class="family-portal-1-header">
                             <h2>Welcome to the ASU portal for family members.</h2>
-                            <p class="lead">Do you have an ASURITE ID? If not, please sign up below.</p>
+                            <p class="lead">By filling out your information, we will be able to keep in touch with you with updates and information about ASU that matter to you and your family.</p>
+                        </div>
+                        <div class="family-portal-1-body">
+                            <p class="lead">Do you have an ASU login?</p>
                         </div>
                         <div class="family-portal-double-button-container">
                             <div class="family-portal-double-button">
-                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep2}">
-                                    Sign up
+                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!generateLoginLink}">
+                                    <i class="fa fa-check-circle" /> Yes
                                 </apex:commandLink>
                             </div>
                             <div class="family-portal-double-button">
-                                <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!generateLoginLink}">
-                                    Login
+                                <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!familyPortalStep2}">
+                                    <i class="fa fa-times-circle" /> No
                                 </apex:commandLink>
                             </div>
+                        </div>
+                        <div class="family-portal-1-forgot-password">
+                            <a href="http://asu.edu/lostpassword">Forgot your password?</a>
                         </div>
                     </apex:pageBlock>
                 </div>

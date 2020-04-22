@@ -7,24 +7,15 @@ public with sharing class FamilyPortalController {
     private Integer studentRowCount = 0;
     public String businessUnitFromUrl;
     public String hashIdFromUrl;
-
+    public FamilyPortalProgressBar progressBarController {get; set;}
+    
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
         hashIdFromUrl = ApexPages.currentPage().getParameters().get('id');
-        addStudentRow();
-    }
-
-    public class FamilyPortalStudentWrapper {
-        public Family_Portal_Student__c familyPortalStudentObj {get;set;}
-        public Integer studentIndex {get;set;}
-        
-        public FamilyPortalStudentWrapper(Family_Portal_Student__c familyPortalStudentObj, Integer studentIndex) {
-            this.familyPortalStudentObj = familyPortalStudentObj;
-            this.studentIndex = studentIndex;
-        }
+        progressBarController = new FamilyPortalProgressBar();
     }
 
     public void addStudentRow() {
@@ -56,6 +47,9 @@ public with sharing class FamilyPortalController {
     }
 
     public PageReference familyPortalOnLoad() {
+        progressBarController.progressCounter = 0;
+        progressBarController.getProgressBarPercentage();
+
         if (hashIdFromUrl != null) {
             try {
                 prefillFormPagesFromHashId();
@@ -132,11 +126,19 @@ public with sharing class FamilyPortalController {
         return Page.FamilyPortalStep2;
     }
 
+    public void familyPortalStep2OnLoad() {
+        progressBarController.progressCounter = 25;
+        progressBarController.getProgressBarPercentage();
+    }
+
     public PageReference familyPortalStep3() {
         return Page.FamilyPortalStep3;
     }
 
     public void familyPortalStep3OnLoad() {
+        progressBarController.progressCounter = 50;
+        progressBarController.getProgressBarPercentage();
+
         try {
             setExistingUserData();
         } catch (Exception e) {
@@ -178,8 +180,17 @@ public with sharing class FamilyPortalController {
         return Page.FamilyPortalStep4a;
     }
 
-    public PageReference familyPortalStep4b() {
+    public void familyPortalStep4aOnLoad() {
+        progressBarController.progressCounter = 75;
+    }
+
+    public PageReference familyPortalStep4() {
         return Page.FamilyPortalStep4b;
+    }
+
+    public void familyPortalStep4OnLoad() {
+        progressBarController.progressCounter = 75;
+        progressBarController.getProgressBarPercentage();
     }
 
     public PageReference familyPortalStep5() {
@@ -193,6 +204,11 @@ public with sharing class FamilyPortalController {
             System.debug(e.getMessage());
         }
         return Page.FamilyPortalStep5;
+    }
+
+    public void familyPortalStep5OnLoad() {
+        progressBarController.progressCounter = 100;
+        progressBarController.getProgressBarPercentage();
     }
 
     private void matchGuardianToExistingContact() {
@@ -291,5 +307,39 @@ public with sharing class FamilyPortalController {
             'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://asu--dev.my.salesforce.com/apex/FamilyPortal?id=' + familyPortalGuardian.Hash_ID__c + '">ASU Family Portal</a></strong>.');
 
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
+    }
+
+    public class FamilyPortalStudentWrapper {
+        public Family_Portal_Student__c familyPortalStudentObj {get;set;}
+        public Integer studentIndex {get;set;}
+        
+        public FamilyPortalStudentWrapper(Family_Portal_Student__c familyPortalStudentObj, Integer studentIndex) {
+            this.familyPortalStudentObj = familyPortalStudentObj;
+            this.studentIndex = studentIndex;
+        }
+    }
+
+    public class FamilyPortalProgressBar {
+        public Decimal currentPercentage {get;set;}
+        public Integer progressCounter {get;set;}
+        public String statusMessage {get;set;}
+        
+        public FamilyPortalProgressBar() {
+            currentPercentage = 0;
+            statusMessage = '';
+            progressCounter = 0;
+        }
+
+        public void getProgressBarPercentage() {
+            if (progressCounter != 0) {
+                if (Decimal.valueOf(progressCounter) > 100) {
+                    currentPercentage = 100;
+                } else {
+                    currentPercentage = (Decimal.valueOf(progressCounter))/100 * 100;
+                }
+            } else {
+                currentPercentage = 0;
+            }
+        }
     }
 }

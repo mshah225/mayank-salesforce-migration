@@ -1277,4 +1277,54 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(null, lostEmail.CarbonCopies__c);
         System.assertEquals(true, lostEmail.RejectedAttachments__c);
     }
+
+    @IsTest
+    private static void emailWithManyAttachmentsNoSoqlError() {
+        AccountFactory.DefaultAccount accountFactory = new AccountFactory.DefaultAccount();
+        Account[] testAccount = accountFactory.create();
+        insert testAccount;
+        ContactFactory.AllEmailsFilled contactFactory = new ContactFactory.AllEmailsFilled(testAccount[0].Id);
+        Contact[] testContact = contactFactory.create();
+        testContact[0].Email = 'test@example.com';
+        testContact[0].FirstName = 'Test';
+        testContact[0].LastName = 'Test';
+        insert testContact;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<String> toAddresses = new List<String>();
+        toAddresses.add('example@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'LostEmailTest';
+        email.fromAddress = testContact[0].Email;
+        email.fromName = testContact[0].LastName;
+        email.plainTextBody = 'Email Content Here';
+        email.htmlBody = 'Email Content Here';
+        env.fromAddress = testContact[0].Email;
+
+        Messaging.inboundEmail.BinaryAttachment[] manyAttachments = new Messaging.inboundEmail.BinaryAttachment[]{};
+
+        for (Integer i = 0; i < 20; i++) {
+            Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+            inAtt.body = blob.valueOf('test' + i);
+            inAtt.fileName = i + 'attach.pdf';
+            inAtt.mimeTypeSubType = 'plain/txt';
+            manyAttachments.add(inAtt);
+        }
+
+        email.binaryAttachments = manyAttachments;
+
+        Test.startTest();
+        CaseInboundEmailHandler handler = new CaseInboundEmailHandler();
+        handler.handleInboundEmail(email, env);
+        Test.stopTest();
+
+
+        List<LostEmail__c> rejectedMessages = [Select Id FROM LostEmail__c];
+        System.assertEquals(0, rejectedMessages.size());
+
+        List<Attachment> allAttachments = [SELECT Id FROM Attachment];
+        System.assertEquals(20, allAttachments.size());
+    }
 }

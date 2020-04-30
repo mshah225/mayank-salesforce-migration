@@ -2735,8 +2735,12 @@
                             if (onlineStudent === true) {
                                 result = '{!$Resource.blankAvatar}';
                             }
+
+                            var blankAvatarURL = document.getElementById('sunDevilImgDiv').firstElementChild.src;
+
                             var html = '<img id="studentPhotoImg2" src="' + result + '" ' +
                                 ' alt="suncard photo" ' +
+                                ' onerror="if (this.src != \''+blankAvatarURL+')\') this.src=\''+blankAvatarURL+'\'" ' +
                                 ' class="img-responsive intro" ' +
                                 ' style="max-width:200px;width:100%;"/>';
                             document.getElementById('sunDevilImgDiv').innerHTML = html;

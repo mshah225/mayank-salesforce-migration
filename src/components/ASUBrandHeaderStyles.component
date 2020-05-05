@@ -1,37 +1,40 @@
 <apex:component>
     <style>
+        #asu_logo a {
+            border-bottom: none;
+            text-decoration: none;
+        }
         #asu_universal_nav ul a,
-		#myasu-header-seo a {
-			border-bottom: none;
-		}
-		.myasu-cont {
-            max-width:1170px !important;
-            margin:auto !important;
+                #myasu-header-seo a {
+            border-bottom: none;
         }
         #myasu-header-seo {
             margin-bottom: 2px !important;
-            margin-top: -2px !important
+            margin-top: -2px !important;
         }
-
         #myasu-header-seo a {
-            font-size: 24px !important;
-            font-weight: 700 !important;
-            color: #000 !important
+            color: #000;
+            font-size: 24px;
+            font-weight: 700;
         }
         #myasu-header-seo a:active,
         #myasu-header-seo a:focus,
         #myasu-header-seo a:hover {
-            text-decoration: none!important
+            text-decoration: none!important;
+        }
+        #skip-to-content {
+            left: -9999px;
+            position: absolute;
+        }
+        .myasu-cont {
+            margin: auto !important;
+            max-width: 1170px !important;
         }
         .myasu-header-seo-container {
             font-size: 24px;
+            overflow: hidden;
             padding: 0 0 12px 1em !important;
             white-space: nowrap;
-            overflow: hidden;
-        }
-        #skip-to-content {
-            position: absolute;
-            left: -9999px;
         }
     </style>
 </apex:component>

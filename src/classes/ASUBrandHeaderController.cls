@@ -1,13 +1,18 @@
 public without sharing class ASUBrandHeaderController {
-    public boolean isUnsubscribeGuestUser { get; set; }
-    public Contact loggedInContact;
+    public Boolean isLoggedInUser;
 
     public ASUBrandHeaderController() {
-        loggedInContact=ContactService.getLoggedInContact();
-            if (loggedInContact==null) {
-                isUnsubscribeGuestUser = true;
-            } else {
-                isUnsubscribeGuestUser = false;
-            }
+        isLoggedInUser = false;
+        setUserStatus();        
+    }
+
+    public Boolean getIsLoggedInUser() {
+        return isLoggedInUser;
+    }
+
+    private void setUserStatus() {
+        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('guest')) {
+            isLoggedInUser = true;
+        }
     }
 }

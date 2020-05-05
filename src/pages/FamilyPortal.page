@@ -2,6 +2,10 @@
     <title>ASU | Welcome ASU Families - Step 1</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    </head>
+
     <c:ASUBrandHeader />
     <div class="myasu-header-seo-container">
         <div>
@@ -40,33 +44,63 @@
     <apex:form>
         <div id="accessible-body">
             <div class="family-portal-body-container">
-                <div class="family-portal-1-container">
-                    <apex:pageBlock>
-                        <div class="family-portal-1-header">
-                            <h2>Welcome to the ASU portal for family members.</h2>
-                            <p class="lead">By filling out your information, we will be able to keep in touch with you with updates and information about ASU that matter to you and your family.</p>
+                <div class="family-portal-1-container container">
+                    <div class="row">
+                        <div class="col-sm-6 family-portal-body-margin">
+                            <apex:pageBlock>
+                                <div class="family-portal-1-header">
+                                    <apex:outputPanel id="family-portal-1-header-h2-logged-in" layout="none" rendered="{!isLoggedInUser}">
+                                        <apex:outputPanel id="family-portal-1-header-h2-logged-in-no-guardian" layout="none" rendered="{!!isExistingGuardian}">
+                                            <h2>
+                                                <apex:outputText value="Welcome, {0}!">
+                                                    <apex:param value="{!loggedInUser.FirstName}"/>
+                                                </apex:outputText>
+                                            </h2>
+                                            <p class="lead">By filling out your information, we will be able to keep in touch with you with updates and information about ASU that matter to you and your family.</p>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel id="family-portal-1-header-h2-logged-in-existing-guardian" layout="none" rendered="{!isExistingGuardian}">
+                                            <h2>
+                                                <apex:outputText value="Welcome back, {0}!">
+                                                    <apex:param value="{!loggedInUser.FirstName}"/>
+                                                </apex:outputText>
+                                            </h2>
+                                            <p class="lead">By updating your information, we will be able to keep in touch with you with updates and information about ASU that matter to you and your family.</p>
+                                        </apex:outputPanel>
+                                        <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
+                                            Next
+                                        </apex:commandLink>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel id="family-portal-1-header-h2-anonymous" layout="none" rendered="{!!isLoggedInUser}">
+                                        <h2>Welcome to the ASU portal for family members!</h2>
+                                        <p class="lead">By filling out your information, we will be able to keep in touch with you with updates and information about ASU that matter to you and your family.</p>
+                                        <div class="family-portal-1-body">
+                                            <p class="lead">Do you have an ASU login?</p>
+                                        </div>
+                                        <div class="family-portal-double-button-container">
+                                            <div class="family-portal-double-button">
+                                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!generateLoginLink}">
+                                                    <i class="fa fa-check-circle" /> Yes
+                                                </apex:commandLink>
+                                            </div>
+                                            <div class="family-portal-double-button">
+                                                <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!familyPortalStep2}">
+                                                    <i class="fa fa-times-circle" /> No
+                                                </apex:commandLink>
+                                            </div>
+                                        </div>
+                                        <div class="family-portal-1-forgot-password">
+                                            <a href="http://asu.edu/lostpassword">Forgot your password?</a>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+                            </apex:pageBlock>
                         </div>
-                        <div class="family-portal-1-body">
-                            <p class="lead">Do you have an ASU login?</p>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-5">
+                            <c:FamilyPortalSidebar />
                         </div>
-                        <div class="family-portal-double-button-container">
-                            <div class="family-portal-double-button">
-                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!generateLoginLink}">
-                                    <i class="fa fa-check-circle" /> Yes
-                                </apex:commandLink>
-                            </div>
-                            <div class="family-portal-double-button">
-                                <apex:commandLink styleClass="btn btn-secondary btn-block" action="{!familyPortalStep2}">
-                                    <i class="fa fa-times-circle" /> No
-                                </apex:commandLink>
-                            </div>
-                        </div>
-                        <div class="family-portal-1-forgot-password">
-                            <a href="http://asu.edu/lostpassword">Forgot your password?</a>
-                        </div>
-                    </apex:pageBlock>
+                    </div>
                 </div>
-                <c:FamilyPortalSidebar />
             </div>
         </div>
     </apex:form>

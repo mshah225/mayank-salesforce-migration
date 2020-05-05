@@ -2,6 +2,10 @@
     <title>ASU | Welcome ASU Families - Step 2</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    </head>
+
     <c:ASUBrandHeader />
     <div class="myasu-header-seo-container">
         <div>
@@ -40,23 +44,36 @@
     <apex:form>
         <div id="accessible-body">
             <div class="family-portal-body-container">
-                <div class="family-portal-2-container">
-                    <apex:pageBlock>
-                        <div class="family-portal-2-header">
-                            <h3>Let's get to know you.</h3>
+                <div class="family-portal-2-container container">
+                    <div class="row">
+                        <div class="col-sm-6 family-portal-body-margin">
+                            <apex:pageBlock>
+                                <div class="family-portal-2-header">
+                                    <h3>Let's get to know you.</h3>
+                                </div>
+                                <apex:pageBlockSection columns="2">
+                                    <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.First_Name__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Last_Name__c}"/>
+                                    <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Email__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Phone__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Street__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.City__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.State__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Zip_Code__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Country__c}" />
+                                    <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.ASU_Alumni__c}" />
+                                </apex:pageBlockSection>
+                                <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
+                                    Next
+                                </apex:commandLink>
+                            </apex:pageBlock>
                         </div>
-                        <apex:pageBlockSection columns="2">
-                            <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.First_Name__c}" />
-                            <apex:inputField styleClass="family-portal-requiredInput" required="true" value="{!familyPortalGuardian.Last_Name__c}"/>
-                            <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Email__c}" />
-                            <apex:inputField styleClass="family-portal-requiredInput" value="{!familyPortalGuardian.Zip_Code__c}" />
-                        </apex:pageBlockSection>
-                        <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
-                            Next
-                        </apex:commandLink>
-                    </apex:pageBlock>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-5">
+                            <c:FamilyPortalSidebar />
+                        </div>
+                    </div>
                 </div>
-                <c:FamilyPortalSidebar />
             </div>
         </div>
     </apex:form>

@@ -2,6 +2,10 @@
     <title>ASU | Welcome ASU Families - Step 3</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    </head>
+
     <c:ASUBrandHeader />
     <div class="myasu-header-seo-container">
         <div>
@@ -40,18 +44,27 @@
     <apex:form>
         <div id="accessible-body">
             <div class="family-portal-body-container">
-                <div class="family-portal-3-container">
-                    <apex:pageBlock>
-                        <div class="family-portal-3-header">
-                            <h3>I want to learn about...</h3>
+                <div class="family-portal-3-container container">
+                    <div class="row">
+                        <div class="col-sm-6 family-portal-body-margin">
+                            <apex:pageBlock>
+                                <div class="family-portal-3-header">
+                                    <h3>I want to learn about...</h3>
+                                </div>
+                                <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
+                                    <apex:selectOptions value="{!guardianInterestChoices}" />
+                                </apex:selectCheckboxes>
+                                <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
+                                    Next
+                                </apex:commandLink>
+                            </apex:pageBlock>
                         </div>
-                        <apex:inputField value="{!familyPortalGuardianInterest.Interest_Choices__c}" />   
-                        <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
-                            Next
-                        </apex:commandLink>
-                    </apex:pageBlock>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-5">
+                            <c:FamilyPortalSidebar />
+                        </div>
+                    </div>
                 </div> 
-                <c:FamilyPortalSidebar />
             </div>
         </div>
     </apex:form>

@@ -80,7 +80,7 @@ public with sharing class FamilyPortalGuardianDeduplicationService implements Qu
                 }
                 
                 List<Family_Portal_Student__c> duplicateGuardianStudentList = [
-                    SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c
+                    SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
                     FROM Family_Portal_Student__c
                     WHERE Family_Portal_Guardian__c =: duplicateGuardian.Id
                 ];
@@ -100,7 +100,7 @@ public with sharing class FamilyPortalGuardianDeduplicationService implements Qu
                 }
 
                 List<Family_Portal_Student__c> currentBestChoiceStudentList = [
-                    SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c
+                    SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
                     FROM Family_Portal_Student__c
                     WHERE Family_Portal_Guardian__c =: currentBestChoice.Id
                 ];

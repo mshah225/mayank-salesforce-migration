@@ -2736,7 +2736,7 @@
                                 result = '{!$Resource.blankAvatar}';
                             }
 
-                            var blankAvatarURL = document.getElementById('sunDevilImgDiv').firstElementChild.src;
+                            var blankAvatarURL = '{!URLFOR($Resource.blankAvatar)}';
 
                             var html = '<img id="studentPhotoImg2" src="' + result + '" ' +
                                 ' alt="suncard photo" ' +

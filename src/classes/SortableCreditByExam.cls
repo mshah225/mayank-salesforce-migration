@@ -1,5 +1,5 @@
-global class SortableCreditByExam {
-    private PS_ASU_SP_TRNSFR_V__x examInfo;
+global class SortableCreditByExam implements Comparable {
+    public PS_ASU_SP_TRNSFR_V__x examInfo{private set; get;}
     private String examParamSort;
     
     global SortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examInfo, String sortBy) {

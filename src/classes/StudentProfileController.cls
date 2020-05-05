@@ -736,8 +736,12 @@ global with sharing class StudentProfileController {
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try {
+            System.debug('EmplId in bbb');
+            System.debug(emplidIn);
             Id student = [SELECT Id FROM Contact WHERE EmplId__c =: emplidIn LIMIT 1].Id;
+            System.debug('recordType in ddd');
             RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            System.debug('recordType in eee');
             Case feedbackCase = new Case(
                 Status = 'New',
                 RecordType = recordType,
@@ -748,6 +752,7 @@ global with sharing class StudentProfileController {
                 IsVisibleInSelfService = false
             );
             insert feedbackCase;
+            System.debug('RETURNING aaa');
             return feedbackCase.Id;
         } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));

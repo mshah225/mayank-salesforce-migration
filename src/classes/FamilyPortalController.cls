@@ -95,11 +95,11 @@ public with sharing class FamilyPortalController {
         return loginLink;
     }
 
-    public PageReference familyPortal() {
-        return Page.FamilyPortal;
+    public PageReference familyPortalStep1() {
+        return Page.FamilyPortalStep1;
     }
 
-    public PageReference familyPortalOnLoad() {
+    public PageReference familyPortalStep1OnLoad() {
         progressBarController.progressCounter = 0;
         progressBarController.getProgressBarPercentage();
 
@@ -369,15 +369,15 @@ public with sharing class FamilyPortalController {
         mail.setToAddresses(new List<String> {familyPortalGuardian.Email__c});
         mail.setReplyTo('salesforce.support@asu.edu');
         mail.setSenderDisplayName('ASU Salesforce Support');
-        mail.setSubject('New family portal submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
+        mail.setSubject('New ASU Families submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
         mail.setBccSender(false);
         mail.setUseSignature(false);
-        mail.setPlainTextBody('Your family portal submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
+        mail.setPlainTextBody('Your ASU Families submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
             'If you have an ASURITE ID, you can view your submission record directly at https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '. ' + 
-            'You can also change your chosen interests or student preferences at any time by revisiting the ASU Family Portal at https://asu--dev.my.salesforce.com/apex/FamilyPortal?id=' + familyPortalGuardian.Hash_ID__c + '.');
-        mail.setHtmlBody('Your family portal submission for <strong>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</strong> has been created.<p>' +
+            'You can also change your chosen interests or student preferences at any time by revisiting ASU Families at https://asu--dev.my.salesforce.com/apex/FamilyPortal?id=' + familyPortalGuardian.Hash_ID__c + '.');
+        mail.setHtmlBody('Your ASU Families submission for <strong>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</strong> has been created.<p>' +
             'If you have an ASURITE ID, you view your <a href=https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '>submission record</a>. ' + 
-            'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://asu--dev.my.salesforce.com/apex/FamilyPortal?id=' + familyPortalGuardian.Hash_ID__c + '">ASU Family Portal</a></strong>.');
+            'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://asu--dev.my.salesforce.com/apex/FamilyPortal?id=' + familyPortalGuardian.Hash_ID__c + '">ASU Families</a></strong>.');
 
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }
@@ -391,7 +391,7 @@ public with sharing class FamilyPortalController {
                 List<SelectOption> typeOptions = getStudentTypeChoices();
                 for (SelectOption type : typeOptions) {
                     if (familyPortalStudentObj.Type__c != null && familyPortalStudentObj.Type__c.contains(type.getValue())) {
-                        selectedTypes.add( type.getValue() );
+                        selectedTypes.add(type.getValue());
                     }
                 }
 

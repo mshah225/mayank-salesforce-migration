@@ -1,4 +1,4 @@
-<apex:page controller="FamilyPortalController" action="{!familyPortalOnLoad}" standardStylesheets="false" showHeader="false" html-lang="en-US">
+<apex:page controller="FamilyPortalController" action="{!familyPortalStep1OnLoad}" standardStylesheets="false" showHeader="false" html-lang="en-US">
     <title>ASU | Welcome ASU Families - Step 1</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
@@ -21,11 +21,11 @@
     
     <apex:variable var="pbc" value="{!progressBarController}" />
     <apex:form id="family-portal-upper-container" styleClass="slds-scope">
-        <div class="progress-container well" style="margin-bottom: 3em;">
+        <div class="family-portal-progress-container well">
             <div class="slds-grid slds-gutters">
-                <div class="slds-col slds-size_1-of-3" style="width: 100%; max-width: 1170px !important; margin: auto;">
-                    <span style="font-weight:700;">Form Progress</span>
-                    <div style="display: block;" class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                <div class="slds-col slds-size_1-of-3 family-portal-progress-bar">
+                    <span class="family-portal-progress-bar-title">Form Progress</span>
+                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
                         <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
                             <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
                         </span>

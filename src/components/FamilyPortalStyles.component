@@ -1,5 +1,8 @@
 <apex:component> 
     <style> 
+        p, select, input, textarea, .lead {
+            font-weight: 400 !important;
+        }
         .bPageBlock .detailList .error {
             border: 2px solid #c00 !important;
         }
@@ -90,8 +93,47 @@
         .family-portal-3-container table > tbody > tr:first-child > td {
             display: none !important;
         }
-        .family-portal-3-container .pbBody td > label {
+        .family-portal-3-container .pbBody td > label,
+        .family-portal-4-container .pbBody td > label {
             display: unset;
+        }
+        .family-portal-3-container input[type=checkbox],
+        .family-portal-4-container input[type=checkbox] {
+            vertical-align: middle;
+            height: 19px;
+            margin-top: 0;
+        }
+        .family-portal-4-container table table,
+        .family-portal-4-container table table > tbody > tr:nth-child(2n+1) {
+            background-color: transparent;
+
+        }
+        .family-portal-4-container table table > tbody > tr > td {
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top: 0;
+        }
+        .family-portal-4-academic-college-input select {
+            max-width: 200px;
+        }
+        .family-portal-4-no-students-text {
+            font-weight: 400;
+            margin-bottom: 1em;
+        }
+        .family-portal-4-student-field-input {
+            margin-bottom: 1em !important;
+        }
+        .family-portal-4-student-field-label {
+            display: block;
+            font-weight: bold;
+        }
+        .family-portal-4-student-remove-button {
+            border-bottom: none !important;
+            text-decoration: none !important;
+        }
+        .family-portal-4-student-remove-button-column {
+            vertical-align: middle;
+            text-align: center;
         }
         .family-portal-5-header {
             margin-top: 3em !important;
@@ -121,6 +163,17 @@
         .mainTitle {
             margin-left: 1em !important;
         }
+        .family-portal-progress-container {
+            margin-bottom: 3em;
+        }
+        .family-portal-progress-bar {
+            width: 100% !important; 
+            max-width: 1170px !important; 
+            margin: auto !important;
+        }
+        .family-portal-progress-bar-title {
+            font-weight: 700;
+        }
         .family-portal-sidebar {
             margin-bottom: 3em;
         }
@@ -139,6 +192,9 @@
         }
         .family-portal-sidebar-contact-info div.row:not(:first-child) {
             margin-top: .5em;
+        }
+        .family-portal-slds-progress-bar {
+            display: block;
         }
         .mainTitle {
             font-size: 1.5em !important;
@@ -200,6 +256,18 @@
                 margin-right: 2em;
                 min-width: 200px;
             }
+            .family-portal-2-container .pbSubsection table td, 
+            .family-portal-2-container .pbSubsection table th {
+                display: block;
+                padding: 0;
+            }
+            .family-portal-2-container .pbSubsection table td input {
+                width: 100%;
+            }
+            .family-portal-double-button {
+                display: block !important;
+                width: 100% !important;
+            }
         }
         @media only screen and (max-width: 1190px) {
             #asu_footer .innovation-mobile-only {
@@ -212,9 +280,6 @@
                 margin-left: 2em;
                 margin-right: 2em;
             }
-        }
-        p, select, input, textarea, .lead {
-            font-weight: 400 !important;
         }
     </style>
 </apex:component>

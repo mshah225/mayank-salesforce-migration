@@ -1,4 +1,7 @@
 <apex:component> 
+    <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
     <style> 
         p, select, input, textarea, .lead {
             font-weight: 400 !important;
@@ -217,39 +220,7 @@
                 padding-left: 0;
             }
         }
-        @media only screen and (max-width: 768px) {
-            #asu_footer ul li {
-                display: list-item !important;
-                margin-bottom: .5em !important;
-                margin-left: 2em !important;
-            }
-            #innovation-footer .footer-menu ul li {
-                clear: left !important;
-            }
-            .myasu-header-seo-container {
-                background: #505558;
-                padding: 12px .9375em !important;
-            }
-            .myasu-header-seo-container a {
-                color: #fff !important;
-                font-size: .5em !important;
-                font-weight: 600 !important;
-            }
-        }
         @media only screen and (max-width: 990px) {
-            #asu_footer ul {
-                padding-left: unset !important;
-            }
-            #asu_footer ul li {
-                margin-left: 1em !important;
-                margin-right: unset !important;
-            }
-            #innovation-bar .innovation-hidden {
-                display: none !important;
-            }
-            #innovation-bar .innovation-status {
-                width: 95% !important;
-            }
             .col-sm-7.family-portal-bootstrap-vertical-center a {
                 display: inline-block;
                 margin-left: 1em;
@@ -270,12 +241,6 @@
             }
         }
         @media only screen and (max-width: 1190px) {
-            #asu_footer .innovation-mobile-only {
-                margin-left: 2em;
-            }
-            #asu_footer .no-border {
-                margin-right: 2em;
-            }
             .family-portal-body-container {
                 margin-left: 2em;
                 margin-right: 2em;

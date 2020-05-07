@@ -7,15 +7,15 @@
     </head>
 
     <c:ASUBrandHeader />
-    <div class="myasu-header-seo-container">
+    <div class="asu-header-site-title-container">
         <div>
-            <div id="myasu-header-seo" class="myasu-cont">
+            <div id="asu-header-site-title" class="asu-header-width">
                 <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
             </div>
         </div>
     </div>
 
-    <c:FamilyPortalResources />
+    <c:FamilyPortalStyles />
     <apex:slds />
     <c:SLDSRemoveGlobalStyles />
     

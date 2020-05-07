@@ -4,19 +4,18 @@
 
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
-        <script src="https://code.jquery.com/jquery-3.5.0.min.js" />
     </head>
 
     <c:ASUBrandHeader />
-    <div class="myasu-header-seo-container">
+    <div class="asu-header-site-title-container">
         <div>
-            <div id="myasu-header-seo" class="myasu-cont">
+            <div id="asu-header-site-title" class="asu-header-width">
                 <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
             </div>
         </div>
     </div>
 
-    <c:FamilyPortalResources />
+    <c:FamilyPortalStyles />
     <apex:slds />
     <c:SLDSRemoveGlobalStyles />
     

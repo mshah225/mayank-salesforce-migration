@@ -1,40 +1,80 @@
 <apex:component>
+    <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header_media.min.css')}" />
     <style>
-        #asu_logo a {
+        #asu-header-site-title a,
+        #asu-header-site-title a:active,
+        #asu-header-site-title a:focus,
+        #asu-header-site-title a:hover,
+        #asu_logo a,
+        #asu_universal_nav ul a, {
             border-bottom: none;
             text-decoration: none;
         }
-        #asu_universal_nav ul a,
-                #myasu-header-seo a {
-            border-bottom: none;
-        }
-        #myasu-header-seo {
-            margin-bottom: 2px !important;
-            margin-top: -2px !important;
-        }
-        #myasu-header-seo a {
+        #asu-header-site-title a {
             color: #000;
             font-size: 24px;
             font-weight: 700;
         }
-        #myasu-header-seo a:active,
-        #myasu-header-seo a:focus,
-        #myasu-header-seo a:hover {
-            text-decoration: none!important;
+        .asu-header-site-title-container {
+            font-size: 24px;
+            overflow: hidden;
+            padding: 0 0 12px 12px !important;
+            white-space: nowrap;
+        }
+        .asu-header-width {
+            margin: auto !important;
+            max-width: 1170px !important;
         }
         #skip-to-content {
             left: -9999px;
             position: absolute;
         }
-        .myasu-cont {
-            margin: auto !important;
-            max-width: 1170px !important;
+        @media only screen and (max-width: 768px) {
+            .asu-header-site-title-container {
+                background: #505558;
+                padding: 12px .5em !important;
+            }
+            .asu-header-site-title-container a {
+                color: #fff !important;
+                font-size: 15px !important;
+                font-weight: 600 !important;
+            }
+            #asu_footer ul li {
+                display: list-item !important;
+                margin-bottom: .5em !important;
+                margin-left: 2em !important;
+            }
+            #innovation-footer .footer-menu ul li {
+                clear: left !important;
+            }
         }
-        .myasu-header-seo-container {
-            font-size: 24px;
-            overflow: hidden;
-            padding: 0 0 12px 1em !important;
-            white-space: nowrap;
+        @media only screen and (max-width: 990px) {
+            #asu_footer ul {
+                padding-left: unset !important;
+            }
+            /* #asu_footer ul li {
+                margin-left: 1em !important;
+                margin-right: unset !important;
+            } */
+            #innovation-bar .innovation-hidden {
+                display: none !important;
+            }
+            #innovation-bar .innovation-status {
+                width: 95% !important;
+            }
+        }
+        @media only screen and (max-width: 1190px) {
+            #asu_footer .innovation-mobile-only {
+                margin-left: 2em;
+            }
+            #asu_footer .no-border {
+                margin-right: 2em;
+            }
+            #asu_footer ul li {
+                margin-left: 1em !important;
+                margin-right: unset !important;
+            }
         }
     </style>
 </apex:component>

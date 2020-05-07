@@ -1,8 +1,0 @@
-<apex:component>
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
-    <c:FamilyPortalStyles />
-</apex:component>

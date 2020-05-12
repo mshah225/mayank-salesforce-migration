@@ -65,7 +65,7 @@ global class JIRAWebserviceCallout {
             for (Integer i = 0 ; i < watchersToAdd.size(); i++) {
                 setHeader(req);
                 setEndPoint(req, endPoint, 'POST');
-                setBody(req, '"' + getUserId(watchersToAdd[i]) + '"');
+                setBody(req, '"' + getJIRAUserId(watchersToAdd[i]) + '"');
                 res = http.send(req);
             }
         } catch(System.CalloutException e) {
@@ -209,6 +209,9 @@ global class JIRAWebserviceCallout {
             when 'Ready For Work' {
                 statusKey = '351';
             }
+	    when 'Done' {
+                statusKey = '111';
+            }
             when else {
                 statusKey = '11';
             }
@@ -216,7 +219,7 @@ global class JIRAWebserviceCallout {
         return statusKey;
     }
 
-    private static String getUserId(String username){
+    private static String getJIRAUserId(String username){
         List<String> errorLoggerVars = new List<String>();
         String userId;
         

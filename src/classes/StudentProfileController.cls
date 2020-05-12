@@ -432,7 +432,7 @@ global with sharing class StudentProfileController {
     }
 
     private void setUndergradStudentTestScores() {
-        Set<String> testCodes = new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ACCUPLACER2', 'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII'};
+        Set<String> testCodes = new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ALEKSMATHPL', 'ACCUPLACER2', 'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII', 'GMAT', 'GRE', 'LSAT', 'MAT', 'MCAT'};
         testUnderGradScoreList = [
             SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c
             FROM Test_Score__c

@@ -11,15 +11,15 @@ global class JIRAWebserviceCallout {
         
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
         
-        String body = '{"fields":' +
-            '{   "project":     {      "id": "17074"      }, ' +
-            '"summary": "' + summary + '",  ' +
-            '"description": "' + description + '",  ' +
-            ' "issuetype": {  "name": "' + type + '"     }';
-        String bodyWithoutReporter = body + '   }}';
-        
-        body += ', "reporter": { "name": "' + alias + '"  }' +
-            '   }}';
+        body = '{"fields":' +
+                '{   "project":     {      "id": "17074"      }, ' +
+                '"summary": "' + summary + '",  ' +
+                '"description": "' + description + '",  ' +
+                ' "issuetype": {  "name": "' + type + '"     }';
+        bodyWithoutReporter = body + '   }}';
+
+        body += ', "reporter": { "id": "' + getJIRAUserId(alias) + '"  }' +
+                '   }}';
         
         setHeader(req);
         setEndpoint(req, endpoint, 'POST');

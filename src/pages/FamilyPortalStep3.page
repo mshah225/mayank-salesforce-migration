@@ -46,7 +46,7 @@
             <div class="family-portal-body-container">
                 <div class="family-portal-3-container container">
                     <div class="row">
-                        <div class="col-sm-6 family-portal-body-margin">
+                        <div class="col-sm-12 family-portal-body-margin">
                             <apex:pageBlock>
                                 <div class="family-portal-3-header">
                                     <h3>I want to learn about...</h3>
@@ -59,14 +59,17 @@
                                 </apex:commandLink>
                             </apex:pageBlock>
                         </div>
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-5">
-                            <c:FamilyPortalSidebar />
-                        </div>
                     </div>
                 </div> 
             </div>
         </div>
     </apex:form>
     <c:ASUBrandFooter />
+
+    <script>
+        $(document).ready(function() {
+            $(this).find('.family-portal-3-container table > tbody > tr').addClass('col-sm-6 family-portal-3-checkbox-option');
+        });
+    </script>
+
 </apex:page>

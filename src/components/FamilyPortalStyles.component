@@ -9,7 +9,7 @@
         .bPageBlock .detailList .error {
             border: 2px solid #c00 !important;
         }
-        .bPageBlock .requiredInput {
+        /* .bPageBlock .requiredInput {
             height: 100% !important;
             position: relative !important;
         }
@@ -20,7 +20,7 @@
             position: absolute !important;
             top: 1px !important;
             width: 3px !important;
-        }
+        } */
         .col-sm-1.family-portal-bootstrap-vertical-center {
             padding-left: 0;
             text-align: center;
@@ -51,10 +51,17 @@
         .family-portal-5-header h2 {
             font-size: 30px !important;
         }
+        .family-portal-2-container {
+            width: 100%;
+        }
         .family-portal-2-container .pbSubsection .assistiveText,
         .family-portal-3-container .pbSubsection .assistiveText,
         .family-portal-4-container .pbSubsection .assistiveText {
             display: none !important;
+        }
+        .family-portal-2-container .family-portal-2-field-required {
+            vertical-align: text-bottom;
+            color: red;
         }
         .family-portal-2-container .pbSubsection table td,
         .family-portal-2-container .pbSubsection table th,
@@ -93,6 +100,7 @@
         .family-portal-3-container table > tbody > tr > td {
             border-top: unset !important;
         }
+        .family-portal-3-container table > tbody > tr:first-child,
         .family-portal-3-container table > tbody > tr:first-child > td {
             display: none !important;
         }
@@ -125,6 +133,7 @@
         }
         .family-portal-4-student-field-input {
             margin-bottom: 1em !important;
+            width: 100%;
         }
         .family-portal-4-student-field-label {
             display: block;
@@ -133,6 +142,7 @@
         .family-portal-4-student-remove-button {
             border-bottom: none !important;
             text-decoration: none !important;
+            padding-right: 1em;
         }
         .family-portal-4-student-remove-button-column {
             vertical-align: middle;
@@ -220,6 +230,13 @@
                 padding-left: 0;
             }
         }
+        @media only screen and (max-width: 768px) {
+            .family-portal-2-container .pbSubsection table td, 
+            .family-portal-2-container .pbSubsection table th {
+                display: block;
+                padding: 0;
+            }
+        }
         @media only screen and (max-width: 990px) {
             .col-sm-7.family-portal-bootstrap-vertical-center a {
                 display: inline-block;
@@ -227,12 +244,10 @@
                 margin-right: 2em;
                 min-width: 200px;
             }
-            .family-portal-2-container .pbSubsection table td, 
-            .family-portal-2-container .pbSubsection table th {
-                display: block;
-                padding: 0;
-            }
             .family-portal-2-container .pbSubsection table td input {
+                width: 100%;
+            }
+            .family-portal-3-checkbox-option {
                 width: 100%;
             }
             .family-portal-double-button {

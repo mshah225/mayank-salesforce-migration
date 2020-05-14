@@ -41,7 +41,7 @@ public with sharing class ConstituentMatcherTest {
 
         // Create list for test contacts
         List<Contact> listOfOriginalContacts = new List<Contact>();
-        static Integer numberOfContactsToCreate = 16;
+        Integer numberOfContactsToCreate = 16;
 
         for (Integer i = 1; i <= numberOfContactsToCreate; i++) {
             Contact testContact = new Contact(
@@ -162,7 +162,7 @@ public with sharing class ConstituentMatcherTest {
         insert listOfOriginalLeads;
 
         // Give lead #5-7 a nickname after insertion to test partial name search
-        for (Integer i = 5; i <= numberOfContactsToCreate; i++) {
+        for (Integer i = 5; i <= numberOfLeadsToCreate; i++) {
             listOfOriginalLeads[i - 1].FirstName = 'Test';    
         }
 

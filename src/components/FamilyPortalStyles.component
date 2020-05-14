@@ -71,6 +71,10 @@
         .family-portal-4-container .pbSubsection table th {
             border: 0 !important;
         }
+        .family-portal-2-container .pbSubsection table td input,
+        .family-portal-2-container .pbSubsection table td select {
+            width: 100%;
+        }
         .family-portal-3-container .multiSelectPicklistCell > a {
             border-bottom: none !important;
             font-size: 2em !important;
@@ -236,6 +240,9 @@
                 display: block;
                 padding: 0;
             }
+            .family-portal-2-container .pbSubsection table td {
+                margin-bottom: 1em;
+            }
         }
         @media only screen and (max-width: 990px) {
             .col-sm-7.family-portal-bootstrap-vertical-center a {
@@ -243,9 +250,6 @@
                 margin-left: 1em;
                 margin-right: 2em;
                 min-width: 200px;
-            }
-            .family-portal-2-container .pbSubsection table td input {
-                width: 100%;
             }
             .family-portal-3-checkbox-option {
                 width: 100%;

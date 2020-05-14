@@ -11,6 +11,39 @@ public with sharing class FamilyPortalController {
     public Boolean isLoggedInUser;
     public Boolean isExistingGuardian;
     public FamilyPortalProgressBar progressBarController {get; set;}
+
+    public Boolean guardianSelectedCountryIsUnitedStatesOrCanada {
+        get {
+            if (familyPortalGuardian.Country__c == 'United States' || familyPortalGuardian.Country__c == 'Canada') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        set;
+    }
+
+    public Boolean guardianSelectedCountryIsUS {
+        get {
+            if (familyPortalGuardian.Country__c == 'United States') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        set;
+    }
+
+    public Boolean guardianSelectedCountryIsCanada {
+        get {
+            if (familyPortalGuardian.Country__c == 'Canada') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        set;
+    }
     public List<String> guardianSelectedInterests {
         get {
             List<String> selectedInterests = new List<String>();
@@ -35,8 +68,29 @@ public with sharing class FamilyPortalController {
         }
     }
 
+    public List<SelectOption> getGuardianCountryOptions() {
+        List<SelectOption> countryCodeOptions = new List<SelectOption>();
+        Schema.DescribeFieldResult countryCodeFieldResult = User.CountryCode.getDescribe();
+        List<Schema.PicklistEntry> countryCodeValues = countryCodeFieldResult.getPicklistValues();
+        for (Schema.PicklistEntry countryCode : countryCodeValues) {
+            countryCodeOptions.add(new SelectOption(countryCode.getLabel(), countryCode.getLabel()));
+        }
+        return countryCodeOptions;
+    }
+
+    public List<SelectOption> getGuardianStateOptions() {
+        List<SelectOption> stateCodeOptions = new List<SelectOption>();
+        Schema.DescribeFieldResult stateCodeFieldResult = User.StateCode.getDescribe();
+        List<Schema.PicklistEntry> stateCodeValues = stateCodeFieldResult.getPicklistValues();
+        for (Schema.PicklistEntry stateCode : stateCodeValues) {
+            stateCodeOptions.add(new SelectOption(stateCode.getLabel(), stateCode.getLabel()));
+        }
+        return stateCodeOptions;
+    }
+
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
+        familyPortalGuardian.Country__c = 'United States';
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
@@ -71,6 +125,18 @@ public with sharing class FamilyPortalController {
     }
 
     public List<SelectOption> getGuardianInterestChoices() {
+        List<SelectOption> optionsToReturn = new List<SelectOption>();
+        Schema.DescribeFieldResult describeResult = Family_Portal_Guardian_Interest__c.Interest_Choices__c.getDescribe();
+        List<Schema.PicklistEntry> picklistOptions = describeResult.getPicklistValues();
+        for (Schema.PicklistEntry picklistItem : picklistOptions) {
+            if (picklistItem.isActive()) {
+                optionsToReturn.add(new SelectOption(picklistItem.getValue(), picklistItem.getLabel()));
+            }
+        }
+        return optionsToReturn;
+    }
+
+    public List<SelectOption> getCountryCodePicklistValues() {
         List<SelectOption> optionsToReturn = new List<SelectOption>();
         Schema.DescribeFieldResult describeResult = Family_Portal_Guardian_Interest__c.Interest_Choices__c.getDescribe();
         List<Schema.PicklistEntry> picklistOptions = describeResult.getPicklistValues();
@@ -253,8 +319,6 @@ public with sharing class FamilyPortalController {
     }
 
     public PageReference familyPortalStep4() {
-        System.debug(guardianSelectedInterests);
-        System.debug(familyPortalGuardianInterest.Interest_Choices__c);
         return Page.FamilyPortalStep4;
     }
 

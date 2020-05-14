@@ -41,7 +41,7 @@ public with sharing class ConstituentMatcherTest {
 
         // Create list for test contacts
         List<Contact> listOfOriginalContacts = new List<Contact>();
-        Integer numberOfContactsToCreate = 16;
+        static Integer numberOfContactsToCreate = 16;
 
         for (Integer i = 1; i <= numberOfContactsToCreate; i++) {
             Contact testContact = new Contact(

@@ -62,14 +62,14 @@
                                         <div class="family-portal-4-field-wrapper col-sm-5">
                                             <apex:outputText styleClass="family-portal-4-student-field-label" value="High School Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}" />
                                             <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}" />
-
                                             <apex:outputText styleClass="family-portal-4-student-field-label" value="Academic College" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}"/>
                                             <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Academic_College__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}" />
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="ASU Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Alumni'}" />
+                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Alumni'}" />
                                         </div>
                                         <div class="family-portal-4-field-wrapper col-sm-4">
                                             <apex:outputText styleClass="family-portal-4-student-field-label" value="Military Affiliation" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}" />
-                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Military_Affiliation__c}"
-                                                rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}" />
+                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Military_Affiliation__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}" />
                                         </div>
                                         <div class="family-portal-4-field-wrapper col-sm-12">
                                             <apex:outputText styleClass="family-portal-4-student-field-label" value="Student Type" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}" />

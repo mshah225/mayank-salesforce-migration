@@ -8,7 +8,8 @@ global class JIRAWebserviceCallout {
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
-        
+        String body = '';
+        String bodyWithoutReporter = '';
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
         
         body = '{"fields":' +

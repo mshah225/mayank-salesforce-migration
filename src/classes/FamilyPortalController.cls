@@ -7,11 +7,10 @@ public with sharing class FamilyPortalController {
     private Integer studentRowCount = 0;    
     public String businessUnitFromUrl;
     public String hashIdFromUrl;
-    public User loggedInUser;
-    public Boolean isLoggedInUser;
-    public Boolean isExistingGuardian;
+    public User loggedInUser {get; set;}
+    public Boolean isLoggedInUser {get; set;}
+    public Boolean isExistingGuardian {get; set;}
     public FamilyPortalProgressBar progressBarController {get; set;}
-
     public Boolean guardianSelectedCountryIsUnitedStatesOrCanada {
         get {
             if (familyPortalGuardian.Country__c == 'United States' || familyPortalGuardian.Country__c == 'Canada') {
@@ -22,7 +21,6 @@ public with sharing class FamilyPortalController {
         }
         set;
     }
-
     public Boolean guardianSelectedCountryIsUS {
         get {
             if (familyPortalGuardian.Country__c == 'United States') {
@@ -33,7 +31,6 @@ public with sharing class FamilyPortalController {
         }
         set;
     }
-
     public Boolean guardianSelectedCountryIsCanada {
         get {
             if (familyPortalGuardian.Country__c == 'Canada') {
@@ -68,26 +65,6 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    public List<SelectOption> getGuardianCountryOptions() {
-        List<SelectOption> countryCodeOptions = new List<SelectOption>();
-        Schema.DescribeFieldResult countryCodeFieldResult = User.CountryCode.getDescribe();
-        List<Schema.PicklistEntry> countryCodeValues = countryCodeFieldResult.getPicklistValues();
-        for (Schema.PicklistEntry countryCode : countryCodeValues) {
-            countryCodeOptions.add(new SelectOption(countryCode.getLabel(), countryCode.getLabel()));
-        }
-        return countryCodeOptions;
-    }
-
-    public List<SelectOption> getGuardianStateOptions() {
-        List<SelectOption> stateCodeOptions = new List<SelectOption>();
-        Schema.DescribeFieldResult stateCodeFieldResult = User.StateCode.getDescribe();
-        List<Schema.PicklistEntry> stateCodeValues = stateCodeFieldResult.getPicklistValues();
-        for (Schema.PicklistEntry stateCode : stateCodeValues) {
-            stateCodeOptions.add(new SelectOption(stateCode.getLabel(), stateCode.getLabel()));
-        }
-        return stateCodeOptions;
-    }
-
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardian.Country__c = 'United States';
@@ -113,16 +90,24 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    public User getLoggedInUser() {
-        return loggedInUser;
+    public List<SelectOption> getGuardianCountryOptions() {
+        List<SelectOption> countryCodeOptions = new List<SelectOption>();
+        Schema.DescribeFieldResult countryCodeFieldResult = User.CountryCode.getDescribe();
+        List<Schema.PicklistEntry> countryCodeValues = countryCodeFieldResult.getPicklistValues();
+        for (Schema.PicklistEntry countryCode : countryCodeValues) {
+            countryCodeOptions.add(new SelectOption(countryCode.getLabel(), countryCode.getLabel()));
+        }
+        return countryCodeOptions;
     }
 
-    public Boolean getIsLoggedInUser() {
-        return isLoggedInUser;
-    }
-
-    public Boolean getIsExistingGuardian() {
-        return isExistingGuardian;
+    public List<SelectOption> getGuardianStateOptions() {
+        List<SelectOption> stateCodeOptions = new List<SelectOption>();
+        Schema.DescribeFieldResult stateCodeFieldResult = User.StateCode.getDescribe();
+        List<Schema.PicklistEntry> stateCodeValues = stateCodeFieldResult.getPicklistValues();
+        for (Schema.PicklistEntry stateCode : stateCodeValues) {
+            stateCodeOptions.add(new SelectOption(stateCode.getLabel(), stateCode.getLabel()));
+        }
+        return stateCodeOptions;
     }
 
     public List<SelectOption> getGuardianInterestChoices() {
@@ -445,8 +430,8 @@ public with sharing class FamilyPortalController {
     }
 
     public class FamilyPortalStudentWrapper {
-        public Family_Portal_Student__c familyPortalStudentObj {get;set;}
-        public Integer studentIndex {get;set;}
+        public Family_Portal_Student__c familyPortalStudentObj {get; set;}
+        public Integer studentIndex {get; set;}
         public List<String> guardianSelectedStudentTypes {
             get {
                 List<String> selectedTypes = new List<String>();
@@ -456,7 +441,6 @@ public with sharing class FamilyPortalController {
                         selectedTypes.add(type.getValue());
                     }
                 }
-
                 return selectedTypes;
             }
             set {
@@ -468,7 +452,6 @@ public with sharing class FamilyPortalController {
                         selectedCheckboxes += ';' + studentType;
                     }
                 }
-
                 familyPortalStudentObj.Type__c = selectedCheckboxes;
             }
         }
@@ -492,9 +475,9 @@ public with sharing class FamilyPortalController {
     }
 
     public class FamilyPortalProgressBar {
-        public Decimal currentPercentage {get;set;}
-        public Integer progressCounter {get;set;}
-        public String statusMessage {get;set;}
+        public Decimal currentPercentage {get; set;}
+        public Integer progressCounter {get; set;}
+        public String statusMessage {get; set;}
         
         public FamilyPortalProgressBar() {
             currentPercentage = 0;

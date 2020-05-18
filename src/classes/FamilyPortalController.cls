@@ -91,6 +91,7 @@ public with sharing class FamilyPortalController {
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
         familyPortalGuardian.Country__c = 'United States';
+        familyPortalGuardian.State__c = 'Arizona';
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');

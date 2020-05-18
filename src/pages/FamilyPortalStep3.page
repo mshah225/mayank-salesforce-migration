@@ -71,5 +71,4 @@
             $(this).find('.family-portal-3-container table > tbody > tr').addClass('col-sm-6 family-portal-3-checkbox-option');
         });
     </script>
-
 </apex:page>

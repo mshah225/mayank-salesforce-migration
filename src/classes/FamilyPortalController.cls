@@ -135,7 +135,10 @@ public with sharing class FamilyPortalController {
     }
 
     public PageReference generateLoginLink() {
-        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/apex/FamilyPortal?bu=' + businessUnitFromUrl;
+        String loginLinkString = 'https://weblogin.asu.edu/cas/login?service=https%3A%2F%2Fshibboleth-dev.asu.edu%2Fidp%2FAuthn%2FExtCas%3Fconversation%3De1s1&entityId=https%3A%2F%2Fasu--dev.my.salesforce.com/FamilyPortal/FamilyPortalStep1';
+        if (businessUnitFromUrl != null) {
+            loginLinkString += '?bu=' + businessUnitFromUrl;
+        }
         if (hashIdFromUrl != null) {
             loginLinkString += '?id=' + hashIdFromUrl;
         }

@@ -2281,7 +2281,7 @@
                                         </tr>
 
                                         <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.2" class="gradTD innerHeaders" style="padding-left: 75px;">
+                                            <th class="gradTD innerHeaders" style="padding-left: 75px; width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Name
                                                 </div>
@@ -2289,22 +2289,22 @@
                                                     There are no Faculty Committee Members for {!theContact.Name}.
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Committee Role
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Title
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Department
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Attendance Method
                                                 </div>
@@ -2343,7 +2343,7 @@
                                         </tr>
 
                                         <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.5" class="gradTD innerHeaders" style="padding-left: 75px;">
+                                            <th class="gradTD innerHeaders" style="padding-left: 75px; width:20%">
                                                 <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'block', 'none')}">
                                                     Name
                                                 </div>

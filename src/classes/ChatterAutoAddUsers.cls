@@ -7,7 +7,7 @@ public class ChatterAutoAddUsers
         CollaborationGroupMember newCollabMember;
         Id collabGroupId;
         List<CollaborationGroupMember> collabMembersToInsert = new List<CollaborationGroupMember>();
-        Map<String, List<String>> chatterSettingsMap = new Map<String, List<String>>();
+        Map<String, String> chatterSettingsMap = new Map<String, String>();
         Map<String, String> chatterGroupsMap= new Map<String, String>();
 
         List<User> userList = [
@@ -24,17 +24,7 @@ public class ChatterAutoAddUsers
 
         for (Chatter_Auto_Add_Users__c caau : chatterSettingsList)
         {
-            if (chatterSettingsMap.get(caau.Profile__c) == null) {
-                List<String> chatterGroup = new List<String>();
-                chatterGroup.add(caau.Chatter_Group_Name__c);
-
-                chatterSettingsMap.put(caau.Profile__c, chatterGroup);
-            } else {
-                List<String> chatterGroup= chatterSettingsMap.get(caau.Profile__c);
-                chatterGroup.add(caau.Chatter_Group_Name__c);
-
-                chatterSettingsMap.put(caau.Profile__c, chatterGroup);
-            }
+            chatterSettingsMap.put(caau.Profile__c, caau.Chatter_Group_Name__c);
         }
 
         // Populate the chatter group map with all chatter group names.
@@ -71,26 +61,25 @@ public class ChatterAutoAddUsers
             // Check for Chatter Settings first
             if (chatterSettingsMap.containsKey(u.Profile.Name))
             {
-                List<String> chatterGroupsForProfile = chatterSettingsMap.get(u.Profile.Name);
+                // Get the group name that belongs to the users Profile
+                String groupName = chatterSettingsMap.get(u.Profile.Name);
 
-                for (String groupName : chatterGroupsForProfile) {
-                    /*
-                    * Pass the groupname to the helper method and return the Ids of
-                    * the collaboration members for dupe checking.
-                    */
-                    Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck(groupName);
+                /*
+                * Pass the groupname to the helper method and return the Ids of
+                * the collaboration members for dupe checking.
+                */
+                Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck(groupName);
 
-                    // Check if the current user is already in the group, if not add them.
-                    if (chatterGroupsMap.containsKey(groupName)
-                        && (!dupeMemberIdSet.contains(u.Id)))
-                    {
-                        collabGroupId = chatterGroupsMap.get(groupName);
+                // Check if the current user is already in the group, if not add them.
+                if (chatterGroupsMap.containsKey(groupName)
+                    && (!dupeMemberIdSet.contains(u.Id)))
+                {
+                    collabGroupId = chatterGroupsMap.get(groupName);
 
-                        newCollabMember = new CollaborationGroupMember();
-                        newCollabMember.MemberId = u.Id;
-                        newCollabMember.CollaborationGroupId = collabGroupId;
-                        collabMembersToInsert.add(newCollabMember);
-                    }
+                    newCollabMember = new CollaborationGroupMember();
+                    newCollabMember.MemberId = u.Id;
+                    newCollabMember.CollaborationGroupId = collabGroupId;
+                    collabMembersToInsert.add(newCollabMember);
                 }
             }
             // Check if Service Profile

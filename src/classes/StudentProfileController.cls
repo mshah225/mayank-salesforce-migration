@@ -406,7 +406,7 @@ global with sharing class StudentProfileController {
             Final_Defense_Results_Status_DtTm__c, Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
             FROM Student_Milestone__c
             WHERE Contact__c =: theContact.Id
-            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS' OR Milestone__c = 'GRFORMAT')
+            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS' OR Milestone__c = 'GRFORMAT' OR Milestone__c = 'GRRESPAPER' OR Milestone__c = 'GRPRACTIC' OR Milestone__c = 'GRBNDDOC')
             ORDER BY Effdt__c ASC
         ];
 
@@ -415,7 +415,7 @@ global with sharing class StudentProfileController {
                 if (milestone.Acad_Plan__r.Plan_Code__c == gppw.gradProgramPlan.Plan_Code__c) {
                     if (milestone.Milestone__c == 'GRDEFENSE') {
                         gppw.gradMilestoneDefense = milestone;
-                    } else if (milestone.Milestone__c == 'GRDISSERT' || milestone.Milestone__c == 'GRTHESIS') {
+                    } else if (milestone.Milestone__c == 'GRDISSERT' || milestone.Milestone__c == 'GRTHESIS' || milestone.Milestone__c == 'GRRESPAPER' || milestone.Milestone__c == 'GRPRACTIC' || milestone.Milestone__c == 'GRBNDDOC') {
                         gppw.gradMilestoneDiss = milestone;
                     } else if (milestone.Milestone__c == 'GRFORMAT') {
                         gppw.gradMilestoneFormat = milestone;

@@ -7,7 +7,9 @@
         #asu-header-site-title a:focus,
         #asu-header-site-title a:hover,
         #asu_logo a,
-        #asu_universal_nav ul a, {
+        #asu_universal_nav ul a,
+        #asu_hdr a,
+        .asu-header-site-title-container a {
             border-bottom: none;
             text-decoration: none;
         }

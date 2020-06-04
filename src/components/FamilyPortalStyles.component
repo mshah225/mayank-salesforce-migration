@@ -3,24 +3,23 @@
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
     <style> 
+        [class*=f-], [class^=f-] {
+            font-family: unset;
+            speak: unset;
+            font-style: unset;
+            font-weight: unset;
+            font-variant: unset;
+            text-transform: unset;
+            line-height: unset;
+            -webkit-font-smoothing: unset;
+            -moz-osx-font-smoothing: unset;
+        }
         p, select, input, textarea, .lead {
             font-weight: 400 !important;
         }
         .bPageBlock .detailList .error {
             border: 2px solid #c00 !important;
         }
-        /* .bPageBlock .requiredInput {
-            height: 100% !important;
-            position: relative !important;
-        }
-        .bPageBlock .requiredInput .requiredBlock {
-            background-color: #c00 !important;
-            bottom: 1px !important;
-            left: -4px !important;
-            position: absolute !important;
-            top: 1px !important;
-            width: 3px !important;
-        } */
         .col-sm-1.family-portal-bootstrap-vertical-center {
             padding-left: 0;
             text-align: center;
@@ -216,12 +215,19 @@
         .mainTitle {
             font-size: 1.5em !important;
         }
+        .siteforceContentArea .comm-layout-column:not(:empty) {
+            padding: 0;
+        }
         .slds-scope .slds-gutters .slds-col {
             padding-left: 0 !important;
             padding-right: 0 !important;
         }
         .slds-scope .slds-progress-bar__value_success {
             background: #8C1D40 !important;
+        }
+        .slds-m-top_x-large,
+        .slds-m-top--x-large {
+            margin-top: 0;
         }
         @media only screen and (max-width: 553px) {
             .col-sm-1.family-portal-bootstrap-vertical-center {

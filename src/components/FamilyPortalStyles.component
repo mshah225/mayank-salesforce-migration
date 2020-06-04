@@ -216,7 +216,7 @@
             font-size: 1.5em !important;
         }
         .siteforceContentArea .comm-layout-column:not(:empty) {
-            padding: 0;
+            padding: 0 !important;
         }
         .slds-scope .slds-gutters .slds-col {
             padding-left: 0 !important;
@@ -227,7 +227,7 @@
         }
         .slds-m-top_x-large,
         .slds-m-top--x-large {
-            margin-top: 0;
+            margin-top: 0 !important;
         }
         @media only screen and (max-width: 553px) {
             .col-sm-1.family-portal-bootstrap-vertical-center {

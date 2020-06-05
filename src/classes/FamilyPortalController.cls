@@ -4,9 +4,13 @@ public with sharing class FamilyPortalController {
     public Family_Portal_Guardian__c familyPortalGuardian {get; set;}
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
     public List<FamilyPortalStudentWrapper> studentWrapperList {get; set;}
-    private Integer studentRowCount = 0;    
+    private Integer studentRowCount = 0;
+    public String businessUnit;    
     public String businessUnitFromUrl;
+    public String businessUnitFromCookie;
+    public String hashId;
     public String hashIdFromUrl;
+    public String hashIdFromCookie;
     public User loggedInUser {get; set;}
     public Boolean isLoggedInUser {get; set;}
     public Boolean isExistingGuardian {get; set;}
@@ -71,9 +75,27 @@ public with sharing class FamilyPortalController {
         familyPortalGuardian.State__c = 'Arizona';
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
-        businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
-        hashIdFromUrl = ApexPages.currentPage().getParameters().get('id');
         progressBarController = new FamilyPortalProgressBar();
+        businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
+        businessUnitFromCookie = ApexPages.currentPage().getCookies().get('bu');
+        hashIdFromUrl = ApexPages.currentPage().getParameters().get('id');
+        hashIdFromCookie = ApexPages.currentPage().getCookies().get('id');
+
+        if (businessUnitFromUrl != null) {
+            businessUnit = businessUnitFromUrl;
+            Cookie businessUnitCookie = new Cookie('bu', businessUnitFromUrl, null, -1, true);
+            ApexPages.currentPage().setCookies(new Cookie[] {businessUnitCookie});
+        } else if (businessUnitFromCookie != null) {
+            businessUnit = businessUnitFromCookie;
+        }
+
+        if (hashIdFromUrl != null) {
+            hashId = hashIdFromUrl;
+            Cookie hashIdCookie = new Cookie('id', hashIdFromUrl, null, -1, true);
+            ApexPages.currentPage().setCookies(new Cookie[] {hashIdCookie});
+        } else if (hashIdFromCookie != null) {
+            hashId = hashIdFromCookie;
+        }
     }
 
     public void addStudentRow() {
@@ -136,11 +158,11 @@ public with sharing class FamilyPortalController {
 
     public PageReference generateLoginLink() {
         String loginLinkString = System.Label.Family_Portal_SSO_Login_URL;
-        if (businessUnitFromUrl != null) {
-            loginLinkString += '?bu=' + businessUnitFromUrl;
+        if (businessUnit != null) {
+            loginLinkString += '?bu=' + businessUnit;
         }
-        if (hashIdFromUrl != null) {
-            loginLinkString += '?id=' + hashIdFromUrl;
+        if (hashId != null) {
+            loginLinkString += '?id=' + hashId;
         }
         PageReference loginLink = new PageReference(loginLinkString);
         loginLink.setRedirect(true);
@@ -171,7 +193,7 @@ public with sharing class FamilyPortalController {
             isLoggedInUser = false;
         }
 
-        if (hashIdFromUrl != null) {
+        if (hashId != null) {
             try {
                 prefillFormPagesFromHashId();
             } catch (Exception e) {
@@ -224,7 +246,7 @@ public with sharing class FamilyPortalController {
         List<Family_Portal_Guardian__c> guardian = [
             SELECT Id, First_Name__c, Last_Name__c, Email__c, Zip_Code__c
             FROM Family_Portal_Guardian__c
-            WHERE Hash_ID__c =: hashIdFromUrl
+            WHERE Hash_ID__c =: hashId
         ];
 
         if (guardian[0].First_Name__c != null) {
@@ -363,14 +385,14 @@ public with sharing class FamilyPortalController {
     }
 
     private void insertGuardian() {
-        if (businessUnitFromUrl != null) {
-            familyPortalGuardian.Business_Unit_Source__c = businessUnitFromUrl;
+        if (businessUnit != null) {
+            familyPortalGuardian.Business_Unit_Source__c = businessUnit;
         }
 
-        if (hashIdFromUrl == null) {
+        if (hashId == null) {
             Blob hashData = Blob.valueOf(familyPortalGuardian.First_Name__c + familyPortalGuardian.Email__c);
-            Blob hashId = Crypto.generateDigest('SHA256', hashData);
-            String hashIdString = EncodingUtil.base64Encode(hashId);
+            Blob hashIdBlob = Crypto.generateDigest('SHA256', hashData);
+            String hashIdString = EncodingUtil.base64Encode(hashIdBlob);
 
             Double randomDouble = Math.random();
             randomDouble = Math.rint(randomDouble * 10);
@@ -379,7 +401,7 @@ public with sharing class FamilyPortalController {
             String hashIdAlphanumeric = hashIdString.replaceAll('[^a-zA-Z0-9]', randomIntegerString);
             familyPortalGuardian.Hash_ID__c = hashIdAlphanumeric;
         } else {
-            familyPortalGuardian.Hash_ID__c = hashIdFromUrl;
+            familyPortalGuardian.Hash_ID__c = hashId;
         }
         insert familyPortalGuardian;
     }

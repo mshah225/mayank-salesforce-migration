@@ -45,19 +45,17 @@
 						<ul id="asu_login_module">
 							<li>{!$User.FirstName}</li>
 							<li id="asu_hdr_ssi" class="end">
-								<a target="_top" href="{!$Label.ASU_Brand_Header_SSO_Logout_URL}" onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
-								onfocus="this.href = ASUHeader.alterLoginHref(this.href);" onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN OUT</a>
+								<a target="_top" href="{!$Label.ASU_Brand_Header_SSO_Logout_URL}">SIGN OUT</a>
 							</li>
 						</ul>
 					</apex:outputPanel>
-					<apex:outputPanel rendered="{! NOT(isLoggedInUser)}">
+					<!-- <apex:outputPanel rendered="{! NOT(isLoggedInUser)}">
 						<ul id="asu_login_module">
 							<li id="asu_hdr_ssi" class="end">
-								<a target="_top" href="{!$Label.ASU_Brand_Header_SSO_Login_URL}" onmouseover="this.href = ASUHeader.alterLoginHref(this.href);"
-								onfocus="this.href = ASUHeader.alterLoginHref(this.href);" onclick="this.href = ASUHeader.alterLoginHref(this.href);">SIGN IN</a>
+								<a target="_top" href="{!$Label.ASU_Brand_Header_SSO_Login_URL}">SIGN IN</a>
 							</li>
 						</ul>
-					</apex:outputPanel>
+					</apex:outputPanel> -->
 					<div id="asu_nav_menu" role="navigation" aria-labelledby="asuNavLabel">
 						<span class="sr-only" id="asuNavLabel">
 							Navigation for Entire University

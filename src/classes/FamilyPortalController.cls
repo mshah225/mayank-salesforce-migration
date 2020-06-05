@@ -5,12 +5,8 @@ public with sharing class FamilyPortalController {
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
     public List<FamilyPortalStudentWrapper> studentWrapperList {get; set;}
     private Integer studentRowCount = 0;
-    public String businessUnit;    
-    public String businessUnitFromUrl;
-    public String businessUnitFromCookie;
+    public String businessUnit;
     public String hashId;
-    public String hashIdFromUrl;
-    public String hashIdFromCookie;
     public User loggedInUser {get; set;}
     public Boolean isLoggedInUser {get; set;}
     public Boolean isExistingGuardian {get; set;}
@@ -76,25 +72,25 @@ public with sharing class FamilyPortalController {
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         progressBarController = new FamilyPortalProgressBar();
-        businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
-        businessUnitFromCookie = ApexPages.currentPage().getCookies().get('bu');
-        hashIdFromUrl = ApexPages.currentPage().getParameters().get('id');
-        hashIdFromCookie = ApexPages.currentPage().getCookies().get('id');
 
-        if (businessUnitFromUrl != null) {
-            businessUnit = businessUnitFromUrl;
-            Cookie businessUnitCookie = new Cookie('bu', businessUnitFromUrl, null, -1, true);
-            ApexPages.currentPage().setCookies(new Cookie[] {businessUnitCookie});
-        } else if (businessUnitFromCookie != null) {
-            businessUnit = businessUnitFromCookie;
-        }
-
+        String hashIdFromUrl = ApexPages.currentPage().getParameters().get('id');
+        Cookie hashIdCookie = ApexPages.currentPage().getCookies().get('id');
         if (hashIdFromUrl != null) {
             hashId = hashIdFromUrl;
-            Cookie hashIdCookie = new Cookie('id', hashIdFromUrl, null, -1, true);
+            hashIdCookie = new Cookie('id', hashIdFromUrl, null, -1, true);
             ApexPages.currentPage().setCookies(new Cookie[] {hashIdCookie});
-        } else if (hashIdFromCookie != null) {
-            hashId = hashIdFromCookie;
+        } else if (hashIdCookie != null) {
+            hashId = hashIdCookie.getValue();
+        }
+        
+        String businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
+        Cookie businessUnitCookie = ApexPages.currentPage().getCookies().get('bu');
+        if (businessUnitFromUrl != null) {
+            businessUnit = businessUnitFromUrl;
+            businessUnitCookie = new Cookie('bu', businessUnitFromUrl, null, -1, true);
+            ApexPages.currentPage().setCookies(new Cookie[] {businessUnitCookie});
+        } else if (businessUnitCookie != null) {
+            businessUnit = businessUnitCookie.getValue();
         }
     }
 

@@ -73,21 +73,21 @@ public with sharing class FamilyPortalController {
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
         progressBarController = new FamilyPortalProgressBar();
 
-        String hashIdFromUrl = ApexPages.currentPage().getParameters().get('id');
-        Cookie hashIdCookie = ApexPages.currentPage().getCookies().get('id');
+        String hashIdFromUrl = ApexPages.currentPage().getParameters().get('fpid');
+        Cookie hashIdCookie = ApexPages.currentPage().getCookies().get('fpid');
         if (hashIdFromUrl != null) {
             hashId = hashIdFromUrl;
-            hashIdCookie = new Cookie('id', hashIdFromUrl, null, -1, true);
+            hashIdCookie = new Cookie('fpid', hashIdFromUrl, null, -1, true);
             ApexPages.currentPage().setCookies(new Cookie[] {hashIdCookie});
         } else if (hashIdCookie != null) {
             hashId = hashIdCookie.getValue();
         }
         
-        String businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
-        Cookie businessUnitCookie = ApexPages.currentPage().getCookies().get('bu');
+        String businessUnitFromUrl = ApexPages.currentPage().getParameters().get('fpbu');
+        Cookie businessUnitCookie = ApexPages.currentPage().getCookies().get('fpbu');
         if (businessUnitFromUrl != null) {
             businessUnit = businessUnitFromUrl;
-            businessUnitCookie = new Cookie('bu', businessUnitFromUrl, null, -1, true);
+            businessUnitCookie = new Cookie('fpbu', businessUnitFromUrl, null, -1, true);
             ApexPages.currentPage().setCookies(new Cookie[] {businessUnitCookie});
         } else if (businessUnitCookie != null) {
             businessUnit = businessUnitCookie.getValue();
@@ -100,7 +100,7 @@ public with sharing class FamilyPortalController {
     }
     
     public void removeStudentRow() {
-        Integer indexToRemove = Integer.valueOf(Apexpages.currentpage().getParameters().get('index'));
+        Integer indexToRemove = Integer.valueOf(ApexPages.currentPage().getParameters().get('index'));
         for (Integer i = 0; i < studentWrapperList.size(); i++) {
             if (studentWrapperList[i].studentIndex == indexToRemove ) {
                 studentWrapperList.remove(i);     
@@ -155,10 +155,10 @@ public with sharing class FamilyPortalController {
     public PageReference generateLoginLink() {
         String loginLinkString = System.Label.Family_Portal_SSO_Login_URL;
         if (businessUnit != null) {
-            loginLinkString += '?bu=' + businessUnit;
+            loginLinkString += '?fpbu=' + businessUnit;
         }
         if (hashId != null) {
-            loginLinkString += '?id=' + hashId;
+            loginLinkString += '?fpid=' + hashId;
         }
         PageReference loginLink = new PageReference(loginLinkString);
         loginLink.setRedirect(true);
@@ -442,10 +442,10 @@ public with sharing class FamilyPortalController {
         mail.setUseSignature(false);
         mail.setPlainTextBody('Your ASU Families submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
             'If you have an ASURITE ID, you can view your submission record directly at https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '. ' + 
-            'You can also change your chosen interests or student preferences at any time by revisiting ASU Families at https://asu--dev.my.salesforce.com/apex/FamilyPortalStep1?id=' + familyPortalGuardian.Hash_ID__c + '.');
+            'You can also change your chosen interests or student preferences at any time by revisiting ASU Families at https://dev-myasu.cs59.force.com/FamilyPortal/s/?fpid=' + familyPortalGuardian.Hash_ID__c + '.');
         mail.setHtmlBody('Your ASU Families submission for <strong>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</strong> has been created.<p>' +
             'If you have an ASURITE ID, you view your <a href=https://asu--dev.my.salesforce.com/' + familyPortalGuardian.Id + '>submission record</a>. ' + 
-            'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://asu--dev.my.salesforce.com/apex/FamilyPortalStep1?id=' + familyPortalGuardian.Hash_ID__c + '">ASU Families</a></strong>.');
+            'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://dev-myasu.cs59.force.com/FamilyPortal/s/?fpid=' + familyPortalGuardian.Hash_ID__c + '">ASU Families</a></strong>.');
 
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }

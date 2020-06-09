@@ -184,6 +184,7 @@ public with sharing class FamilyPortalController {
                 setExistingUserData();
             } catch (Exception e) {
                 System.debug(e.getMessage());
+                System.debug('Failed to set existing user data. Check exception.');
             }
         } else {
             isLoggedInUser = false;
@@ -192,10 +193,13 @@ public with sharing class FamilyPortalController {
         if (hashId != null) {
             try {
                 prefillFormPagesFromHashId();
+                return Page.FamilyPortalStep3;
             } catch (Exception e) {
                 System.debug(e.getMessage());
+                System.debug('No matching guardians for provided hash ID. Check exception.');
+                hashId = null;
+                return null;
             }
-            return Page.FamilyPortalStep3;
         } else {
             return null;
         }
@@ -322,6 +326,7 @@ public with sharing class FamilyPortalController {
             setExistingUserData();
         } catch (Exception e) {
             System.debug(e.getMessage());
+            System.debug('Failed to set existing user data. Check exception.');
         }
     }
 
@@ -343,6 +348,7 @@ public with sharing class FamilyPortalController {
             sendConfirmationEmail();
         } catch (Exception e) {
             System.debug(e.getMessage());
+            System.debug('Something went wrong when submitting a guardian. Check exception.');
         }
         return Page.FamilyPortalStep5;
     }

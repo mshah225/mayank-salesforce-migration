@@ -1,7 +1,7 @@
 /**
  * An apex page controller that exposes the site login functionality
  */
-public with sharing class CommunitiesLoginController {
+public with sharing class FamilyPortalCommunitiesLoginController {
     // Code we will invoke on page load.
     public PageReference forwardToAuthPage() {
         String startUrl = '/FamilyPortal/FamilyPortalStep1';

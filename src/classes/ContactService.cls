@@ -264,6 +264,112 @@ public class ContactService
         return getContactInformation(contactId, '');
     }
 
+    public static void updatePermanentContactWithDeleteId(Map<Id, String> contactIdToDuplicateId, Map<Id, String> contactIdToAccountId) {
+        List<Contact> contactsWithSharedAccounts = [ 
+            SELECT Id, Account.Id, DuplicateIDs__c
+            FROM Contact 
+            WHERE Account.Id IN: contactIdToAccountId.values() AND Id NOT IN: contactIdToDuplicateId.keyset()
+            ORDER By Account.Id 
+        ];
+
+        Map<Id, Contact> accountToMasterContact = new Map<Id, Contact>();
+        List<Contact> contactsToUpdate = new List<Contact>();
+
+        for (Contact masterContact : contactsWithSharedAccounts) {
+            accountToMasterContact.put(masterContact.AccountId, masterContact);
+        }
+
+        for (Id deletedContactId : contactIdToDuplicateId.keyset()) {
+            Contact masterContact = accountToMasterContact.get(contactIdToAccountId.get(deletedContactId));
+            if (masterContact != null) {
+                if (masterContact.DuplicateIDs__c != null) {
+                    masterContact.DuplicateIDs__c += '\r';
+                    masterContact.DuplicateIDs__c += contactIdToDuplicateId.get(deletedContactId);
+                } else {
+                    masterContact.DuplicateIDs__c = contactIdToDuplicateId.get(deletedContactId);
+                }
+
+                contactsToUpdate.add(masterContact);
+            }
+        }
+
+        if (contactsToUpdate.size() > 0) {
+            update contactsToUpdate;
+        }
+    }
+
+    /**
+    * Add a new collection of records to the Cross-Org Crosswalk table
+    * @param jsonRecords A JSON formatted payload
+    * @return void
+    */
+    @future (callout=true)
+    public static void addCrossOrgCrosswalkRecord(String jsonRecords) {
+        try {
+
+            if(jsonRecords.length() == 0){
+                return;
+            }
+
+            HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+            HttpResponse newRecord = crosswalkService.makePostCallout(jsonRecords);
+
+        } catch (Exception e) {
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to create a new crosswalk record\n' +
+                e.getMessage()
+            );
+        }
+    }
+
+    /**
+    * Update a collection of records in the Cross-Org Crosswalk table
+    * @param jsonRecords A JSON formatted payload
+    * @return void
+    */
+    @future (callout=true)
+    public static void updateCrossOrgCrosswalkRecord(String jsonRecords) {
+        try {
+
+            if(jsonRecords.length() == 0){
+                return;
+            }
+
+            // Setup crosswalk service
+            HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+            HttpResponse updatedRecord = crosswalkService.makePutCallout(jsonRecords);
+
+        } catch (Exception e) {
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to update a crosswalk record\n' +
+                e.getMessage()
+            );
+        }
+    }
+
+    /**
+    * Delete a collection of records from the Cross-Org Crosswalk table
+    * @param jsonRecords A JSON formatted payload
+    * @return void
+    */
+    @future (callout=true)
+    public static void deleteCrossOrgCrosswalkRecord(String jsonRecords) {
+        try {
+
+            if(jsonRecords.length() == 0){
+                return;
+            }
+          
+            HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+            HttpResponse deletedRecord = crosswalkService.makeDeleteCallout(jsonRecords);
+
+        } catch (Exception e) {
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to delete a crosswalk record\n' +
+                e.getMessage()
+            );
+        }
+    }
 
     public class ContactServiceException extends Exception {}
 }

@@ -19,6 +19,8 @@ public without sharing class ContactHandler implements ITrigger
     private List<Contact> contactsToCheckIfUpdate = new List<Contact>();
     private List<Relationship__c> bizcardRelationships = new List<Relationship__c>();
     private Map<String, List<CampaignMember>> bizcardCampaignMembers = new Map<String, List<CampaignMember>>();
+    private List <Map<String, String>> crossOrgRecords = new List <Map<String, String>>();
+    private List <Map<String, String>> crossOrgRecordsToUpdate = new List <Map<String, String>>();
 
     public void bulkBefore() {
         // Create a map of Contact to Account
@@ -235,7 +237,20 @@ public without sharing class ContactHandler implements ITrigger
         }
     }
 
-    public void beforeDelete(SObject so) { }
+    public void beforeDelete(SObject so) { 
+        List<Contact> contactsBeingDeleted = (List<Contact>)Trigger.old;
+        Map<Id, String> contactIdToDuplicateIds = new Map<Id, String>();
+        Map<Id, String> contactIdToAccountId = new Map<Id, String>();
+        for (Contact c : contactsBeingDeleted) {
+            String duplicateIds = c.Id;
+            if (c.DuplicateIDs__c != null) {
+                duplicateIds += '/r' + c.DuplicateIDs__c;
+            }
+            contactIdToAccountId.put(c.Id, c.AccountId);
+            contactIdToDuplicateIds.put(c.Id, duplicateIds);
+        }
+        ContactService.updatePermanentContactWithDeleteId(contactIdToDuplicateIds, contactIdToAccountId);
+    }
     
     public void beforeFinally() { 
         // If there are any Accounts to update, update them.
@@ -272,6 +287,17 @@ public without sharing class ContactHandler implements ITrigger
                     bizcardContactIds.add(c.Id);
                     System.debug('Contact IDs: ' + bizcardContactIds);
                 }
+
+                // Cross-Org Map Creation for New Contacts
+               if(!String.IsBlank(c.SSB_CRMSYSTEM_ACCT_ID__c)){
+                    System.debug('Cross-Org Params added to map...');
+                    Map<String, String> paramMap = new Map<String, String>();
+                    paramMap.put('contactId', String.valueOf(c.Id));
+                    paramMap.put('sourceOrgId', String.valueOf(UserInfo.getOrganizationId()));
+                    paramMap.put('guid', String.valueOf(c.SSB_CRMSYSTEM_ACCT_ID__c));
+                    crossOrgRecords.add(paramMap);
+                    System.debug('Cross-Org Map: ' + paramMap);
+               }
 
             }
             if(conIdList.size() > 0) {
@@ -318,7 +344,59 @@ public without sharing class ContactHandler implements ITrigger
                     // Business Card Campaign Members map
                     bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name).add(cm);
                 }
+            }
+            // If we have cross-org data to add
+            if(crossOrgRecords.size() > 0){
+                String records = JSON.serialize(crossOrgRecords);
+                ContactService.addCrossOrgCrosswalkRecord(records);
             } 
+        }
+
+        // Is Update
+        if (Trigger.IsUpdate) {
+
+            for (SObject so : Trigger.New) {
+
+                Contact c = (Contact) so;
+
+                // Cross-Org Map Creation for New Contacts
+                Map<String, String> paramMap = new Map<String, String>();
+                paramMap.put('contactId', String.valueOf(c.Id));
+                paramMap.put('sourceOrgId', String.valueOf(UserInfo.getOrganizationId()));
+                paramMap.put('guid', String.valueOf(c.SSB_CRMSYSTEM_ACCT_ID__c));
+                crossOrgRecordsToUpdate.add(paramMap);
+            }
+
+            // If we have cross-org data to update
+            if(crossOrgRecordsToUpdate.size() > 0){
+                String records = JSON.serialize(crossOrgRecordsToUpdate);
+                // Check Execution Context
+                if(!System.isFuture() && !System.isBatch()){
+                    ContactService.updateCrossOrgCrosswalkRecord(records);
+                }
+            }
+        }
+
+        // Is Delete
+        if (Trigger.IsDelete) {
+
+            List<Id> contactsRemoved = new List<Id>();
+
+            for (SObject so : Trigger.Old) {
+                // Store the sObject as a Contact
+                Contact c = (Contact) so;
+                contactsRemoved.add(c.Id);
+            }
+
+            // If we have cross-org data to remove
+            if(contactsRemoved.size() > 0){
+                String jsonPayload = '\"'+String.join(contactsRemoved,'\",\"')+'\"';
+                jsonPayload = '['+jsonPayload +']';
+                // Check Execution Context
+                if(!System.isFuture() && !System.isBatch()){
+                    ContactService.deleteCrossOrgCrosswalkRecord(jsonPayload);
+                }
+            }
         }
 
         // If there are any new Contact/Account pairs, update them.

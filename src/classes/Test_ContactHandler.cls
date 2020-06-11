@@ -255,6 +255,82 @@ public with sharing class Test_ContactHandler
             System.assertEquals(a.OwnerId, c.OwnerId);
         }
     }
+    
+    static testMethod void testExtMasteredContactCrossOrgUpdate() 
+    {
+        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+
+        List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
+        List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
+        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareUtilities.CrosswalkGetWrapper mockRecord = new CrossOrgShareUtilities.CrosswalkGetWrapper();
+
+        getRecordTypeIDs();
+            
+        // Set up the Contacts
+        List<Contact> extMasteredContacts = createContacts(TRIGGERLOAD, true);
+        
+        Test.startTest();
+        insert extMasteredContacts;
+        Test.stopTest();
+
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_ACCT_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        
+        // Create mocked record
+        mockRecord.contactId = testContact.Id;
+        mockRecord.guid = testContact.SSB_CRMSYSTEM_ACCT_ID__c;
+        mockRecord.lastModifiedDate = String.valueOf(testContact.LastModifiedDate);
+        mockRecord.sourceOrgId = UserInfo.getOrganizationId();
+        mockResponse.add(mockRecord);
+
+        // Get our response based on the test contact
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_ACCT_ID__c);
+        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody());
+
+        // Assert
+        System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
+        System.assertEquals(mockResponse[0].lastModifiedDate, actualResponse[0].lastModifiedDate);
+        System.assertEquals(mockResponse[0].contactId, actualResponse[0].contactId);
+        System.assertEquals(mockResponse[0].sourceOrgId, actualResponse[0].sourceOrgId);
+
+    }
+
+    static testMethod void testExtMasteredContactCrossOrgDelete() 
+    {
+        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+
+        CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
+        CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
+        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+
+        getRecordTypeIDs();
+            
+        // Set up the Contacts
+        List<Contact> extMasteredContacts = createContacts(TRIGGERLOAD, true);
+        insert extMasteredContacts;
+
+        // Get a test contact from insert
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_ACCT_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        Id testContactId = testContact.Id;
+
+        Test.startTest();
+        delete testContact;
+        Test.stopTest();
+
+        // Create mocked record
+        String jsonPayload = '["' + testContactId + '"]';
+
+        mockResponse.message = 'success';
+        mockResponse.status = 200;
+
+        // Get our response based on the test contact
+        HttpResponse crosswalkResponse = crosswalkService.makeDeleteCallout(jsonPayload);
+        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
+
+        // Assert
+        System.assertEquals(mockResponse.message, actualResponse.message);
+        System.assertEquals(mockResponse.status, actualResponse.status);
+    }
 
     static List<Contact> createContacts(Integer qty, boolean createEmplId) 
     {

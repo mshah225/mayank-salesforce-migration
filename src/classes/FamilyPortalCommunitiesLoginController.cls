@@ -3,7 +3,7 @@
  */
 public with sharing class CommunitiesLoginController {
     // Code we will invoke on page load.
-    public PageReference forwardToAuthPage() {
+    public PageReference forwardToCustomAuthPage() {
         if (Site.getName() == 'Family_Portal') {
             String existingStartUrl = System.currentPageReference().getParameters().get('startURL');
             String startUrl = '/FamilyPortal/FamilyPortalStep1';
@@ -11,6 +11,6 @@ public with sharing class CommunitiesLoginController {
                 startUrl += '?' + existingStartUrl.split('\\?')[1];
             }
         }
-        return Network.forwardToAuthPage(startUrl);
+        return Network.forwardToCustomAuthPage(startUrl);
     }
 }

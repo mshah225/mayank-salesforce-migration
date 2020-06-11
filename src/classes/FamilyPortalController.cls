@@ -67,6 +67,9 @@ public with sharing class FamilyPortalController {
 
     public FamilyPortalController() {
         familyPortalGuardian =  new Family_Portal_Guardian__c();
+        familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
+        familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
+        familyPortalGuardian.Email__c = UserInfo.getUserEmail();
         familyPortalGuardian.Country__c = 'United States';
         familyPortalGuardian.State__c = 'Arizona';
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
@@ -152,19 +155,6 @@ public with sharing class FamilyPortalController {
         return optionsToReturn;
     }
 
-    public PageReference generateLoginLink() {
-        String loginLinkString = System.Label.Family_Portal_SSO_Login_URL;
-        if (businessUnit != null) {
-            loginLinkString += '?fpbu=' + businessUnit;
-        }
-        if (hashId != null) {
-            loginLinkString += '?fpid=' + hashId;
-        }
-        PageReference loginLink = new PageReference(loginLinkString);
-        loginLink.setRedirect(true);
-        return loginLink;
-    }
-
     public PageReference familyPortalStep1() {
         return Page.FamilyPortalStep1;
     }
@@ -243,29 +233,30 @@ public with sharing class FamilyPortalController {
     }
 
     private void prefillFormPagesFromHashId() {
-        List<Family_Portal_Guardian__c> guardian = [
+        Family_Portal_Guardian__c guardian = [
             SELECT Id, First_Name__c, Last_Name__c, Email__c, Zip_Code__c
             FROM Family_Portal_Guardian__c
             WHERE Hash_ID__c =: hashId
+            LIMIT 1
         ];
 
-        if (guardian[0].First_Name__c != null) {
-            familyPortalGuardian.First_Name__c = guardian[0].First_Name__c;
+        if (guardian.First_Name__c != null) {
+            familyPortalGuardian.First_Name__c = guardian.First_Name__c;
         }
-        if (guardian[0].Last_Name__c != null) {
-            familyPortalGuardian.Last_Name__c = guardian[0].Last_Name__c;
+        if (guardian.Last_Name__c != null) {
+            familyPortalGuardian.Last_Name__c = guardian.Last_Name__c;
         }
-        if (guardian[0].Email__c != null) {
-            familyPortalGuardian.Email__c = guardian[0].Email__c;
+        if (guardian.Email__c != null) {
+            familyPortalGuardian.Email__c = guardian.Email__c;
         }
-        if (guardian[0].Zip_Code__c != null) {
-            familyPortalGuardian.Zip_Code__c = guardian[0].Zip_Code__c;   
+        if (guardian.Zip_Code__c != null) {
+            familyPortalGuardian.Zip_Code__c = guardian.Zip_Code__c;   
         }
         
         List<Family_Portal_Guardian_Interest__c> guardianInterests = [
             SELECT Id, Chosen_Interest__c
             FROM Family_Portal_Guardian_Interest__c
-            WHERE Family_Portal_Guardian__c =: guardian[0].Id
+            WHERE Family_Portal_Guardian__c =: guardian.Id
         ];
 
         String interestString = '';
@@ -283,7 +274,7 @@ public with sharing class FamilyPortalController {
         List<Family_Portal_Student__c> students = [
             SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
             FROM Family_Portal_Student__c
-            WHERE Family_Portal_Guardian__c =: guardian[0].Id
+            WHERE Family_Portal_Guardian__c =: guardian.Id
         ];
 
         for (Family_Portal_Student__c student : students) {

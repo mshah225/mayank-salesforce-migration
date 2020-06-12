@@ -6,6 +6,7 @@ public with sharing class FamilyPortalController {
     public String businessUnit;
     public Boolean isLoggedInUser {get; set;}
     public Boolean isExistingGuardian {get; set;}
+    public Map<String, Boolean> stepHasBeenViewedMap {get; set;}
     public FamilyPortalProgressBar progressBarController {get; set;}
     public Boolean guardianSelectedCountryIsUnitedStatesOrCanada {
         get {
@@ -83,6 +84,10 @@ public with sharing class FamilyPortalController {
     private void setDefaultSafetyChecks() {
         isLoggedInUser = false;
         isExistingGuardian = false;
+        stepHasBeenViewedMap.put('Step1', false);
+        stepHasBeenViewedMap.put('Step2', false);
+        stepHasBeenViewedMap.put('Step3', false);
+        stepHasBeenViewedMap.put('Step4', false);
     }
 
     private void checkForUrlParameters() {
@@ -299,6 +304,16 @@ public with sharing class FamilyPortalController {
         return optionsToReturn;
     }
 
+    public void familyPortalStep1OnLoad() {
+        if (isLoggedInUser) {
+            stepHasBeenViewedMap.put('Step1', true);
+            progressBarController.progressCounter = 0;
+            progressBarController.getProgressBarPercentage();
+        } else {
+            sendUserToLoginScreen();
+        } 
+    }
+
     public PageReference familyPortalStep1() {
         if (isLoggedInUser) {
             return Page.FamilyPortalStep1;
@@ -308,13 +323,14 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    public void familyPortalStep1OnLoad() {
-        if (isLoggedInUser) {
-            progressBarController.progressCounter = 0;
+    public void familyPortalStep2OnLoad() {
+        if (isLoggedInUser && stepHasBeenViewedMap.get('Step1')) {
+            stepHasBeenViewedMap.put('Step2', true);
+            progressBarController.progressCounter = 25;
             progressBarController.getProgressBarPercentage();
         } else {
             sendUserToLoginScreen();
-        } 
+        }
     }
 
     public PageReference familyPortalStep2() {
@@ -326,9 +342,10 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    public void familyPortalStep2OnLoad() {
-        if (isLoggedInUser) {
-            progressBarController.progressCounter = 25;
+    public void familyPortalStep3OnLoad() {
+        if (isLoggedInUser && stepHasBeenViewedMap.get('Step1') && stepHasBeenViewedMap.get('Step2')) {
+            stepHasBeenViewedMap.put('Step3', true);
+            progressBarController.progressCounter = 50;
             progressBarController.getProgressBarPercentage();
         } else {
             sendUserToLoginScreen();
@@ -344,9 +361,10 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    public void familyPortalStep3OnLoad() {
-        if (isLoggedInUser) {
-            progressBarController.progressCounter = 50;
+    public void familyPortalStep4OnLoad() {
+        if (isLoggedInUser && stepHasBeenViewedMap.get('Step1') && stepHasBeenViewedMap.get('Step2') && stepHasBeenViewedMap.get('Step3')) {
+            stepHasBeenViewedMap.put('Step4', true);
+            progressBarController.progressCounter = 75;
             progressBarController.getProgressBarPercentage();
         } else {
             sendUserToLoginScreen();
@@ -362,9 +380,9 @@ public with sharing class FamilyPortalController {
         }
     }
 
-    public void familyPortalStep4OnLoad() {
-        if (isLoggedInUser) {
-            progressBarController.progressCounter = 75;
+    public void familyPortalStep5OnLoad() {
+        if (isLoggedInUser && stepHasBeenViewedMap.get('Step1') && stepHasBeenViewedMap.get('Step2') && stepHasBeenViewedMap.get('Step3') && stepHasBeenViewedMap.get('Step4')) {
+            progressBarController.progressCounter = 100;
             progressBarController.getProgressBarPercentage();
         } else {
             sendUserToLoginScreen();
@@ -387,15 +405,6 @@ public with sharing class FamilyPortalController {
         } else {
             sendUserToLoginScreen();
             return null;
-        }
-    }
-
-    public void familyPortalStep5OnLoad() {
-        if (isLoggedInUser) {
-            progressBarController.progressCounter = 100;
-            progressBarController.getProgressBarPercentage();
-        } else {
-            sendUserToLoginScreen();
         }
     }
 

@@ -101,7 +101,7 @@ public with sharing class FamilyPortalController {
         progressBarController = new FamilyPortalProgressBar();
         familyPortalGuardian = new Family_Portal_Guardian__c();
         familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
-        familyPortalGuardian.Last_Name__c = UserInfo.getFirstName();
+        familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
         familyPortalGuardian.Email__c = UserInfo.getUserEmail();
         familyPortalGuardian.Country__c = 'United States';
         familyPortalGuardian.State__c = 'Arizona';

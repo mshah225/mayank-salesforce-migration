@@ -1,12 +1,9 @@
 public with sharing class FamilyPortalController {
-    private String existingGuardianUserAsuriteId {get; set;}
-    private String existingGuardianUserEmplid {get; set;}
     public Family_Portal_Guardian__c familyPortalGuardian {get; set;}
     public Family_Portal_Guardian_Interest__c familyPortalGuardianInterest {get; set;}
     public List<FamilyPortalStudentWrapper> studentWrapperList {get; set;}
     private Integer studentRowCount = 0;
     public String businessUnit;
-    public User loggedInUser {get; set;}
     public Boolean isLoggedInUser {get; set;}
     public Boolean isExistingGuardian {get; set;}
     public FamilyPortalProgressBar progressBarController {get; set;}
@@ -69,11 +66,14 @@ public with sharing class FamilyPortalController {
         checkForUrlParameters();
         if (isLoggedInUser()) {
             setupDefaultGuardian();
-            try {
-                prepopulateGuardianData();
-            } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Could not prepopulate guardian data. Check exception.');
+            setExistingAsuUserData();
+            if (isExistingGuardian()) {
+                try {
+                    prepopulateExistingGuardianData();
+                } catch (Exception e) {
+                    System.debug(e.getMessage());
+                    System.debug('Could not prepopulate guardian data. Check exception.');
+                }
             }
         } else {
             sendUserToLoginScreen();
@@ -81,8 +81,8 @@ public with sharing class FamilyPortalController {
     }
 
     private void setDefaultSafetyChecks() {
-        isExistingGuardian = false;
         isLoggedInUser = false;
+        isExistingGuardian = false;
     }
 
     private void checkForUrlParameters() {
@@ -92,35 +92,9 @@ public with sharing class FamilyPortalController {
     private Boolean isLoggedInUser() {
         if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
             isLoggedInUser = true;
-            loggedInUser = new User();
-            loggedInUser.Id = UserInfo.getUserId();
-            loggedInUser.FirstName = UserInfo.getFirstName();
-            loggedInUser.LastName = UserInfo.getLastName();
-            loggedInUser.Email = UserInfo.getUserEmail();
-
-            Integer numberOfMatches = [
-                SELECT COUNT()
-                FROM Family_Portal_Guardian__c
-                WHERE Email__c =: UserInfo.getUserId()
-            ];
-            if (numberOfMatches > 0) {
-                setExistingGuardianUser();
-            }
-
             return true;
         }
-
         return false;
-    }
-
-    private void setExistingGuardianUser() {
-        isExistingGuardian = true;
-        if (existingGuardianUser.EmployeeNumber != null) {
-            existingGuardianUserEmplid = existingGuardianUser.EmployeeNumber;
-        }
-        if (existingGuardianUser.ASURITE_for_External_ID__c != null) {
-            existingGuardianUserAsuriteId = existingGuardianUser.ASURITE_for_External_ID__c;
-        }
     }
 
     private void setupDefaultGuardian() {
@@ -135,7 +109,35 @@ public with sharing class FamilyPortalController {
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
     }
 
-    private void prepopulateGuardianData() {
+    private void setExistingAsuUserData() {
+        User existingAsuUser = [
+            SELECT EmployeeNumber, ASURITE_for_External_ID__c 
+            FROM User 
+            WHERE Id =: UserInfo.getUserId()
+                AND Email =: UserInfo.getUserEmail()
+        ];
+        if (existingAsuUser.EmployeeNumber != null) {
+            familyPortalGuardian.EMPLID__c = existingAsuUser.EmployeeNumber;
+        }
+        if (existingAsuUser.ASURITE_for_External_ID__c != null) {
+            familyPortalGuardian.ASURITE_ID__c = existingAsuUser.ASURITE_for_External_ID__c;
+        }
+    }
+
+    private Boolean isExistingGuardian() {
+        Integer numberOfMatches = [
+            SELECT COUNT()
+            FROM Family_Portal_Guardian__c
+            WHERE Email__c =: UserInfo.getUserEmail()
+        ];
+        if (numberOfMatches > 0) {
+            isExistingGuardian = true;
+            return true;
+        }
+        return false;
+    }
+
+    private void prepopulateExistingGuardianData() {
         Family_Portal_Guardian__c guardian = [
             SELECT Id, ASU_Alumni__c, Business_Unit_Source__c, City__c, Contact__c, 
                     Country__c, Email__c, First_Name__c, Last_Name__c, Phone__c, 
@@ -399,8 +401,8 @@ public with sharing class FamilyPortalController {
 
     private void matchGuardianToExistingContact() {
         Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('emplid', existingGuardianUserEmplid);
-        detailFieldsMap.put('asuriteId', existingGuardianUserAsuriteId);
+        detailFieldsMap.put('emplid', familyPortalGuardian.EMPLID__c);
+        detailFieldsMap.put('asuriteId', familyPortalGuardian.ASURITE_ID__c);
         detailFieldsMap.put('firstName', familyPortalGuardian.First_Name__c);
         detailFieldsMap.put('lastName', familyPortalGuardian.Last_Name__c);
         detailFieldsMap.put('email', familyPortalGuardian.Email__c);

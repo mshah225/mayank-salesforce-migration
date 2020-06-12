@@ -309,8 +309,7 @@ public with sharing class FamilyPortalController {
     }
 
     public void familyPortalStep1OnLoad() {
-        if (isLoggedInUser) {
-            progressBarController.progressCounter = 0;
+        if (isLoggedInUser && progressBarController.progressCounter == 0) {
             progressBarController.getProgressBarPercentage();
         } else {
             sendUserToLoginScreen();
@@ -327,7 +326,7 @@ public with sharing class FamilyPortalController {
     }
 
     public void familyPortalStep2OnLoad() {
-        if (isLoggedInUser) {
+        if (isLoggedInUser && progressBarController.progressCounter == 0) {
             progressBarController.progressCounter = 25;
             progressBarController.getProgressBarPercentage();
         } else {
@@ -345,7 +344,7 @@ public with sharing class FamilyPortalController {
     }
 
     public void familyPortalStep3OnLoad() {
-        if (isLoggedInUser) {
+        if (isLoggedInUser && progressBarController.progressCounter == 25) {
             progressBarController.progressCounter = 50;
             progressBarController.getProgressBarPercentage();
         } else {
@@ -363,7 +362,7 @@ public with sharing class FamilyPortalController {
     }
 
     public void familyPortalStep4OnLoad() {
-        if (isLoggedInUser) {
+        if (isLoggedInUser && progressBarController.progressCounter == 50) {
             progressBarController.progressCounter = 75;
             progressBarController.getProgressBarPercentage();
         } else {
@@ -391,7 +390,7 @@ public with sharing class FamilyPortalController {
     }
 
     public void familyPortalStep5OnLoad() {
-        if (isLoggedInUser) {
+        if (isLoggedInUser && progressBarController.progressCounter == 75) {
             progressBarController.progressCounter = 100;
             progressBarController.getProgressBarPercentage();
         } else {

@@ -84,14 +84,4 @@
         </div>
     </apex:form>
     <c:ASUBrandFooter />
-
-    <script>
-        $('body').bind('DOMSubtreeModified', function () {
-            if ($('span.family-portal-2-field-required').length == 0) {
-                $('.family-portal-2-container tr label:contains("First Name")').append('<span class="family-portal-2-field-required"> *</span>');
-                $('.family-portal-2-container tr label:contains("Last Name")').append('<span class="family-portal-2-field-required"> *</span>');
-                $('.family-portal-2-container tr label:contains("Email")').append('<span class="family-portal-2-field-required"> *</span>');
-            } 
-        });
-    </script>
 </apex:page>

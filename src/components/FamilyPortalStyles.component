@@ -74,6 +74,9 @@
         .family-portal-2-container .pbSubsection table td select {
             width: 100%;
         }
+        .family-portal-2-container .pbSubsection table td span {
+            font-weight: 400;
+        }
         .family-portal-3-container .multiSelectPicklistCell > a {
             border-bottom: none !important;
             font-size: 2em !important;

@@ -6,7 +6,6 @@ public with sharing class FamilyPortalController {
     public List<FamilyPortalStudentWrapper> studentWrapperList {get; set;}
     private Integer studentRowCount = 0;
     public String businessUnit;
-    public String hashId;
     public User loggedInUser {get; set;}
     public Boolean isLoggedInUser {get; set;}
     public Boolean isExistingGuardian {get; set;}
@@ -66,35 +65,178 @@ public with sharing class FamilyPortalController {
     }
 
     public FamilyPortalController() {
-        familyPortalGuardian =  new Family_Portal_Guardian__c();
+        setDefaultSafetyChecks();
+        checkForUrlParameters();
+        if (isLoggedInUser()) {
+            setupDefaultGuardian();
+            try {
+                prepopulateGuardianData();
+            } catch (Exception e) {
+                System.debug(e.getMessage());
+                System.debug('Could not prepopulate guardian data. Check exception.');
+            }
+        } else {
+            sendUserToLoginScreen();
+        }
+    }
+
+    private void setDefaultSafetyChecks() {
+        isExistingGuardian = false;
+        isLoggedInUser = false;
+    }
+
+    private void checkForUrlParameters() {
+        businessUnit = ApexPages.currentPage().getParameters().get('bu');
+    }
+
+    private Boolean isLoggedInUser() {
+        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
+            isLoggedInUser = true;
+            loggedInUser = new User();
+            loggedInUser.Id = UserInfo.getUserId();
+            loggedInUser.FirstName = UserInfo.getFirstName();
+            loggedInUser.LastName = UserInfo.getLastName();
+            loggedInUser.Email = UserInfo.getUserEmail();
+
+            Integer numberOfMatches = [
+                SELECT COUNT()
+                FROM Family_Portal_Guardian__c
+                WHERE Email__c =: UserInfo.getUserId()
+            ];
+            if (numberOfMatches > 0) {
+                setExistingGuardianUser();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void setExistingGuardianUser() {
+        isExistingGuardian = true;
+        if (existingGuardianUser.EmployeeNumber != null) {
+            existingGuardianUserEmplid = existingGuardianUser.EmployeeNumber;
+        }
+        if (existingGuardianUser.ASURITE_for_External_ID__c != null) {
+            existingGuardianUserAsuriteId = existingGuardianUser.ASURITE_for_External_ID__c;
+        }
+    }
+
+    private void setupDefaultGuardian() {
+        progressBarController = new FamilyPortalProgressBar();
+        familyPortalGuardian = new Family_Portal_Guardian__c();
         familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
-        familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
+        familyPortalGuardian.Last_Name__c = UserInfo.getFirstName();
         familyPortalGuardian.Email__c = UserInfo.getUserEmail();
         familyPortalGuardian.Country__c = 'United States';
         familyPortalGuardian.State__c = 'Arizona';
         familyPortalGuardianInterest = new Family_Portal_Guardian_Interest__c();
         studentWrapperList =  new List<FamilyPortalStudentWrapper>();
-        progressBarController = new FamilyPortalProgressBar();
+    }
 
-        String hashIdFromUrl = ApexPages.currentPage().getParameters().get('hid');
-        Cookie hashIdCookie = ApexPages.currentPage().getCookies().get('hid');
-        if (hashIdFromUrl != null) {
-            hashId = hashIdFromUrl;
-            hashIdCookie = new Cookie('hid', hashIdFromUrl, null, 31556952, true);
-            ApexPages.currentPage().setCookies(new Cookie[] {hashIdCookie});
-        } else if (hashIdCookie != null) {
-            hashId = hashIdCookie.getValue();
+    private void prepopulateGuardianData() {
+        Family_Portal_Guardian__c guardian = [
+            SELECT Id, ASU_Alumni__c, Business_Unit_Source__c, City__c, Contact__c, 
+                    Country__c, Email__c, First_Name__c, Last_Name__c, Phone__c, 
+                    State__c, Street__c, Zip_Code__c
+            FROM Family_Portal_Guardian__c
+            WHERE Email__c =: familyPortalGuardian.Email__c
+            LIMIT 1
+        ];
+
+        if (guardian.Id != null) {
+            setExistingGuardianData(guardian);
+            setExistingGuardianInterests(guardian);
+            setExistingStudents(guardian);
         }
-        
-        String businessUnitFromUrl = ApexPages.currentPage().getParameters().get('bu');
-        Cookie businessUnitCookie = ApexPages.currentPage().getCookies().get('bu');
-        if (businessUnitFromUrl != null) {
-            businessUnit = businessUnitFromUrl;
-            businessUnitCookie = new Cookie('bu', businessUnitFromUrl, null, 31556952, true);
-            ApexPages.currentPage().setCookies(new Cookie[] {businessUnitCookie});
-        } else if (businessUnitCookie != null) {
-            businessUnit = businessUnitCookie.getValue();
+    }
+
+    private void setExistingGuardianData(Family_Portal_Guardian__c guardian) {
+        if (guardian.ASU_Alumni__c != null) {
+            familyPortalGuardian.ASU_Alumni__c = guardian.ASU_Alumni__c;
         }
+        if (guardian.Business_Unit_Source__c != null) {
+            familyPortalGuardian.Business_Unit_Source__c = guardian.Business_Unit_Source__c;
+        }
+        if (guardian.City__c != null) {
+            familyPortalGuardian.City__c = guardian.City__c;
+        }
+        if (guardian.Contact__c != null) {
+            familyPortalGuardian.Contact__c = guardian.Contact__c;   
+        }
+        if (guardian.Country__c != null) {
+            familyPortalGuardian.Country__c = guardian.Country__c;
+        }
+        if (guardian.Phone__c != null) {
+            familyPortalGuardian.Phone__c = guardian.Phone__c;   
+        }
+        if (guardian.State__c != null) {
+            familyPortalGuardian.State__c = guardian.State__c;
+        }
+        if (guardian.Street__c != null) {
+            familyPortalGuardian.Street__c = guardian.Street__c;
+        }
+        if (guardian.Zip_Code__c != null) {
+            familyPortalGuardian.Zip_Code__c = guardian.Zip_Code__c;
+        }
+    }
+
+    private void setExistingGuardianInterests(Family_Portal_Guardian__c guardian) {
+        List<Family_Portal_Guardian_Interest__c> guardianInterests = [
+            SELECT Id, Chosen_Interest__c
+            FROM Family_Portal_Guardian_Interest__c
+            WHERE Family_Portal_Guardian__c =: guardian.Id
+        ];
+
+        String interestString = '';
+        for (Family_Portal_Guardian_Interest__c interest : guardianInterests) {
+            if (interestString == null) {
+                interestString += (String) interest.Chosen_Interest__c;
+            } else {
+                interestString += ';' + (String) interest.Chosen_Interest__c;
+            }
+        }
+        if (interestString != null) {
+            familyPortalGuardianInterest.Interest_Choices__c = interestString;
+        }
+    }
+
+    private void setExistingStudents(Family_Portal_Guardian__c guardian) {
+        List<Family_Portal_Student__c> students = [
+            SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
+            FROM Family_Portal_Student__c
+            WHERE Family_Portal_Guardian__c =: guardian.Id
+        ];
+
+        for (Family_Portal_Student__c student : students) {
+            if (student != students[0]) { 
+                studentRowCount++; 
+            }
+            studentWrapperList.add(
+                new FamilyPortalStudentWrapper(
+                    new Family_Portal_Student__c(
+                        Enrollment_Status__c = student.Enrollment_Status__c,
+                        Enrollment_Status_Year__c = student.Enrollment_Status_Year__c,
+                        Type__c = student.Type__c,
+                        Academic_College__c = student.Academic_College__c,
+                        Military_Affiliation__c = student.Military_Affiliation__c
+                    ), 
+                    studentRowCount
+                )
+            );
+        }
+    }
+
+    public PageReference sendUserToLoginScreen() {
+        String url = '/FamilyPortal';
+        if (businessUnit != null) {
+            url += '/s/?bu=' + businessUnit;
+        }
+
+        PageReference pageRef = new PageReference(url);
+        pageRef.setRedirect(true);
+        return pageRef;
     }
 
     public void addStudentRow() {
@@ -156,197 +298,103 @@ public with sharing class FamilyPortalController {
     }
 
     public PageReference familyPortalStep1() {
-        return Page.FamilyPortalStep1;
-    }
-
-    public PageReference familyPortalStep1OnLoad() {
-        progressBarController.progressCounter = 0;
-        progressBarController.getProgressBarPercentage();
-
-        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('guest')) {
-            loggedInUser = new User();
-            loggedInUser.FirstName = UserInfo.getFirstName();
-            loggedInUser.LastName = UserInfo.getLastName();
-            loggedInUser.Id = UserInfo.getUserId();
-            isLoggedInUser = true;
-
-            try {
-                setExistingUserData();
-            } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Failed to set existing user data. Check exception.');
-            }
+        if (isLoggedInUser) {
+            return Page.FamilyPortalStep1;
         } else {
-            isLoggedInUser = false;
-        }
-
-        if (hashId != null) {
-            try {
-                prefillFormPagesFromHashId();
-                return Page.FamilyPortalStep3;
-            } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('No matching guardians for provided hash ID. Check exception.');
-                hashId = null;
-                return null;
-            }
-        } else {
+            sendUserToLoginScreen();
             return null;
         }
     }
 
-    private void setExistingUserData() {
-        User existingGuardianUser;
-        if (UserInfo.getUserId() != null && familyPortalGuardian.First_Name__c == null && familyPortalGuardian.Last_Name__c == null && familyPortalGuardian.Email__c == null) {
-            existingGuardianUser = getExistingUserData();
-
-            if (existingGuardianUser != null) {
-                isExistingGuardian = true;
-            } else {
-                isExistingGuardian = false;
-            }
-
-            if (existingGuardianUser.FirstName != null) {
-                familyPortalGuardian.First_Name__c = existingGuardianUser.FirstName;
-            }
-            if (existingGuardianUser.LastName != null) {
-                familyPortalGuardian.Last_Name__c = existingGuardianUser.LastName;
-            }
-            if (existingGuardianUser.Email != null) {
-                familyPortalGuardian.Email__c = existingGuardianUser.Email;
-            }
-            if (existingGuardianUser.PostalCode != null) {
-                familyPortalGuardian.Zip_Code__c = existingGuardianUser.PostalCode;
-            }
-            if (existingGuardianUser.EmployeeNumber != null) {
-                existingGuardianUserEmplid = existingGuardianUser.EmployeeNumber;
-            }
-            if (existingGuardianUser.ASURITE_for_External_ID__c != null) {
-                existingGuardianUserAsuriteId = existingGuardianUser.ASURITE_for_External_ID__c;
-            }
-        }
-    }
-
-    private User getExistingUserData() {
-        User existingGuardianUser = [SELECT FirstName, LastName, Email, PostalCode, EmployeeNumber, ASURITE_for_External_ID__c, Id FROM User WHERE Id =: UserInfo.getUserId()];
-        return existingGuardianUser;
-    }
-
-    private void prefillFormPagesFromHashId() {
-        Family_Portal_Guardian__c guardian = [
-            SELECT Id, First_Name__c, Last_Name__c, Email__c, Zip_Code__c
-            FROM Family_Portal_Guardian__c
-            WHERE Hash_ID__c =: hashId
-            LIMIT 1
-        ];
-
-        if (guardian.First_Name__c != null) {
-            familyPortalGuardian.First_Name__c = guardian.First_Name__c;
-        }
-        if (guardian.Last_Name__c != null) {
-            familyPortalGuardian.Last_Name__c = guardian.Last_Name__c;
-        }
-        if (guardian.Email__c != null) {
-            familyPortalGuardian.Email__c = guardian.Email__c;
-        }
-        if (guardian.Zip_Code__c != null) {
-            familyPortalGuardian.Zip_Code__c = guardian.Zip_Code__c;   
-        }
-        
-        List<Family_Portal_Guardian_Interest__c> guardianInterests = [
-            SELECT Id, Chosen_Interest__c
-            FROM Family_Portal_Guardian_Interest__c
-            WHERE Family_Portal_Guardian__c =: guardian.Id
-        ];
-
-        String interestString = '';
-        for (Family_Portal_Guardian_Interest__c interest : guardianInterests) {
-            if (interestString == null) {
-                interestString += (String) interest.Chosen_Interest__c;
-            } else {
-                interestString += ';' + (String) interest.Chosen_Interest__c;
-            }
-        }
-        if (interestString != null) {
-            familyPortalGuardianInterest.Interest_Choices__c = interestString;
-        }
-
-        List<Family_Portal_Student__c> students = [
-            SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
-            FROM Family_Portal_Student__c
-            WHERE Family_Portal_Guardian__c =: guardian.Id
-        ];
-
-        for (Family_Portal_Student__c student : students) {
-            if (student != students[0]) { 
-                studentRowCount++; 
-            }
-            studentWrapperList.add(
-                new FamilyPortalStudentWrapper(
-                    new Family_Portal_Student__c(
-                        Enrollment_Status__c = student.Enrollment_Status__c,
-                        Enrollment_Status_Year__c = student.Enrollment_Status_Year__c,
-                        Type__c = student.Type__c,
-                        Academic_College__c = student.Academic_College__c,
-                        Military_Affiliation__c = student.Military_Affiliation__c
-                    ), 
-                    studentRowCount
-                )
-            );
-        }
+    public void familyPortalStep1OnLoad() {
+        if (isLoggedInUser) {
+            progressBarController.progressCounter = 0;
+            progressBarController.getProgressBarPercentage();
+        } else {
+            sendUserToLoginScreen();
+        } 
     }
 
     public PageReference familyPortalStep2() {
-        return Page.FamilyPortalStep2;
+        if (isLoggedInUser) {
+            return Page.FamilyPortalStep2;
+        } else {
+            sendUserToLoginScreen();
+            return null;
+        }
     }
 
     public void familyPortalStep2OnLoad() {
-        progressBarController.progressCounter = 25;
-        progressBarController.getProgressBarPercentage();
+        if (isLoggedInUser) {
+            progressBarController.progressCounter = 25;
+            progressBarController.getProgressBarPercentage();
+        } else {
+            sendUserToLoginScreen();
+        }
     }
 
     public PageReference familyPortalStep3() {
-        return Page.FamilyPortalStep3;
+        if (isLoggedInUser) {
+            return Page.FamilyPortalStep3;
+        } else {
+            sendUserToLoginScreen();
+            return null;
+        }
     }
 
     public void familyPortalStep3OnLoad() {
-        progressBarController.progressCounter = 50;
-        progressBarController.getProgressBarPercentage();
-
-        try {
-            setExistingUserData();
-        } catch (Exception e) {
-            System.debug(e.getMessage());
-            System.debug('Failed to set existing user data. Check exception.');
+        if (isLoggedInUser) {
+            progressBarController.progressCounter = 50;
+            progressBarController.getProgressBarPercentage();
+        } else {
+            sendUserToLoginScreen();
         }
     }
 
     public PageReference familyPortalStep4() {
-        return Page.FamilyPortalStep4;
+        if (isLoggedInUser) {
+            return Page.FamilyPortalStep4;
+        } else {
+            sendUserToLoginScreen();
+            return null;
+        }
     }
 
     public void familyPortalStep4OnLoad() {
-        progressBarController.progressCounter = 75;
-        progressBarController.getProgressBarPercentage();
+        if (isLoggedInUser) {
+            progressBarController.progressCounter = 75;
+            progressBarController.getProgressBarPercentage();
+        } else {
+            sendUserToLoginScreen();
+        }
     }
 
     public PageReference familyPortalStep5() {
-        try {
-            matchGuardianToExistingContact();
-            insertGuardian();
-            insertGuardianInterests();
-            insertStudents();
-            sendConfirmationEmail();
-        } catch (Exception e) {
-            System.debug(e.getMessage());
-            System.debug('Something went wrong when submitting a guardian. Check exception.');
+        if (isLoggedInUser) {
+            try {
+                matchGuardianToExistingContact();
+                insertGuardian();
+                insertGuardianInterests();
+                insertStudents();
+                sendConfirmationEmail();
+            } catch (Exception e) {
+                System.debug(e.getMessage());
+                System.debug('Something went wrong when submitting a guardian. Check exception.');
+            }
+            return Page.FamilyPortalStep5;
+        } else {
+            sendUserToLoginScreen();
+            return null;
         }
-        return Page.FamilyPortalStep5;
     }
 
     public void familyPortalStep5OnLoad() {
-        progressBarController.progressCounter = 100;
-        progressBarController.getProgressBarPercentage();
+        if (isLoggedInUser) {
+            progressBarController.progressCounter = 100;
+            progressBarController.getProgressBarPercentage();
+        } else {
+            sendUserToLoginScreen();
+        }
     }
 
     private void matchGuardianToExistingContact() {
@@ -378,23 +426,8 @@ public with sharing class FamilyPortalController {
     }
 
     private void insertGuardian() {
-        if (businessUnit != null) {
+        if (familyPortalGuardian.Business_Unit_Source__c == null && businessUnit != null) {
             familyPortalGuardian.Business_Unit_Source__c = businessUnit;
-        }
-
-        if (hashId == null) {
-            Blob hashData = Blob.valueOf(familyPortalGuardian.First_Name__c + familyPortalGuardian.Email__c);
-            Blob hashIdBlob = Crypto.generateDigest('SHA256', hashData);
-            String hashIdString = EncodingUtil.base64Encode(hashIdBlob);
-
-            Double randomDouble = Math.random();
-            randomDouble = Math.rint(randomDouble * 10);
-            Integer randomIntegerFromDouble = (Integer) randomDouble;
-            String randomIntegerString = '' + randomIntegerFromDouble;
-            String hashIdAlphanumeric = hashIdString.replaceAll('[^a-zA-Z0-9]', randomIntegerString);
-            familyPortalGuardian.Hash_ID__c = hashIdAlphanumeric;
-        } else {
-            familyPortalGuardian.Hash_ID__c = hashId;
         }
         insert familyPortalGuardian;
     }
@@ -434,15 +467,15 @@ public with sharing class FamilyPortalController {
         mail.setToAddresses(new List<String> {familyPortalGuardian.Email__c});
         mail.setReplyTo('asufamily@asu.edu');
         mail.setSenderDisplayName('ASU Families');
-        mail.setSubject('New ASU Families submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')');
+        mail.setSubject('New ASU Families submission: ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Email__c + ')');
         mail.setBccSender(false);
         mail.setUseSignature(false);
-        mail.setPlainTextBody('Your ASU Families submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')' + ' has been created.' +
-            'If you have an ASURITE ID, you can view your submission record directly at https://asu.my.salesforce.com/' + familyPortalGuardian.Id + '. ' + 
-            'You can also change your chosen interests or student preferences at any time by revisiting ASU Families at https://dev-myasu.cs59.force.com/FamilyPortal/FamilyPortalStep1?hid=' + familyPortalGuardian.Hash_ID__c + '.');
-        mail.setHtmlBody('Your ASU Families submission for <strong>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Id + ')</strong> has been created.<p>' +
-            'If you have an ASURITE ID, you view your <a href=https://asu.my.salesforce.com/' + familyPortalGuardian.Id + '>submission record</a>. ' + 
-            'You can also change your chosen interests or student preferences at any time by revisiting the <strong><a href="https://dev-myasu.cs59.force.com/FamilyPortal/FamilyPortalStep1?hid=' + familyPortalGuardian.Hash_ID__c + '">ASU Families</a></strong>.');
+        mail.setPlainTextBody('Your ASU Families submission for ' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Email__c + ')' + ' has been created.' +
+            'You can change your contact information, chosen interests or student preferences at any time by revisiting the ASU Families form at ' + URL.getSalesforceBaseUrl().toExternalForm() + '/FamilyPortal' + 
+            '. Login with your ASURITE ID if you have one, or with the username (' + UserInfo.getUserName() + ') and password you set when you first filled out the form.');
+        mail.setHtmlBody('Your ASU Families submission for <strong>' + familyPortalGuardian.First_Name__c + ' ' + familyPortalGuardian.Last_Name__c + ' (' + familyPortalGuardian.Email__c + ')</strong> has been created.<p>' +
+            'You can change your contact information, chosen interests or student preferences at any time by revisiting the <strong><a href="' + URL.getSalesforceBaseUrl().toExternalForm() + '/FamilyPortal' + '">ASU Families form</a></strong>' + 
+            '. Login with your ASURITE ID if you have one, or with the username (<strong>' + UserInfo.getUserName() + '</strong>) and password you set when you first filled out the form.');
 
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }

@@ -363,6 +363,19 @@ public class RelationshipService {
             update contactsToUpdate;
         }
     }
+
+    public static void updateNullCreatedByAuthors(List<Relationship__c> newRelationships) {
+        List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
+        for (Relationship__c newRelationship : newRelationshipsList) {
+            if (newRelationship.Relationship_Created_By__c == null && newRelationship.CreatedBy.Profile.Name != null) {
+                newRelationship.Relationship_Created_By__c = newRelationship.CreatedBy.Profile.Name;
+                newRelationshipsToUpdate.add(newRelationship);
+            }
+        }
+        if (newRelationshipsToUpdate.size() > 0) {
+            update newRelationshipsToUpdate;
+        }
+    }
     
     private static boolean relatedContactIsDependentOfPrimaryParent(Relationship__c rel) {
         return rel.Relationship_Type__c == 'Parent/Guardian';

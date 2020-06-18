@@ -415,6 +415,21 @@ public class RelationshipService {
         }
     }
 
+    public static void updateReciprocalRelationshipRevokedStatus(Map<Id, Relationship__c> relationshipsBeforeUpdate, Map<Id, Relationship__c> relationshipsAfterUpdate) {
+        List<Relationship__c> relationshipsToUpdate = new List<Relationship__c>();
+        for (Id key : relationshipsAfterUpdate.keySet()) {
+            Relationship__c relationshipBefore = relationshipsBeforeUpdate.get(key);
+            Relationship__c relationshipAfter = relationshipsAfterUpdate.get(key);
+            if (relationshipBefore.Revoke_Status__c != relationshipAfter.Revoke_Status__c && relationshipAfter.Revoke_Status__c != relationshipAfter.Reciprocal_Relationship__r.Revoke_Status__c) {
+                relationshipAfter.Reciprocal_Relationship__r.Revoke_Status__c = relationshipAfter.Revoke_Status__c;
+                relationshipsToUpdate.add(relationshipAfter);
+            }
+        }
+        if (relationshipsToUpdate.size() > 0) {
+            update relationshipsToUpdate;
+        }
+    }
+
     private static boolean relatedContactIsDependentOfPrimaryParent(Relationship__c rel) {
         return rel.Relationship_Type__c == 'Parent/Guardian';
     }

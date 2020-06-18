@@ -15,7 +15,7 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process before inserting relationships
      */
     public void beforeInsert() {
-        if ( !RelationshipService.verifyTwoPrimary(newList) ) {
+        if (!RelationshipService.verifyTwoPrimary(newList)) {
             for (Relationship__c relIter : newList) {
                 relIter.addError(Label.PrimaryRelationshipError);
             }
@@ -36,7 +36,7 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process before updating relationships
      */
     public void beforeUpdate() {
-        if ( !RelationshipService.checkChanges(oldMap, newMap) ) {
+        if (!RelationshipService.checkChanges(oldMap, newMap)) {
             for (Relationship__c relIter : newList) {
                 relIter.addError(Label.PrimaryRelationshipError);
             }
@@ -49,6 +49,7 @@ public class RelationshipDispatcher implements IDispatch {
     public void afterUpdate() {
         if (checkRecursive.runCount < 1) {
             RelationshipService.updateReciprocal(newList);
+            RelationshipService.updateReciprocalRelationshipRevokedStatus(oldMap, newMap);
         }
     }
 

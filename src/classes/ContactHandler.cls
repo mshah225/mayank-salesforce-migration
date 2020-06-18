@@ -237,7 +237,20 @@ public without sharing class ContactHandler implements ITrigger
         }
     }
 
-    public void beforeDelete(SObject so) {}
+    public void beforeDelete(SObject so) { 
+        List<Contact> contactsBeingDeleted = (List<Contact>)Trigger.old;
+        Map<Id, String> contactIdToDuplicateIds = new Map<Id, String>();
+        Map<Id, String> contactIdToAccountId = new Map<Id, String>();
+        for (Contact c : contactsBeingDeleted) {
+            String duplicateIds = c.Id;
+            if (c.DuplicateIDs__c != null) {
+                duplicateIds += '/r' + c.DuplicateIDs__c;
+            }
+            contactIdToAccountId.put(c.Id, c.AccountId);
+            contactIdToDuplicateIds.put(c.Id, duplicateIds);
+        }
+        ContactService.updatePermanentContactWithDeleteId(contactIdToDuplicateIds, contactIdToAccountId);
+    }
     
     public void beforeFinally() { 
         // If there are any Accounts to update, update them.

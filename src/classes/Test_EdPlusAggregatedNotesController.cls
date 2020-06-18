@@ -35,7 +35,7 @@ public class Test_EdPlusAggregatedNotesController {
         Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
 
         // Query the test contacts and get an ID
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_ACCT_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
         Id testContactId = testContact.Id;
 
         // Set the necessary parameters on the page
@@ -97,7 +97,7 @@ public class Test_EdPlusAggregatedNotesController {
         Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
 
         // Query the test contacts and get an ID
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_ACCT_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
         Id testContactId = testContact.Id;
 
         // Set the necessary parameters on the page
@@ -135,7 +135,7 @@ public class Test_EdPlusAggregatedNotesController {
         // Create test contacts
         List<Contact> internalContacts = TestDataFactory.createContacts(5);
         for (Integer i = 0; i < 5; i++) {
-            internalContacts[i].SSB_CRMSYSTEM_ACCT_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D'+i;
+            internalContacts[i].SSB_CRMSYSTEM_Contact_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D'+i;
         } 
         insert internalContacts;
 

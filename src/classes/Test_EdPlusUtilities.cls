@@ -32,7 +32,7 @@ public class Test_EdPlusUtilities {
         HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
 
         Contact c1 = TestDataFactory.createContact('ASU');
-        c1.SSB_CRMSYSTEM_ACCT_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
+        c1.SSB_CRMSYSTEM_Contact_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
         
         insert c1;
 

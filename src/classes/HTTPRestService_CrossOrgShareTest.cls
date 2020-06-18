@@ -18,7 +18,7 @@ private class HTTPRestService_CrossOrgShareTest {
         paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf('00D0x0000000oQd'), 'UTF-8') ) );
         paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf('BABF4E01-9A6E-4C95-A332-236F8A7D3357'), 'UTF-8') ) );
 
-        Contact d1 = new Contact(FirstName = 'Test', LastName = 'Delete', SSB_CRMSYSTEM_ACCT_ID__c = 'BABF4E01-9A6E-4C95-A332-236F8A7D3357');
+        Contact d1 = new Contact(FirstName = 'Test', LastName = 'Delete', SSB_CRMSYSTEM_Contact_ID = 'BABF4E01-9A6E-4C95-A332-236F8A7D3357');
         insert d1;
         deletePayload.add(d1.Id);
     }

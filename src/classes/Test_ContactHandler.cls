@@ -274,17 +274,17 @@ public with sharing class Test_ContactHandler
         insert extMasteredContacts;
         Test.stopTest();
 
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_ACCT_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
         
         // Create mocked record
         mockRecord.contactId = testContact.Id;
-        mockRecord.guid = testContact.SSB_CRMSYSTEM_ACCT_ID__c;
+        mockRecord.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
         mockRecord.lastModifiedDate = String.valueOf(testContact.LastModifiedDate);
         mockRecord.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(mockRecord);
 
         // Get our response based on the test contact
-        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_ACCT_ID__c);
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_Contact_ID__c);
         actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody());
 
         // Assert
@@ -310,7 +310,7 @@ public with sharing class Test_ContactHandler
         insert extMasteredContacts;
 
         // Get a test contact from insert
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_ACCT_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
         Id testContactId = testContact.Id;
 
         Test.startTest();

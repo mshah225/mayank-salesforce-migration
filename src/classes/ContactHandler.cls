@@ -276,12 +276,12 @@ public without sharing class ContactHandler implements ITrigger
                 }
 
                 // Cross-Org Map Creation for New Contacts
-               if(!String.IsBlank(c.SSB_CRMSYSTEM_ACCT_ID__c)){
+               if(!String.IsBlank(c.SSB_CRMSYSTEM_Contact_ID__c)){
                     System.debug('Cross-Org Params added to map...');
                     Map<String, String> paramMap = new Map<String, String>();
                     paramMap.put('contactId', String.valueOf(c.Id));
                     paramMap.put('sourceOrgId', String.valueOf(UserInfo.getOrganizationId()));
-                    paramMap.put('guid', String.valueOf(c.SSB_CRMSYSTEM_ACCT_ID__c));
+                    paramMap.put('guid', String.valueOf(c.SSB_CRMSYSTEM_Contact_ID__c));
                     crossOrgRecords.add(paramMap);
                     System.debug('Cross-Org Map: ' + paramMap);
                }
@@ -350,7 +350,7 @@ public without sharing class ContactHandler implements ITrigger
                 Map<String, String> paramMap = new Map<String, String>();
                 paramMap.put('contactId', String.valueOf(c.Id));
                 paramMap.put('sourceOrgId', String.valueOf(UserInfo.getOrganizationId()));
-                paramMap.put('guid', String.valueOf(c.SSB_CRMSYSTEM_ACCT_ID__c));
+                paramMap.put('guid', String.valueOf(c.SSB_CRMSYSTEM_Contact_ID__c));
                 crossOrgRecordsToUpdate.add(paramMap);
             }
 

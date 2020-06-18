@@ -391,6 +391,30 @@ public class RelationshipService {
         }
     }
 
+    public static void updateNullSubTypes(List<Relationship__c> newRelationships) {
+        List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
+        for (Relationship__c newRelationship : newRelationships) {
+            if (newRelationship.Sub_Type__c == null && newRelationship.Reciprocal_Relationship__c != null && newRelationship.Reciprocal_Relationship__r.Sub_Type__c != null) {
+                Relationship_SubType__c reciprocalSubType = [
+                    SELECT Reciprocal_SubType__c 
+                    FROM Relationship_SubType__c 
+                    WHERE Name =: newRelationship.Reciprocal_Relationship__r.Sub_Type__c 
+                    LIMIT 1
+                ];
+                if (reciprocalSubType.Reciprocal_SubType__c != null) {
+                    newRelationship.Sub_Type__c = reciprocalSubType.Reciprocal_SubType__c;
+                }
+                if (newRelationship.Reciprocal_Relationship__r.Revoke_Status__c != null) {
+                    newRelationship.Revoke_Status__c = newRelationship.Reciprocal_Relationship__r.Revoke_Status__c;
+                }
+                newRelationshipsToUpdate.add(newRelationship);
+            }
+        }
+        if (newRelationshipsToUpdate.size() > 0) {
+            update newRelationshipsToUpdate;
+        }
+    }
+
     private static boolean relatedContactIsDependentOfPrimaryParent(Relationship__c rel) {
         return rel.Relationship_Type__c == 'Parent/Guardian';
     }

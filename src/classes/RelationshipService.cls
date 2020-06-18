@@ -380,7 +380,7 @@ public class RelationshipService {
 
     public static void updateNullCreatedByAuthors(List<Relationship__c> newRelationships) {
         List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
-        for (Relationship__c newRelationship : newRelationshipsList) {
+        for (Relationship__c newRelationship : newRelationships) {
             if (newRelationship.Relationship_Created_By__c == null && newRelationship.CreatedBy.Profile.Name != null) {
                 newRelationship.Relationship_Created_By__c = newRelationship.CreatedBy.Profile.Name;
                 newRelationshipsToUpdate.add(newRelationship);

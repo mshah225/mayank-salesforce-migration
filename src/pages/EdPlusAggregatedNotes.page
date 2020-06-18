@@ -49,12 +49,12 @@
                         <apex:column headerValue="Type" style="width:3%;">
                             <a href="#" onclick="openCaseSubTab('{!f.Id}','{!f.type}', '{!f.type}'); return false;">{!f.type}</a>
                         </apex:column>
-                        <apex:column headerValue="Created Date" style="text-align: left;vertical-align:middle; width:10%;">
+                        <apex:column headerValue="Created Date" style="text-align: left;vertical-align:middle; width:15%;">
                             <apex:outputText value="{0,date,MM/dd/YYYY hh:mm aaa}" style="text-align: left;vertical-align:middle;">
                                 <apex:param value="{!f.createdDate}" />
                             </apex:outputText>
                         </apex:column>
-                        <apex:column headerValue="Created By" style="width:10%; vertical-align:middle">
+                        <apex:column headerValue="Created By" style="width:15%; vertical-align:middle">
                             <a href="#" onclick="openTab('{!f.createdById}','{!f.createdByName}'); return false;">{!f.createdByName}</a>
                         </apex:column>
                         <apex:column value="{!f.subject}" headerValue="Subject" style="width:20%;vertical-align:middle;" />

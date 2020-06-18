@@ -47,7 +47,7 @@
                 <apex:outputPanel layout="block" style="overflow:auto;width:100%;height:100%;max-height:250px;">
                     <apex:pageBlockTable value="{!filteredDataWrapper}" var="f" rendered="{!filteredDataWrapper.size > 0}">
                         <apex:column headerValue="Type" style="width:3%;">
-                            <a href="#" onclick="openCaseSubTab('{!f.Id}','{!f.type}', '{!f.type}'); return false;">{!f.type}</a>
+                            <a href="#" onclick="openCaseSubTab('{!f.Id}','{!f.type}', '{!f.type}', 'EdPlusTask__x'); return false;">{!f.type}</a>
                         </apex:column>
                         <apex:column headerValue="Created Date" style="text-align: left;vertical-align:middle; width:15%;">
                             <apex:outputText value="{0,date,MM/dd/YYYY hh:mm aaa}" style="text-align: left;vertical-align:middle;">
@@ -55,7 +55,7 @@
                             </apex:outputText>
                         </apex:column>
                         <apex:column headerValue="Created By" style="width:15%; vertical-align:middle">
-                            <a href="#" onclick="openTab('{!f.createdById}','{!f.createdByName}'); return false;">{!f.createdByName}</a>
+                            <a href="#" onclick="openCaseSubTab('{!f.createdById}','{!f.createdByName}','', 'EdPlusUser__x'); return false;">{!f.createdByName}</a>
                         </apex:column>
                         <apex:column value="{!f.subject}" headerValue="Subject" style="width:20%;vertical-align:middle;" />
                         <apex:column value="{!f.notes}" headerValue="Notes" style="vertical-align:middle;" />
@@ -66,7 +66,7 @@
         </apex:outputPanel>
         <script type="text/javascript">
             // Open a sub-tab
-            function openCaseSubTab(recordId, title, type) {
+            function openCaseSubTab(recordId, title, type, obj) {
                 trackUsageData('Viewed External ' + type, recordId);
                 if (sforce.console.isInConsole()) {
                     sforce.console.getEnclosingPrimaryTabId(function (result) {
@@ -74,7 +74,7 @@
                     });
                 }else{
                     if(document.referrer.indexOf(".lightning.force.com") > 0){
-                        window.open("/lightning/r/EdPlusTask__x/" + recordId+ "/view","_blank");
+                        window.open("/lightning/r/"+obj+"/" + recordId+ "/view","_blank");
                     }else{
                         window.open("/" + recordId,"_blank");
                     }

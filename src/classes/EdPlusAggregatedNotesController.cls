@@ -31,6 +31,7 @@ public with sharing class EdPlusAggregatedNotesController {
                 Id,
                 ExternalId,
                 Created_By_Id_edpl__r.Id,
+                Created_By_Id_edpl__r.ExternalId,
                 Created_By_Id_edpl__r.Name_edpl__c,
                 Subject_edpl__c
                 FROM
@@ -120,7 +121,7 @@ public with sharing class EdPlusAggregatedNotesController {
             ownerName = tsk.Owner_Id_edpl__r.Name_edpl__c;
             createdDate = tsk.Created_Date_edpl__c;
             createdByName = tsk.Created_By_Id_edpl__r.Name_edpl__c;
-            createdById = tsk.Created_By_Id_edpl__c;
+            createdById = tsk.Created_By_Id_edpl__r.Id;
             id = tsk.Id;
             type = 'Task';
             notes = (tsk.Description_edpl__c != '' ? tsk.Description_edpl__c : 'N/A');

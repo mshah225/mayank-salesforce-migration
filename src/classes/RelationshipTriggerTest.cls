@@ -44,7 +44,7 @@ private class RelationshipTriggerTest {
                 Active_Relationship__c = true,
                 Relationship_Start_Date__c = Date.today(),
                 RecordTypeId = rId,
-                CreatedBy = null,
+                Relationship_Created_By__c = null,
                 Sub_Type__c = null,
                 Revoke_Status__c = false
             );

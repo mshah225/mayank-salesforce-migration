@@ -58,9 +58,8 @@ public class RelationshipService {
                         Title__c = relation.Title__c,
                         Primary_Parent__c = relation.Primary_Parent__c,
                         Source__c = relation.Source__c,
-                        Source_Date__c = relation.Source_Date__c,
-                        Sub_Type__c = relation.Sub_Type__c
-                        );
+                        Source_Date__c = relation.Source_Date__c
+                    );
 
                     if (recipRTIDMap.get(relation.RecordTypeId) == null) {
                         rel.RecordTypeId = relation.RecordTypeId;
@@ -89,9 +88,11 @@ public class RelationshipService {
         }
 
         if (!sourceToRecipId.isEmpty()) {
-            for (Relationship__c relation : [SELECT Id, Reciprocal_Relationship__c
+            for (Relationship__c relation : [
+                SELECT Id, Reciprocal_Relationship__c
                 FROM Relationship__c
-                WHERE Id IN :sourceToRecipId.keySet()]) {
+                WHERE Id IN :sourceToRecipId.keySet()
+            ]) {
                 relation.Reciprocal_Relationship__c = sourceToRecipId.get(relation.Id);
                 relsToUpdate.add(relation);
             }
@@ -133,7 +134,8 @@ public class RelationshipService {
             for (Relationship__c relation : [
                     SELECT Contact__c, Related_Contact__c, RecordTypeId, Related_Account__c,
                         Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c,
-                        Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c, Primary_Parent__c
+                        Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c, Primary_Parent__c,
+                        Sub_Type__c, Source__c, Source_Date__c
                     FROM Relationship__c
                     WHERE Id IN :recipToSource.keySet()
             ]) {
@@ -153,7 +155,8 @@ public class RelationshipService {
                     relation.Primary_Parent__c != rel.Primary_Parent__c ||
                     relation.Sub_Type__c != rel.Sub_Type__c ||
                     relation.Source__c != rel.Source__c ||
-                    relation.Source_Date__c != rel.Source_Date__c) {
+                    relation.Source_Date__c != rel.Source_Date__c
+                ) {
                     relation.Contact__c = rel.Related_Contact__c;
                     relation.Related_Contact__c = rel.Contact__c;
                     relation.Account__c = rel.Related_Account__c;
@@ -165,6 +168,9 @@ public class RelationshipService {
                     relation.Reciprocal_Relationship__c = rel.Id;
                     relation.Title__c = rel.Title__c;
                     relation.Primary_Parent__c = rel.Primary_Parent__c;
+                    relation.Sub_Type__c = rel.Sub_Type__c;
+                    relation.Source__c = rel.Source__c;
+                    relation.Source_Date__c = rel.Source_Date__c;
 
                     relsToUpdate.add(relation);
                 }

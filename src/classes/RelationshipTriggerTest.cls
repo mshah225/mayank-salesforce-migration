@@ -43,7 +43,10 @@ private class RelationshipTriggerTest {
                 Relationship_Type__c = 'Parent',
                 Active_Relationship__c = true,
                 Relationship_Start_Date__c = Date.today(),
-                RecordTypeId = rId
+                RecordTypeId = rId,
+                CreatedBy = null,
+                Sub_Type__c = null,
+                Revoke_Status__c = false
             );
 
             relsToCreate.add(rel);
@@ -120,10 +123,13 @@ private class RelationshipTriggerTest {
         List<Id> relsToVerify = new List<Id>();
 
         // Change parents to children
-        for (Relationship__c r : [SELECT Reciprocal_Relationship__c
+        for (Relationship__c r : [
+            SELECT Reciprocal_Relationship__c, Relationship_Type__c
             FROM Relationship__c
-            WHERE Relationship_Type__c = 'Parent']) {
+            WHERE Relationship_Type__c = 'Parent'
+        ]) {
             r.Relationship_Type__c = 'Child';
+            r.Revoke_Status__c = true;
 
             relsToVerify.add(r.Reciprocal_Relationship__c);
             relsToUpdate.add(r);
@@ -152,20 +158,5 @@ private class RelationshipTriggerTest {
             );
 
         undelete relationships;
-    }
-
-    @isTest
-    static void testUpdateNullCreatedByAuthors() {
-        
-    }
-
-    @isTest
-    static void testUpdateNullSubTypes() {
-    
-    }
-
-    @isTest
-    static void testUpdateReciprocalRelationshipRevokedStatus() {
-    
     }
 }

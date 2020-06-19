@@ -223,7 +223,7 @@ public class RelationshipService {
             Relationship_Type__c = 'Employee',
             RecordTypeId = recordTypeID,
             Title__c = title
-            );
+        );
 
         return r;
     }

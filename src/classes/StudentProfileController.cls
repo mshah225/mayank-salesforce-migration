@@ -407,6 +407,7 @@ global with sharing class StudentProfileController {
             FROM Student_Milestone__c
             WHERE Contact__c =: theContact.Id
             AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS' OR Milestone__c = 'GRFORMAT' OR Milestone__c = 'GRRESPAPER' OR Milestone__c = 'GRPRACTIC' OR Milestone__c = 'GRBNDDOC')
+            AND Milestone_Level__c <> 'Not Required'
             ORDER BY Effdt__c ASC
         ];
 

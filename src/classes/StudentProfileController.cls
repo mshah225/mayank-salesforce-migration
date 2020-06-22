@@ -258,7 +258,7 @@ global with sharing class StudentProfileController {
                 Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_Max_Time_Limit__r.Name, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
                 Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
                 Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
-                Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c,
+                Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c, Plan_Transcript_Description__c,
                 ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c, Degree_Checkout_Status_Name__c,
                 Grad_Culminating_Event__c, Grad_Advanced_To_Candidacy__c, Degree_Level__c, Grad_Continuous_Enrollment__c,
                 Grad_Anticipated_Term__c, Grad_Anticipated_Term__r.Name, Grad_ASU_Hours_After__c, Grad_ASU_Hours_Before__c, Degree_Chkout_Stat_Code__c

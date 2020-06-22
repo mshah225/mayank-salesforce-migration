@@ -276,7 +276,7 @@
                             </h4>
 
                             <h4 class="intro" style="color:#6e7d83 !important;">
-                                &nbsp;{!studentProgram.Plan_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
+                                &nbsp;{!studentProgram.Plan_Transcript_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
                                 <apex:outputPanel rendered="{!activeGraduatePrograms.size > 1}">
                                     <div class="program-indicator-count" title="Count of Enrolled Active Plans">{!activeGraduatePrograms.size}</div>
                                 </apex:outputPanel>

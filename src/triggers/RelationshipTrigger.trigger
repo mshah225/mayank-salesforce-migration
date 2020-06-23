@@ -12,6 +12,6 @@ before delete, before insert, before update) {
         if (trigger.isUpdate) d.afterUpdate();
         if (trigger.isInsert) d.afterInsert();
         if (trigger.isDelete) d.afterDelete();
-        if (trigger.isUnDelete) d.afterUnDelete();
+        if (trigger.isUndelete) d.afterUndelete();
     }
 }

@@ -41,8 +41,8 @@ public class RelationshipDispatcher implements IDispatch {
     public void afterInsert() {
         RelationshipService.createReciprocal(newList);
         RelationshipService.updateContacts(newList);
-        RelationshipService.updateNullCreatedByName(newList);
-        RelationshipService.updateNullSubTypes(newList);
+        // RelationshipService.updateNullCreatedByName(newList);
+        // RelationshipService.updateNullSubTypes(newList);
     }
 
     /**
@@ -51,7 +51,7 @@ public class RelationshipDispatcher implements IDispatch {
     public void afterUpdate() {
         if (checkRecursive.runCount < 1) {
             RelationshipService.updateReciprocal(newList);
-            RelationshipService.updateReciprocalRevokedStatus(oldMap, newMap);
+            RelationshipService.updateReciprocalRelationshipStatus(oldMap, newMap);
         }
     }
 

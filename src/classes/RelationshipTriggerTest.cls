@@ -28,7 +28,7 @@ private class RelationshipTriggerTest {
 
         insert settingsToCreate;
 
-        contactsToCreate = TestDataFactory.createContacts(qtyToTest + 2);
+        contactsToCreate = TestDataFactory.createContacts(qtyToTest * 2);
 
         // Insert records that trigger async apex methods
         test.startTest();

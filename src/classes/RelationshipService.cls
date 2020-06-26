@@ -386,7 +386,6 @@ public class RelationshipService {
     }
 
     public static void updateNullCreatedByName(List<Relationship__c> newRelationships) {
-        List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
         Set<Id> createdByUserIds = new Set<Id>();
 
         for (Relationship__c newRelationship : newRelationships) {
@@ -401,7 +400,6 @@ public class RelationshipService {
         ) {
             if (newRelationship.Relationship_Created_By__c == null && newRelationship.CreatedBy.Profile.Name != null) {
                 newRelationship.Relationship_Created_By__c = newRelationship.CreatedBy.Profile.Name;
-                newRelationshipsToUpdate.add(newRelationship);
                 if (newRelationship.Reciprocal_Relationship__r.Source__c != null && newRelationship.Source_Date__c == null && newRelationship.Source__c == null) {
                     newRelationship.Source_Date__c = newRelationship.Reciprocal_Relationship__r.Source_Date__c;
                     newRelationship.Source__c = newRelationship.Reciprocal_Relationship__r.Source__c;
@@ -411,7 +409,6 @@ public class RelationshipService {
     }
 
     public static void updateNullSubTypes(List<Relationship__c> newRelationships) {
-        List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
         for (Relationship__c newRelationship : newRelationships) {
             if (newRelationship.Sub_Type__c == null && newRelationship.Reciprocal_Relationship__c != null && newRelationship.Reciprocal_Relationship__r.Sub_Type__c != null) {
                 Relationship_SubType__c reciprocalSubType = [
@@ -426,19 +423,16 @@ public class RelationshipService {
                 if (newRelationship.Reciprocal_Relationship__r.Revoke_Status__c != null) {
                     newRelationship.Revoke_Status__c = newRelationship.Reciprocal_Relationship__r.Revoke_Status__c;
                 }
-                newRelationshipsToUpdate.add(newRelationship);
             }
         }
     }
 
     public static void updateReciprocalRelationshipStatus(Map<Id, Relationship__c> relationshipsBeforeUpdate, Map<Id, Relationship__c> relationshipsAfterUpdate) {
-        List<Relationship__c> relationshipsToUpdate = new List<Relationship__c>();
         for (Id key : relationshipsAfterUpdate.keySet()) {
             Relationship__c relationshipBefore = relationshipsBeforeUpdate.get(key);
             Relationship__c relationshipAfter = relationshipsAfterUpdate.get(key);
             if (relationshipBefore.Revoke_Status__c != relationshipAfter.Revoke_Status__c && relationshipAfter.Revoke_Status__c != relationshipAfter.Reciprocal_Relationship__r.Revoke_Status__c) {
                 relationshipAfter.Reciprocal_Relationship__r.Revoke_Status__c = relationshipAfter.Revoke_Status__c;
-                relationshipsToUpdate.add(relationshipAfter);
             }
         }
     }

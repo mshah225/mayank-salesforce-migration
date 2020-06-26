@@ -41,8 +41,8 @@ public class RelationshipDispatcher implements IDispatch {
     public void afterInsert() {
         RelationshipService.createReciprocal(newList);
         RelationshipService.updateContacts(newList);
-        // RelationshipService.updateNullCreatedByName(newList);
-        // RelationshipService.updateNullSubTypes(newList);
+        RelationshipService.updateNullCreatedByName(newList);
+        RelationshipService.updateNullSubTypes(newList);
     }
 
     /**

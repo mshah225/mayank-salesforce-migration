@@ -79,18 +79,18 @@ private class RelationshipTriggerTest {
             // Ordered by name in decending order so that parents appear first in the list
             parentContacts = [
                 SELECT Id,
-                    (
-                        SELECT Id, Contact__c, Related_Contact__c, Relationship_Type__c, Active_Relationship__c,
-                            Relationship_Start_Date__c, RecordTypeId
-                        FROM Relationships__r
-                        ORDER BY Name DESC
-                    ),
-                    (
-                        SELECT Id, Contact__c, Related_Contact__c, Relationship_Type__c, Active_Relationship__c,
-                            Relationship_Start_Date__c, RecordTypeId
-                        FROM Reciprocal_Relationships__r
-                        ORDER BY Name DESC
-                    )
+                (
+                    SELECT Id, Contact__c, Related_Contact__c, Relationship_Type__c, Active_Relationship__c,
+                    Relationship_Start_Date__c, RecordTypeId
+                    FROM Relationships__r
+                    ORDER BY Name DESC
+                ),
+                (
+                    SELECT Id, Contact__c, Related_Contact__c, Relationship_Type__c, Active_Relationship__c,
+                    Relationship_Start_Date__c, RecordTypeId
+                    FROM Reciprocal_Relationships__r
+                    ORDER BY Name DESC
+                )
                 FROM Contact
                 WHERE Id IN :contactIds
             ];
@@ -114,7 +114,7 @@ private class RelationshipTriggerTest {
             system.assert (parent.RecordTypeId == child.RecordTypeId);
         }
 
-        system.assertEquals( qtyToTest, [SELECT Id FROM Relationship__c WHERE Relationship_Type__c = 'Child'].size() );
+        system.assertEquals(qtyToTest, [SELECT Id FROM Relationship__c WHERE Relationship_Type__c = 'Child'].size());
     }
 
     @isTest
@@ -124,10 +124,10 @@ private class RelationshipTriggerTest {
 
         // Change parents to children
         for (Relationship__c r : [
-            SELECT Reciprocal_Relationship__c, Relationship_Type__c
-            FROM Relationship__c
-            WHERE Relationship_Type__c = 'Parent'
-        ]) {
+                SELECT Reciprocal_Relationship__c, Relationship_Type__c
+                FROM Relationship__c
+                WHERE Relationship_Type__c = 'Parent'
+            ]) {
             r.Relationship_Type__c = 'Child';
             r.Revoke_Status__c = true;
 
@@ -155,7 +155,7 @@ private class RelationshipTriggerTest {
 
         relationships = new List<Relationship__c>(
             [SELECT Id FROM Relationship__c WHERE Relationship_Type__c = 'Child']
-            );
+        );
 
         undelete relationships;
     }

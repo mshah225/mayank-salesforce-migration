@@ -26,7 +26,7 @@ public class RelationshipService {
             SELECT Id
             FROM RecordType
             WHERE SObjectType = 'Relationship__c'
-            AND Name = 'Contact to Account' 
+            AND Name = 'Contact to Account'
             LIMIT 1
         ].Id;
 
@@ -34,7 +34,7 @@ public class RelationshipService {
             SELECT Id
             FROM RecordType
             WHERE SObjectType = 'Relationship__c'
-            AND Name = 'Account to Contact' 
+            AND Name = 'Account to Contact'
             LIMIT 1
         ].Id;
 
@@ -69,8 +69,8 @@ public class RelationshipService {
 
                     sourceToRecip.put(relation.Id, rel);
                 } else if (relation.Reciprocal_Relationship__c != null) {
-                    //I am the recip and I have the Id of my source
-                    //Map my source to my id in a queryable way (Map<Id, Id>)
+                    // I am the recip and I have the Id of my source
+                    // Map my source to my id in a queryable way (Map<Id, Id>)
                     sourceToRecipId.put(relation.Reciprocal_Relationship__c, relation.Id);
                 }
             } else {
@@ -89,10 +89,11 @@ public class RelationshipService {
 
         if (!sourceToRecipId.isEmpty()) {
             for (Relationship__c relation : [
-                SELECT Id, Reciprocal_Relationship__c
-                FROM Relationship__c
-                WHERE Id IN :sourceToRecipId.keySet()
-            ]) {
+                    SELECT Id, Reciprocal_Relationship__c
+                    FROM Relationship__c
+                    WHERE Id IN :sourceToRecipId.keySet()
+                ]
+            ) {
                 relation.Reciprocal_Relationship__c = sourceToRecipId.get(relation.Id);
                 relsToUpdate.add(relation);
             }
@@ -133,12 +134,13 @@ public class RelationshipService {
         if (!recipToSource.isEmpty()) {
             for (Relationship__c relation : [
                     SELECT Contact__c, Related_Contact__c, RecordTypeId, Related_Account__c,
-                        Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c,
-                        Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c, Primary_Parent__c,
-                        Sub_Type__c, Source__c, Source_Date__c
+                    Relationship_Start_Date__c, Active_Relationship__c, Relationship_Type__c,
+                    Account__c, Relationship_End_Date__c, Reciprocal_Relationship__c, Title__c, Primary_Parent__c,
+                    Sub_Type__c, Source__c, Source_Date__c
                     FROM Relationship__c
                     WHERE Id IN :recipToSource.keySet()
-            ]) {
+                ]
+            ) {
                 rel = recipToSource.get(relation.Id);
 
                 // Check for any differences in the fields
@@ -155,8 +157,7 @@ public class RelationshipService {
                     relation.Primary_Parent__c != rel.Primary_Parent__c ||
                     relation.Sub_Type__c != rel.Sub_Type__c ||
                     relation.Source__c != rel.Source__c ||
-                    relation.Source_Date__c != rel.Source_Date__c
-                ) {
+                    relation.Source_Date__c != rel.Source_Date__c) {
                     relation.Contact__c = rel.Related_Contact__c;
                     relation.Related_Contact__c = rel.Contact__c;
                     relation.Account__c = rel.Related_Account__c;
@@ -301,7 +302,7 @@ public class RelationshipService {
         if (!contactList.isEmpty()) {
             List<Contact> contactsToEdit = [
                 SELECT Rel_Parent_1__c, Rel_Parent_2__c,
-                    Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
+                Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
                 FROM Contact
                 WHERE Id IN :contactList
             ];
@@ -343,7 +344,7 @@ public class RelationshipService {
 
             List<Contact> contactList = [
                 SELECT Id, Rel_Parent_1__c, Rel_Parent_2__c,
-                    Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
+                Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
                 FROM Contact
                 WHERE Id IN :contactIdList
             ];
@@ -384,16 +385,30 @@ public class RelationshipService {
         }
     }
 
-    public static void updateNullCreatedByAuthors(List<Relationship__c> newRelationships) {
+    public static void updateNullCreatedByName(List<Relationship__c> newRelationships) {
         List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
+        List<Relationship__c> relWithProfileName = new List<Relationship__c>();
+        Set<Id> createdByUserIds = new Set<Id>();
+
         for (Relationship__c newRelationship : newRelationships) {
+            createdByUserIds.add(newRelationship.CreatedById);
+        }
+        relWithProfileName = [
+            SELECT Id, Relationship_Created_By__c, CreatedBy.Profile.Name
+            FROM Relationship__c
+            WHERE CreatedById IN: createdByUserIds
+        ];
+
+        for (Relationship__c newRelationship : [
+                SELECT Id, Relationship_Created_By__c, CreatedBy.Profile.Name
+                FROM Relationship__c
+                WHERE CreatedById IN:createdByUserIds
+            ]
+        ) {
             if (newRelationship.Relationship_Created_By__c == null && newRelationship.CreatedBy.Profile.Name != null) {
                 newRelationship.Relationship_Created_By__c = newRelationship.CreatedBy.Profile.Name;
                 newRelationshipsToUpdate.add(newRelationship);
             }
-        }
-        if (newRelationshipsToUpdate.size() > 0) {
-            update newRelationshipsToUpdate;
         }
     }
 
@@ -402,9 +417,9 @@ public class RelationshipService {
         for (Relationship__c newRelationship : newRelationships) {
             if (newRelationship.Sub_Type__c == null && newRelationship.Reciprocal_Relationship__c != null && newRelationship.Reciprocal_Relationship__r.Sub_Type__c != null) {
                 Relationship_SubType__c reciprocalSubType = [
-                    SELECT Reciprocal_SubType__c 
-                    FROM Relationship_SubType__c 
-                    WHERE Name =: newRelationship.Reciprocal_Relationship__r.Sub_Type__c 
+                    SELECT Reciprocal_SubType__c
+                    FROM Relationship_SubType__c
+                    WHERE Name =: newRelationship.Reciprocal_Relationship__r.Sub_Type__c
                     LIMIT 1
                 ];
                 if (reciprocalSubType.Reciprocal_SubType__c != null) {
@@ -416,12 +431,9 @@ public class RelationshipService {
                 newRelationshipsToUpdate.add(newRelationship);
             }
         }
-        if (newRelationshipsToUpdate.size() > 0) {
-            update newRelationshipsToUpdate;
-        }
     }
 
-    public static void updateReciprocalRelationshipRevokedStatus(Map<Id, Relationship__c> relationshipsBeforeUpdate, Map<Id, Relationship__c> relationshipsAfterUpdate) {
+    public static void updateReciprocalRelationshipStatus(Map<Id, Relationship__c> relationshipsBeforeUpdate, Map<Id, Relationship__c> relationshipsAfterUpdate) {
         List<Relationship__c> relationshipsToUpdate = new List<Relationship__c>();
         for (Id key : relationshipsAfterUpdate.keySet()) {
             Relationship__c relationshipBefore = relationshipsBeforeUpdate.get(key);
@@ -430,9 +442,6 @@ public class RelationshipService {
                 relationshipAfter.Reciprocal_Relationship__r.Revoke_Status__c = relationshipAfter.Revoke_Status__c;
                 relationshipsToUpdate.add(relationshipAfter);
             }
-        }
-        if (relationshipsToUpdate.size() > 0) {
-            update relationshipsToUpdate;
         }
     }
 

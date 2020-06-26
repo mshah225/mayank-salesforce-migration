@@ -23,16 +23,6 @@ public class RelationshipDispatcher implements IDispatch {
     }
 
     /**
-     * Contains business logic to process after inserting relationships
-     */
-    public void afterInsert() {
-        RelationshipService.createReciprocal(newList);
-        RelationshipService.updateContacts(newList);
-        RelationshipService.updateNullCreatedByAuthors(newList);
-        RelationshipService.updateNullSubTypes(newList);
-    }
-
-    /**
      * Contains business logic to process before updating relationships
      */
     public void beforeUpdate() {
@@ -43,13 +33,25 @@ public class RelationshipDispatcher implements IDispatch {
         }
     }
 
+    public void beforeDelete() {}
+
+    /**
+     * Contains business logic to process after inserting relationships
+     */
+    public void afterInsert() {
+        RelationshipService.createReciprocal(newList);
+        RelationshipService.updateContacts(newList);
+        RelationshipService.updateNullCreatedByName(newList);
+        RelationshipService.updateNullSubTypes(newList);
+    }
+
     /**
      * Contains business logic to process after updating relationships
      */
     public void afterUpdate() {
         if (checkRecursive.runCount < 1) {
             RelationshipService.updateReciprocal(newList);
-            RelationshipService.updateReciprocalRelationshipRevokedStatus(oldMap, newMap);
+            RelationshipService.updateReciprocalRevokedStatus(oldMap, newMap);
         }
     }
 
@@ -62,5 +64,4 @@ public class RelationshipDispatcher implements IDispatch {
     }
 
     public void afterUndelete() {}
-    public void beforeDelete() {}
 }

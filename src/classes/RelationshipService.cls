@@ -387,27 +387,25 @@ public class RelationshipService {
 
     public static void updateNullCreatedByName(List<Relationship__c> newRelationships) {
         List<Relationship__c> newRelationshipsToUpdate = new List<Relationship__c>();
-        List<Relationship__c> relWithProfileName = new List<Relationship__c>();
         Set<Id> createdByUserIds = new Set<Id>();
 
         for (Relationship__c newRelationship : newRelationships) {
             createdByUserIds.add(newRelationship.CreatedById);
         }
-        relWithProfileName = [
-            SELECT Id, Relationship_Created_By__c, CreatedBy.Profile.Name
-            FROM Relationship__c
-            WHERE CreatedById IN: createdByUserIds
-        ];
 
         for (Relationship__c newRelationship : [
                 SELECT Id, Relationship_Created_By__c, CreatedBy.Profile.Name
                 FROM Relationship__c
-                WHERE CreatedById IN:createdByUserIds
+                WHERE CreatedById IN :createdByUserIds
             ]
         ) {
             if (newRelationship.Relationship_Created_By__c == null && newRelationship.CreatedBy.Profile.Name != null) {
                 newRelationship.Relationship_Created_By__c = newRelationship.CreatedBy.Profile.Name;
                 newRelationshipsToUpdate.add(newRelationship);
+                if (newRelationship.Reciprocal_Relationship__r.Source__c != null && newRelationship.Source_Date__c == null && newRelationship.Source__c == null) {
+                    newRelationship.Source_Date__c = newRelationship.Reciprocal_Relationship__r.Source_Date__c;
+                    newRelationship.Source__c = newRelationship.Reciprocal_Relationship__r.Source__c;
+                }
             }
         }
     }

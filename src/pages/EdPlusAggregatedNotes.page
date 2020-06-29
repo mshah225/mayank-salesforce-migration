@@ -67,7 +67,7 @@
         <script type="text/javascript">
             // Open a sub-tab
             function openCaseSubTab(recordId, title, type, obj) {
-                trackUsageData('Viewed External ' + type, recordId);
+                trackUsage('Viewed External ' + type, recordId);
                 if (sforce.console.isInConsole()) {
                     sforce.console.getEnclosingPrimaryTabId(function (result) {
                         sforce.console.openSubtab(result.id, '/' + recordId, true, title, null);

@@ -33,6 +33,7 @@ trigger RelationshipTrigger on Relationship__c(
         }
         if (Trigger.isDelete) {
             dispatcher.afterDelete();
+            dispatcher.afterUndelete();
         }
     }
 }

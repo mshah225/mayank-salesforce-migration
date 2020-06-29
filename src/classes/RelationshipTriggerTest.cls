@@ -46,7 +46,9 @@ private class RelationshipTriggerTest {
                 RecordTypeId = rId,
                 Relationship_Created_By__c = null,
                 Sub_Type__c = null,
-                Revoke_Status__c = false
+                Revoke_Status__c = false,
+                Source__c = 'PS MyASU Guest Portal',
+                Source_Date__c = Date.today()
             );
 
             relsToCreate.add(rel);

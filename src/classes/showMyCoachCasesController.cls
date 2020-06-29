@@ -2,14 +2,14 @@ public class showMyCoachCasesController extends ListViewController {
     private boolean debug = false;
 
     // Properties with standard getters/setters
-    public Id proactiveCaseRTID {get; set;} // The record type Id of the proactive cases
-    public Map<Id, relatedCases> caseCounts {get; set;} // Stores the contact Id to summarized case counts
-    public List<caseWrapper> caseList {get; set;} // List of Case Wrappers (cases) to display on the page
-    public Id ownerId {get; set;} // Stores the Id of the new owner of the selected cases
-    public Id portalEmailRTID {get; set;} // The record type of the portal email object
-    private string originalQuery {get; set;} // Justin is this still required?
-    public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
-    public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
+    public Id proactiveCaseRTID { get; set; } // The record type Id of the proactive cases
+    public Map<Id, relatedCases> caseCounts { get; set; } // Stores the contact Id to summarized case counts
+    public List<caseWrapper> caseList { get; set; } // List of Case Wrappers (cases) to display on the page
+    public Id ownerId { get; set; } // Stores the Id of the new owner of the selected cases
+    public Id portalEmailRTID { get; set; } // The record type of the portal email object
+    private string originalQuery { get; set; } // Justin is this still required?
+    public Boolean emailPreviewMode { get; set; } // Used to determine which set of buttons to show in the email modal
+    public List<Database.SaveResult> emailInsertResults { get; set; } // Used to display the results of the email send to the user
 
     /*
      * Get the list of cases selected by the end user.
@@ -26,7 +26,6 @@ public class showMyCoachCasesController extends ListViewController {
 
             return selectedCases;
         }
-
         set {
             selectedCases = value;
 
@@ -52,7 +51,6 @@ public class showMyCoachCasesController extends ListViewController {
 
             return tempEmail;
         }
-
         set;
     }
 
@@ -109,12 +107,13 @@ public class showMyCoachCasesController extends ListViewController {
     private Map<Id, String> getTimeZones(List<Case> cases) {
         List<Id> contactIds = this.getContactIds(cases);
         List<Contact> contacts = [
-            SELECT(
-            SELECT Time_Zone__c
-            FROM Success_Students__r
-            WHERE Coaching_Student__c = true AND Is_Active__c = true
-            ORDER BY Time_Zone__c DESC NULLs Last
-            )
+            SELECT
+                (
+                    SELECT Time_Zone__c
+                    FROM Success_Students__r
+                    WHERE Coaching_Student__c = true AND Is_Active__c = true
+                    ORDER BY Time_Zone__c DESC NULLS LAST
+                )
             FROM Contact
             WHERE Id IN :contactIds
         ];
@@ -152,12 +151,11 @@ public class showMyCoachCasesController extends ListViewController {
                 contactIds.add(cw.obj.contactid);
             }
 
-            for (Contact c : [SELECT id,
-                (SELECT RecordTypeId
-                FROM Cases
-                WHERE isClosed = false)
+            for (Contact c : [
+                SELECT id, (SELECT RecordTypeId FROM Cases WHERE isClosed = false)
                 FROM Contact
-                WHERE Id IN :ContactIds]) {
+                WHERE Id IN :ContactIds
+            ]) {
                 caseCounts.put(c.id, new relatedCases());
                 for (Case cc : c.cases) {
                     if (cc.recordTypeId == proactiveCaseRTID) {
@@ -174,7 +172,7 @@ public class showMyCoachCasesController extends ListViewController {
      * Transfer Cases
      */
     public void transferCases() {
-        for (case c: selectedCases) {
+        for (case c : selectedCases) {
             c.ownerId = ownerId;
         }
 
@@ -189,15 +187,17 @@ public class showMyCoachCasesController extends ListViewController {
     public void massEmail() {
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
 
-        for (case c: selectedCases) {
-            emails.add(new Portal_Email__c(
-                Case__c = c.Id,
-                Contact__c = c.contactId,
-                Subject__c = tempEmail.Subject__c,
-                Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
-                RecordTypeId = portalEmailRTID,
-                Email_Template_Name__c = tempEmail.Email_Template_Name__c
-            ));
+        for (case c : selectedCases) {
+            emails.add(
+                new Portal_Email__c(
+                    Case__c = c.Id,
+                    Contact__c = c.contactId,
+                    Subject__c = tempEmail.Subject__c,
+                    Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
+                    RecordTypeId = portalEmailRTID,
+                    Email_Template_Name__c = tempEmail.Email_Template_Name__c
+                )
+            );
         }
         if (emails.size() > 0) {
             emailInsertResults = Database.insert(emails);
@@ -225,8 +225,8 @@ public class showMyCoachCasesController extends ListViewController {
      * Used to track the number of proactive and reactive cases at the contact level
      */
     public class relatedCases {
-        public Integer reactiveCount {get; set;}
-        public Integer proactiveCount {get; set;}
+        public Integer reactiveCount { get; set; }
+        public Integer proactiveCount { get; set; }
 
         public relatedCases() {
             reactiveCount = 0;
@@ -238,14 +238,14 @@ public class showMyCoachCasesController extends ListViewController {
      * Used to create a trackable way to select cases via a check box
      */
     public class caseWrapper {
-        public Boolean selected {get; set;}
-        public Case obj {get; set;}
-        public String changeDir {get; set;}
-        public String imageName {get; set;}
-        public String timeZone {get; set;}
-        public String termSession {get; set;}
+        public Boolean selected { get; set; }
+        public Case obj { get; set; }
+        public String changeDir { get; set; }
+        public String imageName { get; set; }
+        public String timeZone { get; set; }
+        public String termSession { get; set; }
 
-        public caseWrapper (Case wrappedCase) {
+        public caseWrapper(Case wrappedCase) {
             selected = false;
             obj = wrappedCase;
 
@@ -278,7 +278,7 @@ public class showMyCoachCasesController extends ListViewController {
      */
     public boolean searched {
         get {
-            if (query == NULL || !query.contains('LIKE')) {
+            if (query == null || !query.contains('LIKE')) {
                 searched = false;
             } else {
                 searched = true;
@@ -299,7 +299,7 @@ public class showMyCoachCasesController extends ListViewController {
         }
         set {
             searchString = value;
-            if (searchString != NULL) {
+            if (searchString != null) {
                 String tempQuery = removeSearchString();
                 Integer loc = tempQuery.indexOf('WHERE');
                 String tempQueryLeft = tempQuery.substring(0, loc + 5);
@@ -308,10 +308,17 @@ public class showMyCoachCasesController extends ListViewController {
                 tempQueryRight = tempQueryRight.trim();
 
                 String searchCon = value.trim();
-                String tmp = tempQueryLeft + ' (' +
-                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                    ') AND ' + tempQueryRight;
+                String tmp =
+                    tempQueryLeft +
+                    ' (' +
+                    'Contact.Name LIKE \'%' +
+                    String.escapeSingleQuotes(searchCon) +
+                    '%\' ' +
+                    'OR Contact.EMPLID__c LIKE \'%' +
+                    String.escapeSingleQuotes(searchCon) +
+                    '%\'' +
+                    ') AND ' +
+                    tempQueryRight;
 
                 query = tmp;
             }
@@ -322,7 +329,7 @@ public class showMyCoachCasesController extends ListViewController {
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch() {
-        searchString = NULL;
+        searchString = null;
         query = removeSearchString();
     }
 

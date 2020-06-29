@@ -6,31 +6,33 @@ trigger RelationshipTrigger on Relationship__c(
     before insert,
     before update
 ) {
-    RelationshipDispatcher d = new RelationshipDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+    RelationshipDispatcher dispatcher = new RelationshipDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
 
     if (Trigger.isBefore) {
         if (Trigger.isUpdate) {
-            d.beforeUpdate();
+            dispatcher.beforeUpdate();
         }
         if (Trigger.isInsert) {
-            d.beforeInsert();
+            dispatcher.beforeInsert();
         }
         if (Trigger.isDelete) {
-            d.beforeDelete();
+            dispatcher.beforeDelete();
         }
     }
     if (Trigger.isAfter) {
         if (Trigger.isUpdate) {
-            d.afterUpdate();
+            dispatcher.afterUpdate();
         }
         if (Trigger.isInsert) {
-            d.afterInsert();
+            dispatcher.afterInsert();
         }
         if (Trigger.isDelete) {
-            d.afterDelete();
-        }
-        if (Trigger.isUndelete) {
-            d.afterUndelete();
+            dispatcher.afterDelete();
         }
     }
 }

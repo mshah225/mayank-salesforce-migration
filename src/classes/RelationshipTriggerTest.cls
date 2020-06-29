@@ -23,8 +23,8 @@ private class RelationshipTriggerTest {
 
         // Create custom settings for the relationship handler to query
         // These settings were pulled from setup to mimick a live environment
-        settingsToCreate.add(new Relationships__c(Name = 'Parent', Reciprocal__c = 'Child'));
-        settingsToCreate.add(new Relationships__c(Name = 'Child', Reciprocal__c = 'Parent'));
+        settingsToCreate.add(new Relationships__c(Name = 'Parent/Guardian', Reciprocal__c = 'Child'));
+        settingsToCreate.add(new Relationships__c(Name = 'Child', Reciprocal__c = 'Parent/Guardian'));
 
         insert settingsToCreate;
 
@@ -40,7 +40,7 @@ private class RelationshipTriggerTest {
             rel = new Relationship__c(
                 Contact__c = contactsToCreate[x].Id,
                 Related_Contact__c = contactsToCreate[x + qtyToTest].Id,
-                Relationship_Type__c = 'Parent',
+                Relationship_Type__c = 'Parent/Guardian',
                 Active_Relationship__c = true,
                 Relationship_Start_Date__c = Date.today(),
                 RecordTypeId = rId,
@@ -65,13 +65,13 @@ private class RelationshipTriggerTest {
             Set<Id> contactIds = new Set<Id>(); // Used to pull up contacts labled as parents
 
             qtyToTest = 2;
-            relationships = [SELECT Contact__c FROM Relationship__c WHERE Relationship_Type__c = 'parent'];
+            relationships = [SELECT Contact__c FROM Relationship__c WHERE Relationship_Type__c = 'Parent/Guardian'];
 
             for (Relationship__c r : relationships) {
                 contactIds.add(r.Contact__c);
             }
 
-            // Get a list of every contact and every contact's 'reciprical' relationship
+            // Get a list of every contact and every contact's reciprocal relationship
             // Ordered by name in decending order so that parents appear first in the list
             parentContacts = [
                 SELECT
@@ -136,7 +136,7 @@ private class RelationshipTriggerTest {
         for (Relationship__c r : [
             SELECT Reciprocal_Relationship__c, Relationship_Type__c
             FROM Relationship__c
-            WHERE Relationship_Type__c = 'Parent'
+            WHERE Relationship_Type__c = 'Parent/Guardian'
         ]) {
             r.Relationship_Type__c = 'Child';
             r.Revoke_Status__c = true;
@@ -151,7 +151,7 @@ private class RelationshipTriggerTest {
 
         // Verify that children were updated to show that they are parents now
         for (Relationship__c r : [SELECT Relationship_Type__c FROM Relationship__c WHERE Id IN :relsToVerify]) {
-            system.assertEquals('Parent', r.Relationship_Type__c);
+            system.assertEquals('Parent/Guardian', r.Relationship_Type__c);
         }
     }
 
@@ -160,11 +160,5 @@ private class RelationshipTriggerTest {
         test.startTest();
         delete relationships;
         test.stopTest();
-
-        relationships = new List<Relationship__c>(
-            [SELECT Id FROM Relationship__c WHERE Relationship_Type__c = 'Child']
-        );
-
-        undelete relationships;
     }
 }

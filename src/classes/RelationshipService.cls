@@ -407,7 +407,14 @@ public class RelationshipService {
         }
 
         for (Relationship__c newRelationship : [
-            SELECT Id, Relationship_Created_By__c, CreatedBy.Profile.Name
+            SELECT
+                Id,
+                Relationship_Created_By__c,
+                CreatedBy.Profile.Name,
+                Source__c,
+                Source_Date__c,
+                Reciprocal_Relationship__r.Source__c,
+                Reciprocal_Relationship__r.Source_Date__c
             FROM Relationship__c
             WHERE CreatedById IN :createdByUserIds
         ]) {
@@ -452,9 +459,19 @@ public class RelationshipService {
         Map<Id, Relationship__c> relationshipsBeforeUpdate,
         Map<Id, Relationship__c> relationshipsAfterUpdate
     ) {
-        for (Id key : relationshipsAfterUpdate.keySet()) {
+        Map<Id, Relationship__c> relationshipsAfterUpdateAmended = new Map<Id, Relationship__c>();
+
+        for (Relationship__c rel : [
+            SELECT Id, Revoke_Status__c, Reciprocal_Relationship__r.Revoke_Status__c
+            FROM Relationship__c
+            WHERE Id IN :relationshipsAfterUpdate.keySet()
+        ]) {
+            relationshipsAfterUpdateAmended.put(rel.Id, rel);
+        }
+
+        for (Id key : relationshipsAfterUpdateAmended.keySet()) {
             Relationship__c relationshipBefore = relationshipsBeforeUpdate.get(key);
-            Relationship__c relationshipAfter = relationshipsAfterUpdate.get(key);
+            Relationship__c relationshipAfter = relationshipsAfterUpdateAmended.get(key);
             if (
                 relationshipBefore.Revoke_Status__c != relationshipAfter.Revoke_Status__c &&
                 relationshipAfter.Revoke_Status__c != relationshipAfter.Reciprocal_Relationship__r.Revoke_Status__c

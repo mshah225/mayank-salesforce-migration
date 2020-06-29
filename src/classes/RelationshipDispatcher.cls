@@ -49,6 +49,7 @@ public class RelationshipDispatcher implements IDispatch {
         RelationshipService.updateContacts(newList);
         RelationshipService.updateNullCreatedByName(newList);
         RelationshipService.updateNullSubTypes(newList);
+        RelationshipService.updateReciprocalRelationshipStatus(oldMap, newMap);
     }
 
     /**
@@ -67,8 +68,5 @@ public class RelationshipDispatcher implements IDispatch {
     public void afterDelete() {
         RelationshipService.removeParent(oldList);
         RelationshipService.deleteReciprocal(oldList);
-    }
-
-    public void afterUndelete() {
     }
 }

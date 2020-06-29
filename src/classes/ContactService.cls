@@ -263,7 +263,41 @@ public class ContactService
     {
         return getContactInformation(contactId, '');
     }
+    
+    public static void updatePermanentContactWithDeleteId(Map<Id, String> contactIdToDuplicateId, Map<Id, String> contactIdToAccountId) {
+        List<Contact> contactsWithSharedAccounts = [ 
+            SELECT Id, Account.Id, DuplicateIDs__c
+            FROM Contact 
+            WHERE Account.Id IN: contactIdToAccountId.values() AND Id NOT IN: contactIdToDuplicateId.keyset()
+            ORDER By Account.Id 
+        ];
 
+        Map<Id, Contact> accountToMasterContact = new Map<Id, Contact>();
+        List<Contact> contactsToUpdate = new List<Contact>();
+
+        for (Contact masterContact : contactsWithSharedAccounts) {
+            accountToMasterContact.put(masterContact.AccountId, masterContact);
+        }
+
+        for (Id deletedContactId : contactIdToDuplicateId.keyset()) {
+            Contact masterContact = accountToMasterContact.get(contactIdToAccountId.get(deletedContactId));
+            if (masterContact != null) {
+                if (masterContact.DuplicateIDs__c != null) {
+                    masterContact.DuplicateIDs__c += '\r';
+                    masterContact.DuplicateIDs__c += contactIdToDuplicateId.get(deletedContactId);
+                } else {
+                    masterContact.DuplicateIDs__c = contactIdToDuplicateId.get(deletedContactId);
+                }
+
+                contactsToUpdate.add(masterContact);
+            }
+        }
+
+        if (contactsToUpdate.size() > 0) {
+            update contactsToUpdate;
+        }
+    }
+    
     /**
     * Add a new collection of records to the Cross-Org Crosswalk table
     * @param jsonRecords A JSON formatted payload

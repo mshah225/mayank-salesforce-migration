@@ -4,7 +4,12 @@ public class RelationshipDispatcher implements IDispatch {
     private Map<Id, Relationship__c> newMap;
     private Map<Id, Relationship__c> oldMap;
 
-    public RelationshipDispatcher(List<Relationship__c> newList, Map<Id, Relationship__c> newMap, List<Relationship__c> oldList, Map<Id, Relationship__c> oldMap) {
+    public RelationshipDispatcher(
+        List<Relationship__c> newList,
+        Map<Id, Relationship__c> newMap,
+        List<Relationship__c> oldList,
+        Map<Id, Relationship__c> oldMap
+    ) {
         this.newList = newList;
         this.oldList = oldList;
         this.newMap = newMap;
@@ -33,7 +38,8 @@ public class RelationshipDispatcher implements IDispatch {
         }
     }
 
-    public void beforeDelete() {}
+    public void beforeDelete() {
+    }
 
     /**
      * Contains business logic to process after inserting relationships
@@ -63,5 +69,6 @@ public class RelationshipDispatcher implements IDispatch {
         RelationshipService.deleteReciprocal(oldList);
     }
 
-    public void afterUndelete() {}
+    public void afterUndelete() {
+    }
 }

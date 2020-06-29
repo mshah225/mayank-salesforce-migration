@@ -17,9 +17,9 @@ private class RelationshipTriggerTest {
         Id rId = [
             SELECT Id
             FROM RecordType
-            WHERE SObjectType = 'Relationship__c'
-            AND DeveloperName = 'Contact_to_Contact'
-        ].Id;
+            WHERE SObjectType = 'Relationship__c' AND DeveloperName = 'Contact_to_Contact'
+        ]
+        .Id;
 
         // Create custom settings for the relationship handler to query
         // These settings were pulled from setup to mimick a live environment
@@ -65,11 +65,7 @@ private class RelationshipTriggerTest {
             Set<Id> contactIds = new Set<Id>(); // Used to pull up contacts labled as parents
 
             qtyToTest = 2;
-            relationships = [
-                SELECT Contact__c
-                FROM Relationship__c
-                WHERE Relationship_Type__c = 'parent'
-            ];
+            relationships = [SELECT Contact__c FROM Relationship__c WHERE Relationship_Type__c = 'parent'];
 
             for (Relationship__c r : relationships) {
                 contactIds.add(r.Contact__c);
@@ -78,23 +74,37 @@ private class RelationshipTriggerTest {
             // Get a list of every contact and every contact's 'reciprical' relationship
             // Ordered by name in decending order so that parents appear first in the list
             parentContacts = [
-                SELECT Id,
-                (
-                    SELECT Id, Contact__c, Related_Contact__c, Relationship_Type__c, Active_Relationship__c,
-                    Relationship_Start_Date__c, RecordTypeId
-                    FROM Relationships__r
-                    ORDER BY Name DESC
-                ),
-                (
-                    SELECT Id, Contact__c, Related_Contact__c, Relationship_Type__c, Active_Relationship__c,
-                    Relationship_Start_Date__c, RecordTypeId
-                    FROM Reciprocal_Relationships__r
-                    ORDER BY Name DESC
-                )
+                SELECT
+                    Id,
+                    (
+                        SELECT
+                            Id,
+                            Contact__c,
+                            Related_Contact__c,
+                            Relationship_Type__c,
+                            Active_Relationship__c,
+                            Relationship_Start_Date__c,
+                            RecordTypeId
+                        FROM Relationships__r
+                        ORDER BY Name DESC
+                    ),
+                    (
+                        SELECT
+                            Id,
+                            Contact__c,
+                            Related_Contact__c,
+                            Relationship_Type__c,
+                            Active_Relationship__c,
+                            Relationship_Start_Date__c,
+                            RecordTypeId
+                        FROM Reciprocal_Relationships__r
+                        ORDER BY Name DESC
+                    )
                 FROM Contact
                 WHERE Id IN :contactIds
             ];
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     @isTest
@@ -106,12 +116,12 @@ private class RelationshipTriggerTest {
             parent = (Relationship__c) c.getSObjects('Relationships__r')[0];
             child = (Relationship__c) c.getSObjects('Reciprocal_Relationships__r')[0];
 
-            system.assert (parent.Contact__c == child.Related_Contact__c);
-            system.assert (parent.Related_Contact__c == child.Contact__c);
-            system.assert (child.Relationship_Type__c == settings.get(parent.Relationship_Type__c).Reciprocal__c);
-            system.assert (parent.Active_Relationship__c == child.Active_Relationship__c);
-            system.assert (parent.Relationship_Start_Date__c == child.Relationship_Start_Date__c);
-            system.assert (parent.RecordTypeId == child.RecordTypeId);
+            system.assert(parent.Contact__c == child.Related_Contact__c);
+            system.assert(parent.Related_Contact__c == child.Contact__c);
+            system.assert(child.Relationship_Type__c == settings.get(parent.Relationship_Type__c).Reciprocal__c);
+            system.assert(parent.Active_Relationship__c == child.Active_Relationship__c);
+            system.assert(parent.Relationship_Start_Date__c == child.Relationship_Start_Date__c);
+            system.assert(parent.RecordTypeId == child.RecordTypeId);
         }
 
         system.assertEquals(qtyToTest, [SELECT Id FROM Relationship__c WHERE Relationship_Type__c = 'Child'].size());
@@ -124,10 +134,10 @@ private class RelationshipTriggerTest {
 
         // Change parents to children
         for (Relationship__c r : [
-                SELECT Reciprocal_Relationship__c, Relationship_Type__c
-                FROM Relationship__c
-                WHERE Relationship_Type__c = 'Parent'
-            ]) {
+            SELECT Reciprocal_Relationship__c, Relationship_Type__c
+            FROM Relationship__c
+            WHERE Relationship_Type__c = 'Parent'
+        ]) {
             r.Relationship_Type__c = 'Child';
             r.Revoke_Status__c = true;
 
@@ -140,9 +150,7 @@ private class RelationshipTriggerTest {
         test.stopTest();
 
         // Verify that children were updated to show that they are parents now
-        for (Relationship__c r : [SELECT Relationship_Type__c
-            FROM Relationship__c
-            WHERE Id IN :relsToVerify]) {
+        for (Relationship__c r : [SELECT Relationship_Type__c FROM Relationship__c WHERE Id IN :relsToVerify]) {
             system.assertEquals('Parent', r.Relationship_Type__c);
         }
     }

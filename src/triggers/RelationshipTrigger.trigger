@@ -1,28 +1,35 @@
-trigger RelationshipTrigger on Relationship__c(after delete, after insert, after update, before delete, before insert, before update) {
+trigger RelationshipTrigger on Relationship__c(
+    after delete,
+    after insert,
+    after update,
+    before delete,
+    before insert,
+    before update
+) {
     RelationshipDispatcher d = new RelationshipDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
 
-    if (trigger.isBefore) {
-        if (trigger.isUpdate) {
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate) {
             d.beforeUpdate();
         }
-        if (trigger.isInsert) {
+        if (Trigger.isInsert) {
             d.beforeInsert();
         }
-        if (trigger.isDelete) {
+        if (Trigger.isDelete) {
             d.beforeDelete();
         }
     }
-    if (trigger.isAfter) {
-        if (trigger.isUpdate) {
+    if (Trigger.isAfter) {
+        if (Trigger.isUpdate) {
             d.afterUpdate();
         }
-        if (trigger.isInsert) {
+        if (Trigger.isInsert) {
             d.afterInsert();
         }
-        if (trigger.isDelete) {
+        if (Trigger.isDelete) {
             d.afterDelete();
         }
-        if (trigger.isUndelete) {
+        if (Trigger.isUndelete) {
             d.afterUndelete();
         }
     }

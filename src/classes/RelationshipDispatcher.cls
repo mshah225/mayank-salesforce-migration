@@ -69,4 +69,7 @@ public class RelationshipDispatcher implements IDispatch {
         RelationshipService.removeParent(oldList);
         RelationshipService.deleteReciprocal(oldList);
     }
+
+    public void afterUndelete() {
+    }
 }

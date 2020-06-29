@@ -49,13 +49,6 @@ public class RelationshipDispatcher implements IDispatch {
         RelationshipService.updateContacts(newList);
         RelationshipService.updateNullCreatedByName(newList);
         RelationshipService.updateNullSubTypes(newList);
-        try {
-            if (checkRecursive.runCount < 1) {
-                RelationshipService.updateReciprocalRelationshipStatus(oldMap, newMap);
-            }
-        } catch (Exception e) {
-            System.debug(e);
-        }
     }
 
     /**

@@ -84,7 +84,8 @@ public class RelationshipService {
                 insert sourceToRecip.values();
             }
         } catch (Exception e) {
-            newRels[0].addError(Label.PrimaryRelationshipError);
+            System.debug(e);
+            //newRels[0].addError(Label.PrimaryRelationshipError);
         }
 
         if (!sourceToRecipId.isEmpty()) {
@@ -194,7 +195,8 @@ public class RelationshipService {
                     update relsToUpdate;
                 }
             } catch (Exception e) {
-                newRels[0].addError(Label.PrimaryRelationshipError);
+                System.debug(e);
+                //newRels[0].addError(Label.PrimaryRelationshipError);
             }
         }
 

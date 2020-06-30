@@ -20,22 +20,22 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process before inserting relationships
      */
     public void beforeInsert() {
-        if (!RelationshipService.verifyTwoPrimary(newList)) {
-            for (Relationship__c relIter : newList) {
-                relIter.addError(Label.PrimaryRelationshipError);
-            }
-        }
+        // if (!RelationshipService.verifyTwoPrimary(newList)) {
+        //     for (Relationship__c relIter : newList) {
+        //         relIter.addError(Label.PrimaryRelationshipError);
+        //     }
+        // }
     }
 
     /**
      * Contains business logic to process before updating relationships
      */
     public void beforeUpdate() {
-        if (!RelationshipService.checkChanges(oldMap, newMap)) {
-            for (Relationship__c relIter : newList) {
-                relIter.addError(Label.PrimaryRelationshipError);
-            }
-        }
+        // if (!RelationshipService.checkChanges(oldMap, newMap)) {
+        //     for (Relationship__c relIter : newList) {
+        //         relIter.addError(Label.PrimaryRelationshipError);
+        //     }
+        // }
     }
 
     public void beforeDelete() {

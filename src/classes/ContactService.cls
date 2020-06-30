@@ -263,7 +263,7 @@ public class ContactService
     {
         return getContactInformation(contactId, '');
     }
-    
+
     /**
     * Add a new collection of records to the Cross-Org Crosswalk table
     * @param jsonRecords A JSON formatted payload

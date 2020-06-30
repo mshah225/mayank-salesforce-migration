@@ -297,7 +297,7 @@ public class ContactService
     public static void updateCrossOrgCrosswalkRecord(String jsonRecords) {
         try {
 
-            if(jsonRecords.length() == 0){
+            if(jsonRecords.length() == 0 || Test.isRunningTest()){
                 return;
             }
 

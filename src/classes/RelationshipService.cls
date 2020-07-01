@@ -88,7 +88,6 @@ public class RelationshipService {
             }
         } catch (Exception e) {
             System.debug(e);
-            newRels[0].addError('A contact can only have two primary parents');
         }
 
         if (!sourceToRecipId.isEmpty()) {
@@ -203,7 +202,6 @@ public class RelationshipService {
                 }
             } catch (Exception e) {
                 System.debug(e);
-                newRels[0].addError('A contact can only have two primary parents');
             }
         }
 

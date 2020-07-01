@@ -16,7 +16,7 @@ public class RelationshipService {
         ID accountToContactRTID; // Id of account to contact record type
         Map<Id, Id> recipRTIDMap = new Map<Id, Id>(); // Id of record type to it's reciprocal
         Map<String, Relationships__c> relationshipTypes = Relationships__c.getAll(); // Map of relationship types to their recip values
-        Map<String, Relationships__c> relationshipSubTypes = Relationship_SubType__c.getAll();
+        Map<String, Relationship_SubType__c> relationshipSubTypes = Relationship_SubType__c.getAll();
         Relationship__c rel; // Temporary relationship
         Map<Id, Relationship__c> sourceToRecip = new Map<Id, Relationship__c>(); // Source Id to recip relationship object
         Map<Id, Id> sourceToRecipId = new Map<Id, Id>(); // Contains the source Id to the Id for it's reciprocal
@@ -116,7 +116,7 @@ public class RelationshipService {
      */
     public static void updateReciprocal(List<SObject> newRels) {
         Map<String, Relationships__c> relationshipTypes = Relationships__c.getAll(); // Map of relationship types to their recip values
-        Map<String, Relationships__c> relationshipSubTypes = Relationship_SubType__c.getAll();
+        Map<String, Relationship_SubType__c> relationshipSubTypes = Relationship_SubType__c.getAll();
         Map<Id, Relationship__c> recipToSource = new Map<Id, Relationship__c>(); // Id of recip relationship to it's source
         List<Relationship__c> relsToUpdate = new List<Relationship__c>();
         List<Relationship__c> relsWithoutRecips = new List<Relationship__c>();

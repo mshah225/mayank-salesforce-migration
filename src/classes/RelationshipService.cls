@@ -58,7 +58,6 @@ public class RelationshipService {
                         Relationship_Start_Date__c = relation.Relationship_Start_Date__c,
                         Relationship_End_Date__c = relation.Relationship_End_Date__c,
                         Title__c = relation.Title__c,
-                        Primary_Parent__c = relation.Primary_Parent__c,
                         Revoke_Status__c = relation.Revoke_Status__c,
                         Source__c = relation.Source__c,
                         Source_Date__c = relation.Source_Date__c,
@@ -151,7 +150,6 @@ public class RelationshipService {
                     Relationship_End_Date__c,
                     Reciprocal_Relationship__c,
                     Title__c,
-                    Primary_Parent__c,
                     Revoke_Status__c,
                     Sub_Type__c,
                     Source__c,
@@ -174,7 +172,6 @@ public class RelationshipService {
                     relation.Relationship_End_Date__c != rel.Relationship_End_Date__c ||
                     relation.Reciprocal_Relationship__c != rel.Id ||
                     relation.Title__c != rel.Title__c ||
-                    relation.Primary_Parent__c != rel.Primary_Parent__c ||
                     relation.Revoke_Status__c != rel.Revoke_Status__c ||
                     relation.Sub_Type__c != relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c ||
                     relation.Source__c != rel.Source__c ||
@@ -191,7 +188,6 @@ public class RelationshipService {
                     relation.Relationship_End_Date__c = rel.Relationship_End_Date__c;
                     relation.Reciprocal_Relationship__c = rel.Id;
                     relation.Title__c = rel.Title__c;
-                    relation.Primary_Parent__c = rel.Primary_Parent__c;
                     relation.Revoke_Status__c = rel.Revoke_Status__c;
                     relation.Sub_Type__c = relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c;
                     relation.Source__c = rel.Source__c;
@@ -263,183 +259,5 @@ public class RelationshipService {
         );
 
         return r;
-    }
-
-    /**
-     * Verifies that a single contact object does not have more
-     * than two primary guardians
-     *
-     * @param List<SObject> List of newly inserted relationships
-     */
-    public static boolean verifyTwoPrimary(List<Relationship__c> relList) {
-        List<Id> contactList = new List<Id>();
-        for (Relationship__c rel : relList) {
-            if (rel.Primary_Parent__c && relatedContactIsDependentOfPrimaryParent(rel)) {
-                contactList.add(rel.Related_Contact__c);
-            }
-        }
-        List<Contact> contactsWithTwoPrimaryParents = [
-            SELECT Id
-            FROM Contact
-            WHERE Rel_Parent_1__c != null AND Rel_Parent_2__c != null AND Id IN :contactList
-        ];
-        if (!contactsWithTwoPrimaryParents.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * When a relationship is updated, it checks if the primary parents changed
-     * and if so it verifies that they still meet the two parent restriction
-     *
-     * @param List<Relationship__c> newRel List of newly inserted relationships
-     * @param List<Relationship__c> oldRel List of old inserted relationships
-     * @return if changes are valid
-     */
-    public static boolean checkChanges(Map<Id, Relationship__C> relMapOld, Map<Id, Relationship__C> relMapNew) {
-        List<Relationship__c> relListAdded = new List<Relationship__c>();
-        List<Relationship__c> relListRemoved = new List<Relationship__c>();
-
-        for (Id relIds : relMapOld.keySet()) {
-            if (primaryParentAddedAndIsActive(relMapOld.get(relIds), relMapNew.get(relIds))) {
-                relListAdded.add(relMapNew.get(relIds));
-            } else if (primaryParentRemovedOrIsNotActive(relMapOld.get(relIds), relMapNew.get(relIds))) {
-                relListRemoved.add(relMapNew.get(relIds));
-            }
-        }
-
-        Boolean validChange = verifyTwoPrimary(relListAdded);
-        if (validChange) {
-            removeParent(relListRemoved);
-            updateContacts(relListAdded);
-        }
-
-        return validChange;
-    }
-
-    public static void updateContacts(List<Relationship__c> relList) {
-        List<Id> contactList = new List<Id>();
-        for (Relationship__c rel : relList) {
-            if (rel.Primary_Parent__c && rel.Contact__c != null && rel.Related_Contact__c != null) {
-                if (relatedContactIsDependentOfPrimaryParent(rel)) {
-                    contactList.add(rel.Related_Contact__c);
-                }
-            }
-        }
-        if (!contactList.isEmpty()) {
-            List<Contact> contactsToEdit = [
-                SELECT Rel_Parent_1__c, Rel_Parent_2__c, Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
-                FROM Contact
-                WHERE Id IN :contactList
-            ];
-            List<Contact> contactsToUpdate = new List<Contact>();
-            for (Contact con : contactsToEdit) {
-                for (Relationship__c rel : relList) {
-                    if (contactMatchesPrimaryContact(rel, con)) {
-                        if (con.Rel_Parent_1__c == null) {
-                            con.Rel_Parent_1__c = rel.Related_Contact__c;
-                            con.Rel_Relationship_Id_1__c = rel.Id;
-                        } else {
-                            con.Rel_Parent_2__c = rel.Related_Contact__c;
-                            con.Rel_Relationship_Id_2__c = rel.Id;
-                        }
-                        contactsToUpdate.add(con);
-                    } else if (contactMatchesRelatedContact(rel, con)) {
-                        if (con.Rel_Parent_1__c == null) {
-                            con.Rel_Parent_1__c = rel.Contact__c;
-                            con.Rel_Relationship_Id_1__c = rel.Id;
-                        } else {
-                            con.Rel_Parent_2__c = rel.Contact__c;
-                            con.Rel_Relationship_Id_2__c = rel.Id;
-                        }
-                        contactsToUpdate.add(con);
-                    }
-                }
-            }
-            update contactsToUpdate;
-        }
-    }
-
-    public static void removeParent(List<Relationship__c> relList) {
-        List<Id> contactIdList = new List<Id>();
-
-        if (!relList.isEmpty()) {
-            for (Relationship__c rel : relList) {
-                contactIdList.add(rel.Contact__c);
-            }
-
-            List<Contact> contactList = [
-                SELECT Id, Rel_Parent_1__c, Rel_Parent_2__c, Rel_Relationship_Id_1__c, Rel_Relationship_Id_2__c
-                FROM Contact
-                WHERE Id IN :contactIdList
-            ];
-            Map<Id, Contact> parent1ToContact = new Map<Id, Contact>();
-            Map<Id, Contact> parent2ToContact = new Map<Id, Contact>();
-            for (Contact con : contactList) {
-                if (con.Rel_Parent_1__c != null) {
-                    parent1ToContact.put(con.Rel_Parent_1__c, con);
-                }
-                if (con.Rel_Parent_2__c != null) {
-                    parent2ToContact.put(con.Rel_Parent_2__c, con);
-                }
-            }
-
-            List<Contact> contactsToUpdate = new List<Contact>();
-            for (Relationship__c rel : relList) {
-                if (parent2ToContact.containsKey(rel.Related_Contact__c)) {
-                    Contact relatedContact = parent2ToContact.get(rel.Related_Contact__c);
-                    relatedContact.Rel_Parent_2__c = null;
-                    relatedContact.Rel_Relationship_Id_2__c = null;
-                    contactsToUpdate.add(relatedContact);
-                } else if (parent1ToContact.containsKey(rel.Related_Contact__c)) {
-                    Contact relatedContact = parent1ToContact.get(rel.Related_Contact__c);
-                    if (relatedContact.Rel_Parent_2__c == null) {
-                        relatedContact.Rel_Parent_1__c = null;
-                        relatedContact.Rel_Relationship_Id_1__c = null;
-                    } else {
-                        relatedContact.Rel_Parent_1__c = relatedContact.Rel_Parent_2__c;
-                        relatedContact.Rel_Relationship_Id_1__c = relatedContact.Rel_Relationship_Id_2__c;
-                        relatedContact.Rel_Parent_2__c = null;
-                        relatedContact.Rel_Relationship_Id_2__c = null;
-                        parent2ToContact.remove(relatedContact.Rel_Parent_2__c);
-                    }
-                    contactsToUpdate.add(relatedContact);
-                }
-            }
-            update contactsToUpdate;
-        }
-    }
-
-    private static boolean relatedContactIsDependentOfPrimaryParent(Relationship__c rel) {
-        return rel.Relationship_Type__c == 'Parent/Guardian';
-    }
-
-    private static boolean contactMatchesPrimaryContact(Relationship__c rel, Contact con) {
-        if (!relatedContactIsDependentOfPrimaryParent(rel)) {
-            return rel.Contact__c == con.Id;
-        } else {
-            return false;
-        }
-    }
-
-    private static boolean contactMatchesRelatedContact(Relationship__c rel, Contact con) {
-        if (relatedContactIsDependentOfPrimaryParent(rel)) {
-            return rel.Related_Contact__c == con.Id;
-        } else {
-            return false;
-        }
-    }
-
-    private static boolean primaryParentAddedAndIsActive(Relationship__c oldRel, Relationship__c newRel) {
-        return (!oldRel.Primary_Parent__c && newRel.Primary_Parent__c) ||
-            (newRel.Primary_Parent__c &&
-            !oldRel.Active_Relationship__c &&
-            newRel.Active_Relationship__c);
-    }
-
-    private static boolean primaryParentRemovedOrIsNotActive(Relationship__c oldRel, Relationship__c newRel) {
-        return (oldRel.Primary_Parent__c && !newRel.Primary_Parent__c) || !newRel.Active_Relationship__c;
     }
 }

@@ -54,7 +54,7 @@ public class RelationshipService {
                         Active_Relationship__c = relation.Active_Relationship__c,
                         Relationship_Type__c = relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c,
                         Reciprocal_Relationship__c = relation.Id,
-                        Relationship_Created_By__c = relation.CreatedBy.Profile.Name,
+                        Relationship_Created_By__c = relation.Relationship_Created_By__c,
                         Relationship_Start_Date__c = relation.Relationship_Start_Date__c,
                         Relationship_End_Date__c = relation.Relationship_End_Date__c,
                         Title__c = relation.Title__c,
@@ -257,5 +257,29 @@ public class RelationshipService {
         );
 
         return r;
+    }
+
+    public static void insertCreatedByProfileName(List<Relationship__c> newRelationships) {
+        Set<Id> newRelationshipIds = new Set<Id>();
+        List<Relationship__c> relationshipsToUpdate = new List<Relationship__c>();
+
+        for (Relationship__c newRelationship : newRelationships) {
+            newRelationshipIds.add(newRelationship.Id);
+        }
+
+        for (Relationship__c newRelationship : [
+            SELECT Id, Relationship_Created_By__c, CreatedBy.Profile.Name
+            FROM Relationship__c
+            WHERE Id IN :newRelationshipIds
+        ]) {
+            if (newRelationship.Relationship_Created_By__c == null && newRelationship.CreatedBy.Profile.Name != null) {
+                newRelationship.Relationship_Created_By__c = newRelationship.CreatedBy.Profile.Name;
+                relationshipsToUpdate.add(newRelationship);
+            }
+        }
+
+        if (relationshipsToUpdate.size() > 0) {
+            update relationshipsToUpdate;
+        }
     }
 }

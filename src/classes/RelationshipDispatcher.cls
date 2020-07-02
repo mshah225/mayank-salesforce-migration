@@ -35,8 +35,8 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process after inserting relationships
      */
     public void afterInsert() {
-        RelationshipService.insertCreatedByProfileName(newList);
         RelationshipService.createReciprocal(newList);
+        RelationshipService.insertCreatedByProfileName(newList);
     }
 
     /**

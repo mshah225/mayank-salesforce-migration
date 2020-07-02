@@ -80,7 +80,7 @@ public with sharing class EdPlusAggregatedNotesController {
         if (filterType == 'Created') {
             for (Wrapper thisData : dataWrapper) {
                 if (startDate != null && endDate != null && thisData.createdDate != null) {
-                    if (Date.valueOf(thisData.createdDate) >= startDate && Date.valueOf(thisData.createdDate) <= endDate) {
+                    if (Date.valueOf(thisData.createdDate) >= startDate && Date.valueOf(thisData.createdDate) <= endDate.AddDays(1)) {
                         filteredDataWrapper.add(thisData);
                     }
                 }

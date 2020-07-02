@@ -263,7 +263,11 @@ public class ContactService
     {
         return getContactInformation(contactId, '');
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> f2f8da45... remove code with missing qa dependencies
     /**
     * Add a new collection of records to the Cross-Org Crosswalk table
     * @param jsonRecords A JSON formatted payload

@@ -1,4 +1,5 @@
-<apex:page controller="FamilyPortalController" action="{!familyPortalStep2OnLoad}" standardStylesheets="false" showHeader="false" html-lang="en-US">
+<apex:page controller="FamilyPortalController" action="{!familyPortalStep2OnLoad}" standardStylesheets="false" showHeader="false"
+    html-lang="en-US">
     <title>ASU | Welcome ASU Families - Step 2</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
@@ -18,14 +19,15 @@
     <c:FamilyPortalStyles />
     <apex:slds />
     <c:SLDSRemoveGlobalStyles />
-    
+
     <apex:variable var="pbc" value="{!progressBarController}" />
     <apex:form id="family-portal-upper-container" styleClass="slds-scope">
         <div class="family-portal-progress-container well">
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_1-of-3 family-portal-progress-bar">
                     <span class="family-portal-progress-bar-title">Form Progress</span>
-                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
                         <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
                             <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
                         </span>
@@ -52,18 +54,26 @@
                                     <h3>Let's get to know you.</h3>
                                 </div>
                                 <apex:pageBlockSection id="family-portal-2-body" columns="2">
-                                    <apex:outputField value="{!familyPortalGuardian.First_Name__c}"  />
-                                    <apex:outputField value="{!familyPortalGuardian.Last_Name__c}" />
-                                    <apex:outputField value="{!familyPortalGuardian.Email__c}"  />
+                                    <apex:outputPanel id="family-portal-2-body-logged" layout="none" rendered="{!OR(isAsuriteUser, isExistingGuardian)}">
+                                        <apex:outputField value="{!familyPortalGuardian.First_Name__c}" />
+                                        <apex:outputField value="{!familyPortalGuardian.Last_Name__c}" />
+                                        <apex:outputField value="{!familyPortalGuardian.Email__c}" />
+                                    </apex:outputPanel>
+                                    <apex:outputPanel id="family-portal-2-body-logged" layout="none" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}">
+                                        <apex:inputField value="{!familyPortalGuardian.First_Name__c}" />
+                                        <apex:inputField value="{!familyPortalGuardian.Last_Name__c}" />
+                                        <apex:inputField value="{!familyPortalGuardian.Email__c}" />
+                                    </apex:outputPanel>
                                     <apex:inputField value="{!familyPortalGuardian.Phone__c}" />
                                     <apex:inputField value="{!familyPortalGuardian.ASU_Alumni__c}" />
-                                    <apex:selectList label="Country" id="test-change" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1">
+                                    <apex:selectList label="Country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1">
                                         <apex:selectOptions value="{!guardianCountryOptions}" />
                                         <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
                                     </apex:selectList>
                                     <apex:inputField label="Street Address" value="{!familyPortalGuardian.Street__c}" />
                                     <apex:inputField value="{!familyPortalGuardian.City__c}" />
-                                    <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" rendered="{!!guardianSelectedCountryIsUnitedStatesOrCanada}" />
+                                    <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" rendered="{!!guardianSelectedCountryIsUnitedStatesOrCanada}"
+                                    />
                                     <apex:selectList label="State" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" rendered="{!guardianSelectedCountryIsUS}">
                                         <apex:selectOptions value="{!guardianStateOptions}" />
                                     </apex:selectList>
@@ -71,7 +81,8 @@
                                         <apex:selectOptions value="{!guardianStateOptions}" />
                                     </apex:selectList>
                                     <apex:inputField label="Zip Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!guardianSelectedCountryIsUS}" />
-                                    <apex:inputField label="Postal Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!!guardianSelectedCountryIsUS}" />
+                                    <apex:inputField label="Postal Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!!guardianSelectedCountryIsUS}"
+                                    />
                                 </apex:pageBlockSection>
                                 <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
                                     Next

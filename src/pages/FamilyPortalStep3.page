@@ -1,4 +1,5 @@
-<apex:page controller="FamilyPortalController" action="{!familyPortalStep3OnLoad}" standardStylesheets="false" showHeader="false" html-lang="en-US">
+<apex:page controller="FamilyPortalController" action="{!familyPortalStep3OnLoad}" standardStylesheets="false" showHeader="false"
+    html-lang="en-US">
     <title>ASU | Welcome ASU Families - Step 3</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
@@ -18,14 +19,15 @@
     <c:FamilyPortalStyles />
     <apex:slds />
     <c:SLDSRemoveGlobalStyles />
-    
+
     <apex:variable var="pbc" value="{!progressBarController}" />
     <apex:form id="family-portal-upper-container" styleClass="slds-scope">
         <div class="family-portal-progress-container well">
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_1-of-3 family-portal-progress-bar">
                     <span class="family-portal-progress-bar-title">Form Progress</span>
-                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
                         <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
                             <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
                         </span>
@@ -40,7 +42,7 @@
             </div>
         </div>
     </apex:form>
-    
+
     <apex:form>
         <div id="accessible-body">
             <div class="family-portal-body-container">
@@ -60,14 +62,14 @@
                             </apex:pageBlock>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </apex:form>
     <c:ASUBrandFooter />
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $(this).find('.family-portal-3-container table > tbody > tr').addClass('col-sm-6 family-portal-3-checkbox-option');
         });
     </script>

@@ -1,4 +1,5 @@
-<apex:page controller="FamilyPortalController" action="{!familyPortalStep4OnLoad}" standardStylesheets="false" showHeader="false" html-lang="en-US">
+<apex:page controller="FamilyPortalController" action="{!familyPortalStep4OnLoad}" standardStylesheets="false" showHeader="false"
+    html-lang="en-US">
     <title>ASU | Welcome ASU Families - Step 4</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
@@ -18,14 +19,15 @@
     <c:FamilyPortalStyles />
     <apex:slds />
     <c:SLDSRemoveGlobalStyles />
-    
+
     <apex:variable var="pbc" value="{!progressBarController}" />
     <apex:form id="family-portal-upper-container" styleClass="slds-scope">
         <div class="family-portal-progress-container well">
             <div class="slds-grid slds-gutters">
                 <div class="slds-col slds-size_1-of-3 family-portal-progress-bar">
                     <span class="family-portal-progress-bar-title">Form Progress</span>
-                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
                         <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
                             <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
                         </span>
@@ -60,32 +62,45 @@
                                             </apex:inputField>
                                         </div>
                                         <div class="family-portal-4-field-wrapper col-sm-5">
-                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="High School Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}" />
-                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}" />
-                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="Academic College" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}"/>
-                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Academic_College__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}" />
-                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="ASU Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Alumni'}" />
-                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Alumni'}" />
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="High School Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}"
+                                            />
+                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}"
+                                                rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}"
+                                            />
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="Academic College" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}"
+                                            />
+                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Academic_College__c}"
+                                                rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}"
+                                            />
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="ASU Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Alumni'}"
+                                            />
+                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}"
+                                                rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Alumni'}"
+                                            />
                                         </div>
                                         <div class="family-portal-4-field-wrapper col-sm-4">
-                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="Military Affiliation" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}" />
-                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Military_Affiliation__c}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}" />
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="Military Affiliation" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}"
+                                            />
+                                            <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Military_Affiliation__c}"
+                                                rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c != null}" />
                                         </div>
                                         <div class="family-portal-4-field-wrapper col-sm-12">
-                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="Student Type" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}" />
-                                            <apex:selectCheckboxes styleClass="family-portal-4-student-field-input" layout="pageDirection" value="{!swl.guardianSelectedStudentTypes}" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}">
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="Student Type" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}"
+                                            />
+                                            <apex:selectCheckboxes styleClass="family-portal-4-student-field-input" layout="pageDirection" value="{!swl.guardianSelectedStudentTypes}"
+                                                rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}">
                                                 <apex:selectOptions value="{!swl.studentTypeChoices}" />
                                             </apex:selectCheckboxes>
                                         </div>
                                     </apex:column>
-                                    <apex:column styleClass="family-portal-4-student-remove-button-column"> 
+                                    <apex:column styleClass="family-portal-4-student-remove-button-column">
                                         <apex:commandLink styleClass="family-portal-4-student-remove-button" action="{!removeStudentRow}" reRender="family-portal-student-page-block">
                                             <apex:param value="{!swl.studentIndex}" name="index" />
                                             <i class="fa fa-3x fa-times-circle" />
                                         </apex:commandLink>
                                     </apex:column>
                                 </apex:dataTable>
-                                <div class="family-portal-4-no-students-text">Please add a student or submit the form without adding students.</div>         
+                                <div class="family-portal-4-no-students-text">Please add a student or submit the form without adding students.</div>
                                 <div class="family-portal-double-button-container">
                                     <div class="family-portal-double-button">
                                         <apex:commandLink styleClass="btn btn-secondary btn-block family-portal-4-add-student-button" action="{!addStudentRow}" reRender="family-portal-student-page-block">
@@ -108,7 +123,7 @@
     <c:ASUBrandFooter />
 
     <script>
-        $("body").bind("DOMNodeInserted", function() {
+        $("body").bind("DOMNodeInserted", function () {
             $(this).find('.family-portal-4-container table table > tbody > tr').addClass('col-sm-6');
         });
 
@@ -122,14 +137,14 @@
             $('.family-portal-4-no-students-text').toggle();
         }
 
-        $('a.family-portal-4-add-student-button').click(function() {
+        $('a.family-portal-4-add-student-button').click(function () {
             if ($('tr:has(td)')) {
                 $('.family-portal-4-add-student-button').text('Add Another Student');
                 $('.family-portal-4-no-students-text').hide();
             }
         })
 
-        $(document).on("click", ".family-portal-4-student-remove-button", function() {
+        $(document).on("click", ".family-portal-4-student-remove-button", function () {
             if ($('.family-portal-4-student-remove-button').length == 1) {
                 $('.family-portal-4-add-student-button').text('Add A Student');
                 $('.family-portal-4-no-students-text').toggle();

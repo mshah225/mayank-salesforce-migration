@@ -83,7 +83,7 @@
                                         </div>
                                         <div class="family-portal-double-button-container">
                                             <div class="family-portal-double-button">
-                                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!sendUserToLoginPage}">
+                                                <apex:commandLink styleClass="btn btn-primary btn-block" action="{!sendUserToLoginScreen}">
                                                     <i class="fa fa-check-circle" /> Yes
                                                 </apex:commandLink>
                                             </div>

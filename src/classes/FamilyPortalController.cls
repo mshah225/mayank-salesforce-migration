@@ -7,6 +7,7 @@ public without sharing class FamilyPortalController {
     public String hashId;
     public Boolean isAsuriteUser { get; set; }
     public Boolean isExistingGuardian { get; set; }
+    public Boolean isLoggedInUser { get; set; }
     public Map<String, Boolean> stepHasBeenViewedMap { get; set; }
     public FamilyPortalProgressBar progressBarController { get; set; }
     public Boolean guardianSelectedCountryIsUnitedStatesOrCanada {
@@ -66,10 +67,6 @@ public without sharing class FamilyPortalController {
             familyPortalGuardianInterest.Interest_Choices__c = selectedCheckboxes;
         }
     }
-
-    // 1. Coming in as a logged in ASURITE user
-    // 2. Coming in as an existing guardian with hash ID or cookie
-    // 3. Coming in anonymously
 
     public FamilyPortalController() {
         setDefaultSafetyChecks();

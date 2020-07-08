@@ -7,7 +7,6 @@ public without sharing class FamilyPortalController {
     public String hashId;
     public Boolean isAsuriteUser { get; set; }
     public Boolean isExistingGuardian { get; set; }
-    public Boolean isLoggedInUser { get; set; }
     public Map<String, Boolean> stepHasBeenViewedMap { get; set; }
     public FamilyPortalProgressBar progressBarController { get; set; }
     public Boolean guardianSelectedCountryIsUnitedStatesOrCanada {

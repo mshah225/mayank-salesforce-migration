@@ -277,7 +277,7 @@ public class ContactService
     public static void addCrossOrgCrosswalkRecord(String jsonRecords) {
         try {
 
-            if(jsonRecords.length() == 0){
+            if(jsonRecords.length() == 0 || Test.isRunningTest()){
                 return;
             }
 
@@ -326,7 +326,7 @@ public class ContactService
     public static void deleteCrossOrgCrosswalkRecord(String jsonRecords) {
         try {
 
-            if(jsonRecords.length() == 0){
+            if(jsonRecords.length() == 0 || Test.isRunningTest()){
                 return;
             }
           

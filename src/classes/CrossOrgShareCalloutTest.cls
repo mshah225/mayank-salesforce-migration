@@ -1,11 +1,11 @@
 /**
- * File Name: HTTPRestService_CrossOrgShareTest
+ * File Name: CrossOrgShareCalloutTest
  * Description: Test class for Cross Org HTTP Callouts
  * Author: Carl Hussey
  * Created: 04/22/2020
  */
 @isTest
-private class HTTPRestService_CrossOrgShareTest {
+private class CrossOrgShareCalloutTest {
     private static Map<String, String> paramMap;
     private static List<Id> deletePayload = new List<Id>();
 
@@ -28,10 +28,10 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testGetCalloutNoRecords() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 
@@ -49,9 +49,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testGetCalloutException() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         createTestData();
 
         Contact c1 = TestDataFactory.createContact('ASU');
@@ -75,9 +75,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testGetByIdCalloutException() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         createTestData();
 
         Contact c1 = TestDataFactory.createContact('ASU');
@@ -101,9 +101,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testGetCalloutSuccess() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         Contact c1 = TestDataFactory.createContact('ASU');
         insert c1;
@@ -134,9 +134,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testGetCalloutByIdSuccess() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         Contact c1 = TestDataFactory.createContact('ASU');
         insert c1;
@@ -167,13 +167,13 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testPostCalloutSuccess() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         mockResponse.message = 'success';
         mockResponse.status = 201;
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 
@@ -196,9 +196,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testPostCalloutException() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         createTestData();
 
         Contact c1 = TestDataFactory.createContact('ASU');
@@ -222,13 +222,13 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testPostCalloutConflict() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         mockResponse.message = 'Database Conflict';
         mockResponse.status = 409;
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 
@@ -248,9 +248,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testPutCalloutException() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         createTestData();
 
         Contact c1 = TestDataFactory.createContact('ASU');
@@ -274,13 +274,13 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testPutCalloutSuccess() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         mockResponse.message = 'success';
         mockResponse.status = 200;
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 
@@ -303,13 +303,13 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testPutCalloutConflict() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         mockResponse.message = 'Database Conflict';
         mockResponse.status = 409;
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 
@@ -329,9 +329,9 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testDeleteCalloutException() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         createTestData();
 
         Contact c1 = TestDataFactory.createContact('ASU');
@@ -357,13 +357,13 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testDeleteCalloutSuccess() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         mockResponse.message = 'success';
         mockResponse.status = 200;
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 
@@ -389,13 +389,13 @@ private class HTTPRestService_CrossOrgShareTest {
      */
     @isTest
     private static void testDeleteCalloutConflict() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         mockResponse.message = 'Database Conflict';
         mockResponse.status = 409;
 
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         createTestData();
 

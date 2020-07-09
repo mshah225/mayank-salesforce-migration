@@ -10,7 +10,7 @@ public class CrossOrgShareUtilities {
      * for the contact
      */
     public static List<CrosswalkGetWrapper> GetCrosswalkRecords(String mdmGuid) {
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=' + mdmGuid);
         List<CrosswalkGetWrapper> crosswalk = new List<CrosswalkGetWrapper>();
 
@@ -26,7 +26,7 @@ public class CrossOrgShareUtilities {
      * for the contact
      */
     public static List<CrosswalkGetWrapper> GetCrosswalkRecordById(String contactId) {
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCalloutById(contactId);
         List<CrosswalkGetWrapper> crosswalk = new List<CrosswalkGetWrapper>();
 

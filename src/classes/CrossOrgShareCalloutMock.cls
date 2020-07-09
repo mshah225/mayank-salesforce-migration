@@ -1,11 +1,11 @@
 /**
- * File Name: MockHttpResponseGen_CrossOrgShare
+ * File Name: CrossOrgShareCalloutMock
  * Description: Mock responses for HTTP
  * Author: Carl Hussey
  * Created: 04/22/2020
  */
 @isTest
-public class MockHttpResponseGen_CrossOrgShare implements HttpCalloutMock {
+public class CrossOrgShareCalloutMock implements HttpCalloutMock {
     /**
      * Default interface method containing logic to handle GET, POST, etc.
      * @param The req request from the callout

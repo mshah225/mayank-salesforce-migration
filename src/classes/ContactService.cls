@@ -281,7 +281,7 @@ public class ContactService
                 return;
             }
 
-            HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+            CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
             HttpResponse newRecord = crosswalkService.makePostCallout(jsonRecords);
 
         } catch (Exception e) {
@@ -306,7 +306,7 @@ public class ContactService
             }
 
             // Setup crosswalk service
-            HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+            CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
             HttpResponse updatedRecord = crosswalkService.makePutCallout(jsonRecords);
 
         } catch (Exception e) {
@@ -330,7 +330,7 @@ public class ContactService
                 return;
             }
           
-            HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+            CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
             HttpResponse deletedRecord = crosswalkService.makeDeleteCallout(jsonRecords);
 
         } catch (Exception e) {

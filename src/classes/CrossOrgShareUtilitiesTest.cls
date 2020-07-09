@@ -1,10 +1,10 @@
 /*****************************************
- * File: Test_CrossOrgShareUtilities
+ * File: CrossOrgShareUtilitiesTest
  * Author: Carl Hussey, ASU
  * Description: Unit Tests for CrossOrgShareUtilities.cls
  ******************************************/
 @IsTest
-private class Test_CrossOrgShareUtilities {
+private class CrossOrgShareUtilitiesTest {
     private static Map<String, String> paramMap;
 
     /**
@@ -22,7 +22,7 @@ private class Test_CrossOrgShareUtilities {
      */
     @isTest
     private static void testGetCrosswalkRecords() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
         createTestData();
 
         Contact c1 = TestDataFactory.createContact('ASU');
@@ -53,7 +53,7 @@ private class Test_CrossOrgShareUtilities {
      */
     @isTest
     private static void testGetCrosswalkRecordsById() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         Contact c1 = TestDataFactory.createContact('ASU');
         insert c1;
@@ -107,7 +107,7 @@ private class Test_CrossOrgShareUtilities {
      */
     @isTest
     private static void testCrosswalkIDToList() {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockRecords = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         List<Contact> Contacts = new List<Contact>();

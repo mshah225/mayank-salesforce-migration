@@ -1,10 +1,10 @@
 /*****************************************
- * File: Test_EdPlusUtilities
+ * File: EdPlusUtilitiesTest
  * Author: Carl Hussey, ASU
  * Description: Unit Tests for EdPlusUtilities.cls
  ******************************************/
 @isTest
-public class Test_EdPlusUtilities {
+public class EdPlusUtilitiesTest {
     /**
      * Test track usage method
      */
@@ -28,8 +28,8 @@ public class Test_EdPlusUtilities {
      * based on CrossOrg API Service
      */
     static testmethod void testGetExternalContacts() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         Contact c1 = TestDataFactory.createContact('ASU');
         c1.SSB_CRMSYSTEM_Contact_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';

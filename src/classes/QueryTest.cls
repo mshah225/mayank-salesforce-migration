@@ -1,11 +1,11 @@
 @isTest
-public class Test_Query {
+public class QueryTest {
     /**
      * Test external data query helper
      */
     public static testMethod void testQueryHelper() {
 
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         // Begin
         Test.startTest();

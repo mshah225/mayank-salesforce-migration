@@ -258,11 +258,11 @@ public with sharing class Test_ContactHandler
     
     static testMethod void testExtMasteredContactCrossOrgUpdate() 
     {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         CrossOrgShareUtilities.CrosswalkGetWrapper mockRecord = new CrossOrgShareUtilities.CrosswalkGetWrapper();
 
         getRecordTypeIDs();
@@ -297,11 +297,11 @@ public with sharing class Test_ContactHandler
 
     static testMethod void testExtMasteredContactCrossOrgDelete() 
     {
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        HTTPRestService_CrossOrgShare crosswalkService = new HTTPRestService_CrossOrgShare();
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
         getRecordTypeIDs();
             

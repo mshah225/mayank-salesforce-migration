@@ -1,10 +1,10 @@
 /**
- * File Name: HTTPRestService_CrossOrgShare
+ * File Name: CrossOrgShareCallout
  * Description: HTTP Callout methods for CrossOrg Data Sharing
  * Author: Carl Hussey
  * Created: 04/22/2020
  */
-public class HTTPRestService_CrossOrgShare {
+public class CrossOrgShareCallout {
     /**
      * Overload GET callout to to transform param map
      * into a query string

@@ -1,10 +1,10 @@
 /*****************************************
- * File: Test_EdPlusAggregatedNotesController
+ * File: EdPlusAggregatedNotesControllerTest
  * Author: Carl Hussey, ASU
  * Description: Unit Tests for EdPlusAggregatedNotesController.cls
  ******************************************/
 @isTest
-public class Test_EdPlusAggregatedNotesController {
+public class EdPlusAggregatedNotesControllerTest {
     /**
      * Extend our Query class to mock our external data
      */
@@ -32,7 +32,7 @@ public class Test_EdPlusAggregatedNotesController {
         createTestData();
 
         // Set HTTP mock for the controller we are testing
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         // Query the test contacts and get an ID
         Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
@@ -94,7 +94,7 @@ public class Test_EdPlusAggregatedNotesController {
         createTestData();
 
         // Set HTTP mock for the controller we are testing
-        Test.setMock( HttpCalloutMock.class, new MockHttpResponseGen_CrossOrgShare() );
+        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         // Query the test contacts and get an ID
         Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];

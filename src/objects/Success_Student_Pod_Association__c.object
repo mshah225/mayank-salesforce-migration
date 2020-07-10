@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Create a Many-To-Many relationship between Success_Student__c and Success_Pod__c</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <fields>
+        <fullName>Primary__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Primary SSPA for the given success student’s cases based on primary program plan.</description>
+        <externalId>false</externalId>
+        <label>Primary</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Success_Committee__c</fullName>
+        <description>Success Committee</description>
+        <externalId>false</externalId>
+        <formula>Success_Pod__r.Committee__c</formula>
+        <label>Success Committee</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Success_Pod__c</fullName>
+        <description>The success pod to associate a student</description>
+        <externalId>false</externalId>
+        <label>Success Pod</label>
+        <referenceTo>Success_Pod__c</referenceTo>
+        <relationshipLabel>Success Student Pod Associations</relationshipLabel>
+        <relationshipName>Success_Student_Pod_Associations</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Success_Student_Name__c</fullName>
+        <description>Success Student Name</description>
+        <externalId>false</externalId>
+        <formula>Success_Student__r.Student_Name__c</formula>
+        <label>Success Student Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Success_Student__c</fullName>
+        <description>The Success Student that is being associated to a success Pod</description>
+        <externalId>false</externalId>
+        <label>Success Student</label>
+        <referenceTo>Success_Student__c</referenceTo>
+        <relationshipLabel>Success Student Pod Associations</relationshipLabel>
+        <relationshipName>Success_Student_Pod_Associations</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <label>Success Student Pod Association</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>Primary__c</columns>
+        <columns>Success_Committee__c</columns>
+        <columns>Success_Pod__c</columns>
+        <columns>Success_Student__c</columns>
+        <columns>Success_Student_Name__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>SSPA-{0}</displayFormat>
+        <label>Success Student Pod Association Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Success Student Pod Associations</pluralLabel>
+    <recordTypes>
+        <fullName>Advisor</fullName>
+        <active>true</active>
+        <description>Advisor Record type</description>
+        <label>Advisor</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Coach</fullName>
+        <active>true</active>
+        <description>Coach Record Type</description>
+        <label>Coach</label>
+    </recordTypes>
+    <searchLayouts />
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

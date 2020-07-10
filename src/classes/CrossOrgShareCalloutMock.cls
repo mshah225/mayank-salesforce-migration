@@ -54,7 +54,7 @@ public class CrossOrgShareCalloutMock implements HttpCalloutMock {
                 '"contactId": "' + contactsForGet.get(0).Id + '",' +
                 '"guid": "9C7E57CF-2DC7-4C89-B476-11166DED34D0",' +
                 '"lastModifiedDate": "'+String.valueOf(system.today().format())+'",' +
-                '"sourceOrgId": "012d0000000wzM5AAI"' +
+                '"sourceOrgId": "'+UserInfo.getOrganizationId()+'"' +
                 '}' +
                 ']'
                 );

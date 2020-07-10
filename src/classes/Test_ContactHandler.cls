@@ -306,11 +306,11 @@ public with sharing class Test_ContactHandler
         getRecordTypeIDs();
             
         // Set up the Contacts
-        List<Contact> extMasteredContacts = createContacts(TRIGGERLOAD, true);
+        List<Contact> extMasteredContacts = createContacts(2, true);
         insert extMasteredContacts;
 
         // Get a test contact from insert
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName1' LIMIT 1];
         Id testContactId = testContact.Id;
 
         Test.startTest();
@@ -337,7 +337,7 @@ public with sharing class Test_ContactHandler
         List<Contact> testContacts = new List<Contact>();
         for (integer i=0; i < qty; i++) 
         {
-            Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i);
+            Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i, SSB_CRMSYSTEM_Contact_ID__c='9C7E57CF-2DC7-4C89-B476-11166DED34D'+i);
             if (createEmplId)
             {
                 c.EMPLID__c = i.format();

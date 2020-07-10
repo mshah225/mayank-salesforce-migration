@@ -479,7 +479,7 @@ public without sharing class ContactHandler implements ITrigger
     }
     
     private static void setHashId(List<Id> contactIdList) {
-        if (System.isFuture() || System.isBatch()) {
+        if (System.isFuture() || System.isBatch() || test.isRunningTest()) {
             setHashIdNow(contactIdList);
         } else {
             setHashIdFuture(contactIdList);

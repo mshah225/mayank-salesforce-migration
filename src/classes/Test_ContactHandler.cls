@@ -279,7 +279,7 @@ public with sharing class Test_ContactHandler
         // Create mocked record
         mockRecord.contactId = testContact.Id;
         mockRecord.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
-        mockRecord.lastModifiedDate = String.valueOf(testContact.LastModifiedDate);
+        mockRecord.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('MM/dd/yyyy'));
         mockRecord.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(mockRecord);
 

@@ -280,8 +280,8 @@
 
                     <ul class="dropdown-menu">
                         <li>
-                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >{!financeDisplayName}</a>
-                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >{!financeDisplayName}</a>
+                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){

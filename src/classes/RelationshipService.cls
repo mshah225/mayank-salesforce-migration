@@ -159,41 +159,61 @@ public class RelationshipService {
                 rel = recipToSource.get(relation.Id);
 
                 // Check for any differences in the fields
-                if (
-                    relation.Contact__c != rel.Related_Contact__c ||
-                    relation.Related_Contact__c != rel.Contact__c ||
-                    relation.Account__c != rel.Related_Account__c ||
-                    relation.Related_Account__c != rel.Account__c ||
-                    relation.Active_Relationship__c != rel.Active_Relationship__c ||
-                    relation.Relationship_Type__c != relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c ||
-                    relation.Relationship_Created_By__c != rel.Relationship_Created_By__c ||
-                    relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c ||
-                    relation.Relationship_End_Date__c != rel.Relationship_End_Date__c ||
-                    relation.Reciprocal_Relationship__c != rel.Id ||
-                    relation.Title__c != rel.Title__c ||
-                    relation.Revoke_Status__c != rel.Revoke_Status__c ||
-                    relation.Sub_Type__c != relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c ||
-                    relation.Source__c != rel.Source__c ||
-                    relation.Source_Date__c != rel.Source_Date__c
-                ) {
+                if (relation.Contact__c != rel.Related_Contact__c) {
                     relation.Contact__c = rel.Related_Contact__c;
-                    relation.Related_Contact__c = rel.Contact__c;
-                    relation.Account__c = rel.Related_Account__c;
-                    relation.Related_Account__c = rel.Account__c;
-                    relation.Active_Relationship__c = rel.Active_Relationship__c;
-                    relation.Relationship_Type__c = relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c;
-                    relation.Relationship_Created_By__c = rel.Relationship_Created_By__c;
-                    relation.Relationship_Start_Date__c = rel.Relationship_Start_Date__c;
-                    relation.Relationship_End_Date__c = rel.Relationship_End_Date__c;
-                    relation.Reciprocal_Relationship__c = rel.Id;
-                    relation.Title__c = rel.Title__c;
-                    relation.Revoke_Status__c = rel.Revoke_Status__c;
-                    relation.Sub_Type__c = relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c;
-                    relation.Source__c = rel.Source__c;
-                    relation.Source_Date__c = rel.Source_Date__c;
-
-                    relsToUpdate.add(relation);
                 }
+                if (relation.Related_Contact__c != rel.Contact__c) {
+                    relation.Related_Contact__c = rel.Contact__c;
+                }
+                if (relation.Account__c != rel.Related_Account__c) {
+                    relation.Account__c = rel.Related_Account__c;
+                }
+                if (relation.Related_Account__c != rel.Account__c) {
+                    relation.Related_Account__c = rel.Account__c;
+                }
+                if (relation.Active_Relationship__c != rel.Active_Relationship__c) {
+                    relation.Active_Relationship__c = rel.Active_Relationship__c;
+                }
+                if (relation.Relationship_Created_By__c != rel.Relationship_Created_By__c) {
+                    relation.Relationship_Created_By__c = rel.Relationship_Created_By__c;
+                }
+                if (relation.Relationship_Start_Date__c != rel.Relationship_Start_Date__c) {
+                    relation.Relationship_Start_Date__c = rel.Relationship_Start_Date__c;
+                }
+                if (relation.Relationship_End_Date__c != rel.Relationship_End_Date__c) {
+                    relation.Relationship_End_Date__c = rel.Relationship_End_Date__c;
+                }
+                if (relation.Reciprocal_Relationship__c != rel.Id) {
+                    relation.Reciprocal_Relationship__c = rel.Id;
+                }
+                if (relation.Title__c != rel.Title__c) {
+                    relation.Title__c = rel.Title__c;
+                }
+                if (relation.Revoke_Status__c != rel.Revoke_Status__c) {
+                    relation.Revoke_Status__c = rel.Revoke_Status__c;
+                }
+                if (relation.Source__c != rel.Source__c) {
+                    relation.Source__c = rel.Source__c;
+                }
+                if (relation.Source_Date__c != rel.Source_Date__c) {
+                    relation.Source_Date__c = rel.Source_Date__c;
+                }
+                if (
+                    relationshipTypes.get(rel.Relationship_Type__c) != null &&
+                    relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c != null &&
+                    relation.Relationship_Type__c != relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c
+                ) {
+                    relation.Relationship_Type__c = relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c;
+                }
+                if (
+                    relationshipSubTypes.get(rel.Sub_Type__c) != null &&
+                    relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c != null &&
+                    relation.Sub_Type__c != relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c
+                ) {
+                    relation.Sub_Type__c = relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c;
+                }
+
+                relsToUpdate.add(relation);
             }
 
             try {

@@ -60,11 +60,11 @@
                                     />
                                     <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!OR(isAsuriteUser, isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}"
+                                    <apex:inputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}"
+                                    <apex:inputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}"
+                                    <apex:inputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
                                     />
                                     <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" />
                                     <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" />

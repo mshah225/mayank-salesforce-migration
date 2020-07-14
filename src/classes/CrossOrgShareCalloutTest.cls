@@ -113,8 +113,8 @@ private class CrossOrgShareCalloutTest {
 
         record.contactId = c1.Id;
         record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
-        record.lastModifiedDate = '2014-05-02T23:31:50Z';
-        record.sourceOrgId = '012d0000000wzM5AAI';
+        record.lastModifiedDate = String.valueOf(c1.LastModifiedDate.format('M/dd/yyyy'));
+        record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
         Test.startTest();
@@ -146,8 +146,8 @@ private class CrossOrgShareCalloutTest {
 
         record.contactId = c1.Id;
         record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
-        record.lastModifiedDate = '2014-05-02T23:31:50Z';
-        record.sourceOrgId = '012d0000000wzM5AAI';
+        record.lastModifiedDate = String.valueOf(c1.LastModifiedDate.format('M/dd/yyyy'));
+        record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
         Test.startTest();

@@ -65,7 +65,7 @@
                                     <apex:outputPanel id="family-portal-1-header-h2-asurite-no-guardian" layout="none" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}">
                                         <h2>
                                             <apex:outputText value="Welcome, {0}!">
-                                                <apex:param value="{!familyPortalGuardian.First_Name__c}" />
+                                                <apex:param value="{!$User.FirstName}" />
                                             </apex:outputText>
                                         </h2>
                                         <p class="lead">By filling out your information, we will be able to keep in touch with you with updates

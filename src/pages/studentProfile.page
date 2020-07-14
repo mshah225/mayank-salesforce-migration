@@ -219,6 +219,10 @@
             .customErrorMessage .message .h4, h4 {
                 color: #9f2b50 !important;
             }
+
+            .alignTop {
+                vertical-align:top;
+            }
         </style>
     </head>
     <body>
@@ -1971,12 +1975,12 @@
                             <div class="activeGradTable" rendered="{!IF(activeGraduatePrograms.size > 0, true, false)}">
                                 <table class="gradTable">
                                     <tr>
-                                        <th class="gradTH" style="border-left: 1px solid #ddd;">Program</th>
-                                        <th class="gradTH">Plan</th>
-                                        <th class="gradTH">Degree Level</th>
-                                        <th class="gradTH">Degree</th>
-                                        <th class="gradTH">Campus</th>
-                                        <th class="gradTH" style="border-right: 1px solid #ddd;">Primary</th>
+                                        <th class="gradTH" style="border-left: 1px solid #ddd; width:25%">Program</th>
+                                        <th class="gradTH" style="width:12%">Plan</th>
+                                        <th class="gradTH" style="width:21%">Degree Level</th>
+                                        <th class="gradTH" style="width:14%">Degree</th>
+                                        <th class="gradTH" style="width:14%">Campus</th>
+                                        <th class="gradTH" style="border-right: 1px solid #ddd; width:14%">Primary</th>
                                     </tr>
                                     <apex:repeat value="{!activeGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
@@ -2000,16 +2004,16 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Cumulative GPA</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
                                                 <apex:outputText value="{0,number,####.00}" style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
                                                     <apex:param value="{!gradProgram.gradProgramPlan.Cum_GPA__c}"/>
                                                 </apex:outputText>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Document Type
                                             </th>
                                             <td class="gradTD">
@@ -2017,13 +2021,13 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Graduate GPA</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_OVRL_GPA__c}"/>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Format Advisor
                                             </th>
                                             <td class="gradTD">
@@ -2031,16 +2035,16 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">
                                                     iPOS GPA
                                                     <i class="fa fa-question-circle " title="Please note that the iPOS GPA is not calculated until iPOS is approved."></i>
                                                 </div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 <c:sp_GPA gpa="{!gradProgram.gradProgramPlan.ASU_AA_POS_GPA__c}"/>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Format Status
                                             </th>
                                             <td class="gradTD">
@@ -2048,13 +2052,13 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Defense Required</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', 'Yes')}
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Format Status Last Updated
                                             </th>
                                             <td class="gradTD">
@@ -2065,9 +2069,9 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD"></th>
-                                            <td class="gradTD"></td>
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD"></th>
+                                            <td colspan="2" class="gradTD"></td>
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Advanced to Candidacy
                                             </th>
                                             <td class="gradTD">
@@ -2079,13 +2083,13 @@
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">iPOS Status</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, 'Not Applicable', gradProgram.gradProgramPlan.Grad_iPOS_Status__c)}
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Defense Status
                                             </th>
                                             <td class="gradTD">
@@ -2093,16 +2097,16 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">iPOS Status Date</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null, '--', '')}
                                                 <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
                                                     <apex:param value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}" />
                                                 </apex:outputText>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Defense Date
                                             </th>
                                             <td class="gradTD">
@@ -2113,14 +2117,14 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Specialization</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
                                             </td>
                                             
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Defense Time
                                             </th>
                                             <td class="gradTD">
@@ -2128,13 +2132,13 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Degree Requirements</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Building
                                             </th>
                                             <td class="gradTD">
@@ -2142,13 +2146,13 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Requirement Term</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Requirement_Term__c==null, '--', gradProgram.gradProgramPlan.Requirement_Term__c)}
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Room
                                             </th>
                                             <td class="gradTD">
@@ -2156,10 +2160,10 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">ASU Hours Before Admit</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c), '--', '')}
                                                 {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}">
@@ -2168,7 +2172,7 @@
                                                     </apex:outputText>
                                                 </span>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Location
                                             </th>
                                             <td class="gradTD">
@@ -2176,10 +2180,10 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">ASU Hours After Admit</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c), '--', '')}
                                                 {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}">
@@ -2188,7 +2192,7 @@
                                                     </apex:outputText>
                                                 </span>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Final Defense Results
                                             </th>
                                             <td class="gradTD">
@@ -2196,10 +2200,10 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">iPOS Total Hours</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--', '')}
                                                 {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, '--', '')}
                                                 <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
@@ -2208,7 +2212,7 @@
                                                     </apex:outputText>
                                                 </span>
                                             </td>
-                                            <th colspan="2" class="gradTD">
+                                            <th colspan="2" class="gradTD alignTop">
                                                 Final Defense Results Status Date
                                             </th>
                                             <td class="gradTD">
@@ -2219,50 +2223,50 @@
                                             </td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Maximum Time Limit</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Anticipated Grad Term</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Grad_Anticipated_Term__c==null, '--', gradProgram.gradProgramPlan.Grad_Anticipated_Term__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Applied to Graduate</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), '--', 'Yes')}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Application Term</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__c==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
                                             <td class="gradTD"></td>
                                         </tr>
                                         <tr class="gradExtraInfo hide">
-                                            <th colspan="2" class="gradTD">
+                                            <th class="gradTD alignTop">
                                                 <div class = "planMargin">Graduation Checkout Status</div>
                                             </th>
-                                            <td class="gradTD">
+                                            <td colspan="2" class="gradTD">
                                                 {!IF(gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c==null, '--', gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c)}
                                             </td>
                                             <th colspan="2" class="gradTD"></th>
@@ -2277,7 +2281,7 @@
                                         </tr>
 
                                         <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.2" class="gradTD innerHeaders" style="padding-left: 75px;">
+                                            <th class="gradTD innerHeaders" style="padding-left: 75px; width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Name
                                                 </div>
@@ -2285,22 +2289,22 @@
                                                     There are no Faculty Committee Members for {!theContact.Name}.
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Committee Role
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Title
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Department
                                                 </div>
                                             </th>
-                                            <th colspan="1.2" class="gradTD innerHeaders">
+                                            <th class="gradTD innerHeaders" style="width:20%">
                                                 <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                     Attendance Method
                                                 </div>
@@ -2339,7 +2343,7 @@
                                         </tr>
 
                                         <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
-                                            <th colspan="1.5" class="gradTD innerHeaders" style="padding-left: 75px;">
+                                            <th class="gradTD innerHeaders" style="padding-left: 75px; width:20%">
                                                 <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'block', 'none')}">
                                                     Name
                                                 </div>
@@ -2379,12 +2383,12 @@
                                  rendered="{!IF(completedGraduatePrograms.size > 0, true, false)}">
                                 <table class="gradTable">
                                     <tr>
-                                        <th class="gradTH" style="border-left: 1px solid #ddd;">Program</th>
-                                        <th class="gradTH">Plan</th>
-                                        <th class="gradTH">Degree Level</th>
-                                        <th class="gradTH">Degree</th>
-                                        <th class="gradTH">Campus</th>
-                                        <th class="gradTH" style="border-right: 1px solid #ddd;">Grad Term</th>
+                                        <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">Program</th>
+                                        <th class="gradTH" style="width: 12%">Plan</th>
+                                        <th class="gradTH" style="width: 21%">Degree Level</th>
+                                        <th class="gradTH" style="width: 14%">Degree</th>
+                                        <th class="gradTH" style="width: 14%">Campus</th>
+                                        <th class="gradTH" style="border-right: 1px solid #ddd; width: 14%">Grad Term</th>
                                     </tr>
                                     <apex:repeat value="{!completedGraduatePrograms}" var="gradProgram">
                                         <tr class="gradTR grad-row-toggle">
@@ -3529,7 +3533,7 @@
                 var commentQuery = 'SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c, ' +
                     'COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c ' +
                     'FROM PS_ASU_SP_COMMNT_V__x ' +
-                    'WHERE EMPLID__c = \'{!theContact.EMPLID__c}\' ' +
+                    'WHERE EMPLID__c = \'{!theContact.EMPLID__c}\' AND CMNT_Category__c  <> \'GRPOS\'' +
                     'ORDER BY COMMENT_DTTM__c DESC';
                 var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
                 conn.query(commentQuery, function (err, response) {

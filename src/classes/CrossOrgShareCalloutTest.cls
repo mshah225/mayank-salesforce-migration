@@ -6,21 +6,17 @@
  */
 @isTest
 private class CrossOrgShareCalloutTest {
-    private static Map<String, String> paramMap;
-    private static List<Id> deletePayload = new List<Id>();
 
-    /**
-     * Create test data for tests
+    /** 
+     * Create test contacts 
      */
-    private static void createTestData() {
-        paramMap = new Map<String, String>();
-        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf('003d000001C3lAPAAZ'), 'UTF-8') ) );
-        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf('00D0x0000000oQd'), 'UTF-8') ) );
-        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf('BABF4E01-9A6E-4C95-A332-236F8A7D3357'), 'UTF-8') ) );
-
-        Contact d1 = new Contact(FirstName = 'Test', LastName = 'Delete', SSB_CRMSYSTEM_Contact_ID__c = 'BABF4E01-9A6E-4C95-A332-236F8A7D3357');
-        insert d1;
-        deletePayload.add(d1.Id);
+    static List<Contact> createContacts(Integer qty) {
+        List<Contact> testContacts = new List<Contact>();
+        for (integer i=0; i < qty; i++) {
+            Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i, SSB_CRMSYSTEM_Contact_ID__c='9C7E57CF-2DC7-4C89-B476-11166DED34D'+i);
+            testContacts.add(c);
+        }
+        return testContacts;
     }
 
     /**
@@ -33,10 +29,8 @@ private class CrossOrgShareCalloutTest {
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
-        createTestData();
-
         Test.startTest();
-        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout(paramMap);
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=');
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody() );
         Test.stopTest();
@@ -52,17 +46,15 @@ private class CrossOrgShareCalloutTest {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-        createTestData();
-
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
-
-        Contact c2 = TestDataFactory.createContact('Sparky');
-        insert c2;
+        
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(5);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
         try {
             Test.startTest();
-            HttpResponse actualResponse = crosswalkService.makeGetCallout(paramMap);
+            HttpResponse actualResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_Contact_ID__c);
             Test.stopTest();
         } catch (CalloutException calloutException) {
             System.debug( calloutException.getMessage() );
@@ -78,17 +70,15 @@ private class CrossOrgShareCalloutTest {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-        createTestData();
-
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
-
-        Contact c2 = TestDataFactory.createContact('Sparky');
-        insert c2;
+        
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(5);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
         try {
             Test.startTest();
-            HttpResponse actualResponse = crosswalkService.makeGetCalloutById(c1.Id);
+            HttpResponse actualResponse = crosswalkService.makeGetCalloutById(testContact.Id);
             Test.stopTest();
         } catch (CalloutException calloutException) {
             System.debug( calloutException.getMessage() );
@@ -105,20 +95,23 @@ private class CrossOrgShareCalloutTest {
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(2);
+        insert contacts;
 
         CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
 
-        record.contactId = c1.Id;
-        record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
-        record.lastModifiedDate = String.valueOf(c1.LastModifiedDate.format('M/dd/yyyy'));
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+
+        record.contactId = testContact.Id;
+        record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/dd/yyyy'));
         record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
         Test.startTest();
-        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=9C7E57CF-2DC7-4C89-B476-11166DED34D0');
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_Contact_ID__c);
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody() );
         Test.stopTest();
@@ -138,20 +131,23 @@ private class CrossOrgShareCalloutTest {
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(5);
+        insert contacts;
 
         CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
 
-        record.contactId = c1.Id;
-        record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
-        record.lastModifiedDate = String.valueOf(c1.LastModifiedDate.format('M/dd/yyyy'));
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+
+        record.contactId = testContact.Id;
+        record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/dd/yyyy'));
         record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
         Test.startTest();
-        HttpResponse crosswalkResponse = crosswalkService.makeGetCalloutById(c1.Id);
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCalloutById(testContact.Id);
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody() );
         Test.stopTest();
@@ -175,10 +171,15 @@ private class CrossOrgShareCalloutTest {
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
-        createTestData();
-
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(1);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf(testContact.Id), 'UTF-8') ) );
+        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
+        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
         Test.startTest();
         String jsonPayload = JSON.serialize(paramMap);
@@ -199,13 +200,15 @@ private class CrossOrgShareCalloutTest {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-        createTestData();
+ 
+        List<Contact> contacts = createContacts(5);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
-
-        Contact c2 = TestDataFactory.createContact('Sparky');
-        insert c2;
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf(testContact.Id), 'UTF-8') ) );
+        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
+        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
         try {
             Test.startTest();
@@ -218,32 +221,6 @@ private class CrossOrgShareCalloutTest {
     }
 
     /**
-     * Test POST callout conflict
-     */
-    @isTest
-    private static void testPostCalloutConflict() {
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
-
-        CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        mockResponse.message = 'Database Conflict';
-        mockResponse.status = 409;
-
-        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-
-        createTestData();
-
-        Test.startTest();
-        String jsonPayload = JSON.serialize(paramMap);
-        HttpResponse crosswalkResponse = crosswalkService.makePostCallout(jsonPayload);
-        CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
-        Test.stopTest();
-
-        System.assertEquals(mockResponse.message, actualResponse.message);
-        System.assertEquals(mockResponse.status, actualResponse.status);
-    }
-
-    /**
      * Test PUT callout failure resulting in an exception thrown
      */
     @isTest
@@ -251,13 +228,14 @@ private class CrossOrgShareCalloutTest {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-        createTestData();
+        List<Contact> contacts = createContacts(5);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
-
-        Contact c2 = TestDataFactory.createContact('Sparky');
-        insert c2;
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf(testContact.Id), 'UTF-8') ) );
+        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
+        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
         try {
             Test.startTest();
@@ -282,36 +260,14 @@ private class CrossOrgShareCalloutTest {
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
-        createTestData();
+        List<Contact> contacts = createContacts(1);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
-
-        Test.startTest();
-        String jsonPayload = JSON.serialize(paramMap);
-        HttpResponse crosswalkResponse = crosswalkService.makePutCallout(jsonPayload);
-        CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
-        Test.stopTest();
-
-        System.assertEquals(mockResponse.message, actualResponse.message);
-        System.assertEquals(mockResponse.status, actualResponse.status);
-    }
-
-    /**
-     * Test PUT callout conflict
-     */
-    @isTest
-    private static void testPutCalloutConflict() {
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
-
-        CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        mockResponse.message = 'Database Conflict';
-        mockResponse.status = 409;
-
-        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-
-        createTestData();
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf(testContact.Id), 'UTF-8') ) );
+        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
+        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
         Test.startTest();
         String jsonPayload = JSON.serialize(paramMap);
@@ -332,13 +288,17 @@ private class CrossOrgShareCalloutTest {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-        createTestData();
+        List<Contact> contacts = createContacts(5);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName4' LIMIT 1];
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf(testContact.Id), 'UTF-8') ) );
+        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
+        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
-        Contact c2 = TestDataFactory.createContact('Sparky');
-        insert c2;
+        List<Id> deletePayload = new List<Id>();
+        deletePayload.add(testContact.Id);
 
         try {
             Test.startTest();
@@ -364,40 +324,17 @@ private class CrossOrgShareCalloutTest {
         mockResponse.status = 200;
 
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
+        List<Contact> contacts = createContacts(1);
+        insert contacts;
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
-        createTestData();
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf(testContact.Id), 'UTF-8') ) );
+        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
+        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
-
-        Test.startTest();
-
-        String jsonPayload = '\"' + String.join(deletePayload, '\",\"') + '\"';
-        jsonPayload = '[' + jsonPayload + ']';
-
-        HttpResponse crosswalkResponse = crosswalkService.makeDeleteCallout(jsonPayload);
-        CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
-        Test.stopTest();
-
-        System.assertEquals(mockResponse.message, actualResponse.message);
-        System.assertEquals(mockResponse.status, actualResponse.status);
-    }
-
-    /**
-     * Test DELETE callout conflict
-     */
-    @isTest
-    private static void testDeleteCalloutConflict() {
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
-
-        CrossOrgShareUtilities.CrosswalkResponseWrapper mockResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        mockResponse.message = 'Database Conflict';
-        mockResponse.status = 409;
-
-        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-
-        createTestData();
+        List<Id> deletePayload = new List<Id>();
+        deletePayload.add(testContact.Id);
 
         Test.startTest();
 
@@ -412,4 +349,5 @@ private class CrossOrgShareCalloutTest {
         System.assertEquals(mockResponse.message, actualResponse.message);
         System.assertEquals(mockResponse.status, actualResponse.status);
     }
+
 }

@@ -5,16 +5,17 @@
  ******************************************/
 @IsTest
 private class CrossOrgShareUtilitiesTest {
-    private static Map<String, String> paramMap;
 
-    /**
-     * Create test data for tests
+    /** 
+     * Create test contacts 
      */
-    private static void createTestData() {
-        paramMap = new Map<String, String>();
-        paramMap.put( 'contactId', ( EncodingUtil.urlEncode(String.valueOf('003d000001C3lAPAAZ'), 'UTF-8') ) );
-        paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf('00D0x0000000oQd'), 'UTF-8') ) );
-        paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf('BABF4E01-9A6E-4C95-A332-236F8A7D3357'), 'UTF-8') ) );
+    static List<Contact> createContacts(Integer qty) {
+        List<Contact> testContacts = new List<Contact>();
+        for (integer i=0; i < qty; i++) {
+            Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i, SSB_CRMSYSTEM_Contact_ID__c='9C7E57CF-2DC7-4C89-B476-11166DED34D'+i);
+            testContacts.add(c);
+        }
+        return testContacts;
     }
 
     /**
@@ -23,23 +24,25 @@ private class CrossOrgShareUtilitiesTest {
     @isTest
     private static void testGetCrosswalkRecords() {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
-        createTestData();
-
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
+       
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(1);
+        insert contacts;
 
         CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
 
-        record.contactId = c1.Id;
-        record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
-        record.lastModifiedDate = String.valueOf(c1.LastModifiedDate.format('M/dd/yyyy'));
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+
+        record.contactId = testContact.Id;
+        record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/dd/yyyy'));
         record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
         Test.startTest();
-        actualResponse = CrossOrgShareUtilities.GetCrosswalkRecords(paramMap.get('guid') );
+        actualResponse = CrossOrgShareUtilities.GetCrosswalkRecords(testContact.SSB_CRMSYSTEM_Contact_ID__c);
         Test.stopTest();
 
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
@@ -55,23 +58,24 @@ private class CrossOrgShareUtilitiesTest {
     private static void testGetCrosswalkRecordsById() {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
-        Contact c1 = TestDataFactory.createContact('ASU');
-        insert c1;
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(1);
+        insert contacts;
 
         CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
 
-        record.contactId = c1.Id;
-        record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
-        record.lastModifiedDate = String.valueOf(c1.LastModifiedDate.format('M/dd/yyyy'));
+        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+
+        record.contactId = testContact.Id;
+        record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/dd/yyyy'));
         record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
-        createTestData();
-
         Test.startTest();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        actualResponse = CrossOrgShareUtilities.GetCrosswalkRecordById(c1.Id);
+        actualResponse = CrossOrgShareUtilities.GetCrosswalkRecordById(testContact.Id);
         Test.stopTest();
 
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);

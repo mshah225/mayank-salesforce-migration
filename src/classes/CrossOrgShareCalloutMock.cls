@@ -72,7 +72,7 @@ public class CrossOrgShareCalloutMock implements HttpCalloutMock {
      * @return A HTTPResponse containing the contact information mostly Id
      */
     public HTTPResponse callPostResponse() {
-        List<String> criteria = new List<String> {'ASU', 'Sparky', 'Devil'};
+        List<String> criteria = new List<String> {'ASU', 'Sparky', 'Devil', 'LName0', 'LName1'};
         List<Contact> contactsForPost = new List<Contact>([SELECT Id FROM Contact WHERE LastName IN: criteria]);
         HttpResponse fakePostResponse = new HttpResponse();
         Integer statusCode = 201;
@@ -87,12 +87,6 @@ public class CrossOrgShareCalloutMock implements HttpCalloutMock {
                 '"status": ' + statusCode + ',' +
                 '"message": "success"' +
                 '}');
-        } else {
-            statusCode = 409;
-            fakePostResponse.setBody('{' +
-                '"status": ' + statusCode + ',' +
-                '"message": "Database Conflict"' +
-                '}');
         }
         fakePostResponse.setStatusCode(statusCode);
 
@@ -105,7 +99,7 @@ public class CrossOrgShareCalloutMock implements HttpCalloutMock {
      * @return A HTTPResponse containing the crosswalk response
      */
     public HTTPResponse callPutResponse() {
-        List<String> criteria = new List<String> {'ASU', 'Sparky', 'Devil'};
+        List<String> criteria = new List<String> {'ASU', 'Sparky', 'Devil', 'LName0', 'LName1'};
         List<Contact> contactsForPut = new List<Contact>([SELECT Id FROM Contact WHERE LastName IN: criteria]);
         HttpResponse fakePutResponse = new HttpResponse();
         Integer statusCode = 200;
@@ -119,12 +113,6 @@ public class CrossOrgShareCalloutMock implements HttpCalloutMock {
             fakePutResponse.setBody('{' +
                 '"status": ' + statusCode + ',' +
                 '"message": "success"' +
-                '}');
-        } else {
-            statusCode = 409;
-            fakePutResponse.setBody('{' +
-                '"status": ' + statusCode + ',' +
-                '"message": "Database Conflict"' +
                 '}');
         }
         fakePutResponse.setStatusCode(statusCode);
@@ -152,12 +140,6 @@ public class CrossOrgShareCalloutMock implements HttpCalloutMock {
             fakeDeleteResponse.setBody('{' +
                 '"status": ' + statusCode + ',' +
                 '"message": "success"' +
-                '}');
-        } else {
-            statusCode = 409;
-            fakeDeleteResponse.setBody('{' +
-                '"status": ' + statusCode + ',' +
-                '"message": "Database Conflict"' +
                 '}');
         }
         fakeDeleteResponse.setStatusCode(statusCode);

@@ -54,24 +54,26 @@
                                     <h3>Let's get to know you.</h3>
                                 </div>
                                 <apex:pageBlockSection id="family-portal-2-body" columns="2">
-                                    <apex:outputPanel id="family-portal-2-body-existing-guardian-or-has-asurite" layout="none" rendered="{!OR(isAsuriteUser, isExistingGuardian)}">
-                                        <apex:outputField value="{!familyPortalGuardian.First_Name__c}" />
-                                        <apex:outputField value="{!familyPortalGuardian.Last_Name__c}" />
-                                        <apex:outputField value="{!familyPortalGuardian.Email__c}" />
-                                    </apex:outputPanel>
-                                    <apex:outputPanel id="family-portal-2-body-anonymous" layout="none" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}">
-                                        <apex:inputField value="{!familyPortalGuardian.First_Name__c}" />
-                                        <apex:inputField value="{!familyPortalGuardian.Last_Name__c}" />
-                                        <apex:inputField value="{!familyPortalGuardian.Email__c}" />
-                                    </apex:outputPanel>
-                                    <apex:inputField value="{!familyPortalGuardian.Phone__c}" />
-                                    <apex:inputField value="{!familyPortalGuardian.ASU_Alumni__c}" />
+                                    <apex:outputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!OR(isAsuriteUser, isExistingGuardian)}"
+                                    />
+                                    <apex:outputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!OR(isAsuriteUser, isExistingGuardian)}"
+                                    />
+                                    <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!OR(isAsuriteUser, isExistingGuardian)}"
+                                    />
+                                    <apex:inputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}"
+                                    />
+                                    <apex:inputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}"
+                                    />
+                                    <apex:inputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!OR(!isAsuriteUser, !isExistingGuardian)}"
+                                    />
+                                    <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" />
+                                    <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" />
                                     <apex:selectList label="Country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1">
                                         <apex:selectOptions value="{!guardianCountryOptions}" />
                                         <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
                                     </apex:selectList>
                                     <apex:inputField label="Street Address" value="{!familyPortalGuardian.Street__c}" />
-                                    <apex:inputField value="{!familyPortalGuardian.City__c}" />
+                                    <apex:inputField label="City" value="{!familyPortalGuardian.City__c}" />
                                     <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" rendered="{!!guardianSelectedCountryIsUnitedStatesOrCanada}"
                                     />
                                     <apex:selectList label="State" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" rendered="{!guardianSelectedCountryIsUS}">

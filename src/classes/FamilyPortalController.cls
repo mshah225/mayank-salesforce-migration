@@ -92,6 +92,7 @@ public without sharing class FamilyPortalController {
     private void setDefaultSafetyChecks() {
         isAsuriteUser = false;
         isExistingGuardian = false;
+        stepHasBeenViewedMap = new Map<String, Boolean>();
         stepHasBeenViewedMap.put('Step1', false);
         stepHasBeenViewedMap.put('Step2', false);
         stepHasBeenViewedMap.put('Step3', false);
@@ -190,8 +191,20 @@ public without sharing class FamilyPortalController {
         if (guardian.Country__c != null) {
             familyPortalGuardian.Country__c = guardian.Country__c;
         }
+        if (guardian.Email__c != null) {
+            familyPortalGuardian.Email__c = guardian.Email__c;
+        }
         if (guardian.EMPLID__c != null) {
             familyPortalGuardian.EMPLID__c = guardian.EMPLID__c;
+        }
+        if (guardian.First_Name__c != null) {
+            familyPortalGuardian.First_Name__c = guardian.First_Name__c;
+        }
+        if (guardian.Hash_ID__c != null) {
+            familyPortalGuardian.Hash_ID__c = guardian.Hash_ID__c;
+        }
+        if (guardian.Last_Name__c != null) {
+            familyPortalGuardian.Last_Name__c = guardian.Last_Name__c;
         }
         if (guardian.Phone__c != null) {
             familyPortalGuardian.Phone__c = guardian.Phone__c;
@@ -286,18 +299,8 @@ public without sharing class FamilyPortalController {
         }
     }
 
-    public PageReference sendUserToStep1() {
-        String url = '/FamilyPortal/FamilyPortalStep1';
-        url = composeRedirectUrl(url);
-
-        PageReference pageRef = new PageReference(url);
-        pageRef.setRedirect(true);
-
-        return pageRef;
-    }
-
     public PageReference sendUserToLoginScreen() {
-        String url = '/FamilyPortal/s/';
+        String url = '/FamilyPortal/CommunitiesLogin';
         url = composeRedirectUrl(url);
 
         PageReference pageRef = new PageReference(url);
@@ -308,7 +311,7 @@ public without sharing class FamilyPortalController {
 
     public String composeRedirectUrl(String url) {
         if (businessUnit != null && hashId != null) {
-            url += '?hid=' + hashId + '&bu=' + businessUnit;
+            url += '?bu=' + businessUnit + '&hid=' + hashId;
         } else if (businessUnit != null) {
             url += '?bu=' + businessUnit;
         } else if (hashId != null) {
@@ -395,8 +398,6 @@ public without sharing class FamilyPortalController {
             stepHasBeenViewedMap.put('Step2', true);
             progressBarController.progressCounter = 25;
             progressBarController.getProgressBarPercentage();
-        } else {
-            sendUserToStep1();
         }
     }
 
@@ -409,8 +410,6 @@ public without sharing class FamilyPortalController {
             stepHasBeenViewedMap.put('Step3', true);
             progressBarController.progressCounter = 50;
             progressBarController.getProgressBarPercentage();
-        } else {
-            sendUserToStep1();
         }
     }
 
@@ -427,8 +426,6 @@ public without sharing class FamilyPortalController {
             stepHasBeenViewedMap.put('Step4', true);
             progressBarController.progressCounter = 75;
             progressBarController.getProgressBarPercentage();
-        } else {
-            sendUserToStep1();
         }
     }
 
@@ -445,35 +442,21 @@ public without sharing class FamilyPortalController {
         ) {
             progressBarController.progressCounter = 100;
             progressBarController.getProgressBarPercentage();
-        } else {
-            sendUserToStep1();
         }
     }
 
     public PageReference familyPortalStep5() {
-        if (
-            stepHasBeenViewedMap.get('Step1') &&
-            stepHasBeenViewedMap.get('Step2') &&
-            stepHasBeenViewedMap.get('Step3') &&
-            stepHasBeenViewedMap.get('Step4')
-        ) {
-            try {
-                matchGuardianToExistingContact();
-                insertGuardian();
-                insertGuardianInterests();
-                insertStudents();
-                sendConfirmationEmail();
-            } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Something went wrong when submitting a guardian. Check exception.');
-            }
-
-            return Page.FamilyPortalStep5;
-        } else {
-            sendUserToStep1();
-
-            return null;
+        try {
+            matchGuardianToExistingContact();
+            insertGuardian();
+            insertGuardianInterests();
+            insertStudents();
+            sendConfirmationEmail();
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            System.debug('Something went wrong when submitting a guardian. Check exception.');
         }
+        return Page.FamilyPortalStep5;
     }
 
     private void matchGuardianToExistingContact() {

@@ -9,14 +9,14 @@
     
     <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
     <script type='text/javascript'>
-        var orgId = '{!financeChatButton.Org_Id__c}';
-        var chatEndpoint = '{!financeChatButton.Chat_Endpoint__c}';
-        var chatDeploymentId = '{!financeChatButton.Chat_Deployment__c}';
-        var financesChatId = '{!financeChatButton.Chat_Button_Id__c}';
-        var studentServiceChatId = '{!studentServicesChatButton.Chat_Button_Id__c}';
-        var techSupportChatId = '{!technicalSupportChatButton.Chat_Button_Id__c}';
+        var orgId = '{!orgId}';
+        var chatEndpoint = '{!chatEndpoint}';
+        var chatDeploymentId = '{!deploymentId}';
+        var financesChatId = '{!financeChatButton}';
+        var studentServiceChatId = '{!studentServicesChatButton}';
+        var techSupportChatId = '{!technicalSupportChatButton}';
         
-        liveagent.setName('{!$User.FirstName} {!$User.LastName}');
+        liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
     </script>
 
@@ -280,8 +280,8 @@
 
                     <ul class="dropdown-menu">
                         <li>
-                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >{!financeChatButton.Display_Name__c}</a>
-                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(financesChatId);" >{!financeChatButton.Display_Name__c}</a>
+                            <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                            <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
@@ -291,8 +291,8 @@
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >{!technicalSupportChatButton.Display_Name__c}</a>
-                            <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >{!technicalSupportChatButton.Display_Name__c}</a>
+                            <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >{!technicalSupportDisplayName}</a>
+                            <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);" >{!technicalSupportDisplayName}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){
@@ -302,8 +302,8 @@
                             </script>
                         </li>
                         <li>
-                            <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesChatButton.Display_Name__c}</a>
-                            <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesChatButton.Display_Name__c}</a>
+                            <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
+                            <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
                             <script type="text/javascript">
                                 if (!window._laq) { window._laq = []; }
                                 window._laq.push(function(){

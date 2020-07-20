@@ -3,7 +3,7 @@
     <apiVersion>40.0</apiVersion>
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>Bulk SMS Contact</label>
+    <label>Bulk SMS Enterprise Contact</label>
     <packageVersions>
         <majorNumber>1</majorNumber>
         <minorNumber>55</minorNumber>

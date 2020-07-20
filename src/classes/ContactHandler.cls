@@ -13,7 +13,9 @@ public without sharing class ContactHandler implements ITrigger
     private Map<Id, Id> contactToAccountRTIdMap = new Map<Id, Id>();
     private Map<Id, Id> accountIdsByContactId = new Map<Id, Id>();
     private static Map<Contact,Account> newContactToNewAccountMap;
+    private Map<Id, User> contactIdToUserMap = new Map<Id, User>();
     private List<Account> accountsToUpdate = new List<Account>();
+    private List<User> usersToUpdate = new List<User>();
     private List<Contact> contactsToCheckIfUpdate = new List<Contact>();
     private List<Relationship__c> bizcardRelationships = new List<Relationship__c>();
     private Map<String, List<CampaignMember>> bizcardCampaignMembers = new Map<String, List<CampaignMember>>();
@@ -170,7 +172,28 @@ public without sharing class ContactHandler implements ITrigger
                     WHERE Id IN :existingAccountIds
                 ]);
             }
-        }  
+        }
+
+        // Get map of <Id,User> to update users' first/last names
+        if (Trigger.IsUpdate) {
+            List<Id> contactIdsToUpdateRelatedUsers = new List<Id>();
+
+            for (SObject updatedObject : Trigger.new) {
+                Contact updatedContact = (Contact) updatedObject;
+                if (updatedContact.RecordTypeId == ExtMasteredContactRTId            // Only External Mastered Type contacts
+                    && (updatedContact.FirstName != ((Contact)Trigger.oldMap.get(updatedContact.Id)).FirstName   // With name changes
+                       || updatedContact.LastName != ((Contact)Trigger.oldMap.get(updatedContact.Id)).LastName )) {  
+                    contactIdsToUpdateRelatedUsers.add(updatedContact.Id);
+                }
+            }
+
+            usersToUpdate = [SELECT ContactId,FirstName,LastName FROM User WHERE ContactId IN :contactIdsToUpdateRelatedUsers];
+
+            // store in map so we can update later as we update each contact
+            for (User userToSearchForLater : usersToUpdate) {
+                contactIdToUserMap.put(userToSearchForLater.ContactId, userToSearchForLater);
+            }
+        }
     }
     
     public void beforeInsert(SObject so) {
@@ -181,25 +204,34 @@ public without sharing class ContactHandler implements ITrigger
     
     public void beforeUpdate(SObject oldSo, SObject so) {
         // Store the triggering sObject as a Contact
-        Contact c = (Contact) so;
+        Contact alteredContact = (Contact) so;
 
         // Store the Account ID of the triggering Contact
-        Account a = existingAccountMap.get(c.AccountId);
+        Account associatedAccount = existingAccountMap.get(alteredContact.AccountId);
 
         // If an Account exists for the triggering contact, and its information doesn't match up
         // with the Contact, add it to our set of Accounts to update
-        if (a != null && 
-            (a.Name != c.FirstName + ' ' + c.LastName 
-                || a.OwnerId != c.OwnerId
-                || a.RecordTypeId != contactToAccountRTIdMap.get(c.RecordTypeID)
-                || a.Contact__c != c.Id
+        if (associatedAccount != null && 
+            (associatedAccount.Name != alteredContact.FirstName + ' ' + alteredContact.LastName 
+                || associatedAccount.OwnerId != alteredContact.OwnerId
+                || associatedAccount.RecordTypeId != contactToAccountRTIdMap.get(alteredContact.RecordTypeID)
+                || associatedAccount.Contact__c != alteredContact.Id
             )) {
-            a.Name = c.FirstName + ' ' + c.LastName;
-            a.OwnerId = c.OwnerId;
-            a.RecordTypeId = contactToAccountRTIdMap.get(c.RecordTypeID);
-            a.Contact__c = c.Id;
+            associatedAccount.Name = alteredContact.FirstName + ' ' + alteredContact.LastName;
+            associatedAccount.OwnerId = alteredContact.OwnerId;
+            associatedAccount.RecordTypeId = contactToAccountRTIdMap.get(alteredContact.RecordTypeID);
+            associatedAccount.Contact__c = alteredContact.Id;
 
-            accountsToUpdate.add(a);
+            accountsToUpdate.add(associatedAccount);
+        }
+
+        // Get the user we will be updating
+        User associatedUser = contactIdToUserMap.get(alteredContact.Id);
+
+        // Update the user's first and last name to match
+        if (associatedUser != null) {
+            associatedUser.FirstName = alteredContact.FirstName;
+            associatedUser.LastName = alteredContact.LastName;
         }
     }
 
@@ -353,7 +385,13 @@ public without sharing class ContactHandler implements ITrigger
 
     public void afterDelete(SObject so) { }
 
-    public void andFinally() { }
+    public void andFinally() {
+        if (Trigger.IsUpdate) {
+            if (usersToUpdate != null && usersToUpdate.size() > 0) { 
+                update usersToUpdate;
+            }
+        }
+    }
 
     private Account createAccount(Contact c) {
         // Create the new 1:1 Account record for this Contact

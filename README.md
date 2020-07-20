@@ -1,6 +1,6 @@
 # ASU Salesforce Metadata
 
-This is the Enteprise Git Repository for Arizona State University's Salesforce.com instance.
+Enterprise Git repository for Arizona State University's Salesforce instance
 
 ### Metadata Contents
 The following metadata types are contained in this repository:
@@ -9,4 +9,25 @@ The following metadata types are contained in this repository:
 * ApexComponent
 * ApexPage
 * ApexTrigger
-* StaticResource
+* AuraDefinitionBundle
+* ConnectedApp
+* CustomApplication
+* CustomLabels
+* CustomMetadata
+* CustomObject
+* CustomPageWebLink
+* CustomTab
+* EmailServicesFunction
+* ExternalDataSource
+* FlexiPage
+* GlobalValueSet
+* Group
+* Layout
+* LightningComponentBundle
+* LiveChatAgentConfig
+* LiveChatDeployment
+* NamedCredential
+* QuickAction
+* RemoteSiteSetting
+* SamlSsoConfig
+* Settings

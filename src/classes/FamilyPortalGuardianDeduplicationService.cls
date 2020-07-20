@@ -1,4 +1,4 @@
-public with sharing class FamilyPortalGuardianDeduplicationService implements Queueable {
+public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private Set<Id> guardianIds;
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
     private static List<Family_Portal_Guardian__c> guardiansToUpdate;

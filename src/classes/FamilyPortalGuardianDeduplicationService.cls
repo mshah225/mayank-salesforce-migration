@@ -1,4 +1,4 @@
-public with sharing class FamilyPortalGuardianDeduplicationService implements Queueable {
+public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private Set<Id> guardianIds;
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
     private static List<Family_Portal_Guardian__c> guardiansToUpdate;
@@ -33,26 +33,25 @@ public with sharing class FamilyPortalGuardianDeduplicationService implements Qu
         List<Family_Portal_Guardian__c> guardianList = [
             SELECT First_Name__c, Email__c, CreatedDate, Id
             FROM Family_Portal_Guardian__c
-            WHERE Id IN: guardianIds
-            ORDER By First_Name__c
+            WHERE Id IN :guardianIds
+            ORDER BY First_Name__c
         ];
 
         if (!guardianList.isEmpty() && guardianList != null) {
             List<Family_Portal_Guardian__c> guardiansToCheck;
-            
+
             for (Family_Portal_Guardian__c guardian : guardianList) {
                 List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
                     SELECT First_Name__c, Email__c, CreatedDate, Id
                     FROM Family_Portal_Guardian__c
-                    WHERE Email__c =: guardian.Email__c
-                        AND First_Name__c =: guardian.First_Name__c
+                    WHERE Email__c = :guardian.Email__c
                 ];
                 matchedGuardiansToCheck.add(guardian);
                 sortGuardiansToDeleteAndUpdate(matchedGuardiansToCheck);
             }
         }
     }
-  
+
     private static void sortGuardiansToDeleteAndUpdate(List<Family_Portal_Guardian__c> duplicateGuardians) {
         Family_Portal_Guardian__c currentBestChoice;
 
@@ -72,17 +71,23 @@ public with sharing class FamilyPortalGuardianDeduplicationService implements Qu
                 List<Family_Portal_Guardian_Interest__c> duplicateGuardianInterestList = [
                     SELECT Id, Chosen_Interest__c
                     FROM Family_Portal_Guardian_Interest__c
-                    WHERE Family_Portal_Guardian__c =: duplicateGuardian.Id
+                    WHERE Family_Portal_Guardian__c = :duplicateGuardian.Id
                 ];
 
                 if (!duplicateGuardianInterestList.isEmpty()) {
                     delete duplicateGuardianInterestList;
                 }
-                
+
                 List<Family_Portal_Student__c> duplicateGuardianStudentList = [
-                    SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
+                    SELECT
+                        Id,
+                        Enrollment_Status__c,
+                        Enrollment_Status_Year__c,
+                        Type__c,
+                        Academic_College__c,
+                        Military_Affiliation__c
                     FROM Family_Portal_Student__c
-                    WHERE Family_Portal_Guardian__c =: duplicateGuardian.Id
+                    WHERE Family_Portal_Guardian__c = :duplicateGuardian.Id
                 ];
 
                 if (!duplicateGuardianStudentList.isEmpty()) {
@@ -92,7 +97,7 @@ public with sharing class FamilyPortalGuardianDeduplicationService implements Qu
                 List<Family_Portal_Guardian_Interest__c> currentBestChoiceInterestList = [
                     SELECT Id, Chosen_Interest__c
                     FROM Family_Portal_Guardian_Interest__c
-                    WHERE Family_Portal_Guardian__c =: currentBestChoice.Id
+                    WHERE Family_Portal_Guardian__c = :currentBestChoice.Id
                 ];
 
                 for (Family_Portal_Guardian_Interest__c interestToChange : currentBestChoiceInterestList) {
@@ -100,9 +105,15 @@ public with sharing class FamilyPortalGuardianDeduplicationService implements Qu
                 }
 
                 List<Family_Portal_Student__c> currentBestChoiceStudentList = [
-                    SELECT Id, Enrollment_Status__c, Enrollment_Status_Year__c, Type__c, Academic_College__c, Military_Affiliation__c
+                    SELECT
+                        Id,
+                        Enrollment_Status__c,
+                        Enrollment_Status_Year__c,
+                        Type__c,
+                        Academic_College__c,
+                        Military_Affiliation__c
                     FROM Family_Portal_Student__c
-                    WHERE Family_Portal_Guardian__c =: currentBestChoice.Id
+                    WHERE Family_Portal_Guardian__c = :currentBestChoice.Id
                 ];
 
                 for (Family_Portal_Student__c studentsToChange : duplicateGuardianStudentList) {

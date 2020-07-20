@@ -278,24 +278,26 @@ public without sharing class FamilyPortalController {
             familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
             familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
             familyPortalGuardian.Email__c = UserInfo.getUserEmail();
-
+            return true;
+        } else if (familyPortalGuardian.ASURITE_ID__c != null) {
             return true;
         }
-
         return false;
     }
 
     private void setExistingAsuUserData() {
-        User existingAsuUser = [
-            SELECT EmployeeNumber, ASURITE_for_External_ID__c
-            FROM User
-            WHERE Id = :UserInfo.getUserId() AND Email = :UserInfo.getUserEmail()
-        ];
-        if (existingAsuUser.EmployeeNumber != null) {
-            familyPortalGuardian.EMPLID__c = existingAsuUser.EmployeeNumber;
-        }
-        if (existingAsuUser.ASURITE_for_External_ID__c != null) {
-            familyPortalGuardian.ASURITE_ID__c = existingAsuUser.ASURITE_for_External_ID__c;
+        if (UserInfo.getUserId() != null) {
+            User existingAsuUser = [
+                SELECT EmployeeNumber, ASURITE_for_External_ID__c
+                FROM User
+                WHERE Id = :UserInfo.getUserId() AND Email = :UserInfo.getUserEmail()
+            ];
+            if (existingAsuUser.EmployeeNumber != null) {
+                familyPortalGuardian.EMPLID__c = existingAsuUser.EmployeeNumber;
+            }
+            if (existingAsuUser.ASURITE_for_External_ID__c != null) {
+                familyPortalGuardian.ASURITE_ID__c = existingAsuUser.ASURITE_for_External_ID__c;
+            }
         }
     }
 

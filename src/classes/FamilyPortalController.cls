@@ -576,7 +576,7 @@ public without sharing class FamilyPortalController {
         mail.setBccSender(false);
         mail.setUseSignature(false);
         mail.setPlainTextBody(messageText + 'ASU Families form at ' + returnUrl + '.');
-        mail.setHtmlBody(messageText + '<strong><a href="' + returnUrl + '">ASU Families form</a>.');
+        mail.setHtmlBody(messageText + '<strong><a href="' + returnUrl + '">ASU Families form</a></strong>.');
         Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
     }
 

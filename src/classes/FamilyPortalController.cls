@@ -165,6 +165,10 @@ public without sharing class FamilyPortalController {
             LIMIT 1
         ];
 
+        if (guardian.ASURITE_ID__c != null) {
+            isAsuriteUser = true;
+        }
+
         if (guardian.Id != null) {
             setExistingGuardianData(guardian);
             setExistingGuardianInterests(guardian);
@@ -556,7 +560,7 @@ public without sharing class FamilyPortalController {
             ' (' +
             familyPortalGuardian.Email__c +
             ')' +
-            ' has been created.' +
+            ' has been created.\n\n' +
             'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the ';
 
         Messaging.reserveSingleEmailCapacity(2);

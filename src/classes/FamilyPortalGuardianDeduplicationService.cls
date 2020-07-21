@@ -29,9 +29,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 FROM Family_Portal_Guardian__c
                 WHERE Email__c = :insertedGuardian.Email__c
             ];
-
             if (matchedGuardiansToCheck.size() > 0) {
-                matchedGuardiansToCheck.add(insertedGuardian);
                 determineGuardiansToDelete(matchedGuardiansToCheck);
             }
         }
@@ -42,13 +40,11 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         for (Family_Portal_Guardian__c matchedGuardian : matchedGuardiansToCheck) {
             if (mostRecentGuardian == null) {
                 mostRecentGuardian = matchedGuardian;
-                break;
+                continue;
             }
-
             if (mostRecentGuardian.Id == matchedGuardian.Id) {
-                break;
+                continue;
             }
-
             if (mostRecentGuardian.CreatedDate >= matchedGuardian.CreatedDate) {
                 guardiansToDelete.add(matchedGuardian);
             } else if (mostRecentGuardian.CreatedDate < matchedGuardian.CreatedDate) {

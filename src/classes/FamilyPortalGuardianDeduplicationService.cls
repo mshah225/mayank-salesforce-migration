@@ -1,22 +1,15 @@
 public class FamilyPortalGuardianDeduplicationService implements Queueable {
-    private Set<Id> guardianIds;
+    private List<Family_Portal_Guardian__c> newlyInsertedGuardians;
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
-    private static List<Family_Portal_Guardian__c> guardiansToUpdate;
 
-    public FamilyPortalGuardianDeduplicationService(List<Family_Portal_Guardian__c> insertedGuardians) {
-        guardianIds = new Set<Id>();
-        for (Family_Portal_Guardian__c insertedGuardian : insertedGuardians) {
-            guardianIds.add(insertedGuardian.Id);
-        }
+    public FamilyPortalGuardianDeduplicationService(List<Family_Portal_Guardian__c> newlyInsertedGuardians) {
+        newlyInsertedGuardians = newlyInsertedGuardians;
     }
 
     public void execute(QueueableContext context) {
-        if (!guardianIds.isEmpty() && guardianIds != null) {
-            gatherGuardiansAndStartDedup(guardianIds);
+        if (newlyInsertedGuardians.size() > 0) {
+            gatherGuardiansAndStartDedup();
             try {
-                if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty()) {
-                    update guardiansToUpdate;
-                }
                 if (guardiansToDelete != null && !guardiansToDelete.isEmpty()) {
                     delete guardiansToDelete;
                 }
@@ -26,114 +19,41 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         }
     }
 
-    public static void gatherGuardiansAndStartDedup(Set<Id> guardianIds) {
+    public static void gatherGuardiansAndStartDedup() {
         guardiansToDelete = new List<Family_Portal_Guardian__c>();
-        guardiansToUpdate = new List<Family_Portal_Guardian__c>();
+        List<Family_Portal_Guardian__c> guardiansToCheck;
 
-        List<Family_Portal_Guardian__c> guardianList = [
-            SELECT First_Name__c, Email__c, CreatedDate, Id
-            FROM Family_Portal_Guardian__c
-            WHERE Id IN :guardianIds
-            ORDER BY First_Name__c
-        ];
+        for (Family_Portal_Guardian__c insertedGuardian : newlyInsertedGuardians) {
+            List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
+                SELECT Id, CreatedDate
+                FROM Family_Portal_Guardian__c
+                WHERE Email__c = :insertedGuardian.Email__c
+            ];
 
-        if (!guardianList.isEmpty() && guardianList != null) {
-            List<Family_Portal_Guardian__c> guardiansToCheck;
-
-            for (Family_Portal_Guardian__c guardian : guardianList) {
-                List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
-                    SELECT First_Name__c, Email__c, CreatedDate, Id
-                    FROM Family_Portal_Guardian__c
-                    WHERE Email__c = :guardian.Email__c
-                ];
-                matchedGuardiansToCheck.add(guardian);
-                sortGuardiansToDeleteAndUpdate(matchedGuardiansToCheck);
+            if (matchedGuardiansToCheck.size() > 0) {
+                matchedGuardiansToCheck.add(insertedGuardian);
+                determineGuardiansToDelete(matchedGuardiansToCheck);
             }
         }
     }
 
-    private static void sortGuardiansToDeleteAndUpdate(List<Family_Portal_Guardian__c> duplicateGuardians) {
-        Family_Portal_Guardian__c currentBestChoice;
-
-        for (Family_Portal_Guardian__c duplicateGuardian : duplicateGuardians) {
-            if (currentBestChoice == null) {
-                currentBestChoice = duplicateGuardian;
-                continue;
-            }
-
-            if (currentBestChoice.Id == duplicateGuardian.Id) {
+    private static void determineGuardiansToDelete(List<Family_Portal_Guardian__c> matchedGuardiansToCheck) {
+        Family_Portal_Guardian__c mostRecentGuardian;
+        for (Family_Portal_Guardian__c matchedGuardian : matchedGuardiansToCheck) {
+            if (mostRecentGuardian == null) {
+                mostRecentGuardian = matchedGuardian;
                 break;
             }
 
-            if (currentBestChoice.CreatedDate > duplicateGuardian.CreatedDate) {
-                guardiansToDelete.add(currentBestChoice);
-
-                List<Family_Portal_Guardian_Interest__c> duplicateGuardianInterestList = [
-                    SELECT Id, Chosen_Interest__c
-                    FROM Family_Portal_Guardian_Interest__c
-                    WHERE Family_Portal_Guardian__c = :duplicateGuardian.Id
-                ];
-
-                if (!duplicateGuardianInterestList.isEmpty()) {
-                    delete duplicateGuardianInterestList;
-                }
-
-                List<Family_Portal_Student__c> duplicateGuardianStudentList = [
-                    SELECT
-                        Id,
-                        Enrollment_Status__c,
-                        Enrollment_Status_Year__c,
-                        Type__c,
-                        Academic_College__c,
-                        Military_Affiliation__c
-                    FROM Family_Portal_Student__c
-                    WHERE Family_Portal_Guardian__c = :duplicateGuardian.Id
-                ];
-
-                if (!duplicateGuardianStudentList.isEmpty()) {
-                    delete duplicateGuardianStudentList;
-                }
-
-                List<Family_Portal_Guardian_Interest__c> currentBestChoiceInterestList = [
-                    SELECT Id, Chosen_Interest__c
-                    FROM Family_Portal_Guardian_Interest__c
-                    WHERE Family_Portal_Guardian__c = :currentBestChoice.Id
-                ];
-
-                for (Family_Portal_Guardian_Interest__c interestToChange : currentBestChoiceInterestList) {
-                    interestToChange.Family_Portal_Guardian__c = duplicateGuardian.Id;
-                }
-
-                List<Family_Portal_Student__c> currentBestChoiceStudentList = [
-                    SELECT
-                        Id,
-                        Enrollment_Status__c,
-                        Enrollment_Status_Year__c,
-                        Type__c,
-                        Academic_College__c,
-                        Military_Affiliation__c
-                    FROM Family_Portal_Student__c
-                    WHERE Family_Portal_Guardian__c = :currentBestChoice.Id
-                ];
-
-                for (Family_Portal_Student__c studentsToChange : duplicateGuardianStudentList) {
-                    studentsToChange.Family_Portal_Guardian__c = duplicateGuardian.Id;
-                }
-
-                currentBestChoice = duplicateGuardian;
-            } else if (currentBestChoice.CreatedDate < duplicateGuardian.CreatedDate) {
-                guardiansToDelete.add(currentBestChoice);
-                currentBestChoice = duplicateGuardian;
-            } else {
-                guardiansToDelete.add(duplicateGuardian);
+            if (mostRecentGuardian.Id == matchedGuardian.Id) {
+                break;
             }
-        }
 
-        guardiansToUpdate.add(currentBestChoice);
-
-        for (Family_Portal_Guardian__c guardian : guardiansToUpdate) {
-            if (guardiansToDelete.contains(guardian)) {
-                guardiansToDelete.remove(guardiansToDelete.indexOf(guardian));
+            if (mostRecentGuardian.CreatedDate >= matchedGuardian.CreatedDate) {
+                guardiansToDelete.add(matchedGuardian);
+            } else if (mostRecentGuardian.CreatedDate < matchedGuardian.CreatedDate) {
+                guardiansToDelete.add(mostRecentGuardian);
+                mostRecentGuardian = matchedGuardian;
             }
         }
     }

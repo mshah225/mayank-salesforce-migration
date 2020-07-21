@@ -165,11 +165,10 @@ public without sharing class FamilyPortalController {
             LIMIT 1
         ];
 
-        if (guardian.ASURITE_ID__c != null) {
-            isAsuriteUser = true;
-        }
-
         if (guardian.Id != null) {
+            if (guardian.ASURITE_ID__c != null) {
+                isAsuriteUser = true;
+            }
             setExistingGuardianData(guardian);
             setExistingGuardianInterests(guardian);
             setExistingStudents(guardian);

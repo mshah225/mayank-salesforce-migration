@@ -7,7 +7,7 @@ public without sharing class FamilyPortalController {
     public String hashId;
     public Boolean isAsuriteUser { get; set; }
     public Boolean isExistingGuardian { get; set; }
-    public Map<String, Boolean> stepHasBeenViewedMap { get; set; }
+    public Map<Integer, Boolean> stepHasBeenViewedMap { get; set; }
     public FamilyPortalProgressBar progressBarController { get; set; }
     public Boolean guardianSelectedCountryIsUnitedStatesOrCanada {
         get {
@@ -92,11 +92,11 @@ public without sharing class FamilyPortalController {
     private void setDefaultSafetyChecks() {
         isAsuriteUser = false;
         isExistingGuardian = false;
-        stepHasBeenViewedMap = new Map<String, Boolean>();
-        stepHasBeenViewedMap.put('Step1', false);
-        stepHasBeenViewedMap.put('Step2', false);
-        stepHasBeenViewedMap.put('Step3', false);
-        stepHasBeenViewedMap.put('Step4', false);
+        stepHasBeenViewedMap = new Map<Integer, Boolean>();
+        stepHasBeenViewedMap.put(1, false);
+        stepHasBeenViewedMap.put(2, false);
+        stepHasBeenViewedMap.put(3, false);
+        stepHasBeenViewedMap.put(4, false);
     }
 
     private void setupDefaultGuardian() {
@@ -283,7 +283,7 @@ public without sharing class FamilyPortalController {
             familyPortalGuardian.Email__c = UserInfo.getUserEmail();
 
             return true;
-        } else if (familyPortalGuardian.ASURITE_ID__c != null || familyPortalGuardian.Email__c.contains('@asu.edu')) {
+        } else if (familyPortalGuardian.ASURITE_ID__c != null) {
             return true;
         }
 
@@ -391,7 +391,7 @@ public without sharing class FamilyPortalController {
     }
 
     public void familyPortalStep1OnLoad() {
-        stepHasBeenViewedMap.put('Step1', true);
+        stepHasBeenViewedMap.put(1, true);
         progressBarController.progressCounter = 0;
         progressBarController.getProgressBarPercentage();
     }
@@ -401,8 +401,8 @@ public without sharing class FamilyPortalController {
     }
 
     public void familyPortalStep2OnLoad() {
-        if (stepHasBeenViewedMap.get('Step1')) {
-            stepHasBeenViewedMap.put('Step2', true);
+        if (stepHasBeenViewedMap.get(1)) {
+            stepHasBeenViewedMap.put(2, true);
             progressBarController.progressCounter = 25;
             progressBarController.getProgressBarPercentage();
         }
@@ -413,8 +413,8 @@ public without sharing class FamilyPortalController {
     }
 
     public void familyPortalStep3OnLoad() {
-        if (stepHasBeenViewedMap.get('Step1') && stepHasBeenViewedMap.get('Step2')) {
-            stepHasBeenViewedMap.put('Step3', true);
+        if (stepHasBeenViewedMap.get(1) && stepHasBeenViewedMap.get(2)) {
+            stepHasBeenViewedMap.put(3, true);
             progressBarController.progressCounter = 50;
             progressBarController.getProgressBarPercentage();
         }
@@ -425,12 +425,8 @@ public without sharing class FamilyPortalController {
     }
 
     public void familyPortalStep4OnLoad() {
-        if (
-            stepHasBeenViewedMap.get('Step1') &&
-            stepHasBeenViewedMap.get('Step2') &&
-            stepHasBeenViewedMap.get('Step3')
-        ) {
-            stepHasBeenViewedMap.put('Step4', true);
+        if (stepHasBeenViewedMap.get(1) && stepHasBeenViewedMap.get(2) && stepHasBeenViewedMap.get(3)) {
+            stepHasBeenViewedMap.put(4, true);
             progressBarController.progressCounter = 75;
             progressBarController.getProgressBarPercentage();
         }
@@ -442,10 +438,10 @@ public without sharing class FamilyPortalController {
 
     public void familyPortalStep5OnLoad() {
         if (
-            stepHasBeenViewedMap.get('Step1') &&
-            stepHasBeenViewedMap.get('Step2') &&
-            stepHasBeenViewedMap.get('Step3') &&
-            stepHasBeenViewedMap.get('Step4')
+            stepHasBeenViewedMap.get(1) &&
+            stepHasBeenViewedMap.get(2) &&
+            stepHasBeenViewedMap.get(3) &&
+            stepHasBeenViewedMap.get(4)
         ) {
             progressBarController.progressCounter = 100;
             progressBarController.getProgressBarPercentage();

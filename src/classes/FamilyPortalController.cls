@@ -278,10 +278,12 @@ public without sharing class FamilyPortalController {
             familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
             familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
             familyPortalGuardian.Email__c = UserInfo.getUserEmail();
+
             return true;
         } else if (familyPortalGuardian.ASURITE_ID__c != null) {
             return true;
         }
+
         return false;
     }
 
@@ -458,6 +460,7 @@ public without sharing class FamilyPortalController {
             System.debug(e.getMessage());
             System.debug('Something went wrong when submitting a guardian. Check exception.');
         }
+
         return Page.FamilyPortalStep5;
     }
 
@@ -543,6 +546,7 @@ public without sharing class FamilyPortalController {
     private void sendConfirmationEmail() {
         Messaging.reserveSingleEmailCapacity(2);
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        String baseUrl = URL.getSalesforceBaseUrl().toExternalForm();
 
         mail.setToAddresses(new List<String>{ familyPortalGuardian.Email__c });
         mail.setReplyTo('asufamily@asu.edu');
@@ -567,10 +571,10 @@ public without sharing class FamilyPortalController {
             familyPortalGuardian.Email__c +
             ')' +
             ' has been created.' +
-            'You can change your contact information, chosen interests or student preferences at any time by revisiting the ASU Families form at ' +
-            URL.getSalesforceBaseUrl().toExternalForm() +
+            'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the ASU Families form at ' +
+            baseUrl +
             '/FamilyPortal/FamilyPortalStep1?hid=' +
-            hashId
+            familyPortalGuardian.Hash_ID__c
         );
         mail.setHtmlBody(
             'Your ASU Families submission for <strong>' +
@@ -580,10 +584,11 @@ public without sharing class FamilyPortalController {
             ' (' +
             familyPortalGuardian.Email__c +
             ')</strong> has been created.<p>' +
-            'You can change your contact information, chosen interests or student preferences at any time by revisiting the <strong><a href="' +
-            URL.getSalesforceBaseUrl().toExternalForm() +
+            'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the <strong><a href="' +
+            baseUrl +
             '/FamilyPortal/FamilyPortalStep1?hid=' +
-            hashId
+            familyPortalGuardian.Hash_ID__c +
+            '">ASU Families form</a>.'
         );
 
         Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });

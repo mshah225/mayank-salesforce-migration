@@ -544,10 +544,23 @@ public without sharing class FamilyPortalController {
     }
 
     private void sendConfirmationEmail() {
+        String returnUrl =
+            URL.getSalesforceBaseUrl().toExternalForm() +
+            '/FamilyPortal/FamilyPortalStep1?hid=' +
+            familyPortalGuardian.Hash_ID__c;
+        String messageText =
+            'Your ASU Families submission for ' +
+            familyPortalGuardian.First_Name__c +
+            ' ' +
+            familyPortalGuardian.Last_Name__c +
+            ' (' +
+            familyPortalGuardian.Email__c +
+            ')' +
+            ' has been created.' +
+            'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the ';
+
         Messaging.reserveSingleEmailCapacity(2);
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        String baseUrl = URL.getSalesforceBaseUrl().toExternalForm();
-
         mail.setToAddresses(new List<String>{ familyPortalGuardian.Email__c });
         mail.setReplyTo('asufamily@asu.edu');
         mail.setSenderDisplayName('ASU Families');
@@ -562,35 +575,8 @@ public without sharing class FamilyPortalController {
         );
         mail.setBccSender(false);
         mail.setUseSignature(false);
-        mail.setPlainTextBody(
-            'Your ASU Families submission for ' +
-            familyPortalGuardian.First_Name__c +
-            ' ' +
-            familyPortalGuardian.Last_Name__c +
-            ' (' +
-            familyPortalGuardian.Email__c +
-            ')' +
-            ' has been created.' +
-            'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the ASU Families form at ' +
-            baseUrl +
-            '/FamilyPortal/FamilyPortalStep1?hid=' +
-            familyPortalGuardian.Hash_ID__c
-        );
-        mail.setHtmlBody(
-            'Your ASU Families submission for <strong>' +
-            familyPortalGuardian.First_Name__c +
-            ' ' +
-            familyPortalGuardian.Last_Name__c +
-            ' (' +
-            familyPortalGuardian.Email__c +
-            ')</strong> has been created.<p>' +
-            'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the <strong><a href="' +
-            baseUrl +
-            '/FamilyPortal/FamilyPortalStep1?hid=' +
-            familyPortalGuardian.Hash_ID__c +
-            '">ASU Families form</a>.'
-        );
-
+        mail.setPlainTextBody(messageText + 'ASU Families form at ' + returnUrl + '.');
+        mail.setHtmlBody(messageText + '<strong><a href="' + returnUrl + '">ASU Families form</a>.');
         Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
     }
 

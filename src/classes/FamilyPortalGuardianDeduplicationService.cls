@@ -3,7 +3,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
 
     public FamilyPortalGuardianDeduplicationService(List<Family_Portal_Guardian__c> newlyInsertedGuardians) {
-        newlyInsertedGuardians = newlyInsertedGuardians;
+        this.newlyInsertedGuardians = newlyInsertedGuardians;
     }
 
     public void execute(QueueableContext context) {

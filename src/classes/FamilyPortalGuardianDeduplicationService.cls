@@ -8,7 +8,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
 
     public void execute(QueueableContext context) {
         if (newlyInsertedGuardians.size() > 0) {
-            gatherGuardiansAndStartDedup();
+            gatherGuardiansAndStartDedup(newlyInsertedGuardians);
             try {
                 if (guardiansToDelete != null && !guardiansToDelete.isEmpty()) {
                     delete guardiansToDelete;
@@ -19,11 +19,11 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         }
     }
 
-    public static void gatherGuardiansAndStartDedup() {
+    public static void gatherGuardiansAndStartDedup(List<Family_Portal_Guardian__c> insertedGuardians) {
         guardiansToDelete = new List<Family_Portal_Guardian__c>();
         List<Family_Portal_Guardian__c> guardiansToCheck;
 
-        for (Family_Portal_Guardian__c insertedGuardian : newlyInsertedGuardians) {
+        for (Family_Portal_Guardian__c insertedGuardian : insertedGuardians) {
             List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
                 SELECT Id, CreatedDate
                 FROM Family_Portal_Guardian__c

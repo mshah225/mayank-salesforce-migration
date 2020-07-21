@@ -166,7 +166,7 @@ public without sharing class FamilyPortalController {
         ];
 
         if (guardian.Id != null) {
-            if (guardian.ASURITE_ID__c != null) {
+            if (guardian.ASURITE_ID__c != null || guardian.Email__c.contains('@asu.edu')) {
                 isAsuriteUser = true;
             }
             setExistingGuardianData(guardian);
@@ -283,7 +283,7 @@ public without sharing class FamilyPortalController {
             familyPortalGuardian.Email__c = UserInfo.getUserEmail();
 
             return true;
-        } else if (familyPortalGuardian.ASURITE_ID__c != null) {
+        } else if (familyPortalGuardian.ASURITE_ID__c != null || familyPortalGuardian.Email__c.contains('@asu.edu')) {
             return true;
         }
 

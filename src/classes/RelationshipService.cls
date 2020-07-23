@@ -52,7 +52,6 @@ public class RelationshipService {
                         Account__c = relation.Related_Account__c,
                         Related_Account__c = relation.Account__c,
                         Active_Relationship__c = relation.Active_Relationship__c,
-                        Relationship_Type__c = relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c,
                         Reciprocal_Relationship__c = relation.Id,
                         Relationship_Created_By__c = relation.Relationship_Created_By__c,
                         Relationship_Start_Date__c = relation.Relationship_Start_Date__c,
@@ -60,9 +59,21 @@ public class RelationshipService {
                         Title__c = relation.Title__c,
                         Revoke_Status__c = relation.Revoke_Status__c,
                         Source__c = relation.Source__c,
-                        Source_Date__c = relation.Source_Date__c,
-                        Sub_Type__c = relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c
+                        Source_Date__c = relation.Source_Date__c
                     );
+
+                    if (
+                        relationshipTypes.get(relation.Relationship_Type__c) != null &&
+                        relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c != null
+                    ) {
+                        rel.Relationship_Type__c = relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c;
+                    }
+                    if (
+                        relationshipSubTypes.get(relation.Sub_Type__c) != null &&
+                        relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c != null
+                    ) {
+                        rel.Sub_Type__c = relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c;
+                    }
 
                     if (recipRTIDMap.get(relation.RecordTypeId) == null) {
                         rel.RecordTypeId = relation.RecordTypeId;

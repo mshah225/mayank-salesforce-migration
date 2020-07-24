@@ -67,12 +67,17 @@ public class RelationshipService {
                         relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c != null
                     ) {
                         rel.Relationship_Type__c = relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c;
+                    } else {
+                        rel.Relationship_Type__c = null;
                     }
+
                     if (
                         relationshipSubTypes.get(relation.Sub_Type__c) != null &&
                         relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c != null
                     ) {
                         rel.Sub_Type__c = relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c;
+                    } else {
+                        rel.Sub_Type__c = null;
                     }
 
                     if (recipRTIDMap.get(relation.RecordTypeId) == null) {
@@ -197,12 +202,17 @@ public class RelationshipService {
                     relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c != null
                 ) {
                     relation.Relationship_Type__c = relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c;
+                } else {
+                    relation.Relationship_Type__c = null;
                 }
+
                 if (
                     relationshipSubTypes.get(rel.Sub_Type__c) != null &&
                     relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c != null
                 ) {
                     relation.Sub_Type__c = relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c;
+                } else {
+                    relation.Sub_Type__c = null;
                 }
 
                 relsToUpdate.add(relation);

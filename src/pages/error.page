@@ -243,7 +243,7 @@
         </header>
 
         <div class="page-title">
-            <a href="/StudentServiceCenter" class="mobileHeaderLink">Student Service Center</a>
+            <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
         </div>
 
         <div id="asu_content_well">
@@ -256,7 +256,8 @@
                             <a href="https://webapp4.asu.edu/myasu" style="color:#990033;">My ASU</a> to ask questions, report an issue, and get help.
                             <br />
                             <br /> If you’re unable to access the My ASU Service Center or need immediate assistance, please call
-                            1-855-ASU-5080.</p>
+                            1-855-ASU-5080.
+                        </p>
                     </div>
                 </div>
             </div>

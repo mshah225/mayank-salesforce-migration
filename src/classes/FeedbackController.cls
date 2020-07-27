@@ -63,7 +63,7 @@ public with sharing class FeedbackController {
         } catch (Exception e) {
         }
 
-        PageReference submit = new PageReference('/StudentServiceCenter?Confirm=feedback');
+        PageReference submit = new PageReference('/studentSC?Confirm=feedback');
         submit.setRedirect(true);
         return submit;
     }

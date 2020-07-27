@@ -92,7 +92,7 @@
                         <br />
                         <apex:form>
                             <apex:pageBlock mode="maindetail">
-                                <a href="/viewAllCases?source=StudentServiceCenter" style="padding:4px" class="btn">
+                                <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn">
                                     View All Cases
                                 </a>
                             </apex:pageBlock>

@@ -157,9 +157,9 @@ public with sharing class viewCaseController {
         String source = ApexPages.currentPage().getParameters().get('source');
 
         if (source == null) {
-            source = 'StudentServiceCenter';
+            source = 'studentSC';
         } else if (source.equals('viewAllCases')) {
-            source = 'viewAllCases?source=StudentServiceCenter';
+            source = 'viewAllCases?source=studentSC';
         }
 
         return source;

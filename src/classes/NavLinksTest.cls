@@ -39,7 +39,7 @@ private class NavLinksTest {
 
         insert testUser;
 
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
     }
 

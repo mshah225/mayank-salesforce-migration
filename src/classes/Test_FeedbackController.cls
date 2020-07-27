@@ -44,7 +44,7 @@ private class Test_FeedbackController {
             fc = new FeedbackController(sc);
             fc.comments = 'Test description submission.';
 
-            PageReference submitTest = new PageReference('/StudentServiceCenter?Confirm=feedback');
+            PageReference submitTest = new PageReference('/studentSC?Confirm=feedback');
             System.assertEquals(fc.submit().getUrl(), submitTest.getUrl());
         }
     }

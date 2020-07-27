@@ -9,6 +9,8 @@
     <apex:attribute name="showNavBar" description="If true, the black navbar from Studen Center will be shown on the page" type="boolean"
         default="true" />
 
+    <c:ASUBrandMegaMenuStyles />
+
     <div id="menuCSSWrap">
         <apex:outputPanel rendered="{!showNavBar}">
             <header class="navbar navbar-default" role="banner">

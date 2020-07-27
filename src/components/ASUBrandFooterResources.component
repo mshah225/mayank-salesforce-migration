@@ -1,0 +1,6 @@
+<apex:component>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"
+    />
+    <apex:includeScript value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/js/asu_header.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}" />
+</apex:component>

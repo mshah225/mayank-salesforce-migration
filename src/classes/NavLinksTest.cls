@@ -7,14 +7,10 @@ private class NavLinksTest {
     private static User testUser;
 
     private static void setUp() {
-        asuCommunityProfile = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'ASU Community'
-        ];
-        
+        asuCommunityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'];
+
         List<Term__c> lstTerms = new List<Term__c>();
-        
+
         Term__c termAC = new Term__c();
         Date sessionAStartDate = Date.today().adddays(30);
         termAC.Session_A_C_Start_Date__c = sessionAStartDate;
@@ -27,9 +23,9 @@ private class NavLinksTest {
 
         lstTerms.add(termAC);
         lstTerms.add(termB);
-        
+
         insert lstTerms;
-        
+
         List<Contact> listOfTestContacts = (new ContactFactory.DefaultContact()).create();
 
         testContact = listOfTestContacts[0];
@@ -37,13 +33,13 @@ private class NavLinksTest {
         insert testContact;
 
         List<User> listOfTestUsers = (new UserFactory.DefaultUser()).create();
-        testUser =  listOfTestUsers[0];
+        testUser = listOfTestUsers[0];
         testUser.ProfileId = asuCommunityProfile.Id;
         testUser.ContactId = testContact.Id;
 
         insert testUser;
 
-        PageReference serviceCenter = Page.studentSC;
+        PageReference serviceCenter = Page.StudentServiceCenter;
         Test.setCurrentPage(serviceCenter);
     }
 
@@ -51,12 +47,12 @@ private class NavLinksTest {
         String nullPath = null;
         Integer sessionCookie = -1;
         Boolean insecureCookie = false;
-        
-        Cookie linksCookie = new Cookie('navbarlinks',cookieData,nullPath,sessionCookie,insecureCookie);
-        ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});    
+
+        Cookie linksCookie = new Cookie('navbarlinks', cookieData, nullPath, sessionCookie, insecureCookie);
+        ApexPages.currentPage().setCookies(new List<Cookie>{ linksCookie });
     }
-    
-    @isTest 
+
+    @isTest
     private static void testInitWithoutURLParameters() {
         setUp();
         Test.startTest();
@@ -69,39 +65,43 @@ private class NavLinksTest {
         System.assertEquals(nav.linkList, null);
     }
 
-    @isTest 
+    @isTest
     private static void retrieveCookieDataFromURL() {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
             sc = new ServiceCenter();
             nav = new NavLinks(sc);
-            ApexPages.currentPage().getParameters().put('navbar',
-                '{"navbarLinks":[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
-                '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
-                '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
-                '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
-                '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}');
+            ApexPages.currentPage()
+                .getParameters()
+                .put(
+                    'navbar',
+                    '{"navbarLinks":[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
+                    '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
+                    '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
+                    '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
+                    '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}'
+                );
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.linkList[0].name,'Home');
-        System.assertEquals(nav.linkList[0].url,'https://webapp4-dev.asu.edu/myasu/student');
-        
-        System.assertEquals(nav.linkList[1].name,'Finances');
-        System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
-    
-        System.assertEquals(nav.linkList[2].name,'Service Center');
+        System.assertEquals(nav.linkList[0].name, 'Home');
+        System.assertEquals(nav.linkList[0].url, 'https://webapp4-dev.asu.edu/myasu/student');
+
+        System.assertEquals(nav.linkList[1].name, 'Finances');
+        System.assertEquals(nav.linkList[1].url, 'https://webapp4-dev.asu.edu/myasu/student/finances');
+
+        System.assertEquals(nav.linkList[2].name, 'Service Center');
         System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
-        
-        System.assertEquals(nav.linkList[3].name,'Campus Services');
+
+        System.assertEquals(nav.linkList[3].name, 'Campus Services');
         System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
-        
-        System.assertEquals(nav.linkList[4].name,'Profile');
+
+        System.assertEquals(nav.linkList[4].name, 'Profile');
         System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
     }
-    
-     @isTest
+
+    @isTest
     private static void testNullCookieDataInURL() {
         setUp();
         Test.startTest();
@@ -114,8 +114,7 @@ private class NavLinksTest {
         Test.stopTest();
         System.assertEquals(nav.linkList.isEmpty(), true);
     }
-    
-    
+
     // @isTest
     // private static void retrieveCookieFromPage() {
     //     setUp();
@@ -134,20 +133,20 @@ private class NavLinksTest {
     //     Test.stopTest();
     //     System.assertEquals(nav.linkList[0].name,'Home');
     //     System.assertEquals(nav.linkList[0].url,'https://webapp4-dev.asu.edu/myasu/student');
-    // 
+    //
     //     System.assertEquals(nav.linkList[1].name,'Finances');
     //     System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
-    // 
+    //
     //     System.assertEquals(nav.linkList[2].name,'Service Center');
     //     System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
-    // 
+    //
     //     System.assertEquals(nav.linkList[3].name,'Campus Services');
     //     System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
-    // 
+    //
     //     System.assertEquals(nav.linkList[4].name,'Profile');
     //     System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
     // }
-    
+
     // @isTest
     // private static void retrieveNullCookieFromPage() {
     //     setUp();
@@ -162,7 +161,7 @@ private class NavLinksTest {
     //     Test.stopTest();
     //     System.assertEquals(nav.linkList, null);
     // }
-    
+
     // @isTest
     // private static void incorrectStringAsCookie() {
     //     setUp();

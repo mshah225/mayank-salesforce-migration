@@ -1,0 +1,11 @@
+<apex:component>
+    <style>
+        .checkboxHidden {
+            visibility: hidden;
+        }
+
+        .contactPhone td {
+            padding: 0px !important;
+        }
+    </style>
+</apex:component>

@@ -2,15 +2,7 @@
     extensions="NavLinks,vfListPaginationController">
 
     <head>
-        <style>
-            .checkboxHidden {
-                visibility: hidden;
-            }
-
-            .contactPhone td {
-                padding: 0px !important;
-            }
-        </style>
+        <c:StudentServiceCenterStyles />
 
         <script>
             var $j = jQuery.noConflict();

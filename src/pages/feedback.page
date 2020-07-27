@@ -249,7 +249,7 @@
         </header>
 
         <div class="page-title">
-            <a href="/StudentServiceCenter" class="mobileHeaderLink">Student Service Center</a>
+            <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
         </div>
 
         <div id="asu_content_well">
@@ -257,7 +257,7 @@
             <div class="container">
                 <ol class="breadcrumb">
                     <li>
-                        <a href="/StudentServiceCenter">Back</a>
+                        <a href="/studentSC">Back</a>
                     </li>
                     <li class="active" style="font-size:10pt;">Feedback</li>
                 </ol>

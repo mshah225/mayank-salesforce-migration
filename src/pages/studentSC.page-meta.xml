@@ -4,5 +4,5 @@
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <description>The homepage of the Service Center. Students can get a quick view of their open cases and the top articles in the AKB.</description>
-    <label>StudentServiceCenter</label>
+    <label>studentSC</label>
 </ApexPage>

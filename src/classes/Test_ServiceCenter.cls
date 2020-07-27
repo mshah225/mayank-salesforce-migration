@@ -188,7 +188,7 @@ private class Test_ServiceCenter {
 
         loadTestDataWithUserByLastName('User0');
 
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         serviceCenter.getParameters().put('source', 'viewAllCases');
         Test.setCurrentPage(serviceCenter);
 
@@ -236,7 +236,7 @@ private class Test_ServiceCenter {
         insert scm;
 
         loadTestDataWithUserByLastName('User1');
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         serviceCenter.getParameters().put('source', 'viewAllCases');
         Test.setCurrentPage(serviceCenter);
 
@@ -280,7 +280,7 @@ private class Test_ServiceCenter {
     private static void testStudentSCNotEnrolled() {
         loadTestDataWithUserByLastName('User2');
 
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         serviceCenter.getParameters().put('source', 'viewAllCases');
         Test.setCurrentPage(serviceCenter);
 
@@ -309,7 +309,7 @@ private class Test_ServiceCenter {
 
         Test.startTest();
 
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
         System.runAs(testUser) {
@@ -328,7 +328,7 @@ private class Test_ServiceCenter {
     private static void testStudentSCAlumni() {
         loadTestDataWithUserByLastName('User3');
 
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
         Test.startTest();
@@ -350,7 +350,7 @@ private class Test_ServiceCenter {
     private static void testSubmitCase() {
         loadTestUserByLastName('User0');
 
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
 
         Test.startTest();
@@ -380,7 +380,7 @@ private class Test_ServiceCenter {
     @isTest
     private static void suggestAnArticleReturnsProperUrl() {
         loadTestUserByLastName('User0');
-        PageReference serviceCenter = Page.StudentServiceCenter;
+        PageReference serviceCenter = Page.studentSC;
         Test.setCurrentPage(serviceCenter);
         PageReference submit;
         String urlReturnedFromSubmit;

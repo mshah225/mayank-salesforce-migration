@@ -349,7 +349,7 @@
         }
 
         #asu_content_well .container {
-            max-width: 1270px!important;
+            max-width: 1170px!important;
             margin: auto!important
         }
 

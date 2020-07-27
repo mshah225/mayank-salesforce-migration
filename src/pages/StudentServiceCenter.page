@@ -2,9 +2,6 @@
     extensions="NavLinks,vfListPaginationController">
 
     <head>
-        <title>My ASU | Service Center</title>
-        <c:asu_responsive_header_section linkList="{!linkList}" />
-
         <style>
             .checkboxHidden {
                 visibility: hidden;
@@ -36,7 +33,7 @@
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">
-                <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
+                <a href="https://webapp4.asu.edu/myasu">My ASU | Service Center</a>
             </div>
         </div>
     </div>

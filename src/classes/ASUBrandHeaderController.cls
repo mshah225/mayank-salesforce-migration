@@ -11,7 +11,7 @@ public without sharing class ASUBrandHeaderController {
     }
 
     private void setUserStatus() {
-        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('guest')) {
+        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
             isLoggedInUser = true;
         }
     }

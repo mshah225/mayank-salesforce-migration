@@ -40,8 +40,8 @@
             </div>
         </div>
     </div>
-    <c:ASUBrandMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
+    <c:ASUBrandMegaMenuServiceCenter firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}"
+        stopViewAsUrl="{!stopViewAsUrl}" viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
     <body>
         <div id="asu_content_well">
@@ -237,9 +237,7 @@
                     event.preventDefault();
                 });
             }
-        </script>
 
-        <script>
             viewAsLinks();
 
             function viewAsLinks() {

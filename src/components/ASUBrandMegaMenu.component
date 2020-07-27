@@ -103,7 +103,7 @@
         </apex:outputPanel>
         <apex:outputPanel rendered="{!showNavBar}">
             <div class="page-title">
-                <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
+                <a href="/StudentServiceCenter" class="mobileHeaderLink">Student Service Center</a>
             </div>
         </apex:outputPanel>
     </div>

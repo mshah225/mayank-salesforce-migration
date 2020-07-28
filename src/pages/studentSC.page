@@ -1,9 +1,22 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="ServiceCenter" action="{!init}" cache="true"
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="ServiceCenterController" action="{!init}" cache="true"
     extensions="NavLinks,vfListPaginationController">
 
     <head>
-        <c:StudentServiceCenterStyles />
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || []; w[l].push({
+                    'gtm.start': new Date().getTime(),
+                    event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-KDWN8Z');
+        </script>
+        <!-- End Google Tag Manager -->
 
+        <!-- Google Analytics -->
         <script>
             var $j = jQuery.noConflict();
             (function (i, s, o, g, r, a, m) {
@@ -12,14 +25,16 @@
                 }, i[r].l = 1 * new Date(); a = s.createElement(o),
                     m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
             })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
             ga('create', 'UA-47141114-2', 'auto');
             ga('send', 'pageview');
         </script>
+        <!-- End Google Analytics -->
 
-        <c:SCBomgarScripts asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
+        <c:ServiceCenterBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
     </head>
+
+    <c:ServiceCenterStyles />
 
     <c:ASUBrandHeader />
     <div class="asu-header-site-title-container">
@@ -29,12 +44,18 @@
             </div>
         </div>
     </div>
-    <c:ASUBrandMegaMenuServiceCenter firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}"
-        stopViewAsUrl="{!stopViewAsUrl}" viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
+    <c:ServiceCenterMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
     <body>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDWN8Z" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+
         <div id="asu_content_well">
-            <c:SCPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
+            <c:ServiceCenterPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
             />
 
             <apex:form id="suggestAnArticle">
@@ -82,96 +103,100 @@
 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-7">
-                        <div class="box firstbox">
-                            <div class="header">
-                                <h6>
-                                    <b>ASU Knowledge Base</b>
-                                </h6>
-                            </div>
-
-                            <div class="content box-padding" id="search_content">
-                                <apex:form id="searchForm" styleClass="searchKB">
-                                    <apex:pageBlock mode="maindetail">
-                                        <p>Search for any issue or question to learn how ASU can help!</p>
-                                        <br />
-                                        <div class="searchKB2">
-                                            <div class="form-horizontal">
-                                                <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox" html-placeholder="Search the Knowledge Base"
-                                                    html-pattern=".{2,}" required="true" title="Please enter a minimum of 2
-                                                            characters" maxlength="99" />
-
-                                                <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()"
-                                                    status="searchStatus" />
-
-                                                <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"
-                                                />
-                                            </div>
-                                        </div>
-                                    </apex:pageBlock>
-                                </apex:form>
-                                <br />
-                                <apex:form id="theSearchResults" style="min-height:200px;">
-                                    <apex:pageBlock id="searchResults" mode="maindetail">
-                                        <br />
-                                        <apex:outputPanel rendered="{!searchstring != ''}">
-                                            <h5>
-                                                <b>Showing top results for '{!searchstring}'</b>
-                                            </h5>
-                                        </apex:outputPanel>
-
-                                        <apex:outputPanel rendered="{!searchstring == ''}">
-                                            <h5>
-                                                <b>Top 5 Knowledge Articles</b>
-                                            </h5>
-                                        </apex:outputPanel>
-
-                                        <apex:actionStatus id="searchStatus">
-                                            <apex:facet name="start">
-                                                <img src="/img/loading.gif" style="position:absolute;margin:1px 0px 0px 5px;" />
-                                            </apex:facet>
-                                        </apex:actionStatus>
-
-                                        <hr style="margin-top:5px;" />
-
-                                        <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageSize="{!IF(searchstring != '',10,5)}">
-                                            <table>
-                                                <tr>
-                                                    <td style="vertical-align:top;">
-                                                        &#8226;&nbsp;
-                                                    </td>
-
-                                                    <td>
-                                                        <apex:outputLink value="/authkb?id={!article.id}">
-                                                            {!article.title}
-                                                        </apex:outputLink>
-                                                    </td>
-                                                </tr>
-                                            </table>
-
-                                            <div style="height:15px;"></div>
-                                        </knowledge:articleList>
-
-                                        <apex:commandLink styleClass="btn" style="padding:4px" value="View All Results" action="{!viewAllResults}" rendered="{!searchstring != ''}"
-                                        />
-                                    </apex:pageBlock>
-                                </apex:form>
-                            </div>
+                    <div class="col-md-7 service-center-region service-center-faq-region">
+                        <div class="service-center-region-header">
+                            <strong>Frequently Asked Questions</strong>
                         </div>
 
-                        <div class="box firstbox">
-                            <iframe src="https://webapp4.asu.edu/narrowcasting/ad/SMALL/myasu-servicecenter-1/true?rotate=true&interval=6000" scrolling="no"
-                                frameborder="0" width="100%" height="57" style="margin-bottom: -5px;">
-                            </iframe>
+                        <div class="content box-padding" id="search_content">
+                            <apex:form id="searchForm" styleClass="searchKB">
+                                <apex:pageBlock mode="maindetail">
+                                    <div class="service-center-faq-search">
+                                        <center>
+                                            <p class="lead">
+                                                <strong>Ask us anything.</strong>
+                                            </p>
+                                            <div class="searchKB2">
+                                                <div class="form-horizontal">
+                                                    <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="service-center-faq-search-input" html-placeholder="Type your question here"
+                                                        html-pattern=".{2,}" required="true" title="Please enter a minimum of 2
+                                                            characters" maxlength="99" />
+
+                                                    <apex:commandLink id="theCommandLink" styleClass="btn btn-secondary" reRender="service-center-faq-search-results" oncomplete="viewAsLinks()"
+                                                        status="service-center-faq-search-status">
+                                                        <i class="fa fa-search" aria-hidden="true" />
+                                                    </apex:commandLink>
+                                                </div>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </apex:pageBlock>
+                            </apex:form>
+                            <br />
+                            <apex:form id="service-center-faq-search-results" style="min-height:200px;">
+                                <apex:pageBlock id="service-center-faq-search-results-block" mode="maindetail">
+                                    <br />
+                                    <apex:outputPanel rendered="{!searchstring != ''}">
+                                        <h5>
+                                            <strong>Showing top results for '{!searchstring}'</strong>
+                                        </h5>
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel rendered="{!searchstring == ''}">
+                                        <h5>
+                                            <strong>Browse common questions</strong>
+                                        </h5>
+
+                                        <h6>Finances</h6>
+                                        <!-- Top 3 finance articles -->
+                                        <!-- Link to all finance questions -->
+                                        <h6>Technology</h6>
+                                        <!-- Top 3 technology articles -->
+                                        <!-- Link to all technology questions -->
+                                        <h6>Housing</h6>
+                                        <!-- Top 3 housing articles -->
+                                        <!-- Link to all housing questions -->
+                                    </apex:outputPanel>
+
+                                    <apex:actionStatus id="service-center-faq-search-status">
+                                        <apex:facet name="start">
+                                            <img src="/img/loading.gif" style="position:absolute;margin:1px 0px 0px 5px;" />
+                                        </apex:facet>
+                                    </apex:actionStatus>
+
+                                    <hr style="margin-top:5px;" />
+
+                                    <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageSize="{!IF(searchstring != '',10,5)}">
+                                        <table>
+                                            <tr>
+                                                <td style="vertical-align:top;">
+                                                    &#8226;&nbsp;
+                                                </td>
+
+                                                <td>
+                                                    <apex:outputLink value="/authkb?id={!article.id}">
+                                                        {!article.title}
+                                                    </apex:outputLink>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <div style="height:15px;"></div>
+                                    </knowledge:articleList>
+
+                                    <apex:commandLink styleClass="btn" style="padding:4px" value="View All Results" action="{!viewAllResults}" rendered="{!searchstring != ''}"
+                                    />
+                                </apex:pageBlock>
+                            </apex:form>
                         </div>
                     </div>
                     <!-- end col-md-7 -->
 
-                    <div class="col-md-5">
-                        <c:SCImmediateAssistanceBox HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}"
-                            newPin="{!newPin}" changePin="{!changePin}" />
+                    <div class="col-md-5 service-center-region">
+                        <c:ServiceCenterContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
+                            changePin="{!changePin}" />
 
-                        <c:SCMyCasesBox />
+                        <c:ServiceCenterMyCases />
                     </div>
                     <!-- end col-md-5 -->
                 </div>
@@ -190,7 +215,7 @@
                                     padding: 5px 10px !important;
                                 }
                             </style>
-                            <c:DynamicFeedbackButton carName="MyASU Service Center" betaTag="false" classes="btn btn-primary" />
+                            <c:FeedbackButton carName="My ASU Help" betaTag="false" classes="btn btn-primary" />
                         </div>
                     </div>
                 </div>
@@ -198,7 +223,6 @@
             <!-- End main container -->
         </div>
         <!-- End ASU Content -->
-
 
         <c:ASUBrandFooter />
 

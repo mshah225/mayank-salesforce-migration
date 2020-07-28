@@ -1,4 +1,4 @@
-public with sharing class ServiceCenter {
+public with sharing class ServiceCenterController {
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 4, 6);
     private static final Integer CLOSEDCASELIMIT = 5;
     private Id caseId;
@@ -24,7 +24,7 @@ public with sharing class ServiceCenter {
     public String userAsurite;
     public String mMessage;
 
-    public ServiceCenter() {
+    public ServiceCenterController() {
         suggestAnArticle = new Case();
         viewingAs = false;
         checkForViewAs();

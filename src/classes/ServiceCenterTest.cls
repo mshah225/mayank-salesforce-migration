@@ -1,9 +1,9 @@
 @isTest
-private class Test_ServiceCenter {
-    private static ServiceCenter sc;
+private class ServiceCenterTest {
+    private static ServiceCenterController sc;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
-    private static SCMyCasesBoxController scMyCaseBox;
+    private static ServiceCenterMyCasesController serviceCenterMyCases;
     private static Case caseOnTestUser;
     private static User testUser;
     private static Contact contactRelatedToTestUser;
@@ -195,13 +195,13 @@ private class Test_ServiceCenter {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             vcc = new viewCaseController();
-            scMyCaseBox = new SCMyCasesBoxController();
+            serviceCenterMyCases = new ServiceCenterMyCasesController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            scMyCaseBox.getMyCasesBox();
+            serviceCenterMyCases.getMyCasesBox();
 
             sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vcc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
@@ -249,11 +249,11 @@ private class Test_ServiceCenter {
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            scMyCaseBox = new SCMyCasesBoxController();
-            sc = new ServiceCenter();
+            serviceCenterMyCases = new ServiceCenterMyCasesController();
+            sc = new ServiceCenterController();
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            scMyCaseBox.oppList = oppListForTestUser;
+            serviceCenterMyCases.oppList = oppListForTestUser;
 
             vacc.getMyCases();
             vacc.getAllClosedCases();
@@ -266,9 +266,9 @@ private class Test_ServiceCenter {
             vacc.getSource();
             vacc.viewCase();
 
-            scMyCaseBox.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
-            scMyCaseBox.viewAsUrl = 'www.hankhillgifs.com';
-            scMyCaseBox.getmyCasesBox();
+            serviceCenterMyCases.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
+            serviceCenterMyCases.viewAsUrl = 'www.hankhillgifs.com';
+            serviceCenterMyCases.getmyCasesBox();
             System.assertEquals(false, sc.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
             System.assertEquals('There is maintenance forever', sc.getmMessage());
@@ -287,15 +287,15 @@ private class Test_ServiceCenter {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             vcc = new viewCaseController();
-            scMyCaseBox = new SCMyCasesBoxController();
+            serviceCenterMyCases = new ServiceCenterMyCasesController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            scMyCaseBox.oppList = oppListForTestUser;
+            serviceCenterMyCases.oppList = oppListForTestUser;
 
-            System.assertEquals(true, scMyCaseBox.getmyCasesBox());
+            System.assertEquals(true, serviceCenterMyCases.getmyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
             System.assertEquals(true, vcc.getHelpBox());
         }
@@ -313,12 +313,12 @@ private class Test_ServiceCenter {
         Test.setCurrentPage(serviceCenter);
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
-            scMyCaseBox = new SCMyCasesBoxController();
+            sc = new ServiceCenterController();
+            serviceCenterMyCases = new ServiceCenterMyCasesController();
 
-            scMyCaseBox.oppList = oppListForTestUser;
+            serviceCenterMyCases.oppList = oppListForTestUser;
 
-            System.assertEquals(true, scMyCaseBox.getMyCasesBox());
+            System.assertEquals(true, serviceCenterMyCases.getMyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
         }
         Test.stopTest();
@@ -334,13 +334,13 @@ private class Test_ServiceCenter {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             System.assertEquals(true, sc.getHelpBox());
-            scMyCaseBox = new SCMyCasesBoxController();
+            serviceCenterMyCases = new ServiceCenterMyCasesController();
 
-            scMyCaseBox.oppList = oppListForTestUser;
+            serviceCenterMyCases.oppList = oppListForTestUser;
 
-            System.assertEquals(true, scMyCaseBox.getMyCasesBox());
+            System.assertEquals(true, serviceCenterMyCases.getMyCasesBox());
         }
 
         Test.stopTest();
@@ -356,22 +356,25 @@ private class Test_ServiceCenter {
         Test.startTest();
 
         System.runAs(testUser) {
-            scMyCaseBox = new SCMyCasesBoxController();
-            scMyCaseBox.newCase.Subject = 'Test Subject for SC';
-            scMyCaseBox.newCase.Description = 'Test Desc';
+            serviceCenterMyCases = new ServiceCenterMyCasesController();
+            serviceCenterMyCases.newCase.Subject = 'Test Subject for SC';
+            serviceCenterMyCases.newCase.Description = 'Test Desc';
 
-            PageReference submit = scMyCaseBox.submitCase();
+            PageReference submit = serviceCenterMyCases.submitCase();
             System.debug(submit);
             System.assertEquals(submit.getURL().contains('/viewcase?'), true);
 
-            scMyCaseBox.getClosedCases();
-            scMyCaseBox.viewCase();
-            scMyCaseBox.getMyCases();
-            scMyCaseBox.getMyCasesBox();
+            serviceCenterMyCases.getClosedCases();
+            serviceCenterMyCases.viewCase();
+            serviceCenterMyCases.getMyCases();
+            serviceCenterMyCases.getMyCasesBox();
 
-            scMyCaseBox.viewingAs = true;
-            scMyCaseBox.masqScopeIdCookie = 'testCookie';
-            System.assertEquals(scMyCaseBox.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
+            serviceCenterMyCases.viewingAs = true;
+            serviceCenterMyCases.masqScopeIdCookie = 'testCookie';
+            System.assertEquals(
+                serviceCenterMyCases.submitCase().getURL().contains('masqScopeIdCookie=testCookie'),
+                true
+            );
         }
 
         Test.stopTest();
@@ -386,7 +389,7 @@ private class Test_ServiceCenter {
         String urlReturnedFromSubmit;
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
             sc.suggestedArticleDescription = 'Description';
             submit = ApexPages.currentPage();
@@ -415,7 +418,7 @@ private class Test_ServiceCenter {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
 
@@ -537,7 +540,7 @@ private class Test_ServiceCenter {
         loadTestDataWithUserByLastName('User0');
 
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             sc.newPin = testUser.Contact.Self_Service_PIN__c + 1;
             sc.UserContact.LastName = null;
             Test.startTest();

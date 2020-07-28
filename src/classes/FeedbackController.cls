@@ -1,5 +1,5 @@
 public with sharing class FeedbackController {
-    private ServiceCenter sc;
+    private ServiceCenterController sc;
 
     public Case c { get; set; }
     public Contact feedbackContact { get; set; }
@@ -7,7 +7,7 @@ public with sharing class FeedbackController {
     public String comments { get; set; }
     public String userAlias;
 
-    public FeedbackController(ServiceCenter sc) {
+    public FeedbackController(ServiceCenterController sc) {
         this.sc = sc;
         c = new Case();
         feedbackContact = sc.userContact;

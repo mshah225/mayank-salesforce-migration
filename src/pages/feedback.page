@@ -1,4 +1,4 @@
-<apex:page sidebar="false" showHeader="false" controller="ServiceCenter" cache="true" extensions="FeedbackController">
+<apex:page sidebar="false" showHeader="false" controller="ServiceCenterController" cache="true" extensions="FeedbackController">
     <html>
 
     <head>
@@ -253,7 +253,7 @@
         </div>
 
         <div id="asu_content_well">
-            <c:SCPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+            <c:ServiceCenterPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
             <div class="container">
                 <ol class="breadcrumb">
                     <li>

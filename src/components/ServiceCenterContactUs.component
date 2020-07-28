@@ -1,0 +1,102 @@
+<apex:component allowDML="true" controller="ServiceCenterContactUsController">
+    <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean" />
+    <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean" />
+    <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />
+    <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal" />
+    <apex:attribute name="newPin" description="The new PIN" type="Decimal" />
+    <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action" />
+
+    <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
+    <script type='text/javascript'>
+        var orgId = '{!orgId}';
+        var chatEndpoint = '{!chatEndpoint}';
+        var chatDeploymentId = '{!deploymentId}';
+        var financesChatId = '{!financeChatButton}';
+        var studentServiceChatId = '{!studentServicesChatButton}';
+        var techSupportChatId = '{!technicalSupportChatButton}';
+
+        liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
+        liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+    </script>
+
+    <apex:outputPanel>
+        <div class="box">
+            <div class="service-center-region-header">
+                <strong>Contact Us</strong>
+            </div>
+
+            <div class="content">
+                <p>
+                    We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
+                    chat session, or call to talk now.
+                </p>
+                <apex:form>
+                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="theCommandLink" reRender="pannel1">
+                        <strong>
+                            <i class="fa fa-commenting" aria-hidden="true" />
+                            <span class="service-center-contact-us-chat-text">Live Chat</span>
+                        </strong>
+                    </apex:commandLink>
+                    <apex:outputPanel id="pannel1" title="First Pannel" rendered="{!showLiveChatOptions}">
+                        <ul>
+                            <li>
+                                <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                                <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                                <script type="text/javascript">
+                                    if (!window._laq) { window._laq = []; }
+                                    window._laq.push(function () {
+                                        liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_online_finances'));
+                                        liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_offline_finances'));
+                                    });
+                                </script>
+                            </li>
+                            <li>
+                                <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
+                                <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
+                                <script type="text/javascript">
+                                    if (!window._laq) { window._laq = []; }
+                                    window._laq.push(function () {
+                                        liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_online_technical_support'));
+                                        liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_offline_technical_support'));
+                                    });
+                                </script>
+                            </li>
+                            <li>
+                                <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"
+                                    onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
+                                <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"
+                                    onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
+                                <script type="text/javascript">
+                                    if (!window._laq) { window._laq = []; }
+                                    window._laq.push(function () {
+                                        liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_online_student_services'));
+                                        liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_offline_student_services'));
+                                    });
+                                </script>
+                            </li>
+                        </ul>
+                    </apex:outputPanel>
+
+                    <hr />
+                    <div id="normalPhone">
+                        <apex:outputLink styleClass="service-center-contact-us-phone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
+                            <strong>
+                                <i class="fa fa-phone" aria-hidden="true" />
+                                <span class="service-center-contact-us-phone-number-rover">Call 1-855-ASU-5080</span>
+                            </strong>
+                        </apex:outputLink>
+                    </div>
+
+                    <div id="roverPhone">
+                        <apex:outputLink styleClass="service-center-contact-us-phone-rover" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
+                            <strong>
+                                <i class="fa fa-phone" aria-hidden="true" />
+                                <span class="service-center-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>
+                            </strong>
+                        </apex:outputLink>
+                    </div>
+                </apex:form>
+            </div>
+        </div>
+    </apex:outputPanel>
+</apex:component>

@@ -1,18 +1,23 @@
-public class NavLinks
-{
-    public NavLinks() {}
-    public NavLinks(ServiceCenter controller) { }
-    public NavLinks(viewCaseController controller){}
-    public NavLinks(AKBController controller) { }
-    public NavLinks(ViewAllCasesController controller) { }
-    public NavLinks(ApexPages.StandardController controller) { }
-    public NavLinks(UnsubscribeController controller) { }
+public class NavLinks {
+    public NavLinks() {
+    }
+    public NavLinks(ServiceCenterController controller) {
+    }
+    public NavLinks(viewCaseController controller) {
+    }
+    public NavLinks(AKBController controller) {
+    }
+    public NavLinks(ViewAllCasesController controller) {
+    }
+    public NavLinks(ApexPages.StandardController controller) {
+    }
+    public NavLinks(UnsubscribeController controller) {
+    }
 
     public String links { get; set; }
     public List<Link> linkList { get; set; }
 
-    public PageReference init()
-    {
+    public PageReference init() {
         Cookie linksCookie;
         String linksJSON = '';
         String asuriteIdParm = '';
@@ -21,42 +26,34 @@ public class NavLinks
 
         System.debug('parms: ' + ApexPages.currentPage().getParameters());
 
-        if (ApexPages.currentPage().getParameters().get('asuriteId') != null)
-        {
+        if (ApexPages.currentPage().getParameters().get('asuriteId') != null) {
             asuriteIdParm = ApexPages.currentPage().getParameters().get('asuriteId');
         }
 
-        if (ApexPages.currentPage().getParameters().get('time') != null)
-        {
+        if (ApexPages.currentPage().getParameters().get('time') != null) {
             timeParm = ApexPages.currentPage().getParameters().get('time');
         }
 
-        if (ApexPages.currentPage().getParameters().get('signature') != null)
-        {
+        if (ApexPages.currentPage().getParameters().get('signature') != null) {
             signatureParm = ApexPages.currentPage().getParameters().get('signature');
         }
 
-        if (ApexPages.currentPage().getParameters().get('navbar') != null)
-        {
+        if (ApexPages.currentPage().getParameters().get('navbar') != null) {
             links = ApexPages.currentPage().getParameters().get('navbar');
             System.debug('links: ' + links);
-            links = links.replace('{"navbarLinks":','');
-            links = links.substring(0, (links.length()-1));
+            links = links.replace('{"navbarLinks":', '');
+            links = links.substring(0, (links.length() - 1));
 
             // Write the cookie
-            if (links != null && links != '')
-            {
-                linksCookie = new Cookie('navbarlinks',links,null,-1,false);
-                ApexPages.currentPage().setCookies(new Cookie[]{linksCookie});
+            if (links != null && links != '') {
+                linksCookie = new Cookie('navbarlinks', links, null, -1, false);
+                ApexPages.currentPage().setCookies(new List<Cookie>{ linksCookie });
             }
-        }
-        else
-        {
+        } else {
             linksCookie = ApexPages.currentPage().getCookies().get('navbarlinks');
         }
 
-        if (linksCookie != null)
-        {
+        if (linksCookie != null) {
             linksJSON = linksCookie.getValue();
             System.debug('Cookie value: ' + linksJSON);
             // Clean up any HTML encoding for quotes
@@ -66,11 +63,9 @@ public class NavLinks
 
             linkList = new List<Link>();
             JSONParser parser = JSON.createParser(linksJSON);
-            while (parser.nextToken() != null)
-            {
+            while (parser.nextToken() != null) {
                 // If current token is a field name
-                if (parser.getCurrentToken() == JSONToken.FIELD_NAME)
-                {
+                if (parser.getCurrentToken() == JSONToken.FIELD_NAME) {
                     Link thisLink = new Link();
                     String fieldName = parser.getText();
                     thisLink.name = fieldName;

@@ -1,9 +1,7 @@
 @isTest
-private class Test_ViewAllCasesController
-{
+private class Test_ViewAllCasesController {
     private static User testUser;
-    static void setup()
-    {
+    static void setup() {
         Term__c termAC = new Term__c();
         Date dTac = Date.today().adddays(365);
         Date dTb = Date.today().adddays(405);
@@ -22,7 +20,7 @@ private class Test_ViewAllCasesController
         insert testContact;
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        testUser = (User)userCreator.create(1)[0];
+        testUser = (User) userCreator.create(1)[0];
         testUser.ProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
         testUser.ContactId = testContact.Id;
         insert testUser;
@@ -31,15 +29,11 @@ private class Test_ViewAllCasesController
 
         // Set the first three testCases to closed
         Integer i = 0;
-        for (Case c : testCases)
-        {
-            if (i < 3)
-            {
+        for (Case c : testCases) {
+            if (i < 3) {
                 c.Status = 'New';
                 i++;
-            }
-            else
-            {
+            } else {
                 c.Status = 'Closed: Resolved';
             }
         }
@@ -47,18 +41,17 @@ private class Test_ViewAllCasesController
         insert testCases;
     }
 
-    @isTest static void testGetAllClosedCases()
-    {
+    @isTest
+    static void testGetAllClosedCases() {
         setup();
         PageReference viewAllCasesPage = Page.viewAllCases;
         Test.setCurrentPage(viewAllCasesPage);
-        ServiceCenter sc;
+        ServiceCenterController sc;
         ViewAllCasesController vac;
         List<Case> closedCases = null;
 
         Test.startTest();
-        System.runAs(testUser)
-        {
+        System.runAs(testUser) {
             vac = new ViewAllCasesController();
 
             closedCases = vac.getAllClosedCases();

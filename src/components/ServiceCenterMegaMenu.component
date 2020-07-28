@@ -23,34 +23,28 @@
                                     <span class="fa fa-home" title="Home"></span>
                                 </a>
                             </span>
-
                             <span class='tab'>
                                 <a href="https://webapp4.asu.edu/myasu/student/finances" class="tracking">
                                     Finances
                                 </a>
                             </span>
-
                             <span class='tab'>
                                 <a href="https://webapp4.asu.edu/myasu/student/campusservices" class="tracking">
                                     Campus Services
                                 </a>
                             </span>
-
                             <span class='tab'>
                                 <a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">
                                     Profile
                                 </a>
                             </span>
-
                             <span class='selected tab'>
                                 <a href="javascript:void(0)" class="tracking">
                                     Help
                                 </a>
                             </span>
-
                             <p class="username pull-right">
                                 {!firstName} {!lastName}
-
                                 <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
                                     &nbsp;&nbsp;({!emplId})
                                     <br />
@@ -104,11 +98,6 @@
 
         <apex:outputPanel rendered="{!NOT(showNavBar)}">
             <hr style="width:100%; border-style: solid !important; margin-top:6px; margin-Bottom:6px;" />
-        </apex:outputPanel>
-        <apex:outputPanel rendered="{!showNavBar}">
-            <div class="page-title">
-                <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
-            </div>
         </apex:outputPanel>
     </div>
 </apex:component>

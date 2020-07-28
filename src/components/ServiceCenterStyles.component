@@ -10,5 +10,15 @@
         .contactPhone td {
             padding: 0px !important;
         }
+
+        .service-center-region .header {
+            background-color: lightgray;
+        }
+
+        .service-center-faq-region {
+            border: gray;
+            border-style: solid;
+            border-width: thin;
+        }
     </style>
 </apex:component>

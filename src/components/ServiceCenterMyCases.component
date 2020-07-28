@@ -1,4 +1,4 @@
-<apex:component controller="SCMyCasesBoxController" allowDML="true">
+<apex:component controller="ServiceCenterMyCasesController" allowDML="true">
     <!-- This component renders the My Cases Box on the Service Center -->
     <apex:outputPanel>
         <div class="box">
@@ -9,35 +9,6 @@
             </div>
 
             <div class="content box-padding" id="crm_content">
-                <p>Save time and submit your question or support request online.</p>
-
-                <button id="showNewCase" class="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:75px;">
-                    New Case
-                </button>
-
-                <button id="cancel" class="btn kbbtn" style="display:none;color:#fff;background:#990033;padding:5px;width:75px;">
-                    My Cases
-                </button>
-                <br />
-                <br />
-
-                <script>
-                    $j("#showNewCase").click(function () {
-                        $j("#newCaseForm").slideToggle("500");
-                        $j("#myCases").slideToggle("500");
-                        $j("#showNewCase").hide();
-                        $j("#cancel").show();
-                        $j("#caseSubject").focus(600);
-                    });
-
-                    $j("#cancel").click(function () {
-                        $j("#newCaseForm").slideToggle("500");
-                        $j("#myCases").slideToggle("500");
-                        $j("#showNewCase").show();
-                        $j("#cancel").hide();
-                    });
-                </script>
-
                 <div id="myCases">
                     <apex:form>
                         <h5>My Open Cases</h5>
@@ -99,41 +70,6 @@
                         </apex:form>
                     </div>
 
-                </div>
-
-                <div id="newCaseForm" style="display:none">
-                    <apex:form style="width:100%">
-                        <h5>Create a New Case</h5>
-
-                        <div style="height:5px;"></div>
-
-                        <apex:pageBlock>
-                            <apex:pageBlockSection collapsible="false" columns="1">
-                                <label for="caseSubject" style="margin-bottom:0px;">Subject</label>
-
-                                <apex:inputField id="caseSubject" styleClass="caseField" value="{!newCase.subject}" required="true" label="" html-placeholder="Enter a subject"
-                                />
-                                <br />
-                                <label for="caseDesc" style="margin-bottom:0px;">Description</label>
-
-                                <apex:inputField id="caseDesc" styleClass="caseField" value="{!newCase.description}" required="true" style="height:100px;resize:none;"
-                                    label="" html-placeholder="Enter a description" />
-
-                                <label for="attHelpText" style="margin-bottom:0px;">Attachments</label>
-                                <apex:outputText id="attHelpText">
-                                    Attachments can be uploaded once the case has been created.
-                                </apex:outputText>
-                                <apex:outputText id="newCaseHelpText">
-                                    Responses to your case will be sent to your official ASU email or the email account you are forwarding your ASU email to.
-                                </apex:outputText>
-                            </apex:pageBlockSection>
-
-                            <apex:pageblockbuttons location="bottom">
-                                <apex:commandButton action="{!submitCase}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;width:55px;"
-                                />
-                            </apex:pageblockbuttons>
-                        </apex:pageBlock>
-                    </apex:form>
                 </div>
             </div>
         </div>

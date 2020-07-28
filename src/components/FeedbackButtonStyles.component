@@ -1,0 +1,57 @@
+<apex:component>
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
+            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+    <style>
+        .feedbackButton {
+            position: relative;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            margin: 0px;
+            padding-left: 24px;
+            padding-right: 24px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+            background-color: RGB(140, 29, 64);
+            transition: all 0.25s ease-in-out 0s;
+            word-wrap: break-word;
+            font-size: 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .feedbackButton img {
+            transition: all 0.25s ease-in-out 0s;
+            -moz-transition: all 0.25s ease-in-out 0s;
+            -webkit-transition: all 0.25s ease-in-out 0s;
+            -o-transition: all 0.25s ease-in-out 0s;
+            -ms-transition: all 0.25s ease-in-out 0s;
+        }
+
+        .feedbackButton:hover {
+            color: white;
+            text-decoration: none;
+            background-color: #d23153;
+        }
+
+        .feedbackButton:hover img {
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
+            filter: alpha(opacity=95);
+            opacity: 0.95;
+        }
+
+        .feedbackButton:focus {
+            color: white;
+            text-decoration: none;
+        }
+
+        .betaTag {
+            border-top-left-radius: 4px;
+            position: absolute;
+            left: -1px;
+            top: -1px;
+            height: 46px;
+            width: 46px;
+        }
+    </style>
+</apex:component>

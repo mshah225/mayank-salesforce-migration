@@ -4,7 +4,7 @@ private class Test_FeedbackController {
     private static Case testCase;
     private static User testUser;
     private static FeedbackController fc;
-    private static ServiceCenter sc;
+    private static ServiceCenterController sc;
 
     static void setUp() {
         Term__c termAC = new Term__c();
@@ -40,7 +40,7 @@ private class Test_FeedbackController {
         PageReference setPage = Page.feedback;
         Test.setCurrentPage(setPage);
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             fc = new FeedbackController(sc);
             fc.comments = 'Test description submission.';
 
@@ -56,7 +56,7 @@ private class Test_FeedbackController {
         PageReference setPage = Page.feedback;
         Test.setCurrentPage(setPage);
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             fc = new FeedbackController(sc);
             sc.viewingAs = true;
             fc.comments = 'test should return null PageReference while Viewing As';

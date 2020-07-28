@@ -3,7 +3,7 @@ private class NavLinksTest {
     private static Contact testContact;
     private static NavLinks nav;
     private static Profile asuCommunityProfile;
-    private static ServiceCenter sc;
+    private static ServiceCenterController sc;
     private static User testUser;
 
     private static void setUp() {
@@ -57,7 +57,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             nav = new Navlinks(sc);
             nav.init();
         }
@@ -70,7 +70,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             nav = new NavLinks(sc);
             ApexPages.currentPage()
                 .getParameters()
@@ -106,7 +106,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new ServiceCenter();
+            sc = new ServiceCenterController();
             nav = new NavLinks(sc);
             ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();
@@ -120,7 +120,7 @@ private class NavLinksTest {
     //     setUp();
     //     Test.startTest();
     //     System.runAs(testUser) {
-    //         sc = new ServiceCenter();
+    //         sc = new ServiceCenterController();
     //         nav = new NavLinks(sc);
     //         String links = '{"navbarLinks":' + '[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
     //             '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
@@ -152,7 +152,7 @@ private class NavLinksTest {
     //     setUp();
     //     Test.startTest();
     //     System.runAs(testUser) {
-    //         sc = new ServiceCenter();
+    //         sc = new ServiceCenterController();
     //         nav = new NavLinks(sc);
     //         String links = '[]';
     //         setCookie(links);
@@ -167,7 +167,7 @@ private class NavLinksTest {
     //     setUp();
     //     Test.startTest();
     //     System.runAs(testUser) {
-    //         sc = new ServiceCenter();
+    //         sc = new ServiceCenterController();
     //         nav = new NavLinks(sc);
     //         ApexPages.currentPage().getParameters().put('navbar',
     //             '{"navbarLinks":');

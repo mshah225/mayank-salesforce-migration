@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+<?xml version="1.0" encoding="utf-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
         <fullName>EMPLIDMissing</fullName>
         <language>en_US</language>
@@ -1028,5 +1029,19 @@ Also, the package has changed the setting to prevent the creation of Contacts an
         <protected>false</protected>
         <shortDescription>PreSurveyQuestion</shortDescription>
         <value>How can we help?</value>
+    </labels>
+    <labels>
+        <fullName>ASU_Brand_Header_SSO_Login_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ASU Brand Header SSO Login URL</shortDescription>
+        <value>https://dev-myasu.cs59.force.com?so=00D2C000000Cyy6</value>
+    </labels>
+    <labels>
+        <fullName>ASU_Brand_Header_SSO_Logout_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>ASU Brand Header SSO Logout URL</shortDescription>
+        <value>https://shibboleth-dev.asu.edu/idp/logoutRedirect.jsp</value>
     </labels>
 </CustomLabels>

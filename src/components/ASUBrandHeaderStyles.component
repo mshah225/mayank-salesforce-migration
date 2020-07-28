@@ -2,6 +2,10 @@
     <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header_media.min.css')}" />
     <style>
+        #asu_footer ul {
+            margin-left: auto;
+        }
+
         #asu-header-site-title a,
         #asu-header-site-title a:active,
         #asu-header-site-title a:focus,

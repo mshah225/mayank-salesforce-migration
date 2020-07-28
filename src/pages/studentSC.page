@@ -104,35 +104,37 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-7 service-center-region service-center-faq-region">
-                        <div class="header">
-                            <h6>
-                                <strong>Frequently Asked Questions</strong>
-                            </h6>
+                        <div class="service-center-region-header">
+                            <strong>Frequently Asked Questions</strong>
                         </div>
 
                         <div class="content box-padding" id="search_content">
                             <apex:form id="searchForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
-                                    <p>Ask us anything.</p>
-                                    <br />
-                                    <div class="searchKB2">
-                                        <div class="form-horizontal">
-                                            <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="searchBox" html-placeholder="Type your question here"
-                                                html-pattern=".{2,}" required="true" title="Please enter a minimum of 2
+                                    <div class="service-center-faq-search">
+                                        <center>
+                                            <p class="lead">
+                                                <strong>Ask us anything.</strong>
+                                            </p>
+                                            <div class="searchKB2">
+                                                <div class="form-horizontal">
+                                                    <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="service-center-faq-search-input" html-placeholder="Type your question here"
+                                                        html-pattern=".{2,}" required="true" title="Please enter a minimum of 2
                                                             characters" maxlength="99" />
 
-                                            <apex:commandButton value="Search" id="submitButton" styleClass="kbbtn searchBtn" reRender="theSearchResults" oncomplete="viewAsLinks()"
-                                                status="searchStatus" />
-
-                                            <apex:commandButton value="Clear" styleClass="kbbtn searchBtn" style="width:37px;" onclick="this.form.reset();return false;"
-                                            />
-                                        </div>
+                                                    <apex:commandLink id="theCommandLink" styleClass="btn btn-secondary" reRender="service-center-faq-search-results" oncomplete="viewAsLinks()"
+                                                        status="service-center-faq-search-status">
+                                                        <i class="fa fa-search" aria-hidden="true" />
+                                                    </apex:commandLink>
+                                                </div>
+                                            </div>
+                                        </center>
                                     </div>
                                 </apex:pageBlock>
                             </apex:form>
                             <br />
-                            <apex:form id="theSearchResults" style="min-height:200px;">
-                                <apex:pageBlock id="searchResults" mode="maindetail">
+                            <apex:form id="service-center-faq-search-results" style="min-height:200px;">
+                                <apex:pageBlock id="service-center-faq-search-results-block" mode="maindetail">
                                     <br />
                                     <apex:outputPanel rendered="{!searchstring != ''}">
                                         <h5>
@@ -144,9 +146,19 @@
                                         <h5>
                                             <strong>Browse common questions</strong>
                                         </h5>
+
+                                        <h6>Finances</h6>
+                                        <!-- Top 3 finance articles -->
+                                        <!-- Link to all finance questions -->
+                                        <h6>Technology</h6>
+                                        <!-- Top 3 technology articles -->
+                                        <!-- Link to all technology questions -->
+                                        <h6>Housing</h6>
+                                        <!-- Top 3 housing articles -->
+                                        <!-- Link to all housing questions -->
                                     </apex:outputPanel>
 
-                                    <apex:actionStatus id="searchStatus">
+                                    <apex:actionStatus id="service-center-faq-search-status">
                                         <apex:facet name="start">
                                             <img src="/img/loading.gif" style="position:absolute;margin:1px 0px 0px 5px;" />
                                         </apex:facet>

@@ -3,6 +3,14 @@
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
     <style>
+        p {
+            font-weight: 400;
+        }
+
+        .lead {
+            margin-top: 0;
+        }
+
         .checkboxHidden {
             visibility: hidden;
         }
@@ -11,7 +19,7 @@
             padding: 0px !important;
         }
 
-        .service-center-region .header {
+        .service-center-region-header {
             background-color: lightgray;
         }
 
@@ -19,6 +27,32 @@
             border: gray;
             border-style: solid;
             border-width: thin;
+        }
+
+        .col-md-7,
+        .col-md-5 {
+            padding: 0;
+        }
+
+        .service-center-faq-search {
+            background-color: #8C1D40;
+        }
+
+        .service-center-faq-search .lead {
+            color: white;
+        }
+
+        a.btn,
+        .btn {
+            margin-top: 0;
+        }
+
+        .service-center-faq-search-input {
+            min-width: 75%;
+        }
+
+        .asu-header-site-title-container {
+            padding-bottom: 0 !important;
         }
     </style>
 </apex:component>

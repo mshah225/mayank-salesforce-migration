@@ -1,5 +1,4 @@
 <apex:component allowDML="true" controller="ServiceCenterContactUsController">
-    <!-- This component renders the Immediate Assitance Box -->
     <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean" />
     <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean" />
     <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />
@@ -22,10 +21,8 @@
 
     <apex:outputPanel>
         <div class="box">
-            <div class="header">
-                <h6>
-                    <strong>Contact Us</strong>
-                </h6>
+            <div class="service-center-region-header">
+                <strong>Contact Us</strong>
             </div>
 
             <div class="content">
@@ -34,7 +31,7 @@
                     chat session, or call to talk now.
                 </p>
                 <apex:form>
-                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="theCommandLink">
+                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="theCommandLink" reRender="pannel1">
                         <strong>
                             <i class="fa fa-commenting" aria-hidden="true" />
                             <span class="service-center-contact-us-chat-text">Live Chat</span>

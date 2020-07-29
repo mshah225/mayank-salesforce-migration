@@ -7,8 +7,17 @@
             font-weight: 400;
         }
 
+        body {
+            color: #191919;
+        }
+
+        .btn-primary {
+            background: #8C1D40 !important;
+        }
+
         .lead {
             margin-top: 0;
+            font-weight: 400;
         }
 
         .checkboxHidden {
@@ -20,26 +29,53 @@
         }
 
         .service-center-region-header {
-            background-color: lightgray;
+            background-color: #f5f5f5;
+            font-weight: 500;
         }
 
-        .service-center-faq-region {
-            border: gray;
+        .service-center-region-header,
+        .service-center-region-sub-header,
+        .service-center-region-sub-header-category,
+        .service-center-region-contact-us-content,
+        .service-center-region-my-cases-content {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+
+        .service-center-region-sub-header {
+            font-weight: 500;
+        }
+
+        .service-center-region-contact-us,
+        .service-center-region-my-cases,
+        .service-center-region-faq {
+            margin-bottom: 2em;
+        }
+
+        .service-center-region-header,
+        .service-center-region-contact-us,
+        .service-center-region-my-cases,
+        .service-center-region-faq,
+        .service-center-region-faq-search {
+            border-color: #d8d8d8;
             border-style: solid;
             border-width: thin;
         }
 
-        .col-md-7,
-        .col-md-5 {
+        .col-md-6,
+        .col-md-5,
+        .col-md-1 {
             padding: 0;
         }
 
-        .service-center-faq-search {
+        .service-center-region-faq-search {
             background-color: #8C1D40;
+            padding: 2em;
         }
 
-        .service-center-faq-search .lead {
+        .service-center-region-faq-search .lead {
             color: white;
+            padding-bottom: .5em;
         }
 
         a.btn,
@@ -47,7 +83,7 @@
             margin-top: 0;
         }
 
-        .service-center-faq-search-input {
+        .service-center-region-faq-search-input {
             min-width: 75%;
         }
 

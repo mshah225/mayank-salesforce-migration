@@ -1,0 +1,92 @@
+<apex:component>
+    <apex:attribute name="searchstring" description="The searched string" type="String" />
+
+    <div class="service-center-region-faq">
+        <div class="service-center-region-header">
+            Frequently Asked Questions
+        </div>
+
+        <div class="content box-padding" id="search_content">
+            <apex:form id="searchForm" styleClass="searchKB">
+                <apex:pageBlock mode="maindetail">
+                    <div class="service-center-region-faq-search">
+                        <apex:actionStatus id="service-center-region-faq-search-status">
+                            <apex:facet name="start">
+                                <i class="fa fa-2x fa-spinner fa-spin" style="position:absolute;color:#FFC627;" />
+                                <!-- <img src="/img/loading.gif" style="float:right;margin:0 1em 0 1em" /> -->
+                            </apex:facet>
+                        </apex:actionStatus>
+                        <center>
+                            <p class="lead" style="display:inline-block;">Ask us anything.
+                            </p>
+                            <div class="searchKB2">
+                                <div class="form-horizontal">
+                                    <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="service-center-region-faq-search-input" html-placeholder="Type your question here"
+                                        html-pattern=".{2,}" required="true" title="Please enter a minimum of 2
+                                                                characters" maxlength="99" />
+
+                                    <apex:commandLink id="theCommandLink" styleClass="btn btn-secondary" reRender="service-center-region-faq-search-results"
+                                        oncomplete="viewAsLinks()" status="service-center-region-faq-search-status">
+                                        <i class="fa fa-search" aria-hidden="true" />
+                                    </apex:commandLink>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </apex:pageBlock>
+            </apex:form>
+            <apex:form id="service-center-region-faq-search-results" style="min-height:200px;">
+                <apex:pageBlock id="service-center-region-faq-search-results-block" mode="maindetail">
+                    <apex:outputPanel rendered="{!searchstring != ''}">
+                        <div class="service-center-region-sub-header">
+                            Showing top results for '{!searchstring}'
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!searchstring == ''}">
+                        <div class="service-center-region-sub-header">
+                            Browse common questions
+                        </div>
+                        <div class="service-center-region-sub-header-category">
+                            <p>Finances</p>
+                            <!-- Top 3 finance articles -->
+                            <!-- Link to all finance questions -->
+                            <a href="javascript:void(0)">View all finance questions</a>
+                        </div>
+                        <div class="service-center-region-sub-header-category">
+                            <p>Technology</p>
+                            <!-- Top 3 technology articles -->
+                            <!-- Link to all technology questions -->
+                            <a href="javascript:void(0)">View all technology questions</a>
+                        </div>
+                        <div class="service-center-region-sub-header-category">
+                            <p>Housing</p>
+                            <!-- Top 3 housing articles -->
+                            <!-- Link to all housing questions -->
+                            <a href="javascript:void(0)">View all housing questions</a>
+                        </div>
+                    </apex:outputPanel>
+                    <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageSize="{!IF(searchstring != '',10,5)}">
+                        <table>
+                            <tr>
+                                <td style="vertical-align:top;">
+                                    &#8226;&nbsp;
+                                </td>
+
+                                <td>
+                                    <apex:outputLink value="/authkb?id={!article.id}">
+                                        {!article.title}
+                                    </apex:outputLink>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="height:15px;"></div>
+                    </knowledge:articleList>
+
+                    <apex:commandLink styleClass="btn" style="padding:4px" value="View All Results" action="{!viewAllResults}" rendered="{!searchstring != ''}"
+                    />
+                </apex:pageBlock>
+            </apex:form>
+        </div>
+    </div>
+</apex:component>

@@ -20,12 +20,12 @@
     </script>
 
     <apex:outputPanel>
-        <div class="box">
+        <div class="box service-center-region-contact-us">
             <div class="service-center-region-header">
-                <strong>Contact Us</strong>
+                Contact Us
             </div>
 
-            <div class="content">
+            <div class="content service-center-region-contact-us-content">
                 <p>
                     We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
                     chat session, or call to talk now.

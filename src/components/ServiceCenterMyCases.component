@@ -1,12 +1,12 @@
 <apex:component controller="ServiceCenterMyCasesController" allowDML="true">
     <!-- This component renders the My Cases Box on the Service Center -->
     <apex:outputPanel>
-        <div class="box">
+        <div class="box service-center-region-my-cases">
             <div class="service-center-region-header">
-                <strong>My Cases</strong>
+                My Cases
             </div>
 
-            <div class="content box-padding" id="crm_content">
+            <div class="content box-padding service-center-region-my-cases-content" id="crm_content">
                 <div id="myCases">
                     <apex:form>
                         <h5>My Open Cases</h5>

@@ -170,7 +170,7 @@
             ga('send', 'pageview');
         </script>
 
-        <c:ServiceCenterBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
+        <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
 
         <script>
@@ -229,7 +229,7 @@
 
 
         <div id="asu_content_well">
-            <c:ServiceCenterPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+            <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
 
             <div class="container">
 
@@ -426,9 +426,9 @@
                     </div>
                     <!-- end col-md-8 -->
                     <div class="col-md-5">
-                        <c:ServiceCenterContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
+                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
                             changePin="{!changePin}" />
-                        <c:ServiceCenterMyCases />
+                        <c:MyASUHelpMyCases />
                     </div>
                     <!-- end col-md-4-->
                 </div>

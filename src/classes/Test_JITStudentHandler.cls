@@ -1,16 +1,15 @@
 @isTest
-public with sharing class Test_JITStudentHandler
-{
-    @testSetup static void setUpData()
-    {
+public with sharing class Test_JITStudentHandler {
+    @testSetup
+    static void setUpData() {
         Contact testContact = ContactService.createTestContact();
         testContact.ASURite_ID__c = 'testJIT';
 
         insert testContact;
     }
 
-    @isTest static void testJITServiceCenterJustFedId()
-    {
+    @isTest
+    static void testJITMyASUHelpJustFedId() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
 
@@ -22,8 +21,8 @@ public with sharing class Test_JITStudentHandler
         System.assertNotEquals(null, testUser);
     }
 
-    @isTest static void testServiceCenterUserCreation()
-    {
+    @isTest
+    static void testMyASUHelpUserCreation() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
         attributes.put('User.FirstName', 'Crazy');

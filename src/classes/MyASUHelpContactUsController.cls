@@ -1,4 +1,4 @@
-public without sharing class ServiceCenterContactUsController {
+public without sharing class MyASUHelpContactUsController {
     public String financeChatButton { get; set; }
     public String financeDisplayName { get; set; }
     public String studentServicesChatButton { get; set; }
@@ -10,7 +10,7 @@ public without sharing class ServiceCenterContactUsController {
     public String chatEndpoint { get; set; }
     public Boolean showLiveChatOptions { get; set; }
 
-    public ServiceCenterContactUsController() {
+    public MyASUHelpContactUsController() {
         Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
         Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
         Live_Agent_Button__c technicalSupportChatLAB = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');

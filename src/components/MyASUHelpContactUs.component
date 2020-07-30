@@ -1,4 +1,4 @@
-<apex:component allowDML="true" controller="ServiceCenterContactUsController">
+<apex:component allowDML="true" controller="MyASUHelpContactUsController">
     <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean" />
     <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean" />
     <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />
@@ -20,12 +20,12 @@
     </script>
 
     <apex:outputPanel>
-        <div class="box">
+        <div class="box service-center-region-contact-us">
             <div class="service-center-region-header">
-                <strong>Contact Us</strong>
+                Contact Us
             </div>
 
-            <div class="content">
+            <div class="content service-center-region-contact-us-content">
                 <p>
                     We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
                     chat session, or call to talk now.

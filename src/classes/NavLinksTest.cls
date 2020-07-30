@@ -3,7 +3,7 @@ private class NavLinksTest {
     private static Contact testContact;
     private static NavLinks nav;
     private static Profile asuCommunityProfile;
-    private static ServiceCenterController sc;
+    private static MyASUHelpController sc;
     private static User testUser;
 
     private static void setUp() {
@@ -39,8 +39,8 @@ private class NavLinksTest {
 
         insert testUser;
 
-        PageReference serviceCenter = Page.studentSC;
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
     }
 
     private static void setCookie(String cookieData) {
@@ -57,7 +57,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             nav = new Navlinks(sc);
             nav.init();
         }
@@ -70,7 +70,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             nav = new NavLinks(sc);
             ApexPages.currentPage()
                 .getParameters()
@@ -78,7 +78,7 @@ private class NavLinksTest {
                     'navbar',
                     '{"navbarLinks":[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
                     '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
-                    '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
+                    '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/myasuhelp"},' +
                     '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
                     '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}'
                 );
@@ -92,7 +92,7 @@ private class NavLinksTest {
         System.assertEquals(nav.linkList[1].url, 'https://webapp4-dev.asu.edu/myasu/student/finances');
 
         System.assertEquals(nav.linkList[2].name, 'Service Center');
-        System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
+        System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/myasuhelp');
 
         System.assertEquals(nav.linkList[3].name, 'Campus Services');
         System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
@@ -106,7 +106,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             nav = new NavLinks(sc);
             ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();
@@ -120,11 +120,11 @@ private class NavLinksTest {
     //     setUp();
     //     Test.startTest();
     //     System.runAs(testUser) {
-    //         sc = new ServiceCenterController();
+    //         sc = new MyASUHelpController();
     //         nav = new NavLinks(sc);
     //         String links = '{"navbarLinks":' + '[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
     //             '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
-    //             '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
+    //             '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/myasuhelp"},' +
     //             '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
     //             '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}';
     //         setCookie(links);
@@ -138,7 +138,7 @@ private class NavLinksTest {
     //     System.assertEquals(nav.linkList[1].url,'https://webapp4-dev.asu.edu/myasu/student/finances');
     //
     //     System.assertEquals(nav.linkList[2].name,'Service Center');
-    //     System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
+    //     System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/myasuhelp');
     //
     //     System.assertEquals(nav.linkList[3].name,'Campus Services');
     //     System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
@@ -152,7 +152,7 @@ private class NavLinksTest {
     //     setUp();
     //     Test.startTest();
     //     System.runAs(testUser) {
-    //         sc = new ServiceCenterController();
+    //         sc = new MyASUHelpController();
     //         nav = new NavLinks(sc);
     //         String links = '[]';
     //         setCookie(links);
@@ -167,7 +167,7 @@ private class NavLinksTest {
     //     setUp();
     //     Test.startTest();
     //     System.runAs(testUser) {
-    //         sc = new ServiceCenterController();
+    //         sc = new MyASUHelpController();
     //         nav = new NavLinks(sc);
     //         ApexPages.currentPage().getParameters().put('navbar',
     //             '{"navbarLinks":');

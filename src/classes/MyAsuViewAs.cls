@@ -1,5 +1,4 @@
 public without sharing class MyAsuViewAs {
-    
     private Map<String, String> response;
     public Boolean hasViewAsRights;
 
@@ -7,18 +6,19 @@ public without sharing class MyAsuViewAs {
         response = EffectiveIdentityCallout.getCalloutResponseContents(idCookie, asurite);
         checkViewAsRights(response, asurite);
     }
-    
+
     public String getResponseValueFromMap(String specificResponse) {
         return String.valueOf(response.get(specificResponse));
     }
-    
+
     private void checkViewAsRights(Map<String, String> viewAsMap, String userAsurite) {
-        hasViewAsRights = !viewAsMap.isEmpty()
-                && viewAsMap.get('authorizedToViewAs') == 'true'
-                && viewAsMap.get('isViewingAs') == 'true'
-                && userAsurite != viewAsMap.get('effectiveAsurite');
+        hasViewAsRights =
+            !viewAsMap.isEmpty() &&
+            viewAsMap.get('authorizedToViewAs') == 'true' &&
+            viewAsMap.get('isViewingAs') == 'true' &&
+            userAsurite != viewAsMap.get('effectiveAsurite');
     }
-    
+
     public Contact getContact(String asurite) {
         if (hasViewAsRights) {
             return MyAsuViewAsWithoutSharing.getContact(asurite);
@@ -34,12 +34,20 @@ public without sharing class MyAsuViewAs {
             return MyAsuViewAsWithSharing.getCaseDetails(caseId);
         }
     }
-    
+
     public Map<Id, List<Case>> getOpenCases(List<Contact> contacts) {
         if (hasViewAsRights) {
             return MyAsuViewAsWithoutSharing.getOpenCases(contacts);
         } else {
             return MyAsuViewAsWithSharing.getOpenCases(contacts);
+        }
+    }
+
+    public Map<Id, List<Case>> getOpenCases(List<Contact> contacts, Integer queryLimit) {
+        if (hasViewAsRights) {
+            return MyAsuViewAsWithoutSharing.getOpenCases(contacts, queryLimit);
+        } else {
+            return MyAsuViewAsWithSharing.getOpenCases(contacts, queryLimit);
         }
     }
 
@@ -51,6 +59,14 @@ public without sharing class MyAsuViewAs {
         }
     }
 
+    public Map<Id, List<Case>> getClosedCases(List<Contact> contacts, Integer queryLimit) {
+        if (hasViewAsRights) {
+            return MyAsuViewAsWithoutSharing.getClosedCases(contacts, queryLimit);
+        } else {
+            return MyAsuViewAsWithSharing.getClosedCases(contacts, queryLimit);
+        }
+    }
+
     public List<EmailMessage> getCaseEmails(Date launchDate, Id caseId, List<String> contactEmails) {
         if (hasViewAsRights) {
             return MyAsuViewAsWithoutSharing.getCaseEmails(launchDate, caseId, contactEmails);
@@ -58,8 +74,10 @@ public without sharing class MyAsuViewAs {
             return MyAsuViewAsWithSharing.getCaseEmails(launchDate, caseId, contactEmails);
         }
     }
-        
-    private with sharing class MyAsuViewAsWithSharing extends MyAsuViewAsSharingService{}
-    
-    private without sharing class MyAsuViewAsWithoutSharing extends MyAsuViewAsSharingService{}
+
+    private with sharing class MyAsuViewAsWithSharing extends MyAsuViewAsSharingService {
+    }
+
+    private without sharing class MyAsuViewAsWithoutSharing extends MyAsuViewAsSharingService {
+    }
 }

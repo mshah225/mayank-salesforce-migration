@@ -1,0 +1,49 @@
+<apex:component>
+    <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean" />
+    <apex:attribute name="masqScopeIdCookie" description="Cookie" type="String" />
+    <script>
+        if (!(navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i))) {
+            document.getElementById("normalPhone").addEventListener("click", function (event) {
+                event.preventDefault();
+            });
+
+            document.getElementById("normalPhone").addEventListener("contextmenu", function (event) {
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("click", function (event) {
+                event.preventDefault();
+            });
+
+            document.getElementById("roverPhone").addEventListener("contextmenu", function (event) {
+                event.preventDefault();
+            });
+        }
+
+        viewAsLinks();
+        function viewAsLinks() {
+            var masqCookie = "{!masqScopeIdCookie}";
+            var viewingAs = "{!viewingAs}";
+            if (masqCookie != "" && viewingAs == "true") {
+                $("a").each(function () {
+                    var href = this.href;
+                    if (href.indexOf("force") > -1) {
+                        if (href.indexOf("?") != -1) {
+                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        else {
+                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                        }
+                        $(this).attr("href", href);
+                    }
+                });
+            }
+        }
+    </script>
+</apex:component>

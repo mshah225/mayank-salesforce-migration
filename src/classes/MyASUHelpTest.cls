@@ -1,9 +1,9 @@
 @isTest
-private class ServiceCenterTest {
-    private static ServiceCenterController sc;
+private class MyASUHelpTest {
+    private static MyASUHelpController sc;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
-    private static ServiceCenterMyCasesController serviceCenterMyCases;
+    private static MyASUHelpMyCasesController myASUHelpMyCases;
     private static Case caseOnTestUser;
     private static User testUser;
     private static Contact contactRelatedToTestUser;
@@ -188,20 +188,20 @@ private class ServiceCenterTest {
 
         loadTestDataWithUserByLastName('User0');
 
-        PageReference serviceCenter = Page.studentSC;
-        serviceCenter.getParameters().put('source', 'viewAllCases');
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        myASUHelp.getParameters().put('source', 'viewAllCases');
+        Test.setCurrentPage(myASUHelp);
 
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             vcc = new viewCaseController();
-            serviceCenterMyCases = new ServiceCenterMyCasesController();
+            myASUHelpMyCases = new MyASUHelpMyCasesController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            serviceCenterMyCases.getMyCasesBox();
+            myASUHelpMyCases.getMyCasesBox();
 
             sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vcc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
@@ -236,9 +236,9 @@ private class ServiceCenterTest {
         insert scm;
 
         loadTestDataWithUserByLastName('User1');
-        PageReference serviceCenter = Page.studentSC;
-        serviceCenter.getParameters().put('source', 'viewAllCases');
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        myASUHelp.getParameters().put('source', 'viewAllCases');
+        Test.setCurrentPage(myASUHelp);
 
         Test.startTest();
 
@@ -249,11 +249,11 @@ private class ServiceCenterTest {
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            serviceCenterMyCases = new ServiceCenterMyCasesController();
-            sc = new ServiceCenterController();
+            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            sc = new MyASUHelpController();
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            serviceCenterMyCases.oppList = oppListForTestUser;
+            myASUHelpMyCases.oppList = oppListForTestUser;
 
             vacc.getMyCases();
             vacc.getAllClosedCases();
@@ -266,9 +266,9 @@ private class ServiceCenterTest {
             vacc.getSource();
             vacc.viewCase();
 
-            serviceCenterMyCases.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
-            serviceCenterMyCases.viewAsUrl = 'www.hankhillgifs.com';
-            serviceCenterMyCases.getmyCasesBox();
+            myASUHelpMyCases.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
+            myASUHelpMyCases.viewAsUrl = 'www.hankhillgifs.com';
+            myASUHelpMyCases.getmyCasesBox();
             System.assertEquals(false, sc.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
             System.assertEquals('There is maintenance forever', sc.getmMessage());
@@ -280,22 +280,22 @@ private class ServiceCenterTest {
     private static void testStudentSCNotEnrolled() {
         loadTestDataWithUserByLastName('User2');
 
-        PageReference serviceCenter = Page.studentSC;
-        serviceCenter.getParameters().put('source', 'viewAllCases');
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        myASUHelp.getParameters().put('source', 'viewAllCases');
+        Test.setCurrentPage(myASUHelp);
 
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             vcc = new viewCaseController();
-            serviceCenterMyCases = new ServiceCenterMyCasesController();
+            myASUHelpMyCases = new MyASUHelpMyCasesController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            serviceCenterMyCases.oppList = oppListForTestUser;
+            myASUHelpMyCases.oppList = oppListForTestUser;
 
-            System.assertEquals(true, serviceCenterMyCases.getmyCasesBox());
+            System.assertEquals(true, myASUHelpMyCases.getmyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
             System.assertEquals(true, vcc.getHelpBox());
         }
@@ -309,16 +309,16 @@ private class ServiceCenterTest {
 
         Test.startTest();
 
-        PageReference serviceCenter = Page.studentSC;
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
-            serviceCenterMyCases = new ServiceCenterMyCasesController();
+            sc = new MyASUHelpController();
+            myASUHelpMyCases = new MyASUHelpMyCasesController();
 
-            serviceCenterMyCases.oppList = oppListForTestUser;
+            myASUHelpMyCases.oppList = oppListForTestUser;
 
-            System.assertEquals(true, serviceCenterMyCases.getMyCasesBox());
+            System.assertEquals(true, myASUHelpMyCases.getMyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
         }
         Test.stopTest();
@@ -328,19 +328,19 @@ private class ServiceCenterTest {
     private static void testStudentSCAlumni() {
         loadTestDataWithUserByLastName('User3');
 
-        PageReference serviceCenter = Page.studentSC;
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
 
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             System.assertEquals(true, sc.getHelpBox());
-            serviceCenterMyCases = new ServiceCenterMyCasesController();
+            myASUHelpMyCases = new MyASUHelpMyCasesController();
 
-            serviceCenterMyCases.oppList = oppListForTestUser;
+            myASUHelpMyCases.oppList = oppListForTestUser;
 
-            System.assertEquals(true, serviceCenterMyCases.getMyCasesBox());
+            System.assertEquals(true, myASUHelpMyCases.getMyCasesBox());
         }
 
         Test.stopTest();
@@ -350,31 +350,28 @@ private class ServiceCenterTest {
     private static void testSubmitCase() {
         loadTestUserByLastName('User0');
 
-        PageReference serviceCenter = Page.studentSC;
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
 
         Test.startTest();
 
         System.runAs(testUser) {
-            serviceCenterMyCases = new ServiceCenterMyCasesController();
-            serviceCenterMyCases.newCase.Subject = 'Test Subject for SC';
-            serviceCenterMyCases.newCase.Description = 'Test Desc';
+            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            myASUHelpMyCases.newCase.Subject = 'Test Subject for SC';
+            myASUHelpMyCases.newCase.Description = 'Test Desc';
 
-            PageReference submit = serviceCenterMyCases.submitCase();
+            PageReference submit = myASUHelpMyCases.submitCase();
             System.debug(submit);
             System.assertEquals(submit.getURL().contains('/viewcase?'), true);
 
-            serviceCenterMyCases.getClosedCases();
-            serviceCenterMyCases.viewCase();
-            serviceCenterMyCases.getMyCases();
-            serviceCenterMyCases.getMyCasesBox();
+            myASUHelpMyCases.getClosedCases();
+            myASUHelpMyCases.viewCase();
+            myASUHelpMyCases.getMyCases();
+            myASUHelpMyCases.getMyCasesBox();
 
-            serviceCenterMyCases.viewingAs = true;
-            serviceCenterMyCases.masqScopeIdCookie = 'testCookie';
-            System.assertEquals(
-                serviceCenterMyCases.submitCase().getURL().contains('masqScopeIdCookie=testCookie'),
-                true
-            );
+            myASUHelpMyCases.viewingAs = true;
+            myASUHelpMyCases.masqScopeIdCookie = 'testCookie';
+            System.assertEquals(myASUHelpMyCases.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
         }
 
         Test.stopTest();
@@ -383,13 +380,13 @@ private class ServiceCenterTest {
     @isTest
     private static void suggestAnArticleReturnsProperUrl() {
         loadTestUserByLastName('User0');
-        PageReference serviceCenter = Page.studentSC;
-        Test.setCurrentPage(serviceCenter);
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
         PageReference submit;
         String urlReturnedFromSubmit;
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
             sc.suggestedArticleDescription = 'Description';
             submit = ApexPages.currentPage();
@@ -418,7 +415,7 @@ private class ServiceCenterTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
 
@@ -540,7 +537,7 @@ private class ServiceCenterTest {
         loadTestDataWithUserByLastName('User0');
 
         System.runAs(testUser) {
-            sc = new ServiceCenterController();
+            sc = new MyASUHelpController();
             sc.newPin = testUser.Contact.Self_Service_PIN__c + 1;
             sc.UserContact.LastName = null;
             Test.startTest();

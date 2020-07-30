@@ -1,12 +1,10 @@
-public with sharing class ServiceCenterMyCasesController {
-    private static final Integer CLOSEDCASELIMIT = 5;
+public with sharing class MyASUHelpMyCasesController {
     private Id caseId;
     private Map<String, String> viewAsMap;
     private Term__c termcAC;
     private Term__c termcB;
     private Decimal origPin;
     private Date today;
-
     public Boolean viewingAs { get; set; }
     public Case newCase { get; set; }
     public List<Opportunity> oppList;
@@ -21,7 +19,7 @@ public with sharing class ServiceCenterMyCasesController {
     public String masqScopeIdCookie { get; set; }
     public MyAsuViewAs viewAsService;
 
-    public ServiceCenterMyCasesController() {
+    public MyASUHelpMyCasesController() {
         newCase = new Case();
         viewingAs = false;
         createViewAs();
@@ -76,29 +74,30 @@ public with sharing class ServiceCenterMyCasesController {
         ];
     }
 
+    public List<Case> getMyCases() {
+        List<Contact> contacts = new List<Contact>{ userContact };
+        Map<Id, List<Case>> openCaseMap;
+        if (viewAsService != null) {
+            openCaseMap = viewAsService.getOpenCases(contacts, 5);
+        } else {
+            openCaseMap = CaseService.getVisibleOpenCases(contacts, 5);
+        }
+
+        return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
+    }
+
     public List<Case> getClosedCases() {
         List<Case> closedCases = new List<Case>();
         List<Contact> contacts = new List<Contact>{ userContact };
         Map<Id, List<Case>> closedCaseMap;
 
         if (viewAsService != null) {
-            closedCaseMap = viewAsService.getClosedCases(contacts);
+            closedCaseMap = viewAsService.getClosedCases(contacts, 5);
         } else {
-            closedCaseMap = CaseService.getVisibleClosedCases(contacts);
+            closedCaseMap = CaseService.getVisibleClosedCases(contacts, 5);
         }
 
-        if (closedCaseMap.get(userContact.Id) != null) {
-            // Limit the number of closed cases that are displayed to CLOSEDCASELIMIT
-            if (closedCaseMap.get(userContact.Id).size() > CLOSEDCASELIMIT) {
-                for (Integer i = 0; i < CLOSEDCASELIMIT; i++) {
-                    closedCases.add(closedCaseMap.get(userContact.Id).get(i));
-                }
-            } else {
-                closedCases = closedCaseMap.get(userContact.Id).clone();
-            }
-        }
-
-        return closedCases;
+        return (closedCaseMap.get(userContact.Id) == null) ? new List<Case>() : closedCaseMap.get(userContact.Id);
     }
 
     public PageReference viewCase() {
@@ -144,18 +143,6 @@ public with sharing class ServiceCenterMyCasesController {
             ErrorLogger.log(e, vars, false);
             return null;
         }
-    }
-
-    public List<Case> getMyCases() {
-        List<Contact> contacts = new List<Contact>{ userContact };
-        Map<Id, List<Case>> openCaseMap;
-        if (viewAsService != null) {
-            openCaseMap = viewAsService.getOpenCases(contacts);
-        } else {
-            openCaseMap = CaseService.getVisibleOpenCases(contacts);
-        }
-
-        return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
     }
 
     public Boolean getMyCasesBox() {

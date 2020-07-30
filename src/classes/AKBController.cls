@@ -1,5 +1,5 @@
 public without sharing class AKBController {
-    private ServiceCenterController sc;
+    private MyASUHelpController myASUHelp;
     public AKB_Article_Feedback__c feedbackHelpful { get; set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
     public Case suggestAnArticle { get; set; }
@@ -17,9 +17,9 @@ public without sharing class AKBController {
     public String funcGroup { get; set; }
     public String artType { get; set; }
 
-    public AKBController(ServiceCenterController sc) {
-        this.sc = sc;
-        userContact = sc.userContact;
+    public AKBController(MyASUHelpController myASUHelp) {
+        this.myASUHelp = myASUHelp;
+        userContact = myASUHelp.userContact;
         article = [
             SELECT Title, ArticleType, ArticleNumber, KnowledgeArticleId, CreatedBy.Name
             FROM KnowledgeArticleVersion
@@ -63,9 +63,9 @@ public without sharing class AKBController {
     }
 
     public PageReference helpfulYes() {
-        if (sc.viewingAs) {
+        if (myASUHelp.viewingAs) {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
-            go.getParameters().put('masqScopeIdCookie', sc.masqScopeIdCookie);
+            go.getParameters().put('masqScopeIdCookie', myASUHelp.masqScopeIdCookie);
             go.setRedirect(true);
 
             return go;
@@ -97,9 +97,9 @@ public without sharing class AKBController {
     }
 
     public PageReference helpfulNo() {
-        if (sc.viewingAs) {
+        if (myASUHelp.viewingAs) {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
-            go.getParameters().put('masqScopeIdCookie', sc.masqScopeIdCookie);
+            go.getParameters().put('masqScopeIdCookie', myASUHelp.masqScopeIdCookie);
             go.setRedirect(true);
 
             return go;

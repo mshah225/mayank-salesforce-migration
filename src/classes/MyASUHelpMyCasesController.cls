@@ -1,4 +1,4 @@
-public with sharing class ServiceCenterMyCasesController {
+public with sharing class MyASUHelpMyCasesController {
     private Id caseId;
     private Map<String, String> viewAsMap;
     private Term__c termcAC;
@@ -19,7 +19,7 @@ public with sharing class ServiceCenterMyCasesController {
     public String masqScopeIdCookie { get; set; }
     public MyAsuViewAs viewAsService;
 
-    public ServiceCenterMyCasesController() {
+    public MyASUHelpMyCasesController() {
         newCase = new Case();
         viewingAs = false;
         createViewAs();

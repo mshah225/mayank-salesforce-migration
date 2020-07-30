@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="ServiceCenterController" action="{!init}" cache="true"
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MyASUHelpController" action="{!init}" cache="true"
     extensions="AKBController,NavLinks,vfListPaginationController">
 
     <head>
@@ -110,7 +110,7 @@
             ga('send', 'pageview');
         </script>
 
-        <c:ServiceCenterBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
+        <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
     </head>
 
@@ -121,7 +121,7 @@
             viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
         <div id="asu_content_well">
-            <c:ServiceCenterPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+            <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
 
             <div class="container">
                 <ol class="breadcrumb">
@@ -369,10 +369,10 @@
                                 </div>
                             </div>
                         </apex:form>
-                        <c:ServiceCenterContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
+                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
                             changePin="{!changePin}" />
 
-                        <c:ServiceCenterMyCases />
+                        <c:MyASUHelpMyCases />
                     </div>
                     <!-- end col-md-4 -->
                 </div>

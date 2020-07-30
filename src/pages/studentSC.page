@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="ServiceCenterController" action="{!init}" cache="true"
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MyASUHelpController" action="{!init}" cache="true"
     extensions="NavLinks,vfListPaginationController">
 
     <head>
@@ -30,12 +30,11 @@
         </script>
         <!-- End Google Analytics -->
 
-        <c:ServiceCenterBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
+        <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
     </head>
 
-    <apex:slds />
-    <c:ServiceCenterStyles />
+    <c:MyASUHelpStyles />
 
     <c:ASUBrandHeader />
     <div class="asu-header-site-title-container">
@@ -45,7 +44,7 @@
             </div>
         </div>
     </div>
-    <c:ServiceCenterMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+    <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
         viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
     <body>
@@ -56,24 +55,24 @@
         <!-- End Google Tag Manager (noscript) -->
 
         <div id="asu_content_well">
-            <c:ServiceCenterPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
+            <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
             />
-            <c:ServiceCenterSuggestAnArticle suggestAnArticle="{!suggestAnArticle}" />
+            <c:MyASUHelpSuggestAnArticle suggestAnArticle="{!suggestAnArticle}" />
 
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 service-center-region">
-                        <c:ServiceCenterFAQ searchstring="{!searchstring}" />
+                        <c:MyASUHelpFAQ searchstring="{!searchstring}" />
                     </div>
 
                     <div class="col-md-1"></div>
 
                     <div class="col-md-5 service-center-region">
-                        <c:ServiceCenterContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
+                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
                             changePin="{!changePin}" />
                         <div style="margin-bottom:2em;"></div>
 
-                        <c:ServiceCenterMyCases />
+                        <c:MyASUHelpMyCases />
                     </div>
                 </div>
                 <div class="row">
@@ -88,5 +87,5 @@
     </body>
 
     <c:ASUBrandFooter />
-    <c:ServiceCenterPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
+    <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

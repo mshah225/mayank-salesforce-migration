@@ -1,5 +1,5 @@
 @isTest
-public class ServiceCenterAttachmentsControllerTest {
+public class MyASUHelpAttachmentsControllerTest {
     private static List<Case> openCases; // A list of all open cases
     private static User testCommUser; // A test Community User
     private static User testAdminUser; // A test Admin user
@@ -40,7 +40,7 @@ public class ServiceCenterAttachmentsControllerTest {
         List<Attachment> verifyAtt;
         Test.startTest();
         System.runAs(testAdminUser) {
-            ServiceCenterAttachmentsController testAttBox = new ServiceCenterAttachmentsController();
+            MyASUHelpAttachmentsController testAttBox = new MyASUHelpAttachmentsController();
             testAttBox.attParentId = openCases[0].Id;
             testAttBox.objAtt.Name = 'Test Attachment';
             testAttBox.objAtt.Body = Blob.valueOf('Test Attachment Body');
@@ -56,7 +56,7 @@ public class ServiceCenterAttachmentsControllerTest {
         }
 
         System.runAs(testCommUser) {
-            ServiceCenterAttachmentsController testAttBox = new ServiceCenterAttachmentsController();
+            MyASUHelpAttachmentsController testAttBox = new MyASUHelpAttachmentsController();
             testAttBox.attParentId = openCases[0].Id;
             testAttBox.objAtt.Name = 'Test Attachment';
             testAttBox.objAtt.Body = Blob.valueOf('Test Attachment Body');

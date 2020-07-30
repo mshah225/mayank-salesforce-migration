@@ -1,7 +1,7 @@
 public class NavLinks {
     public NavLinks() {
     }
-    public NavLinks(ServiceCenterController controller) {
+    public NavLinks(MyASUHelpController controller) {
     }
     public NavLinks(viewCaseController controller) {
     }

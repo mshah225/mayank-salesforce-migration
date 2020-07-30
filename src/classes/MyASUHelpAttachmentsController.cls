@@ -1,4 +1,4 @@
-public with sharing class ServiceCenterAttachmentsController {
+public with sharing class MyASUHelpAttachmentsController {
     public Id attParentId { get; set; }
     public Attachment objAtt { get; set; }
     public List<String> vars;
@@ -22,7 +22,7 @@ public with sharing class ServiceCenterAttachmentsController {
         set;
     }
 
-    public ServiceCenterAttachmentsController() {
+    public MyASUHelpAttachmentsController() {
         objAtt = new Attachment();
     }
 

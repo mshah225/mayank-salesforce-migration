@@ -1,4 +1,4 @@
-public with sharing class ServiceCenterController {
+public with sharing class MyASUHelpController {
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 4, 6);
     private static final Integer CLOSEDCASELIMIT = 5;
     private Id caseId;
@@ -24,7 +24,7 @@ public with sharing class ServiceCenterController {
     public String userAsurite;
     public String mMessage;
 
-    public ServiceCenterController() {
+    public MyASUHelpController() {
         suggestAnArticle = new Case();
         viewingAs = false;
         checkForViewAs();

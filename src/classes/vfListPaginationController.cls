@@ -6,7 +6,7 @@ public with sharing class vfListPaginationController {
     public vfListPaginationController() {
         setUpPage();
     }
-    public vfListPaginationController(ServiceCenterController controller) {
+    public vfListPaginationController(MyASUHelpController controller) {
         setUpPage();
     }
 

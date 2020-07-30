@@ -1,4 +1,4 @@
-<apex:component controller="ServiceCenterMyCasesController" allowDML="true">
+<apex:component controller="MyASUHelpMyCasesController" allowDML="true">
     <!-- This component renders the My Cases Box on the Service Center -->
     <apex:outputPanel>
         <div class="box service-center-region-my-cases">

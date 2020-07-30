@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component controller="MyASUHelpFAQController" extensions="vfListPaginationController">
     <apex:attribute name="searchstring" description="The searched string" type="String" />
 
     <div class="service-center-region-faq">
@@ -42,7 +42,7 @@
                             Showing top results for '{!searchstring}'
                         </div>
                     </apex:outputPanel>
-                    <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageSize="{!IF(searchstring != '',10,5)}">
+                    <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageSize="{!IF(searchstring != '',5,0)}">
                         <table>
                             <tr>
                                 <td>
@@ -53,7 +53,7 @@
                             </tr>
                         </table>
                     </knowledge:articleList>
-                    <apex:commandLink styleClass="btn" style="padding:4px" value="View All Results" action="{!viewAllResults}" rendered="{!searchstring != ''}"
+                    <apex:commandLink styleClass="btn" style="padding:4px" value="View all results" action="{!viewAllResults}" rendered="{!searchstring != ''}"
                     />
 
                     <apex:outputPanel rendered="{!searchstring == ''}">
@@ -62,50 +62,26 @@
                         </div>
                         <div class="service-center-region-sub-header-category">
                             <p>Finances</p>
-                            <knowledge:articleList articleVar="article" sortBy="mostViewed" categories="Finance" pageSize="{!IF(searchstring == '',5,5)}">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <apex:outputLink value="/authkb?id={!article.id}">
-                                                {!article.title}
-                                            </apex:outputLink>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </knowledge:articleList>
-                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all finance questions" action="{!viewAllResults}" rendered="{!searchstring != ''}"
+                            <apex:dataList value="{!topFiveFinancialArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
+                                <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
+                            </apex:dataList>
+                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
                             />
                         </div>
                         <div class="service-center-region-sub-header-category">
                             <p>Technology</p>
-                            <knowledge:articleList articleVar="article" sortBy="mostViewed" categories="Technology" pageSize="{!IF(searchstring == '',5,5)}">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <apex:outputLink value="/authkb?id={!article.id}">
-                                                {!article.title}
-                                            </apex:outputLink>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </knowledge:articleList>
-                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all technology questions" action="{!viewAllResults}" rendered="{!searchstring != ''}"
+                            <apex:dataList value="{!topFiveTechnicalArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
+                                <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
+                            </apex:dataList>
+                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all technology questions" action="{!getViewAllTechnicalArticlesLink}"
                             />
                         </div>
                         <div class="service-center-region-sub-header-category">
                             <p>Housing</p>
-                            <knowledge:articleList articleVar="article" sortBy="mostViewed" categories="Housing" pageSize="{!IF(searchstring == '',5,5)}">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <apex:outputLink value="/authkb?id={!article.id}">
-                                                {!article.title}
-                                            </apex:outputLink>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </knowledge:articleList>
-                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all housing questions" action="{!viewAllResults}" rendered="{!searchstring != ''}"
+                            <apex:dataList value="{!topFiveHousingArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
+                                <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
+                            </apex:dataList>
+                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
                             />
                         </div>
                     </apex:outputPanel>

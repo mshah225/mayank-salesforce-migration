@@ -72,7 +72,6 @@
         }
 
         function reloadPage() {
-            console.log('in reload page');
             if (isLightningExperienceOrSalesforce1()) {
                 hideButtons();
                 var refreshPrimaryTab = function showTabId(result) {

@@ -61,24 +61,24 @@
                             Browse common questions
                         </div>
                         <div class="service-center-region-sub-header-category">
-                            <p>Finances</p>
-                            <apex:dataList value="{!topFiveFinancialArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
+                            <div class="service-center-region-common-questions-header">Finances</div>
+                            <apex:dataList value="{!topThreeFinancialArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
                                 <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
                             </apex:dataList>
                             <apex:commandLink styleClass="btn" style="padding:4px" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
                             />
                         </div>
                         <div class="service-center-region-sub-header-category">
-                            <p>Technology</p>
-                            <apex:dataList value="{!topFiveTechnicalArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
+                            <div class="service-center-region-common-questions-header">Technology</div>
+                            <apex:dataList value="{!topThreeTechnicalArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
                                 <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
                             </apex:dataList>
                             <apex:commandLink styleClass="btn" style="padding:4px" value="View all technology questions" action="{!getViewAllTechnicalArticlesLink}"
                             />
                         </div>
                         <div class="service-center-region-sub-header-category">
-                            <p>Housing</p>
-                            <apex:dataList value="{!topFiveHousingArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
+                            <div class="service-center-region-common-questions-header">Housing</div>
+                            <apex:dataList value="{!topThreeHousingArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
                                 <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
                             </apex:dataList>
                             <apex:commandLink styleClass="btn" style="padding:4px" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"

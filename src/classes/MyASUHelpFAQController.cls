@@ -30,7 +30,7 @@ public with sharing class MyASUHelpFAQController {
                 FROM FAQ__kav
                 WHERE IsDeleted = false AND Functional_Group__c = 'Financial Aid'
                 ORDER BY ArticleTotalViewCount DESC
-                LIMIT 5
+                LIMIT 3
             ];
         } catch (Exception e) {
             List<String> vars = new List<String>();
@@ -51,7 +51,7 @@ public with sharing class MyASUHelpFAQController {
                 FROM FAQ__kav
                 WHERE IsDeleted = false AND Functional_Group__c LIKE '%Technical Resources%'
                 ORDER BY ArticleTotalViewCount DESC
-                LIMIT 5
+                LIMIT 3
             ];
         } catch (Exception e) {
             List<String> vars = new List<String>();
@@ -72,7 +72,7 @@ public with sharing class MyASUHelpFAQController {
                 FROM FAQ__kav
                 WHERE IsDeleted = false AND Functional_Group__c = 'Housing'
                 ORDER BY ArticleTotalViewCount DESC
-                LIMIT 5
+                LIMIT 3
             ];
         } catch (Exception e) {
             List<String> vars = new List<String>();

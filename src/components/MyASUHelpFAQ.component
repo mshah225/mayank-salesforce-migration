@@ -1,16 +1,16 @@
 <apex:component controller="MyASUHelpFAQController" extensions="vfListPaginationController">
     <apex:attribute name="searchstring" description="The searched string" type="String" />
 
-    <div class="service-center-region-faq">
-        <div class="service-center-region-header">
+    <div class="myasu-help-region-faq">
+        <div class="myasu-help-region-header">
             Frequently Asked Questions
         </div>
 
         <div class="content box-padding" id="search_content">
             <apex:form id="searchForm" styleClass="searchKB">
                 <apex:pageBlock mode="maindetail">
-                    <div class="service-center-region-faq-search">
-                        <apex:actionStatus id="service-center-region-faq-search-status">
+                    <div class="myasu-help-region-faq-search">
+                        <apex:actionStatus id="myasu-help-region-faq-search-status">
                             <apex:facet name="start">
                                 <i class="fa fa-2x fa-spinner fa-spin" style="position:absolute;color:#FFC627;" />
                             </apex:facet>
@@ -20,12 +20,12 @@
                             </p>
                             <div class="searchKB2">
                                 <div class="form-horizontal">
-                                    <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="service-center-region-faq-search-input" html-placeholder="Type your question here"
+                                    <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="myasu-help-region-faq-search-input" html-placeholder="Type your question here"
                                         html-pattern=".{2,}" required="true" title="Please enter a minimum of 2
                                                                 characters" maxlength="99" />
 
-                                    <apex:commandLink id="theCommandLink" styleClass="btn btn-secondary" reRender="service-center-region-faq-search-results"
-                                        oncomplete="viewAsLinks()" status="service-center-region-faq-search-status">
+                                    <apex:commandLink id="theCommandLink" styleClass="btn btn-secondary" reRender="myasu-help-region-faq-search-results" oncomplete="viewAsLinks()"
+                                        status="myasu-help-region-faq-search-status">
                                         <i class="fa fa-search" aria-hidden="true" />
                                     </apex:commandLink>
                                 </div>
@@ -34,11 +34,11 @@
                     </div>
                 </apex:pageBlock>
             </apex:form>
-            <apex:form id="service-center-region-faq-search-results" style="min-height:200px;">
-                <apex:pageBlock id="service-center-region-faq-search-results-block" mode="maindetail">
+            <apex:form id="myasu-help-region-faq-search-results" style="min-height:200px;">
+                <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
 
                     <apex:outputPanel rendered="{!searchstring != ''}">
-                        <div class="service-center-region-sub-header">
+                        <div class="myasu-help-region-sub-header">
                             Showing top results for '{!searchstring}'
                         </div>
                     </apex:outputPanel>
@@ -57,31 +57,34 @@
                     />
 
                     <apex:outputPanel rendered="{!searchstring == ''}">
-                        <div class="service-center-region-sub-header">
+                        <div class="myasu-help-region-sub-header">
                             Browse common questions
                         </div>
-                        <div class="service-center-region-sub-header-category">
-                            <div class="service-center-region-common-questions-header">Finances</div>
-                            <apex:dataList value="{!topThreeFinancialArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
-                                <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
-                            </apex:dataList>
-                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
+                        <div class="myasu-help-region-sub-header-category">
+                            <div class="myasu-help-region-common-questions-header">Finances</div>
+                            <apex:repeat value="{!topThreeFinancialArticles}" var="article" id="myasu-help-region-common-questions-finances">
+                                <apex:outputLink styleClass="myasu-help-region-common-questions-finance-article" value="/kb/articles/FAQ/{!article.UrlName}">{!article.Title}</apex:outputLink>
+                                <br/>
+                            </apex:repeat>
+                            <apex:commandLink styleClass="myasu-help-region-common-questions-finances-view-all" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
                             />
                         </div>
-                        <div class="service-center-region-sub-header-category">
-                            <div class="service-center-region-common-questions-header">Technology</div>
-                            <apex:dataList value="{!topThreeTechnicalArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
-                                <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
-                            </apex:dataList>
-                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all technology questions" action="{!getViewAllTechnicalArticlesLink}"
-                            />
+                        <div class="myasu-help-region-sub-header-category">
+                            <div class="myasu-help-region-common-questions-header">Technology</div>
+                            <apex:repeat value="{!topThreeTechnicalArticles}" var="article" id="myasu-help-region-common-questions-technical">
+                                <apex:outputLink styleClass="myasu-help-region-common-questions-technical-article" value="/kb/articles/FAQ/{!article.UrlName}">{!article.Title}</apex:outputLink>
+                                <br/>
+                            </apex:repeat>
+                            <apex:commandLink styleClass="myasu-help-region-common-questions-technical-view-all" value="View all technology questions"
+                                action="{!getViewAllTechnicalArticlesLink}" />
                         </div>
-                        <div class="service-center-region-sub-header-category">
-                            <div class="service-center-region-common-questions-header">Housing</div>
-                            <apex:dataList value="{!topThreeHousingArticles}" var="article" style="list-style-type:none;padding:0;margin:0;">
-                                <apex:outputLink value="/kb/articles/FAQ/{!article.UrlName}"> {!article.Title}</apex:outputLink>
-                            </apex:dataList>
-                            <apex:commandLink styleClass="btn" style="padding:4px" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
+                        <div class="myasu-help-region-sub-header-category">
+                            <div class="myasu-help-region-common-questions-header">Housing</div>
+                            <apex:repeat value="{!topThreeHousingArticles}" var="article" id="myasu-help-region-common-questions-housing">
+                                <apex:outputLink styleClass="myasu-help-region-common-questions-housing-article" value="/kb/articles/FAQ/{!article.UrlName}">{!article.Title}</apex:outputLink>
+                                <br/>
+                            </apex:repeat>
+                            <apex:commandLink styleClass="myasu-help-region-common-questions-housing-view-all" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
                             />
                         </div>
                     </apex:outputPanel>

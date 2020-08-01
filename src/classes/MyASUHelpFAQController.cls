@@ -1,42 +1,42 @@
 public with sharing class MyASUHelpFAQController {
-    public List<FAQ__kav> topFiveFinancialArticles;
-    public List<FAQ__kav> topFiveTechnicalArticles;
-    public List<FAQ__kav> topFiveHousingArticles;
+    public List<FAQ__kav> topThreeFinancialArticles;
+    public List<FAQ__kav> topThreeTechnicalArticles;
+    public List<FAQ__kav> topThreeHousingArticles;
     public String viewAllFinanceArticlesUrl;
     public String viewAllTechnicalArticlesUrl;
 
     public MyASUHelpFAQController() {
-        setTopFiveFinancialArticles();
-        setTopFiveTechnicalArticles();
-        setTopFiveHousingArticles();
+        setTopThreeFinancialArticles();
+        setTopThreeTechnicalArticles();
+        setTopThreeHousingArticles();
     }
 
-    public List<FAQ__kav> getTopFiveFinancialArticles() {
-        return topFiveFinancialArticles;
+    public List<FAQ__kav> getTopThreeFinancialArticles() {
+        return topThreeFinancialArticles;
     }
 
-    public List<FAQ__kav> getTopFiveTechnicalArticles() {
-        return topFiveTechnicalArticles;
+    public List<FAQ__kav> getTopThreeTechnicalArticles() {
+        return topThreeTechnicalArticles;
     }
 
-    public List<FAQ__kav> getTopFiveHousingArticles() {
-        return topFiveHousingArticles;
+    public List<FAQ__kav> getTopThreeHousingArticles() {
+        return topThreeHousingArticles;
     }
 
-    private void setTopFiveFinancialArticles() {
+    private void setTopThreeFinancialArticles() {
         try {
-            topFiveFinancialArticles = [
+            topThreeFinancialArticles = [
                 SELECT Id, Title, UrlName
                 FROM FAQ__kav
                 WHERE IsDeleted = false AND Functional_Group__c = 'Financial Aid'
                 ORDER BY ArticleTotalViewCount DESC
-                LIMIT 5
+                LIMIT 3
             ];
         } catch (Exception e) {
             List<String> vars = new List<String>();
             vars.add(
                 ErrorLogger.convertStringToJSON(
-                    'topFiveFinancialArticles',
+                    'topThreeFinancialArticles',
                     'There was an error setting the top five financial articles for My ASU Help'
                 )
             );
@@ -44,20 +44,20 @@ public with sharing class MyASUHelpFAQController {
         }
     }
 
-    private void setTopFiveTechnicalArticles() {
+    private void setTopThreeTechnicalArticles() {
         try {
-            topFiveTechnicalArticles = [
+            topThreeTechnicalArticles = [
                 SELECT Id, Title, UrlName
                 FROM FAQ__kav
                 WHERE IsDeleted = false AND Functional_Group__c LIKE '%Technical Resources%'
                 ORDER BY ArticleTotalViewCount DESC
-                LIMIT 5
+                LIMIT 3
             ];
         } catch (Exception e) {
             List<String> vars = new List<String>();
             vars.add(
                 ErrorLogger.convertStringToJSON(
-                    'topFiveTechnologyArticles',
+                    'topThreeTechnicalArticles',
                     'There was an error setting the top five technical articles for My ASU Help'
                 )
             );
@@ -65,20 +65,20 @@ public with sharing class MyASUHelpFAQController {
         }
     }
 
-    private void setTopFiveHousingArticles() {
+    private void setTopThreeHousingArticles() {
         try {
-            topFiveHousingArticles = [
+            topThreeHousingArticles = [
                 SELECT Id, Title, UrlName
                 FROM FAQ__kav
                 WHERE IsDeleted = false AND Functional_Group__c = 'Housing'
                 ORDER BY ArticleTotalViewCount DESC
-                LIMIT 5
+                LIMIT 3
             ];
         } catch (Exception e) {
             List<String> vars = new List<String>();
             vars.add(
                 ErrorLogger.convertStringToJSON(
-                    'topFiveHousingArticles',
+                    'topThreeHousingArticles',
                     'There was an error setting the top five housing articles for My ASU Help'
                 )
             );

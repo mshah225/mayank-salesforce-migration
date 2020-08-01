@@ -20,24 +20,36 @@
     </script>
 
     <apex:outputPanel>
-        <div class="box service-center-region-contact-us">
-            <div class="service-center-region-header">
+        <div class="myasu-help-region-contact-us">
+            <div class="myasu-help-region-header">
                 Contact Us
             </div>
 
-            <div class="content service-center-region-contact-us-content">
+            <div class="myasu-help-region-contact-us-content">
                 <p>
                     We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
                     chat session, or call to talk now.
                 </p>
                 <apex:form>
-                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="theCommandLink" reRender="pannel1">
+
+                    <hr />
+
+                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="myasu-help-contact-us-email-link">
                         <strong>
-                            <i class="fa fa-commenting" aria-hidden="true" />
-                            <span class="service-center-contact-us-chat-text">Live Chat</span>
+                            <i class="fa fa-envelope myasu-help-contact-us-email-icon" aria-hidden="true" />
+                            <span class="myasu-help-contact-us-email">Email Us</span>
                         </strong>
                     </apex:commandLink>
-                    <apex:outputPanel id="pannel1" title="First Pannel" rendered="{!showLiveChatOptions}">
+
+                    <hr />
+
+                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="myasu-help-contact-us-chat-link" reRender="myasu-help-contact-us-chat-panel">
+                        <strong>
+                            <i class="fa fa-commenting myasu-help-contact-us-chat-icon" aria-hidden="true" />
+                            <span class="myasu-help-contact-us-chat">Live Chat</span>
+                        </strong>
+                    </apex:commandLink>
+                    <apex:outputPanel id="myasu-help-contact-us-chat-panel" title="First Pannel" rendered="{!showLiveChatOptions}">
                         <ul>
                             <li>
                                 <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
@@ -78,20 +90,20 @@
                     </apex:outputPanel>
 
                     <hr />
-                    <div id="normalPhone">
-                        <apex:outputLink styleClass="service-center-contact-us-phone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
+                    <div id="myasu-help-contact-us-phone-container">
+                        <apex:outputLink styleClass="myasu-help-contact-us-phone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
                             <strong>
-                                <i class="fa fa-phone" aria-hidden="true" />
-                                <span class="service-center-contact-us-phone-number-rover">Call 1-855-ASU-5080</span>
+                                <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
+                                <span class="myasu-help-contact-us-phone-number-rover">Call 1-855-ASU-5080</span>
                             </strong>
                         </apex:outputLink>
                     </div>
 
-                    <div id="roverPhone">
-                        <apex:outputLink styleClass="service-center-contact-us-phone-rover" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
+                    <div id="myasu-help-contact-us-phone-container">
+                        <apex:outputLink styleClass="myasu-help-contact-us-phone-rover" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
                             <strong>
-                                <i class="fa fa-phone" aria-hidden="true" />
-                                <span class="service-center-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>
+                                <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
+                                <span class="myasu-help-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>
                             </strong>
                         </apex:outputLink>
                     </div>

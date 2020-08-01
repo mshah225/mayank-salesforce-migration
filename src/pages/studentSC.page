@@ -47,44 +47,42 @@
     <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
         viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
-    <body>
-        <!-- Google Tag Manager (noscript) -->
-        <noscript>
-            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDWN8Z" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-        </noscript>
-        <!-- End Google Tag Manager (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDWN8Z" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
-        <div id="asu_content_well">
-            <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
-            />
-            <c:MyASUHelpSuggestAnArticle suggestAnArticle="{!suggestAnArticle}" />
+    <div id="asu_content_well">
+        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
+        />
+        <c:MyASUHelpSuggestAnArticle suggestAnArticle="{!suggestAnArticle}" />
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 service-center-region">
-                        <c:MyASUHelpFAQ searchstring="{!searchstring}" />
-                    </div>
-
-                    <div class="col-md-1"></div>
-
-                    <div class="col-md-5 service-center-region">
-                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
-                            changePin="{!changePin}" />
-                        <div style="margin-bottom:2em;"></div>
-
-                        <c:MyASUHelpMyCases />
-                    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 myasu-help-region">
+                    <c:MyASUHelpFAQ searchstring="{!searchstring}" />
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="bgWrapper">
-                            <c:FeedbackButton carName="My ASU Help" betaTag="false" classes="btn btn-primary" />
-                        </div>
+
+                <div class="col-md-1"></div>
+
+                <div class="col-md-5 myasu-help-region">
+                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
+                        changePin="{!changePin}" />
+                    <div style="margin-bottom:2em;"></div>
+
+                    <c:MyASUHelpMyCases />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="bgWrapper">
+                        <c:FeedbackButton carName="My ASU Help" classes="btn btn-primary" />
                     </div>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
 
     <c:ASUBrandFooter />
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />

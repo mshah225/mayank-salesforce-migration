@@ -25,7 +25,7 @@ public class ObjectScrambleService {
             }
             when USER {
                 Id sysAdminId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1].Id;
-                queryToReturn = 'SELECT Id FROM User WHERE IsActive = true AND (NOT Username LIKE \'%@00dn000000091oqeay.com\') AND ProfileId <> \'' + sysAdminId + '\'';
+                queryToReturn = 'SELECT Id FROM User WHERE IsActive = true AND Sandbox_DEV__c = false AND (NOT Username LIKE \'%@00dn000000091oqeay.com\') AND ProfileId <> \'' + sysAdminId + '\'';
             }
         }
 

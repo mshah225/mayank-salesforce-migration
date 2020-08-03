@@ -18,6 +18,10 @@
             font-size: .9em;
         }
 
+        .btn {
+            border: none !important;
+        }
+
         .btn-primary:hover,
         .btn-primary:focus,
         .btn-primary:active,
@@ -38,11 +42,16 @@
 
         p {
             font-weight: 400;
+            padding: 1em 0;
+            margin: 0;
+        }
+
+        .myasu-help-region-contact-us-content p:first-child {
+            padding-bottom: 0;
         }
 
         body {
             color: #191919;
-            font-family:
         }
 
         .btn-primary {
@@ -82,6 +91,10 @@
             margin-bottom: 1em;
         }
 
+        #asu-header-site-title a:hover {
+            color: #000 !important;
+        }
+
         .myasu-help-region-my-cases-no-cases {
             font-size: .85em;
             font-weight: 400;
@@ -89,7 +102,7 @@
         }
 
         .myasu-help-region-my-cases-sub-header {
-            margin-top: 1em;
+            padding-top: 1em;
             margin-bottom: 1em;
             font-weight: 400;
             font-size: .9em;
@@ -97,6 +110,22 @@
 
         .bPageBlock {
             /* Use for my cases table */
+        }
+
+        #myasu-tabs .navbar-links {
+            max-width: 1170px;
+            margin: auto;
+        }
+
+        #myasu-tabs .tab,
+        #myasu-tabs .tab a {
+            padding-top: 18px !important;
+            border-bottom: none;
+        }
+
+        #myasu-tabs .tab a:hover,
+        #myasu-tabs .selected a {
+            color: #FFC627 !important;
         }
 
         .myasu-help-region-common-questions-finance-article,
@@ -107,7 +136,9 @@
         .myasu-help-region-common-questions-housing-article-link,
         .myasu-help-region-common-questions-finances-view-all,
         .myasu-help-region-common-questions-technical-view-all,
-        .myasu-help-region-common-questions-housing-view-all {
+        .myasu-help-region-common-questions-housing-view-all,
+        .myasu-help-region-faq-search-results-article,
+        .myasu-help-region-faq-search-results-view-all {
             font-weight: 400;
             margin-bottom: .5em;
             display: inline-block;
@@ -115,10 +146,15 @@
 
         .myasu-help-region-common-questions-finances-view-all,
         .myasu-help-region-common-questions-technical-view-all,
-        .myasu-help-region-common-questions-housing-view-all {
+        .myasu-help-region-common-questions-housing-view-all,
+        .myasu-help-region-faq-search-results-view-all {
             color: #8C1D40 !important;
-            margin-bottom: 1.5em;
             margin-top: .5em;
+        }
+
+        .myasu-help-region-common-questions-finances-view-all,
+        .myasu-help-region-common-questions-technical-view-all {
+            margin-bottom: 1.5em;
         }
 
         .myasu-help-region-header {
@@ -153,6 +189,12 @@
             padding-right: 1em;
         }
 
+        .myasu-help-region-faq-search-results-article,
+        .myasu-help-region-faq-search-results-view-all {
+            margin-left: 1em !important;
+            margin-right: 1em !important;
+        }
+
         .myasu-help-region-sub-header {
             font-weight: 500;
             margin-bottom: 1em;
@@ -164,19 +206,34 @@
             margin-bottom: 2em;
         }
 
-        .myasu-help-region-header,
         .myasu-help-region-contact-us,
         .myasu-help-region-my-cases,
-        .myasu-help-region-faq,
-        .myasu-help-region-faq-search {
-            border-color: #d8d8d8;
-            border-style: solid;
-            border-width: thin;
+        .myasu-help-region-faq {
+            /* border-color: #d8d8d8; */
+            /* border-style: solid; */
+            /* border-width: 2px; */
         }
 
-        .col-md-6,
-        .col-md-5,
-        .col-md-1 {
+        .myasu-help-region-header {
+            border-color: #d8d8d8;
+            border-style: solid;
+            border-width: 2px;
+        }
+
+        .myasu-help-region-contact-us-content,
+        .myasu-help-region-my-cases-content,
+        .myasu-help-region-faq-content {
+            border-top-color: unset !important;
+            border-top-style: unset !important;
+            border-top-width: unset !important;
+            border-right-color: #d8d8d8;
+            border-bottom-color: #d8d8d8;
+            border-left-color: #d8d8d8;
+            border-style: solid;
+            border-width: 2px;
+        }
+
+        [class*="col-md-"] {
             padding: 0;
         }
 
@@ -190,9 +247,40 @@
             padding-bottom: .5em;
         }
 
-        a.btn,
+        .myasu-help-region-contact-us-content a {
+            border-bottom: none;
+        }
+
+        .fa {
+            vertical-align: middle;
+        }
+
+        .btn {
+            -moz-user-select: none !important;
+            background-image: none !important;
+            border: 1px solid transparent !important;
+            border-radius: 0.25em !important;
+            cursor: pointer !important;
+            display: inline-block !important;
+            font-size: 1em !important;
+            font-weight: normal !important;
+            line-height: 1.44 !important;
+            margin-bottom: 0 !important;
+            padding: 0.375em 1.1875em !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
         .btn {
             margin-top: 0;
+            font-size: .9em !important;
+            margin: auto 0 auto 0 !important;
+        }
+
+        .myasu-help-region-faq-search-input-button {
+            padding-left: 1em !important;
+            padding-right: 1em !important;
         }
 
         .myasu-help-region-faq-search-input {
@@ -201,6 +289,63 @@
 
         .asu-header-site-title-container {
             padding-bottom: 0 !important;
+        }
+
+        .navbar {
+            margin-bottom: 0;
+        }
+
+        .navbar-default {
+            background-color: unset !important;
+            border-color: transparent !important;
+        }
+
+        .secondaryPalette {
+            border: none;
+            border-left: 0 !important;
+            border-right: 0 !important;
+            border-bottom: 0 !important;
+            border-radius: unset !important;
+        }
+
+        .pbBody {
+            margin: 0 !important;
+        }
+
+        body .pbBody table.list tr th {
+            border-top: unset;
+            border-right: unset;
+            border-left: unset;
+        }
+
+        body .pbBody table.list tr th,
+        body .pbBody table.list tr td {
+            border-bottom: 2px solid #ccc;
+        }
+
+        @media only screen and (max-width: 692px) {
+            .myasu-help-region:first-child {
+                margin-top: 2em;
+            }
+        }
+
+        @media only screen and (max-width: 892px) {
+            #menuCSSWrap {
+                display: none;
+            }
+        }
+
+        @media only screen and (min-width: 693px) {
+            .container {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        @media only screen and (min-width: 893px) {
+            .myasu-help-region:first-child {
+                padding-right: 2em;
+            }
         }
     </style>
 </apex:component>

@@ -69,23 +69,18 @@
                             <apex:form id="searchForm" styleClass="searchKB">
                                 <apex:pageBlock mode="maindetail">
                                     <div class="myasu-help-region-faq-search">
-                                        <apex:actionStatus id="myasu-help-region-faq-search-status">
-                                            <apex:facet name="start">
-                                                <i class="fa fa-2x fa-spinner fa-spin" style="position:absolute;color:#FFC627;" />
-                                            </apex:facet>
-                                        </apex:actionStatus>
                                         <center>
                                             <p class="lead" style="display:inline-block;">
                                                 Ask us anything.
                                             </p>
                                             <div class="searchKB2">
-                                                <div class="form-horizontal">
+                                                <div class="form-horizontal myasu-help-region-faq-search-input-container">
                                                     <apex:inputText id="articleTextBoxId" value="{!searchstring}" styleClass="myasu-help-region-faq-search-input" html-placeholder="Type your question here"
                                                         html-pattern=".{2,}" required="true" title="Please enter a minimum of 2 characters"
                                                         maxlength="99" />
-                                                    <apex:commandLink id="" styleClass="btn btn-secondary myasu-help-region-faq-search-input-button" reRender="myasu-help-region-faq-search-results"
-                                                        oncomplete="viewAsLinks()" status="myasu-help-region-faq-search-status">
-                                                        <i class="fa fa-search fa-2x" aria-hidden="true" />
+                                                    <apex:commandLink styleClass="btn btn-secondary myasu-help-region-faq-search-input-button" reRender="myasu-help-region-faq-search-results"
+                                                        oncomplete="viewAsLinks()">
+                                                        <i class="fa fa-search" aria-hidden="true" />
                                                     </apex:commandLink>
                                                 </div>
                                             </div>

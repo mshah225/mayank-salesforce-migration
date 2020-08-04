@@ -18,6 +18,7 @@
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
     </script>
+    <c:AccordionTemplateResources />
 
     <apex:outputPanel>
         <div class="myasu-help-region-contact-us">
@@ -30,84 +31,109 @@
                     We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
                     chat session, or call to talk now.
                 </p>
-                <apex:form>
-
-                    <hr />
-
-                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="myasu-help-contact-us-email-link">
-                        <strong>
-                            <i class="fa fa-envelope myasu-help-contact-us-email-icon" aria-hidden="true" />
-                            <span class="myasu-help-contact-us-email">Email Us</span>
-                        </strong>
-                    </apex:commandLink>
-
-                    <hr />
-
-                    <apex:commandLink action="{!toggleLiveChatOptionsView}" id="myasu-help-contact-us-chat-link" reRender="myasu-help-contact-us-chat-panel">
-                        <strong>
-                            <i class="fa fa-commenting myasu-help-contact-us-chat-icon" aria-hidden="true" />
-                            <span class="myasu-help-contact-us-chat">Live Chat</span>
-                        </strong>
-                    </apex:commandLink>
-                    <apex:outputPanel id="myasu-help-contact-us-chat-panel" title="First Pannel" rendered="{!showLiveChatOptions}">
-                        <ul>
-                            <li>
-                                <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
-                                <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
-                                <script type="text/javascript">
-                                    if (!window._laq) { window._laq = []; }
-                                    window._laq.push(function () {
-                                        liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_online_finances'));
-                                        liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_offline_finances'));
-                                    });
-                                </script>
-                            </li>
-                            <li>
-                                <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
-                                <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
-                                <script type="text/javascript">
-                                    if (!window._laq) { window._laq = []; }
-                                    window._laq.push(function () {
-                                        liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_online_technical_support'));
-                                        liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_offline_technical_support'));
-                                    });
-                                </script>
-                            </li>
-                            <li>
-                                <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"
-                                    onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
-                                <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"
-                                    onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
-                                <script type="text/javascript">
-                                    if (!window._laq) { window._laq = []; }
-                                    window._laq.push(function () {
-                                        liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_online_student_services'));
-                                        liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_offline_student_services'));
-                                    });
-                                </script>
-                            </li>
-                        </ul>
-                    </apex:outputPanel>
-
-                    <hr />
-                    <div id="myasu-help-contact-us-phone-container">
-                        <apex:outputLink styleClass="myasu-help-contact-us-phone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
-                            <strong>
-                                <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
-                                <span class="myasu-help-contact-us-phone-number-rover">Call 1-855-ASU-5080</span>
-                            </strong>
-                        </apex:outputLink>
+                <hr />
+                <div class="myasu-help-region-contact-us-accordion-container">
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-contact-us-email-link">
+                                        <strong>
+                                            <i class="fa fa-envelope myasu-help-contact-us-email-icon" aria-hidden="true" />
+                                            <span class="myasu-help-contact-us-email">Email Us</span>
+                                        </strong>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="myasu-help-contact-us-email-link" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <apex:form>
+                                        <div class="myasu-help-contact-us-email-subject-label">Subject</div>
+                                        <apex:inputText label="Subject" value="{!contactUsEmailSubject}" id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject"
+                                        />
+                                        <div class="myasu-help-contact-us-email-message-label">Message</div>
+                                        <apex:inputTextarea label="Message" value="{!contactUsEmailMessage}" id="myasu-help-contact-us-email-message" styleClass="myasu-help-contact-us-email-message"
+                                        />
+                                        <div class="myasu-help-contact-us-email-message-submit-wrapper">
+                                            <apex:commandLink styleClass="btn btn-primary myasu-help-contact-us-email-message-submit" action="{!sendContactUsEmail}">
+                                                Submit
+                                            </apex:commandLink>
+                                        </div>
+                                    </apex:form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-contact-us-chat-link">
+                                        <strong>
+                                            <i class="fa fa-commenting myasu-help-contact-us-chat-icon" aria-hidden="true" />
+                                            <span class="myasu-help-contact-us-chat">Live Chat</span>
+                                        </strong>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="myasu-help-contact-us-chat-link" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div class="myasu-help-contact-us-chat-link-finance btn btn-secondary">
+                                        <a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                                        <a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                                        <script type="text/javascript">
+                                            if (!window._laq) { window._laq = []; }
+                                            window._laq.push(function () {
+                                                liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_online_finances'));
+                                                liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_offline_finances'));
+                                            });
+                                        </script>
+                                    </div>
+                                    <div class="myasu-help-contact-us-chat-link-technical btn btn-secondary">
+                                        <a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
+                                        <a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
+                                        <script type="text/javascript">
+                                            if (!window._laq) { window._laq = []; }
+                                            window._laq.push(function () {
+                                                liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_online_technical_support'));
+                                                liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_offline_technical_support'));
+                                            });
+                                        </script>
+                                    </div>
+                                    <div class="myasu-help-contact-us-chat-link-student-services btn btn-secondary">
+                                        <a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"
+                                            onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
+                                        <a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"
+                                            onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>
+                                        <script type="text/javascript">
+                                            if (!window._laq) { window._laq = []; }
+                                            window._laq.push(function () {
+                                                liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_online_student_services'));
+                                                liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_offline_student_services'));
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default myasu-help-contact-us-phone-container">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <apex:outputLink styleClass="myasu-help-contact-us-phone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
+                                        <strong>
+                                            <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
+                                            <span class="myasu-help-contact-us-phone-number-rover">Call 1-855-ASU-5080</span>
+                                        </strong>
+                                    </apex:outputLink>
+                                    <apex:outputLink styleClass="myasu-help-contact-us-phone-rover" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
+                                        <strong>
+                                            <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
+                                            <span class="myasu-help-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>
+                                        </strong>
+                                    </apex:outputLink>
+                                </h4>
+                            </div>
+                        </div>
                     </div>
-
-                    <div id="myasu-help-contact-us-phone-container">
-                        <apex:outputLink styleClass="myasu-help-contact-us-phone-rover" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
-                            <strong>
-                                <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
-                                <span class="myasu-help-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>
-                            </strong>
-                        </apex:outputLink>
-                    </div>
-                </apex:form>
+                </div>
             </div>
         </div>
     </apex:outputPanel>

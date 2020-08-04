@@ -2,6 +2,70 @@
     <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header_media.min.css')}" />
     <style>
+        body {
+            color: #191919;
+        }
+
+        p {
+            font-weight: 400;
+            padding: 1em 0;
+            margin: 0;
+        }
+
+        a:hover {
+            color: #d23153 !important;
+            text-decoration: none !important;
+            border-bottom: 1px dotted #d23153;
+        }
+
+        .btn {
+            -moz-user-select: none !important;
+            background-image: none !important;
+            border: none !important;
+            border-radius: 0.25em !important;
+            cursor: pointer !important;
+            display: inline-block !important;
+            font-size: 1em !important;
+            font-weight: normal !important;
+            line-height: 1.44 !important;
+            margin-bottom: 0 !important;
+            padding: 0.375em 1.1875em !important;
+            text-align: center !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
+        .btn-primary {
+            background: #8C1D40 !important;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:active,
+        .btn-primary.active,
+        .open>.btn-primary.dropdown-toggle {
+            background-color: #d23153 !important;
+            color: white !important;
+        }
+
+        .btn-secondary:hover,
+        .btn-secondary:focus,
+        .btn-secondary:active,
+        .btn-secondary.active,
+        .open>.btn-secondary.dropdown-toggle {
+            background-color: #f2f2f2 !important;
+            color: #2a2a2a !important;
+        }
+
+        .fa {
+            vertical-align: middle;
+        }
+
+        .lead {
+            margin-top: 0;
+            font-weight: 400;
+        }
+
         #asu_footer ul {
             margin-left: auto;
         }
@@ -16,6 +80,7 @@
         .asu-header-site-title-container a {
             border-bottom: none;
             text-decoration: none;
+            color: #000 !important;
         }
 
         #asu-header-site-title a {
@@ -27,7 +92,7 @@
         .asu-header-site-title-container {
             font-size: 24px;
             overflow: hidden;
-            padding: 0 0 12px 12px !important;
+            padding: 0 0 0 12px !important;
             white-space: nowrap;
         }
 
@@ -39,6 +104,17 @@
         #skip-to-content {
             left: -9999px;
             position: absolute;
+        }
+
+        [class*="col-md-"] {
+            padding: 0;
+        }
+
+        @media only screen and (min-width: 693px) {
+            .container {
+                padding-left: 0;
+                padding-right: 0;
+            }
         }
 
         @media only screen and (max-width: 768px) {

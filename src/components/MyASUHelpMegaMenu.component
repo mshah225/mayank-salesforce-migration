@@ -11,7 +11,7 @@
 
     <c:ASUBrandMegaMenuStyles />
 
-    <div id="menuCSSWrap">
+    <div id="myasu-tabs-wrapper">
         <apex:outputPanel rendered="{!showNavBar}">
             <header class="navbar navbar-default" role="banner">
                 <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,

@@ -23,12 +23,21 @@ public with sharing class MyASUHelpController {
     public String userAsurite;
     public String mMessage;
 
+    public List<FAQ__kav> topThreeFinancialArticles;
+    public List<FAQ__kav> topThreeTechnicalArticles;
+    public List<FAQ__kav> topThreeHousingArticles;
+    public String viewAllFinanceArticlesUrl;
+    public String viewAllTechnicalArticlesUrl;
+
     public MyASUHelpController() {
         suggestAnArticle = new Case();
         viewingAs = false;
         checkForViewAs();
         popUserContact();
         popTerms();
+        setTopThreeFinancialArticles();
+        setTopThreeTechnicalArticles();
+        setTopThreeHousingArticles();
     }
 
     public void checkForViewAs() {
@@ -81,7 +90,7 @@ public with sharing class MyASUHelpController {
         List<Service_Center_Maintenance__c> scmList = [
             SELECT Message__c, Start_Time__c, End_Time__c
             FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = true
+            WHERE Displayed__c = TRUE
         ];
 
         if (scmList.size() > 0) {
@@ -113,7 +122,7 @@ public with sharing class MyASUHelpController {
         suggestAnArticle.CC_Functional_Group__c = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student Success Innovations'
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Student Success Innovations'
             LIMIT 1
         ]
         .Id;
@@ -122,7 +131,7 @@ public with sharing class MyASUHelpController {
             FROM Case_Classification__c
             WHERE
                 RecordType.Name = 'Category'
-                AND Active__c = true
+                AND Active__c = TRUE
                 AND Name = 'Knowledge'
                 AND Parent__c = :suggestAnArticle.CC_Functional_Group__c
             LIMIT 1
@@ -219,5 +228,92 @@ public with sharing class MyASUHelpController {
         redirect.getParameters().put(param, value);
         redirect.setRedirect(true);
         return redirect;
+    }
+
+    public List<FAQ__kav> getTopThreeFinancialArticles() {
+        return topThreeFinancialArticles;
+    }
+
+    public List<FAQ__kav> getTopThreeTechnicalArticles() {
+        return topThreeTechnicalArticles;
+    }
+
+    public List<FAQ__kav> getTopThreeHousingArticles() {
+        return topThreeHousingArticles;
+    }
+
+    private void setTopThreeFinancialArticles() {
+        try {
+            topThreeFinancialArticles = [
+                SELECT Id, Title, UrlName
+                FROM FAQ__kav
+                WHERE IsDeleted = FALSE AND Functional_Group__c = 'Financial Aid'
+                ORDER BY ArticleTotalViewCount DESC
+                LIMIT 3
+            ];
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'topThreeFinancialArticles',
+                    'There was an error setting the top five financial articles for My ASU Help'
+                )
+            );
+            ErrorLogger.log(e, vars, false);
+        }
+    }
+
+    private void setTopThreeTechnicalArticles() {
+        try {
+            topThreeTechnicalArticles = [
+                SELECT Id, Title, UrlName
+                FROM FAQ__kav
+                WHERE IsDeleted = FALSE AND Functional_Group__c LIKE '%Technical Resources%'
+                ORDER BY ArticleTotalViewCount DESC
+                LIMIT 3
+            ];
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'topThreeTechnicalArticles',
+                    'There was an error setting the top five technical articles for My ASU Help'
+                )
+            );
+            ErrorLogger.log(e, vars, false);
+        }
+    }
+
+    private void setTopThreeHousingArticles() {
+        try {
+            topThreeHousingArticles = [
+                SELECT Id, Title, UrlName
+                FROM FAQ__kav
+                WHERE IsDeleted = FALSE AND Functional_Group__c = 'Housing'
+                ORDER BY ArticleTotalViewCount DESC
+                LIMIT 3
+            ];
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'topThreeHousingArticles',
+                    'There was an error setting the top five housing articles for My ASU Help'
+                )
+            );
+            ErrorLogger.log(e, vars, false);
+        }
+    }
+
+    public String getViewAllFinancialArticlesLink() {
+        return '/kb/pkb_Home?l=en_US&c=Finances%3AMy_ASU_Financial_Aid';
+    }
+
+    public String getViewAllTechnicalArticlesLink() {
+        return '/kb/pkb_Home?l=en_US&c=Campus_Services%3ATechnical_Resources';
+    }
+
+    public String getViewAllHousingArticlesLink() {
+        return '/kb/pkb_Home?l=en_US&c=Campus_Services%3AHousing';
     }
 }

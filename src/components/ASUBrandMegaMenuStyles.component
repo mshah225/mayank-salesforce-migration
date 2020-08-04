@@ -1,10 +1,19 @@
 <apex:component>
     <style>
+        #myasu-tabs-wrapper .navbar {
+            margin-bottom: 0;
+        }
+
+        #myasu-tabs-wrapper .navbar-default {
+            background-color: unset !important;
+            border-color: transparent !important;
+        }
+
         #myasu-tabs {
             position: relative;
             width: 100%;
             height: 57px;
-            margin-bottom: 10px;
+            margin-bottom: 2em;
             padding: 0 10px;
             background: #353535;
             color: #ededed;
@@ -26,6 +35,8 @@
             height: 57px;
             font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-weight: 400;
+            max-width: 1170px;
+            margin: auto;
         }
 
         #myasu-tabs .navbar-links span {
@@ -55,7 +66,7 @@
             padding-bottom: 20px;
         }
 
-        #myasu-tabs span.tab {
+        #myasu-tabs .tab {
             vertical-align: top;
             padding-top: 20px;
             padding-bottom: 20px;
@@ -64,7 +75,13 @@
             height: 57px;
         }
 
-        #myasu-tabs span.tab a {
+        #myasu-tabs .tab,
+        #myasu-tabs .tab a {
+            padding-top: 18px !important;
+            border-bottom: none;
+        }
+
+        #myasu-tabs .tab a {
             text-decoration: none;
             height: 57px;
             padding-top: 20px;
@@ -73,14 +90,19 @@
             margin-right: 0;
         }
 
-        #myasu-tabs span.tab a:hover {
+        #myasu-tabs .tab a:hover,
+        #myasu-tabs .selected a {
+            color: #FFC627 !important;
+        }
+
+        #myasu-tabs .tab a:hover {
             height: 57px;
             margin-left: 0;
             margin-right: 0;
             background: #000;
         }
 
-        #myasu-tabs span.tab.selected a {
+        #myasu-tabs .tab.selected a {
             height: 57px;
             margin-left: 0;
             margin-right: 0;
@@ -92,6 +114,17 @@
 
         #myasu-tabs span.tab.guest a:hover {
             color: #903;
+        }
+
+        #myasu-tabs .username {
+            padding: 0;
+            margin-top: -.5em;
+        }
+
+        @media only screen and (max-width: 892px) {
+            #myasu-tabs-wrapper {
+                display: none;
+            }
         }
     </style>
 </apex:component>

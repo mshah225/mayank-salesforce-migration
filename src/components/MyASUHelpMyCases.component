@@ -1,5 +1,4 @@
 <apex:component controller="MyASUHelpMyCasesController" allowDML="true">
-    <!-- This component renders the My Cases Box on the Service Center -->
     <apex:outputPanel>
         <div class="myasu-help-region-my-cases">
             <div class="myasu-help-region-header">
@@ -11,12 +10,12 @@
                     <div class="myasu-help-region-my-cases-sub-header">My Open Cases</div>
                     <apex:pageBlock mode="maindetail ">
                         <apex:pageBlockTable rendered="{!(myCases.size>= 1)}" value="{!myCases}" var="case" styleClass="">
-                            <apex:column headerValue="Subject" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
+                            <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
-                            <apex:column headerValue="Status" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
+                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
-                            <apex:column onmousemove="this.style.backgroundColor='white'" style="background-color:white;" onmouseout="this.style.backgroundColor ='white'">
-                                <apex:commandLink value="View" styleClass="btn btn-secondary" style="padding:4px;" action="{!viewCase}">
+                            <apex:column onmousemove="this.style.backgroundColor='white'" width="10%" style="background-color:white;" onmouseout="this.style.backgroundColor ='white'">
+                                <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
                             </apex:column>
@@ -33,17 +32,14 @@
                         <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="">
                             <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
-
                             <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
-
                             <apex:column width="10%" style="background-color:white;" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
-                                <apex:commandLink value="View" styleClass="btn btn-secondary" style="padding:4px;" action="{!viewCase}">
+                                <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
                             </apex:column>
                         </apex:pageBlockTable>
-
                         <apex:outputText rendered="{!(closedCases.size = 0)}">
                             <p class="myasu-help-region-my-cases-no-cases">You do not have any closed cases.</p>
                         </apex:outputText>
@@ -52,7 +48,7 @@
                 <div style="text-align:right">
                     <apex:form>
                         <apex:pageBlock mode="maindetail">
-                            <a href="/viewAllCases?source=studentSC" style="padding:4px" class="btn btn-secondary">
+                            <a href="/viewAllCases?source=studentSC" class="btn btn-secondary">
                                 View All Cases
                             </a>
                         </apex:pageBlock>
@@ -61,6 +57,5 @@
 
             </div>
         </div>
-        <!-- end box -->
     </apex:outputPanel>
 </apex:component>

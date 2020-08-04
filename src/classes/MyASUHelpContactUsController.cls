@@ -8,7 +8,9 @@ public without sharing class MyASUHelpContactUsController {
     public String orgId { get; set; }
     public String deploymentId { get; set; }
     public String chatEndpoint { get; set; }
-    public Boolean showLiveChatOptions { get; set; }
+
+    public String contactUsEmailSubject { get; set; }
+    public String contactUsEmailMessage { get; set; }
 
     public MyASUHelpContactUsController() {
         Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
@@ -25,15 +27,21 @@ public without sharing class MyASUHelpContactUsController {
         studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
         technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
         technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
-        showLiveChatOptions = false;
     }
 
-    public PageReference toggleLiveChatOptionsView() {
-        if (showLiveChatOptions) {
-            showLiveChatOptions = false;
-        } else {
-            showLiveChatOptions = true;
-        }
-        return null;
+    public void sendContactUsEmail() {
+        Messaging.reserveSingleEmailCapacity(1);
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        //List<String> toAddresses = new List<String>{ 'salesforcesupport@asu.edu' };
+        List<String> toAddresses = new List<String>{ 'mgilardi@asu.edu' };
+        mail.setToAddresses(toAddresses);
+        mail.setReplyTo(UserInfo.getUserEmail());
+        mail.setSenderDisplayName(UserInfo.getFirstName() + ' ' + UserInfo.getLastName());
+        mail.setSubject('My ASU Help submission: ' + contactUsEmailSubject);
+        mail.setBccSender(false);
+        mail.setUseSignature(false);
+        mail.setPlainTextBody(contactUsEmailMessage);
+        mail.setHtmlBody(contactUsEmailMessage);
+        Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
     }
 }

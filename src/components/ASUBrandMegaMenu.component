@@ -1,6 +1,6 @@
 <apex:component controller="ASUBrandHeaderController">
     <c:ASUBrandMegaMenuStyles />
-    <div id="menuCSSWrap">
+    <div id="myasu-tabs-wrapper">
         <header class="navbar navbar-default" role="banner">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">

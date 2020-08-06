@@ -80,13 +80,17 @@
         .asu-header-site-title-container a {
             border-bottom: none;
             text-decoration: none;
-            color: #000 !important;
+            color: #000;
         }
 
         #asu-header-site-title a {
             color: #000;
             font-size: 24px;
             font-weight: 700;
+        }
+
+        #asu-header-site-title a:hover {
+            color: #000 !important;
         }
 
         .asu-header-site-title-container {
@@ -141,10 +145,6 @@
             #asu_footer ul {
                 padding-left: unset !important;
             }
-            /* #asu_footer ul li {
-                margin-left: 1em !important;
-                margin-right: unset !important;
-            } */
             #innovation-bar .innovation-hidden {
                 display: none !important;
             }

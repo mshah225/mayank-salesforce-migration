@@ -9,9 +9,6 @@ public with sharing class vfListPaginationController {
     public vfListPaginationController(MyASUHelpController controller) {
         setUpPage();
     }
-    public vfListPaginationController(MyASUHelpFAQController controller) {
-        setUpPage();
-    }
 
     public void setUpPage() {
         String strurl = getVFPageName();

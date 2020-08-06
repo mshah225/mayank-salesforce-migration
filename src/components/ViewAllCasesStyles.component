@@ -1,0 +1,13 @@
+<apex:component>
+    <style>
+        .panel {
+            border-radius: 0px !important;
+        }
+
+        .openCasesTable {
+            margin-top: 0px !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+</apex:component>

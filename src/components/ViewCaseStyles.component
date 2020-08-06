@@ -1,0 +1,92 @@
+<apex:component>
+    <style>
+        .caseTab .secondaryPalette,
+        .individualPalette .caseBlock .secondaryPalette {
+            border-top-color: #990033 !important;
+        }
+
+        td,
+        tr {
+            vertical-align: middle !important;
+        }
+
+        .bPageBlock .detailList .dataCol {
+            width: 100% !important;
+        }
+
+        .detailList td,
+        .detailList th {
+            vertical-align: middle !important;
+            padding: 6px !important;
+        }
+
+        .detailList tr {
+            border-bottom: solid 1px #e6e6e6 !important;
+        }
+
+        #newCaseForm .detailList tr {
+            border-bottom: none !important;
+        }
+
+        .detailList tr:last-child {
+            border-bottom: none !important;
+        }
+
+        .labelCol.vfLabelColTextWrap {
+            vertical-align: top !important;
+        }
+
+        label {
+            margin-bottom: 0px !important;
+        }
+
+        .bPageBlock.brandSecondaryBrd.apexDefaultPageBlock.secondaryPalette {
+            border-top-color: #990033;
+        }
+
+        .panel {
+            border-radius: 0px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .commentBox .content {
+            padding-bottom: 0px !important;
+        }
+
+        a.emailToggle {
+            text-decoration: none;
+            outline: none;
+            color: #990033;
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            width: 90px;
+        }
+
+        .emailMessage {
+            font-family: Helvetica, Arial !important;
+            word-wrap: break-word !important;
+        }
+
+        .emailMessage img {
+            display: none !important;
+        }
+
+        .emailMessage p,
+        .emailMessage span {
+            font-family: Helvetica, Arial !important;
+            font-size: 10pt !important;
+            line-height: 1.5em !important;
+            font-weight: 400;
+        }
+
+        .morecontent {
+            display: none;
+        }
+
+        .chatUserInfo {
+            font-weight: bold;
+        }
+    </style>
+</apex:component>

@@ -3,7 +3,7 @@ private class MyASUHelpTest {
     private static MyASUHelpController sc;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
-    private static MyASUHelpMyCasesController myASUHelpMyCases;
+    private static MyASUHelpMyRequestsController myASUHelpMyRequests;
     private static Case caseOnTestUser;
     private static User testUser;
     private static Contact contactRelatedToTestUser;
@@ -197,11 +197,11 @@ private class MyASUHelpTest {
         System.runAs(testUser) {
             sc = new MyASUHelpController();
             vcc = new viewCaseController();
-            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            myASUHelpMyCases.getMyCasesBox();
+            myASUHelpMyRequests.getMyCasesBox();
 
             sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vcc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
@@ -249,11 +249,11 @@ private class MyASUHelpTest {
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
             sc = new MyASUHelpController();
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            myASUHelpMyCases.oppList = oppListForTestUser;
+            myASUHelpMyRequests.oppList = oppListForTestUser;
 
             vacc.getMyCases();
             vacc.getAllClosedCases();
@@ -266,9 +266,9 @@ private class MyASUHelpTest {
             vacc.getSource();
             vacc.viewCase();
 
-            myASUHelpMyCases.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
-            myASUHelpMyCases.viewAsUrl = 'www.hankhillgifs.com';
-            myASUHelpMyCases.getmyCasesBox();
+            myASUHelpMyRequests.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
+            myASUHelpMyRequests.viewAsUrl = 'www.hankhillgifs.com';
+            myASUHelpMyRequests.getmyCasesBox();
             System.assertEquals(false, sc.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
             System.assertEquals('There is maintenance forever', sc.getmMessage());
@@ -289,13 +289,13 @@ private class MyASUHelpTest {
         System.runAs(testUser) {
             sc = new MyASUHelpController();
             vcc = new viewCaseController();
-            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            myASUHelpMyCases.oppList = oppListForTestUser;
+            myASUHelpMyRequests.oppList = oppListForTestUser;
 
-            System.assertEquals(true, myASUHelpMyCases.getmyCasesBox());
+            System.assertEquals(true, myASUHelpMyRequests.getmyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
             System.assertEquals(true, vcc.getHelpBox());
         }
@@ -314,11 +314,11 @@ private class MyASUHelpTest {
 
         System.runAs(testUser) {
             sc = new MyASUHelpController();
-            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
-            myASUHelpMyCases.oppList = oppListForTestUser;
+            myASUHelpMyRequests.oppList = oppListForTestUser;
 
-            System.assertEquals(true, myASUHelpMyCases.getMyCasesBox());
+            System.assertEquals(true, myASUHelpMyRequests.getMyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
         }
         Test.stopTest();
@@ -336,11 +336,11 @@ private class MyASUHelpTest {
         System.runAs(testUser) {
             sc = new MyASUHelpController();
             System.assertEquals(true, sc.getHelpBox());
-            myASUHelpMyCases = new MyASUHelpMyCasesController();
+            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
-            myASUHelpMyCases.oppList = oppListForTestUser;
+            myASUHelpMyRequests.oppList = oppListForTestUser;
 
-            System.assertEquals(true, myASUHelpMyCases.getMyCasesBox());
+            System.assertEquals(true, myASUHelpMyRequests.getMyCasesBox());
         }
 
         Test.stopTest();
@@ -356,22 +356,25 @@ private class MyASUHelpTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            myASUHelpMyCases = new MyASUHelpMyCasesController();
-            myASUHelpMyCases.newCase.Subject = 'Test Subject for SC';
-            myASUHelpMyCases.newCase.Description = 'Test Desc';
+            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
+            myASUHelpMyRequests.newCase.Subject = 'Test Subject for SC';
+            myASUHelpMyRequests.newCase.Description = 'Test Desc';
 
-            PageReference submit = myASUHelpMyCases.submitCase();
+            PageReference submit = myASUHelpMyRequests.submitCase();
             System.debug(submit);
             System.assertEquals(submit.getURL().contains('/viewcase?'), true);
 
-            myASUHelpMyCases.getClosedCases();
-            myASUHelpMyCases.viewCase();
-            myASUHelpMyCases.getMyCases();
-            myASUHelpMyCases.getMyCasesBox();
+            myASUHelpMyRequests.getClosedCases();
+            myASUHelpMyRequests.viewCase();
+            myASUHelpMyRequests.getMyCases();
+            myASUHelpMyRequests.getMyCasesBox();
 
-            myASUHelpMyCases.viewingAs = true;
-            myASUHelpMyCases.masqScopeIdCookie = 'testCookie';
-            System.assertEquals(myASUHelpMyCases.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
+            myASUHelpMyRequests.viewingAs = true;
+            myASUHelpMyRequests.masqScopeIdCookie = 'testCookie';
+            System.assertEquals(
+                myASUHelpMyRequests.submitCase().getURL().contains('masqScopeIdCookie=testCookie'),
+                true
+            );
         }
 
         Test.stopTest();

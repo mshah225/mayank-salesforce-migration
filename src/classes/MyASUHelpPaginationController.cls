@@ -1,12 +1,12 @@
-public with sharing class vfListPaginationController {
+public with sharing class MyASUHelpPaginationController {
     public Integer pageSize;
     public List<KnowledgeArticleVersion> articleList;
     public String searchstring { get; set; }
 
-    public vfListPaginationController() {
+    public MyASUHelpPaginationController() {
         setUpPage();
     }
-    public vfListPaginationController(MyASUHelpController controller) {
+    public MyASUHelpPaginationController(MyASUHelpFAQController controller) {
         setUpPage();
     }
 

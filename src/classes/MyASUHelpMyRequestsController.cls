@@ -3,7 +3,6 @@ public with sharing class MyASUHelpMyRequestsController {
     private Map<String, String> viewAsMap;
     private Term__c termcAC;
     private Term__c termcB;
-    private Decimal origPin;
     private Date today;
     public Boolean viewingAs { get; set; }
     public Case newCase { get; set; }
@@ -52,7 +51,6 @@ public with sharing class MyASUHelpMyRequestsController {
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
         asurite = userContact.ASURite_ID__c;
-        origPin = userContact.Self_Service_PIN__c;
     }
 
     public void popTerms() {

@@ -1,14 +1,13 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="viewCaseController" action="{!init}" cache="true"
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="ViewCaseController" action="{!init}" cache="true"
     extensions="NavLinks">
 
     <head>
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
 
-        <title>My ASU | {!caseDetails.Subject}</title>
-        <c:asu_responsive_header_section linkList="{!linkList}" />
+        <title>My ASU Help | Request Details | {!caseDetails.Subject}</title>
 
-        <c:ViewCaseStyles />
+        <c:MyASUHelpStyles />
 
         <script>
             var $j = jQuery.noConflict();
@@ -122,276 +121,232 @@
 
     </head>
 
-    <body>
-        <c:GoogleTagManagerBody />
+    <c:ASUBrandHeader />
+    <div class="asu-header-site-title-container">
+        <div>
+            <div id="asu-header-site-title" class="asu-header-width">
+                <a href="https://webapp4.asu.edu/myasu">My ASU</a>
+            </div>
+        </div>
+    </div>
+    <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
-        <apex:pageMessages id="message" />
+    <c:GoogleTagManagerBody />
 
-        <div id="main-search" class="main-search closed"></div>
+    <apex:pageMessages id="message" />
 
-        <c:SCHeader firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-            viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
+    <div id="asu_content_well">
+        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
 
-
-        <div id="asu_content_well">
-            <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
-
-            <div class="container">
-
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="/{!source}">Back</a>
-                    </li>
-                    <li class="active" style="font-size:10pt;">Case Details</li>
-                </ol>
-
-                <div class="row">
-                    <div class="col-md-7">
-                        <div class="box">
-                            <div class="header">
-                                <h6 class="floatleft">
-                                    <b>Case &#35;{!caseDetails.CaseNumber} Details</b>
-                                </h6>
-                            </div>
-
-                            <div class="content">
-                                <apex:form styleClass="detailsForm">
-                                    <h3 style="word-wrap: break-word;">{!caseDetails.subject}</h3>
-                                    <br />
-                                    <br />
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="active">Home</li>
+                <li class="active">
+                    <a href="/">Help</a>
+                </li>
+                <li class="active">Request Details</li>
+                <li class="active">{!caseDetails.Subject}</li>
+            </ol>
+            <div class="row">
+                <div class="col-md-7 myasu-help-region">
+                    <div class="myasu-help-region-request-details">
+                        <div class="myasu-help-region-header">
+                            Request Details
+                        </div>
+                        <div class="myasu-help-region-request-details-content">
+                            <apex:form styleClass="detailsForm">
+                                <div class="myasu-help-region-sub-header">
+                                    Request #{!caseDetails.CaseNumber}
+                                </div>
+                                <div class="myasu-help-region-request-details-info">
                                     <apex:pageBlock tabStyle="Case" mode="maindetail">
                                         <apex:pageBlockSection collapsible="false" columns="1">
-                                            <apex:outputText value="{!caseDetails.Status}" />
-
+                                            <apex:outputField value="{!caseDetails.Status}" />
                                             <apex:outputField value="{!caseDetails.Subject}" />
-
-                                            <apex:outputField value="{!caseDetails.description}" />
-
-
-                                            <apex:outputText value="{!caseDetails.CC_Functional_Group__r.Name}" label="Department" rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
+                                            <apex:outputField value="{!caseDetails.Description}" />
+                                            <apex:outputField value="{!caseDetails.CC_Functional_Group__r.Name}" label="Department" rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
                                             />
-
-                                            <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
                                                 <apex:param value="{!caseDetails.CreatedDate}" />
                                             </apex:outputText>
-
-                                            <apex:outputText rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}" value="{0, date, MMMM d','  yyyy, hh:MM a z}"
-                                                label="Date Closed">
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d',' yyyy, hh:MM a z}" label="Date Closed"
+                                                rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
                                                 <apex:param value="{!caseDetails.ClosedDate}" />
                                             </apex:outputText>
-
                                             <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
                                                 && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}"
                                                 escape="false" styleClass="feedbackLink" label="Feedback" />
                                         </apex:pageBlockSection>
                                     </apex:pageBlock>
-                                </apex:form>
-                            </div>
-                        </div>
-
-                        <apex:outputPanel id="emailMessagesBox" rendered="{!IF(EmailMessages.empty,false,true)}">
-                            <div class="box commentBox">
-                                <div class="header">
-                                    <h6>
-                                        <b>Responses To This Case</b>
-                                    </h6>
                                 </div>
-
-                                <div class="content">
-                                    <apex:repeat value="{!EmailMessages}" var="EM">
+                                <hr />
+                                <div class="myasu-help-region-request-details-accordion-container">
+                                    <div class="panel-group" id="accordion">
                                         <div class="panel panel-default">
-                                            <div class="panel-body">
-                                                <apex:outputLabel for="emailSentDate" value="Sent Date:" />
-                                                <apex:outputText id="emailSentDate" value="{0, date, MMMM d',' yyyy, hh:MM a z}">
-                                                    <apex:param value="{!EM.CreatedDate}" />
-                                                </apex:outputText>
-                                                <br />
-                                                <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
-                                                    <apex:outputLabel for="fromAddress" value="From Address:" /> &nbsp;
-                                                    <apex:outputText id="fromAddress">
-                                                        {!EM.FromName} &#60;{!EM.FromAddress}&#62;
-                                                    </apex:outputText>
-                                                    <br />
-                                                </apex:outputPanel>
-
-                                                <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
-                                                    <apex:outputLabel for="toAddress" value="To Address:" /> &nbsp;
-                                                    <apex:outputText id="toAddress" value="{!EM.ToAddress}" />
-                                                    <br />
-                                                </apex:outputPanel>
-
-                                                <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
-                                                    <apex:outputLabel for="ccAddress" value="CC:" /> &nbsp;
-                                                    <apex:outputText id="ccAddress" value="{!EM.CCAddress}" />
-                                                    <br />
-                                                </apex:outputPanel>
-                                                <br />
-                                                <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"
-                                                />
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-region-request-details-view-responses">
+                                                        <strong>
+                                                            <i class="fa fa-comments myasu-help-region-request-details-icon" aria-hidden="true" />
+                                                            <span class="myasu-help-region-request-details-panel-title">View Responses</span>
+                                                        </strong>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="myasu-help-region-request-details-view-responses" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <apex:outputPanel id="myasu-help-region-request-details-view-responses-panel" rendered="{!!EmailMessages.empty}">
+                                                        <apex:repeat value="{!EmailMessages}" var="EM">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-body">
+                                                                    <apex:outputLabel for="emailSentDate" value="Sent Date:" />
+                                                                    <apex:outputText id="emailSentDate" value="{0, date, MMMM d',' yyyy, hh:MM a z}">
+                                                                        <apex:param value="{!EM.CreatedDate}" />
+                                                                    </apex:outputText>
+                                                                    <br />
+                                                                    <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
+                                                                        <apex:outputLabel for="fromAddress" value="From Address:" /> &nbsp;
+                                                                        <apex:outputText id="fromAddress">
+                                                                            {!EM.FromName} &#60;{!EM.FromAddress}&#62;
+                                                                        </apex:outputText>
+                                                                        <br />
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                                                        <apex:outputLabel for="toAddress" value="To Address:" /> &nbsp;
+                                                                        <apex:outputText id="toAddress" value="{!EM.ToAddress}" />
+                                                                        <br />
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                                                        <apex:outputLabel for="ccAddress" value="CC:" /> &nbsp;
+                                                                        <apex:outputText id="ccAddress" value="{!EM.CCAddress}" />
+                                                                        <br />
+                                                                    </apex:outputPanel>
+                                                                    <br />
+                                                                    <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </apex:repeat>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!EmailMessages.empty}">
+                                                        <p class="myasu-help-region-request-details-view-responses-no-emails">You do not currently have any responses for this request.</p>
+                                                    </apex:outputPanel>
+                                                </div>
                                             </div>
                                         </div>
-                                    </apex:repeat>
-                                </div>
-                            </div>
-                        </apex:outputPanel>
-
-                        <apex:outputPanel id="replySection">
-                            <div class="box">
-                                <div class="header">
-                                    <h6 class="floatleft">
-                                        <b>Reply to Case or Upload Attachment</b>
-                                    </h6>
-                                </div>
-                                <div class="content">
-                                    <apex:form styleClass="detailsForm">
-                                        <apex:outputPanel id="replyButton">
-                                            <apex:commandButton action="{!displayReplyBox}" rendered="{!showReplyButton}" value="Reply Or Add Attachment" styleClass="btn kbbtn"
-                                                style="color:#fff;background:#990033;padding:5px;" reRender="replyButton, replyBox"
-                                            />
-                                        </apex:outputPanel>
-                                    </apex:form>
-                                    <apex:outputPanel id="replyBox">
-                                        <apex:outputPanel id="replyPanel" rendered="{!showReplyBox}">
-                                            <apex:form id="replyForm" styleClass="detailsForm">
-                                                <br />
-                                                <apex:inputTextarea value="{!caseReply}" id="replyText" rows="10" cols="98" style="max-width: 100%; max-height: 100%;" />
-                                                <br />
-                                                <br />
-                                                <div class="box">
-                                                    <div class="header">
-                                                        <h6>
-                                                            <b>Upload New Attachments (Max size 25MB) </b>
-                                                        </h6>
-                                                    </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-region-request-details-reply">
+                                                        <strong>
+                                                            <i class="fa fa-reply myasu-help-region-request-details-icon" aria-hidden="true" />
+                                                            <span class="myasu-help-region-request-details-panel-title">Reply</span>
+                                                        </strong>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="myasu-help-region-request-details-reply" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <apex:inputTextarea value="{!caseReply}" id="replyText" rows="5" cols="98" style="max-width: 100%; max-height: 100%;" />
+                                                    <span>
+                                                        Upload New Attachments (max size 25MB)
+                                                    </span>
+                                                    <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" />
+                                                    <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-primary" style="margin-top:1em !important;"
+                                                        onclick="return validateReply();" />
                                                     <br />
-                                                    <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" style="float:left;"
-                                                    />
-                                                    <br />
+                                                    <div class="errorMsg" id="errorDiv" />
                                                 </div>
-                                                <div align="center" draggable="false">
-                                                    <apex:commandButton action="{!clearContentsAndCloseBox}" value="Cancel" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"
-                                                    />
-                                                    <div style="width: 10px; display: inline-block;" />
-                                                    <apex:commandButton onclick="return validateReply();" action="{!submitReply}" value="Submit" styleClass="btn kbbtn" style="color:#fff;background:#990033;padding:5px;"
-                                                    />
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-region-request-details-view-attachments">
+                                                        <strong>
+                                                            <i class="fa fa-paperclip myasu-help-region-request-details-icon" aria-hidden="true" />
+                                                            <span class="myasu-help-region-request-details-panel-title">View Attachments</span>
+                                                        </strong>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="myasu-help-region-request-details-view-attachments" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <apex:outputPanel rendered="{!showCaseAttachments}">
+                                                        <apex:pageBlock>
+                                                            <apex:pageBlockTable value="{!allCaseAttachments}" var="eachAttachment" columns="2">
+                                                                <apex:column headerValue="Name">
+                                                                    <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
+                                                                </apex:column>
+                                                                <apex:column headerValue="Created Date">
+                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
+                                                                        <apex:param value="{!eachAttachment.CreatedDate}" />
+                                                                    </apex:outputText>
+                                                                </apex:column>
+                                                            </apex:pageBlockTable>
+                                                        </apex:pageBlock>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!!showCaseAttachments}">
+                                                        <p class="myasu-help-region-request-details-view-attachments-no-attachments">You do not currently have any uploaded attachments. Click the Reply
+                                                            section to submit an attachment for this request.</p>
+                                                    </apex:outputPanel>
                                                 </div>
-                                                <br />
-                                                <div class="errorMsg" id="errorDiv" />
-                                            </apex:form>
-                                        </apex:outputPanel>
-                                    </apex:outputPanel>
-                                </div>
-                            </div>
-                        </apex:outputPanel>
-
-                        <apex:outputPanel rendered="{!showCaseAttachments}">
-                            <apex:pageBlock>
-                                <div class="row">
-                                    <div class="header">
-                                        <h6>
-                                            <b>View Attachments</b>
-                                        </h6>
+                                            </div>
+                                        </div>
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-region-request-details-view-chat-history">
+                                                        <strong>
+                                                            <i class="fa fa-history myasu-help-region-request-details-icon" aria-hidden="true" />
+                                                            <span class="myasu-help-region-request-details-panel-title">View Chat History</span>
+                                                        </strong>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="myasu-help-region-request-details-view-chat-history" class="panel-collapse collapse">
+                                                <div class="panel-body">
+                                                    <apex:outputPanel rendered="{!!chatMessages.empty}">
+                                                        <apex:repeat value="{!chatMessages}" var="message">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-body">
+                                                                    <div class="chatUserInfo">
+                                                                        <apex:outputText id="chatUserInfo" value="{!message.performedBy}" />
+                                                                    </div>
+                                                                    <apex:outputText value="{!message.text}" escape="false" />
+                                                                </div>
+                                                            </div>
+                                                        </apex:repeat>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!chatMessages.empty}">
+                                                        <p class="myasu-help-region-request-details-view-chat-history-no-history">You do not currently have any chat sessions to view. Click Live Chat
+                                                            under Contact Us to start a new chat session.</p>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <apex:pageBlockTable value="{!allCaseAttachments}" rendered="{!showCaseAttachments}" var="eachAttachment" columns="2">
-                                        <apex:column headerValue="Name">
-                                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
-                                        </apex:column>
-                                        <apex:column headerValue="Created Date">
-                                            <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
-                                                <apex:param value="{!eachAttachment.CreatedDate}" />
-                                            </apex:outputText>
-                                        </apex:column>
-                                    </apex:pageBlockTable>
                                 </div>
-                            </apex:pageBlock>
-                        </apex:outputPanel>
-
-                        <apex:outputPanel id="chatMessagesBox" rendered="{!IF(chatMessages.empty,false,true)}">
-                            <div class="box commentBox">
-                                <div class="header">
-                                    <h6>
-                                        <b>Chat Session</b>
-                                    </h6>
-                                </div>
-
-                                <div class="content">
-                                    <apex:repeat value="{!chatMessages}" var="message">
-                                        <div class="panel panel-default">
-                                            <div class="panel-body">
-                                                <div class="chatUserInfo">
-                                                    <apex:outputText id="chatUserInfo" value="{!message.performedBy}" />
-                                                </div>
-                                                <apex:outputText value="{!message.text}" escape="false" />
-                                            </div>
-                                        </div>
-                                    </apex:repeat>
-                                </div>
-                            </div>
-                        </apex:outputPanel>
+                            </apex:form>
+                        </div>
                     </div>
-                    <!-- end col-md-8 -->
-                    <div class="col-md-5">
-                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" myPin="{!myPin}" newPin="{!newPin}"
-                            changePin="{!changePin}" />
-                        <c:MyASUHelpMyRequests />
-                    </div>
-                    <!-- end col-md-4-->
                 </div>
-                <!-- end row -->
+                <div class="col-md-5 myasu-help-region">
+                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
+                    <c:MyASUHelpMyRequests />
+                </div>
             </div>
-            <!-- end container -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="bgWrapper">
+                        <c:FeedbackButton carName="MyASU Service Center" classes="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- End ASU Content -->
-        <c:SCFooter />
+    </div>
 
-        <script>
-            if (!(navigator.userAgent.match(/Android/i)
-                || navigator.userAgent.match(/webOS/i)
-                || navigator.userAgent.match(/iPhone/i)
-                || navigator.userAgent.match(/iPad/i)
-                || navigator.userAgent.match(/iPod/i)
-                || navigator.userAgent.match(/BlackBerry/i)
-                || navigator.userAgent.match(/Windows Phone/i))) {
-                document.getElementById("normalPhone").addEventListener("click", function (event) {
-                    event.preventDefault();
-                });
-
-                document.getElementById("normalPhone").addEventListener("contextmenu", function (event) {
-                    event.preventDefault();
-                });
-
-                document.getElementById("roverPhone").addEventListener("click", function (event) {
-                    event.preventDefault();
-                });
-
-                document.getElementById("roverPhone").addEventListener("contextmenu", function (event) {
-                    event.preventDefault();
-                });
-            }
-        </script>
-
-        <script>
-            viewAsLinks();
-
-            function viewAsLinks() {
-                var masqCookie = "{!masqScopeIdCookie}";
-                var viewingAs = "{!viewingAs}";
-                if (masqCookie != "" && viewingAs == "true") {
-                    $j("a").each(function () {
-                        var href = this.href;
-                        if (href.indexOf("force") > -1) {
-                            if (href.indexOf("?") != -1) {
-                                href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
-                            }
-                            else {
-                                href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
-                            }
-                            $j(this).attr("href", href);
-                        }
-                    });
-                }
-            }
-        </script>
-    </body>
-
+    <c:ASUBrandFooter />
+    <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

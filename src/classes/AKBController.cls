@@ -1,5 +1,5 @@
 public without sharing class AKBController {
-    private MyASUHelpController myASUHelp;
+    private MyASUHelpFAQController myASUHelp;
     public AKB_Article_Feedback__c feedbackHelpful { get; set; }
     public AKB_Article_Feedback__c[] feedbackGiven;
     public Case suggestAnArticle { get; set; }
@@ -17,7 +17,7 @@ public without sharing class AKBController {
     public String funcGroup { get; set; }
     public String artType { get; set; }
 
-    public AKBController(MyASUHelpController myASUHelp) {
+    public AKBController(MyASUHelpFAQController myASUHelp) {
         this.myASUHelp = myASUHelp;
         userContact = myASUHelp.userContact;
         article = [

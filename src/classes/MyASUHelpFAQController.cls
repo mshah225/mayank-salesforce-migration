@@ -1,18 +1,15 @@
-public with sharing class MyASUHelpController {
+public with sharing class MyASUHelpFAQController {
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 4, 6);
     private Id caseId;
     private Date today;
-    private Decimal origPin;
     private Term__c termcAC;
     private Term__c termcB;
     private MyAsuViewAs viewAsService;
-
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
     public String suggestedArticleDescription { get; set; }
     public Contact userContact;
-    public Decimal newPin { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
@@ -29,7 +26,7 @@ public with sharing class MyASUHelpController {
     public String viewAllFinanceArticlesUrl;
     public String viewAllTechnicalArticlesUrl;
 
-    public MyASUHelpController() {
+    public MyASUHelpFAQController() {
         suggestAnArticle = new Case();
         viewingAs = false;
         checkForViewAs();
@@ -64,7 +61,6 @@ public with sharing class MyASUHelpController {
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
         asurite = userContact.ASURite_ID__c;
-        origPin = userContact.Self_Service_PIN__c;
     }
 
     public void popTerms() {
@@ -201,26 +197,9 @@ public with sharing class MyASUHelpController {
         }
     }
 
-    public Decimal getMyPin() {
-        return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
-    }
-
-    public PageReference changePin() {
-        if (viewingAs) {
-            return clonePageAndAddMasqScopeCookie();
-        } else {
-            return refreshPageWithPinUpdate();
-        }
-    }
-
     private PageReference clonePageAndAddMasqScopeCookie() {
         PageReference copyOfCurrentPage = new PageReference(ApexPages.currentPage().getUrl());
         return redirectWithParams(copyOfCurrentPage, 'masqScopeIdCookie', masqScopeIdCookie);
-    }
-
-    private PageReference refreshPageWithPinUpdate() {
-        String updateResult = ContactPinUtility.updatePin(userContact, origPin, newPin);
-        return redirectWithParams(ApexPages.currentPage(), 'PIN', updateResult);
     }
 
     public PageReference redirectWithParams(PageReference page, String param, String value) {
@@ -306,14 +285,14 @@ public with sharing class MyASUHelpController {
     }
 
     public String getViewAllFinancialArticlesLink() {
-        return '/kb/pkb_Home?l=en_US&c=Finances%3AMy_ASU_Financial_Aid';
+        return '/viewAllArticles?q=financ';
     }
 
     public String getViewAllTechnicalArticlesLink() {
-        return '/kb/pkb_Home?l=en_US&c=Campus_Services%3ATechnical_Resources';
+        return '/viewAllArticles?q=tech';
     }
 
     public String getViewAllHousingArticlesLink() {
-        return '/kb/pkb_Home?l=en_US&c=Campus_Services%3AHousing';
+        return '/viewAllArticles?q=housing';
     }
 }

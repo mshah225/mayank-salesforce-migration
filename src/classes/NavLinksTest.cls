@@ -3,7 +3,7 @@ private class NavLinksTest {
     private static Contact testContact;
     private static NavLinks nav;
     private static Profile asuCommunityProfile;
-    private static MyASUHelpController sc;
+    private static MyASUHelpFAQController sc;
     private static User testUser;
 
     private static void setUp() {
@@ -57,7 +57,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             nav = new Navlinks(sc);
             nav.init();
         }
@@ -70,7 +70,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             nav = new NavLinks(sc);
             ApexPages.currentPage()
                 .getParameters()
@@ -106,7 +106,7 @@ private class NavLinksTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             nav = new NavLinks(sc);
             ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();

@@ -1,6 +1,6 @@
 @isTest
-private class MyASUHelpTest {
-    private static MyASUHelpController sc;
+private class MyASUHelpFAQControllerTest {
+    private static MyASUHelpFAQController sc;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
     private static MyASUHelpMyRequestsController myASUHelpMyRequests;
@@ -138,17 +138,13 @@ private class MyASUHelpTest {
 
     private static void loadTestUserByLastName(String lastName) {
         testUser = [
-            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c, Contact.Self_Service_PIN__c
+            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
             FROM User
             WHERE LastName = :lastName
         ];
     }
     private static void loadContactForTestUser() {
-        List<Contact> contactListForTestUser = [
-            SELECT Id, Self_Service_PIN__c
-            FROM Contact
-            WHERE Id = :testUser.ContactId
-        ];
+        List<Contact> contactListForTestUser = [SELECT Id FROM Contact WHERE Id = :testUser.ContactId];
         if (!contactListForTestUser.isEmpty())
             contactRelatedToTestUser = contactListForTestUser[0];
     }
@@ -195,8 +191,8 @@ private class MyASUHelpTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            vcc = new viewCaseController();
+            sc = new MyASUHelpFAQController();
+            vcc = new ViewCaseController();
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             sc.oppList = oppListForTestUser;
@@ -208,10 +204,7 @@ private class MyASUHelpTest {
             sc.viewAsUrl = 'www.hankhillgifs.com';
             vcc.viewAsUrl = 'www.hankhillgifs.com';
 
-            sc.getMyPin();
             sc.getSource();
-
-            vcc.getMyPin();
             vcc.getSource();
 
             System.assertEquals('There is maintenance', sc.getmMessage());
@@ -244,13 +237,13 @@ private class MyASUHelpTest {
 
         System.runAs(testUser) {
             vacc = new ViewAllCasesController();
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
 
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
             myASUHelpMyRequests.oppList = oppListForTestUser;
@@ -287,8 +280,8 @@ private class MyASUHelpTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            vcc = new viewCaseController();
+            sc = new MyASUHelpFAQController();
+            vcc = new ViewCaseController();
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             sc.oppList = oppListForTestUser;
@@ -313,7 +306,7 @@ private class MyASUHelpTest {
         Test.setCurrentPage(myASUHelp);
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             myASUHelpMyRequests.oppList = oppListForTestUser;
@@ -334,7 +327,7 @@ private class MyASUHelpTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             System.assertEquals(true, sc.getHelpBox());
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
@@ -389,7 +382,7 @@ private class MyASUHelpTest {
         String urlReturnedFromSubmit;
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
             sc.suggestedArticleDescription = 'Description';
             submit = ApexPages.currentPage();
@@ -418,85 +411,14 @@ private class MyASUHelpTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            sc = new MyASUHelpFAQController();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
 
-            System.assertEquals(stop.getURL(), sc.changePin().getURL());
             System.assertEquals(stop.getURL(), sc.suggestAnArticleSubmit().getURL());
         }
 
         Test.stopTest();
-    }
-
-    @isTest
-    private static void originalPinSameAsNewPinError() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-        PageReference currentPage;
-        String urlAfterPinChange;
-
-        System.runAs(testUser) {
-            vcc = new viewCaseController();
-            vcc.newPin = contactRelatedToTestUser.Self_Service_PIN__c;
-            currentPage = ApexPages.currentPage();
-            currentPage.getParameters().put('PIN', 'error');
-
-            Test.startTest();
-            urlAfterPinChange = vcc.changePin().getURL();
-            Test.stopTest();
-        }
-        System.assertEquals(currentPage.getURL(), urlAfterpinChange);
-    }
-
-    @isTest
-    private static void repeatingDigitsError() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-        PageReference currentPage;
-        String urlAfterPinChange;
-
-        System.runAs(testUser) {
-            vcc = new viewCaseController();
-            vcc.newPin = 111111;
-
-            Test.startTest();
-            urlAfterPinChange = vcc.changePin().getURL();
-            Test.stopTest();
-
-            currentPage = ApexPages.currentPage();
-            currentPage.getParameters().put('PIN', 'error');
-        }
-        System.assertEquals(currentPage.getURL(), urlAfterPinChange);
-    }
-
-    @isTest
-    private static void testViewCasePinSuccess() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-
-        String urlAfterPinChange;
-        System.runAs(testUser) {
-            vcc = new viewCaseController();
-            vcc.newPin = 574838;
-
-            Test.startTest();
-            urlAfterPinChange = vcc.changepin().getURL();
-            Test.stopTest();
-        }
-
-        PageReference submitPage = ApexPages.currentPage();
-        submitPage.getParameters().put('PIN', 'success');
-
-        Contact retrieveContact = [
-            SELECT Id, Self_Service_PIN__c, PIN_Lockout__c
-            FROM Contact
-            WHERE Id = :vcc.UserContact.Id
-        ];
-
-        System.assertEquals(submitPage.getURL(), urlAfterPinChange);
-        System.assertEquals(retrieveContact.Self_service_PIN__c, vcc.newPin);
-        System.assertEquals(retrieveContact.PIN_Lockout__c, false);
     }
 
     @isTest
@@ -508,7 +430,7 @@ private class MyASUHelpTest {
 
         Test.startTest();
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             checkCase = vcc.getCaseDetails();
 
             vcc.viewingAs = true;
@@ -527,29 +449,12 @@ private class MyASUHelpTest {
 
         Test.startTest();
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             vcc.viewingAs = true;
             checkCase = vcc.getCaseDetails();
         }
         Test.stopTest();
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);
-    }
-
-    @isTest
-    private static void testSCExceptionCases() {
-        loadTestDataWithUserByLastName('User0');
-
-        System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            sc.newPin = testUser.Contact.Self_Service_PIN__c + 1;
-            sc.UserContact.LastName = null;
-            Test.startTest();
-            sc.changePin();
-            Test.stopTest();
-        }
-
-        List<Case> lstCase = [SELECT Id, Subject, Description FROM Case WHERE Origin__c = 'Error Logger'];
-        System.assertEquals(1, lstCase.size());
     }
 
     @isTest
@@ -559,7 +464,7 @@ private class MyASUHelpTest {
 
         Test.startTest();
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             vcc.getEmailMessages();
         }
         Test.stopTest();
@@ -574,7 +479,7 @@ private class MyASUHelpTest {
 
         Test.startTest();
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             vcc.viewingAs = true;
             vcc.getEmailMessages();
         }
@@ -591,7 +496,7 @@ private class MyASUHelpTest {
         List<ChatMessage> fetchedChatMessages;
         Test.startTest();
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
@@ -612,7 +517,7 @@ private class MyASUHelpTest {
         List<ChatMessage> fetchedChatMessages;
         Test.startTest();
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
@@ -640,48 +545,12 @@ private class MyASUHelpTest {
     }
 
     @isTest
-    private static void testDisplayReplyBox() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-
-        Test.startTest();
-        System.runAs(testUser) {
-            vcc = new viewCaseController();
-            vcc.showReplyBox = false;
-            vcc.showReplyButton = true;
-            vcc.displayReplyBox();
-        }
-        Test.stopTest();
-        System.assertEquals(vcc.showReplyBox, true);
-        System.assertEquals(vcc.showReplyButton, false);
-    }
-
-    @isTest
-    private static void testCancelFunctionality() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-
-        Test.startTest();
-        System.runAs(testUser) {
-            vcc = new viewCaseController();
-            vcc.showReplyBox = true;
-            vcc.caseReply = 'Test Reply';
-            vcc.showReplyButton = false;
-            vcc.clearContentsAndCloseBox();
-        }
-        Test.stopTest();
-        System.assertEquals(vcc.showReplyBox, false);
-        System.assertEquals(vcc.caseReply.length(), 0);
-        System.assertEquals(vcc.showReplyButton, true);
-    }
-
-    @isTest
     private static void testRestCalloutSuccess() {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
 
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             Test.setMock(HttpCalloutMock.class, new EmailMessageSuccessMock());
             vcc.replyCaseAttachment.Name = 'Test Name';
             vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
@@ -709,7 +578,7 @@ private class MyASUHelpTest {
         setCurrentPageAsViewCase();
 
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             Test.setMock(HttpCalloutMock.class, new EmailMessageFailureMock());
             vcc.replyCaseAttachment.Name = 'Test Name';
             vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
@@ -739,7 +608,7 @@ private class MyASUHelpTest {
         setCurrentPageAsViewCase();
         String jsonEmail;
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             Test.startTest();
             jsonEmail = vcc.createJsonEmail();
             Test.stopTest();
@@ -753,7 +622,7 @@ private class MyASUHelpTest {
         setCurrentPageAsViewCase();
         String jsonEmail;
         System.runAs(testUser) {
-            vcc = new viewCaseController();
+            vcc = new ViewCaseController();
             Test.startTest();
             jsonEmail = vcc.createJsonEmail();
             Test.stopTest();

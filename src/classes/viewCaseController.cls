@@ -1,15 +1,13 @@
-public with sharing class viewCaseController {
+public with sharing class ViewCaseController {
     private static final Date EMAIL_VISIBILITY_DATE = Date.newInstance(2015, 4, 6);
     private static final Integer REPLY_ACCEPTANCE_THRESHOLD = 14;
     private Date today;
-    private Decimal origPin;
     private Term__c termAc;
     private Term__c termB;
     private Map<String, String> viewAsMap;
     private MyAsuViewAs viewAsService;
 
     public Id caseId { get; set; }
-    public Decimal newPin { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
@@ -22,8 +20,6 @@ public with sharing class viewCaseController {
     public String viewAsUrl { get; set; }
     public String caseFunctionalGroup { get; set; }
     public List<Opportunity> oppList;
-    public Boolean showReplyBox { get; set; }
-    public Boolean showReplyButton { get; set; }
     public String caseReply { get; set; }
     public Attachment replyCaseAttachment { get; set; }
     public List<String> varsForErrorLogging { get; set; }
@@ -31,10 +27,8 @@ public with sharing class viewCaseController {
     public Boolean showCaseAttachments { get; set; }
     public Boolean showOpenNewCaseAlert { get; set; }
 
-    public viewCaseController() {
+    public ViewCaseController() {
         viewingAs = false;
-        showReplyBox = false;
-        showReplyButton = true;
         replyCaseAttachment = new Attachment();
         checkForViewAs();
         popUserContact();
@@ -118,7 +112,6 @@ public with sharing class viewCaseController {
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
         asurite = userContact.ASURite_ID__c;
-        origPin = userContact.Self_Service_PIN__c;
     }
 
     public void setCaseId() {
@@ -277,37 +270,6 @@ public with sharing class viewCaseController {
         }
     }
 
-    public Decimal getMyPin() {
-        return (viewingAs) ? 111111 : userContact.Self_Service_PIN__c;
-    }
-
-    public PageReference changePin() {
-        if (viewingAs) {
-            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
-            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
-            go.setRedirect(true);
-            return go;
-        }
-
-        Boolean isUpdateSuccess = true;
-
-        if (origPin == newPin || !ContactService.isPinValid(newPin, userContact.Birthdate)) {
-            isUpdateSuccess = false;
-        } else {
-            isUpdateSuccess = updateContactWithPin();
-        }
-
-        return isUpdateSuccess ? getPinSuccessPage() : getPinErrorPage();
-    }
-
-    private PageReference getPinErrorPage() {
-        return redirectWithParams('PIN', 'error');
-    }
-
-    private PageReference getPinSuccessPage() {
-        return redirectWithParams('PIN', 'success');
-    }
-
     private PageReference redirectWithParams(String param, String value) {
         PageReference redirect = ApexPages.currentPage();
         redirect.getParameters().put(param, value);
@@ -315,40 +277,8 @@ public with sharing class viewCaseController {
         return redirect;
     }
 
-    private Boolean updateContactWithPin() {
-        userContact.Self_Service_PIN__c = newPin;
-        if (userContact.PIN_lockout__c == true) {
-            userContact.PIN_lockout__c = false;
-        }
-        try {
-            update userContact;
-            return true;
-        } catch (Exception e) {
-            ErrorLogger logger = new ErrorLogger();
-            logger.setException(e);
-            logger.setDetails(
-                String.format(
-                    'First Name: {0}\n Last Name: {1}\n Employee Id: {2}\n',
-                    new List<String>{ userContact.FirstName, userContact.LastName, userContact.EMPLId__c }
-                )
-            );
-            logger.log();
-            return false;
-        }
-    }
-
-    public void displayReplyBox() {
-        showReplyBox = true;
-        showReplyButton = false;
-    }
-
     private void clearReplyContents() {
         caseReply = '';
-    }
-
-    private void closeReplyBox() {
-        showReplyBox = false;
-        showReplyButton = true;
     }
 
     private void clearReplyAttachment() {
@@ -357,7 +287,6 @@ public with sharing class viewCaseController {
 
     public PageReference clearContentsAndCloseBox() {
         clearReplyContents();
-        closeReplyBox();
         clearReplyAttachment();
         return null;
     }
@@ -365,7 +294,6 @@ public with sharing class viewCaseController {
     public PageReference submitReply() {
         submitCaseReply();
         submitAttachmentReply();
-        closeReplyBox();
         return null;
     }
 

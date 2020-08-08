@@ -2,9 +2,6 @@
     <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean" />
     <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean" />
     <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />
-    <apex:attribute name="myPin" description="The user's contact's PIN" type="Decimal" />
-    <apex:attribute name="newPin" description="The new PIN" type="Decimal" />
-    <apex:attribute name="changePin" description="Action that changes the PIN" type="ApexPages.Action" />
 
     <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js'></script>
     <script type='text/javascript'>
@@ -26,7 +23,7 @@
                 Contact Us
             </div>
 
-            <div class="myasu-help-region-contact-us-content">
+            <div class="myasu-help-region-contact-us-content myasu-help-region-content-section">
                 <p>
                     We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
                     chat session, or call to talk now.
@@ -48,14 +45,14 @@
                             <div id="myasu-help-contact-us-email-link" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <apex:form>
-                                        <div class="myasu-help-contact-us-email-subject-label">Subject</div>
-                                        <apex:inputText label="Subject" value="{!contactUsEmailSubject}" id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject"
-                                        />
-                                        <div class="myasu-help-contact-us-email-message-label">Message</div>
-                                        <apex:inputTextarea label="Message" value="{!contactUsEmailMessage}" id="myasu-help-contact-us-email-message" styleClass="myasu-help-contact-us-email-message"
-                                        />
+                                        <label for="myasu-help-contact-us-email-subject" class="myasu-help-contact-us-email-subject-label">Subject</label>
+                                        <apex:inputField id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject" value="{!newCase.Subject}"
+                                            required="true" label="" />
+                                        <label for="myasu-help-contact-us-email-message" class="myasu-help-contact-us-email-message-label">Message</label>
+                                        <apex:inputField id="myasu-help-contact-us-email-message" styleClass="myasu-help-contact-us-email-message" value="{!newCase.Description}"
+                                            required="true" label="" />
                                         <div class="myasu-help-contact-us-email-message-submit-wrapper">
-                                            <apex:commandLink styleClass="btn btn-primary myasu-help-contact-us-email-message-submit" action="{!sendContactUsEmail}">
+                                            <apex:commandLink styleClass="btn btn-primary myasu-help-contact-us-email-message-submit" action="{!submitCase}">
                                                 Submit
                                             </apex:commandLink>
                                         </div>

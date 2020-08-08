@@ -66,7 +66,9 @@
 
         .myasu-help-region .myasu-help-region-contact-us-content,
         .myasu-help-region .myasu-help-region-my-requests-content,
-        .myasu-help-region .myasu-help-region-faq-content {
+        .myasu-help-region .myasu-help-region-faq-content,
+        .myasu-help-region .myasu-help-region-request-details-content,
+        .myasu-help-region .myasu-help-region-content-section {
             border-top-color: unset !important;
             border-top-style: unset !important;
             border-top-width: unset !important;
@@ -75,6 +77,40 @@
             border-left-color: #ccc;
             border-style: solid;
             border-width: 1px;
+        }
+
+        .myasu-help-region .myasu-help-region-my-requests-no-cases,
+        .myasu-help-region .myasu-help-region-request-details-view-responses-no-emails,
+        .myasu-help-region .myasu-help-region-request-details-view-attachments-no-attachments,
+        .myasu-help-region .myasu-help-region-request-details-view-chat-history-no-history {
+            font-size: .85em;
+            font-weight: 500;
+            margin-left: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-contact-us-content .panel-title a,
+        .myasu-help-region .myasu-help-region-request-details-content .panel-title a {
+            border-bottom: none;
+            color: #8C1D40;
+        }
+
+        .myasu-help-region .myasu-help-contact-us-email,
+        .myasu-help-region .myasu-help-contact-us-chat,
+        .myasu-help-region .myasu-help-contact-us-phone-number-rover,
+        .myasu-help-region .myasu-help-contact-us-phone-number-normal,
+        .myasu-help-region .myasu-help-region-request-details-panel-title {
+            font-size: .9em;
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .myasu-help-region .myasu-help-region-faq,
+        .myasu-help-region .myasu-help-region-request-details {
+            margin-bottom: 2em;
+        }
+
+        .myasu-help-region .breadcrumb {
+            font-weight: 400 !important;
         }
 
         @media only screen and (max-width: 692px) {
@@ -86,6 +122,10 @@
         @media only screen and (min-width: 893px) {
             .myasu-help-region:first-child {
                 padding-right: 2em;
+            }
+
+            .myasu-help-region-full-width:first-child {
+                padding-right: 0;
             }
         }
 
@@ -135,10 +175,6 @@
             margin-right: 1em !important;
         }
 
-        .myasu-help-region .myasu-help-region-faq {
-            margin-bottom: 2em;
-        }
-
         .myasu-help-region .myasu-help-region-faq-search {
             background-color: #8C1D40;
             padding: 1.5em 2em 2em 2em;
@@ -150,7 +186,7 @@
         }
 
         .myasu-help-region .myasu-help-region-faq-search-input-container {
-            height: 2.1em;
+            height: 2em;
         }
 
         .myasu-help-region .myasu-help-region-faq-search-input {
@@ -193,15 +229,6 @@
             margin-bottom: .25em;
         }
 
-        .myasu-help-region .myasu-help-contact-us-email,
-        .myasu-help-region .myasu-help-contact-us-chat,
-        .myasu-help-region .myasu-help-contact-us-phone-number-rover,
-        .myasu-help-region .myasu-help-contact-us-phone-number-normal {
-            font-size: .9em;
-            color: #000000;
-            font-weight: 500;
-        }
-
         .myasu-help-region [class*="-icon"] {
             margin-right: .5em;
         }
@@ -218,11 +245,6 @@
 
         .myasu-help-region .myasu-help-region-contact-us {
             margin-bottom: 2em;
-        }
-
-        .myasu-help-region .myasu-help-region-contact-us-content .panel-title a {
-            border-bottom: none;
-            color: #8C1D40;
         }
 
         .myasu-help-region .panel,
@@ -266,7 +288,7 @@
         }
 
 
-        /* My ASU Help - My Cases */
+        /* My ASU Help - My Requests */
 
         .myasu-help-region td span {
             font-weight: 400;
@@ -275,12 +297,6 @@
 
         .myasu-help-region th div {
             font-size: .9em;
-        }
-
-        .myasu-help-region .myasu-help-region-my-requests-no-cases {
-            font-size: .85em;
-            font-weight: 500;
-            margin-left: 1em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests-sub-header {
@@ -296,12 +312,35 @@
         }
 
         .myasu-help-region .myasu-help-region-my-requests-content p {
-            padding-top: 0;
+            font-weight: 400;
             font-size: .9em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests {
             margin-bottom: 2em;
         }
+
+
+        /* My ASU Help - View Case */
+
+        .myasu-help-region .myasu-help-region-request-details .myasu-help-region-sub-header {
+            padding-top: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-request-details hr {
+            margin-bottom: .25em;
+        }
+
+        .myasu-help-region .myasu-help-region-request-details-reply .btn-primary {
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+
+        /* My ASU Help - View All Cases */
+
+        /* My ASU Help - View Article */
+
+        /* My ASU Help - View All Articles */
     </style>
 </apex:component>

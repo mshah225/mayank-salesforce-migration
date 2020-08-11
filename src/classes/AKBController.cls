@@ -16,6 +16,7 @@ public without sharing class AKBController {
     public String userAlias;
     public String funcGroup { get; set; }
     public String artType { get; set; }
+    public String articleWasHelpful { get; set; }
 
     public AKBController(MyASUHelpFAQController myASUHelp) {
         this.myASUHelp = myASUHelp;
@@ -39,6 +40,7 @@ public without sharing class AKBController {
             artType = faq.ArticleType;
         }
 
+        articleWasHelpful = '';
         feedbackHelpful = new AKB_Article_Feedback__c();
         suggestAnArticle = new Case();
     }
@@ -67,9 +69,10 @@ public without sharing class AKBController {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', myASUHelp.masqScopeIdCookie);
             go.setRedirect(true);
-
             return go;
         }
+
+        articleWasHelpful = 'yes';
 
         feedbackHelpful.Article_Id__c = ApexPages.currentPage().getParameters().get('id');
         feedbackHelpful.Article_Number__c = article.ArticleNumber;
@@ -101,7 +104,6 @@ public without sharing class AKBController {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', myASUHelp.masqScopeIdCookie);
             go.setRedirect(true);
-
             return go;
         }
 
@@ -129,6 +131,14 @@ public without sharing class AKBController {
         confirmPage.setRedirect(true);
 
         return confirmPage;
+    }
+
+    public void setArticleHelpfulNull() {
+        articleWasHelpful = '';
+    }
+
+    public void setArticleHelpfulNo() {
+        articleWasHelpful = 'no';
     }
 
     public Boolean getfeedbackVisible() {

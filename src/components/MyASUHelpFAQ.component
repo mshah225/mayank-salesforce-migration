@@ -46,7 +46,6 @@
                         <div class="myasu-help-region-sub-header">
                             Showing top results for '{!searchstring}'
                         </div>
-
                         <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageSize="{!IF(searchstring != '',10,0)}">
                             <div class="myasu-help-region-faq-search-results-article-container">
                                 <apex:outputLink styleClass="myasu-help-region-faq-search-results-article" value="/authkb?id={!article.id}">
@@ -57,14 +56,14 @@
                         <apex:commandLink styleClass="myasu-help-region-faq-search-results-view-all" value="View all results" action="{!viewAllResults}"
                         />
                     </apex:outputPanel>
-                    <apex:outputPanel rendered="{!searchstring == ''}">
+                    <apex:outputPanel rendered="{!AND(searchstring == '', !isSearchingWithFunctionalGroup)}">
                         <div class="myasu-help-region-sub-header">
                             Browse common questions
                         </div>
                         <div class="myasu-help-region-sub-header-category">
                             <div class="myasu-help-region-common-questions-header">Finances</div>
                             <apex:repeat value="{!topThreeFinancialArticles}" var="article" id="myasu-help-region-common-questions-finances">
-                                <apex:outputLink styleClass="myasu-help-region-common-questions-finance-article" value="/authkb?id={!article.id}">{!article.Title}</apex:outputLink>
+                                <apex:outputLink styleClass="myasu-help-region-common-questions-finance-article" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
                                 <br/>
                             </apex:repeat>
                             <apex:commandLink styleClass="myasu-help-region-common-questions-finances-view-all" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
@@ -73,7 +72,7 @@
                         <div class="myasu-help-region-sub-header-category">
                             <div class="myasu-help-region-common-questions-header">Technology</div>
                             <apex:repeat value="{!topThreeTechnicalArticles}" var="article" id="myasu-help-region-common-questions-technical">
-                                <apex:outputLink styleClass="myasu-help-region-common-questions-technical-article" value="/authkb?id={!article.id}">{!article.Title}</apex:outputLink>
+                                <apex:outputLink styleClass="myasu-help-region-common-questions-technical-article" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
                                 <br/>
                             </apex:repeat>
                             <apex:commandLink styleClass="myasu-help-region-common-questions-technical-view-all" value="View all technology questions"
@@ -82,11 +81,43 @@
                         <div class="myasu-help-region-sub-header-category">
                             <div class="myasu-help-region-common-questions-header">Housing</div>
                             <apex:repeat value="{!topThreeHousingArticles}" var="article" id="myasu-help-region-common-questions-housing">
-                                <apex:outputLink styleClass="myasu-help-region-common-questions-housing-article" value="/authkb?id={!article.id}">{!article.Title}</apex:outputLink>
+                                <apex:outputLink styleClass="myasu-help-region-common-questions-housing-article" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
                                 <br/>
                             </apex:repeat>
                             <apex:commandLink styleClass="myasu-help-region-common-questions-housing-view-all" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
                             />
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!AND(searchstring == '', isSearchingWithFunctionalGroup)}">
+                        <apex:outputPanel rendered="{!functionalGroup == 'Financial Aid'}">
+                            <div class="myasu-help-region-sub-header">Showing all Finance results</div>
+                            <apex:repeat value="{!allFinancialArticles}" var="article" id="myasu-help-region-view-all-articles-finance">
+                                <div class="myasu-help-region-view-all-articles-article-container">
+                                    <apex:outputLink styleClass="myasu-help-region-view-all-articles-finance" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                    <br/>
+                                </div>
+                            </apex:repeat>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!functionalGroup == '%Technical Resources%'}">
+                            <div class="myasu-help-region-sub-header">Showing all Technology results</div>
+                            <apex:repeat value="{!allTechnicalArticles}" var="article" id="myasu-help-region-view-all-articles-technical">
+                                <div class="myasu-help-region-view-all-articles-article-container">
+                                    <apex:outputLink styleClass="myasu-help-region-view-all-articles-technical" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                    <br/>
+                                </div>
+                            </apex:repeat>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!functionalGroup == 'Housing'}">
+                            <div class="myasu-help-region-sub-header">Showing all Housing results</div>
+                            <apex:repeat value="{!allHousingArticles}" var="article" id="myasu-help-region-view-all-articles-housing">
+                                <div class="myasu-help-region-view-all-articles-article-container">
+                                    <apex:outputLink styleClass="myasu-help-region-view-all-articles-housing" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                    <br/>
+                                </div>
+                            </apex:repeat>
+                        </apex:outputPanel>
+                        <div class="myasu-help-region-view-all-articles-view-all-container">
+                            <apex:outputLink styleClass="myasu-help-region-view-all-articles-view-common" value="/">View all common questions</apex:outputLink>
                         </div>
                     </apex:outputPanel>
                 </apex:pageBlock>

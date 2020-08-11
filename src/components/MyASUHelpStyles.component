@@ -116,7 +116,8 @@
             margin-bottom: 2em;
         }
 
-        .myasu-help-region .breadcrumb {
+        .myasu-help-region .breadcrumb,
+        #asu_content_well .breadcrumb {
             font-weight: 400 !important;
         }
 
@@ -326,6 +327,10 @@
             padding-right: 1em;
         }
 
+        .myasu-help-region .myasu-help-region-my-requests-content a:hover {
+            color: #000 !important;
+        }
+
         .myasu-help-region .myasu-help-region-my-requests-content p {
             font-weight: 400;
             font-size: .9em;
@@ -369,11 +374,17 @@
             display: none;
         }
 
-        .myasu-help-region .myasu-help-region-view-article .bPageBlock {
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .bPageBlock {
+            margin-bottom: 0;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .bPageBlock,
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .bPageBlock>.pbBody>.apexp>.bPageBlock {
             margin-bottom: .75em;
         }
 
-        .myasu-help-region .myasu-help-region-view-article .bPageBlock .requiredInput .requiredBlock {
+        .myasu-help-region .myasu-help-region-view-article .requiredBlock,
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .requiredBlock {
             background-color: transparent;
         }
 

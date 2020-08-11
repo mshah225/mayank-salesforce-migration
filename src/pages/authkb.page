@@ -87,8 +87,8 @@
                                         <apex:inputField id="articleFeedback" value="{!feedbackHelpful.Comments__c}" />
                                     </apex:pageBlock>
                                     <apex:commandLink value="Submit" action="{!helpfulNo}" styleClass="btn btn-primary" />
-                                    <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-primary" reRender="feedbackButtons"
-                                    />
+                                    <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-secondary" style="margin-left:1em!important;"
+                                        reRender="feedbackButtons" />
                                 </apex:outputPanel>
                             </apex:form>
                         </div>
@@ -113,7 +113,33 @@
                             </apex:outputLink>
                             <div class="myasu-help-region-view-article-suggest-article-accordion-container">
                                 <hr />
-                                <c:MyASUHelpSuggestAnArticle />
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-region-view-article-suggest-article-link">
+                                                    <strong>
+                                                        <i class="fa fa-pencil myasu-help-contact-us-email-icon" aria-hidden="true" />
+                                                        <span class="myasu-help-region-view-article-suggest-article">Suggest An Article</span>
+                                                    </strong>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="myasu-help-region-view-article-suggest-article-link" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <apex:form id="suggestAnArticle">
+                                                    <apex:pageBlock mode="maindetail">
+                                                        <p>Have an idea for an article you'd like to see? Please tell us below!</p>
+                                                        <apex:pageBlock mode="maindetail">
+                                                            <apex:inputField id="articleDetails" required="true" value="{!suggestAnArticle.Description}" />
+                                                        </apex:pageBlock>
+                                                        <apex:commandLink value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-primary" />
+                                                    </apex:pageBlock>
+                                                </apex:form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

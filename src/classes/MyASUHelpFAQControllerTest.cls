@@ -384,7 +384,6 @@ private class MyASUHelpFAQControllerTest {
         System.runAs(testUser) {
             sc = new MyASUHelpFAQController();
             sc.suggestAnArticle.Description = 'Test submitting a suggestion';
-            sc.suggestedArticleDescription = 'Description';
             submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
 

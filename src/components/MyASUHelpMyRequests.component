@@ -6,9 +6,10 @@
             </div>
 
             <div class="myasu-help-region-my-requests-content">
+                <p class="myasu-help-region-requests-text">Click the View button to see a history of your request, including chat and email history.</p>
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Pending Requests</div>
-                    <apex:pageBlock mode="maindetail ">
+                    <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable rendered="{!(myCases.size>= 1)}" value="{!myCases}" var="case" styleClass="">
                             <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
@@ -28,7 +29,6 @@
                 </apex:form>
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Completed Requests</div>
-                    <p>Click the View button to see a history of your request, including chat and email history.</p>
                     <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="">
                             <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"

@@ -46,7 +46,7 @@ private class Test_ViewAllCasesController {
         setup();
         PageReference viewAllCasesPage = Page.viewAllCases;
         Test.setCurrentPage(viewAllCasesPage);
-        MyASUHelpController sc;
+        MyASUHelpFAQController sc;
         ViewAllCasesController vac;
         List<Case> closedCases = null;
 

@@ -21,6 +21,11 @@
             margin: 0 !important;
         }
 
+        .myasu-help-region textarea {
+            width: 100%;
+            font-weight: 400;
+        }
+
         .myasu-help-region .pbBody .list tr th {
             border-top: unset;
             border-right: unset;
@@ -66,7 +71,9 @@
 
         .myasu-help-region .myasu-help-region-contact-us-content,
         .myasu-help-region .myasu-help-region-my-requests-content,
-        .myasu-help-region .myasu-help-region-faq-content {
+        .myasu-help-region .myasu-help-region-faq-content,
+        .myasu-help-region .myasu-help-region-request-details-content,
+        .myasu-help-region .myasu-help-region-content-section {
             border-top-color: unset !important;
             border-top-style: unset !important;
             border-top-width: unset !important;
@@ -77,15 +84,60 @@
             border-width: 1px;
         }
 
-        @media only screen and (max-width: 692px) {
-            .myasu-help-region:first-child {
+        .myasu-help-region .myasu-help-region-my-requests-no-cases,
+        .myasu-help-region .myasu-help-region-request-details-view-responses-no-emails,
+        .myasu-help-region .myasu-help-region-request-details-view-attachments-no-attachments,
+        .myasu-help-region .myasu-help-region-request-details-view-chat-history-no-history {
+            font-size: .85em;
+            font-weight: 500;
+            margin-left: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-contact-us-content .panel-title a,
+        .myasu-help-region .myasu-help-region-request-details-content .panel-title a,
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .panel-title a {
+            border-bottom: none;
+            color: #8C1D40;
+        }
+
+        .myasu-help-region .myasu-help-contact-us-email,
+        .myasu-help-region .myasu-help-contact-us-chat,
+        .myasu-help-region .myasu-help-contact-us-phone-number-rover,
+        .myasu-help-region .myasu-help-contact-us-phone-number-normal,
+        .myasu-help-region .myasu-help-region-request-details-panel-title,
+        .myasu-help-region .myasu-help-region-view-article-suggest-article {
+            font-size: .9em;
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .myasu-help-region .myasu-help-region-faq,
+        .myasu-help-region .myasu-help-region-request-details {
+            margin-bottom: 2em;
+        }
+
+        .myasu-help-region .breadcrumb,
+        #asu_content_well .breadcrumb {
+            font-weight: 400 !important;
+        }
+
+        @media only screen and (max-width: 991px) {
+            .myasu-help-region:first-child,
+            .myasu-help-region .myasu-help-region-view-article,
+            .myasu-help-region .myasu-help-region-view-article-helpful-articles {
                 margin-top: 2em;
+                padding-right: 0;
             }
         }
 
-        @media only screen and (min-width: 893px) {
-            .myasu-help-region:first-child {
+        @media only screen and (min-width: 992px) {
+            .myasu-help-region:first-child,
+            .myasu-help-region .myasu-help-region-view-article {
                 padding-right: 2em;
+            }
+
+            .myasu-help-region-full-width:first-child {
+                padding-right: 0;
             }
         }
 
@@ -103,14 +155,15 @@
         .myasu-help-region .myasu-help-region-common-questions-finance-article,
         .myasu-help-region .myasu-help-region-common-questions-technical-article,
         .myasu-help-region .myasu-help-region-common-questions-housing-article,
-        .myasu-help-region .myasu-help-region-common-questions-finance-article-link,
-        .myasu-help-region .myasu-help-region-common-questions-technical-article-link,
-        .myasu-help-region .myasu-help-region-common-questions-housing-article-link,
         .myasu-help-region .myasu-help-region-common-questions-finances-view-all,
         .myasu-help-region .myasu-help-region-common-questions-technical-view-all,
         .myasu-help-region .myasu-help-region-common-questions-housing-view-all,
         .myasu-help-region .myasu-help-region-faq-search-results-article,
-        .myasu-help-region .myasu-help-region-faq-search-results-view-all {
+        .myasu-help-region .myasu-help-region-faq-search-results-view-all,
+        .myasu-help-region .myasu-help-region-view-all-articles-finance,
+        .myasu-help-region .myasu-help-region-view-all-articles-technical,
+        .myasu-help-region .myasu-help-region-view-all-articles-housing,
+        .myasu-help-region .myasu-help-region-view-all-articles-view-common {
             font-weight: 400;
             margin-bottom: .5em;
             display: inline-block;
@@ -119,7 +172,8 @@
         .myasu-help-region .myasu-help-region-common-questions-finances-view-all,
         .myasu-help-region .myasu-help-region-common-questions-technical-view-all,
         .myasu-help-region .myasu-help-region-common-questions-housing-view-all,
-        .myasu-help-region .myasu-help-region-faq-search-results-view-all {
+        .myasu-help-region .myasu-help-region-faq-search-results-view-all,
+        .myasu-help-region .myasu-help-region-view-all-articles-view-common {
             color: #8C1D40 !important;
             margin-top: .5em;
         }
@@ -130,13 +184,11 @@
         }
 
         .myasu-help-region .myasu-help-region-faq-search-results-article,
-        .myasu-help-region .myasu-help-region-faq-search-results-view-all {
+        .myasu-help-region .myasu-help-region-faq-search-results-view-all,
+        .myasu-help-region .myasu-help-region-view-all-articles-article-container,
+        .myasu-help-region .myasu-help-region-view-all-articles-view-all-container {
             margin-left: 1em !important;
             margin-right: 1em !important;
-        }
-
-        .myasu-help-region .myasu-help-region-faq {
-            margin-bottom: 2em;
         }
 
         .myasu-help-region .myasu-help-region-faq-search {
@@ -150,7 +202,7 @@
         }
 
         .myasu-help-region .myasu-help-region-faq-search-input-container {
-            height: 2.1em;
+            height: 2em;
         }
 
         .myasu-help-region .myasu-help-region-faq-search-input {
@@ -193,15 +245,6 @@
             margin-bottom: .25em;
         }
 
-        .myasu-help-region .myasu-help-contact-us-email,
-        .myasu-help-region .myasu-help-contact-us-chat,
-        .myasu-help-region .myasu-help-contact-us-phone-number-rover,
-        .myasu-help-region .myasu-help-contact-us-phone-number-normal {
-            font-size: .9em;
-            color: #000000;
-            font-weight: 500;
-        }
-
         .myasu-help-region [class*="-icon"] {
             margin-right: .5em;
         }
@@ -218,11 +261,6 @@
 
         .myasu-help-region .myasu-help-region-contact-us {
             margin-bottom: 2em;
-        }
-
-        .myasu-help-region .myasu-help-region-contact-us-content .panel-title a {
-            border-bottom: none;
-            color: #8C1D40;
         }
 
         .myasu-help-region .panel,
@@ -266,7 +304,7 @@
         }
 
 
-        /* My ASU Help - My Cases */
+        /* My ASU Help - My Requests */
 
         .myasu-help-region td span {
             font-weight: 400;
@@ -275,12 +313,6 @@
 
         .myasu-help-region th div {
             font-size: .9em;
-        }
-
-        .myasu-help-region .myasu-help-region-my-requests-no-cases {
-            font-size: .85em;
-            font-weight: 500;
-            margin-left: 1em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests-sub-header {
@@ -295,13 +327,128 @@
             padding-right: 1em;
         }
 
+        .myasu-help-region .myasu-help-region-my-requests-content a:hover {
+            color: #000 !important;
+        }
+
         .myasu-help-region .myasu-help-region-my-requests-content p {
-            padding-top: 0;
+            font-weight: 400;
             font-size: .9em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests {
             margin-bottom: 2em;
         }
+
+
+        /* My ASU Help - View Case */
+
+        .myasu-help-region .myasu-help-region-request-details .myasu-help-region-sub-header {
+            padding-top: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-request-details hr {
+            margin-bottom: .25em;
+        }
+
+        .myasu-help-region .myasu-help-region-request-details-reply .btn-primary {
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+
+        /* My ASU Help - View All Cases */
+
+        /* My ASU Help - View Article */
+
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-view-all {
+            font-size: .9em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article {
+            color: #000000;
+            font-size: .9em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article-container:first-of-type {
+            display: none;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .bPageBlock {
+            margin-bottom: 0;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .bPageBlock,
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .bPageBlock>.pbBody>.apexp>.bPageBlock {
+            margin-bottom: .75em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .requiredBlock,
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .requiredBlock {
+            background-color: transparent;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-sub-header,
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article-container:nth-of-type(2) {
+            padding-top: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-helpful-yes,
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-helpful-no {
+            margin-left: 1em !important;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article hr {
+            margin-bottom: .25em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles hr {
+            margin-top: .25em;
+            margin-bottom: .25em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .sfdc_richtext {
+            padding-left: 1em;
+            padding-bottom: 1em;
+            padding-right: 1em;
+            padding-top: 0;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-category-label,
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-date-updated-label {
+            display: inline;
+            padding-left: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-feedback {
+            padding-left: 1em;
+            padding-bottom: .5em;
+            padding-right: 1em;
+            padding-top: .5em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table {
+            margin-bottom: 0;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr:nth-child(2n+1) {
+            background-color: #FFFFFF;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr>td {
+            border-top: none;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles {
+            padding-right: 0;
+            margin-bottom: 2em;
+        }
+
+        .myasu-help-region .myasu-help-region-view-article-category,
+        .myasu-help-region .myasu-help-region-view-article-date-updated {
+            font-weight: 400;
+        }
+
+        /* My ASU Help - View All Articles */
     </style>
 </apex:component>

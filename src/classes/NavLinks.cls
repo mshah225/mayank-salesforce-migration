@@ -1,9 +1,9 @@
 public class NavLinks {
     public NavLinks() {
     }
-    public NavLinks(MyASUHelpController controller) {
+    public NavLinks(MyASUHelpFAQController controller) {
     }
-    public NavLinks(viewCaseController controller) {
+    public NavLinks(ViewCaseController controller) {
     }
     public NavLinks(AKBController controller) {
     }

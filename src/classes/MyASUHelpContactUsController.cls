@@ -9,8 +9,19 @@ public without sharing class MyASUHelpContactUsController {
     public String deploymentId { get; set; }
     public String chatEndpoint { get; set; }
 
-    public String contactUsEmailSubject { get; set; }
-    public String contactUsEmailMessage { get; set; }
+    private Id caseId;
+    public Boolean viewingAs { get; set; }
+    public Case newCase { get; set; }
+    public Contact userContact;
+    public String stopViewAsUrl { get; set; }
+    public String viewAsUrl { get; set; }
+    public String firstName { get; set; }
+    public String lastName { get; set; }
+    public String emplId { get; set; }
+    public String userAsurite;
+    public String asurite { get; set; }
+    public String masqScopeIdCookie { get; set; }
+    public MyAsuViewAs viewAsService;
 
     public MyASUHelpContactUsController() {
         Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
@@ -27,21 +38,80 @@ public without sharing class MyASUHelpContactUsController {
         studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
         technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
         technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
+
+        newCase = new Case();
+        viewingAs = false;
+        createViewAs();
+        popUserContact();
     }
 
-    public void sendContactUsEmail() {
-        Messaging.reserveSingleEmailCapacity(1);
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        //List<String> toAddresses = new List<String>{ 'salesforcesupport@asu.edu' };
-        List<String> toAddresses = new List<String>{ 'mgilardi@asu.edu' };
-        mail.setToAddresses(toAddresses);
-        mail.setReplyTo(UserInfo.getUserEmail());
-        mail.setSenderDisplayName(UserInfo.getFirstName() + ' ' + UserInfo.getLastName());
-        mail.setSubject('My ASU Help submission: ' + contactUsEmailSubject);
-        mail.setBccSender(false);
-        mail.setUseSignature(false);
-        mail.setPlainTextBody(contactUsEmailMessage);
-        mail.setHtmlBody(contactUsEmailMessage);
-        Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
+    public void createViewAs() {
+        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
+            masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
+            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
+        }
+    }
+
+    public void popUserContact() {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
+        } else {
+            userContact = ContactService.getLoggedInContact();
+        }
+        firstName = userContact.FirstName;
+        lastName = userContact.LastName;
+        emplId = userContact.EMPLID__c;
+        asurite = userContact.ASURite_ID__c;
+    }
+
+    public PageReference viewCase() {
+        caseId = ApexPages.currentPage().getParameters().get('caseId');
+        String current = ApexPages.currentPage().getUrl();
+        current = current.split('apex/')[1];
+        PageReference viewCasePage = new PageReference('/viewcase');
+        viewCasePage.getParameters().put('id', caseId);
+
+        viewCasePage.getParameters().put('source', current);
+
+        if (viewingAs) {
+            viewCasePage.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+        }
+
+        return viewCasePage;
+    }
+
+    public PageReference submitCase() {
+        Boolean isCaseCreated = true;
+        PageReference confirmPage;
+        if (viewingAs) {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+
+            return go;
+        }
+
+        newCase.ContactId = userContact.Id;
+        newCase.Web_Submission__c = 'My ASU Standard';
+        try {
+            insert newCase;
+            ApexPages.currentPage().getParameters().put('caseId', newCase.Id);
+            confirmPage = viewCase();
+            confirmPage.setRedirect(true);
+            return confirmPage;
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('ContactId', newCase.ContactId));
+            vars.add(ErrorLogger.convertStringToJSON('Subject', newCase.Subject));
+            vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
+            ErrorLogger.log(e, vars, false);
+            return null;
+        }
     }
 }

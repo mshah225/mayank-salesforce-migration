@@ -1,0 +1,359 @@
+public with sharing class MyASUHelpFAQController {
+    private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 4, 6);
+    private Id caseId;
+    private Date today;
+    private Term__c termcAC;
+    private Term__c termcB;
+    private MyAsuViewAs viewAsService;
+    public List<Opportunity> oppList;
+    public Boolean viewingAs { get; set; }
+    public Case suggestAnArticle { get; set; }
+    public Contact userContact;
+    public String firstName { get; set; }
+    public String lastName { get; set; }
+    public String emplId { get; set; }
+    public String masqScopeIdCookie { get; set; }
+    public String stopViewAsUrl { get; set; }
+    public String viewAsUrl { get; set; }
+    public String asurite { get; set; }
+    public String userAsurite;
+    public String mMessage;
+
+    public String functionalGroup { get; set; }
+    public Boolean isSearchingWithFunctionalGroup { get; set; }
+    public List<FAQ__kav> allFinancialArticles;
+    public List<FAQ__kav> topThreeFinancialArticles;
+    public List<FAQ__kav> allTechnicalArticles;
+    public List<FAQ__kav> topThreeTechnicalArticles;
+    public List<FAQ__kav> allHousingArticles;
+    public List<FAQ__kav> topThreeHousingArticles;
+    public String viewAllArticlesUrl;
+    public String viewAllFinanceArticlesUrl;
+    public String viewAllTechnicalArticlesUrl;
+    public String viewAllHousingArticlesUrl;
+
+    public MyASUHelpFAQController() {
+        suggestAnArticle = new Case();
+        viewingAs = false;
+        functionalGroup = null;
+        isSearchingWithFunctionalGroup = false;
+
+        popUserContact();
+        popTerms();
+        checkForViewAs();
+        checkForFunctionalGroup();
+
+        setAllFinancialArticles();
+        setTopThreeFinancialArticles();
+        setAllTechnicalArticles();
+        setTopThreeTechnicalArticles();
+        setAllHousingArticles();
+        setTopThreeHousingArticles();
+        setViewAllArticlesLink();
+        setViewAllFinancialArticlesLink();
+        setViewAllTechnicalArticlesLink();
+        setViewAllHousingArticlesLink();
+    }
+
+    public void popUserContact() {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
+            userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
+            stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
+            viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
+            viewingAs = true;
+        } else {
+            userContact = ContactService.getLoggedInContact();
+        }
+        firstName = userContact.FirstName;
+        lastName = userContact.LastName;
+        emplId = userContact.EMPLID__c;
+        asurite = userContact.ASURite_ID__c;
+    }
+
+    public void popTerms() {
+        today = date.today();
+
+        termcAC = [
+            SELECT Session_A_C_Start_Date__c
+            FROM Term__c
+            WHERE session_A_C_Start_Date__c > :System.today()
+            LIMIT 1
+        ];
+
+        termcB = [SELECT Session_B_Start_Date__c FROM Term__c WHERE session_B_Start_Date__c > :System.today() LIMIT 1];
+
+        oppList = [
+            SELECT Career__c, Term__c, StageName, Admitted_Session__c
+            FROM Opportunity
+            WHERE Contact__c = :userContact.Id
+        ];
+    }
+
+    public void checkForViewAs() {
+        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
+            masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
+            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+
+            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
+        }
+    }
+
+    public void checkForFunctionalGroup() {
+        if (ApexPages.currentPage().getParameters().get('category') != null) {
+            String functionalGroupKey = ApexPages.currentPage().getParameters().get('category');
+            if (functionalGroupKey.equals('finance')) {
+                functionalGroup = 'Financial Aid';
+            } else if (functionalGroupKey.equals('technical')) {
+                functionalGroup = '%Technical Resources%';
+            } else if (functionalGroupKey.equals('housing')) {
+                functionalGroup = 'Housing';
+            }
+
+            if (functionalGroup != null) {
+                isSearchingWithFunctionalGroup = true;
+            }
+        }
+    }
+
+    public List<FAQ__kav> getAllFinancialArticles() {
+        return allFinancialArticles;
+    }
+
+    private void setAllFinancialArticles() {
+        allFinancialArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 1000
+        ];
+    }
+
+    public List<FAQ__kav> getTopThreeFinancialArticles() {
+        return topThreeFinancialArticles;
+    }
+
+    private void setTopThreeFinancialArticles() {
+        topThreeFinancialArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 3
+        ];
+    }
+
+    public List<FAQ__kav> getAllTechnicalArticles() {
+        return allTechnicalArticles;
+    }
+
+    private void setAllTechnicalArticles() {
+        allTechnicalArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 1000
+        ];
+    }
+
+    public List<FAQ__kav> getTopThreeTechnicalArticles() {
+        return topThreeTechnicalArticles;
+    }
+
+    private void setTopThreeTechnicalArticles() {
+        topThreeTechnicalArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 3
+        ];
+    }
+
+    public List<FAQ__kav> getAllHousingArticles() {
+        return allHousingArticles;
+    }
+
+    private void setAllHousingArticles() {
+        allHousingArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 1000
+        ];
+    }
+
+    public List<FAQ__kav> getTopThreeHousingArticles() {
+        return topThreeHousingArticles;
+    }
+
+    private void setTopThreeHousingArticles() {
+        topThreeHousingArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 3
+        ];
+    }
+
+    public String getViewAllArticlesLink() {
+        return viewAllArticlesUrl;
+    }
+
+    private void setViewAllArticlesLink() {
+        viewAllArticlesUrl = '/viewAllArticles';
+    }
+
+    public String getViewAllFinancialArticlesLink() {
+        return viewAllFinanceArticlesUrl;
+    }
+
+    private void setViewAllFinancialArticlesLink() {
+        viewAllFinanceArticlesUrl = '/viewAllArticles?category=finance';
+    }
+
+    public String getViewAllTechnicalArticlesLink() {
+        return viewAllTechnicalArticlesUrl;
+    }
+
+    private void setViewAllTechnicalArticlesLink() {
+        viewAllTechnicalArticlesUrl = '/viewAllArticles?category=technical';
+    }
+
+    public String getViewAllHousingArticlesLink() {
+        return viewAllHousingArticlesUrl;
+    }
+
+    private void setViewAllHousingArticlesLink() {
+        viewAllHousingArticlesUrl = '/viewAllArticles?category=housing';
+    }
+
+    public PageReference suggestAnArticleSubmit() {
+        if (viewingAs) {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
+        }
+
+        suggestAnArticle.Subject = 'Suggest An Article';
+        suggestAnArticle.ContactId = userContact.Id;
+        suggestAnArticle.CC_Functional_Group__c = [
+            SELECT Id
+            FROM Case_Classification__c
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Student Success Innovations'
+            LIMIT 1
+        ]
+        .Id;
+        suggestAnArticle.CC_Category__c = [
+            SELECT Id
+            FROM Case_Classification__c
+            WHERE
+                RecordType.Name = 'Category'
+                AND Active__c = TRUE
+                AND Name = 'Knowledge'
+                AND Parent__c = :suggestAnArticle.CC_Functional_Group__c
+            LIMIT 1
+        ]
+        .Id;
+        suggestAnArticle.Origin__c = 'My ASU';
+        suggestAnArticle.Visible_by_Contact__c = false;
+        suggestAnArticle.OwnerId = [
+            SELECT Id
+            FROM Group
+            WHERE Name = 'Student Success Innovations (Case)' AND Type = 'Queue'
+        ]
+        .Id;
+
+        insert suggestAnArticle;
+
+        return redirectWithParams(ApexPages.currentPage(), 'Suggest', 'yes');
+    }
+
+    public String getSource() {
+        String source = ApexPages.currentPage().getParameters().get('source');
+
+        if (source == null) {
+            source = 'studentSC';
+        } else if (source.equals('viewAllCases')) {
+            source = 'viewAllCases?source=studentSC';
+        }
+
+        return source;
+    }
+
+    public Boolean getNormalPhone() {
+        return (userContact.CAP__c == null) ? true : false;
+    }
+
+    public Boolean getRoverPhone() {
+        return (userContact.CAP__c != null) ? true : false;
+    }
+
+    public Boolean getHelpBox() {
+        if ((oppList == null && userContact != null) || (oppList.size() == 0 && userContact != null)) {
+            return true;
+        } else if (
+            (oppList[0].StageName == 'Enrolled' &&
+            oppList[0].Career__c == 'Undergraduate' &&
+            oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)
+        ) {
+            return false;
+        } else if (
+            (oppList[0].StageName == 'Enrolled' &&
+            oppList[0].Career__c == 'Undergraduate' &&
+            oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c)
+        ) {
+            return false;
+        } else if (
+            oppList[0].StageName != 'Enrolled' &&
+            oppList[0].Career__c == 'Undergraduate' &&
+            (userContact.Affiliation_Student__c == 'Current' ||
+            userContact.Affiliation_Alumni__c == 'Current' ||
+            userContact.Affiliation_Courtesy_Affiliate__c == 'Current' ||
+            userContact.Affiliation_Employee__c == 'Current') &&
+            today < date.valueOf(termcB.Session_B_Start_Date__c)
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public String getmMessage() {
+        List<Service_Center_Maintenance__c> scmList = [
+            SELECT Message__c, Start_Time__c, End_Time__c
+            FROM Service_Center_Maintenance__c
+            WHERE Displayed__c = TRUE
+        ];
+
+        if (scmList.size() > 0) {
+            if (
+                (scmList[0].Start_Time__c <= System.now() && scmList[0].End_Time__c >= System.now()) ||
+                (scmList[0].Start_Time__c == null &&
+                scmList[0].End_Time__c == null)
+            ) {
+                mMessage = scmList[0].Message__c;
+            }
+        }
+
+        return mMessage;
+    }
+
+    private PageReference clonePageAndAddMasqScopeCookie() {
+        PageReference copyOfCurrentPage = new PageReference(ApexPages.currentPage().getUrl());
+        return redirectWithParams(copyOfCurrentPage, 'masqScopeIdCookie', masqScopeIdCookie);
+    }
+
+    public PageReference redirectWithParams(PageReference page, String param, String value) {
+        PageReference redirect = page;
+        redirect.getParameters().put(param, value);
+        redirect.setRedirect(true);
+        return redirect;
+    }
+}

@@ -25,9 +25,12 @@ public without sharing class FeedbackButtonController {
             caseContactId = ApexPages.currentPage().getParameters().get('contactId');
             carName = ApexPages.currentPage().getParameters().get('carName');
 
+            System.debug(carName);
+
             if (carName != null) {
                 // The only required parameter for the page to function properly
                 settings = Feedback_Cars__c.getAll().get(carName);
+                System.debug(settings);
 
                 if (settings != null) {
                     // Validate the contact, if it does not exist or is not valid
@@ -149,7 +152,6 @@ public without sharing class FeedbackButtonController {
                 insert feedbackCase;
 
                 alertHandler.clear();
-
                 alertHandler.newAlert(
                     customAlert.CONFIRM,
                     'Thank you for your feedback about the ' +
@@ -159,7 +161,6 @@ public without sharing class FeedbackButtonController {
 
                 caseDescription = '';
             }
-            system.debug('called');
             return null;
         } catch (Exception e) {
             List<String> vars = new List<String>();

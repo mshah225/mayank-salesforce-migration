@@ -5,134 +5,118 @@
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
 
-        <title>My ASU | View All Cases</title>
-        <c:asu_responsive_header_section linkList="{!linkList}" />
+        <title>My ASU | Help | View All Requests</title>
 
-        <c:ViewAllCasesStyles />
+        <c:MyASUHelpStyles />
     </head>
 
-    <body onload="viewAsLinks()">
-        <c:GoogleTagManagerBody />
+    <c:ASUBrandHeader />
+    <div class="asu-header-site-title-container">
+        <div>
+            <div id="asu-header-site-title" class="asu-header-width">
+                <a href="https://webapp4.asu.edu/myasu">My ASU</a>
+            </div>
+        </div>
+    </div>
+    <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
 
-        <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
-        <div id="main-search" class="main-search closed"></div>
+    <c:GoogleTagManagerBody />
+    <div id="asu_content_well">
+        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="active">Home</li>
+                <li class="active">
+                    <a href="/">Help</a>
+                </li>
+                <li class="active">View All Requests</li>
+            </ol>
+            <div class="row">
+                <div class="col-md-12 myasu-help-region myasu-help-region-full-width">
 
-        <c:SCHeader firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-            viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
-
-        <div id="asu_content_well">
-            <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
-            <div class="container">
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="/{!source}">Back</a>
-                    </li>
-                    <li class="active" style="font-size:10pt;">View All Cases</li>
-                </ol>
-                <div class="row">
-                    <div class="col-md-12">
-
-                        <!-- My Open Cases view -->
-                        <div class="box">
-                            <div class="header">
-                                <h6>
-                                    <b>My Open Cases</b>
-                                </h6>
-                            </div>
-                            <div id="openCases">
-                                <apex:form>
-                                    <apex:pageBlock mode="maindetail">
-                                        <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
-                                            <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;"
-                                                onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"
-                                            />
-
-                                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
-                                                onmouseout="this.style.backgroundColor ='white'" />
-
-                                            <apex:column headerValue="Date Opened" width="15%" value="{!case.CreatedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
-                                                onmouseout="this.style.backgroundColor ='white'" />
-
-                                            <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
-                                                onmouseout="this.style.backgroundColor ='white'">
-                                                <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
-                                                    <apex:param name="caseId" value="{!case.Id}" />
-                                                </apex:commandLink>
-                                            </apex:column>
-                                        </apex:pageBlockTable>
-                                        <apex:outputText rendered="{!(myCases.size = 0)}">
-                                            <div class="padClass"> You do not have any open cases. </div>
-                                        </apex:outputText>
-                                    </apex:pageBlock>
-                                </apex:form>
-                            </div>
+                    <!-- My Open Cases view -->
+                    <div class="myasu-help-region-view-all-requests-pending">
+                        <div class="myasu-help-region-header">
+                            Pending Requests
                         </div>
+                        <div class="myasu-help-region-my-requests-content">
+                            <p class="myasu-help-region-requests-text">Click the View button to see a history of your request, including chat and email history.</p>
+                            <apex:form>
+                                <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
+                                        <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;"
+                                            onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"
+                                        />
 
-                        <br />
+                                        <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
+                                            onmouseout="this.style.backgroundColor ='white'" />
 
-                        <!-- My Closed Cases view -->
-                        <div class="box">
-                            <div class="header">
-                                <h6>
-                                    <b>My Closed Cases</b>
-                                </h6>
-                            </div>
-                            <div id="closedCases">
-                                <apex:form>
-                                    <apex:pageBlock mode="maindetail">
-                                        <apex:pageBlockTable rendered="{!(allClosedCases.size >= 1)}" value="{!allClosedCases}" var="case" styleClass="myCasesTable">
-                                            <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;"
-                                                onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"
-                                            />
+                                        <apex:column headerValue="Date Opened" width="15%" value="{!case.CreatedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
+                                            onmouseout="this.style.backgroundColor ='white'" />
 
-                                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
-                                                onmouseout="this.style.backgroundColor ='white'" />
+                                        <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
+                                            onmouseout="this.style.backgroundColor ='white'">
+                                            <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
+                                                <apex:param name="caseId" value="{!case.Id}" />
+                                            </apex:commandLink>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <apex:outputText rendered="{!(myCases.size = 0)}">
+                                        <div class="padClass">You do not currently have any open requests.</div>
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:form>
+                        </div>
+                    </div>
 
-                                            <apex:column headerValue="Date Closed" width="15%" value="{!case.ClosedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
-                                                onmouseout="this.style.backgroundColor ='white'" />
+                    <br />
 
-                                            <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
-                                                onmouseout="this.style.backgroundColor ='white'">
-                                                <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
-                                                    <apex:param name="caseId" value="{!case.Id}" />
-                                                </apex:commandLink>
-                                            </apex:column>
-                                        </apex:pageBlockTable>
-                                        <apex:outputText rendered="{!(allClosedCases.size = 0)}">
-                                            <div class="padClass"> You do not have any closed cases. </div>
-                                        </apex:outputText>
-                                    </apex:pageBlock>
-                                </apex:form>
-                            </div>
+                    <!-- My Closed Cases view -->
+                    <div class="myasu-help-region-view-all-requests-completed">
+                        <div class="myasu-help-region-header">
+                            Completed Requests
+                        </div>
+                        <div class="myasu-help-region-my-requests-content">
+                            <p class="myasu-help-region-requests-text">Click the View button to see a history of your request, including chat and email history.</p>
+                            <apex:form>
+                                <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlockTable rendered="{!(allClosedCases.size >= 1)}" value="{!allClosedCases}" var="case" styleClass="myCasesTable">
+                                        <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;"
+                                            onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"
+                                        />
+
+                                        <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
+                                            onmouseout="this.style.backgroundColor ='white'" />
+
+                                        <apex:column headerValue="Date Closed" width="15%" value="{!case.ClosedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
+                                            onmouseout="this.style.backgroundColor ='white'" />
+
+                                        <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
+                                            onmouseout="this.style.backgroundColor ='white'">
+                                            <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
+                                                <apex:param name="caseId" value="{!case.Id}" />
+                                            </apex:commandLink>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <apex:outputText rendered="{!(allClosedCases.size = 0)}">
+                                        <p class="myasu-help-region-my-requests-no-cases">You do not currently have any completed requests.</p>
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:form>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="bgWrapper">
+                        <c:FeedbackButton carName="MyASU Service Center" classes="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <c:SCFooter />
-
-        <script>
-            viewAsLinks();
-
-            function viewAsLinks() {
-                var masqCookie = "{!masqScopeIdCookie}";
-                var viewingAs = "{!viewingAs}";
-                if (masqCookie != "" && viewingAs == "true") {
-                    $("a").each(function () {
-                        var href = this.href;
-                        if (href.indexOf("force") > -1) {
-                            if (href.indexOf("?") != -1) {
-                                href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
-                            }
-                            else {
-                                href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
-                            }
-                            $(this).attr("href", href);
-                        }
-                    });
-                }
-            }
-        </script>
-    </body>
+    </div>
+    <c:ASUBrandFooter />
+    <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

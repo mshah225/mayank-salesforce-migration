@@ -56,14 +56,14 @@ public class Test_FeedbackButtonController {
         Id functionalGroup = [
             SELECT Id
             FROM case_classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND name = 'Student-Centric Initiatives'
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND name = 'Student-Centric Initiatives'
             LIMIT 1
         ]
         .Id;
         Id category = [
             SELECT Id
             FROM case_classification__c
-            WHERE RecordType.Name = 'Category' AND Active__c = true AND name = 'Student Profile Feedback'
+            WHERE RecordType.Name = 'Category' AND Active__c = TRUE AND name = 'Student Profile Feedback'
             LIMIT 1
         ]
         .Id;

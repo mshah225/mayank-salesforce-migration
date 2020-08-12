@@ -1,5 +1,5 @@
 public with sharing class FeedbackController {
-    private MyASUHelpController sc;
+    private MyASUHelpFAQController sc;
 
     public Case c { get; set; }
     public Contact feedbackContact { get; set; }
@@ -7,7 +7,7 @@ public with sharing class FeedbackController {
     public String comments { get; set; }
     public String userAlias;
 
-    public FeedbackController(MyASUHelpController sc) {
+    public FeedbackController(MyASUHelpFAQController sc) {
         this.sc = sc;
         c = new Case();
         feedbackContact = sc.userContact;
@@ -40,9 +40,9 @@ public with sharing class FeedbackController {
                 FROM Case_Classification__c
                 WHERE
                     RecordType.Name = 'Functional Group'
-                    AND Active__c = true
+                    AND Active__c = TRUE
                     AND Name = 'Student-Centric Initiatives'
-                    AND Parent__c = null
+                    AND Parent__c = NULL
                 LIMIT 1
             ]
             .Id;
@@ -51,7 +51,7 @@ public with sharing class FeedbackController {
                 FROM Case_Classification__c
                 WHERE
                     RecordType.Name = 'Category'
-                    AND Active__c = true
+                    AND Active__c = TRUE
                     AND Name = 'Service Center Feedback'
                     AND Parent__c = :c.CC_Functional_Group__c
                 LIMIT 1

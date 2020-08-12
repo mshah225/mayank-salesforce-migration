@@ -18,6 +18,10 @@
             border-bottom: 1px dotted #d23153;
         }
 
+        body .pbBody table.list tr.headerRow th {
+            background-color: #f5f5f5;
+        }
+
         .btn {
             -moz-user-select: none !important;
             background-image: none !important;
@@ -64,6 +68,19 @@
         .lead {
             margin-top: 0;
             font-weight: 400;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+        }
+
+        .breadcrumb li {
+            margin-left: 0;
+        }
+
+        .breadcrumb .active,
+        .breadcrumb .active::before {
+            color: #555;
         }
 
         #asu_footer ul {

@@ -5,7 +5,7 @@
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
 
-        <title>My ASU Help | Request Details | {!caseDetails.Subject}</title>
+        <title>My ASU | Help | {!caseDetails.Subject}</title>
 
         <c:MyASUHelpStyles />
 
@@ -254,7 +254,7 @@
                                                     </span>
                                                     <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" />
                                                     <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-primary" style="margin-top:1em !important;"
-                                                        onclick="return validateReply();" />
+                                                    />
                                                     <br />
                                                     <div class="errorMsg" id="errorDiv" />
                                                 </div>

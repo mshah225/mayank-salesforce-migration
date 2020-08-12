@@ -4,7 +4,7 @@
     <head>
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
-        <title>My ASU | {!article.title}</title>
+        <title>My ASU | Help | {!article.title}</title>
         <c:MyASUHelpStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />

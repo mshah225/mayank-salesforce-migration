@@ -122,24 +122,13 @@ public with sharing class MyASUHelpFAQController {
     }
 
     private void setAllFinancialArticles() {
-        try {
-            allFinancialArticles = [
-                SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-                FROM FAQ__kav
-                WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
-                ORDER BY ArticleTotalViewCount DESC
-                LIMIT 1000
-            ];
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(
-                ErrorLogger.convertStringToJSON(
-                    'allFinancialArticles',
-                    'There was an error setting all financial articles for My ASU Help'
-                )
-            );
-            //ErrorLogger.log(e, vars, false);
-        }
+        allFinancialArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 1000
+        ];
     }
 
     public List<FAQ__kav> getTopThreeFinancialArticles() {
@@ -147,24 +136,13 @@ public with sharing class MyASUHelpFAQController {
     }
 
     private void setTopThreeFinancialArticles() {
-        try {
-            topThreeFinancialArticles = [
-                SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-                FROM FAQ__kav
-                WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
-                ORDER BY ArticleTotalViewCount DESC
-                LIMIT 3
-            ];
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(
-                ErrorLogger.convertStringToJSON(
-                    'topThreeFinancialArticles',
-                    'There was an error setting the top three financial articles for My ASU Help'
-                )
-            );
-            //ErrorLogger.log(e, vars, false);
-        }
+        topThreeFinancialArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 3
+        ];
     }
 
     public List<FAQ__kav> getAllTechnicalArticles() {
@@ -172,27 +150,13 @@ public with sharing class MyASUHelpFAQController {
     }
 
     private void setAllTechnicalArticles() {
-        try {
-            allTechnicalArticles = [
-                SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-                FROM FAQ__kav
-                WHERE
-                    IsDeleted = FALSE
-                    AND PublishStatus = 'Online'
-                    AND Functional_Group__c LIKE '%Technical Resources%'
-                ORDER BY ArticleTotalViewCount DESC
-                LIMIT 1000
-            ];
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(
-                ErrorLogger.convertStringToJSON(
-                    'allTechnicalArticles',
-                    'There was an error setting all technical articles for My ASU Help'
-                )
-            );
-            //ErrorLogger.log(e, vars, false);
-        }
+        allTechnicalArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 1000
+        ];
     }
 
     public List<FAQ__kav> getTopThreeTechnicalArticles() {
@@ -200,27 +164,13 @@ public with sharing class MyASUHelpFAQController {
     }
 
     private void setTopThreeTechnicalArticles() {
-        try {
-            topThreeTechnicalArticles = [
-                SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-                FROM FAQ__kav
-                WHERE
-                    IsDeleted = FALSE
-                    AND PublishStatus = 'Online'
-                    AND Functional_Group__c LIKE '%Technical Resources%'
-                ORDER BY ArticleTotalViewCount DESC
-                LIMIT 3
-            ];
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(
-                ErrorLogger.convertStringToJSON(
-                    'topThreeTechnicalArticles',
-                    'There was an error setting the top three technical articles for My ASU Help'
-                )
-            );
-            //ErrorLogger.log(e, vars, false);
-        }
+        topThreeTechnicalArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 3
+        ];
     }
 
     public List<FAQ__kav> getAllHousingArticles() {
@@ -228,24 +178,13 @@ public with sharing class MyASUHelpFAQController {
     }
 
     private void setAllHousingArticles() {
-        try {
-            allHousingArticles = [
-                SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-                FROM FAQ__kav
-                WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
-                ORDER BY ArticleTotalViewCount DESC
-                LIMIT 1000
-            ];
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(
-                ErrorLogger.convertStringToJSON(
-                    'allHousingArticles',
-                    'There was an error setting all housing articles for My ASU Help'
-                )
-            );
-            //ErrorLogger.log(e, vars, false);
-        }
+        allHousingArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 1000
+        ];
     }
 
     public List<FAQ__kav> getTopThreeHousingArticles() {
@@ -253,24 +192,13 @@ public with sharing class MyASUHelpFAQController {
     }
 
     private void setTopThreeHousingArticles() {
-        try {
-            topThreeHousingArticles = [
-                SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-                FROM FAQ__kav
-                WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
-                ORDER BY ArticleTotalViewCount DESC
-                LIMIT 3
-            ];
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(
-                ErrorLogger.convertStringToJSON(
-                    'topThreeHousingArticles',
-                    'There was an error setting the top three housing articles for My ASU Help'
-                )
-            );
-            //ErrorLogger.log(e, vars, false);
-        }
+        topThreeHousingArticles = [
+            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
+            FROM FAQ__kav
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            ORDER BY ArticleTotalViewCount DESC
+            LIMIT 3
+        ];
     }
 
     public String getViewAllArticlesLink() {

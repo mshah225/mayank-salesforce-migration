@@ -23,7 +23,8 @@ public with sharing class MyASUHelpPaginationController {
             'SELECT Id, Title, UrlName, LastPublishedDate,LastModifiedById ' +
             'FROM KnowledgeArticleVersion ' +
             'WHERE PublishStatus = \'online\' ' +
-            'AND Language = \'en_US\'';
+            'AND Language = \'en_US\'' +
+            'LIMIT 100';
         articleList = Database.query(qryString);
         maxSize = articleList.size();
         checkSearchParams();

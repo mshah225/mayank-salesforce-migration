@@ -63,7 +63,7 @@
                                         </apex:column>
                                     </apex:pageBlockTable>
                                     <apex:outputText rendered="{!(myCases.size = 0)}">
-                                        <div class="padClass">You do not currently have any open requests.</div>
+                                        <p class="myasu-help-region-my-requests-no-cases">You do not currently have any completed requests.</p>
                                     </apex:outputText>
                                 </apex:pageBlock>
                             </apex:form>

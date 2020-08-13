@@ -117,36 +117,32 @@ public with sharing class MyASUHelpFAQController {
         }
     }
 
-    public List<FAQ__kav> getAllFinancialArticles() {
-        return allFinancialArticles;
-    }
-
     private void setAllFinancialArticles() {
         allFinancialArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
             WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 1000
+            LIMIT 250
         ];
+
+        if (allFinancialArticles[0].Id != null) {
+            topThreeFinancialArticles.add(allFinancialArticles[0]);
+        }
+        if (allFinancialArticles[1].Id != null) {
+            topThreeFinancialArticles.add(allFinancialArticles[1]);
+        }
+        if (allFinancialArticles[2].Id != null) {
+            topThreeFinancialArticles.add(allFinancialArticles[2]);
+        }
+    }
+
+    public List<FAQ__kav> getAllFinancialArticles() {
+        return allFinancialArticles;
     }
 
     public List<FAQ__kav> getTopThreeFinancialArticles() {
         return topThreeFinancialArticles;
-    }
-
-    private void setTopThreeFinancialArticles() {
-        topThreeFinancialArticles = [
-            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-            FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
-            ORDER BY ArticleTotalViewCount DESC
-            LIMIT 3
-        ];
-    }
-
-    public List<FAQ__kav> getAllTechnicalArticles() {
-        return allTechnicalArticles;
     }
 
     private void setAllTechnicalArticles() {
@@ -155,26 +151,26 @@ public with sharing class MyASUHelpFAQController {
             FROM FAQ__kav
             WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 1000
+            LIMIT 250
         ];
+
+        if (allTechnicalArticles[0].Id != null) {
+            topThreeTechnicalArticles.add(allTechnicalArticles[0]);
+        }
+        if (allTechnicalArticles[1].Id != null) {
+            topThreeTechnicalArticles.add(allTechnicalArticles[1]);
+        }
+        if (allTechnicalArticles[2].Id != null) {
+            topThreeTechnicalArticles.add(allTechnicalArticles[2]);
+        }
+    }
+
+    public List<FAQ__kav> getAllTechnicalArticles() {
+        return allTechnicalArticles;
     }
 
     public List<FAQ__kav> getTopThreeTechnicalArticles() {
         return topThreeTechnicalArticles;
-    }
-
-    private void setTopThreeTechnicalArticles() {
-        topThreeTechnicalArticles = [
-            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-            FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
-            ORDER BY ArticleTotalViewCount DESC
-            LIMIT 3
-        ];
-    }
-
-    public List<FAQ__kav> getAllHousingArticles() {
-        return allHousingArticles;
     }
 
     private void setAllHousingArticles() {
@@ -183,22 +179,26 @@ public with sharing class MyASUHelpFAQController {
             FROM FAQ__kav
             WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 1000
+            LIMIT 250
         ];
+
+        if (allHousingArticles[0].Id != null) {
+            topThreeHousingArticles.add(allHousingArticles[0]);
+        }
+        if (allHousingArticles[1].Id != null) {
+            topThreeHousingArticles.add(allHousingArticles[1]);
+        }
+        if (allHousingArticles[2].Id != null) {
+            topThreeHousingArticles.add(allHousingArticles[2]);
+        }
+    }
+
+    public List<FAQ__kav> getAllHousingArticles() {
+        return allHousingArticles;
     }
 
     public List<FAQ__kav> getTopThreeHousingArticles() {
         return topThreeHousingArticles;
-    }
-
-    private void setTopThreeHousingArticles() {
-        topThreeHousingArticles = [
-            SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
-            FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
-            ORDER BY ArticleTotalViewCount DESC
-            LIMIT 3
-        ];
     }
 
     public String getViewAllArticlesLink() {

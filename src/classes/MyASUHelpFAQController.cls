@@ -44,15 +44,9 @@ public with sharing class MyASUHelpFAQController {
         checkForFunctionalGroup();
 
         setAllFinancialArticles();
-        setTopThreeFinancialArticles();
         setAllTechnicalArticles();
-        setTopThreeTechnicalArticles();
         setAllHousingArticles();
-        setTopThreeHousingArticles();
-        setViewAllArticlesLink();
-        setViewAllFinancialArticlesLink();
-        setViewAllTechnicalArticlesLink();
-        setViewAllHousingArticlesLink();
+        setViewAllArticlesLinks();
     }
 
     public void popUserContact() {
@@ -205,32 +199,23 @@ public with sharing class MyASUHelpFAQController {
         return viewAllArticlesUrl;
     }
 
-    private void setViewAllArticlesLink() {
+    private void setViewAllArticlesLinks() {
         viewAllArticlesUrl = '/viewAllArticles';
+        viewAllFinanceArticlesUrl = '/viewAllArticles?category=finance';
+        viewAllTechnicalArticlesUrl = '/viewAllArticles?category=technical';
+        viewAllHousingArticlesUrl = '/viewAllArticles?category=housing';
     }
 
     public String getViewAllFinancialArticlesLink() {
         return viewAllFinanceArticlesUrl;
     }
 
-    private void setViewAllFinancialArticlesLink() {
-        viewAllFinanceArticlesUrl = '/viewAllArticles?category=finance';
-    }
-
     public String getViewAllTechnicalArticlesLink() {
         return viewAllTechnicalArticlesUrl;
     }
 
-    private void setViewAllTechnicalArticlesLink() {
-        viewAllTechnicalArticlesUrl = '/viewAllArticles?category=technical';
-    }
-
     public String getViewAllHousingArticlesLink() {
         return viewAllHousingArticlesUrl;
-    }
-
-    private void setViewAllHousingArticlesLink() {
-        viewAllHousingArticlesUrl = '/viewAllArticles?category=housing';
     }
 
     public PageReference suggestAnArticleSubmit() {

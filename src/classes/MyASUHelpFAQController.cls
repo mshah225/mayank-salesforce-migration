@@ -119,15 +119,18 @@ public with sharing class MyASUHelpFAQController {
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 250
         ];
+        topThreeFinancialArticles = new List<FAQ__kav>();
 
-        if (allFinancialArticles[0].Id != null) {
-            topThreeFinancialArticles.add(allFinancialArticles[0]);
-        }
-        if (allFinancialArticles[1].Id != null) {
-            topThreeFinancialArticles.add(allFinancialArticles[1]);
-        }
-        if (allFinancialArticles[2].Id != null) {
-            topThreeFinancialArticles.add(allFinancialArticles[2]);
+        if (allFinancialArticles != null) {
+            if (allFinancialArticles[0].Id != null) {
+                topThreeFinancialArticles.add(allFinancialArticles[0]);
+            }
+            if (allFinancialArticles[1].Id != null) {
+                topThreeFinancialArticles.add(allFinancialArticles[1]);
+            }
+            if (allFinancialArticles[2].Id != null) {
+                topThreeFinancialArticles.add(allFinancialArticles[2]);
+            }
         }
     }
 
@@ -147,15 +150,18 @@ public with sharing class MyASUHelpFAQController {
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 250
         ];
+        topThreeTechnicalArticles = new List<FAQ__kav>();
 
-        if (allTechnicalArticles[0].Id != null) {
-            topThreeTechnicalArticles.add(allTechnicalArticles[0]);
-        }
-        if (allTechnicalArticles[1].Id != null) {
-            topThreeTechnicalArticles.add(allTechnicalArticles[1]);
-        }
-        if (allTechnicalArticles[2].Id != null) {
-            topThreeTechnicalArticles.add(allTechnicalArticles[2]);
+        if (allTechnicalArticles != null) {
+            if (allTechnicalArticles[0].Id != null) {
+                topThreeTechnicalArticles.add(allTechnicalArticles[0]);
+            }
+            if (allTechnicalArticles[1].Id != null) {
+                topThreeTechnicalArticles.add(allTechnicalArticles[1]);
+            }
+            if (allTechnicalArticles[2].Id != null) {
+                topThreeTechnicalArticles.add(allTechnicalArticles[2]);
+            }
         }
     }
 
@@ -175,15 +181,18 @@ public with sharing class MyASUHelpFAQController {
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 250
         ];
+        topThreeHousingArticles = new List<FAQ__kav>();
 
-        if (allHousingArticles[0].Id != null) {
-            topThreeHousingArticles.add(allHousingArticles[0]);
-        }
-        if (allHousingArticles[1].Id != null) {
-            topThreeHousingArticles.add(allHousingArticles[1]);
-        }
-        if (allHousingArticles[2].Id != null) {
-            topThreeHousingArticles.add(allHousingArticles[2]);
+        if (allHousingArticles != null) {
+            if (allHousingArticles[0].Id != null) {
+                topThreeHousingArticles.add(allHousingArticles[0]);
+            }
+            if (allHousingArticles[1].Id != null) {
+                topThreeHousingArticles.add(allHousingArticles[1]);
+            }
+            if (allHousingArticles[2].Id != null) {
+                topThreeHousingArticles.add(allHousingArticles[2]);
+            }
         }
     }
 

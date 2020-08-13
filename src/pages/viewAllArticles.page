@@ -74,27 +74,6 @@
             <div class="row">
                 <div class="col-md-12">
                     <c:MyASUHelpFAQ EmbedLocation="viewAllArticles" />
-                    <apex:form id="theSearchResults">
-                        <apex:pageBlock id="searchResults" mode="maindetail">
-                            <div class="row">
-                                <div class="col-md-12">
-
-                                    <div class="pull-right visible-sm visible-md visible-lg">
-                                        <button class="btn btn-secondary" data-toggle="modal" data-target="#suggestAnArticle">
-                                            Suggest An Article
-                                        </button>
-                                    </div>
-
-                                    <div class="pull-left visible-xs" style="clear:both;margin-top:20px;">
-                                        <button class="btn btn-secondary" data-toggle="modal" data-target="#suggestAnArticle">
-                                            Suggest An Article
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </apex:pageBlock>
-                    </apex:form>
-
                 </div>
             </div>
             <div class="row">

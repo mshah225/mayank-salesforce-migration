@@ -201,9 +201,9 @@ public with sharing class MyASUHelpFAQController {
 
     private void setViewAllArticlesLinks() {
         viewAllArticlesUrl = '/viewAllArticles';
-        viewAllFinanceArticlesUrl = '/viewAllArticles?category=finance';
-        viewAllTechnicalArticlesUrl = '/viewAllArticles?category=technical';
-        viewAllHousingArticlesUrl = '/viewAllArticles?category=housing';
+        viewAllFinanceArticlesUrl = viewAllArticlesUrl + '?category=finance';
+        viewAllTechnicalArticlesUrl = viewAllArticlesUrl + '?category=technical';
+        viewAllHousingArticlesUrl = viewAllArticlesUrl + '?category=housing';
     }
 
     public String getViewAllFinancialArticlesLink() {

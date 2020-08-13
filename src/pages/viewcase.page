@@ -167,10 +167,10 @@
                                             <apex:outputField value="{!caseDetails.Description}" />
                                             <apex:outputField value="{!caseDetails.CC_Functional_Group__r.Name}" label="Department" rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
                                             />
-                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d','  yyyy, hh:mm a z}" label="Date Opened">
                                                 <apex:param value="{!caseDetails.CreatedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d',' yyyy, hh:MM a z}" label="Date Closed"
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d',' yyyy, hh:mm a z}" label="Date Closed"
                                                 rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
                                                 <apex:param value="{!caseDetails.ClosedDate}" />
                                             </apex:outputText>
@@ -200,25 +200,25 @@
                                                         <apex:repeat value="{!EmailMessages}" var="EM">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-body">
-                                                                    <apex:outputLabel for="emailSentDate" value="Sent Date:" />
-                                                                    <apex:outputText id="emailSentDate" value="{0, date, MMMM d',' yyyy, hh:MM a z}">
-                                                                        <apex:param value="{!EM.CreatedDate}" />
-                                                                    </apex:outputText>
-                                                                    <br />
                                                                     <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
-                                                                        <apex:outputLabel for="fromAddress" value="From Address:" /> &nbsp;
+                                                                        <apex:outputLabel for="fromAddress" value="From:" />
                                                                         <apex:outputText id="fromAddress">
                                                                             {!EM.FromName} &#60;{!EM.FromAddress}&#62;
                                                                         </apex:outputText>
                                                                         <br />
                                                                     </apex:outputPanel>
+                                                                    <apex:outputLabel for="emailSentDate" value="Date:" />
+                                                                    <apex:outputText id="emailSentDate" value="{0, date, MMMM d',' yyyy, hh:mm a z}">
+                                                                        <apex:param value="{!EM.MessageDate}" />
+                                                                    </apex:outputText>
+                                                                    <br />
                                                                     <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
-                                                                        <apex:outputLabel for="toAddress" value="To Address:" /> &nbsp;
+                                                                        <apex:outputLabel for="toAddress" value="To:" /> &nbsp;
                                                                         <apex:outputText id="toAddress" value="{!EM.ToAddress}" />
                                                                         <br />
                                                                     </apex:outputPanel>
                                                                     <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
-                                                                        <apex:outputLabel for="ccAddress" value="CC:" /> &nbsp;
+                                                                        <apex:outputLabel for="ccAddress" value="Cc:" /> &nbsp;
                                                                         <apex:outputText id="ccAddress" value="{!EM.CCAddress}" />
                                                                         <br />
                                                                     </apex:outputPanel>
@@ -280,7 +280,7 @@
                                                                     <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
                                                                 </apex:column>
                                                                 <apex:column headerValue="Created Date">
-                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">
+                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy, hh:mm a z}" label="Date Opened">
                                                                         <apex:param value="{!eachAttachment.CreatedDate}" />
                                                                     </apex:outputText>
                                                                 </apex:column>

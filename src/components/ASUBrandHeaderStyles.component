@@ -83,6 +83,33 @@
             color: #555;
         }
 
+        .confirmM3 .messageTable,
+        .warningM3 .messageTable,
+        .errorM3 .messageTable,
+        .infoM3 .messageTable {
+            background-color: transparent !important;
+            max-width: 1170px;
+            margin: auto !important;
+        }
+
+        .confirmM3 .messageTable tr,
+        .warningM3 .messageTable tr,
+        .errorM3 .messageTable tr,
+        .infoM3 .messageTable tr {
+            background-color: transparent !important;
+        }
+
+        .confirmM3 .messageTable>tbody>tr>td,
+        .warningM3 .messageTable>tbody>tr>td,
+        .errorM3 .messageTable>tbody>tr>td,
+        .infoM3 .messageTable>tbody>tr>td {
+            border-top: transparent;
+        }
+
+        .messageTable>tbody>tr>td:first-child {
+            display: none;
+        }
+
         #asu_footer ul {
             margin-left: auto;
         }

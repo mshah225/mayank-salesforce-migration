@@ -2016,7 +2016,7 @@
                                                 <td class="gradTD">
                                                     {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
                                                     '--', '')}
-                                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                                    <apex:outputText rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}" value="{0, date, MM'/'dd'/'yyyy}">
                                                         <apex:param value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}" />
                                                     </apex:outputText>
                                                 </td>

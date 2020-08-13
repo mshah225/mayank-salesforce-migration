@@ -302,13 +302,13 @@ public with sharing class ViewCaseController {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
                 ApexPages.addmessage(
-                    new ApexPages.message(ApexPages.severity.CONFIRM, 'Response to the case was submitted successfully')
+                    new ApexPages.message(ApexPages.severity.CONFIRM, 'Your response was submitted successfully.')
                 );
             } else {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
-                        'Could not add response to case. Please try again or contact system admin'
+                        'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080.'
                     )
                 );
             }
@@ -321,12 +321,15 @@ public with sharing class ViewCaseController {
             String attachmentUploadResponse = uploadAttachment();
             if (attachmentUploadResponse.contains('success')) {
                 ApexPages.addmessage(
-                    new ApexPages.message(ApexPages.severity.CONFIRM, 'Attachment to Case submitted Successfully')
+                    new ApexPages.message(ApexPages.severity.CONFIRM, 'Your attachment upload was successful.')
                 );
                 retrieveAttachmentList();
             } else {
                 ApexPages.addmessage(
-                    new ApexPages.message(ApexPages.severity.ERROR, 'Could not upload attachment, please try again')
+                    new ApexPages.message(
+                        ApexPages.severity.ERROR,
+                        'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080.'
+                    )
                 );
             }
         }
@@ -363,9 +366,8 @@ public with sharing class ViewCaseController {
             currentUser.FirstName +
             ' ' +
             currentUser.LastName +
-            ' from the MyASU Service Center at ' +
-            DateTime.now() +
-            ':';
+            ' from the My ASU Help tab at ' +
+            DateTime.now();
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(
             caseReply,
             caseId,

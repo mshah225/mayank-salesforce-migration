@@ -48,6 +48,7 @@ public class CaseService {
             SELECT
                 FromName,
                 CreatedDate,
+                MessageDate,
                 HtmlBody,
                 LastModifiedDate,
                 Subject,

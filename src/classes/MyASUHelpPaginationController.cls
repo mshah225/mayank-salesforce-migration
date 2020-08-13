@@ -1,37 +1,74 @@
 public with sharing class MyASUHelpPaginationController {
     public Integer pageSize;
+    public Integer currentPage;
+    public Integer maxSize;
+    public Integer rangeStart;
+    public Integer rangeEnd;
+    public String resultsRange;
     public List<KnowledgeArticleVersion> articleList;
     public String searchstring { get; set; }
 
     public MyASUHelpPaginationController() {
-        setUpPage();
+        setupPagination();
     }
     public MyASUHelpPaginationController(MyASUHelpFAQController controller) {
-        setUpPage();
+        setupPagination();
     }
 
-    public void setUpPage() {
-        String strurl = getVFPageName();
-
-        if (strurl == 'viewAllArticles') {
-            pageSize = 20;
-        } else {
-            pageSize = 10;
-        }
-
-        String qryString =
-            'SELECT Id, Title, UrlName, LastPublishedDate,LastModifiedById ' +
-            'FROM KnowledgeArticleVersion ' +
-            'WHERE PublishStatus = \'online\' ' +
-            'AND Language = \'en_US\'' +
-            'LIMIT 100';
-        articleList = Database.query(qryString);
-        maxSize = articleList.size();
+    public void setupPagination() {
+        pageSize = 10;
+        currentPage = 1;
+        rangeStart = 1;
+        rangeEnd = 1;
+        setMaxSize();
+        setResultsRange();
         checkSearchParams();
     }
 
-    Integer currentPage = 1;
-    Integer maxSize = 1;
+    private void setMaxSize() {
+        maxSize = [
+            SELECT COUNT()
+            FROM KnowledgeArticleVersion
+            WHERE PublishStatus = 'online' AND Language = 'en_US'
+            LIMIT 200
+        ];
+    }
+
+    public void checkSearchParams() {
+        String searchParams = ApexPages.currentPage().getParameters().get('q');
+        if (searchParams != null) {
+            searchstring = (searchParams.length() > 99) ? searchParams.substring(0, 99) : searchParams;
+        }
+    }
+
+    public void setResultsRange() {
+        resultsRange = '';
+        if (maxSize == 0) {
+            rangeStart = 0;
+            rangeEnd = 0;
+        } else if (maxSize < 10 && maxSize > 0) {
+            rangeEnd = maxSize;
+            rangeStart = 1;
+        } else {
+            rangeEnd = currentPage * 10;
+            rangeStart = rangeEnd - 9;
+
+            if (rangeEnd > maxSize) {
+                rangeEnd = maxSize;
+            }
+        }
+
+        if (rangeStart != rangeEnd) {
+            resultsRange += rangeStart + ' - ' + rangeEnd + ' of ' + maxSize + ' results';
+        } else {
+            resultsRange += rangeStart;
+            if (rangeStart == 1) {
+                resultsRange += ' of ' + maxSize + ' result';
+            } else if (rangeStart == 0) {
+                resultsRange += ' of ' + maxSize + ' results';
+            }
+        }
+    }
 
     public Integer getMaxSize() {
         return maxSize;
@@ -40,26 +77,16 @@ public with sharing class MyASUHelpPaginationController {
         return pageSize;
     }
 
+    public String getResultsRange() {
+        return resultsRange;
+    }
+
+    public void resetForm() {
+        currentPage = 1;
+    }
+
     public void clearSearchString() {
         searchString = '';
-    }
-
-    public string getVFPageName() {
-        String pageName = ApexPages.CurrentPage().getUrl();
-        pageName = pageName.replaceFirst('/apex/', '');
-        pageName = EncodingUtil.urlEncode(pageName, 'UTF-8');
-        String[] pageNameExtra = pageName.split('%3F', 0);
-        pageName = pageNameExtra[0];
-
-        return pageName;
-    }
-
-    public void checkSearchParams() {
-        String q = ApexPages.currentPage().getParameters().get('q');
-
-        if (ApexPages.currentPage().getParameters().get('q') != null) {
-            searchstring = (q.length() > 99) ? q.substring(0, 99) : q;
-        }
     }
 
     public boolean getPrevRequired() {
@@ -78,6 +105,7 @@ public with sharing class MyASUHelpPaginationController {
         if (maxSize > this.currentPage * pageSize) {
             this.currentPage = this.currentPage + 1;
         }
+        setResultsRange();
 
         return null;
     }
@@ -86,23 +114,17 @@ public with sharing class MyASUHelpPaginationController {
         if (this.currentPage > 1) {
             this.currentPage = this.currentPage - 1;
         }
+        setResultsRange();
 
         return null;
     }
 
-    public void resetForm() {
-        currentPage = 1;
-    }
-
     public PageReference viewAllResults() {
-        PageReference viewAllArts = new PageReference('/viewAllArticles');
-
+        PageReference viewAllArticles = new PageReference('/viewAllArticles');
         if (searchstring != null) {
-            viewAllArts.getParameters().put('q', searchstring);
+            viewAllArticles.getParameters().put('q', searchstring);
         }
-
-        viewAllArts.setRedirect(true);
-
-        return viewAllArts;
+        viewAllArticles.setRedirect(true);
+        return viewAllArticles;
     }
 }

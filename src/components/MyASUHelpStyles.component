@@ -191,6 +191,10 @@
             margin-right: 1em !important;
         }
 
+        .myasu-help-region .myasu-help-region-faq-search-results-article {
+            margin-bottom: 1em;
+        }
+
         .myasu-help-region .myasu-help-region-faq-search {
             background-color: #8C1D40;
             padding: 1.5em 2em 2em 2em;
@@ -224,6 +228,16 @@
 
         .myasu-help-region .fa-search {
             font-size: 1.5em !important;
+        }
+
+        .myasu-help-region-faq-search-results-current-page {
+            vertical-align: middle;
+            padding: .25em .5em .25em .5em;
+            background-color: #2d2d2d;
+            color: #FFF;
+            display: inline-block;
+            margin-left: -.25em;
+            margin-right: -.25em;
         }
 
 
@@ -368,6 +382,7 @@
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article {
             color: #000000;
             font-size: .9em;
+            margin-bottom: 1em;
         }
 
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article-container:first-of-type {
@@ -450,5 +465,9 @@
         }
 
         /* My ASU Help - View All Articles */
+
+        .myasu-help-region .myasu-help-region-faq-search-results-step-backwards {
+            margin-left: 1em !important;
+        }
     </style>
 </apex:component>

@@ -10,8 +10,12 @@
         <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
 
         <style>
-            #asu_content_well .webform-component-textarea {
+            .dynamic-feedback-container .webform-component-textarea {
                 font-weight: 400;
+            }
+
+            .dynamic-feedback-container .alert-block p {
+                padding: 0 !important;
             }
         </style>
     </head>
@@ -26,7 +30,7 @@
     </div>
 
     <c:GoogleTagManagerBody />
-    <div id="asu_content_well">
+    <div class="dynamic-feedback-container" id="asu_content_well">
         <c:MyASUHelpPageNotifications />
         <div class="container">
             <div class="row">

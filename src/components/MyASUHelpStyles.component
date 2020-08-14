@@ -169,6 +169,12 @@
             display: inline-block;
         }
 
+        .myasu-help-region .myasu-help-region-view-all-articles-finance,
+        .myasu-help-region .myasu-help-region-view-all-articles-technical,
+        .myasu-help-region .myasu-help-region-view-all-articles-housing {
+            margin-bottom: 1em;
+        }
+
         .myasu-help-region .myasu-help-region-common-questions-finances-view-all,
         .myasu-help-region .myasu-help-region-common-questions-technical-view-all,
         .myasu-help-region .myasu-help-region-common-questions-housing-view-all,
@@ -224,6 +230,7 @@
         .myasu-help-region .myasu-help-region-faq-search-input,
         .myasu-help-region .myasu-help-region-faq-search-input-button {
             height: 100%;
+            vertical-align: middle;
         }
 
         .myasu-help-region .fa-search {
@@ -238,6 +245,8 @@
             display: inline-block;
             margin-left: -.25em;
             margin-right: -.25em;
+            min-width: 2.2em;
+            text-align: center;
         }
 
 
@@ -468,6 +477,11 @@
 
         .myasu-help-region .myasu-help-region-faq-search-results-step-backwards {
             margin-left: 1em !important;
+        }
+
+        .myasu-help-region .myasu-help-region-faq-search-results-step-backwards,
+        .myasu-help-region .myasu-help-region-faq-search-results-step-forwards {
+            border-radius: 0 !important;
         }
     </style>
 </apex:component>

@@ -47,7 +47,7 @@
                                 style="{!IF(prevRequired = true,'display:inline-block','display:none')}" reRender="myasu-help-region-faq-search-results-block">
                                 <i class="fa fa-step-backward" aria-hidden="true" />
                             </apex:commandLink>
-                            <!-- <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div> -->
+                            <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div>
                             <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(nextRequired = true,'display:inline-block','display:none')}"
                                 reRender="myasu-help-region-faq-search-results-block">
                                 <i class="fa fa-step-forward" aria-hidden="true" />

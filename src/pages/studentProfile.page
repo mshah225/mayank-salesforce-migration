@@ -241,54 +241,43 @@
                                 <span class="headerTextColor">
                                     {!contactName}
                                 </span>
+                            </apex:outputPanel>
+                        </h2>
+                        <h4 class="intro" style="{!IF(urlParamsExistAndAreValid, 'display:block; color:#6e7d83 !important;', 'display:none;')}">
+                            {!theContact.EMPLID__c}
+                            <span style="color:#353535">|</span>
+                            {!theContact.ASURite_ID__c}
+                        </h4>
 
-                            </h2>
-                            <h2 style=";margin-top:0px;" class="intro">
-                                <span style="color:#9f2b50">
-                                    {!theContact.FirstName} {!theContact.LastName}
-                                </span>
-                                <apex:outputPanel rendered="{!deceased != ''}">
-                                    <span style="font-size:12pt;
-                                             margin-left:20px;">
-                                        {!deceased}
-                                    </span>
-                                </apex:outputPanel>
-                            </h2>
-                            <h4 class="intro" style="{!IF(urlParamsExistAndAreValid, 'display:block; color:#6e7d83 !important;', 'display:none;')}">
-                                &nbsp;{!theContact.EMPLID__c}
-                                <span style="color:#353535">|</span>
-                                &nbsp;{!theContact.ASURite_ID__c}
+                        <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}">
+                            <h4 class="intro" style="color:#6e7d83 !important;">
+                                {!studentProgram.Career__c}
                             </h4>
 
-                            <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}">
-                                <h4 class="intro" style="color:#6e7d83 !important;">
-                                    &nbsp;{!studentProgram.Career__c}
-                                </h4>
+                            <h4 class="intro" style="color:#6e7d83 !important;">
+                                {!studentProgram.Program_Description__c}
+                            </h4>
 
-                                <h4 class="intro" style="color:#6e7d83 !important;">
-                                    &nbsp;{!studentProgram.Program_Description__c}
-                                </h4>
+                            <h4 class="intro" style="color:#6e7d83 !important;">
+                                {!studentProgram.Plan_Transcript_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
+                                <apex:outputPanel rendered="{!activeGraduatePrograms.size > 1}">
+                                    <div class="program-indicator-count" title="Count of Enrolled Active Plans">{!activeGraduatePrograms.size}</div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!accelerated}">
+                                    <div class="accelerated-indicator"
+                                         title="Accelerated">A</div>
+                                </apex:outputPanel>
+                            </h4>
 
-                                <h4 class="intro" style="color:#6e7d83 !important;">
-                                    &nbsp;{!studentProgram.Plan_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
-                                    <apex:outputPanel rendered="{!activeGraduatePrograms.size > 1}">
-                                        <div class="program-indicator-count" title="Count of Enrolled Active Plans">{!activeGraduatePrograms.size}</div>
-                                    </apex:outputPanel>
-                                    <apex:outputPanel rendered="{!accelerated}">
-                                        <div class="accelerated-indicator" title="Accelerated">A</div>
-                                    </apex:outputPanel>
-                                </h4>
+                            <h4 class="intro" style="color:#6e7d83 !important;">
+                                {!IF(subPlanString==null, '--', subPlanString)}
+                            </h4>
 
-                                <h4 class="intro" style="color:#6e7d83 !important;">
-                                    &nbsp;{!IF(subPlanString==null, '--', subPlanString)}
-                                </h4>
-
-                                <h4 class="intro" style="color:#6e7d83 !important;">
-                                    &nbsp;{!studentProgram.Campus__r.Name}
-                                </h4>
-                            </apex:outputPanel>
-                        </span>
-                    </div>
+                            <h4 class="intro" style="color:#6e7d83 !important;">
+                                {!studentProgram.Campus__r.Name}
+                            </h4>
+                        </apex:outputPanel>
+                    </span>
                 </div>
 
                 <div class="col-xs-12 col-md-6">

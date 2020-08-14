@@ -9,9 +9,15 @@ public without sharing class NonAuthenticatedLiveAgentController {
     public String caseSubject { get; set; }
     public String presurveyQuestion { get; set; }
     public String contactId { get; set; }
+    public String orgId { get; set; }
+    public String chatDeploymentId { get; set; }
+    public String chatButtonId { get; set; }
+    public String chatEndpoint { get; set; }
+    public Live_Agent_Button__c buttonConfig { get; set; }
 
     public NonAuthenticatedLiveAgentController() {
         getButtonIdFromURL();
+        setButtonInformation();
         setCaseDetails();
         setPresurveyQuestion();
         setNonAuthenticatedContact();
@@ -22,6 +28,14 @@ public without sharing class NonAuthenticatedLiveAgentController {
         Integer indexOf = buttonParam.indexOf('button_id');
         buttonParam = buttonParam.substring(indexOf + 12, indexOf + 27);
         buttonPressed = [SELECT DeveloperName FROM LiveChatButton WHERE Id = :buttonParam LIMIT 1].DeveloperName;
+    }
+
+    private void setButtonInformation() {
+        buttonConfig = Live_Agent_Button__c.getInstance(buttonPressed);
+        orgId = buttonConfig.Org_Id__c;
+        chatDeploymentId = buttonConfig.Chat_Deployment__c;
+        chatButtonId = buttonConfig.Chat_Button_Id__c;
+        chatEndpoint = buttonConfig.Chat_Endpoint__c;
     }
 
     private void setCaseDetails() {

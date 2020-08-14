@@ -45,7 +45,7 @@
 					</div>
 					<div class="row">
 						<div class="col-sm-12">
-							<c:FeedbackButton betaTag="true" carName="One Click Unsubscribe Page" classes="btn btn-primary btn-lg" />
+							<c:FeedbackButton carName="One Click Unsubscribe Page" classes="btn btn-primary btn-lg" />
 						</div>
 					</div>
 				</div>

@@ -33,7 +33,7 @@
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(searchstring != '', EmbedLocation == 'viewAllArticles')}">
                             <div class="myasu-help-region-sub-header">
-                                Showing {!resultsRange} for '{!searchstring}'
+                                Showing all results for '{!searchstring}'
                             </div>
                             <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageNumber="{!currentPageNumber}"
                                 pageSize="{!IF(searchstring != '',pageSize,0)}">

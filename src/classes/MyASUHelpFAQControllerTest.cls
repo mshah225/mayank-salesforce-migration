@@ -464,11 +464,9 @@ private class MyASUHelpFAQControllerTest {
         Test.startTest();
         System.runAs(testUser) {
             vcc = new ViewCaseController();
-            vcc.getEmailMessages();
         }
         Test.stopTest();
-        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :caseOnTestUser.Id];
-        System.assertEquals(emailMsgWithParentId.ParentId, caseOnTestUser.Id);
+        System.assertEquals(vcc.getEmailMessages().size(), 1);
     }
 
     @isTest
@@ -480,16 +478,15 @@ private class MyASUHelpFAQControllerTest {
         System.runAs(testUser) {
             vcc = new ViewCaseController();
             vcc.viewingAs = true;
-            vcc.getEmailMessages();
         }
         Test.stopTest();
-        EmailMessage emailMsgWithParentId = [SELECT Id, ParentId FROM EmailMessage WHERE ParentId = :caseOnTestUser.Id];
-        System.assertEquals(emailMsgWithParentId.ParentId, caseOnTestUser.Id);
+        System.assertEquals(vcc.getEmailMessages().size(), 1);
     }
 
     @isTest
     private static void fetchChatMessages() {
         loadTestDataWithUserByLastName('User0');
+        insertLiveAgentMessages(1);
         setCurrentPageAsViewCase();
 
         List<ChatMessage> fetchedChatMessages;
@@ -499,12 +496,7 @@ private class MyASUHelpFAQControllerTest {
             fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
-        List<bomgar__Event__c> bomgarForAssert = [
-            SELECT Id, bomgar__BomgarSession__r.bomgar__relatedcase__c
-            FROM bomgar__Event__c
-            LIMIT 1
-        ];
-        System.assertEquals(bomgarForAssert[0].bomgar__BomgarSession__r.bomgar__relatedcase__c, caseOnTestUser.Id);
+        System.assertEquals(fetchedChatMessages.size(), 1);
     }
 
     @isTest

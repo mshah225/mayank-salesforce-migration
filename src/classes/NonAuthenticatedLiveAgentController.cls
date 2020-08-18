@@ -48,7 +48,7 @@ public without sharing class NonAuthenticatedLiveAgentController {
     }
 
     private Case_Assignment_Rule__c getCarFromButton() {
-        String emailForCarFilter = buttonPressed.toLowerCase();
+        String emailForCarFilter = buttonPressed.toLowerCase() + '@asu.edu';
 
         Case_Assignment_Rule__c carFromButton = [
             SELECT

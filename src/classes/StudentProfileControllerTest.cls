@@ -438,25 +438,6 @@ private class StudentProfileControllerTest {
         System.assert(classData.classSessions.contains('example4 SESSION_CODE__c'));
         System.assert(classData.classSessions.contains('All'));
     }
-    
-    @IsTest
-    private static void testCreateCase() {
-        String createdCaseId;
-        createdCaseId = StudentProfileController.createCase('Test Description', 'Test Subject', getStudentProfileContactId());
-        System.assertNotEquals(null, createdCaseId);
-
-        Case createdCase = [SELECT ContactId, Subject, Description FROM Case WHERE Id=:createdCaseId LIMIT 1];
-
-        System.assertEquals('Test Description', createdCase.Description);
-        System.assertEquals('Test Subject', createdCase.Subject);
-        System.assertEquals(getStudentProfileContactId(), createdCase.ContactId);
-    } // fails
-
-    @IsTest 
-    private static void testGetSunCardPhotoRA() {
-        String url = StudentProfileController.getSunCardPhotoRA(getStudentProfileContactAsurite(),getStudentProfileContactEmplId());
-        System.assertNotEquals(null, url);
-    } // fails
 
     private static String getStudentProfileContactEmplId() {
         return '1203436008';

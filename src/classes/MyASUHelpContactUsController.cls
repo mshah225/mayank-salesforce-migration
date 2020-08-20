@@ -23,6 +23,10 @@ public without sharing class MyASUHelpContactUsController {
     public String masqScopeIdCookie { get; set; }
     public MyAsuViewAs viewAsService;
 
+    public Map<String, String> accordionPanels { get; set; }
+    public Map<String, String> accordionPanelsUrlSafe { get; set; }
+    public Map<String, String> accordionPanelsIcon { get; set; }
+
     public MyASUHelpContactUsController() {
         Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
         Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
@@ -43,6 +47,8 @@ public without sharing class MyASUHelpContactUsController {
         viewingAs = false;
         createViewAs();
         popUserContact();
+
+        setAccordionPanels();
     }
 
     public void createViewAs() {
@@ -68,6 +74,39 @@ public without sharing class MyASUHelpContactUsController {
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
         asurite = userContact.ASURite_ID__c;
+    }
+
+    private void setAccordionPanels() {
+        accordionPanels = new Map<String, String>();
+        accordionPanelsUrlSafe = new Map<String, String>();
+        accordionPanelsIcon = new Map<String, String>();
+
+        String panelOneIcon = 'fa-envelope';
+        String panelOneHeader = 'Email Us';
+        String panelOneContent =
+            '<apex:form>' +
+            '<label for="myasu-help-contact-us-email-subject" class="myasu-help-contact-us-email-subject-label">Subject</label>' +
+            '<apex:inputField id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject" value="{!newCase.Subject}"' +
+            'required="true" label="" />' +
+            '<label for="myasu-help-contact-us-email-message" class="myasu-help-contact-us-email-message-label">Message</label>' +
+            '<apex:inputField id="myasu-help-contact-us-email-message" styleClass="myasu-help-contact-us-email-message" value="{!newCase.Description}"' +
+            'required="true" label="" />' +
+            '<div class="myasu-help-contact-us-email-message-submit-wrapper">' +
+            '<apex:commandLink styleClass="btn btn-primary myasu-help-contact-us-email-message-submit" action="{!submitCase}">' +
+            'Submit' +
+            '</apex:commandLink>' +
+            '</div>' +
+            '</apex:form>';
+
+        String panelTwoIcon = 'fa-commenting';
+        String panelTwoHeader = 'Live Chat';
+        String panelTwoContent = '';
+
+        String panelThreeIcon = 'fa-phone';
+        String panelThreeHeader = 'Call ';
+        String panelThreeContent = '';
+
+        accordionPanels.put(panelOneHeader, panelOneContent);
     }
 
     public PageReference viewCase() {

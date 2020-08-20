@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MyASUHelpFAQController" action="{!init}" cache="true"
-    extensions="NavLinks,MyASUHelpPaginationController">
+    extensions="ASUBrandMenuController,MyASUHelpPaginationController">
 
     <head>
         <c:GoogleTagManager />
@@ -12,19 +12,12 @@
         />
     </head>
 
-    <c:ASUBrandHeader />
-    <div class="asu-header-site-title-container">
-        <div>
-            <div id="asu-header-site-title" class="asu-header-width">
-                <a href="https://webapp4.asu.edu/myasu">My ASU</a>
-            </div>
-        </div>
-    </div>
-    <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
+    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
+    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <c:GoogleTagManagerBody />
-    <div id="asu_content_well">
+    <div id="asu-content-container">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
         />
         <div class="container">
@@ -47,6 +40,7 @@
             </div>
         </div>
     </div>
+
     <c:ASUBrandFooter />
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

@@ -252,7 +252,7 @@
             <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
         </div>
 
-        <div id="asu_content_well">
+        <div id="asu-content-container">
             <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
             <div class="container">
                 <ol class="breadcrumb">

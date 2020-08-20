@@ -1,21 +1,21 @@
-public class NavLinks {
-    public NavLinks() {
-    }
-    public NavLinks(MyASUHelpFAQController controller) {
-    }
-    public NavLinks(ViewCaseController controller) {
-    }
-    public NavLinks(AKBController controller) {
-    }
-    public NavLinks(ViewAllCasesController controller) {
-    }
-    public NavLinks(ApexPages.StandardController controller) {
-    }
-    public NavLinks(UnsubscribeController controller) {
-    }
-
+public class ASUBrandMenuController {
     public String links { get; set; }
-    public List<Link> linkList { get; set; }
+    public List<Link> menuLinks { get; set; }
+
+    public ASUBrandMenuController() {
+    }
+    public ASUBrandMenuController(ApexPages.StandardController controller) {
+    }
+    public ASUBrandMenuController(AKBController controller) {
+    }
+    public ASUBrandMenuController(MyASUHelpFAQController controller) {
+    }
+    public ASUBrandMenuController(UnsubscribeController controller) {
+    }
+    public ASUBrandMenuController(ViewCaseController controller) {
+    }
+    public ASUBrandMenuController(ViewAllCasesController controller) {
+    }
 
     public PageReference init() {
         Cookie linksCookie;
@@ -24,7 +24,7 @@ public class NavLinks {
         String timeParm = '';
         String signatureParm = '';
 
-        System.debug('parms: ' + ApexPages.currentPage().getParameters());
+        System.debug('params: ' + ApexPages.currentPage().getParameters());
 
         if (ApexPages.currentPage().getParameters().get('asuriteId') != null) {
             asuriteIdParm = ApexPages.currentPage().getParameters().get('asuriteId');
@@ -61,7 +61,7 @@ public class NavLinks {
             linksJSON = linksJSON.replaceAll('&#34;', '"');
             System.debug(linksJSON);
 
-            linkList = new List<Link>();
+            menuLinks = new List<Link>();
             JSONParser parser = JSON.createParser(linksJSON);
             while (parser.nextToken() != null) {
                 // If current token is a field name
@@ -73,15 +73,23 @@ public class NavLinks {
                     // Move to token after the field name
                     parser.nextToken();
                     thisLink.url = parser.getText();
-                    linkList.add(thisLink);
+                    menuLinks.add(thisLink);
                 }
             }
+        }
+
+        if (menuLinks == null) {
+            menuLinks.add(new Link(name = '', url = '/myasu'));
+            menuLinks.add(new Link(name = 'Finances', url = '/myasu/student/finances'));
+            menuLinks.add(new Link(name = 'Campus Services', url = '/myasu/student/campusservices'));
+            menuLinks.add(new Link(name = 'Profile', url = '/myasu/student/profile'));
+            menuLinks.add(new Link(name = 'Help', url = '/'));
         }
 
         System.debug('asuriteId: ' + asuriteIdParm);
         System.debug('time: ' + timeParm);
         System.debug('signature: ' + signatureParm);
-        System.debug('linkList: ' + linkList);
+        System.debug('menuLinks: ' + menuLinks);
 
         return null;
     }

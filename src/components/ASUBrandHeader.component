@@ -1,4 +1,6 @@
 <apex:component controller="ASUBrandHeaderController">
+    <apex:attribute name="siteTitleName" description="The name of the site to display in the ASU header" type="String" />
+    <apex:attribute name="siteTitleUrl" description="The URL for the site title name link" type="String" />
     <c:ASUBrandHeaderStyles />
 
     <!-- START /asuthemes/4.9/headers/default.shtml -->
@@ -18,10 +20,10 @@
             </form>
         </div>
         <div class="accessibility-hide">
-            <a href="#accessible-body" id="skip-to-content">Skip to Main Page Content</a>
+            <a class="sr-only" href="#asu-content-container">Skip to Main Page Content</a>
         </div>
         <div id="asu-report-accessiblity" class="accessibility-hide">
-            <a href="https://www.asu.edu/accessibility/" class="sr-only">Report an accessibility problem</a>
+            <a class="sr-only" href="https://www.asu.edu/accessibility/">Report an accessibility problem</a>
         </div>
         <div id="asu_hdr" class="asu_hdr_white asu-header-width">
             <div id="asu_mobile_hdr">
@@ -241,6 +243,14 @@
         <div style="clear:both;"></div>
     </div>
     <!-- END /asuthemes/4.9/headers/default.shtml -->
+
+    <div class="asu-header-site-title-container">
+        <div>
+            <div id="asu-header-site-title" class="asu-header-width">
+                <a href="{!siteTitleUrl}">{!siteTitleName}</a>
+            </div>
+        </div>
+    </div>
 
     <!-- {!$User.FirstName} {!$User.LastName} {!$User.Id} -->
 </apex:component>

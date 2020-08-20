@@ -15,7 +15,7 @@
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
     </script>
-    <c:AccordionTemplateResources />
+    <c:AccordionResources />
 
     <apex:outputPanel>
         <div class="myasu-help-region-contact-us">
@@ -30,6 +30,8 @@
                 </p>
                 <hr />
                 <div class="myasu-help-region-contact-us-accordion-container">
+                    <c:Accordion accordionPanels="accordionPanels" accordionPanelsUrlSafe="accordionPanelsUrlSafe" />
+
                     <div class="panel-group" id="accordion">
                         <div class="panel panel-default">
                             <div class="panel-heading">

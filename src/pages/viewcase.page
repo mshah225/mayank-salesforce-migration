@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="ViewCaseController" action="{!init}" cache="true"
-    extensions="NavLinks">
+    extensions="ASUBrandMenuController">
 
     <head>
         <c:GoogleTagManager />
@@ -121,7 +121,7 @@
 
     </head>
 
-    <c:ASUBrandHeader />
+    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">
@@ -129,14 +129,14 @@
             </div>
         </div>
     </div>
-    <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
+    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <c:GoogleTagManagerBody />
 
     <apex:pageMessages id="message" />
 
-    <div id="asu_content_well">
+    <div id="asu-content-container">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
 
         <div class="container">

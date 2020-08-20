@@ -1,0 +1,32 @@
+<apex:component>
+    <apex:attribute name="accordionPanels" description="The accordion panels" type="Map" />
+    <apex:attribute name="accordionPanelsUrlSafe" description="The URL-safe link for accordion panels" type="Map" />
+    <apex:attribute name="accordionPanelsIcon" description="The icon for the accordion panel" type="Map" />
+    <c:AccordionResources />
+
+    <div class="accordion-container">
+        <div class="panel-group" id="accordion">
+            <apex:repeat value="{!accordionPanels}" var="panel" id="asu-accordion-repeat">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#{!accordionPanelsUrlSafe[panel]}-link">
+                                <strong>
+                                    <i class="fa {!accordionPanelsIcon[panel]} {!accordionPanelsUrlSafe[panel]}-icon" aria-hidden="true" />
+                                    <span class="{!accordionPanelsUrlSafe[panel]}">{!panel}</span>
+                                </strong>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="{!accordionPanelsUrlSafe[panel]}" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <p>
+                                <apex:outputText value="{!accordionPanels[panel]}" escape="false" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </apex:repeat>
+        </div>
+    </div>
+</apex:component>

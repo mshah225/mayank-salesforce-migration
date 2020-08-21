@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="NavLinks"
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandMenuController"
  action="{!optOutOfEmails}" standardStylesheets="false">
 
 	<head>
@@ -15,7 +15,7 @@
 		<div id="main-search" class="main-search closed"></div>
 		<c:SCHeader pageHead="Subscription Center" showNavBar="false" />
 		<div id="bgWrapper">
-			<div id="asu_content_well">
+			<div id="asu-content-container">
 				<div class="container">
 					<div class="row">
 						<div class="col-sm-12">

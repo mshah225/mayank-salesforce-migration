@@ -9,7 +9,7 @@
         <c:MyASUHelpStyles />
     </head>
 
-    <c:ASUBrandHeader />
+    <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="https://webapp4.asu.edu/myasu" />
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">
@@ -17,10 +17,10 @@
             </div>
         </div>
     </div>
-    <c:MyASUHelpMegaMenu />
+    <c:ASUBrandMenu />
 
     <c:GoogleTagManagerBody />
-    <div id="asu_content_well">
+    <div id="asu-content-container">
         <div class="container">
             <div class="panel-body">
                 <p class="lead">

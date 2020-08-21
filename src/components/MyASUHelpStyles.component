@@ -107,7 +107,7 @@
         .myasu-help-region .myasu-help-region-request-details-panel-title,
         .myasu-help-region .myasu-help-region-view-article-suggest-article {
             font-size: .9em;
-            color: #000000;
+            color: #191919;
             font-weight: 500;
         }
 
@@ -117,7 +117,7 @@
         }
 
         .myasu-help-region .breadcrumb,
-        #asu_content_well .breadcrumb {
+        #asu-content-container .breadcrumb {
             font-weight: 400 !important;
         }
 
@@ -298,7 +298,7 @@
         }
 
         .myasu-help-region #myasu-help-contact-us-chat-link a {
-            color: #000;
+            color: #191919;
             font-weight: 400;
         }
 
@@ -351,7 +351,7 @@
         }
 
         .myasu-help-region .myasu-help-region-my-requests-content a:hover {
-            color: #000 !important;
+            color: #191919 !important;
         }
 
         .myasu-help-region .myasu-help-region-my-requests-content p {
@@ -389,7 +389,7 @@
         }
 
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article {
-            color: #000000;
+            color: #191919;
             font-size: .9em;
             margin-bottom: 1em;
         }

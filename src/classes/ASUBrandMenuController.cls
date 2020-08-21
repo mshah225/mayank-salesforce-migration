@@ -1,21 +1,21 @@
-public class NavLinks {
-    public NavLinks() {
-    }
-    public NavLinks(MyASUHelpFAQController controller) {
-    }
-    public NavLinks(ViewCaseController controller) {
-    }
-    public NavLinks(AKBController controller) {
-    }
-    public NavLinks(ViewAllCasesController controller) {
-    }
-    public NavLinks(ApexPages.StandardController controller) {
-    }
-    public NavLinks(UnsubscribeController controller) {
-    }
-
+public class ASUBrandMenuController {
     public String links { get; set; }
-    public List<Link> linkList { get; set; }
+    public List<Link> menuLinks { get; set; }
+
+    public ASUBrandMenuController() {
+    }
+    public ASUBrandMenuController(ApexPages.StandardController controller) {
+    }
+    public ASUBrandMenuController(AKBController controller) {
+    }
+    public ASUBrandMenuController(MyASUHelpFAQController controller) {
+    }
+    public ASUBrandMenuController(UnsubscribeController controller) {
+    }
+    public ASUBrandMenuController(ViewCaseController controller) {
+    }
+    public ASUBrandMenuController(ViewAllCasesController controller) {
+    }
 
     public PageReference init() {
         Cookie linksCookie;
@@ -24,7 +24,7 @@ public class NavLinks {
         String timeParm = '';
         String signatureParm = '';
 
-        System.debug('parms: ' + ApexPages.currentPage().getParameters());
+        System.debug('params: ' + ApexPages.currentPage().getParameters());
 
         if (ApexPages.currentPage().getParameters().get('asuriteId') != null) {
             asuriteIdParm = ApexPages.currentPage().getParameters().get('asuriteId');
@@ -61,7 +61,7 @@ public class NavLinks {
             linksJSON = linksJSON.replaceAll('&#34;', '"');
             System.debug(linksJSON);
 
-            linkList = new List<Link>();
+            menuLinks = new List<Link>();
             JSONParser parser = JSON.createParser(linksJSON);
             while (parser.nextToken() != null) {
                 // If current token is a field name
@@ -73,15 +73,43 @@ public class NavLinks {
                     // Move to token after the field name
                     parser.nextToken();
                     thisLink.url = parser.getText();
-                    linkList.add(thisLink);
+                    menuLinks.add(thisLink);
                 }
             }
+        }
+
+        if (menuLinks == null) {
+            Link link1 = new Link();
+            link1.name = '';
+            link1.url = '/myasu';
+
+            Link link2 = new Link();
+            link2.name = 'Finances';
+            link2.url = '/myasu/student/finances';
+
+            Link link3 = new Link();
+            link3.name = 'Campus Services';
+            link3.url = '/myasu/student/campusservices';
+
+            Link link4 = new Link();
+            link4.name = 'Profile';
+            link4.url = '/myasu/student/profile';
+
+            Link link5 = new Link();
+            link5.name = 'Help';
+            link5.url = '/';
+
+            menuLinks.add(link1);
+            menuLinks.add(link2);
+            menuLinks.add(link3);
+            menuLinks.add(link4);
+            menuLinks.add(link5);
         }
 
         System.debug('asuriteId: ' + asuriteIdParm);
         System.debug('time: ' + timeParm);
         System.debug('signature: ' + signatureParm);
-        System.debug('linkList: ' + linkList);
+        System.debug('menuLinks: ' + menuLinks);
 
         return null;
     }

@@ -14,9 +14,13 @@ public with sharing class ViewAllCasesController {
     public String masqScopeIdCookie { get; set; }
     public Contact userContact;
     public String userAsurite;
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
 
     public ViewAllCasesController() {
         viewingAs = false;
+        siteTitleName = 'My ASU';
+        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
         checkForViewAs();
         popUserContact();
     }

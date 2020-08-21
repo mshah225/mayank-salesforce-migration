@@ -124,17 +124,17 @@
         .asu-header-site-title-container a {
             border-bottom: none;
             text-decoration: none;
-            color: #000;
+            color: #191919;
         }
 
         #asu-header-site-title a {
-            color: #000;
+            color: #191919;
             font-size: 24px;
             font-weight: 700;
         }
 
         #asu-header-site-title a:hover {
-            color: #000 !important;
+            color: #191919 !important;
         }
 
         .asu-header-site-title-container {

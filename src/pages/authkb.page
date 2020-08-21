@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MyASUHelpFAQController" action="{!init}" cache="true"
-    extensions="AKBController,NavLinks,MyASUHelpPaginationController">
+    extensions="AKBController,ASUBrandMenuController,MyASUHelpPaginationController">
 
     <head>
         <c:GoogleTagManager />
@@ -10,7 +10,7 @@
         />
     </head>
 
-    <c:ASUBrandHeader />
+    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">
@@ -18,11 +18,11 @@
             </div>
         </div>
     </div>
-    <c:MyASUHelpMegaMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" linkList="{!linkList}" />
+    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <c:GoogleTagManagerBody />
-    <div id="asu_content_well">
+    <div id="asu-content-container">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
 
         <div class="container myasu-help-region">

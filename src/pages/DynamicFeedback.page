@@ -20,7 +20,7 @@
         </style>
     </head>
 
-    <c:ASUBrandHeader />
+    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">
@@ -30,7 +30,7 @@
     </div>
 
     <c:GoogleTagManagerBody />
-    <div class="dynamic-feedback-container" id="asu_content_well">
+    <div class="dynamic-feedback-container" id="asu-content-container">
         <c:MyASUHelpPageNotifications />
         <div class="container">
             <div class="row">

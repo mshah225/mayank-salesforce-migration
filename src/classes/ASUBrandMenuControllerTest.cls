@@ -1,7 +1,7 @@
 @isTest
-private class NavLinksTest {
+private class ASUBrandMenuControllerTest {
     private static Contact testContact;
-    private static NavLinks nav;
+    private static ASUBrandMenuController nav;
     private static Profile asuCommunityProfile;
     private static MyASUHelpFAQController sc;
     private static User testUser;
@@ -58,11 +58,11 @@ private class NavLinksTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpFAQController();
-            nav = new Navlinks(sc);
+            nav = new ASUBrandMenuController(sc);
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.linkList, null);
+        System.assertEquals(nav.menuLinks, null);
     }
 
     @isTest
@@ -71,7 +71,7 @@ private class NavLinksTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpFAQController();
-            nav = new NavLinks(sc);
+            nav = new ASUBrandMenuController(sc);
             ApexPages.currentPage()
                 .getParameters()
                 .put(
@@ -85,20 +85,20 @@ private class NavLinksTest {
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.linkList[0].name, 'Home');
-        System.assertEquals(nav.linkList[0].url, 'https://webapp4-dev.asu.edu/myasu/student');
+        System.assertEquals(nav.menuLinks[0].name, 'Home');
+        System.assertEquals(nav.menuLinks[0].url, 'https://webapp4-dev.asu.edu/myasu/student');
 
-        System.assertEquals(nav.linkList[1].name, 'Finances');
-        System.assertEquals(nav.linkList[1].url, 'https://webapp4-dev.asu.edu/myasu/student/finances');
+        System.assertEquals(nav.menuLinks[1].name, 'Finances');
+        System.assertEquals(nav.menuLinks[1].url, 'https://webapp4-dev.asu.edu/myasu/student/finances');
 
-        System.assertEquals(nav.linkList[2].name, 'Service Center');
-        System.assertEquals(nav.linkList[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
+        System.assertEquals(nav.menuLinks[2].name, 'Service Center');
+        System.assertEquals(nav.menuLinks[2].url, 'https://webapp4-dev.asu.edu/myasu/student/servicecenter');
 
-        System.assertEquals(nav.linkList[3].name, 'Campus Services');
-        System.assertEquals(nav.linkList[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
+        System.assertEquals(nav.menuLinks[3].name, 'Campus Services');
+        System.assertEquals(nav.menuLinks[3].url, 'https://webapp4-dev.asu.edu/myasu/student/campusservices');
 
-        System.assertEquals(nav.linkList[4].name, 'Profile');
-        System.assertEquals(nav.linkList[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
+        System.assertEquals(nav.menuLinks[4].name, 'Profile');
+        System.assertEquals(nav.menuLinks[4].url, 'https://webapp4-dev.asu.edu/myasu/student/profile');
     }
 
     @isTest
@@ -107,11 +107,11 @@ private class NavLinksTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpFAQController();
-            nav = new NavLinks(sc);
+            nav = new ASUBrandMenuController(sc);
             ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();
         }
         Test.stopTest();
-        System.assertEquals(nav.linkList.isEmpty(), true);
+        System.assertEquals(nav.menuLinks.isEmpty(), true);
     }
 }

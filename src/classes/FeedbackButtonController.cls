@@ -10,6 +10,9 @@ public without sharing class FeedbackButtonController {
     public String carName { get; set; } // The name of the custom setting entry that references the required car
     public AlertHandler alertHandler { get; set; } // Use the custom alerting component
     public Contact loggedInContact;
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
+
     public FeedbackButtonController() {
     }
 
@@ -28,6 +31,9 @@ public without sharing class FeedbackButtonController {
             if (carName != null) {
                 // The only required parameter for the page to function properly
                 settings = Feedback_Cars__c.getAll().get(carName);
+
+                siteTitleName = carName;
+                siteTitleUrl = 'https://webapp4.asu.edu/myasu';
 
                 if (settings != null) {
                     // Validate the contact, if it does not exist or is not valid

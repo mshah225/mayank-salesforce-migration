@@ -16,6 +16,8 @@ public with sharing class MyASUHelpFAQController {
     public String stopViewAsUrl { get; set; }
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
     public String userAsurite;
     public String mMessage;
 
@@ -37,6 +39,8 @@ public with sharing class MyASUHelpFAQController {
         viewingAs = false;
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
+        siteTitleName = 'My ASU';
+        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
 
         popUserContact();
         popTerms();

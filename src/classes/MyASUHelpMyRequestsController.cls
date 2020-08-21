@@ -134,11 +134,11 @@ public with sharing class MyASUHelpMyRequestsController {
             confirmPage.setRedirect(true);
             return confirmPage;
         } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('ContactId', newCase.ContactId));
-            vars.add(ErrorLogger.convertStringToJSON('Subject', newCase.Subject));
-            vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
-            ErrorLogger.log(e, vars, false);
+            // List<String> vars = new List<String>();
+            // vars.add(ErrorLogger.convertStringToJSON('ContactId', newCase.ContactId));
+            // vars.add(ErrorLogger.convertStringToJSON('Subject', newCase.Subject));
+            // vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
+            // ErrorLogger.log(e, vars, false);
             return null;
         }
     }

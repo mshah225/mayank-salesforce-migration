@@ -37,7 +37,7 @@
                                 </apex:outputPanel>
                             </apex:repeat>
                         </apex:outputPanel>
-                        <apex:outputPanel rendered="{!AND(firstName != null, lastName != null)">
+                        <apex:outputPanel rendered="{!AND(firstName != null, lastName != null)}">
                             <p class="username pull-right">
                                 {!firstName} {!lastName}
                                 <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">

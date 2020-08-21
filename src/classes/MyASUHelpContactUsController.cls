@@ -24,7 +24,7 @@ public without sharing class MyASUHelpContactUsController {
     public MyAsuViewAs viewAsService;
 
     public Map<String, String> accordionPanels { get; set; }
-    public Map<String, String> accordionPanelsUrlSafe { get; set; }
+    public Map<String, String> accordionPanelsId { get; set; }
     public Map<String, String> accordionPanelsIcon { get; set; }
 
     public MyASUHelpContactUsController() {
@@ -48,7 +48,10 @@ public without sharing class MyASUHelpContactUsController {
         createViewAs();
         popUserContact();
 
-        setAccordionPanels();
+        accordionPanels = new Map<String, String>();
+        accordionPanelsId = new Map<String, String>();
+        accordionPanelsIcon = new Map<String, String>();
+        setContactUsAccordionPanels();
     }
 
     public void createViewAs() {
@@ -76,11 +79,8 @@ public without sharing class MyASUHelpContactUsController {
         asurite = userContact.ASURite_ID__c;
     }
 
-    private void setAccordionPanels() {
-        accordionPanels = new Map<String, String>();
-        accordionPanelsUrlSafe = new Map<String, String>();
-        accordionPanelsIcon = new Map<String, String>();
-
+    public void setContactUsAccordionPanels() {
+        String panelOneId = 'myasu-help-contact-us-email';
         String panelOneIcon = 'fa-envelope';
         String panelOneHeader = 'Email Us';
         String panelOneContent =
@@ -98,15 +98,64 @@ public without sharing class MyASUHelpContactUsController {
             '</div>' +
             '</apex:form>';
 
+        accordionPanelsId.put(panelOneHeader, panelOneId);
+        accordionPanelsIcon.put(panelOneHeader, panelOneIcon);
+        accordionPanels.put(panelOneHeader, panelOneContent);
+
+        String panelTwoId = 'myasu-help-contact-us-chat';
         String panelTwoIcon = 'fa-commenting';
         String panelTwoHeader = 'Live Chat';
-        String panelTwoContent = '';
+        String panelTwoContent =
+            '<div class="myasu-help-contact-us-chat-link-finance">' +
+            '<a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open(\'https://chatbotweb.m.asu.edu/?full=true\',\'NewButtonWindowName\',\'width=450,height=500,scrollbars=yes\')">{!financeDisplayName}</a>' +
+            '<a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open(\'https://chatbotweb.m.asu.edu/?full=true\',\'NewButtonWindowName\',\'width=450,height=500,scrollbars=yes\')">{!financeDisplayName}</a>' +
+            '<script type="text/javascript">' +
+            'if (!window._laq) { window._laq = []; }' +
+            'window._laq.push(function () {' +
+            'liveagent.showWhenOnline(financesChatId, document.getElementById(\'liveagent_button_online_finances\'));' +
+            'liveagent.showWhenOffline(financesChatId, document.getElementById(\'liveagent_button_offline_finances\'));' +
+            '});' +
+            '</script>' +
+            '</div>' +
+            '<div class="myasu-help-contact-us-chat-link-technical">' +
+            '<a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>' +
+            '<a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>' +
+            '<script type="text/javascript">' +
+            'if (!window._laq) { window._laq = []; }' +
+            'window._laq.push(function () {' +
+            'liveagent.showWhenOnline(techSupportChatId, document.getElementById(\'liveagent_button_online_technical_support\'));' +
+            'liveagent.showWhenOffline(techSupportChatId, document.getElementById(\'liveagent_button_offline_technical_support\'));' +
+            '});' +
+            '</script>' +
+            '</div>' +
+            '<div class="myasu-help-contact-us-chat-link-student-services">' +
+            '<a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"' +
+            'onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>' +
+            '<a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"' +
+            'onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>' +
+            '<script type="text/javascript">' +
+            'if (!window._laq) { window._laq = []; }' +
+            'window._laq.push(function () {' +
+            'liveagent.showWhenOnline(studentServiceChatId, document.getElementById(\'liveagent_button_online_student_services\'));' +
+            'liveagent.showWhenOffline(studentServiceChatId, document.getElementById(\'liveagent_button_offline_student_services\'));' +
+            '});' +
+            '</script>' +
+            '</div>';
 
+        accordionPanelsId.put(panelTwoHeader, panelTwoId);
+        accordionPanelsIcon.put(panelTwoHeader, panelTwoIcon);
+        accordionPanels.put(panelTwoHeader, panelTwoContent);
+
+        String panelThreeId = 'myasu-help-contact-us-phone';
         String panelThreeIcon = 'fa-phone';
-        String panelThreeHeader = 'Call ';
+        String panelThreeHeader =
+            '<apex:outputText rendered="{!NormalPhone}">Call 1-855-ASU-5080</apex:outputText>' +
+            '<apex:outputText rendered="{!RoverPhone}">>Call 1-844-ASU-6693</apex:outputText>';
         String panelThreeContent = '';
 
-        accordionPanels.put(panelOneHeader, panelOneContent);
+        accordionPanels.put(panelThreeHeader, panelThreeContent);
+        accordionPanelsId.put(panelThreeHeader, panelThreeId);
+        accordionPanelsIcon.put(panelThreeHeader, panelThreeIcon);
     }
 
     public PageReference viewCase() {
@@ -115,7 +164,6 @@ public without sharing class MyASUHelpContactUsController {
         current = current.split('apex/')[1];
         PageReference viewCasePage = new PageReference('/viewcase');
         viewCasePage.getParameters().put('id', caseId);
-
         viewCasePage.getParameters().put('source', current);
 
         if (viewingAs) {
@@ -132,7 +180,6 @@ public without sharing class MyASUHelpContactUsController {
             PageReference go = new PageReference(ApexPages.currentPage().getUrl());
             go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
             go.setRedirect(true);
-
             return go;
         }
 
@@ -145,11 +192,11 @@ public without sharing class MyASUHelpContactUsController {
             confirmPage.setRedirect(true);
             return confirmPage;
         } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('ContactId', newCase.ContactId));
-            vars.add(ErrorLogger.convertStringToJSON('Subject', newCase.Subject));
-            vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
-            ErrorLogger.log(e, vars, false);
+            // List<String> vars = new List<String>();
+            // vars.add(ErrorLogger.convertStringToJSON('ContactId', newCase.ContactId));
+            // vars.add(ErrorLogger.convertStringToJSON('Subject', newCase.Subject));
+            // vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
+            // ErrorLogger.log(e, vars, false);
             return null;
         }
     }

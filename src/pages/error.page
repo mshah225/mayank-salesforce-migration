@@ -9,7 +9,7 @@
         <c:MyASUHelpStyles />
     </head>
 
-    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
+    <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="https://webapp4.asu.edu/myasu" />
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">

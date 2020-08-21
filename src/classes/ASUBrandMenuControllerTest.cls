@@ -58,7 +58,7 @@ private class ASUBrandMenuControllerTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpFAQController();
-            nav = new Navlinks(sc);
+            nav = new ASUBrandMenuController(sc);
             nav.init();
         }
         Test.stopTest();

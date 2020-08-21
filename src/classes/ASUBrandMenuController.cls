@@ -79,11 +79,31 @@ public class ASUBrandMenuController {
         }
 
         if (menuLinks == null) {
-            menuLinks.add(new Link(name = '', url = '/myasu'));
-            menuLinks.add(new Link(name = 'Finances', url = '/myasu/student/finances'));
-            menuLinks.add(new Link(name = 'Campus Services', url = '/myasu/student/campusservices'));
-            menuLinks.add(new Link(name = 'Profile', url = '/myasu/student/profile'));
-            menuLinks.add(new Link(name = 'Help', url = '/'));
+            Link link1 = new Link();
+            link1.name = '';
+            link1.url = '/myasu';
+
+            Link link2 = new Link();
+            link2.name = 'Finances';
+            link2.url = '/myasu/student/finances';
+
+            Link link3 = new Link();
+            link3.name = 'Campus Services';
+            link3.url = '/myasu/student/campusservices';
+
+            Link link4 = new Link();
+            link4.name = 'Profile';
+            link4.url = '/myasu/student/profile';
+
+            Link link5 = new Link();
+            link5.name = 'Help';
+            link5.url = '/';
+
+            menuLinks.add(link1);
+            menuLinks.add(link2);
+            menuLinks.add(link3);
+            menuLinks.add(link4);
+            menuLinks.add(link5);
         }
 
         System.debug('asuriteId: ' + asuriteIdParm);

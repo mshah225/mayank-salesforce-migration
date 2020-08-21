@@ -26,8 +26,12 @@ public with sharing class ViewCaseController {
     public List<Attachment> allCaseAttachments { get; set; }
     public Boolean showCaseAttachments { get; set; }
     public Boolean showOpenNewCaseAlert { get; set; }
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
 
     public ViewCaseController() {
+        siteTitleName = 'My ASU';
+        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
         viewingAs = false;
         replyCaseAttachment = new Attachment();
         checkForViewAs();

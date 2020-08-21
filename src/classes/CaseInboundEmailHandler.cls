@@ -635,7 +635,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         /* **** From */
         theEmail.FromName = email.fromName;
-        theEmail.FromAddress = email.fromAddress;
+        // Clean from address (Remove @reply.asu.edu)
+        EmailTransformer cleanFromTransformer = new EmailTransformer();
+        theEmail.FromAddress = cleanFromTransformer.trimReplyFromSuffix(email.fromAddress);
 
         /* **** CC */
         if (email.ccAddresses != null) {

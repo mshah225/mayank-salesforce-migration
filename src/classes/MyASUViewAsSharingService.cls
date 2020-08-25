@@ -1,4 +1,4 @@
-public virtual class MyAsuViewAsSharingService {
+public virtual class MyASUViewAsSharingService {
     public static Contact getContact(String asurite) {
         return ContactService.getContactToViewAs(asurite);
     }

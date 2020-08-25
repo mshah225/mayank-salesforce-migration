@@ -4,7 +4,7 @@ public with sharing class MyASUHelpFAQController {
     private Date today;
     private Term__c termcAC;
     private Term__c termcB;
-    private MyAsuViewAs viewAsService;
+    private MyASUViewAs viewAsService;
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
@@ -92,7 +92,7 @@ public with sharing class MyASUHelpFAQController {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
 
-            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }

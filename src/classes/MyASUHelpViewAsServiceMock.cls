@@ -1,5 +1,5 @@
 @isTest
-public class MockHttpResponseGen_MyASUViewAs implements HttpCalloutMock {
+public class MyASUHelpViewAsServiceMock implements HttpCalloutMock {
     public HTTPResponse respond(HTTPRequest request) {
         HttpResponse fakeResponse = new HttpResponse();
         if (request.getMethod() == 'GET') {

@@ -16,7 +16,7 @@ public with sharing class MyASUHelpMyRequestsController {
     public String userAsurite;
     public String asurite { get; set; }
     public String masqScopeIdCookie { get; set; }
-    public MyASUViewAs viewAsService;
+    public MyASUHelpViewAsService viewAsService;
 
     public MyASUHelpMyRequestsController() {
         newCase = new Case();
@@ -32,7 +32,7 @@ public with sharing class MyASUHelpMyRequestsController {
 
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
 
-            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }

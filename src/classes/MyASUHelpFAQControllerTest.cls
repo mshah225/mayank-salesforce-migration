@@ -421,7 +421,7 @@ private class MyASUHelpFAQControllerTest {
     }
 
     @isTest
-    private static void fetchCaseDetailsWithoutMyASUViewAs() {
+    private static void fetchCaseDetailsWithoutMyASUHelpViewAsService() {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
 
@@ -440,7 +440,7 @@ private class MyASUHelpFAQControllerTest {
     }
 
     @isTest
-    private static void fetchCaseDetailsWithMyASUViewAs() {
+    private static void fetchCaseDetailsWithMyASUHelpViewAsService() {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
 
@@ -457,7 +457,7 @@ private class MyASUHelpFAQControllerTest {
     }
 
     @isTest
-    private static void fetchEmailMessagesWithoutMyASUViewAs() {
+    private static void fetchEmailMessagesWithoutMyASUHelpViewAsService() {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
 
@@ -470,7 +470,7 @@ private class MyASUHelpFAQControllerTest {
     }
 
     @isTest
-    private static void fetchEmailMessagesWithMyASUViewAs() {
+    private static void fetchEmailMessagesWithMyASUHelpViewAsService() {
         loadTestDataWithUserByLastName('User0');
         setCurrentPageAsViewCase();
 

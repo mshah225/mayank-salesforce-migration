@@ -5,7 +5,7 @@ public with sharing class ViewCaseController {
     private Term__c termAc;
     private Term__c termB;
     private Map<String, String> viewAsMap;
-    private MyASUViewAs viewAsService;
+    private MyASUHelpViewAsService viewAsService;
 
     public Id caseId { get; set; }
     public String firstName { get; set; }
@@ -77,7 +77,7 @@ public with sharing class ViewCaseController {
 
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
 
-            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }

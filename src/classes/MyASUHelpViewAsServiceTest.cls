@@ -1,10 +1,10 @@
 @isTest
-private class MyASUViewAsTest {
+private class MyASUHelpViewAsServiceTest {
     private static User userToUse;
-    private static MyASUViewAs viewAsService;
+    private static MyASUHelpViewAsService viewAsService;
 
     private static void setUpUser() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_MyASUViewAs());
+        Test.setMock(HttpCalloutMock.class, new MyASUHelpViewAsServiceMock());
         String uniqueUserName = 'standarduser' + DateTime.now().getTime() + '@testorg.com';
         Profile profileSettings = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'];
         userToUse = new User(
@@ -34,13 +34,13 @@ private class MyASUViewAsTest {
         View_As_Url__c urlToInsert = new View_As_Url__c(Name = 'URL', MyAsuUrl__c = 'https://webapp4.asu.edu/myasu');
         insert urlToInsert;
         Test.startTest();
-        viewAsService = new MyASUViewAs(null, 'Tester');
+        viewAsService = new MyASUHelpViewAsService(null, 'Tester');
         Test.stopTest();
     }
 
     @isTest
     private static void getContact() {
-        MyASUViewAsTest.setUpUser();
+        MyASUHelpViewAsServiceTest.setUpUser();
         Contact contactAssociatedWithAsurite;
         System.runAs(userToUse) {
             viewAsService.hasViewAsRights = true;
@@ -53,7 +53,7 @@ private class MyASUViewAsTest {
 
     @isTest
     private static void getCaseDetails() {
-        MyASUViewAsTest.setUpUser();
+        MyASUHelpViewAsServiceTest.setUpUser();
         Case createdCase = [SELECT Id FROM Case LIMIT 1];
         Case caseAssociatedWithAsurite;
         System.runAs(userToUse) {
@@ -65,7 +65,7 @@ private class MyASUViewAsTest {
 
     @isTest
     private static void getOpenCasesWithSharing() {
-        MyASUViewAsTest.setUpUser();
+        MyASUHelpViewAsServiceTest.setUpUser();
         List<Contact> contactsWithCases = [SELECT Id FROM Contact];
         List<Case> allOpenCases = [SELECT Id FROM Case WHERE isClosed = FALSE];
         List<Case> openCases;

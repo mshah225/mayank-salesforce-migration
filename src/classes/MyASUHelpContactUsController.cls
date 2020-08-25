@@ -21,7 +21,7 @@ public without sharing class MyASUHelpContactUsController {
     public String userAsurite;
     public String asurite { get; set; }
     public String masqScopeIdCookie { get; set; }
-    public MyAsuViewAs viewAsService;
+    public MyASUViewAs viewAsService;
 
     public Map<String, String> accordionPanels { get; set; }
     public Map<String, String> accordionPanelsId { get; set; }
@@ -58,7 +58,7 @@ public without sharing class MyASUHelpContactUsController {
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
-            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }

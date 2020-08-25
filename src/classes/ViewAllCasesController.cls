@@ -2,7 +2,7 @@ public with sharing class ViewAllCasesController {
     private Id caseId;
     private Map<String, String> viewAsMap;
     private Decimal origPin;
-    private MyAsuViewAs viewAsService;
+    private MyASUViewAs viewAsService;
 
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -31,7 +31,7 @@ public with sharing class ViewAllCasesController {
 
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
 
-            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUViewAs(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }

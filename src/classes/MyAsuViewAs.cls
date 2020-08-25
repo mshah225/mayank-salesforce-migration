@@ -2,7 +2,7 @@ public without sharing class MyAsuViewAs {
     private Map<String, String> response;
     public Boolean hasViewAsRights;
 
-    public MyASUViewAs(String idCookie, String asurite) {
+    public MyAsuViewAs(String idCookie, String asurite) {
         response = EffectiveIdentityCallout.getCalloutResponseContents(idCookie, asurite);
         checkViewAsRights(response, asurite);
     }

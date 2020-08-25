@@ -1,8 +1,8 @@
-public without sharing class MyASUHelpViewAsServiceewAsService {
+public without sharing class MyASUHelpViewAsService {
     private Map<String, String> response;
     public Boolean hasViewAsRights;
 
-    public MyASUHelpViewAsServiceewAsService(String idCookie, String asurite) {
+    public MyASUHelpViewAsService(String idCookie, String asurite) {
         response = EffectiveIdentityCallout.getCalloutResponseContents(idCookie, asurite);
         checkViewAsRights(response, asurite);
     }
@@ -21,63 +21,63 @@ public without sharing class MyASUHelpViewAsServiceewAsService {
 
     public Contact getContact(String asurite) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getContact(asurite);
+            return MyASUHelpViewAsServiceWithoutSharing.getContact(asurite);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getContact(asurite);
+            return MyASUHelpViewAsServiceWithSharing.getContact(asurite);
         }
     }
 
     public Case getCaseDetails(Id caseId) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getCaseDetails(caseId);
+            return MyASUHelpViewAsServiceWithoutSharing.getCaseDetails(caseId);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getCaseDetails(caseId);
+            return MyASUHelpViewAsServiceWithSharing.getCaseDetails(caseId);
         }
     }
 
     public Map<Id, List<Case>> getOpenCases(List<Contact> contacts) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getOpenCases(contacts);
+            return MyASUHelpViewAsServiceWithoutSharing.getOpenCases(contacts);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getOpenCases(contacts);
+            return MyASUHelpViewAsServiceWithSharing.getOpenCases(contacts);
         }
     }
 
     public Map<Id, List<Case>> getOpenCases(List<Contact> contacts, Integer queryLimit) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getOpenCases(contacts, queryLimit);
+            return MyASUHelpViewAsServiceWithoutSharing.getOpenCases(contacts, queryLimit);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getOpenCases(contacts, queryLimit);
+            return MyASUHelpViewAsServiceWithSharing.getOpenCases(contacts, queryLimit);
         }
     }
 
     public Map<Id, List<Case>> getClosedCases(List<Contact> contacts) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getClosedCases(contacts);
+            return MyASUHelpViewAsServiceWithoutSharing.getClosedCases(contacts);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getClosedCases(contacts);
+            return MyASUHelpViewAsServiceWithSharing.getClosedCases(contacts);
         }
     }
 
     public Map<Id, List<Case>> getClosedCases(List<Contact> contacts, Integer queryLimit) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getClosedCases(contacts, queryLimit);
+            return MyASUHelpViewAsServiceWithoutSharing.getClosedCases(contacts, queryLimit);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getClosedCases(contacts, queryLimit);
+            return MyASUHelpViewAsServiceWithSharing.getClosedCases(contacts, queryLimit);
         }
     }
 
     public List<EmailMessage> getCaseEmails(Date launchDate, Id caseId, List<String> contactEmails) {
         if (hasViewAsRights) {
-            return MyASUHelpViewAsServiceewAsServiceWithoutSharing.getCaseEmails(launchDate, caseId, contactEmails);
+            return MyASUHelpViewAsServiceWithoutSharing.getCaseEmails(launchDate, caseId, contactEmails);
         } else {
-            return MyASUHelpViewAsServiceewAsServiceWithSharing.getCaseEmails(launchDate, caseId, contactEmails);
+            return MyASUHelpViewAsServiceWithSharing.getCaseEmails(launchDate, caseId, contactEmails);
         }
     }
 
-    private with sharing class MyASUHelpViewAsServiceewAsServiceWithShariMyASUHelpViewAsServiceMyASUHelpViewAsServiceSharingService {
+    private with sharing class MyASUHelpViewAsServiceWithSharing extends MyASUHelpViewAsSharingService {
     }
 
-    private without sharing class MyASUHelpViewAsServiceewAsServiceWithoutShariMyASUHelpViewAsServiceMyASUHelpViewAsServiceSharingService {
+    private without sharing class MyASUHelpViewAsServiceWithoutSharing extends MyASUHelpViewAsSharingService {
     }
 }

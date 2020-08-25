@@ -75,9 +75,9 @@ public without sharing class MyASUHelpViewAsService {
         }
     }
 
-    private with sharing class MyASUHelpViewAsServiceWithShariMyASUHelpViewAsServiceMyASUHelpViewAsServiceSharingService {
+    private with sharing class MyASUHelpViewAsServiceWithSharing extends MyASUHelpViewAsSharingService {
     }
 
-    private without sharing class MyASUHelpViewAsServiceWithoutShariMyASUHelpViewAsServiceMyASUHelpViewAsServiceSharingService {
+    private without sharing class MyASUHelpViewAsServiceWithoutSharing extends MyASUHelpViewAsSharingService {
     }
 }

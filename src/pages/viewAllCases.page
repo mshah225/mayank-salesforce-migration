@@ -11,13 +11,6 @@
     </head>
 
     <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
-    <div class="asu-header-site-title-container">
-        <div>
-            <div id="asu-header-site-title" class="asu-header-width">
-                <a href="https://webapp4.asu.edu/myasu">My ASU</a>
-            </div>
-        </div>
-    </div>
     <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
         viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 

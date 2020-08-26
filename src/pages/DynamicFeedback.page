@@ -21,13 +21,6 @@
     </head>
 
     <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
-    <div class="asu-header-site-title-container">
-        <div>
-            <div id="asu-header-site-title" class="asu-header-width">
-                <a href="https://webapp4.asu.edu/myasu">{!carName} Feedback</a>
-            </div>
-        </div>
-    </div>
 
     <c:GoogleTagManagerBody />
     <div class="dynamic-feedback-container" id="asu-content-container">

@@ -125,7 +125,7 @@ public with sharing class MyASUHelpFAQController {
         ];
         topThreeFinancialArticles = new List<FAQ__kav>();
 
-        if (allFinancialArticles != null) {
+        if (allFinancialArticles != null && !allFinancialArticles.isEmpty()) {
             if (allFinancialArticles[0].Id != null) {
                 topThreeFinancialArticles.add(allFinancialArticles[0]);
             }
@@ -156,7 +156,7 @@ public with sharing class MyASUHelpFAQController {
         ];
         topThreeTechnicalArticles = new List<FAQ__kav>();
 
-        if (allTechnicalArticles != null) {
+        if (allTechnicalArticles != null && !allTechnicalArticles.isEmpty()) {
             if (allTechnicalArticles[0].Id != null) {
                 topThreeTechnicalArticles.add(allTechnicalArticles[0]);
             }
@@ -187,7 +187,7 @@ public with sharing class MyASUHelpFAQController {
         ];
         topThreeHousingArticles = new List<FAQ__kav>();
 
-        if (allHousingArticles != null) {
+        if (allHousingArticles != null && !allHousingArticles.isEmpty()) {
             if (allHousingArticles[0].Id != null) {
                 topThreeHousingArticles.add(allHousingArticles[0]);
             }

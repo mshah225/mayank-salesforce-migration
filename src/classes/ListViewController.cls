@@ -6,8 +6,8 @@ public virtual class ListViewController {
     private boolean debug = false;
 
     // Properties with standard getters/setters
-    private String oldQuery {get; set;} // Used to determine if the query changges
-    public List<SObject> recordList {get; set;} // Stores the standard record list
+    private String oldQuery { get; set; } // Used to determine if the query changges
+    public List<SObject> recordList { get; set; } // Stores the standard record list
 
     // Transient properties (cookies cannot be stored in the view state)
     private transient Map<String, Cookie> cookieMap;
@@ -42,7 +42,6 @@ public virtual class ListViewController {
      */
     public String queryAttr {
         get;
-
         set {
             queryAttr = value;
             if (queryAttr != oldQuery || query == null) {
@@ -62,7 +61,6 @@ public virtual class ListViewController {
      */
     public String query {
         get;
-
         set {
             List<String> vars = new List<String>();
             try {
@@ -81,7 +79,6 @@ public virtual class ListViewController {
      */
     public ApexPages.StandardSetController setCon {
         get;
-
         set {
             setCon = value;
             setCon.setPageSize(pageSize);
@@ -105,9 +102,9 @@ public virtual class ListViewController {
     public Integer pageSize {
         get {
             pageSize = integer.valueOf(getPageSizeCookie().getValue());
+
             return pageSize;
         }
-
         set {
             pageSize = value;
             pageSizeCookie = new Cookie('pageSize', string.valueOf(pageSize), null, cookieExpiration, false);
@@ -138,7 +135,6 @@ public virtual class ListViewController {
 
             return sortDir;
         }
-
         set;
     }
 
@@ -179,19 +175,20 @@ public virtual class ListViewController {
 
             return sortField;
         }
-
         set {
             String tempQuery;
             Integer loc;
 
             if (!String.isEmpty(value)) {
-                if (value == sortField) { // Field has not changed
+                if (value == sortField) {
+                    // Field has not changed
                     if (sortDir == 'ASC') {
                         sortDir = 'DESC';
                     } else {
                         sortDir = 'ASC';
                     }
-                } else { // The value has changed
+                } else {
+                    // The value has changed
                     sortDir = 'ASC';
                 }
 
@@ -207,7 +204,19 @@ public virtual class ListViewController {
                     tempQuery = tempQuery.trim();
                 }
 
-                tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
+                // if value from component contains a comma, handle multiple values
+                if (value.contains(',')) {
+                    List<String> split = value.split('\\s*,\\s*');
+
+                    tempQuery += ' ORDER BY';
+                    for (String s : split) {
+                        tempQuery += ' ' + s + ' ' + sortDir + ' NULLS LAST,';
+                    }
+                    tempQuery = tempQuery.removeEnd(',');
+                } else {
+                    tempQuery = tempQuery + ' ORDER BY ' + sortField + ' ' + sortDir + ' NULLS LAST';
+                }
+
                 query = tempQuery;
             }
         }
@@ -225,7 +234,6 @@ public virtual class ListViewController {
      */
     public boolean refreshList {
         get;
-
         set {
             refreshList = value;
 
@@ -258,7 +266,13 @@ public virtual class ListViewController {
         }
 
         if (pageSizeCookie == null) {
-            pageSizeCookie = new Cookie(pageSizeCookieName, string.valueOf(defaultPageSize), null, cookieExpiration, false);
+            pageSizeCookie = new Cookie(
+                pageSizeCookieName,
+                string.valueOf(defaultPageSize),
+                null,
+                cookieExpiration,
+                false
+            );
             cookieMap.put(pageSizeCookieName, pageSizeCookie);
             ApexPages.currentPage().setCookies(cookieMap.values());
         }

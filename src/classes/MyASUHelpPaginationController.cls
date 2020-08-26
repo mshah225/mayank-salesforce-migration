@@ -33,16 +33,20 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     private void setMaxSize() {
-        String querySOSL = '';
-        String queryString = String.escapeSingleQuotes(searchstring);
-        Search.SearchResults searchResults = Search.find(
-            'FIND \'' +
-            queryString +
-            '*\'' +
-            'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
-        );
-        List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
-        maxSize = articlelist.size();
+        if (searchstring != '') {
+            String querySOSL = '';
+            String queryString = String.escapeSingleQuotes(searchstring);
+            Search.SearchResults searchResults = Search.find(
+                'FIND \'' +
+                queryString +
+                '*\'' +
+                'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
+            );
+            List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
+            maxSize = articlelist.size();
+        } else {
+            maxSize = 0;
+        }
     }
 
     private void setResultsRange() {

@@ -3,7 +3,7 @@
     <apiVersion>40.0</apiVersion>
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>Single SMS Contact</label>
+    <label>Single SMS Organization</label>
     <packageVersions>
         <majorNumber>1</majorNumber>
         <minorNumber>60</minorNumber>

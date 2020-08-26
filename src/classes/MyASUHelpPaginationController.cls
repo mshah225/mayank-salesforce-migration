@@ -26,12 +26,7 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     private void setMaxSize() {
-        maxSize = [
-            SELECT COUNT()
-            FROM KnowledgeArticleVersion
-            WHERE PublishStatus = 'online' AND Language = 'en_US'
-            LIMIT 200
-        ];
+        maxSize = [SELECT COUNT() FROM FAQ__kav WHERE IsDeleted = FALSE AND PublishStatus = 'Online' LIMIT 200];
     }
 
     public void checkSearchParams() {

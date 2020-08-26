@@ -1,12 +1,5 @@
 <apex:component>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
     <style>
-        header,
-        body,
-        footer {
-            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-        }
-
         #myasu-tabs-wrapper .navbar {
             margin-bottom: 0;
         }

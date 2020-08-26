@@ -121,7 +121,7 @@ public with sharing class MyASUHelpFAQController {
             FROM FAQ__kav
             WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 250
+            LIMIT 200
         ];
         topThreeFinancialArticles = new List<FAQ__kav>();
 
@@ -152,7 +152,7 @@ public with sharing class MyASUHelpFAQController {
             FROM FAQ__kav
             WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 250
+            LIMIT 200
         ];
         topThreeTechnicalArticles = new List<FAQ__kav>();
 
@@ -183,7 +183,7 @@ public with sharing class MyASUHelpFAQController {
             FROM FAQ__kav
             WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 250
+            LIMIT 200
         ];
         topThreeHousingArticles = new List<FAQ__kav>();
 

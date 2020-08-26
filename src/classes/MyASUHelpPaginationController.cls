@@ -20,23 +20,32 @@ public with sharing class MyASUHelpPaginationController {
         currentPage = 1;
         rangeStart = 1;
         rangeEnd = 1;
+        checkSearchParams();
         setMaxSize();
         setResultsRange();
-        checkSearchParams();
     }
 
-    private void setMaxSize() {
-        maxSize = [SELECT COUNT() FROM FAQ__kav WHERE IsDeleted = FALSE AND PublishStatus = 'Online' LIMIT 200];
-    }
-
-    public void checkSearchParams() {
+    private void checkSearchParams() {
         String searchParams = ApexPages.currentPage().getParameters().get('q');
         if (searchParams != null) {
             searchstring = (searchParams.length() > 99) ? searchParams.substring(0, 99) : searchParams;
         }
     }
 
-    public void setResultsRange() {
+    private void setMaxSize() {
+        String querySOSL = '';
+        String queryString = String.escapeSingleQuotes(searchstring);
+        Search.SearchResults searchResults = Search.find(
+            'FIND \'' +
+            queryString +
+            '*\'' +
+            'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
+        );
+        List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
+        maxSize = articlelist.size();
+    }
+
+    private void setResultsRange() {
         resultsRange = '';
         if (maxSize == 0) {
             rangeStart = 0;

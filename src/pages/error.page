@@ -10,7 +10,6 @@
     </head>
 
     <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="https://webapp4.asu.edu/myasu" />
-    <c:ASUBrandMenu />
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container">

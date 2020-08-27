@@ -39,7 +39,8 @@
                             <div class="myasu-help-region-sub-header">
                                 Showing all results for '{!textToSearch}'
                             </div>
-                            <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPage}" pageSize="{!IF(textToSearch != '', pageSize, 0)}">
+                            <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPageNumber}"
+                                pageSize="{!IF(textToSearch != '', pageSize, 0)}">
                                 <div class="myasu-help-region-faq-search-results-article-container">
                                     <apex:outputLink styleClass="myasu-help-region-faq-search-results-article" value="/authkb?id={!article.id}">
                                         {!article.title}
@@ -51,7 +52,7 @@
                                     style="{!IF(prevRequired == true,'display:inline-block','display:none')}" reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-backward" aria-hidden="true" />
                                 </apex:commandLink>
-                                <div class="myasu-help-region-faq-search-results-current-page">{!currentPage}</div>
+                                <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div>
                                 <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(nextRequired == true,'display:inline-block','display:none')}"
                                     reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-forward" aria-hidden="true" />

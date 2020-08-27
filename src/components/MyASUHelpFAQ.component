@@ -38,22 +38,24 @@
                                 Showing all results for '{!searchstring}'
                             </div>
                             <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!searchstring}" pageNumber="{!currentPageNumber}"
-                                pageSize="{!IF(searchstring != '',pageSize,0)}">
+                                pageSize="{!IF(searchstring != '', pageSize, 0)}">
                                 <div class="myasu-help-region-faq-search-results-article-container">
                                     <apex:outputLink styleClass="myasu-help-region-faq-search-results-article" value="/authkb?id={!article.id}">
                                         {!article.title}
                                     </apex:outputLink>
                                 </div>
                             </knowledge:articleList>
-                            <apex:commandLink action="{!previous}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-backwards"
-                                style="{!IF(prevRequired == true,'display:inline-block','display:none')}" reRender="myasu-help-region-faq-search-results-block">
-                                <i class="fa fa-step-backward" aria-hidden="true" />
-                            </apex:commandLink>
-                            <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div>
-                            <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(nextRequired == true,'display:inline-block','display:none')}"
-                                reRender="myasu-help-region-faq-search-results-block">
-                                <i class="fa fa-step-forward" aria-hidden="true" />
-                            </apex:commandLink>
+                            <div class="myasu-help-region-faq-search-results-pagination">
+                                <apex:commandLink action="{!previous}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-backwards"
+                                    style="{!IF(prevRequired == true,'display:inline-block','display:none')}" reRender="myasu-help-region-faq-search-results-block">
+                                    <i class="fa fa-step-backward" aria-hidden="true" />
+                                </apex:commandLink>
+                                <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div>
+                                <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(nextRequired == true,'display:inline-block','display:none')}"
+                                    reRender="myasu-help-region-faq-search-results-block">
+                                    <i class="fa fa-step-forward" aria-hidden="true" />
+                                </apex:commandLink>
+                            </div>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(searchstring != '', EmbedLocation != 'viewAllArticles')}">
                             <div class="myasu-help-region-sub-header">
@@ -138,4 +140,15 @@
             </apex:form>
         </div>
     </div>
+    <script>
+
+
+        if ($(".myasu-help-region-sub-header:contains('Showing all results for')").length) {
+            if ($('.myasu-help-region-faq-search-results-article-container').length == 0) {
+                $('.myasu-help-region-sub-header').append('<p>No results found. Please try rewording your question.</p>');
+                $('.myasu-help-region-faq-search-results-pagination').hide();
+            }
+        }
+
+    </script>
 </apex:component>

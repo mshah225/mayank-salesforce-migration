@@ -1,6 +1,8 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MyASUHelpFAQController" action="{!init}" cache="true"
     extensions="MyASUHelpPaginationController,ASUBrandMenuController">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+
     <head>
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
@@ -47,8 +49,7 @@
     <script>
         function checkNumbers() {
             var pageSize = "{!pageSize}";
-            var aCount = document.getElementById("{!$Component.theSearchResults}")
-                .getElementsByTagName("a").length;
+            var aCount = document.getElementById("{!$Component.theSearchResults}").getElementsByTagName("a").length;
             console.log("aCount: " + aCount);
             console.log("pageSize: " + pageSize);
             if (aCount < pageSize) {

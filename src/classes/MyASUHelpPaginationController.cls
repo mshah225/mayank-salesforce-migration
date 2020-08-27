@@ -33,8 +33,9 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     private void setMaxSize() {
-        if (searchstring != '') {
-            String querySOSL = '';
+        if (searchstring == '') {
+            maxSize = 0;
+        } else {
             String queryString = String.escapeSingleQuotes(searchstring);
             Search.SearchResults searchResults = Search.find(
                 'FIND \'' +
@@ -44,8 +45,6 @@ public with sharing class MyASUHelpPaginationController {
             );
             List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
             maxSize = articlelist.size();
-        } else {
-            maxSize = 0;
         }
     }
 

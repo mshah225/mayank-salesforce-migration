@@ -1,5 +1,7 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" controller="MyASUHelpFAQController" action="{!init}" cache="true"
     extensions="ASUBrandMenuController,MyASUHelpPaginationController">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"
+    />
 
     <head>
         <c:GoogleTagManager />

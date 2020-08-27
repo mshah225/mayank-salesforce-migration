@@ -45,6 +45,10 @@
             margin-right: 0;
         }
 
+        #myasu-tabs .navbar-links span:not(:last-child) {
+            margin-right: -.25em;
+        }
+
         #myasu-tabs .navbar-links span.selected {
             background: #000;
             margin-left: 0;

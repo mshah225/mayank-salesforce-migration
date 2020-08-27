@@ -16,7 +16,7 @@
             <header class="navbar navbar-default" role="banner">
                 <div id="myasu-tabs" class="myasu-cont">
                     <div class="navbar-links">
-                        <apex:outputPanel rendered="{!IF(ISNULL(menuLinks) || ISBLANK(menuLinks), false, true)}">
+                        <apex:outputPanel rendered="{!IF(ISNULL(menuLinks) || ISBLANK(menuLinks), false, true)}" layout="none">
                             <apex:repeat value="{!menuLinks}" var="link" id="linkRepeater">
                                 <apex:outputPanel rendered="{!IF(link.name != 'Service Center' && link.name != 'Help', true, false)}">
                                     <span class='tab'>

@@ -2,8 +2,12 @@ public with sharing class MyASUHelpPaginationController {
     public String textToSearch { get; set; }
     public Integer pageSize;
     public Integer currentPage;
+    public Integer lastPage;
     public Integer maxSize;
     public List<KnowledgeArticleVersion> articleList;
+
+    public Boolean onFirstPage;
+    public Boolean onLastPage;
 
     public MyASUHelpPaginationController() {
         setupPagination();
@@ -15,6 +19,9 @@ public with sharing class MyASUHelpPaginationController {
     public void setupPagination() {
         pageSize = 10;
         currentPage = 1;
+        lastPage = 1;
+        onFirstPage = true;
+        onLastPage = true;
         checkSearchParams();
         setMaxSize();
     }
@@ -39,6 +46,13 @@ public with sharing class MyASUHelpPaginationController {
             );
             List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
             maxSize = articlelist.size();
+        }
+
+        if (maxSize > 0) {
+            //lastPage = (maxSize / pageSize) + 1;
+
+            if (currentPage == lastPage) {
+            }
         }
     }
 

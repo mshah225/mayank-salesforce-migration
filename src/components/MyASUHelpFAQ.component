@@ -1,6 +1,8 @@
 <apex:component controller="MyASUHelpFAQController" extensions="ASUBrandMenuController,MyASUHelpPaginationController">
     <apex:attribute name="EmbedLocation" description="The location the component is embedded" type="String" />
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+
     <div class="myasu-help-region-faq">
         <div class="myasu-help-region-header">
             Frequently Asked Questions
@@ -19,7 +21,7 @@
                                         html-pattern=".{2,}" html-type="search" required="true" title="Please enter a minimum of 2 characters"
                                         maxlength="99" />
                                     <apex:commandLink styleClass="btn btn-secondary myasu-help-region-faq-search-input-button" reRender="myasu-help-region-faq-search-results"
-                                        oncomplete="viewAsLinks()">
+                                        oncomplete="myASUHelpFAQ()">
                                         <i class="fa fa-search" aria-hidden="true">
                                             <span class="sr-only">Search</span>
                                         </i>
@@ -141,14 +143,42 @@
         </div>
     </div>
     <script>
+        myASUHelpFAQ();
 
+        function myASUHelpFAQ() {
+            checkResultsPane();
+            // Add view as JS call or somewhere else?
+        }
 
-        if ($(".myasu-help-region-sub-header:contains('Showing all results for')").length) {
-            if ($('.myasu-help-region-faq-search-results-article-container').length == 0) {
-                $('.myasu-help-region-sub-header').append('<p>No results found. Please try rewording your question.</p>');
-                $('.myasu-help-region-faq-search-results-pagination').hide();
+        function checkResultsPane() {
+            checkAllResults();
+            checkTopResults();
+        }
+
+        function checkAllResults() {
+            if ($(".myasu-help-region-sub-header:contains('Showing all results for')").length) {
+                if ($('.myasu-help-region-faq-search-results-article-container').length == 0) {
+                    if ($('.myasu-append-no-results-text').length == 0) {
+                        appendNoResultsText();
+                        $('.myasu-help-region-faq-search-results-pagination').hide();
+                    }
+                }
             }
         }
 
+        function checkTopResults() {
+            if ($(".myasu-help-region-sub-header:contains('Showing top results for')").length) {
+                if ($('.myasu-help-region-faq-search-results-article-container').length == 0) {
+                    if ($('.myasu-append-no-results-text').length == 0) {
+                        appendNoResultsText();
+                        $('.myasu-help-region-faq-search-results-view-all').hide();
+                    }
+                }
+            }
+        }
+
+        function appendNoResultsText() {
+            $('.myasu-help-region-sub-header').append('<p class="myasu-append-no-results-text">No results found. Please try rewording your question.</p>');
+        }
     </script>
 </apex:component>

@@ -79,8 +79,10 @@ public class ASUBrandMenuController {
         }
 
         if (menuLinks == null) {
+            menuLinks = new List<Link>();
+
             Link link1 = new Link();
-            link1.name = '';
+            link1.name = 'Home';
             link1.url = '/myasu';
 
             Link link2 = new Link();

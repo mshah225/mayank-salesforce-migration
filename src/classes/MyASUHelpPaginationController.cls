@@ -33,7 +33,7 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     private void setMaxSize() {
-        if (searchstring == '') {
+        if (searchstring == '' || searchstring == null) {
             maxSize = 0;
         } else {
             String queryString = String.escapeSingleQuotes(searchstring);

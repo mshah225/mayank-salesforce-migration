@@ -1,6 +1,8 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandMenuController"
  action="{!optOutOfEmails}" standardStylesheets="false">
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+
 	<head>
 		<title>ASU | Unsubscribe from Campaign</title>
 		<c:asu_responsive_header_section />

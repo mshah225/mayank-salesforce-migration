@@ -35,12 +35,10 @@ private class MyASUHelpPaginationControllerTest {
         vf.previous();
         vf.getNextRequired();
         vf.getPrevRequired();
-        vf.clearSearchString();
         vf.getCurrentPageNumber();
-        vf.resetForm();
         vf.viewAllResults();
 
-        System.assertEquals('', vf.searchstring);
+        System.assertEquals('', vf.textToSearch);
         System.assertEquals(1, vf.getCurrentPageNumber());
     }
 }

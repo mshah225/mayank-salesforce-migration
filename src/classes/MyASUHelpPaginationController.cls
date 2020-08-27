@@ -50,7 +50,7 @@ public with sharing class MyASUHelpPaginationController {
         return pageSize;
     }
 
-    public Decimal getCurrentPage() {
+    public Decimal getCurrentPageNumber() {
         return currentPage;
     }
 

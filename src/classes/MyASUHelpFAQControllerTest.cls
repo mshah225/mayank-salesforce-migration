@@ -354,7 +354,6 @@ private class MyASUHelpFAQControllerTest {
             myASUHelpMyRequests.newCase.Description = 'Test Desc';
 
             PageReference submit = myASUHelpMyRequests.submitCase();
-            System.debug(submit);
             System.assertEquals(submit.getURL().contains('/viewcase?'), true);
 
             myASUHelpMyRequests.getClosedCases();
@@ -383,7 +382,7 @@ private class MyASUHelpFAQControllerTest {
 
         System.runAs(testUser) {
             sc = new MyASUHelpFAQController();
-            sc.suggestAnArticle.Description = 'Test submitting a suggestion';
+            sc.suggestAnArticle.Description = 'Description';
             submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
 
@@ -454,33 +453,6 @@ private class MyASUHelpFAQControllerTest {
         }
         Test.stopTest();
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);
-    }
-
-    @isTest
-    private static void fetchEmailMessagesWithoutMyASUViewAs() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-
-        Test.startTest();
-        System.runAs(testUser) {
-            vcc = new ViewCaseController();
-        }
-        Test.stopTest();
-        System.assertEquals(vcc.getEmailMessages().size(), 1);
-    }
-
-    @isTest
-    private static void fetchEmailMessagesWithMyASUViewAs() {
-        loadTestDataWithUserByLastName('User0');
-        setCurrentPageAsViewCase();
-
-        Test.startTest();
-        System.runAs(testUser) {
-            vcc = new ViewCaseController();
-            vcc.viewingAs = true;
-        }
-        Test.stopTest();
-        System.assertEquals(vcc.getEmailMessages().size(), 1);
     }
 
     @isTest
@@ -556,7 +528,7 @@ private class MyASUHelpFAQControllerTest {
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         Boolean successMessageFound = false;
         for (Apexpages.Message msg : msgs) {
-            if (msg.getDetail().contains('Response to the case was submitted successfully')) {
+            if (msg.getDetail().contains('Your response was submitted successfully')) {
                 successMessageFound = true;
             }
         }
@@ -584,7 +556,7 @@ private class MyASUHelpFAQControllerTest {
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         Boolean failureMessageFound = false;
         for (Apexpages.Message msg : msgs) {
-            if (msg.getDetail().contains('Could not add response to case. Please try again or contact system admin')) {
+            if (msg.getDetail().contains('Your response was not submitted successfully')) {
                 failureMessageFound = true;
             }
         }

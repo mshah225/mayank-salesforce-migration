@@ -44,7 +44,6 @@ public class CrossOrgShareCallout {
             response = http.send(request);
         } catch (System.CalloutException calloutException) {
             throw new CrossOrgShareCalloutException(
-                '!!!ERROR!!!: An error occurred trying to get crosswalk record\n' +
                 calloutException.getMessage()
             );
         }
@@ -71,7 +70,6 @@ public class CrossOrgShareCallout {
             response = http.send(request);
         } catch (System.CalloutException calloutException) {
             throw new CrossOrgShareCalloutException(
-                '!!!ERROR!!!: An error occurred trying to get crosswalk record\n' +
                 calloutException.getMessage()
             );
         }
@@ -101,7 +99,6 @@ public class CrossOrgShareCallout {
             response = new http().send(request);
         } catch (System.CalloutException calloutException) {
             throw new CrossOrgShareCalloutException(
-                '!!!ERROR!!!: An error occurred trying to create crosswalk record\n' +
                 calloutException.getMessage()
             );
         }
@@ -131,7 +128,6 @@ public class CrossOrgShareCallout {
             response = new http().send(request);
         } catch (System.CalloutException calloutException) {
             throw new CrossOrgShareCalloutException(
-                '!!!ERROR!!!: An error occurred trying to update crosswalk record\n' +
                 calloutException.getMessage()
             );
         }
@@ -161,7 +157,6 @@ public class CrossOrgShareCallout {
             response = new http().send(request);
         } catch (System.CalloutException calloutException) {
             throw new CrossOrgShareCalloutException(
-                '!!!ERROR!!!: An error occurred trying to delete crosswalk record\n' +
                 calloutException.getMessage()
             );
         }

@@ -52,14 +52,14 @@ private class CrossOrgShareCalloutTest {
         insert contacts;
         Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
+        Test.startTest();
         try {
-            Test.startTest();
             HttpResponse actualResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_Contact_ID__c);
-            Test.stopTest();
-        } catch (CalloutException calloutException) {
-            System.debug( calloutException.getMessage() );
+        } catch (Exception calloutException) {
             System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
         }
+        Test.stopTest();
+        
     }
 
     /**
@@ -76,14 +76,13 @@ private class CrossOrgShareCalloutTest {
         insert contacts;
         Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
 
+        Test.startTest();
         try {
-            Test.startTest();
             HttpResponse actualResponse = crosswalkService.makeGetCalloutById(testContact.Id);
-            Test.stopTest();
-        } catch (CalloutException calloutException) {
-            System.debug( calloutException.getMessage() );
+        } catch (Exception calloutException) {
             System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
         }
+        Test.stopTest();
     }
 
     /**
@@ -210,14 +209,14 @@ private class CrossOrgShareCalloutTest {
         paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
         paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
+        Test.startTest();
         try {
-            Test.startTest();
             String jsonPayload = JSON.serialize(paramMap);
             HttpResponse actualResponse = crosswalkService.makePostCallout(jsonPayload);
-            Test.stopTest();
-        } catch (CalloutException calloutException) {
+        } catch (Exception calloutException) {
             System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
         }
+        Test.stopTest();
     }
 
     /**
@@ -237,14 +236,14 @@ private class CrossOrgShareCalloutTest {
         paramMap.put( 'sourceOrgId', ( EncodingUtil.urlEncode(String.valueOf(UserInfo.getOrganizationId()), 'UTF-8') ) );
         paramMap.put( 'guid', ( EncodingUtil.urlEncode(String.valueOf(testContact.SSB_CRMSYSTEM_Contact_ID__c), 'UTF-8') ) );
 
+        Test.startTest();
         try {
-            Test.startTest();
             String jsonPayload = JSON.serialize(paramMap);
             HttpResponse actualResponse = crosswalkService.makePutCallout(jsonPayload);
-            Test.stopTest();
-        } catch (CalloutException calloutException) {
+        } catch (Exception calloutException) {
             System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
         }
+        Test.stopTest();
     }
 
     /**
@@ -300,16 +299,15 @@ private class CrossOrgShareCalloutTest {
         List<Id> deletePayload = new List<Id>();
         deletePayload.add(testContact.Id);
 
+        Test.startTest();
         try {
-            Test.startTest();
             String jsonPayload = '\"' + String.join(deletePayload, '\",\"') + '\"';
             jsonPayload = '[' + jsonPayload + ']';
-
             HttpResponse actualResponse = crosswalkService.makeDeleteCallout(jsonPayload);
-            Test.stopTest();
-        } catch (CalloutException calloutException) {
+        } catch (Exception calloutException) {
             System.assertEquals(calloutException.getMessage(), 'Throw a callout exception to cover catch block.');
         }
+        Test.stopTest();
     }
 
     /**

@@ -285,7 +285,7 @@ public with sharing class Test_ContactHandler
 
         // Get our response based on the test contact
         HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_Contact_ID__c);
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody());
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkResponse(crosswalkResponse.getBody());
 
         // Assert
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
@@ -325,7 +325,7 @@ public with sharing class Test_ContactHandler
 
         // Get our response based on the test contact
         HttpResponse crosswalkResponse = crosswalkService.makeDeleteCallout(jsonPayload);
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
 
         // Assert
         System.assertEquals(mockResponse.message, actualResponse.message);

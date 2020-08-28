@@ -32,7 +32,7 @@ private class CrossOrgShareCalloutTest {
         Test.startTest();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=');
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkResponse(crosswalkResponse.getBody() );
         Test.stopTest();
 
         System.assertEquals(mockResponse, actualResponse);
@@ -113,7 +113,7 @@ private class CrossOrgShareCalloutTest {
         Test.startTest();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid='+testContact.SSB_CRMSYSTEM_Contact_ID__c);
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkResponse(crosswalkResponse.getBody() );
         Test.stopTest();
 
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
@@ -149,7 +149,7 @@ private class CrossOrgShareCalloutTest {
         Test.startTest();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCalloutById(testContact.Id);
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkResponse(crosswalkResponse.getBody() );
         Test.stopTest();
 
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
@@ -185,7 +185,7 @@ private class CrossOrgShareCalloutTest {
         String jsonPayload = JSON.serialize(paramMap);
         HttpResponse crosswalkResponse = crosswalkService.makePostCallout(jsonPayload);
         CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
         Test.stopTest();
 
         System.assertEquals(mockResponse.message, actualResponse.message);
@@ -273,7 +273,7 @@ private class CrossOrgShareCalloutTest {
         String jsonPayload = JSON.serialize(paramMap);
         HttpResponse crosswalkResponse = crosswalkService.makePutCallout(jsonPayload);
         CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
         Test.stopTest();
 
         System.assertEquals(mockResponse.message, actualResponse.message);
@@ -343,7 +343,7 @@ private class CrossOrgShareCalloutTest {
 
         HttpResponse crosswalkResponse = crosswalkService.makeDeleteCallout(jsonPayload);
         CrossOrgShareUtilities.CrosswalkResponseWrapper actualResponse = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
-        actualResponse = CrossOrgShareUtilities.DeserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkReturnResponse(crosswalkResponse.getBody() );
         Test.stopTest();
 
         System.assertEquals(mockResponse.message, actualResponse.message);

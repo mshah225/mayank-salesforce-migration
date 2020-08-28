@@ -15,7 +15,7 @@ public class EdPlusUtilitiesTest {
         User rec = TestDataFactory.createUser('John', pId);
         insert rec;
 
-        EdPlusUtilities.TrackUsage(rec.Id, 'Viewed Record', 'ABC123');
+        EdPlusUtilities.trackUsage(rec.Id, 'Viewed Record', 'ABC123');
         List<EntCrossOrgUsageStats__c> totalRecords = [SELECT Id FROM EntCrossOrgUsageStats__c];
 
         system.assertEquals(1, totalRecords.size() );
@@ -27,7 +27,7 @@ public class EdPlusUtilitiesTest {
      * Test getting external ContactIds
      * based on CrossOrg API Service
      */
-    static testmethod void testGetExternalContacts() {
+    static testmethod void testgetExternalContacts() {
         Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
 
@@ -40,7 +40,7 @@ public class EdPlusUtilitiesTest {
 
         Test.startTest();
         List<Id> actualResponse = new List<Id>();
-        actualResponse = EdPlusUtilities.GetExternalContacts(testContact);
+        actualResponse = EdPlusUtilities.getExternalContacts(testContact);
         Test.stopTest();
 
         System.assertEquals(testContact, actualResponse[0]);

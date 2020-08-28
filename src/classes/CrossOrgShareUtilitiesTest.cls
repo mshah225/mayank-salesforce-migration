@@ -22,7 +22,7 @@ private class CrossOrgShareUtilitiesTest {
      * Test Success Crosswalk Response for given GUID
      */
     @isTest
-    private static void testGetCrosswalkRecords() {
+    private static void testgetCrosswalkRecords() {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
        
         // Set up the Contacts
@@ -42,7 +42,7 @@ private class CrossOrgShareUtilitiesTest {
         mockResponse.add(record);
 
         Test.startTest();
-        actualResponse = CrossOrgShareUtilities.GetCrosswalkRecords(testContact.SSB_CRMSYSTEM_Contact_ID__c);
+        actualResponse = CrossOrgShareUtilities.getCrosswalkRecords(testContact.SSB_CRMSYSTEM_Contact_ID__c);
         Test.stopTest();
 
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
@@ -55,7 +55,7 @@ private class CrossOrgShareUtilitiesTest {
      * Test Success Crosswalk Response for given ContactId
      */
     @isTest
-    private static void testGetCrosswalkRecordsById() {
+    private static void testgetCrosswalkRecordsById() {
         Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
 
         // Set up the Contacts
@@ -75,7 +75,7 @@ private class CrossOrgShareUtilitiesTest {
 
         Test.startTest();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
-        actualResponse = CrossOrgShareUtilities.GetCrosswalkRecordById(testContact.Id);
+        actualResponse = CrossOrgShareUtilities.getCrosswalkRecordById(testContact.Id);
         Test.stopTest();
 
         System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
@@ -88,7 +88,7 @@ private class CrossOrgShareUtilitiesTest {
      * Test deserializing crosswalk JSON response against wrapper
      */
     @isTest
-    private static void testDeserializeCrosswalkResponse() {
+    private static void testdeserializeCrosswalkResponse() {
         CrossOrgShareUtilities.CrosswalkGetWrapper wrapper = new CrossOrgShareUtilities.CrosswalkGetWrapper();
         wrapper.contactId = '003d000001C3lAPAAZ';
         wrapper.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34DZ';
@@ -100,7 +100,7 @@ private class CrossOrgShareUtilitiesTest {
      * Test deserializing crosswalk return status JSON response against wrapper
      */
     @isTest
-    private static void testDeserializeCrosswalkReturnResponse() {
+    private static void testdeserializeCrosswalkReturnResponse() {
         CrossOrgShareUtilities.CrosswalkResponseWrapper wrapper = new CrossOrgShareUtilities.CrosswalkResponseWrapper();
         wrapper.status = 200;
         wrapper.message = 'success';
@@ -135,7 +135,7 @@ private class CrossOrgShareUtilitiesTest {
 
         Test.startTest();
         Set<Id> result = new Set<Id>();
-        result.addAll(CrossOrgShareUtilities.CrosswalkToIDList(mockRecords) );
+        result.addAll(CrossOrgShareUtilities.crosswalkToIDList(mockRecords) );
         Id testContact = [SELECT Id FROM Contact WHERE LastName = 'ASU_2' LIMIT 1].Id;
         Test.stopTest();
 

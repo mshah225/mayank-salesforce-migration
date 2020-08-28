@@ -9,13 +9,13 @@ public class CrossOrgShareUtilities {
      * Given an MDM GUID, find crosswalk records
      * for the contact
      */
-    public static List<CrosswalkGetWrapper> GetCrosswalkRecords(String mdmGuid) {
+    public static List<CrosswalkGetWrapper> getCrosswalkRecords(String mdmGuid) {
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=' + mdmGuid);
         List<CrosswalkGetWrapper> crosswalk = new List<CrosswalkGetWrapper>();
 
         if (crosswalkResponse.getStatusCode() == 200) {
-            crosswalk = DeserializeCrosswalkResponse( crosswalkResponse.getBody() );
+            crosswalk = deserializeCrosswalkResponse( crosswalkResponse.getBody() );
         }
 
         return crosswalk;
@@ -25,13 +25,13 @@ public class CrossOrgShareUtilities {
      * Given a ContactId, find crosswalk record
      * for the contact
      */
-    public static List<CrosswalkGetWrapper> GetCrosswalkRecordById(String contactId) {
+    public static List<CrosswalkGetWrapper> getCrosswalkRecordById(String contactId) {
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
         HttpResponse crosswalkResponse = crosswalkService.makeGetCalloutById(contactId);
         List<CrosswalkGetWrapper> crosswalk = new List<CrosswalkGetWrapper>();
 
         if (crosswalkResponse.getStatusCode() == 200) {
-            crosswalk = DeserializeCrosswalkResponse( crosswalkResponse.getBody() );
+            crosswalk = deserializeCrosswalkResponse( crosswalkResponse.getBody() );
         }
 
         return crosswalk;
@@ -40,7 +40,7 @@ public class CrossOrgShareUtilities {
     /**
      * Deserialize JSON crosswalk records
      */
-    public static List<CrosswalkGetWrapper> DeserializeCrosswalkResponse(String jsonResponse) {
+    public static List<CrosswalkGetWrapper> deserializeCrosswalkResponse(String jsonResponse) {
         List<CrosswalkGetWrapper> crosswalkWrapperList = (List<CrosswalkGetWrapper>) JSON.deserialize(jsonResponse, List<CrosswalkGetWrapper> .class);
 
         return crosswalkWrapperList;
@@ -49,7 +49,7 @@ public class CrossOrgShareUtilities {
     /**
      * Deserialize JSON crosswalk status
      */
-    public static CrosswalkResponseWrapper DeserializeCrosswalkReturnResponse(String jsonResponse) {
+    public static CrosswalkResponseWrapper deserializeCrosswalkReturnResponse(String jsonResponse) {
         CrosswalkResponseWrapper crosswalkResponseWrapper = (CrosswalkResponseWrapper) JSON.deserialize(jsonResponse, CrosswalkResponseWrapper.class);
 
         return crosswalkResponseWrapper;
@@ -59,7 +59,7 @@ public class CrossOrgShareUtilities {
      * Convert crosswalk response
      * to a list of ContactIds
      */
-    public static List<Id> CrosswalkToIDList(List<CrosswalkGetWrapper> crosswalk) {
+    public static List<Id> crosswalkToIDList(List<CrosswalkGetWrapper> crosswalk) {
         List<Id> contactIds = new List<Id>();
 
         for (CrosswalkGetWrapper c: crosswalk) {

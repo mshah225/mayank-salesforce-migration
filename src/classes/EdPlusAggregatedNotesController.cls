@@ -20,7 +20,7 @@ public with sharing class EdPlusAggregatedNotesController {
     public EdPlusAggregatedNotesController (ApexPages.StandardController stdController) {
         this.theContact = (Contact) stdController.getRecord();
         this.parentId = theContact.Id;
-        List<Id> Contacts = EdPlusUtilities.GetExternalContacts(this.parentId);
+        List<Id> Contacts = EdPlusUtilities.getExternalContacts(this.parentId);
 
         List<EdPlusTask__x> tasks = Query.records([
                 SELECT
@@ -94,7 +94,7 @@ public with sharing class EdPlusAggregatedNotesController {
      * Track Usage on Controller load
      */
     public void trackUsage() {
-        EdPlusUtilities.TrackUsage(userInfo.getUserId(), this.trackedAction, this.relatedRecordId);
+        EdPlusUtilities.trackUsage(userInfo.getUserId(), this.trackedAction, this.relatedRecordId);
     }
 
     /**

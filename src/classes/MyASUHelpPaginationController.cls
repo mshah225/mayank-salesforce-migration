@@ -23,7 +23,7 @@ public with sharing class MyASUHelpPaginationController {
         checkSearchParams();
         setNumberOfResults();
         setLastPageNumber();
-        setOnFirstOrLastPage();
+        setFirstAndLastPageStatuses();
     }
 
     private void checkSearchParams() {
@@ -57,7 +57,7 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
-    private void setOnFirstOrLastPage() {
+    private void setFirstAndLastPageStatuses() {
         if (currentPage == 1) {
             onFirstPage = true;
             if (lastPage == 1) {
@@ -88,27 +88,17 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     public Decimal getCurrentPageNumber() {
-        setOnFirstOrLastPage();
+        setFirstAndLastPageStatuses();
         return currentPage;
     }
 
-    public boolean getPrevRequired() {
-        return currentPage > 1;
-    }
-
-    public boolean getNextRequired() {
-        return currentPage * pageSize < numberOfResults;
-    }
-
     public void next() {
-        setOnFirstOrLastPage();
         if (currentPage < lastPage) {
             currentPage = currentPage + 1;
         }
     }
 
     public void previous() {
-        setOnFirstOrLastPage();
         if (currentPage > 1) {
             currentPage = currentPage - 1;
         }

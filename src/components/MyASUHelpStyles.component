@@ -240,7 +240,7 @@
         .myasu-help-region-faq-search-results-current-page {
             vertical-align: middle;
             padding: .25em .5em .25em .5em;
-            background-color: #2d2d2d;
+            background-color: #484848;
             color: #FFF;
             display: inline-block;
             margin-left: -.25em;

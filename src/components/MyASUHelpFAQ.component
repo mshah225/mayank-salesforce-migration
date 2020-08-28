@@ -49,11 +49,12 @@
                             </knowledge:articleList>
                             <div class="myasu-help-region-faq-search-results-pagination">
                                 <apex:commandLink action="{!previous}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-backwards"
-                                    style="{!IF(prevRequired == true,'display:inline-block','display:none')}" reRender="myasu-help-region-faq-search-results-block">
+                                    style="{!IF(onFirstPage == false,'display:inline-block!important','display:none!important')}"
+                                    reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-backward" aria-hidden="true" />
                                 </apex:commandLink>
-                                <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div>
-                                <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(nextRequired == true,'display:inline-block','display:none')}"
+                                <div class="myasu-help-region-faq-search-results-current-page" style="{!IF(onFirstPage == false,'margin-left:-.25em','margin-left:3.5em')}">{!currentPageNumber}</div>
+                                <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(onLastPage == false,'display:inline-block!important','display:none!important')}"
                                     reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-forward" aria-hidden="true" />
                                 </apex:commandLink>

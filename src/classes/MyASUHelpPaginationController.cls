@@ -3,7 +3,7 @@ public with sharing class MyASUHelpPaginationController {
     public Integer pageSize;
     public Integer currentPage;
     public Integer lastPage;
-    public Integer maxSize;
+    public Integer numberOfResults;
     public List<KnowledgeArticleVersion> articleList;
 
     public Boolean onFirstPage;
@@ -18,12 +18,12 @@ public with sharing class MyASUHelpPaginationController {
 
     public void setupPagination() {
         pageSize = 10;
-        currentPage = 1;
-        lastPage = 1;
         onFirstPage = true;
-        onLastPage = true;
+        currentPage = 1;
         checkSearchParams();
-        setMaxSize();
+        setNumberOfResults();
+        setLastPageNumber();
+        setOnFirstOrLastPage();
     }
 
     private void checkSearchParams() {
@@ -33,9 +33,9 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
-    private void setMaxSize() {
+    private void setNumberOfResults() {
         if (textToSearch == '' || textToSearch == null) {
-            maxSize = 0;
+            numberOfResults = 0;
         } else {
             String queryString = String.escapeSingleQuotes(textToSearch);
             Search.SearchResults searchResults = Search.find(
@@ -45,19 +45,42 @@ public with sharing class MyASUHelpPaginationController {
                 'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
             );
             List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
-            maxSize = articlelist.size();
+            numberOfResults = articlelist.size();
         }
+    }
 
-        if (maxSize > 0) {
-            //lastPage = (maxSize / pageSize) + 1;
+    private void setLastPageNumber() {
+        if (numberOfResults > 0) {
+            lastPage = (numberOfResults / pageSize) + 1;
+        } else {
+            lastPage = 1;
+        }
+    }
 
-            if (currentPage == lastPage) {
+    private void setOnFirstOrLastPage() {
+        if (currentPage == 1) {
+            onFirstPage = true;
+            if (lastPage == 1) {
+                onLastPage = true;
+            } else if (lastPage > 1) {
+                onLastPage = false;
+            }
+        } else if (currentPage > 1) {
+            onFirstPage = false;
+            if (lastPage == currentPage) {
+                onLastPage = true;
+            } else if (lastPage != currentPage) {
+                onLastPage = false;
             }
         }
     }
 
-    public Integer getMaxSize() {
-        return maxSize;
+    public Boolean getOnFirstPage() {
+        return onFirstPage;
+    }
+
+    public Boolean getOnLastPage() {
+        return onLastPage;
     }
 
     public Integer getPageSize() {
@@ -65,6 +88,7 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     public Decimal getCurrentPageNumber() {
+        setOnFirstOrLastPage();
         return currentPage;
     }
 
@@ -73,16 +97,18 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     public boolean getNextRequired() {
-        return currentPage * pageSize < maxSize;
+        return currentPage * pageSize < numberOfResults;
     }
 
     public void next() {
-        if (maxSize > currentPage * pageSize) {
+        setOnFirstOrLastPage();
+        if (currentPage < lastPage) {
             currentPage = currentPage + 1;
         }
     }
 
     public void previous() {
+        setOnFirstOrLastPage();
         if (currentPage > 1) {
             currentPage = currentPage - 1;
         }

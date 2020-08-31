@@ -23,6 +23,7 @@
         a:focus {
             color: #d23153 !important;
             border-bottom: none;
+            text-decoration: underline;
         }
 
         body .pbBody table.list tr.headerRow th {

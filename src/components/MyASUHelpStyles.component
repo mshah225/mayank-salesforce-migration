@@ -37,6 +37,10 @@
             border-bottom: 2px solid #ccc;
         }
 
+        .myasu-help-region td {
+            vertical-align: middle;
+        }
+
         .myasu-help-region .btn {
             margin-top: 0;
             font-size: .9em !important;
@@ -59,10 +63,11 @@
         .myasu-help-region .myasu-help-region-sub-header {
             font-weight: 500;
             margin-bottom: 1em;
+            font-size: 1.125rem;
         }
 
-        .myasu-help-region .myasu-help-region-sub-header {
-            font-size: 1.125rem;
+        .myasu-help-region .myasu-help-region-faq-content .myasu-help-region-sub-header {
+            padding-left: .8em;
         }
 
         .myasu-help-region .myasu-help-region-header {
@@ -179,6 +184,16 @@
             display: inline-block;
         }
 
+        .myasu-help-region .myasu-help-region-common-questions-finance-article,
+        .myasu-help-region .myasu-help-region-common-questions-technical-article,
+        .myasu-help-region .myasu-help-region-common-questions-housing-article,
+        .myasu-help-region .myasu-help-region-faq-search-results-article,
+        .myasu-help-region .myasu-help-region-view-all-articles-finance,
+        .myasu-help-region .myasu-help-region-view-all-articles-technical,
+        .myasu-help-region .myasu-help-region-view-all-articles-housing {
+            color: #191919;
+        }
+
         .myasu-help-region .myasu-help-region-view-all-articles-finance,
         .myasu-help-region .myasu-help-region-view-all-articles-technical,
         .myasu-help-region .myasu-help-region-view-all-articles-housing {
@@ -209,6 +224,15 @@
 
         .myasu-help-region .myasu-help-region-faq-search-results-article {
             margin-bottom: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-faq-content .apexp {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-faq-content .apexp:first-of-type {
+            margin-top: 0;
         }
 
         .myasu-help-region .myasu-help-region-faq-search {

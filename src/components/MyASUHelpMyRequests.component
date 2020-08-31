@@ -1,4 +1,6 @@
 <apex:component controller="MyASUHelpMyRequestsController" allowDML="true">
+    <link rel="Stylesheet" type="text/css" href="" />
+
     <apex:outputPanel>
         <div class="myasu-help-region-my-requests">
             <div class="myasu-help-region-header">

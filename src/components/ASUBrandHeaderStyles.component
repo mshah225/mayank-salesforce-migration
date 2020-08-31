@@ -68,9 +68,10 @@
             color: #2a2a2a !important;
         }
 
+        /* 
         .fa {
             vertical-align: middle;
-        }
+        } */
 
         .lead {
             margin-top: 0;

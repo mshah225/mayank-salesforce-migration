@@ -149,9 +149,10 @@ public without sharing class MyASUHelpContactUsController {
         String panelThreeId = 'myasu-help-contact-us-phone';
         String panelThreeIcon = 'fa-phone';
         String panelThreeHeader =
-            '<apex:outputText rendered="{!NormalPhone}">Call 1-855-ASU-5080</apex:outputText>' +
-            '<apex:outputText rendered="{!RoverPhone}">>Call 1-844-ASU-6693</apex:outputText>';
+            '<span style="{!IF(NormalPhone), \'display:inline\', \'display:none\'}" class="myasu-help-contact-us-phone-number">Call 1-855-ASU-5080</span>' +
+            '<span style="{!IF(RoverPhone), \'display:inline\', \'display:none\'}" class="myasu-help-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>';
         String panelThreeContent = '';
+        String panelThreeStyles = '';
 
         accordionPanels.put(panelThreeHeader, panelThreeContent);
         accordionPanelsId.put(panelThreeHeader, panelThreeId);

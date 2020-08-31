@@ -6,7 +6,8 @@
             </div>
 
             <div class="myasu-help-region-my-requests-content">
-                <p class="myasu-help-region-requests-text">Click the View All button to see a history of your request(s), including chat and email history.</p>
+                <p class="myasu-help-region-requests-text">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
+                    through a webform.</p>
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Pending Requests</div>
                     <apex:pageBlock mode="maindetail">
@@ -46,6 +47,7 @@
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
+                <p class="myasu-help-region-requests-text">Click the View All button to see a history of your request(s), including chat and email history.</p>
                 <div style="text-align:right">
                     <apex:form>
                         <apex:pageBlock mode="maindetail">

@@ -1,4 +1,4 @@
-<apex:page sidebar="false" showHeader="false">
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
 
     <head>
         <c:GoogleTagManager />

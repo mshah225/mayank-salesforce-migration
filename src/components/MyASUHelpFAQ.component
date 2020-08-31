@@ -1,8 +1,6 @@
 <apex:component controller="MyASUHelpFAQController" extensions="ASUBrandMenuController,MyASUHelpPaginationController">
     <apex:attribute name="EmbedLocation" description="The location the component is embedded" type="String" />
 
-    <link rel="Stylesheet" type="text/css" href="" />
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <div class="myasu-help-region-faq">

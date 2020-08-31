@@ -16,9 +16,6 @@
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
     </script>
 
-    <link rel="Stylesheet" type="text/css" href="" />
-
-
     <apex:outputPanel>
         <div class="myasu-help-region-contact-us">
             <div class="myasu-help-region-header">

@@ -52,7 +52,7 @@
 
                                         <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
                                             onmouseout="this.style.backgroundColor ='white'">
-                                            <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
+                                            <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
                                                 <apex:param name="caseId" value="{!case.Id}" />
                                             </apex:commandLink>
                                         </apex:column>

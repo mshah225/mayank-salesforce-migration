@@ -47,11 +47,6 @@ public without sharing class MyASUHelpContactUsController {
         viewingAs = false;
         createViewAs();
         popUserContact();
-
-        accordionPanels = new Map<String, String>();
-        accordionPanelsId = new Map<String, String>();
-        accordionPanelsIcon = new Map<String, String>();
-        setContactUsAccordionPanels();
     }
 
     public void createViewAs() {
@@ -77,86 +72,6 @@ public without sharing class MyASUHelpContactUsController {
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
         asurite = userContact.ASURite_ID__c;
-    }
-
-    public void setContactUsAccordionPanels() {
-        String panelOneId = 'myasu-help-contact-us-email';
-        String panelOneIcon = 'fa-envelope';
-        String panelOneHeader = 'Email Us';
-        String panelOneContent =
-            '<apex:form>' +
-            '<label for="myasu-help-contact-us-email-subject" class="myasu-help-contact-us-email-subject-label">Subject</label>' +
-            '<apex:inputField id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject" value="{!newCase.Subject}"' +
-            'required="true" label="" />' +
-            '<label for="myasu-help-contact-us-email-message" class="myasu-help-contact-us-email-message-label">Message</label>' +
-            '<apex:inputField id="myasu-help-contact-us-email-message" styleClass="myasu-help-contact-us-email-message" value="{!newCase.Description}"' +
-            'required="true" label="" />' +
-            '<div class="myasu-help-contact-us-email-message-submit-wrapper">' +
-            '<apex:commandLink styleClass="btn btn-primary myasu-help-contact-us-email-message-submit" action="{!submitCase}">' +
-            'Submit' +
-            '</apex:commandLink>' +
-            '</div>' +
-            '</apex:form>';
-
-        accordionPanelsId.put(panelOneHeader, panelOneId);
-        accordionPanelsIcon.put(panelOneHeader, panelOneIcon);
-        accordionPanels.put(panelOneHeader, panelOneContent);
-
-        String panelTwoId = 'myasu-help-contact-us-chat';
-        String panelTwoIcon = 'fa-commenting';
-        String panelTwoHeader = 'Live Chat';
-        String panelTwoContent =
-            '<div class="myasu-help-contact-us-chat-link-finance">' +
-            '<a id="liveagent_button_online_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open(\'https://chatbotweb.m.asu.edu/?full=true\',\'NewButtonWindowName\',\'width=450,height=500,scrollbars=yes\')">{!financeDisplayName}</a>' +
-            '<a id="liveagent_button_offline_finances" class="chat-link" style="display: none; cursor: pointer" onclick="window.open(\'https://chatbotweb.m.asu.edu/?full=true\',\'NewButtonWindowName\',\'width=450,height=500,scrollbars=yes\')">{!financeDisplayName}</a>' +
-            '<script type="text/javascript">' +
-            'if (!window._laq) { window._laq = []; }' +
-            'window._laq.push(function () {' +
-            'liveagent.showWhenOnline(financesChatId, document.getElementById(\'liveagent_button_online_finances\'));' +
-            'liveagent.showWhenOffline(financesChatId, document.getElementById(\'liveagent_button_offline_finances\'));' +
-            '});' +
-            '</script>' +
-            '</div>' +
-            '<div class="myasu-help-contact-us-chat-link-technical">' +
-            '<a id="liveagent_button_online_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>' +
-            '<a id="liveagent_button_offline_technical_support" class="chat-link" style="display: none; cursor: pointer" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>' +
-            '<script type="text/javascript">' +
-            'if (!window._laq) { window._laq = []; }' +
-            'window._laq.push(function () {' +
-            'liveagent.showWhenOnline(techSupportChatId, document.getElementById(\'liveagent_button_online_technical_support\'));' +
-            'liveagent.showWhenOffline(techSupportChatId, document.getElementById(\'liveagent_button_offline_technical_support\'));' +
-            '});' +
-            '</script>' +
-            '</div>' +
-            '<div class="myasu-help-contact-us-chat-link-student-services">' +
-            '<a id="liveagent_button_online_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"' +
-            'onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>' +
-            '<a id="liveagent_button_offline_student_services" class="chat-link" style="display: none; border: 0px none; cursor: pointer"' +
-            'onclick="liveagent.startChat(studentServiceChatId)">{!studentServicesDisplayName}</a>' +
-            '<script type="text/javascript">' +
-            'if (!window._laq) { window._laq = []; }' +
-            'window._laq.push(function () {' +
-            'liveagent.showWhenOnline(studentServiceChatId, document.getElementById(\'liveagent_button_online_student_services\'));' +
-            'liveagent.showWhenOffline(studentServiceChatId, document.getElementById(\'liveagent_button_offline_student_services\'));' +
-            '});' +
-            '</script>' +
-            '</div>';
-
-        accordionPanelsId.put(panelTwoHeader, panelTwoId);
-        accordionPanelsIcon.put(panelTwoHeader, panelTwoIcon);
-        accordionPanels.put(panelTwoHeader, panelTwoContent);
-
-        String panelThreeId = 'myasu-help-contact-us-phone';
-        String panelThreeIcon = 'fa-phone';
-        String panelThreeHeader =
-            '<span style="{!IF(NormalPhone), \'display:inline\', \'display:none\'}" class="myasu-help-contact-us-phone-number">Call 1-855-ASU-5080</span>' +
-            '<span style="{!IF(RoverPhone), \'display:inline\', \'display:none\'}" class="myasu-help-contact-us-phone-number-rover">Call 1-844-ASU-6693</span>';
-        String panelThreeContent = '';
-        String panelThreeStyles = '';
-
-        accordionPanels.put(panelThreeHeader, panelThreeContent);
-        accordionPanelsId.put(panelThreeHeader, panelThreeId);
-        accordionPanelsIcon.put(panelThreeHeader, panelThreeIcon);
     }
 
     public PageReference viewCase() {

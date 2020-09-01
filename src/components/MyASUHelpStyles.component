@@ -30,11 +30,13 @@
             border-top: unset;
             border-right: unset;
             border-left: unset;
+            border-bottom: unset;
         }
 
-        .myasu-help-region .pbBody .list tr th,
-        .myasu-help-region .pbBody .list tr td {
-            border-bottom: 2px solid #ccc;
+        .myasu-help-region .pbBody .list tr {
+            border-color: #ccc;
+            border-width: 1px;
+            border-style: solid;
         }
 
         .myasu-help-region td {

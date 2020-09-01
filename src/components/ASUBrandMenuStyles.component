@@ -1,5 +1,53 @@
 <apex:component>
     <style>
+        /* caret style */
+
+        .caret {
+            position: relative;
+        }
+
+        /* dropdown style */
+
+        .dropdown.open .caret:before,
+        .dropdown.open .caret:after {
+            content: "";
+            position: absolute;
+            display: block;
+            width: 0;
+            height: 0;
+            border-width: 7px 8px;
+            border-style: solid;
+            border-color: transparent;
+            z-index: 1001;
+        }
+
+        .dropdown.open .caret:before {
+            bottom: -17px;
+            right: -8px;
+            border-bottom-color: #ccc;
+        }
+
+        .dropdown.open .caret:after {
+            bottom: -18px;
+            right: -8px;
+            border-bottom-color: #fff;
+        }
+
+        /* navbar style */
+
+        .navbar-nav>li>.dropdown-menu {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .navbar-nav>.open>a .caret:before {
+            bottom: -23px;
+        }
+
+        .navbar-nav>.open>a .caret:after {
+            bottom: -24px;
+        }
+
         #myasu-tabs-wrapper .navbar {
             margin-bottom: 0;
         }
@@ -45,8 +93,9 @@
             margin-right: 0;
         }
 
+        #myasu-tabs .asu-brand-menu-view-as-change,
         #myasu-tabs .navbar-links span:not(:last-child) {
-            margin-right: -.25em;
+            margin-right: -.25em !important;
         }
 
         #myasu-tabs .navbar-links span.selected {
@@ -112,17 +161,40 @@
             margin-right: 0;
         }
 
+        #myasu-tabs span.tab.guest a:hover,
         #myasu-tabs span.tab.guest.selected a:hover {
             color: #903;
         }
 
-        #myasu-tabs span.tab.guest a:hover {
-            color: #903;
-        }
-
-        #myasu-tabs .username {
+        #myasu-tabs .asu-brand-menu-user {
             padding: 0;
             margin-top: -.5em;
+        }
+
+        #myasu-tabs .asu-brand-menu-view-as-dropdown {
+            margin-left: 1em;
+            margin-right: 1em;
+        }
+
+        #myasu-tabs .asu-brand-menu-view-as-dropdown-menu {
+            margin: -.4em 0 0 0;
+            background-color: #f5f5f5;
+            padding-left: 1em;
+        }
+
+        .asu-brand-menu-view-as-dropdown-menu .dropdown-item {
+            display: block;
+            color: #191919 !important;
+        }
+
+        #myasu-tabs .asu-brand-menu-view-as-dropdown-menu a:hover,
+        #myasu-tabs .asu-brand-menu-view-as-dropdown-menu a:focus {
+            color: #903 !important;
+        }
+
+        #myasu-tabs .asu-brand-menu-view-as-button {
+            font-size: .75em !important;
+            margin-bottom: 1em !important;
         }
 
         @media only screen and (max-width: 892px) {

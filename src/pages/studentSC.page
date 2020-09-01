@@ -43,6 +43,31 @@
         </div>
     </div>
 
+    <script>
+        var widthToPush;
+        var viewAsLinkWidth = realWidth($('.asu-brand-menu-view-as-change'));
+        var logoutAsLinkWidth = realWidth($('.asu-brand-menu-view-as-logout'));
+
+        if (viewAsLinkWidth > logoutAsLinkWidth) {
+            widthToPush = viewAsLinkWidth;
+        } else if (viewAsLinkWidth < logoutAsLinkWidth) {
+            widthToPush = logoutAsLinkWidth;
+        } else {
+            widthToPush = logoutAsLinkWidth;
+        }
+
+        $('.asu-brand-menu-view-as-dropdown-menu').width(widthToPush + 2);
+
+        function realWidth(obj) {
+            var clone = obj.clone();
+            clone.css("visibility", "hidden");
+            $('body').append(clone);
+            var width = clone.outerWidth();
+            clone.remove();
+            return width;
+        }
+    </script>
+
     <c:ASUBrandFooter />
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

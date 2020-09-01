@@ -29,12 +29,9 @@ private class MyASUHelpPaginationControllerTest {
         ApexPages.currentPage().getParameters().put('q', 'Test');
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
 
-        vf.getMaxSize();
         vf.getPageSize();
         vf.next();
         vf.previous();
-        vf.getNextRequired();
-        vf.getPrevRequired();
         vf.getCurrentPageNumber();
         vf.viewAllResults();
 

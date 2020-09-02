@@ -147,7 +147,6 @@
 
         function myASUHelpFAQ() {
             checkResultsPane();
-            // Add view as JS call or somewhere else?
         }
 
         function checkResultsPane() {
@@ -178,7 +177,13 @@
         }
 
         function appendNoResultsText() {
-            $('.myasu-help-region-sub-header').append('<p class="myasu-append-no-results-text">No results found. Please try rewording your question.</p>');
+            $('.myasu-help-region-sub-header').text(function () {
+                return $(this).text().replace("Showing top results", "No results found");
+            });
+            $('.myasu-help-region-sub-header').text(function () {
+                return $(this).text().replace("Showing all results", "No results found");
+            });
+            $('.myasu-help-region-sub-header').append('<p class="myasu-append-no-results-text">Try rewording your search.</p><p class="myasu-append-no-results-text-back"><a href="/">Back to Frequently Asked Questions</a></p>');
         }
     </script>
 </apex:component>

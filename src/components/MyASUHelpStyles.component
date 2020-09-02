@@ -287,6 +287,12 @@
             height: 30px;
         }
 
+        .myasu-help-region .myasu-append-no-results-text,
+        .myasu-help-region .myasu-append-no-results-text-back {
+            padding-bottom: 0;
+            font-size: 1rem;
+        }
+
 
         /* My ASU Help - Contact Us */
 
@@ -483,6 +489,7 @@
             padding-bottom: 1em;
             padding-right: 1em;
             padding-top: 0;
+            font-weight: 400;
         }
 
         .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-category-label,

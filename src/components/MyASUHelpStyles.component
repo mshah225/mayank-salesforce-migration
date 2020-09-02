@@ -284,6 +284,7 @@
             margin-right: -.25em;
             min-width: 2.2em;
             text-align: center;
+            height: 30px;
         }
 
 
@@ -528,6 +529,7 @@
         .myasu-help-region .myasu-help-region-faq-search-results-step-backwards,
         .myasu-help-region .myasu-help-region-faq-search-results-step-forwards {
             border-radius: 0 !important;
+            height: 30px;
         }
     </style>
 </apex:component>

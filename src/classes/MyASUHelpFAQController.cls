@@ -4,7 +4,7 @@ public with sharing class MyASUHelpFAQController {
     private Date today;
     private Term__c termcAC;
     private Term__c termcB;
-    private MyAsuViewAs viewAsService;
+    private MyASUHelpViewAsService viewAsService;
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
@@ -16,6 +16,8 @@ public with sharing class MyASUHelpFAQController {
     public String stopViewAsUrl { get; set; }
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
     public String userAsurite;
     public String mMessage;
 
@@ -37,6 +39,8 @@ public with sharing class MyASUHelpFAQController {
         viewingAs = false;
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
+        siteTitleName = 'My ASU';
+        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
 
         popUserContact();
         popTerms();
@@ -88,7 +92,7 @@ public with sharing class MyASUHelpFAQController {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
 
-            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }
@@ -115,13 +119,13 @@ public with sharing class MyASUHelpFAQController {
         allFinancialArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 250
+            LIMIT 200
         ];
         topThreeFinancialArticles = new List<FAQ__kav>();
 
-        if (allFinancialArticles != null) {
+        if (allFinancialArticles != null && !allFinancialArticles.isEmpty()) {
             if (allFinancialArticles[0].Id != null) {
                 topThreeFinancialArticles.add(allFinancialArticles[0]);
             }
@@ -146,13 +150,13 @@ public with sharing class MyASUHelpFAQController {
         allTechnicalArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 250
+            LIMIT 200
         ];
         topThreeTechnicalArticles = new List<FAQ__kav>();
 
-        if (allTechnicalArticles != null) {
+        if (allTechnicalArticles != null && !allTechnicalArticles.isEmpty()) {
             if (allTechnicalArticles[0].Id != null) {
                 topThreeTechnicalArticles.add(allTechnicalArticles[0]);
             }
@@ -177,13 +181,13 @@ public with sharing class MyASUHelpFAQController {
         allHousingArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
             ORDER BY ArticleTotalViewCount DESC
-            LIMIT 250
+            LIMIT 200
         ];
         topThreeHousingArticles = new List<FAQ__kav>();
 
-        if (allHousingArticles != null) {
+        if (allHousingArticles != null && !allHousingArticles.isEmpty()) {
             if (allHousingArticles[0].Id != null) {
                 topThreeHousingArticles.add(allHousingArticles[0]);
             }
@@ -237,24 +241,33 @@ public with sharing class MyASUHelpFAQController {
 
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.CC_Functional_Group__c = [
+
+        List<Case_Classification__c> funcGroupList;
+        funcGroupList = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Student Success Innovations'
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student Success Innovations'
             LIMIT 1
-        ]
-        .Id;
-        suggestAnArticle.CC_Category__c = [
+        ];
+        if (!funcGroupList.isEmpty() && funcGroupList[0].Id != null) {
+            suggestAnArticle.CC_Functional_Group__c = funcGroupList[0].Id;
+        }
+
+        List<Case_Classification__c> catList;
+        catList = [
             SELECT Id
             FROM Case_Classification__c
             WHERE
                 RecordType.Name = 'Category'
-                AND Active__c = TRUE
+                AND Active__c = true
                 AND Name = 'Knowledge'
                 AND Parent__c = :suggestAnArticle.CC_Functional_Group__c
             LIMIT 1
-        ]
-        .Id;
+        ];
+        if (!catList.isEmpty() && catList[0].Id != null) {
+            suggestAnArticle.CC_Category__c = catList[0].Id;
+        }
+
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
         suggestAnArticle.OwnerId = [
@@ -323,7 +336,7 @@ public with sharing class MyASUHelpFAQController {
         List<Service_Center_Maintenance__c> scmList = [
             SELECT Message__c, Start_Time__c, End_Time__c
             FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = TRUE
+            WHERE Displayed__c = true
         ];
 
         if (scmList.size() > 0) {

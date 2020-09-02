@@ -119,7 +119,7 @@ public with sharing class MyASUHelpFAQController {
         allFinancialArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -150,7 +150,7 @@ public with sharing class MyASUHelpFAQController {
         allTechnicalArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -181,7 +181,7 @@ public with sharing class MyASUHelpFAQController {
         allHousingArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -241,24 +241,33 @@ public with sharing class MyASUHelpFAQController {
 
         suggestAnArticle.Subject = 'Suggest An Article';
         suggestAnArticle.ContactId = userContact.Id;
-        suggestAnArticle.CC_Functional_Group__c = [
+
+        List<Case_Classification__c> funcGroupList;
+        funcGroupList = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Student Success Innovations'
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student Success Innovations'
             LIMIT 1
-        ]
-        .Id;
-        suggestAnArticle.CC_Category__c = [
+        ];
+        if (!funcGroupList.isEmpty() && funcGroupList[0].Id != null) {
+            suggestAnArticle.CC_Functional_Group__c = funcGroupList[0].Id;
+        }
+
+        List<Case_Classification__c> catList;
+        catList = [
             SELECT Id
             FROM Case_Classification__c
             WHERE
                 RecordType.Name = 'Category'
-                AND Active__c = TRUE
+                AND Active__c = true
                 AND Name = 'Knowledge'
                 AND Parent__c = :suggestAnArticle.CC_Functional_Group__c
             LIMIT 1
-        ]
-        .Id;
+        ];
+        if (!catList.isEmpty() && catList[0].Id != null) {
+            suggestAnArticle.CC_Category__c = catList[0].Id;
+        }
+
         suggestAnArticle.Origin__c = 'My ASU';
         suggestAnArticle.Visible_by_Contact__c = false;
         suggestAnArticle.OwnerId = [
@@ -327,7 +336,7 @@ public with sharing class MyASUHelpFAQController {
         List<Service_Center_Maintenance__c> scmList = [
             SELECT Message__c, Start_Time__c, End_Time__c
             FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = TRUE
+            WHERE Displayed__c = true
         ];
 
         if (scmList.size() > 0) {

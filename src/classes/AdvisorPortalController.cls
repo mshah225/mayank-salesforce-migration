@@ -43,6 +43,7 @@ public with sharing class AdvisorPortalController {
             WHERE (
                 Success_Pod__r.OwnerId IN :allUserOptions
                 AND Is_Active__c = TRUE
+                AND Student__c NOT IN :successStudentContactIds
             )
             LIMIT 10000
         ]) {

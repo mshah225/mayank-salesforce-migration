@@ -261,6 +261,7 @@ public class AdvisorPortalFilterHelper {
                 SELECT Contact__c
                 FROM Student_Program_Plan__c
                 WHERE Contact__c IN :contactIds
+                LIMIT 2000
             ]) {
                 contactIdByPlanId.put(plan.Id, plan.Contact__c);
             }

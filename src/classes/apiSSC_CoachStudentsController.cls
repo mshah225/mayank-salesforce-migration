@@ -2,7 +2,6 @@
 * File: apiSSC_CoachStudentsController
 * Author: James Galindo
 * Description: Custom api controller for coaches/students
-* Last Modified By: James Galindo - Added Mobile_Phone__c to the SOQL for Pitch app.
 ******************************************/
 @RestResource(urlMapping='/SuccessCoachStudents')
 global with sharing class apiSSC_CoachStudentsController {

@@ -454,7 +454,6 @@ public without sharing class FamilyPortalController {
             insertGuardian();
             insertGuardianInterests();
             insertStudents();
-            sendConfirmationEmail();
         } catch (Exception e) {
             System.debug(e.getMessage());
             System.debug('Something went wrong when submitting a guardian. Check exception.');
@@ -540,43 +539,6 @@ public without sharing class FamilyPortalController {
             reportedStudent.Family_Portal_Guardian__c = familyPortalGuardian.Id;
         }
         insert familyPortalStudentList;
-    }
-
-    private void sendConfirmationEmail() {
-        String returnUrl =
-            URL.getSalesforceBaseUrl().toExternalForm() +
-            '/FamilyPortal/FamilyPortalStep1?hid=' +
-            familyPortalGuardian.Hash_ID__c;
-        String messageText =
-            'Your ASU Families submission for ' +
-            familyPortalGuardian.First_Name__c +
-            ' ' +
-            familyPortalGuardian.Last_Name__c +
-            ' (' +
-            familyPortalGuardian.Email__c +
-            ')' +
-            ' has been created.\n\n' +
-            'You can change your ASU Families contact information, chosen interests or student preferences at any time by revisiting the ';
-
-        Messaging.reserveSingleEmailCapacity(2);
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setToAddresses(new List<String>{ familyPortalGuardian.Email__c });
-        mail.setReplyTo('asufamily@asu.edu');
-        mail.setSenderDisplayName('ASU Families');
-        mail.setSubject(
-            'New ASU Families submission: ' +
-            familyPortalGuardian.First_Name__c +
-            ' ' +
-            familyPortalGuardian.Last_Name__c +
-            ' (' +
-            familyPortalGuardian.Email__c +
-            ')'
-        );
-        mail.setBccSender(false);
-        mail.setUseSignature(false);
-        mail.setPlainTextBody(messageText + 'ASU Families form at ' + returnUrl + '.');
-        mail.setHtmlBody(messageText + '<strong><a href="' + returnUrl + '">ASU Families form</a></strong>.');
-        Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
     }
 
     public class FamilyPortalStudentWrapper {

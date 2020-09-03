@@ -81,10 +81,23 @@ public class showMyCoachCasesController extends ListViewController {
         this.caseList = new List<CaseWrapper>();
         for (Case c : cases) {
             CaseWrapper cw = new CaseWrapper(c);
+            cw.termSession = parseTermSession(c);
             cw.timeZone = timeZones.get(cw.obj.ContactId);
             this.caseList.add(cw);
         }
         resetCaseCounts();
+    }
+
+    private String parseTermSession(Case currentCase) {
+        String termSession = '';
+        if (currentCase.STRM__c != null) {
+            termSession += currentCase.STRM__c;
+        }
+        if (currentCase.Session__c != null) {
+            termSession += currentCase.Session__c;
+        }
+
+        return termSession;
     }
 
     /**
@@ -110,6 +123,7 @@ public class showMyCoachCasesController extends ListViewController {
                 timeZones.put(c.Id, c.Success_Students__r[0].Time_Zone__c);
             }
         }
+
         return timeZones;
     }
 
@@ -121,6 +135,7 @@ public class showMyCoachCasesController extends ListViewController {
         for (Case c : cases) {
             contactIds.add(c.ContactId);
         }
+
         return contactIds;
     }
 
@@ -228,6 +243,7 @@ public class showMyCoachCasesController extends ListViewController {
         public String changeDir { get; set; }
         public String imageName { get; set; }
         public String timeZone { get; set; }
+        public String termSession { get; set; }
 
         public caseWrapper(Case wrappedCase) {
             selected = false;
@@ -267,13 +283,14 @@ public class showMyCoachCasesController extends ListViewController {
             } else {
                 searched = true;
             }
+
             return searched;
         }
         set;
     }
 
     /**
-     *Used to modify the query based on search parameter inputted by user
+     * Used to modify the query based on search parameter inputted by user
      *
      */
     public string searchString {
@@ -328,6 +345,7 @@ public class showMyCoachCasesController extends ListViewController {
             String right = tmpQuery.substring(loc + 3);
             tmpQuery = left + right;
         }
+
         return tmpQuery;
     }
 }

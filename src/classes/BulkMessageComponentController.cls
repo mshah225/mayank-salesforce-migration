@@ -1,13 +1,13 @@
 public class BulkMessageComponentController {
     
     @AuraEnabled
-    public static StudentWrapper studentList(Id userId){
+    public static FYSStudentWrapper studentList(Id userId){
         Boolean firstLoad = false;
         if (userId == null) {
             userId = UserInfo.getUserId();
             firstLoad = true;
         }
-        StudentWrapper wrapper = new StudentWrapper();
+        FYSStudentWrapper wrapper = new FYSStudentWrapper();
         Set<User> coaches = new Set<User>();
         String deviceType = '';
         Set<String> fieldsToSelect = new Set<String>();
@@ -16,6 +16,7 @@ public class BulkMessageComponentController {
             fieldsToSelect.add('sg_contact__r.'+f.getFieldPath().toLowerCase());
             wrapper.addFieldDetailEntry(f.getLabel(),f.getFieldPath(), String.valueOf(f.getType()));
         }
+        wrapper.addFieldDetailEntry();
         
         List<String> peopleSoftCodeList = new List<String>();
         for(Success_Coach_Mapping__c  successMap : [SELECT Id, PeopleSoft_Student_Group_Code__c, Supervisor__c, 

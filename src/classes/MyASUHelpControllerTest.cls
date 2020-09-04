@@ -3,7 +3,6 @@ private class MyASUHelpControllerTest {
     private static MyASUHelpController sc;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
-    private static MyASUHelpMyRequestsController myASUHelpMyRequests;
     private static Case caseOnTestUser;
     private static User testUser;
     private static Contact contactRelatedToTestUser;
@@ -193,11 +192,10 @@ private class MyASUHelpControllerTest {
         System.runAs(testUser) {
             sc = new MyASUHelpController();
             vcc = new ViewCaseController();
-            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            myASUHelpMyRequests.getMyCasesBox();
+            sc.getMyCasesBox();
 
             sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vcc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
@@ -242,11 +240,10 @@ private class MyASUHelpControllerTest {
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
             sc = new MyASUHelpController();
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            myASUHelpMyRequests.oppList = oppListForTestUser;
+            sc.oppList = oppListForTestUser;
 
             vacc.getMyCases();
             vacc.getAllClosedCases();
@@ -259,9 +256,9 @@ private class MyASUHelpControllerTest {
             vacc.getSource();
             vacc.viewCase();
 
-            myASUHelpMyRequests.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
-            myASUHelpMyRequests.viewAsUrl = 'www.hankhillgifs.com';
-            myASUHelpMyRequests.getmyCasesBox();
+            sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
+            sc.viewAsUrl = 'www.hankhillgifs.com';
+            sc.getmyCasesBox();
             System.assertEquals(false, sc.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
             System.assertEquals('There is maintenance forever', sc.getmMessage());
@@ -282,13 +279,12 @@ private class MyASUHelpControllerTest {
         System.runAs(testUser) {
             sc = new MyASUHelpController();
             vcc = new ViewCaseController();
-            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            myASUHelpMyRequests.oppList = oppListForTestUser;
+            sc.oppList = oppListForTestUser;
 
-            System.assertEquals(true, myASUHelpMyRequests.getmyCasesBox());
+            System.assertEquals(true, sc.getmyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
             System.assertEquals(true, vcc.getHelpBox());
         }
@@ -307,11 +303,10 @@ private class MyASUHelpControllerTest {
 
         System.runAs(testUser) {
             sc = new MyASUHelpController();
-            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
-            myASUHelpMyRequests.oppList = oppListForTestUser;
+            sc.oppList = oppListForTestUser;
 
-            System.assertEquals(true, myASUHelpMyRequests.getMyCasesBox());
+            System.assertEquals(true, sc.getMyCasesBox());
             System.assertEquals(true, sc.getHelpBox());
         }
         Test.stopTest();
@@ -329,11 +324,10 @@ private class MyASUHelpControllerTest {
         System.runAs(testUser) {
             sc = new MyASUHelpController();
             System.assertEquals(true, sc.getHelpBox());
-            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
-            myASUHelpMyRequests.oppList = oppListForTestUser;
+            sc.oppList = oppListForTestUser;
 
-            System.assertEquals(true, myASUHelpMyRequests.getMyCasesBox());
+            System.assertEquals(true, sc.getMyCasesBox());
         }
 
         Test.stopTest();
@@ -349,24 +343,21 @@ private class MyASUHelpControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            myASUHelpMyRequests = new MyASUHelpMyRequestsController();
-            myASUHelpMyRequests.newCase.Subject = 'Test Subject for SC';
-            myASUHelpMyRequests.newCase.Description = 'Test Desc';
+            sc = new MyASUHelpController();
+            sc.newCase.Subject = 'Test Subject for SC';
+            sc.newCase.Description = 'Test Desc';
 
-            PageReference submit = myASUHelpMyRequests.submitCase();
+            PageReference submit = sc.submitCase();
             System.assertEquals(submit.getURL().contains('/viewcase?'), true);
 
-            myASUHelpMyRequests.getClosedCases();
-            myASUHelpMyRequests.viewCase();
-            myASUHelpMyRequests.getMyCases();
-            myASUHelpMyRequests.getMyCasesBox();
+            sc.getClosedCases();
+            sc.viewCase();
+            sc.getMyCases();
+            sc.getMyCasesBox();
 
-            myASUHelpMyRequests.viewingAs = true;
-            myASUHelpMyRequests.masqScopeIdCookie = 'testCookie';
-            System.assertEquals(
-                myASUHelpMyRequests.submitCase().getURL().contains('masqScopeIdCookie=testCookie'),
-                true
-            );
+            sc.viewingAs = true;
+            sc.masqScopeIdCookie = 'testCookie';
+            System.assertEquals(sc.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
         }
 
         Test.stopTest();

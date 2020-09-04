@@ -4,10 +4,12 @@ public with sharing class MyASUHelpController {
     private Date today;
     private Term__c termcAC;
     private Term__c termcB;
+    private Map<String, String> viewAsMap;
     private MyASUHelpViewAsService viewAsService;
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
+    public Case newCase { get; set; }
     public Contact userContact;
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -34,8 +36,32 @@ public with sharing class MyASUHelpController {
     public String viewAllTechnicalArticlesUrl;
     public String viewAllHousingArticlesUrl;
 
+    public String financeChatButton { get; set; }
+    public String financeDisplayName { get; set; }
+    public String studentServicesChatButton { get; set; }
+    public String studentServicesDisplayName { get; set; }
+    public String technicalSupportChatButton { get; set; }
+    public String technicalSupportDisplayName { get; set; }
+    public String orgId { get; set; }
+    public String deploymentId { get; set; }
+    public String chatEndpoint { get; set; }
+
     public MyASUHelpController() {
+        Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
+        Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
+        Live_Agent_Button__c technicalSupportChatLAB = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');
+        orgId = financeChatLAB.Org_Id__c;
+        deploymentId = financeChatLAB.Chat_Deployment__c;
+        chatEndpoint = financeChatLAB.Chat_Endpoint__c;
+        financeChatButton = financeChatLAB.Chat_Button_Id__c;
+        financeDisplayName = financeChatLAB.Display_Name__c;
+        studentServicesChatButton = studentServicesChatLAB.Chat_Button_Id__c;
+        studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
+        technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
+        technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
+
         suggestAnArticle = new Case();
+        newCase = new Case();
         viewingAs = false;
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
@@ -352,6 +378,62 @@ public with sharing class MyASUHelpController {
         return mMessage;
     }
 
+    public List<Case> getMyCases() {
+        List<Contact> contacts = new List<Contact>{ userContact };
+        Map<Id, List<Case>> openCaseMap;
+        if (viewAsService != null) {
+            openCaseMap = viewAsService.getOpenCases(contacts, 5);
+        } else {
+            openCaseMap = CaseService.getVisibleOpenCases(contacts, 5);
+        }
+
+        return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
+    }
+
+    public List<Case> getClosedCases() {
+        List<Case> closedCases = new List<Case>();
+        List<Contact> contacts = new List<Contact>{ userContact };
+        Map<Id, List<Case>> closedCaseMap;
+
+        if (viewAsService != null) {
+            closedCaseMap = viewAsService.getClosedCases(contacts, 5);
+        } else {
+            closedCaseMap = CaseService.getVisibleClosedCases(contacts, 5);
+        }
+
+        return (closedCaseMap.get(userContact.Id) == null) ? new List<Case>() : closedCaseMap.get(userContact.Id);
+    }
+
+    public Boolean getMyCasesBox() {
+        if ((oppList == null && userContact != null) || (oppList.size() == 0 && userContact != null)) {
+            return true;
+        } else if (
+            (oppList[0].StageName == 'Enrolled' &&
+            oppList[0].Career__c == 'Undergraduate' &&
+            oppList[0].Admitted_Session__c == 'A/C') && today < date.valueOf(termcAC.Session_A_C_Start_Date__c)
+        ) {
+            return false;
+        } else if (
+            (oppList[0].StageName == 'Enrolled' &&
+            oppList[0].Career__c == 'Undergraduate' &&
+            oppList[0].Admitted_Session__c == 'B') && today < date.valueOf(termcB.Session_B_Start_Date__c)
+        ) {
+            return false;
+        } else if (
+            oppList[0].StageName != 'Enrolled' &&
+            oppList[0].Career__c == 'Undergraduate' &&
+            (userContact.Affiliation_Student__c == 'Current' ||
+            userContact.Affiliation_Alumni__c == 'Current' ||
+            userContact.Affiliation_Courtesy_Affiliate__c == 'Current' ||
+            userContact.Affiliation_Employee__c == 'Current') &&
+            today < date.valueOf(termcB.Session_B_Start_Date__c)
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private PageReference clonePageAndAddMasqScopeCookie() {
         PageReference copyOfCurrentPage = new PageReference(ApexPages.currentPage().getUrl());
         return redirectWithParams(copyOfCurrentPage, 'masqScopeIdCookie', masqScopeIdCookie);
@@ -362,5 +444,50 @@ public with sharing class MyASUHelpController {
         redirect.getParameters().put(param, value);
         redirect.setRedirect(true);
         return redirect;
+    }
+
+    public PageReference viewCase() {
+        caseId = ApexPages.currentPage().getParameters().get('caseId');
+        String current = ApexPages.currentPage().getUrl();
+        current = current.split('apex/')[1];
+        PageReference viewCasePage = new PageReference('/viewcase');
+        viewCasePage.getParameters().put('id', caseId);
+        viewCasePage.getParameters().put('source', current);
+
+        if (viewingAs) {
+            viewCasePage.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+        }
+
+        return viewCasePage;
+    }
+
+    public PageReference submitCase() {
+        Boolean isCaseCreated = true;
+        PageReference confirmPage;
+        if (viewingAs) {
+            PageReference go = new PageReference(ApexPages.currentPage().getUrl());
+            go.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
+            go.setRedirect(true);
+            return go;
+        }
+
+        newCase.ContactId = userContact.Id;
+        newCase.Web_Submission__c = 'My ASU Standard';
+        try {
+            insert newCase;
+            ApexPages.currentPage().getParameters().put('caseId', newCase.Id);
+            confirmPage = viewCase();
+            confirmPage.setRedirect(true);
+            return confirmPage;
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add('');
+            // These throw reference errors I believe
+            // vars.add(ErrorLogger.convertStringToJSON('ContactId', newCase.ContactId));
+            // vars.add(ErrorLogger.convertStringToJSON('Subject', newCase.Subject));
+            // vars.add(ErrorLogger.convertStringToJSON('Description', newCase.Description));
+            ErrorLogger.log(e, vars, false);
+            return null;
+        }
     }
 }

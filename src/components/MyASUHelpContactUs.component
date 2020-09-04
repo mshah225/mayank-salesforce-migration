@@ -1,4 +1,4 @@
-<apex:component allowDML="true" controller="MyASUHelpContactUsController">
+<apex:component allowDML="true" controller="MyASUHelpController">
     <apex:attribute name="Helpbox" description="Boolean to display the help box" type="Boolean" />
     <apex:attribute name="NormalPhone" description="Boolean to display the normal phone number" type="Boolean" />
     <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />

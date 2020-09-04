@@ -66,16 +66,7 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
-        for (AggregateResult result : [
-            SELECT Subject
-            FROM Case
-            WHERE IsClosed = FALSE
-            AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
-            AND Subject != NULL
-            AND ContactId IN :AdvisorPortalController.getSuccessStudentContactIdsForViewOptions(viewAsOptions)
-            GROUP BY Subject
-            LIMIT 50000
-        ]) {
+        for (AggregateResult result : queryForCasesWithPicklistData(viewAsOptions, 'Subject')) {
             if (result.get('Subject') != null) {
                 caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
             }
@@ -94,16 +85,7 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
-        for (AggregateResult result : [
-            SELECT CC_Category__r.Name CategoryName
-            FROM Case
-            WHERE IsClosed = FALSE
-            AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
-            AND CC_Category__c != NULL
-            AND ContactId IN :AdvisorPortalController.getSuccessStudentContactIdsForViewOptions(viewAsOptions)
-            GROUP BY CC_Category__r.Name
-            LIMIT 50000
-        ]) {
+        for (AggregateResult result : queryForCasesWithPicklistData(viewAsOptions, 'CC_Category__c')) {
             if (result.get('CategoryName') != null) {
                 caseClassificationValuesByLabel.put((String) result.get('CategoryName'), (String) result.get('CategoryName'));
             }
@@ -195,6 +177,7 @@ public class AdvisorPortalFilterSectionController {
         Set<Contact> filteredCaseContacts = new Set<Contact>();
         Set<Id> filteredContactIds = new Set<Id>();
         List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
+        List<AdvisorPortalContact> shortenedAdvisorPortalContactResults = new List<AdvisorPortalContact>();
         Map<Id, List<Case>> casesByContactIds = new Map<Id, List<Case>>();
         
         // Query for cases owned by viewAsOptions and following cases-related filters
@@ -274,27 +257,51 @@ public class AdvisorPortalFilterSectionController {
                 }
 
                 contactWrapper.addCases(caseWrappers);
-                addAlphabetically(advisorPortalContactResults, contactWrapper);
+                addAlphabetically(advisorPortalContactResults, contactWrapper);  // hits CPU time limit at 15000 records, might want something faster
             } else if (filter.allCasesState) {
                 addAlphabetically(advisorPortalContactResults, contactWrapper);
             }
         }
 
-        return advisorPortalContactResults;
+        
+        for(Integer i=0; i<advisorPortalContactResults.size() && i<3000; i++) {
+            shortenedAdvisorPortalContactResults.add(advisorPortalContactResults.get(i));
+        }
+
+        return shortenedAdvisorPortalContactResults;
     }
 
     // Add to list and keep sorted (insertion sort but we are adding one at a time anyways)
     private static void addAlphabetically(List<AdvisorPortalContact> sortedList, AdvisorPortalContact toInsert) {
-        for (Integer i=0; i<sortedList.size(); i++) {
-            AdvisorPortalContact compareWith = sortedList.get(i);
-            if (toInsert.portalContact.Name.compareTo(compareWith.portalContact.Name) <= 0) {
-                sortedList.add(i, toInsert);
-                return; // after insert return immediately
+        addToSortedList(sortedList, toInsert, 0, sortedList.size());
+    }
+
+    private static void addToSortedList(List<AdvisorPortalContact> sortedList, AdvisorPortalContact toInsert, Integer lowerBound, Integer upperBound){        
+        if (lowerBound == upperBound) {
+            sortedList.add(toInsert);
+        } else if (upperBound - lowerBound <= 1) {
+            AdvisorPortalContact midContact = sortedList.get(lowerBound);
+            if (toInsert.portalContact.Name.compareTo(midContact.portalContact.Name) <= 0) {
+                sortedList.add(lowerBound, toInsert);
+            } else {
+                if (upperBound == sortedList.size()) {
+                    sortedList.add(toInsert);
+                } else {
+                    sortedList.add(upperBound, toInsert);
+                } 
+            }
+        } else {
+            Integer midIndex = (upperBound + lowerBound) / 2;
+            AdvisorPortalContact midContact = sortedList.get(midIndex);
+            if (toInsert.portalContact.Name.compareTo(midContact.portalContact.Name) <= 0) {
+                addToSortedList(sortedList, toInsert, lowerBound, midIndex);
+            } else {
+                addToSortedList(sortedList, toInsert, midIndex, upperBound);
             }
         }
-        sortedList.add(toInsert); // needed to be added at end
-        return;
     }
+
+
 
     // Limits.getQueryRows() += 30000
     private static List<Case> queryForCasesWithContactData(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
@@ -399,5 +406,33 @@ public class AdvisorPortalFilterSectionController {
         queryString += ' LIMIT 30000';
 
         return Database.query(queryString);
+    }
+
+    private static List<AggregateResult> queryForCasesWithPicklistData(List<Id> viewAsOptions, String whichPickList) {
+        if (whichPickList.equals('Subject')) {
+            return [
+                SELECT Subject
+                FROM Case
+                WHERE IsClosed = FALSE
+                AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                AND Subject != NULL
+                AND OwnerId IN :viewAsOptions
+                GROUP BY Subject
+                LIMIT 50000
+            ];
+        } else if (whichPickList.equals('CC_Category__c')) {
+            return [
+                SELECT CC_Category__r.Name CategoryName
+                FROM Case
+                WHERE IsClosed = FALSE
+                AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                AND CC_Category__c != NULL
+                AND OwnerId IN :viewAsOptions
+                GROUP BY CC_Category__r.Name
+                LIMIT 50000
+            ];
+        } else {
+            return null;
+        }
     }
 }

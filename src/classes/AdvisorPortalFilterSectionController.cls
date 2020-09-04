@@ -257,51 +257,19 @@ public class AdvisorPortalFilterSectionController {
                 }
 
                 contactWrapper.addCases(caseWrappers);
-                addAlphabetically(advisorPortalContactResults, contactWrapper);  // hits CPU time limit at 15000 records, might want something faster
+                advisorPortalContactResults.add(contactWrapper);
             } else if (filter.allCasesState) {
-                addAlphabetically(advisorPortalContactResults, contactWrapper);
+                advisorPortalContactResults.add(contactWrapper);
             }
         }
-
         
+        // Limit to the first 3000 results to prevent massive page slowdown
         for(Integer i=0; i<advisorPortalContactResults.size() && i<3000; i++) {
             shortenedAdvisorPortalContactResults.add(advisorPortalContactResults.get(i));
         }
 
         return shortenedAdvisorPortalContactResults;
     }
-
-    // Add to list and keep sorted (insertion sort but we are adding one at a time anyways)
-    private static void addAlphabetically(List<AdvisorPortalContact> sortedList, AdvisorPortalContact toInsert) {
-        addToSortedList(sortedList, toInsert, 0, sortedList.size());
-    }
-
-    private static void addToSortedList(List<AdvisorPortalContact> sortedList, AdvisorPortalContact toInsert, Integer lowerBound, Integer upperBound){        
-        if (lowerBound == upperBound) {
-            sortedList.add(toInsert);
-        } else if (upperBound - lowerBound <= 1) {
-            AdvisorPortalContact midContact = sortedList.get(lowerBound);
-            if (toInsert.portalContact.Name.compareTo(midContact.portalContact.Name) <= 0) {
-                sortedList.add(lowerBound, toInsert);
-            } else {
-                if (upperBound == sortedList.size()) {
-                    sortedList.add(toInsert);
-                } else {
-                    sortedList.add(upperBound, toInsert);
-                } 
-            }
-        } else {
-            Integer midIndex = (upperBound + lowerBound) / 2;
-            AdvisorPortalContact midContact = sortedList.get(midIndex);
-            if (toInsert.portalContact.Name.compareTo(midContact.portalContact.Name) <= 0) {
-                addToSortedList(sortedList, toInsert, lowerBound, midIndex);
-            } else {
-                addToSortedList(sortedList, toInsert, midIndex, upperBound);
-            }
-        }
-    }
-
-
 
     // Limits.getQueryRows() += 30000
     private static List<Case> queryForCasesWithContactData(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
@@ -403,6 +371,7 @@ public class AdvisorPortalFilterSectionController {
             queryString += ' AND Change_Date__c <= ' + filter.persistenceToDate;
         }
 
+        queryString += ' ORDER BY Contact.Name ASC';
         queryString += ' LIMIT 30000';
 
         return Database.query(queryString);

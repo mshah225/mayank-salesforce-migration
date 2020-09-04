@@ -1,6 +1,6 @@
 @isTest
-private class MyASUHelpFAQControllerTest {
-    private static MyASUHelpFAQController sc;
+private class MyASUHelpControllerTest {
+    private static MyASUHelpController sc;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
     private static MyASUHelpMyRequestsController myASUHelpMyRequests;
@@ -191,7 +191,7 @@ private class MyASUHelpFAQControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             vcc = new ViewCaseController();
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
@@ -243,7 +243,7 @@ private class MyASUHelpFAQControllerTest {
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             sc.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
             myASUHelpMyRequests.oppList = oppListForTestUser;
@@ -280,7 +280,7 @@ private class MyASUHelpFAQControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             vcc = new ViewCaseController();
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
@@ -306,7 +306,7 @@ private class MyASUHelpFAQControllerTest {
         Test.setCurrentPage(myASUHelp);
 
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
             myASUHelpMyRequests.oppList = oppListForTestUser;
@@ -327,7 +327,7 @@ private class MyASUHelpFAQControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             System.assertEquals(true, sc.getHelpBox());
             myASUHelpMyRequests = new MyASUHelpMyRequestsController();
 
@@ -381,7 +381,7 @@ private class MyASUHelpFAQControllerTest {
         String urlReturnedFromSubmit;
 
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             sc.suggestAnArticle.Description = 'Description';
             submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
@@ -409,7 +409,7 @@ private class MyASUHelpFAQControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             sc.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
 

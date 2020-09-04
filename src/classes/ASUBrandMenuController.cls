@@ -8,7 +8,7 @@ public class ASUBrandMenuController {
     }
     public ASUBrandMenuController(AKBController controller) {
     }
-    public ASUBrandMenuController(MyASUHelpFAQController controller) {
+    public ASUBrandMenuController(MyASUHelpController controller) {
     }
     public ASUBrandMenuController(UnsubscribeController controller) {
     }

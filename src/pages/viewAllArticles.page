@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpFAQController"
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
     action="{!init}" cache="true" extensions="MyASUHelpPaginationController,ASUBrandMenuController">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />

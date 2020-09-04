@@ -12,7 +12,7 @@ public with sharing class MyASUHelpPaginationController {
     public MyASUHelpPaginationController() {
         setupPagination();
     }
-    public MyASUHelpPaginationController(MyASUHelpFAQController controller) {
+    public MyASUHelpPaginationController(MyASUHelpController controller) {
         setupPagination();
     }
 

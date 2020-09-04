@@ -1,4 +1,4 @@
-<apex:page sidebar="false" showHeader="false" controller="MyASUHelpFAQController" cache="true" extensions="FeedbackController">
+<apex:page sidebar="false" showHeader="false" controller="MyASUHelpController" cache="true" extensions="FeedbackController">
     <html>
 
     <head>

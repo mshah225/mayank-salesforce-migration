@@ -3,7 +3,7 @@ private class ASUBrandMenuControllerTest {
     private static Contact testContact;
     private static ASUBrandMenuController nav;
     private static Profile asuCommunityProfile;
-    private static MyASUHelpFAQController sc;
+    private static MyASUHelpController sc;
     private static User testUser;
 
     private static void setUp() {
@@ -57,7 +57,7 @@ private class ASUBrandMenuControllerTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             nav = new ASUBrandMenuController(sc);
             nav.init();
         }
@@ -70,7 +70,7 @@ private class ASUBrandMenuControllerTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             nav = new ASUBrandMenuController(sc);
             ApexPages.currentPage()
                 .getParameters()
@@ -106,7 +106,7 @@ private class ASUBrandMenuControllerTest {
         setUp();
         Test.startTest();
         System.runAs(testUser) {
-            sc = new MyASUHelpFAQController();
+            sc = new MyASUHelpController();
             nav = new ASUBrandMenuController(sc);
             ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();

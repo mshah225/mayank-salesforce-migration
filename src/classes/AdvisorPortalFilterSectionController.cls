@@ -66,7 +66,16 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
-        for (AggregateResult result : queryForCasesWithPicklistData(viewAsOptions, 'Subject')) {
+        for (AggregateResult result : [
+            SELECT Subject
+            FROM Case
+            WHERE IsClosed = FALSE
+            AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+            AND Subject != NULL
+            AND OwnerId IN :viewAsOptions
+            GROUP BY Subject
+            LIMIT 30000 
+        ]) {
             if (result.get('Subject') != null) {
                 caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
             }
@@ -85,7 +94,16 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
-        for (AggregateResult result : queryForCasesWithPicklistData(viewAsOptions, 'CC_Category__c')) {
+        for (AggregateResult result : [
+            SELECT CC_Category__r.Name CategoryName
+            FROM Case
+            WHERE IsClosed = FALSE
+            AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+            AND CC_Category__c != NULL
+            AND OwnerId IN :viewAsOptions
+            GROUP BY CC_Category__r.Name
+            LIMIT 30000
+        ]) {
             if (result.get('CategoryName') != null) {
                 caseClassificationValuesByLabel.put((String) result.get('CategoryName'), (String) result.get('CategoryName'));
             }
@@ -375,33 +393,5 @@ public class AdvisorPortalFilterSectionController {
         queryString += ' LIMIT 30000';
 
         return Database.query(queryString);
-    }
-
-    private static List<AggregateResult> queryForCasesWithPicklistData(List<Id> viewAsOptions, String whichPickList) {
-        if (whichPickList.equals('Subject')) {
-            return [
-                SELECT Subject
-                FROM Case
-                WHERE IsClosed = FALSE
-                AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
-                AND Subject != NULL
-                AND OwnerId IN :viewAsOptions
-                GROUP BY Subject
-                LIMIT 50000
-            ];
-        } else if (whichPickList.equals('CC_Category__c')) {
-            return [
-                SELECT CC_Category__r.Name CategoryName
-                FROM Case
-                WHERE IsClosed = FALSE
-                AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
-                AND CC_Category__c != NULL
-                AND OwnerId IN :viewAsOptions
-                GROUP BY CC_Category__r.Name
-                LIMIT 50000
-            ];
-        } else {
-            return null;
-        }
     }
 }

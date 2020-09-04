@@ -78,7 +78,7 @@ public class Test_AKBController {
         Test.startTest();
 
         System.runAs(testUser) {
-            MyASUHelpFAQController sc = new MyASUHelpFAQController();
+            MyASUHelpController sc = new MyASUHelpController();
             AKBController akb = new AKBController(sc);
             akb.getTitleKeyword();
             System.AssertEquals(akb.article.KnowledgeArticleId, articleTest[0].KnowledgeArticleId);
@@ -105,7 +105,7 @@ public class Test_AKBController {
         Test.startTest();
 
         System.runAs(testuser) {
-            MyASUHelpFAQController sc = new MyASUHelpFAQController();
+            MyASUHelpController sc = new MyASUHelpController();
             AKBController akb = new AKBController(sc);
             PageReference expected = new PageReference(
                 '/authkb?Feedback=yes&id=' + ApexPages.currentPage().getParameters().get('id')
@@ -151,7 +151,7 @@ public class Test_AKBController {
         Test.startTest();
 
         System.runAs(testuser) {
-            MyASUHelpFAQController sc = new MyASUHelpFAQController();
+            MyASUHelpController sc = new MyASUHelpController();
             AKBController akb = new AKBController(sc);
             akb.feedbackHelpful.comments__c = 'test';
             PageReference expected = new PageReference(
@@ -199,7 +199,7 @@ public class Test_AKBController {
         Test.startTest();
 
         System.runAs(testUser) {
-            MyASUHelpFAQController sc = new MyASUHelpFAQController();
+            MyASUHelpController sc = new MyASUHelpController();
             AKBController akb = new AKBController(sc);
             akb.getfeedbackVisible();
             akb.userContact = testContact;
@@ -227,7 +227,7 @@ public class Test_AKBController {
         Test.startTest();
 
         System.runAs(testUser) {
-            MyASUHelpFAQController sc = new MyASUHelpFAQController();
+            MyASUHelpController sc = new MyASUHelpController();
             AKBController akb = new AKBController(sc);
             akb.feedbackHelpful.Article_Id__c = articleTest[0].Id;
             akb.feedbackHelpful.Contact__c = testContact.Id;
@@ -259,7 +259,7 @@ public class Test_AKBController {
         Test.startTest();
 
         System.runAs(testUser) {
-            MyASUHelpFAQController sc = new MyASUHelpFAQController();
+            MyASUHelpController sc = new MyASUHelpController();
             AKBController akb = new AKBController(sc);
             akb.urlsJSON = '["akbController-Test-Article-4"]';
             String fixedIdLink = '["/authkb?id=' + articleTest[0].KnowledgeArticleId + '"]';

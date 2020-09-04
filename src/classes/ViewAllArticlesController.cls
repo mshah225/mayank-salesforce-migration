@@ -7,7 +7,7 @@ public class ViewAllArticlesController {
     public ViewAllArticlesController() {
         setUp();
     }
-    public ViewAllArticlesController(MyASUHelpFAQController controller) {
+    public ViewAllArticlesController(MyASUHelpController controller) {
         setUp();
     }
 

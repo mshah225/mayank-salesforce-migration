@@ -42,15 +42,43 @@ public with sharing class MyASUHelpFAQController {
         siteTitleName = 'My ASU';
         siteTitleUrl = 'https://webapp4.asu.edu/myasu';
 
-        popUserContact();
-        popTerms();
         checkForViewAs();
         checkForFunctionalGroup();
+        popUserContact();
+        popTerms();
 
         setAllFinancialArticles();
         setAllTechnicalArticles();
         setAllHousingArticles();
         setViewAllArticlesLinks();
+    }
+
+    public void checkForViewAs() {
+        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
+            masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
+            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+
+            viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
+        } else {
+            viewingAs = false;
+        }
+    }
+
+    public void checkForFunctionalGroup() {
+        if (ApexPages.currentPage().getParameters().get('category') != null) {
+            String functionalGroupKey = ApexPages.currentPage().getParameters().get('category');
+            if (functionalGroupKey.equals('finance')) {
+                functionalGroup = 'Financial Aid';
+            } else if (functionalGroupKey.equals('technical')) {
+                functionalGroup = '%Technical Resources%';
+            } else if (functionalGroupKey.equals('housing')) {
+                functionalGroup = 'Housing';
+            }
+
+            if (functionalGroup != null) {
+                isSearchingWithFunctionalGroup = true;
+            }
+        }
     }
 
     public void popUserContact() {
@@ -87,39 +115,11 @@ public with sharing class MyASUHelpFAQController {
         ];
     }
 
-    public void checkForViewAs() {
-        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
-            masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
-            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
-
-            viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
-        } else {
-            viewingAs = false;
-        }
-    }
-
-    public void checkForFunctionalGroup() {
-        if (ApexPages.currentPage().getParameters().get('category') != null) {
-            String functionalGroupKey = ApexPages.currentPage().getParameters().get('category');
-            if (functionalGroupKey.equals('finance')) {
-                functionalGroup = 'Financial Aid';
-            } else if (functionalGroupKey.equals('technical')) {
-                functionalGroup = '%Technical Resources%';
-            } else if (functionalGroupKey.equals('housing')) {
-                functionalGroup = 'Housing';
-            }
-
-            if (functionalGroup != null) {
-                isSearchingWithFunctionalGroup = true;
-            }
-        }
-    }
-
     private void setAllFinancialArticles() {
         allFinancialArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -150,7 +150,7 @@ public with sharing class MyASUHelpFAQController {
         allTechnicalArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -181,7 +181,7 @@ public with sharing class MyASUHelpFAQController {
         allHousingArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -246,7 +246,7 @@ public with sharing class MyASUHelpFAQController {
         funcGroupList = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student Success Innovations'
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Student Success Innovations'
             LIMIT 1
         ];
         if (!funcGroupList.isEmpty() && funcGroupList[0].Id != null) {
@@ -259,7 +259,7 @@ public with sharing class MyASUHelpFAQController {
             FROM Case_Classification__c
             WHERE
                 RecordType.Name = 'Category'
-                AND Active__c = true
+                AND Active__c = TRUE
                 AND Name = 'Knowledge'
                 AND Parent__c = :suggestAnArticle.CC_Functional_Group__c
             LIMIT 1
@@ -336,7 +336,7 @@ public with sharing class MyASUHelpFAQController {
         List<Service_Center_Maintenance__c> scmList = [
             SELECT Message__c, Start_Time__c, End_Time__c
             FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = true
+            WHERE Displayed__c = TRUE
         ];
 
         if (scmList.size() > 0) {

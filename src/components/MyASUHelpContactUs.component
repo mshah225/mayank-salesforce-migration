@@ -72,7 +72,7 @@
                             <div id="myasu-help-contact-us-chat-link" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <div class="myasu-help-contact-us-chat-link-finance">
-                                        <a id="liveagent-button-finances" href="#" onclick="window.open('https://chatbotweb.m.asu.edu/?full=true','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
+                                        <a id="liveagent-button-finances" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes')">{!financeDisplayName}</a>
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {

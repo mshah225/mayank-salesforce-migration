@@ -15,6 +15,8 @@ public class BulkApiManager {
             this.objectType = 'lead';
         } else if (objectType =='CAR') {
             this.objectType = 'case_assignment_rule__c';
+        } else if (objectType == 'EDPLUS_CASE') {
+            this.objectType = 'case';
         } else {
         	this.objectType = objectType.toLowerCase().capitalize();
         }

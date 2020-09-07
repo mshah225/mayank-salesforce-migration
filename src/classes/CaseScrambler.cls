@@ -1,7 +1,7 @@
 public class CaseScrambler implements ObjectScramble {
     Case caseToScramble;
 
-    public CaseScrambler(Contact caseToScramble) {
+    public CaseScrambler(Case caseToScramble) {
         this.caseToScramble = caseToScramble;
     }
 

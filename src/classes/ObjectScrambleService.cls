@@ -1,6 +1,6 @@
 public class ObjectScrambleService {
     private ObjectTypes objectType;
-    public enum ObjectTypes {CONTACT, CASE, LEAD, CONVERTED_LEAD, USER, CAR}
+    public enum ObjectTypes {CONTACT, EDPLUS_CASE, LEAD, CONVERTED_LEAD, USER, CAR}
 
     public ObjectScrambleService(ObjectTypes objectType) {
         this.objectType = objectType;
@@ -14,7 +14,7 @@ public class ObjectScrambleService {
                     'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
                     'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact';
             }
-            when CASE {
+            when EDPLUS_CASE {
                 queryToReturn = 'SELECT Id FROM Case WHERE LastModifiedDate >= 2020-03-01T00:00:00Z AND (CC_Functional_Group__c = \'a240W000001jHG6\' OR CC_Functional_Group__c = \'a240W000001jHH0\' OR CC_Functional_Group__c = \'a240W000001jHG9\'  OR CC_Functional_Group__c = \'a240W000001jHG8\' OR CC_Functional_Group__c = \'a240W000001jHGB\' OR  CC_Functional_Group__c = \'a240W000001jHHr\')';
             }
             when LEAD {
@@ -41,7 +41,7 @@ public class ObjectScrambleService {
             when CONTACT {
                 objectScrambler = new ContactScrambler( (Contact) objectToScramble );
             }
-            when CASE {
+            when EDPLUS_CASE {
                 objectScrambler = new CaseScrambler( (Case) objectToScramble );
             }
             when LEAD {
@@ -70,7 +70,7 @@ public class ObjectScrambleService {
                     +
                     'Lead_Secondary_Email__c,me3hs_User_ID__c,Parent_Email__c,Personal_Email__c,silverpop__Silverpop_RecipientID__c\n';
             }
-            when CASE {
+            when EDPLUS_CASE {
                 header = 
                     'Id,Ed_Plus_Org_Viewable__c\n';
             }

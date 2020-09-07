@@ -106,8 +106,7 @@ public class ContactFactory extends TestFactory {
                 me3hs_User_ID__c = 'test@test.com',
                 Parent_Email__c = 'test@test.com',
                 Personal_Email__c = 'test@test.com',
-                Birthdate = System.today(),
-                AccountId = accountId
+                Birthdate = System.today()
             ));
             this.addToFieldsToIncrement('LastName');
         }

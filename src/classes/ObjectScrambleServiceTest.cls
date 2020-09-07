@@ -57,7 +57,7 @@ private class ObjectScrambleServiceTest {
         ObjectScrambleService scrambleService = new ObjectScrambleService(ObjectScrambleService.ObjectTypes.USER);
         Id sysAdminId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1].Id;
         String expectedQuery =
-            'SELECT Id FROM User WHERE IsActive = true AND (NOT Username LIKE \'%@00dn000000091oqeay.com\') AND ProfileId <> \''
+            'SELECT Id FROM User WHERE IsActive = true AND Sandbox_DEV__c = false AND (NOT Username LIKE \'%@00dn000000091oqeay.com\') AND ProfileId <> \''
             + sysAdminId + '\'';
         System.assertEquals(expectedQuery, scrambleService.getQueryFromObject() );
     }

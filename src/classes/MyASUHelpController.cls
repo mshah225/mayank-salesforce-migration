@@ -1,15 +1,17 @@
 public with sharing class MyASUHelpController {
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
     private static final Date EMAILVISIBILITYDATE = Date.newInstance(2015, 4, 6);
     private Id caseId;
     private Date today;
     private Term__c termcAC;
     private Term__c termcB;
-    private Map<String, String> viewAsMap;
     private MyASUHelpViewAsService viewAsService;
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
     public Case newCase { get; set; }
+
     public Contact userContact;
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -18,8 +20,6 @@ public with sharing class MyASUHelpController {
     public String stopViewAsUrl { get; set; }
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
-    public String siteTitleName { get; set; }
-    public String siteTitleUrl { get; set; }
     public String userAsurite;
     public String mMessage;
 
@@ -36,53 +36,66 @@ public with sharing class MyASUHelpController {
     public String viewAllTechnicalArticlesUrl;
     public String viewAllHousingArticlesUrl;
 
+    public String orgId { get; set; }
+    public String deploymentId { get; set; }
+    public String chatEndpoint { get; set; }
     public String financeChatButton { get; set; }
     public String financeDisplayName { get; set; }
     public String studentServicesChatButton { get; set; }
     public String studentServicesDisplayName { get; set; }
     public String technicalSupportChatButton { get; set; }
     public String technicalSupportDisplayName { get; set; }
-    public String orgId { get; set; }
-    public String deploymentId { get; set; }
-    public String chatEndpoint { get; set; }
 
     public MyASUHelpController() {
-        Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
-        Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
-        Live_Agent_Button__c technicalSupportChatLAB = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');
-        orgId = financeChatLAB.Org_Id__c;
-        deploymentId = financeChatLAB.Chat_Deployment__c;
-        chatEndpoint = financeChatLAB.Chat_Endpoint__c;
-        financeChatButton = financeChatLAB.Chat_Button_Id__c;
-        financeDisplayName = financeChatLAB.Display_Name__c;
-        studentServicesChatButton = studentServicesChatLAB.Chat_Button_Id__c;
-        studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
-        technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
-        technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
-
-        suggestAnArticle = new Case();
-        newCase = new Case();
-        viewingAs = false;
-        functionalGroup = null;
-        isSearchingWithFunctionalGroup = false;
-        siteTitleName = 'My ASU';
-        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
+        setSiteTitleInformation();
+        instantiateControllerVariables();
+        setLiveAgentSettings();
 
         checkForViewAs();
-        checkForFunctionalGroup();
         popUserContact();
         popTerms();
 
+        checkForFunctionalGroup();
         setAllFinancialArticles();
         setAllTechnicalArticles();
         setAllHousingArticles();
         setViewAllArticlesLinks();
     }
 
+    private void setSiteTitleInformation() {
+        siteTitleName = 'My ASU';
+        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
+    }
+
+    private void instantiateControllerVariables() {
+        suggestAnArticle = new Case();
+        newCase = new Case();
+        viewingAs = false;
+        functionalGroup = null;
+        isSearchingWithFunctionalGroup = false;
+    }
+
+    private void setLiveAgentSettings() {
+        Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
+        orgId = financeChatLAB.Org_Id__c;
+        deploymentId = financeChatLAB.Chat_Deployment__c;
+        chatEndpoint = financeChatLAB.Chat_Endpoint__c;
+        financeChatButton = financeChatLAB.Chat_Button_Id__c;
+        financeDisplayName = financeChatLAB.Display_Name__c;
+
+        Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
+        studentServicesChatButton = studentServicesChatLAB.Chat_Button_Id__c;
+        studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
+
+        Live_Agent_Button__c technicalSupportChatLAB = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');
+        technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
+        technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
+    }
+
     public void checkForViewAs() {
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
-            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
+            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__c;
 
             viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
         } else {

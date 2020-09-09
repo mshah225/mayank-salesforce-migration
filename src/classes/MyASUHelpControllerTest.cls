@@ -10,6 +10,28 @@ private class MyASUHelpControllerTest {
 
     @testSetup
     private static void setTestData() {
+        List<Live_Agent_Button__c> liveAgentButtonSettings = new List<Live_Agent_Button__c>();
+
+        Live_Agent_Button__c financeChatLAB = new Live_Agent_Button__c();
+        financeChatLAB.Org_Id__c = '00D2D000000DhIo';
+        financeChatLAB.Chat_Deployment__c = '5720W000001UJD8';
+        financeChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
+        financeChatLAB.Chat_Button_Id__c = '5730W000001YVMU';
+        financeChatLAB.Display_Name__c = 'Finances';
+        liveAgentButtonSettings.add(financeChatLAB);
+
+        Live_Agent_Button__c studentServicesChatLAB = new Live_Agent_Button__c();
+        studentServicesChatLAB.Chat_Button_Id__c = '5730W000001YVMR';
+        studentServicesChatLAB.Display_Name__c = 'ASU Services';
+        liveAgentButtonSettings.add(studentServicesChatLAB);
+
+        Live_Agent_Button__c technicalSupportChatLAB = new Live_Agent_Button__c();
+        technicalSupportChatLAB.Chat_Button_Id__c = '5730W000001YVMW';
+        technicalSupportChatLAB.Display_Name__c = 'Technical Support';
+        liveAgentButtonSettings.add(technicalSupportChatLAB);
+
+        insert liveAgentButtonSettings;
+
         Term__c termAC = new Term__c();
         Date acTermStart = Date.today().adddays(365);
         termAC.Session_A_C_Start_Date__c = date.newinstance(acTermStart.year(), acTermStart.month(), acTermStart.day());

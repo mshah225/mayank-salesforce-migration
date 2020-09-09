@@ -80,7 +80,6 @@ public with sharing class MyASUHelpController {
         orgId = financeChatLAB.Org_Id__c;
         deploymentId = financeChatLAB.Chat_Deployment__c;
         chatEndpoint = financeChatLAB.Chat_Endpoint__c;
-
         financeChatButton = financeChatLAB.Chat_Button_Id__c;
         financeDisplayName = financeChatLAB.Display_Name__c;
 

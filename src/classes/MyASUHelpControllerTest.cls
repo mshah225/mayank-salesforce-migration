@@ -63,6 +63,7 @@ private class MyASUHelpControllerTest {
     private static void setLiveAgentSettings() {
         List<Live_Agent_Button__c> liveAgentButtonSettings = new List<Live_Agent_Button__c>();
         Live_Agent_Button__c financeChatLAB = new Live_Agent_Button__c();
+        financeChatLAB.Name = 'Finances_Live_Chat';
         financeChatLAB.Org_Id__c = '00D2D000000DhIo';
         financeChatLAB.Chat_Deployment__c = '5720W000001UJD8';
         financeChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
@@ -71,18 +72,23 @@ private class MyASUHelpControllerTest {
         liveAgentButtonSettings.add(financeChatLAB);
 
         Live_Agent_Button__c studentServicesChatLAB = new Live_Agent_Button__c();
+        studentServicesChatLAB.Name = 'ASU_Services_Live_Chat';
+        studentServicesChatLAB.Org_Id__c = '00D2D000000DhIo';
+        studentServicesChatLAB.Chat_Deployment__c = '5720W000001UJD8';
+        studentServicesChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
         studentServicesChatLAB.Chat_Button_Id__c = '5730W000001YVMR';
         studentServicesChatLAB.Display_Name__c = 'ASU Services';
         liveAgentButtonSettings.add(studentServicesChatLAB);
 
         Live_Agent_Button__c technicalSupportChatLAB = new Live_Agent_Button__c();
+        technicalSupportChatLAB.Name = 'Technical_Support_Live_Chat';
+        technicalSupportChatLAB.Org_Id__c = '00D2D000000DhIo';
+        technicalSupportChatLAB.Chat_Deployment__c = '5720W000001UJD8';
+        technicalSupportChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
         technicalSupportChatLAB.Chat_Button_Id__c = '5730W000001YVMW';
         technicalSupportChatLAB.Display_Name__c = 'Technical Support';
         liveAgentButtonSettings.add(technicalSupportChatLAB);
         insert liveAgentButtonSettings;
-    }
-
-    private static void setupTerms() {
     }
 
     private static void setUpEnrolledTestSessionA() {

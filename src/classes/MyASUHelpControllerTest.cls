@@ -1,6 +1,6 @@
 @isTest
 private class MyASUHelpControllerTest {
-    private static MyASUHelpController sc;
+    private static MyASUHelpController helpTab;
     private static ViewCaseController vcc;
     private static ViewAllCasesController vacc;
     private static Case caseOnTestUser;
@@ -10,27 +10,7 @@ private class MyASUHelpControllerTest {
 
     @testSetup
     private static void setTestData() {
-        List<Live_Agent_Button__c> liveAgentButtonSettings = new List<Live_Agent_Button__c>();
-
-        Live_Agent_Button__c financeChatLAB = new Live_Agent_Button__c();
-        financeChatLAB.Org_Id__c = '00D2D000000DhIo';
-        financeChatLAB.Chat_Deployment__c = '5720W000001UJD8';
-        financeChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
-        financeChatLAB.Chat_Button_Id__c = '5730W000001YVMU';
-        financeChatLAB.Display_Name__c = 'Finances';
-        liveAgentButtonSettings.add(financeChatLAB);
-
-        Live_Agent_Button__c studentServicesChatLAB = new Live_Agent_Button__c();
-        studentServicesChatLAB.Chat_Button_Id__c = '5730W000001YVMR';
-        studentServicesChatLAB.Display_Name__c = 'ASU Services';
-        liveAgentButtonSettings.add(studentServicesChatLAB);
-
-        Live_Agent_Button__c technicalSupportChatLAB = new Live_Agent_Button__c();
-        technicalSupportChatLAB.Chat_Button_Id__c = '5730W000001YVMW';
-        technicalSupportChatLAB.Display_Name__c = 'Technical Support';
-        liveAgentButtonSettings.add(technicalSupportChatLAB);
-
-        insert liveAgentButtonSettings;
+        setLiveAgentSettings();
 
         Term__c termAC = new Term__c();
         Date acTermStart = Date.today().adddays(365);
@@ -78,6 +58,37 @@ private class MyASUHelpControllerTest {
         setupEnrolledTestSessionA();
         setUpEnrolledTestSessionB();
         setUpNonEnrolled();
+    }
+
+    private static void setLiveAgentSettings() {
+        List<Live_Agent_Button__c> liveAgentButtonSettings = new List<Live_Agent_Button__c>();
+        Live_Agent_Button__c financeChatLAB = new Live_Agent_Button__c();
+        financeChatLAB.Name = 'Finances_Live_Chat';
+        financeChatLAB.Org_Id__c = '00D2D000000DhIo';
+        financeChatLAB.Chat_Deployment__c = '5720W000001UJD8';
+        financeChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
+        financeChatLAB.Chat_Button_Id__c = '5730W000001YVMU';
+        financeChatLAB.Display_Name__c = 'Finances';
+        liveAgentButtonSettings.add(financeChatLAB);
+
+        Live_Agent_Button__c studentServicesChatLAB = new Live_Agent_Button__c();
+        studentServicesChatLAB.Name = 'ASU_Services_Live_Chat';
+        studentServicesChatLAB.Org_Id__c = '00D2D000000DhIo';
+        studentServicesChatLAB.Chat_Deployment__c = '5720W000001UJD8';
+        studentServicesChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
+        studentServicesChatLAB.Chat_Button_Id__c = '5730W000001YVMR';
+        studentServicesChatLAB.Display_Name__c = 'ASU Services';
+        liveAgentButtonSettings.add(studentServicesChatLAB);
+
+        Live_Agent_Button__c technicalSupportChatLAB = new Live_Agent_Button__c();
+        technicalSupportChatLAB.Name = 'Technical_Support_Live_Chat';
+        technicalSupportChatLAB.Org_Id__c = '00D2D000000DhIo';
+        technicalSupportChatLAB.Chat_Deployment__c = '5720W000001UJD8';
+        technicalSupportChatLAB.Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat';
+        technicalSupportChatLAB.Chat_Button_Id__c = '5730W000001YVMW';
+        technicalSupportChatLAB.Display_Name__c = 'Technical Support';
+        liveAgentButtonSettings.add(technicalSupportChatLAB);
+        insert liveAgentButtonSettings;
     }
 
     private static void setUpEnrolledTestSessionA() {
@@ -212,25 +223,25 @@ private class MyASUHelpControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
             vcc = new ViewCaseController();
 
-            sc.oppList = oppListForTestUser;
+            helpTab.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            sc.getMyCasesBox();
+            helpTab.getMyCasesBox();
 
-            sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
+            helpTab.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vcc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
-            sc.viewAsUrl = 'www.hankhillgifs.com';
+            helpTab.viewAsUrl = 'www.hankhillgifs.com';
             vcc.viewAsUrl = 'www.hankhillgifs.com';
 
-            sc.getSource();
+            helpTab.getSource();
             vcc.getSource();
 
-            System.assertEquals('There is maintenance', sc.getmMessage());
-            System.assertEquals(false, sc.getHelpBox());
-            System.assertEquals(true, sc.getNormalPhone());
-            System.assertEquals(false, sc.getRoverPhone());
+            System.assertEquals('There is maintenance', helpTab.getmMessage());
+            System.assertEquals(false, helpTab.getHelpBox());
+            System.assertEquals(true, helpTab.getNormalPhone());
+            System.assertEquals(false, helpTab.getRoverPhone());
 
             System.assertEquals(false, vcc.getHelpBox());
             System.assertEquals(true, vcc.getNormalPhone());
@@ -262,10 +273,10 @@ private class MyASUHelpControllerTest {
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            sc = new MyASUHelpController();
-            sc.oppList = oppListForTestUser;
+            helpTab = new MyASUHelpController();
+            helpTab.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            sc.oppList = oppListForTestUser;
+            helpTab.oppList = oppListForTestUser;
 
             vacc.getMyCases();
             vacc.getAllClosedCases();
@@ -278,12 +289,12 @@ private class MyASUHelpControllerTest {
             vacc.getSource();
             vacc.viewCase();
 
-            sc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
-            sc.viewAsUrl = 'www.hankhillgifs.com';
-            sc.getmyCasesBox();
-            System.assertEquals(false, sc.getHelpBox());
+            helpTab.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
+            helpTab.viewAsUrl = 'www.hankhillgifs.com';
+            helpTab.getmyCasesBox();
+            System.assertEquals(false, helpTab.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
-            System.assertEquals('There is maintenance forever', sc.getmMessage());
+            System.assertEquals('There is maintenance forever', helpTab.getmMessage());
         }
         Test.stopTest();
     }
@@ -299,15 +310,15 @@ private class MyASUHelpControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
             vcc = new ViewCaseController();
 
-            sc.oppList = oppListForTestUser;
+            helpTab.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
-            sc.oppList = oppListForTestUser;
+            helpTab.oppList = oppListForTestUser;
 
-            System.assertEquals(true, sc.getmyCasesBox());
-            System.assertEquals(true, sc.getHelpBox());
+            System.assertEquals(true, helpTab.getmyCasesBox());
+            System.assertEquals(true, helpTab.getHelpBox());
             System.assertEquals(true, vcc.getHelpBox());
         }
 
@@ -324,12 +335,12 @@ private class MyASUHelpControllerTest {
         Test.setCurrentPage(myASUHelp);
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
 
-            sc.oppList = oppListForTestUser;
+            helpTab.oppList = oppListForTestUser;
 
-            System.assertEquals(true, sc.getMyCasesBox());
-            System.assertEquals(true, sc.getHelpBox());
+            System.assertEquals(true, helpTab.getMyCasesBox());
+            System.assertEquals(true, helpTab.getHelpBox());
         }
         Test.stopTest();
     }
@@ -344,12 +355,12 @@ private class MyASUHelpControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            System.assertEquals(true, sc.getHelpBox());
+            helpTab = new MyASUHelpController();
+            System.assertEquals(true, helpTab.getHelpBox());
 
-            sc.oppList = oppListForTestUser;
+            helpTab.oppList = oppListForTestUser;
 
-            System.assertEquals(true, sc.getMyCasesBox());
+            System.assertEquals(true, helpTab.getMyCasesBox());
         }
 
         Test.stopTest();
@@ -365,21 +376,21 @@ private class MyASUHelpControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            sc.newCase.Subject = 'Test Subject for SC';
-            sc.newCase.Description = 'Test Desc';
+            helpTab = new MyASUHelpController();
+            helpTab.newCase.Subject = 'Test Subject for SC';
+            helpTab.newCase.Description = 'Test Desc';
 
-            PageReference submit = sc.submitCase();
+            PageReference submit = helpTab.submitCase();
             System.assertEquals(submit.getURL().contains('/viewcase?'), true);
 
-            sc.getClosedCases();
-            sc.viewCase();
-            sc.getMyCases();
-            sc.getMyCasesBox();
+            helpTab.getClosedCases();
+            helpTab.viewCase();
+            helpTab.getMyCases();
+            helpTab.getMyCasesBox();
 
-            sc.viewingAs = true;
-            sc.masqScopeIdCookie = 'testCookie';
-            System.assertEquals(sc.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
+            helpTab.viewingAs = true;
+            helpTab.masqScopeIdCookie = 'testCookie';
+            System.assertEquals(helpTab.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
         }
 
         Test.stopTest();
@@ -394,18 +405,18 @@ private class MyASUHelpControllerTest {
         String urlReturnedFromSubmit;
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            sc.suggestAnArticle.Description = 'Description';
+            helpTab = new MyASUHelpController();
+            helpTab.suggestAnArticle.Description = 'Description';
             submit = ApexPages.currentPage();
             submit.getParameters().put('Suggest', 'yes');
 
             Test.startTest();
-            urlReturnedFromSubmit = sc.suggestAnArticleSubmit().getURL();
+            urlReturnedFromSubmit = helpTab.suggestAnArticleSubmit().getURL();
             Test.stopTest();
         }
 
         System.assertEquals(submit.getURL(), urlReturnedFromSubmit);
-        System.assertEquals('Description', sc.suggestAnArticle.Description);
+        System.assertEquals('Description', helpTab.suggestAnArticle.Description);
     }
 
     private static void setCurrentPageAsViewCase() {
@@ -422,11 +433,11 @@ private class MyASUHelpControllerTest {
         Test.startTest();
 
         System.runAs(testUser) {
-            sc = new MyASUHelpController();
-            sc.viewingAs = true;
+            helpTab = new MyASUHelpController();
+            helpTab.viewingAs = true;
             PageReference stop = ApexPages.currentPage();
 
-            System.assertEquals(stop.getURL(), sc.suggestAnArticleSubmit().getURL());
+            System.assertEquals(stop.getURL(), helpTab.suggestAnArticleSubmit().getURL());
         }
 
         Test.stopTest();

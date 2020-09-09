@@ -13,7 +13,7 @@
 
     <div id="myasu-tabs-wrapper">
         <apex:outputPanel rendered="{!showNavBar}">
-            <header class="navbar navbar-default" role="banner">
+            <header class="navbar navbar-default" role="banner" style="max-height:57px;">
                 <div id="myasu-tabs" class="myasu-cont">
                     <div class="navbar-links">
                         <apex:outputPanel rendered="{!IF(ISNULL(menuLinks) || ISBLANK(menuLinks), false, true)}" layout="none">
@@ -38,29 +38,33 @@
                             </apex:repeat>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(firstName != null, lastName != null)}">
-                            <div class="asu-brand-menu-user pull-right">
-                                {!firstName} {!lastName}
-                                <apex:outputPanel rendered="{!viewingAs}"> ({!emplId})</apex:outputPanel>
+                            <div class="asu-brand-menu-user pull-right" style="max-height:57px;line-height: 1.44;margin-top: .4em;">
+                                <span style="display:block;">
+                                    {!firstName} {!lastName}
+                                    <apex:outputPanel rendered="{!viewingAs}"> ({!emplId})</apex:outputPanel>
+                                </span>
+                                <span style="display:block;">
+                                    <apex:outputPanel rendered="{!viewingAs}">
+                                        <div class="dropdown asu-brand-menu-view-as-dropdown pull-right">
+                                            <button class="btn btn-blue asu-brand-menu-view-as-button dropdown-toggle" type="button" id="asu-brand-menu-view-as" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                View As
+                                                <span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right asu-brand-menu-view-as-dropdown-menu" aria-labelledby="asu-brand-menu-view-as">
+                                                <a class="dropdown-item viewAsLink asu-brand-menu-view-as-change" href="{!viewAsUrl}">
+                                                    <i class="fa fa-eye" /> View as someone else
+                                                </a>
+                                                <a class="dropdown-item viewAsLink asu-brand-menu-view-as-logout" href="{!stopViewAsUrl}">
+                                                    <i class="fa fa-sign-out" /> Logout as {!firstName} {!lastName}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </span>
                             </div>
                         </apex:outputPanel>
                     </div>
-                    <apex:outputPanel rendered="{!viewingAs}">
-                        <div class="dropdown asu-brand-menu-view-as-dropdown pull-right">
-                            <button class="btn btn-blue asu-brand-menu-view-as-button dropdown-toggle" type="button" id="asu-brand-menu-view-as" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                View As
-                                <span class="caret"></span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right asu-brand-menu-view-as-dropdown-menu" aria-labelledby="asu-brand-menu-view-as">
-                                <a class="dropdown-item viewAsLink asu-brand-menu-view-as-change" href="{!viewAsUrl}">
-                                    <i class="fa fa-eye" /> View as someone else
-                                </a>
-                                <a class="dropdown-item viewAsLink asu-brand-menu-view-as-logout" href="{!stopViewAsUrl}">
-                                    <i class="fa fa-sign-out" /> Logout as {!firstName} {!lastName}
-                                </a>
-                            </div>
-                        </div>
-                    </apex:outputPanel>
                 </div>
             </header>
         </apex:outputPanel>

@@ -21,16 +21,10 @@
             z-index: 1001;
         }
 
-        .dropdown.open .caret:before {
-            bottom: -17px;
-            right: -8px;
-            border-bottom-color: #ccc;
-        }
-
         .dropdown.open .caret:after {
             bottom: -18px;
             right: -8px;
-            border-bottom-color: #fff;
+            border-bottom-color: #d0d0d0;
         }
 
         /* navbar style */
@@ -46,10 +40,6 @@
 
         .navbar-nav>.open>a .caret:after {
             bottom: -24px;
-        }
-
-        #myasu-tabs-wrapper .navbar {
-            margin-bottom: 0;
         }
 
         #myasu-tabs-wrapper .navbar-default {
@@ -168,12 +158,6 @@
 
         #myasu-tabs .asu-brand-menu-user {
             padding: 0;
-            margin-top: -.5em;
-        }
-
-        #myasu-tabs .asu-brand-menu-view-as-dropdown {
-            margin-left: 1em;
-            margin-right: 1em;
         }
 
         #myasu-tabs .asu-brand-menu-view-as-dropdown-menu {
@@ -194,7 +178,21 @@
 
         #myasu-tabs .asu-brand-menu-view-as-button {
             font-size: .75em !important;
-            margin-bottom: 1em !important;
+            margin-bottom: 0;
+            margin-top: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        #myasu-tabs .asu-brand-menu-view-as-change,
+        #myasu-tabs .asu-brand-menu-view-as-logout {
+            padding: 0 !important;
+        }
+
+        #myasu-tabs .asu-brand-menu-view-as-change:hover,
+        #myasu-tabs .asu-brand-menu-view-as-logout:hover {
+            background-color: transparent !important;
+            height: unset !important;
         }
 
         @media only screen and (max-width: 892px) {

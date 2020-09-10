@@ -1,5 +1,6 @@
 public with sharing class MyASUHelpPaginationController {
     public String textToSearch { get; set; }
+    public String mostRecentSearchText { get; set; }
     public Integer pageSize;
     public Integer currentPage;
     public Integer lastPage;
@@ -88,8 +89,18 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     public Decimal getCurrentPageNumber() {
+        determineIfSearchTextHasChanged();
         setFirstAndLastPageStatuses();
         return currentPage;
+    }
+
+    private void determineIfSearchTextHasChanged() {
+        if (mostRecentSearchText == '' || mostRecentSearchText == null) {
+            mostRecentSearchText = textToSearch;
+        } else if (mostRecentSearchText != '' && mostRecentSearchText != null && mostRecentSearchText != textToSearch) {
+            currentPage = 1;
+            mostRecentSearchText = textToSearch;
+        }
     }
 
     public void next() {

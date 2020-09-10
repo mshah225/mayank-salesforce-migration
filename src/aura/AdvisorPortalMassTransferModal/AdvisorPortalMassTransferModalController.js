@@ -4,18 +4,18 @@
     },
 
     handleViewAsOptions: function (component, event, helper) {
-        component.set("v.ViewAsOptions", event.getParam("viewAsOptions"));
+        component.set('v.ViewAsOptions', event.getParam('viewAsOptions'));
     },
-    
+
     massTransfer: function (component, event, helper) {
         let casesToTransfer = [];
-        component.set("v.FormError", "");
-        let contacts = component.get("v.Contacts");
-        event.getSource().set("v.disabled", true);
+        component.set('v.FormError', '');
+        let contacts = component.get('v.Contacts');
+        event.getSource().set('v.disabled', true);
 
-        if (!component.get("v.SelectedOwnerId")) {
-            component.set("v.FormError", "Please select a new Owner.");
-            event.getSource().set("v.disabled", false);
+        if (!component.get('v.SelectedOwnerId')) {
+            component.set('v.FormError', 'Please select a new Owner.');
+            event.getSource().set('v.disabled', false);
             return;
         }
 
@@ -29,24 +29,24 @@
             }
         }
 
-        let action = component.get("c.transferCases");
+        let action = component.get('c.transferCases');
         action.setParams({
             portalCases: casesToTransfer,
-            ownerId: component.get("v.SelectedOwnerId").split(';').pop()
+            ownerId: component.get('v.SelectedOwnerId').split(';').pop(),
         });
         action.setCallback(this, function (response) {
             if (response.getState() !== 'SUCCESS') {
-                helper.fireToast("Error", helper.buildErrorMessage(response.getError()), "error");
-                event.getSource().set("v.disabled", false);
+                helper.fireToast('Error', helper.buildErrorMessage(response.getError()), 'error');
+                event.getSource().set('v.disabled', false);
                 return;
             }
 
-            helper.fireToast("", "Case(s) Successfully Transferred.", "success");
-            component.set("v.SelectedOwnerId", "");
-            component.set("v.FormError", "");
+            helper.fireToast('', 'Case(s) Successfully Transferred.', 'success');
+            component.set('v.SelectedOwnerId', '');
+            component.set('v.FormError', '');
             helper.toggleTransferModal(component);
-            event.getSource().set("v.disabled", false);
-            $A.get("e.c:RefreshAdvisorPortalContacts").fire();
+            event.getSource().set('v.disabled', false);
+            $A.get('e.c:RefreshAdvisorPortalContacts').fire();
         });
         $A.enqueueAction(action);
     },
@@ -57,30 +57,31 @@
 
     hideDropdown: function (component) {
         window.setTimeout(
-            $A.getCallback(function() {
-                $A.util.removeClass(component.find("combobox-drop").getElement(), "slds-is-open");
-            }), 150
+            $A.getCallback(function () {
+                $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
+            }),
+            150
         );
     },
 
     toggleOption: function (component, event, helper) {
-        let selectedId = event.currentTarget.getAttribute("data-optionId");
+        let selectedId = event.currentTarget.getAttribute('data-optionId');
 
         if (selectedId) {
-            let viewAsOptions = component.get("v.ViewAsOptions");
+            let viewAsOptions = component.get('v.ViewAsOptions');
 
             for (let i = 0, len = viewAsOptions.length; i < len; i++) {
                 if (viewAsOptions[i].label + ';' + viewAsOptions[i].value === selectedId) {
                     viewAsOptions[i].isSelected = true;
-                    component.set("v.SelectedLabel", viewAsOptions[i].label);
-                    component.set("v.SelectedOwnerId", viewAsOptions[i].value);
+                    component.set('v.SelectedLabel', viewAsOptions[i].label);
+                    component.set('v.SelectedOwnerId', viewAsOptions[i].value);
                 } else if (viewAsOptions[i].isSelected) {
                     viewAsOptions[i].isSelected = false;
                 }
             }
 
-            component.set("v.ViewAsOptions", viewAsOptions);
+            component.set('v.ViewAsOptions', viewAsOptions);
             helper.toggleDropdown(component);
         }
-    }
-})
+    },
+});

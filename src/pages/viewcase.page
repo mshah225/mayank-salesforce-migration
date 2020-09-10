@@ -5,6 +5,8 @@
 
     <head>
         <title>My ASU | Help | {!caseDetails.Subject}</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
         <c:MyASUHelpStyles />

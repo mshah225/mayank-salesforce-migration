@@ -113,81 +113,13 @@ public class AdvisorPortalFilterSectionController {
     }
 
     /**
-     * Filters Contacts on the Advisor Portal using the supplied view as options and filter.
+     * Filters Contacts and Case wrappers on the Advisor Portal using the supplied view as options and filter.
      *
      * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @param filter, the AdvisorPortalFilter to use.
      *
-     * @return advisorPortalContactResults, a filtered List of AdvisorPortalContact records.
+     * @return shortenedAdvisorPortalContactResults, a filtered List of AdvisorPortalContact records (3000 maximum contacts/case wrappers).
      */
-    @AuraEnabled
-    public static List<AdvisorPortalContact> filterContacts(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
-        List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
-        Map<Id, List<Case>> casesByContactIds = new Map<Id, List<Case>>();
-        Set<Id> filteredContactIds = AdvisorPortalController.getSuccessStudentContactIdsForViewOptions(viewAsOptions);
-        filteredContactIds = AdvisorPortalFilterHelper.filterContacts(filter, filteredContactIds);
-        filteredContactIds = AdvisorPortalFilterHelper.filterStudentGroups(filter, filteredContactIds);
-        filteredContactIds = AdvisorPortalFilterHelper.filterStudentPlans(filter, filteredContactIds);
-        filteredContactIds = AdvisorPortalFilterHelper.filterStudentAdvisors(filter, filteredContactIds);
-        
-        /**
-         * Filter on Case fields.
-         */
-        for (Case caseResult : AdvisorPortalFilterHelper.filterCases(filter, filteredContactIds)) {
-            if (!casesByContactIds.containsKey(caseResult.ContactId)) {
-                casesByContactIds.put(caseResult.ContactId, new List<Case>{caseResult});
-            } else {
-                casesByContactIds.get(caseResult.ContactId).add(caseResult);
-            }
-        }
-        
-        List<Contact> contactsFromFilteredIds = [
-            SELECT Name,
-                EMPLID__c,
-                ASURite_ID__c,
-                US_Citizen__c,
-                Change_Date__c,
-                Most_Recent_Outlook_Change_Direction__c,
-                Curr_Cont_Prediction_Level__c
-            FROM Contact
-            WHERE Id IN :filteredContactIds
-            ORDER BY Name
-            LIMIT 2000
-        ];
-
-        // Add filtered Contact/Case records to wrapper.
-        for (Contact contact : contactsFromFilteredIds) {
-
-            // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && (filter.caseCount != null || filter.caseCount > 0)) {
-                continue;
-            }
-
-            AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
-
-            if (casesByContactIds.containsKey(contact.Id)) {
-                // Skip Contact if we filter by Case count and it has less than we want.
-                if ((filter.caseCount != null || filter.caseCount > 0) && casesByContactIds.get(contact.Id).size() < filter.caseCount) {
-                    continue;
-                }
-
-                List<AdvisorPortalCase> caseWrappers = new List<AdvisorPortalCase>();
-
-                for (Case caseResult : casesByContactIds.get(contact.Id)) {
-                    caseWrappers.add(new AdvisorPortalCase(caseResult));
-                }
-
-                contactWrapper.addCases(caseWrappers);
-                advisorPortalContactResults.add(contactWrapper);
-            } else if (filter.allCasesState) {
-                advisorPortalContactResults.add(contactWrapper);
-            }
-        }
-
-        return advisorPortalContactResults;
-    }
-
-
     // Limits.getQueryRows() += 36000
     @AuraEnabled
     public static List<AdvisorPortalContact> getContactCaseWrappersWithLessQueries(List<Id> viewAsOptions, AdvisorPortalFilter filter){

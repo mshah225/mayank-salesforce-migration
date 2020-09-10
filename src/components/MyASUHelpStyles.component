@@ -288,9 +288,14 @@
         }
 
         .myasu-help-region .myasu-append-no-results-text,
-        .myasu-help-region .myasu-append-no-results-text-back {
+        .myasu-help-region .myasu-append-no-results-text-back,
+        .myasu-help-region .myasu-append-no-results-text-back-main {
             padding-bottom: 0;
             font-size: 1rem;
+        }
+
+        .myasu-help-region .myasu-append-no-results-text-back-main {
+            padding-left: 1em;
         }
 
 

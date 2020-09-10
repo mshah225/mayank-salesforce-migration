@@ -1,11 +1,9 @@
 <apex:page sidebar="false" showHeader="false" standardStylesheets="false">
 
     <head>
+        <title>My ASU | Error</title>
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
-
-        <title>My ASU | Error</title>
-
         <c:MyASUHelpStyles />
     </head>
 

@@ -4,11 +4,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
+        <title>My ASU | Help | View All Articles</title>
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
-
-        <title>My ASU | Help | View All Articles</title>
-
         <c:MyASUHelpStyles />
     </head>
 

@@ -7,7 +7,6 @@
     <aura:attribute name="FormError" type="String" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
     <aura:registerEvent name="refreshContacts" type="c:RefreshAdvisorPortalContacts" />
-    <aura:handler event="c:UpdateViewAsOptions" action="{!c.handleViewAsOptions}" />
 
     <aura:if isTrue="{!not(empty(v.Contacts))}">
         <lightning:button label="Mass Transfer" variant="brand" onclick="{!c.toggleMassTransferModal}" />

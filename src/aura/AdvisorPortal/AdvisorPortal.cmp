@@ -45,7 +45,7 @@
 
     <div class="slds-grid slds-m-top_x-small">
         <span class="slds-show_inline slds-m-right_xx-small">
-            <c:AdvisorPortalMassTransferModal Contacts="{!v.FilteredContacts}" />
+            <c:AdvisorPortalMassTransferModal Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" />
         </span>
         <span class="slds-show_inline slds-m-right_xx-small">
             <c:AdvisorPortalMassEmailModal Contacts="{!v.FilteredContacts}" />

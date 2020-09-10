@@ -3,10 +3,6 @@
         helper.toggleTransferModal(component);
     },
 
-    handleViewAsOptions: function (component, event, helper) {
-        component.set('v.ViewAsOptions', event.getParam('viewAsOptions'));
-    },
-
     massTransfer: function (component, event, helper) {
         let casesToTransfer = [];
         component.set('v.FormError', '');

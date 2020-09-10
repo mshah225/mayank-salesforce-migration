@@ -1,7 +1,7 @@
 public class SilverpopDeleter implements ObjectScramble {
     sObject silverpopToDelete;
 
-    public LeadDeleter(sObject silverpopToDelete) {
+    public SilverpopDeleter(sObject silverpopToDelete) {
         this.silverpopToDelete = silverpopToDelete;
     }
 

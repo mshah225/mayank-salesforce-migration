@@ -21,7 +21,6 @@
         component.find('caseSubjectPicklist').resetMultiSelect();
         component.find('caseCategoryPicklist').resetMultiSelect();
         component.find('academicLevelPicklist').resetMultiSelect();
-        component.set('v.Advisor', '');
         component.set('v.StudentGroup', '');
         component.find('outlookScoreOptionsPicklist').resetMultiSelect();
         component.find('outlookChangePicklist').resetMultiSelect();

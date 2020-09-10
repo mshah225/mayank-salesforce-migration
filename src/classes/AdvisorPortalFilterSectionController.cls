@@ -159,9 +159,6 @@ public class AdvisorPortalFilterSectionController {
 
         // Filter based on Student Plans (LIMIT 2000 query, unavoidable)
         filteredContactIds = AdvisorPortalFilterHelper.filterStudentPlans(filter, filteredContactIds);
-        
-        // Filter based on Student Advisors (LIMIT 2000 query, unavoidable)
-        filteredContactIds = AdvisorPortalFilterHelper.filterStudentAdvisors(filter, filteredContactIds);
 
         // Remove cases that don't match contact filters and generate list of filteredContacts
         for(Integer i=0; i<filteredCases.size(); i++) {

@@ -22,7 +22,6 @@
     />
     <aura:attribute name="CaseCategory" type="String" default="" />
     <aura:attribute name="CaseCategoryPicklistValues" type="List" />
-    <aura:attribute name="Advisor" type="String" default="" />
     <aura:attribute name="StudentGroup" type="String" default="" />
     <aura:attribute name="OutlookScore" type="String" default="" />
     <aura:attribute
@@ -102,13 +101,6 @@
                     value="{!v.AcademicLevel}"
                     options="{!v.AcademicLevelPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <lightning:input
-                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                    type="text"
-                    name="Advisor"
-                    value="{!v.Advisor}"
-                    label="Advisor: "
                 />
                 <lightning:input
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"

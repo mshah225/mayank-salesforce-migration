@@ -243,45 +243,4 @@ public class AdvisorPortalFilterHelper {
             return contactIds;
         }
     }
-
-    /**
-     * Queries for Student_Program_Plan__c records based on the supplied filter and Contact Ids.
-     *
-     * @param filter, the AdvisorPortalFilter to use.
-     * @param contactIds, a Set of Contact Ids to use in the query.
-     *
-     * @return filteredContactIds, a Set of filtered Contact Ids.
-     */
-    public static Set<Id> filterStudentAdvisors(AdvisorPortalFilter filter, Set<Id> contactIds) {
-        if (!String.isBlank(filter.advisor)) {
-            Set<Id> filteredContactIds = new Set<Id>();
-            Map<Id, Id> contactIdByPlanId = new Map<Id, Id>();
-
-            for (Student_Program_Plan__c plan : [
-                SELECT Contact__c
-                FROM Student_Program_Plan__c
-                WHERE Contact__c IN :contactIds
-                LIMIT 2000
-            ]) {
-                contactIdByPlanId.put(plan.Id, plan.Contact__c);
-            }
-
-            for (Student_Program_Plan_Advisor__c sPPAdvisor : (List<Student_Program_Plan_Advisor__c>) [
-                FIND :filter.advisor
-                IN NAME FIELDS RETURNING
-                    Student_Program_Plan_Advisor__c(
-                        Advisor_Name__c,
-                        Student_Program_Plan__c
-                        WHERE Student_Program_Plan__c IN :contactIdByPlanId.keySet()
-                    )
-            ][0]) {
-                if (contactIdByPlanId.containsKey(sPPAdvisor.Student_Program_Plan__c)) {
-                    filteredContactIds.add(contactIdByPlanId.get(sPPAdvisor.Student_Program_Plan__c));
-                }
-            }
-            return filteredContactIds;
-        } else {
-            return contactIds;
-        }
-    }
 }

@@ -99,6 +99,8 @@ public with sharing class MyASUHelpPaginationController {
             mostRecentSearchText = textToSearch;
         } else if (mostRecentSearchText != '' && mostRecentSearchText != null && mostRecentSearchText != textToSearch) {
             currentPage = 1;
+            setNumberOfResults();
+            setLastPageNumber();
             mostRecentSearchText = textToSearch;
         }
     }

@@ -1,6 +1,6 @@
 public class ObjectScrambleService {
     private ObjectTypes objectType;
-    public enum ObjectTypes {CONTACT, EDPLUS_CASE, LEAD, CONVERTED_LEAD, USER, CAR}
+    public enum ObjectTypes {CONTACT, EDPLUS_CASE, LEAD, CONVERTED_LEAD, USER, CAR, DELETED_SILVERPOP}
 
     public ObjectScrambleService(ObjectTypes objectType) {
         this.objectType = objectType;
@@ -22,6 +22,9 @@ public class ObjectScrambleService {
             }
             when CONVERTED_LEAD {
                 queryToReturn = 'SELECT Id FROM LEAD WHERE IsConverted = true';
+            }
+            when DELETED_SILVERPOP {
+                queryToReturn = 'SELECT Id FROM ' + System.Label.SilverPopName;
             }
             when CAR {
                 queryToReturn = 'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c';
@@ -49,6 +52,9 @@ public class ObjectScrambleService {
             }
             when CONVERTED_LEAD {
                 objectScrambler = new LeadDeleter( (Lead) objectToScramble);
+            }
+            when DELETED_SILVERPOP {
+                objectScrambler = new SilverpopDeleter(objectToScramble);
             }
             when CAR {
                 objectScrambler = new CarScrambler( (Case_Assignment_Rule__c) objectToScramble);
@@ -83,6 +89,10 @@ public class ObjectScrambleService {
                     'Id,Email_Address__c,Reply_To_Email_Address__c\n';
             }
             when CONVERTED_LEAD {
+                header = 
+                    'Id\n';
+            }
+            when DELETED_SILVERPOP {
                 header = 
                     'Id\n';
             }

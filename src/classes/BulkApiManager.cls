@@ -17,6 +17,8 @@ public class BulkApiManager {
             this.objectType = 'case_assignment_rule__c';
         } else if (objectType == 'EDPLUS_CASE') {
             this.objectType = 'case';
+        } else if (objectType == 'DELETED_SILVERPOP') {
+            this.objectType = System.Label.SilverPopName;
         } else {
         	this.objectType = objectType.toLowerCase().capitalize();
         }

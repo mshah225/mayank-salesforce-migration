@@ -46,7 +46,7 @@
         <style>
         </style>
 
-        <div id="asu-content-container">
+        <div id="asu-content-container" role="main">
             <div class="container">
                 <div id="bgWrapper">
                     <apex:outputPanel id="alerts">

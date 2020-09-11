@@ -12,7 +12,7 @@
     <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="https://webapp4.asu.edu/myasu" />
 
     <c:GoogleTagManagerBody />
-    <div id="asu-content-container">
+    <div id="asu-content-container" role="main">
         <div class="container">
             <div class="panel-body">
                 <p class="lead">

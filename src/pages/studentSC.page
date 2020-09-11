@@ -19,7 +19,7 @@
         viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <c:GoogleTagManagerBody />
-    <div id="asu-content-container">
+    <div id="asu-content-container" role="main">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
         />
         <div class="container">

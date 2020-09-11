@@ -131,7 +131,7 @@
 
     <apex:pageMessages id="message" />
 
-    <div id="asu-content-container">
+    <div id="asu-content-container" role="main">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
 
         <div class="container">

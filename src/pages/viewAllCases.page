@@ -17,7 +17,7 @@
         viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <c:GoogleTagManagerBody />
-    <div id="asu-content-container">
+    <div id="asu-content-container" role="main">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
         <div class="container">
             <ol class="breadcrumb">
@@ -29,27 +29,23 @@
             </ol>
             <div class="row">
                 <div class="col-md-12 myasu-help-region myasu-help-region-full-width">
-
                     <!-- My Open Cases view -->
                     <div class="myasu-help-region-view-all-requests-pending">
                         <div class="myasu-help-region-header">
                             Pending Requests
                         </div>
                         <div class="myasu-help-region-my-requests-content">
-                            <p class="myasu-help-region-requests-text">Click the View button to see a history of your request, including chat and email history.</p>
+                            <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0, 'display:block;', 'display:none;')}">Click the View button to see a history of your request, including chat and email history.</p>
                             <apex:form>
                                 <apex:pageBlock mode="maindetail">
-                                    <apex:pageBlockTable rendered="{!(myCases.size >= 1)}" value="{!myCases}" var="case" styleClass="myCasesTable">
+                                    <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="myCasesTable">
                                         <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;"
                                             onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"
                                         />
-
                                         <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
                                             onmouseout="this.style.backgroundColor ='white'" />
-
                                         <apex:column headerValue="Date Opened" width="15%" value="{!case.CreatedDate}" style="background-color:white" onmousemove="this.style.backgroundColor='white'"
                                             onmouseout="this.style.backgroundColor ='white'" />
-
                                         <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
                                             onmouseout="this.style.backgroundColor ='white'">
                                             <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
@@ -57,26 +53,24 @@
                                             </apex:commandLink>
                                         </apex:column>
                                     </apex:pageBlockTable>
-                                    <apex:outputText rendered="{!(myCases.size = 0)}">
-                                        <p class="myasu-help-region-my-requests-no-cases">You do not currently have any completed requests.</p>
+                                    <apex:outputText rendered="{!myCases.size == 0}">
+                                        <p class="myasu-help-region-my-requests-no-cases">You do not currently have any open requests.</p>
                                     </apex:outputText>
                                 </apex:pageBlock>
                             </apex:form>
                         </div>
                     </div>
-
                     <br />
-
                     <!-- My Closed Cases view -->
                     <div class="myasu-help-region-view-all-requests-completed">
                         <div class="myasu-help-region-header">
                             Completed Requests
                         </div>
                         <div class="myasu-help-region-my-requests-content">
-                            <p class="myasu-help-region-requests-text">Click the View button to see a history of your request, including chat and email history.</p>
+                            <p class="myasu-help-region-requests-text" style="{!IF(allClosedCases.size > 0, 'display:block;', 'display:none;')}">Click the View button to see a history of your request, including chat and email history.</p>
                             <apex:form>
                                 <apex:pageBlock mode="maindetail">
-                                    <apex:pageBlockTable rendered="{!(allClosedCases.size >= 1)}" value="{!allClosedCases}" var="case" styleClass="myCasesTable">
+                                    <apex:pageBlockTable rendered="{!allClosedCases.size > 0}" value="{!allClosedCases}" var="case" styleClass="myCasesTable">
                                         <apex:column headerValue="Subject" styleClass="truncate" width="50%" value="{!case.Subject}" style="background-color:white;overflow-x:hidden;"
                                             onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'"
                                         />
@@ -94,7 +88,7 @@
                                             </apex:commandLink>
                                         </apex:column>
                                     </apex:pageBlockTable>
-                                    <apex:outputText rendered="{!(allClosedCases.size = 0)}">
+                                    <apex:outputText rendered="{!allClosedCases.size == 0}">
                                         <p class="myasu-help-region-my-requests-no-cases">You do not currently have any completed requests.</p>
                                     </apex:outputText>
                                 </apex:pageBlock>

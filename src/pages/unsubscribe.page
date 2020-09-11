@@ -17,7 +17,7 @@
 		<div id="main-search" class="main-search closed"></div>
 		<c:SCHeader pageHead="Subscription Center" showNavBar="false" />
 		<div id="bgWrapper">
-			<div id="asu-content-container">
+			<div id="asu-content-container" role="main">
 				<div class="container">
 					<div class="row">
 						<div class="col-sm-12">

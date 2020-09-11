@@ -1,7 +1,7 @@
 <apex:component>
     <br />
     <br />
-    <div id="innovation-footer">
+    <div id="innovation-footer" role="contentinfo">
         <div id="innovation-bar">
             <div class="innovation-top">
                 <div class="innovation-status">

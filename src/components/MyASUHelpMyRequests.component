@@ -6,12 +6,12 @@
             </div>
 
             <div class="myasu-help-region-my-requests-content">
-                <p class="myasu-help-region-requests-text">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
+                <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
                     through a webform.</p>
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Pending Requests</div>
                     <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable rendered="{!(myCases.size>= 1)}" value="{!myCases}" var="case" styleClass="">
+                        <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="">
                             <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
                             <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
@@ -22,8 +22,7 @@
                                 </apex:commandLink>
                             </apex:column>
                         </apex:pageBlockTable>
-
-                        <apex:outputText rendered="{!(myCases.size = 0)}">
+                        <apex:outputText rendered="{!myCases.size == 0}">
                             <p class="myasu-help-region-my-requests-no-cases">You do not currently have any open requests.</p>
                         </apex:outputText>
                     </apex:pageBlock>
@@ -31,7 +30,7 @@
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Completed Requests</div>
                     <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable rendered="{!(closedCases.size >= 1)}" value="{!closedCases}" var="case" styleClass="">
+                        <apex:pageBlockTable rendered="{!closedCases.size > 0}" value="{!closedCases}" var="case" styleClass="">
                             <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
                                 onmouseout="this.style.backgroundColor ='white'" />
                             <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color:white;" onmousemove="this.style.backgroundColor='white'"
@@ -42,13 +41,13 @@
                                 </apex:commandLink>
                             </apex:column>
                         </apex:pageBlockTable>
-                        <apex:outputText rendered="{!(closedCases.size = 0)}">
+                        <apex:outputText rendered="{!closedCases.size == 0}">
                             <p class="myasu-help-region-my-requests-no-cases">You do not currently have any completed requests.</p>
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
-                <p class="myasu-help-region-requests-text">Click the View All button to see a history of your request(s), including chat and email history.</p>
-                <div style="text-align:right;margin-bottom:1em;">
+                <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Click the View All button to see a history of your request(s), including chat and email history.</p>
+                <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
                     <apex:form>
                         <apex:pageBlock mode="maindetail">
                             <a href="/viewAllCases?source=studentSC" class="btn btn-secondary">

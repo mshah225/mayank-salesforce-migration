@@ -38,7 +38,7 @@ public with sharing class EdPlusAggregatedNotesController {
                 EdPlusTask__x
                 WHERE
                 Who_Id_edpl__c IN: Contacts
-                ORDER BY Activity_Date_edpl__c DESC
+                ORDER BY Activity_Date_edpl__c DESC ALL ROWS
             ]);
 
         dataWrapper = new List<Wrapper>();

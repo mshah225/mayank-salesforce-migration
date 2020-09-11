@@ -211,6 +211,14 @@
             margin-top: .5em;
         }
 
+        .myasu-help-region .myasu-help-region-common-questions-finances-view-all:hover,
+        .myasu-help-region .myasu-help-region-common-questions-technical-view-all:hover,
+        .myasu-help-region .myasu-help-region-common-questions-housing-view-all:hover,
+        .myasu-help-region .myasu-help-region-faq-search-results-view-all:hover,
+        .myasu-help-region .myasu-help-region-view-all-articles-view-common:hover {
+            color: #d23153 !important;
+        }
+
         .myasu-help-region .myasu-help-region-common-questions-finances-view-all,
         .myasu-help-region .myasu-help-region-common-questions-technical-view-all {
             margin-bottom: 1.5em;
@@ -235,6 +243,10 @@
 
         .myasu-help-region .myasu-help-region-faq-content .apexp:first-of-type {
             margin-top: 0;
+        }
+
+        .myasu-help-region .myasu-help-region-faq-content a {
+            text-decoration: underline;
         }
 
         .myasu-help-region .myasu-help-region-faq-search {
@@ -300,6 +312,12 @@
 
 
         /* My ASU Help - Contact Us */
+
+        .myasu-help-region #liveagent_button_finances,
+        .myasu-help-region #liveagent_button_technical_support,
+        .myasu-help-region #liveagent_button_student_services {
+            text-decoration: underline;
+        }
 
         .myasu-help-region .myasu-help-region-contact-us-accordion-container .fa {
             vertical-align: unset;

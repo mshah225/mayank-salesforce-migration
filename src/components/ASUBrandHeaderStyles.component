@@ -19,8 +19,7 @@
             margin: 0;
         }
 
-        a:hover,
-        a:focus {
+        a:hover {
             color: #d23153 !important;
             border-bottom: none;
             text-decoration: underline;

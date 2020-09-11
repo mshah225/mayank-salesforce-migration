@@ -319,6 +319,12 @@
             text-decoration: underline;
         }
 
+        .myasu-help-region .accordion-toggle:focus,
+        .myasu-help-region .accordion-toggle2:focus,
+        .myasu-help-region .accordion-toggle3:focus {
+            color: #d23153;
+        }
+
         .myasu-help-region .myasu-help-region-contact-us-accordion-container .fa {
             vertical-align: unset;
         }

@@ -14,6 +14,27 @@
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+
+        $(document).ready(function () {
+            $('.accordion-toggle').focus(function () {
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle strong').css({ "outline": "2px solid #4D90FE", "box-shadow": "0px 0px 5px #4D90FE" });
+            });
+            $('.accordion-toggle').focusout(function () {
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle strong').css({ "outline": "none", "box-shadow": "none" });
+            });
+            $('.accordion-toggle2').focus(function () {
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle2 strong').css({ "outline": "2px solid #4D90FE", "box-shadow": "0px 0px 5px #4D90FE" });
+            });
+            $('.accordion-toggle2').focusout(function () {
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle2 strong').css({ "outline": "none", "box-shadow": "none" });
+            });
+            $('.accordion-toggle3').focus(function () {
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle3 strong').css({ "outline": "2px solid #4D90FE", "box-shadow": "0px 0px 5px #4D90FE" });
+            });
+            $('.accordion-toggle3').focusout(function () {
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle3 strong').css({ "outline": "none", "box-shadow": "none" });
+            });
+        });
     </script>
 
     <apex:outputPanel>

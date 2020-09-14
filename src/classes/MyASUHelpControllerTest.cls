@@ -415,6 +415,7 @@ private class MyASUHelpControllerTest {
             Test.stopTest();
         }
 
+        System.assertEquals('/viewAllArticles', helpTab.getViewAllArticlesLink());
         System.assertEquals(submit.getURL(), urlReturnedFromSubmit);
         System.assertEquals('Description', helpTab.suggestAnArticle.Description);
     }
@@ -615,5 +616,47 @@ private class MyASUHelpControllerTest {
             Test.stopTest();
         }
         System.assert(jsonEmail.contains('noEmail@test.com'));
+    }
+
+    @isTest
+    private static void testCheckForFunctionalGroup() {
+        loadTestUserByLastName('User0');
+        Pagereference pr;
+
+        System.runAs(testUser) {
+            Test.startTest();
+            pr = ApexPages.currentPage();
+            pr.getParameters().put('category', 'finance');
+            helpTab = new MyASUHelpController();
+            System.assertEquals('Financial Aid', helpTab.functionalGroup);
+            pr.getParameters().put('category', 'technical');
+            helpTab = new MyASUHelpController();
+            System.assertEquals('%Technical Resources%', helpTab.functionalGroup);
+            pr.getParameters().put('category', 'housing');
+            helpTab = new MyASUHelpController();
+            System.assertEquals('Housing', helpTab.functionalGroup);
+            Test.stopTest();
+        }
+    }
+
+    @isTest
+    private static void testGetArticlesAndLinks() {
+        loadTestUserByLastName('User0');
+
+        System.runAs(testUser) {
+            Test.startTest();
+            helpTab = new MyASUHelpController();
+            System.assertEquals(0, helptab.getAllFinancialArticles().size());
+            System.assertEquals(0, helptab.getTopThreeFinancialArticles().size());
+            System.assertEquals(0, helptab.getAllTechnicalArticles().size());
+            System.assertEquals(0, helptab.getTopThreeTechnicalArticles().size());
+            System.assertEquals(0, helptab.getAllHousingArticles().size());
+            System.assertEquals(0, helptab.getTopThreeHousingArticles().size());
+            System.assertNotEquals(null, helptab.getViewAllFinancialArticlesLink());
+            System.assertNotEquals(null, helptab.getViewAllTechnicalArticlesLink());
+            System.assertNotEquals(null, helptab.getViewAllHousingArticlesLink());
+
+            Test.stopTest();
+        }
     }
 }

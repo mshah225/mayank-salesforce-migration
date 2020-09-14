@@ -81,7 +81,6 @@
             'campus': component.get('v.Campus'),
             'residency': component.get('v.Residency'),
             'major': component.get('v.Major'),
-            'advisor': component.get('v.Advisor'),
         };
     },
 

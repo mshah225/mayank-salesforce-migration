@@ -162,45 +162,4 @@ private class AdvisorPortalFilterHelperTest {
         // Assert
         System.assert(results.contains(testContact.Id), 'The testContact Id should have been returned.');
     }
-
-    @IsTest
-    static void testFilterStudentAdvisors() {
-        // Arrange
-        Contact testContact = [SELECT Id FROM Contact LIMIT 1];
-
-        Location__c tempe = new Location__c(
-            Name = 'Tempe',
-            Location_Code__c = 'TEMPE'
-        );
-        insert tempe;
-
-        Student_Program_Plan__c testPlan = new Student_Program_Plan__c(
-            Contact__c = testContact.Id,
-            Cohort__c = 'Senior',
-            Campus__c = tempe.Id,
-            Residency__c = 'Resident',
-            Plan_Description__c = 'Computer Science'
-        );
-        insert testPlan;
-
-        Student_Program_Plan_Advisor__c testAdvisor = new Student_Program_Plan_Advisor__c(
-            Name = 'Test Advisor',
-            Advisor_Name__c = 'Sally Advisor',
-            Student_Program_Plan__c = testPlan.Id
-        );
-        insert testAdvisor;
-
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.advisor = 'sally';
-
-        Test.setFixedSearchResults(new List<String>{testAdvisor.Id});
-
-        // Act
-        Test.startTest();
-        Set<Id> results = AdvisorPortalFilterHelper.filterStudentAdvisors(filter, new Set<Id>{testContact.Id});
-        Test.stopTest();
-
-        // Assert
-        System.assert(results.contains(testContact.Id), 'The testContact Id should have been returned.');
-    }
 }

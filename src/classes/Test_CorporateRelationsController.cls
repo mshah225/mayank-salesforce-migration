@@ -52,7 +52,7 @@ private class Test_CorporateRelationsController
         insert testContact;
 
         testR = new Relationship__c(
-            Account__c = testAccount.Id,
+            Related_Account__c = testAccount.Id,
             Active_Relationship__c = true,
             Contact__c = testContact.Id,
             Title__c = 'Test Title',

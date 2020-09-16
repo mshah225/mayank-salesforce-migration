@@ -1029,4 +1029,11 @@ Also, the package has changed the setting to prevent the creation of Contacts an
         <shortDescription>PreSurveyQuestion</shortDescription>
         <value>How can we help?</value>
     </labels>
+    <labels>
+        <fullName>SilverPopName</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SilverPopName</shortDescription>
+        <value>INSERTOBJECTNAMEHERE</value>
+    </labels>
 </CustomLabels>

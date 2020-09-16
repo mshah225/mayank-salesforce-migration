@@ -83,6 +83,7 @@ public class ContactFactory extends TestFactory {
                 Last_Case_Email_Used__c = 'test@test.com',
                 Lead_Email__c = 'test@test.com',
                 Lead_Secondary_Email__c = 'test@test.com',
+                me3hs_User_ID__c = 'test@test.com',
                 Parent_Email__c = 'test@test.com',
                 Personal_Email__c = 'test@test.com',
                 Birthdate = System.today(),
@@ -102,6 +103,7 @@ public class ContactFactory extends TestFactory {
                 Last_Case_Email_Used__c = 'test@test.com',
                 Lead_Email__c = 'test@test.com',
                 Lead_Secondary_Email__c = 'test@test.com',
+                me3hs_User_ID__c = 'test@test.com',
                 Parent_Email__c = 'test@test.com',
                 Personal_Email__c = 'test@test.com',
                 Birthdate = System.today()

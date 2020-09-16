@@ -299,7 +299,7 @@ public class showMyCoachCasesController extends ListViewController {
         }
         set {
             searchString = value;
-            if (searchString != null) {
+            if (searchString != '') {
                 String tempQuery = removeSearchString();
                 Integer loc = tempQuery.indexOf('WHERE');
                 String tempQueryLeft = tempQuery.substring(0, loc + 5);
@@ -329,7 +329,7 @@ public class showMyCoachCasesController extends ListViewController {
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch() {
-        searchString = null;
+        searchString = '';
         query = removeSearchString();
     }
 

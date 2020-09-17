@@ -1,4 +1,4 @@
-<apex:component controller="ASUBrandHeaderController">
+<apex:component controller="ASUBrandController">
     <apex:attribute name="siteTitleName" description="The name of the site to display in the ASU header" type="String" />
     <apex:attribute name="siteTitleUrl" description="The URL for the site title name link" type="String" />
     <c:ASUBrandHeaderStyles />
@@ -238,7 +238,31 @@
                 document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className + " chrome";
             }
             ASUHeader.generateSiteTitle();
-			//--><!]]>
+            //--><!]]>
+
+            var ASUHeader = ASUHeader || {};
+            ASUHeader.browser = false;
+            window.ASUHeader = window.ASUHeader || {};
+            ASUHeader.site_menu = ASUHeader.site_menu || {};
+
+            if ("{!menuLinks.size}" > 0) {
+                var pos = jsonHeaderString.lastIndexOf(',');
+                jsonHeaderString = jsonHeaderString.substring(0, pos);
+                jsonHeaderString += ']';
+                ASUHeader.site_menu.json = jsonHeaderString;
+            }
+            else {
+                ASUHeader.site_menu.json = '[' +
+                    '{"title":"Home","path":"https://webapp4.asu.edu/myasu"},' +
+                    '{"title":"Finances","path":"https://webapp4.asu.edu/myasu/student/finances"},' +
+                    '{"title":"Service Center","path":"\/"},' +
+                    '{"title":"Campus Services","path":"https://webapp4.asu.edu/myasu/student/campusservices"},' +
+                    '{"title":"Profile","path":"https://webapp4.asu.edu/myasu/student/profile"}]';
+            }
+
+            ASUHeader.site_menu.site_name = "Student Service Center";
+            ASUHeader.user_signedin = true;
+            ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
         </script>
         <div style="clear:both;"></div>
     </div>

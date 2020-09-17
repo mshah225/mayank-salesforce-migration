@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="ViewAllCasesController"
-    action="{!init}" cache="true" extensions="ASUBrandMenuController">
+    action="{!init}" cache="true" extensions="ASUBrandController">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
@@ -83,7 +83,7 @@
 
                                         <apex:column width="5%" style="background-color:white;text-align:right" onmousemove="this.style.backgroundColor='white'"
                                             onmouseout="this.style.backgroundColor ='white'">
-                                            <apex:commandLink value="View" styleClass="btn" style="padding:4px;" action="{!viewCase}">
+                                            <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
                                                 <apex:param name="caseId" value="{!case.Id}" />
                                             </apex:commandLink>
                                         </apex:column>

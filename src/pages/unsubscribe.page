@@ -1,4 +1,4 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandMenuController"
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandController"
  action="{!optOutOfEmails}" standardStylesheets="false">
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />

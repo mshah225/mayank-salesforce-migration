@@ -1,7 +1,7 @@
 @isTest
-private class ASUBrandMenuControllerTest {
+private class ASUBrandControllerTest {
     private static Contact testContact;
-    private static ASUBrandMenuController nav;
+    private static ASUBrandController nav;
     private static Profile asuCommunityProfile;
     private static MyASUHelpController sc;
     private static User testUser;
@@ -58,7 +58,7 @@ private class ASUBrandMenuControllerTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpController();
-            nav = new ASUBrandMenuController(sc);
+            nav = new ASUBrandController(sc);
             nav.init();
         }
         Test.stopTest();
@@ -71,16 +71,18 @@ private class ASUBrandMenuControllerTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpController();
-            nav = new ASUBrandMenuController(sc);
+            nav = new ASUBrandController(sc);
             ApexPages.currentPage()
                 .getParameters()
                 .put(
                     'navbar',
-                    '{"navbarLinks":[{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
+                    '{"navbarLinks":[' +
+                    '{"Home":"https://webapp4-dev.asu.edu/myasu/student"},' +
                     '{"Finances":"https://webapp4-dev.asu.edu/myasu/student/finances"},' +
                     '{"Service Center":"https://webapp4-dev.asu.edu/myasu/student/servicecenter"},' +
                     '{"Campus Services":"https://webapp4-dev.asu.edu/myasu/student/campusservices"},' +
-                    '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}]}'
+                    '{"Profile":"https://webapp4-dev.asu.edu/myasu/student/profile"}' +
+                    ']}'
                 );
             nav.init();
         }
@@ -107,7 +109,7 @@ private class ASUBrandMenuControllerTest {
         Test.startTest();
         System.runAs(testUser) {
             sc = new MyASUHelpController();
-            nav = new ASUBrandMenuController(sc);
+            nav = new ASUBrandController(sc);
             ApexPages.currentPage().getParameters().put('navbar', '{"navbarLinks":[]}');
             nav.init();
         }

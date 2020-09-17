@@ -1,20 +1,40 @@
-public class ASUBrandMenuController {
+public class ASUBrandController {
     public String links { get; set; }
     public List<Link> menuLinks { get; set; }
+    public Boolean isLoggedInUser;
 
-    public ASUBrandMenuController() {
+    public ASUBrandController() {
+        setUserStatus();
     }
-    public ASUBrandMenuController(ApexPages.StandardController controller) {
+    public ASUBrandController(ApexPages.StandardController controller) {
+        setUserStatus();
     }
-    public ASUBrandMenuController(AKBController controller) {
+    public ASUBrandController(AKBController controller) {
+        setUserStatus();
     }
-    public ASUBrandMenuController(MyASUHelpController controller) {
+    public ASUBrandController(MyASUHelpController controller) {
+        setUserStatus();
     }
-    public ASUBrandMenuController(UnsubscribeController controller) {
+    public ASUBrandController(UnsubscribeController controller) {
+        setUserStatus();
     }
-    public ASUBrandMenuController(ViewCaseController controller) {
+    public ASUBrandController(ViewCaseController controller) {
+        setUserStatus();
     }
-    public ASUBrandMenuController(ViewAllCasesController controller) {
+    public ASUBrandController(ViewAllCasesController controller) {
+        setUserStatus();
+    }
+
+    private void setUserStatus() {
+        isLoggedInUser = false;
+
+        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
+            isLoggedInUser = true;
+        }
+    }
+
+    public Boolean getIsLoggedInUser() {
+        return isLoggedInUser;
     }
 
     public PageReference init() {

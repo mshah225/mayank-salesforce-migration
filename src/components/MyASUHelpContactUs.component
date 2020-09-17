@@ -97,8 +97,8 @@
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent-button-finances'));
-                                                liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent-button-finances'));
+                                                liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_finances'));
+                                                liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_finances'));
                                             });
                                         </script>
                                     </div>
@@ -107,8 +107,8 @@
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent-button-technical-support'));
-                                                liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent-button-technical-support'));
+                                                liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_technical_support'));
+                                                liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_technical_support'));
                                             });
                                         </script>
                                     </div>
@@ -117,8 +117,8 @@
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent-button-student-services'));
-                                                liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent-button-student-services'));
+                                                liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_student_services'));
+                                                liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_student_services'));
                                             });
                                         </script>
                                     </div>

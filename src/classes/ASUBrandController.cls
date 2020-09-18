@@ -103,7 +103,7 @@ public class ASUBrandController {
 
             Link link1 = new Link();
             link1.name = 'Home';
-            link1.url = System.Label.MyASU_Help_Base_URL + '/myasu';
+            link1.url = System.Label.MyASU_Help_Base_URL + '/myasu/student';
 
             Link link2 = new Link();
             link2.name = 'Finances';

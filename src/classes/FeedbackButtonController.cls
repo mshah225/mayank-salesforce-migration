@@ -33,7 +33,7 @@ public without sharing class FeedbackButtonController {
                 settings = Feedback_Cars__c.getAll().get(carName);
 
                 siteTitleName = carName;
-                siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu';
+                siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu/student';
 
                 if (settings != null) {
                     // Validate the contact, if it does not exist or is not valid

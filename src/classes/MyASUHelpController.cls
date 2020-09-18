@@ -10,6 +10,7 @@ public with sharing class MyASUHelpController {
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
     public Case suggestAnArticle { get; set; }
+    public String suggestedArticleDescription { get; set; }
     public Case newCase { get; set; }
 
     public Contact userContact;
@@ -279,6 +280,9 @@ public with sharing class MyASUHelpController {
         }
 
         suggestAnArticle.Subject = 'Suggest An Article';
+        if (suggestedArticleDescription != null) {
+            suggestAnArticle.Description = suggestedArticleDescription;
+        }
         suggestAnArticle.ContactId = userContact.Id;
 
         List<Case_Classification__c> funcGroupList;

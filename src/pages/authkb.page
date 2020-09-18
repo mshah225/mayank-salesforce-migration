@@ -128,7 +128,7 @@
                                                     <apex:pageBlock mode="maindetail">
                                                         <p>Have an idea for an article you'd like to see? Please tell us below!</p>
                                                         <apex:pageBlock mode="maindetail">
-                                                            <apex:inputText id="articleDetails" required="true" value="{!suggestedArticleDescription}" />
+                                                            <apex:inputTextarea id="articleDetails" required="true" value="{!suggestedArticleDescription}" />
                                                         </apex:pageBlock>
                                                         <apex:commandLink value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-primary" />
                                                     </apex:pageBlock>

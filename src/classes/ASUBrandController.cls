@@ -103,23 +103,23 @@ public class ASUBrandController {
 
             Link link1 = new Link();
             link1.name = 'Home';
-            link1.url = '{!$Label.MyASU_Help_Base_URL}/myasu';
+            link1.url = System.Label.MyASU_Help_Base_URL + '/myasu';
 
             Link link2 = new Link();
             link2.name = 'Finances';
-            link2.url = '{!$Label.MyASU_Help_Base_URL}/myasu/student/finances';
+            link2.url = System.Label.MyASU_Help_Base_URL + '/myasu/student/finances';
 
             Link link3 = new Link();
             link3.name = 'Campus Services';
-            link3.url = '{!$Label.MyASU_Help_Base_URL}/myasu/student/campusservices';
+            link3.url = System.Label.MyASU_Help_Base_URL + '/myasu/student/campusservices';
 
             Link link4 = new Link();
             link4.name = 'Profile';
-            link4.url = '{!$Label.MyASU_Help_Base_URL}/myasu/student/profile';
+            link4.url = System.Label.MyASU_Help_Base_URL + '/myasu/student/profile';
 
             Link link5 = new Link();
             link5.name = 'Help';
-            link5.url = '{!$Label.MyASU_Help_Base_URL}/myasu/student/servicecenter';
+            link5.url = System.Label.MyASU_Help_Base_URL + '/myasu/student/servicecenter';
 
             menuLinks.add(link1);
             menuLinks.add(link2);

@@ -73,14 +73,30 @@
         let caseSubjectPicklistAction = component.get('c.getCaseSubjectPicklistValues');
         caseSubjectPicklistAction.setParams({viewAsOptions: userIds});
         caseSubjectPicklistAction.setCallback(this, function (response) {
-            component.set('v.CaseSubjectPicklistValues', helper.buildPicklistOptionsArray(response.getReturnValue()));
+            if (response && response.getReturnValue()) {
+                component.set(
+                    'v.CaseSubjectPicklistValues',
+                    helper.buildPicklistOptionsArray(response.getReturnValue())
+                );
+            } else {
+                console.log('Error!');
+                console.log(response.getError());
+            }
         });
         $A.enqueueAction(caseSubjectPicklistAction);
 
         let caseClassificationPicklistAction = component.get('c.getCaseClassificationPicklistValues');
         caseClassificationPicklistAction.setParams({viewAsOptions: userIds});
         caseClassificationPicklistAction.setCallback(this, function (response) {
-            component.set('v.CaseCategoryPicklistValues', helper.buildPicklistOptionsArray(response.getReturnValue()));
+            if (response && response.getReturnValue()) {
+                component.set(
+                    'v.CaseCategoryPicklistValues',
+                    helper.buildPicklistOptionsArray(response.getReturnValue())
+                );
+            } else {
+                console.log('Error!');
+                console.log(response.getError());
+            }
         });
         $A.enqueueAction(caseClassificationPicklistAction);
     },

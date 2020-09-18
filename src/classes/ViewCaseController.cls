@@ -31,7 +31,7 @@ public with sharing class ViewCaseController {
 
     public ViewCaseController() {
         siteTitleName = 'My ASU';
-        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
+        siteTitleUrl = '{!$Label.MyASU_Help_Base_URL}/myasu';
         viewingAs = false;
         replyCaseAttachment = new Attachment();
         checkForViewAs();

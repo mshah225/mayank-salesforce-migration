@@ -239,11 +239,11 @@
             }
             else {
                 ASUHeader.site_menu.json = '[' +
-                    '{"title":"Home","path":"/myasu"},' +
-                    '{"title":"Finances","path":"/myasu/student/finances"},' +
-                    '{"title":"Campus Services","path":"/myasu/student/campusservices"},' +
-                    '{"title":"Profile","path":"/myasu/student/profile"},' +
-                    '{"title":"Help","path":"\/"}]';
+                    '{"title":"Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu"},' +
+                    '{"title":"Finances","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/finances"},' +
+                    '{"title":"Campus Services","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/campusservices"},' +
+                    '{"title":"Profile","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/profile"},' +
+                    '{"title":"Help","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/servicecenter"}]';
             }
 
             ASUHeader.site_menu.site_name = "My ASU";

@@ -9,7 +9,7 @@
         <c:MyASUHelpStyles />
     </head>
 
-    <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="https://webapp4.asu.edu/myasu" />
+    <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="{!$Label.MyASU_Help_Base_URL}/myasu" />
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">

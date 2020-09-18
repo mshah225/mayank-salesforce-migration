@@ -530,7 +530,6 @@ public without sharing class FamilyPortalController {
     }
 
     private void insertGuardianReturnUrl() {
-        System.debug(ApexPages.currentPage().getHeaders().get('Host'));
         if (familyPortalGuardian.Hash_ID__c != null) {
             String currentHeaderUrl = ApexPages.currentPage().getHeaders().get('Host');
             familyPortalGuardian.Return_URL__c =

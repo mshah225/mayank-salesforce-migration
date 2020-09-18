@@ -20,7 +20,7 @@ public with sharing class ViewAllCasesController {
     public ViewAllCasesController() {
         viewingAs = false;
         siteTitleName = 'My ASU';
-        siteTitleUrl = 'https://webapp4.asu.edu/myasu';
+        siteTitleUrl = '{!$Label.MyASU_Help_Base_URL}/myasu';
         checkForViewAs();
         popUserContact();
     }

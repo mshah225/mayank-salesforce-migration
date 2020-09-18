@@ -26,7 +26,7 @@
             ASUHeader.browser = false;
             window.ASUHeader = window.ASUHeader || {};
             ASUHeader.site_menu = ASUHeader.site_menu || {};
-            ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"}]';
+            ASUHeader.site_menu.json = '[{"title":"Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu"}]';
 
             ASUHeader.site_menu.site_name = "Student Service Center";
             ASUHeader.user_signedin = true;
@@ -220,7 +220,7 @@
         <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
 
         <div id="myasu-header-seo" class="myasu-cont">
-            <a href="https://webapp4.asu.edu/myasu">My ASU</a>
+            <a href="{!$Label.MyASU_Help_Base_URL}/myasu">My ASU</a>
         </div>
 
         <!-- MyASU Tab Bar -->
@@ -228,7 +228,7 @@
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
                     <span class='tab'>
-                        <a href="https://webapp4.asu.edu/myasu" class="tracking">
+                        <a href="{!$Label.MyASU_Help_Base_URL}/myasu" class="tracking">
                             <span class="fa fa-home" title="Home"></span>
                         </a>
                     </span>

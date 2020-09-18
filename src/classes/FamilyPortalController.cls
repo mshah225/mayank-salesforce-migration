@@ -508,6 +508,7 @@ public without sharing class FamilyPortalController {
         } else {
             familyPortalGuardian.Hash_ID__c = hashId;
         }
+        insertGuardianReturnUrl();
         insert familyPortalGuardian;
     }
 
@@ -525,6 +526,18 @@ public without sharing class FamilyPortalController {
                 familyPortalGuardianInterestList.add(guardianInterest);
             }
             insert familyPortalGuardianInterestList;
+        }
+    }
+
+    private void insertGuardianReturnUrl() {
+        System.debug(ApexPages.currentPage().getHeaders().get('Host'));
+        if (familyPortalGuardian.Hash_ID__c != null) {
+            String currentHeaderUrl = ApexPages.currentPage().getHeaders().get('Host');
+            familyPortalGuardian.Return_URL__c =
+                'https://' +
+                currentHeaderUrl +
+                '/FamilyPortal?hid=' +
+                familyPortalGuardian.Hash_ID__c;
         }
     }
 

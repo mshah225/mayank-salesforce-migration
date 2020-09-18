@@ -65,7 +65,7 @@ public with sharing class MyASUHelpController {
 
     private void setSiteTitleInformation() {
         siteTitleName = 'My ASU';
-        siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu';
+        siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu/student';
     }
 
     private void instantiateControllerVariables() {

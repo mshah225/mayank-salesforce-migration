@@ -239,7 +239,7 @@
             }
             else {
                 ASUHeader.site_menu.json = '[' +
-                    '{"title":"Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu"},' +
+                    '{"title":"Student Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student"},' +
                     '{"title":"Finances","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/finances"},' +
                     '{"title":"Campus Services","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/campusservices"},' +
                     '{"title":"Profile","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/profile"},' +

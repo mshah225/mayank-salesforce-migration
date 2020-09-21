@@ -313,9 +313,7 @@
 
         /* My ASU Help - Contact Us */
 
-        .myasu-help-region #liveagent_button_finances,
-        .myasu-help-region #liveagent_button_technical_support,
-        .myasu-help-region #liveagent_button_student_services {
+        .myasu-help-region [id*='liveagent_button_'] {
             text-decoration: underline;
         }
 

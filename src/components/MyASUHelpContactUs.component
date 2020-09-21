@@ -93,32 +93,47 @@
                             <div id="myasu-help-contact-us-chat-link" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <div class="myasu-help-contact-us-chat-link-finance">
-                                        <a id="liveagent_button_finances" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">{!financeDisplayName}</a>
+                                        <a id="liveagent_button_finances_online" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                            {!financeDisplayName}
+                                        </a>
+                                        <a id="liveagent_button_finances_offline" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                            {!financeDisplayName}
+                                        </a>
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_finances'));
-                                                liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_finances'));
+                                                liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_finances_online'));
+                                                liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_finances_offline'));
                                             });
                                         </script>
                                     </div>
                                     <div class="myasu-help-contact-us-chat-link-technical">
-                                        <a id="liveagent_button_technical_support" href="#" onclick="liveagent.startChat(techSupportChatId);">{!technicalSupportDisplayName}</a>
+                                        <a id="liveagent_button_technical_support_online" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                            {!technicalSupportDisplayName}
+                                        </a>
+                                        <a id="liveagent_button_technical_support_offline" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                            {!technicalSupportDisplayName}
+                                        </a>
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_technical_support'));
-                                                liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_technical_support'));
+                                                liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_technical_support_online'));
+                                                liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_technical_support_offline'));
                                             });
                                         </script>
                                     </div>
                                     <div class="myasu-help-contact-us-chat-link-student-services">
-                                        <a id="liveagent_button_student_services" href="#" onclick="liveagent.startChat(studentServiceChatId);">{!studentServicesDisplayName}</a>
+                                        <a id="liveagent_button_student_services_online" href="#" onclick="liveagent.startChat(studentServiceChatId);">
+                                            {!studentServicesDisplayName}
+                                        </a>
+                                        <a id="liveagent_button_student_services_offline" href="#" onclick="liveagent.startChat(studentServiceChatId);">
+                                            {!studentServicesDisplayName}
+                                        </a>
                                         <script type="text/javascript">
                                             if (!window._laq) { window._laq = []; }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_student_services'));
-                                                liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_student_services'));
+                                                liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_student_services_online'));
+                                                liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_student_services_offline'));
                                             });
                                         </script>
                                     </div>

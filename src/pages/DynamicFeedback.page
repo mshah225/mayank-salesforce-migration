@@ -43,7 +43,7 @@
                             <li class="active">Feedback</li>
                         </ol>
                     </apex:outputPanel>
-                    <apex:form id="feedbackForm" style="max-width:50%;">
+                    <apex:form id="feedbackForm">
                         <p class="lead">ASU values your experience and wants to ensure that you receive quality service. Tell us how we can
                             improve your experience below.</p>
                         <div class="form-item webform-component webform-component-textarea webform-component--text-area">

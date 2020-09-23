@@ -6,21 +6,21 @@
     massEmail: function (component, event, helper) {
         let casesToEmail = [];
         let isValid = true;
-        component.set("v.FormError", "");
-        let contacts = component.get("v.Contacts");
-        event.getSource().set("v.disabled", true);
+        component.set('v.FormError', '');
+        let contacts = component.get('v.Contacts');
+        event.getSource().set('v.disabled', true);
 
-        if (!component.get("v.EmailSubject")) {
+        if (!component.get('v.EmailSubject')) {
             isValid = false;
         }
 
-        if (!component.get("v.EmailBody")) {
+        if (!component.get('v.EmailBody')) {
             isValid = false;
         }
 
         if (!isValid) {
-            component.set("v.FormError", "Please fill out all required fields.");
-            event.getSource().set("v.disabled", false);
+            component.set('v.FormError', 'Please fill out all required fields.');
+            event.getSource().set('v.disabled', false);
             return;
         }
 
@@ -34,26 +34,26 @@
             }
         }
 
-        let action = component.get("c.createPortalEmails");
+        let action = component.get('c.createPortalEmails');
         action.setParams({
             portalCases: casesToEmail,
-            subject: component.get("v.EmailSubject"),
-            body: component.get("v.EmailBody")
+            subject: component.get('v.EmailSubject'),
+            body: component.get('v.EmailBody'),
         });
         action.setCallback(this, function (response) {
             if (response.getState() !== 'SUCCESS') {
-                helper.fireToast("Error", helper.buildErrorMessage(response.getError()), "error");
-                event.getSource().set("v.disabled", false);
+                helper.fireToast('Error', helper.buildErrorMessage(response.getError()), 'error');
+                event.getSource().set('v.disabled', false);
                 return;
             }
 
-            helper.fireToast("", "Email message(s) sent.", "success");
-            component.set("v.EmailSubject", "");
-            component.set("v.EmailBody", "");
-            component.set("v.FormError", "");
+            helper.fireToast('', 'Email message(s) sent.', 'success');
+            component.set('v.EmailSubject', '');
+            component.set('v.EmailBody', '');
+            component.set('v.FormError', '');
             helper.toggleEmailModal(component);
-            event.getSource().set("v.disabled", false);
+            event.getSource().set('v.disabled', false);
         });
         $A.enqueueAction(action);
-    }
-})
+    },
+});

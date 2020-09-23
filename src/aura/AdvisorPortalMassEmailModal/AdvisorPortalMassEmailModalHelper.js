@@ -1,7 +1,7 @@
 ({
     toggleEmailModal: function (component) {
         let countOfSelectedCases = 0;
-        let contacts = component.get("v.Contacts");
+        let contacts = component.get('v.Contacts');
 
         for (let i = 0; i < contacts.length; i++) {
             if (contacts[i].isSelected) {
@@ -15,17 +15,17 @@
         }
 
         if (countOfSelectedCases === 0) {
-            this.fireToast("", "Please select a case first.", "error");
+            this.fireToast('', 'Please select a case first.', 'error');
             return;
         }
 
-        $A.util.toggleClass(component.find("modalBackdrop"), "slds-backdrop_open");
-        $A.util.toggleClass(component.find("massEmailModal"), "slds-fade-in-open");
+        $A.util.toggleClass(component.find('modalBackdrop'), 'slds-backdrop_open');
+        $A.util.toggleClass(component.find('massEmailModal'), 'slds-fade-in-open');
 
-        if ($A.util.hasClass(component.find("massEmailModal"), "slds-fade-in-open")) {
-            component.set("v.EmailSubject", "");
-            component.set("v.EmailBody", "");
-            component.set("v.FormError", "");
+        if ($A.util.hasClass(component.find('massEmailModal'), 'slds-fade-in-open')) {
+            component.set('v.EmailSubject', '');
+            component.set('v.EmailBody', '');
+            component.set('v.FormError', '');
         }
     },
 
@@ -54,18 +54,18 @@
                 }
             }
         } else {
-            messageMap.set("Unknown error", "Unknown Error");
+            messageMap.set('Unknown error', 'Unknown Error');
         }
 
-        return Array.from(messageMap.values()).join(". ");
+        return Array.from(messageMap.values()).join('. ');
     },
 
     fireToast: function (title, message, type) {
-        let lightningToast = $A.get("e.force:showToast");
+        let lightningToast = $A.get('e.force:showToast');
         if (lightningToast !== undefined) {
-            lightningToast.setParams({"title": title, "message": message, "type": type}).fire();
+            lightningToast.setParams({title: title, message: message, type: type}).fire();
         } else {
-            $A.get("e.c:ShowClassicToast").setParams({"title": title, "message": message, "type": type}).fire();
+            $A.get('e.c:ShowClassicToast').setParams({title: title, message: message, type: type}).fire();
         }
-    }
-})
+    },
+});

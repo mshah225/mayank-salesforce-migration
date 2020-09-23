@@ -1,17 +1,31 @@
 <aura:component controller="AdvisorPortalMassEmailModalController" description="AdvisorPortalMassEmailModal">
-    <aura:attribute name="Contacts" type="AdvisorPortalContact[]"/>
-    <aura:attribute name="EmailSubject" type="String"/>
-    <aura:attribute name="EmailBody" type="String"/>
-    <aura:attribute name="FormError" type="String"/>
-    <aura:registerEvent name="classicToast" type="c:ShowClassicToast"/>
+    <aura:attribute name="Contacts" type="AdvisorPortalContact[]" />
+    <aura:attribute name="EmailSubject" type="String" />
+    <aura:attribute name="EmailBody" type="String" />
+    <aura:attribute name="FormError" type="String" />
+    <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
     <aura:if isTrue="{!not(empty(v.Contacts))}">
-        <lightning:button label="Mass Email" variant="brand" onclick="{!c.toggleMassEmailModal}"/>
+        <lightning:button label="Mass Email" variant="brand" onclick="{!c.toggleMassEmailModal}" />
 
-        <section aura:id="massEmailModal" role="dialog" tabindex="-1" aria-labelledby="massEmailHeading" aria-modal="true" aria-describedby="massEmailBody" class="slds-modal">
+        <section
+            aura:id="massEmailModal"
+            role="dialog"
+            tabindex="-1"
+            aria-labelledby="massEmailHeading"
+            aria-modal="true"
+            aria-describedby="massEmailBody"
+            class="slds-modal"
+        >
             <div class="slds-modal__container">
                 <header class="slds-modal__header">
-                    <lightning:buttonIcon iconName="utility:close" onclick="{!c.toggleMassEmailModal}" alternativeText="close" variant="bare-inverse" class="slds-modal__close"/>
+                    <lightning:buttonIcon
+                        iconName="utility:close"
+                        onclick="{!c.toggleMassEmailModal}"
+                        alternativeText="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"
+                    />
                     <h2 id="massEmailHeading" class="slds-text-heading_medium slds-hyphenate">Mass Email</h2>
                 </header>
 
@@ -26,18 +40,23 @@
                         </aura:if>
 
                         <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
-                            <lightning:input type="text" label="Subject" value="{!v.EmailSubject}" required="true"/>
+                            <lightning:input type="text" label="Subject" value="{!v.EmailSubject}" required="true" />
                         </lightning:layoutItem>
 
                         <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
-                            <lightning:textarea label="Body" value="{!v.EmailBody}" class="email-body" required="true"/>
+                            <lightning:textarea
+                                label="Body"
+                                value="{!v.EmailBody}"
+                                class="email-body"
+                                required="true"
+                            />
                         </lightning:layoutItem>
                     </lightning:layout>
                 </div>
 
                 <footer class="slds-modal__footer">
-                    <lightning:button variant="neutral" label="Cancel" onclick="{!c.toggleMassEmailModal}"/>
-                    <lightning:button type="submit" variant="brand" label="Send" onclick="{!c.massEmail}"/>
+                    <lightning:button variant="neutral" label="Cancel" onclick="{!c.toggleMassEmailModal}" />
+                    <lightning:button type="submit" variant="brand" label="Send" onclick="{!c.massEmail}" />
                 </footer>
             </div>
         </section>

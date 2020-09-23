@@ -35,7 +35,7 @@
 }
 
 .THIS .slds-accordion__summary-heading {
-    flex-grow: .005 !important;
+    flex-grow: 0.005 !important;
 }
 
 .THIS .slds-button[disabled],

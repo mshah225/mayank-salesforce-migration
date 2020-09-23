@@ -1,22 +1,31 @@
 ({
     getFilterPicklists: function (component) {
         let residencyAction = component.get('c.getPicklistValues');
+        component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') + 1);
         residencyAction.setParams({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'});
         residencyAction.setCallback(this, function (response) {
             component.set('v.ResidencyPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
+            component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') - 1);
+            component.set('v.isProcessing', component.get('v.processingCounterForInit') == 0 ? false : true);
         });
         $A.enqueueAction(residencyAction);
 
         let caseStatusAction = component.get('c.getCaseStatusSettings');
+        component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') + 1);
         caseStatusAction.setCallback(this, function (response) {
             component.set('v.CaseStatusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
+            component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') - 1);
+            component.set('v.isProcessing', component.get('v.processingCounterForInit') == 0 ? false : true);
         });
         $A.enqueueAction(caseStatusAction);
 
         let campusOptionsAction = component.get('c.getPicklistValues');
+        component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') + 1);
         campusOptionsAction.setParams({objectName: 'Case', fieldName: 'Campus__c'});
         campusOptionsAction.setCallback(this, function (response) {
             component.set('v.CampusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
+            component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') - 1);
+            component.set('v.isProcessing', component.get('v.processingCounterForInit') == 0 ? false : true);
         });
         $A.enqueueAction(campusOptionsAction);
     },

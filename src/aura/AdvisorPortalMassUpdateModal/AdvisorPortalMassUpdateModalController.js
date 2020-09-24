@@ -118,7 +118,7 @@
             helper.toggleUpdateModal(component);
             helper.resetComponentValues(component);
             event.getSource().set('v.disabled', false);
-            $A.get('e.c:RefreshAdvisorPortalContacts').fire();
+            component.getEvent('refreshAdvisorPortalContacts').fire();
         });
         $A.enqueueAction(action);
     },

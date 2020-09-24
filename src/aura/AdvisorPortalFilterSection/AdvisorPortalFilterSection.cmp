@@ -48,6 +48,9 @@
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.SelectedViewAsUserOptions}" action="{!c.viewAsUsersHasChanged}" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
+
+    <aura:method name="forceApplyFilters" action="{!c.applyFilters}"></aura:method>
+
     <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
     <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />
     <aura:registerEvent name="updateCaseContactWrappersEvent" type="c:UpdateCaseContactWrappersEvent" />

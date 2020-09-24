@@ -1,5 +1,6 @@
 <aura:component access="public">
     <aura:attribute name="Contacts" type="AdvisorPortalContact[]" />
+    <aura:attribute name="ViewAsOptions" type="List" />
     <aura:attribute name="ContactsDisplayed" type="AdvisorPortalContact[]" />
     <aura:attribute name="AllSections" type="List" />
     <aura:attribute name="OpenSections" type="List" />
@@ -19,9 +20,32 @@
     <aura:attribute name="RecordOffsetRangeTo" type="Integer" description="Last record offset in range" />
     <aura:attribute name="Total" type="Integer" description="Total number of records" />
     <aura:handler name="change" value="{!v.Contacts}" action="{!c.resetViews}" />
+
+    <aura:registerEvent name="refreshAdvisorPortalContacts" type="c:RefreshAdvisorPortalContacts" />
+
     <ltng:require scripts="/support/console/45.0/integration.js" />
 
     <aura:if isTrue="{!not(empty(v.ContactsDisplayed))}">
+        <div class="slds-grid slds-m-top_x-small">
+            <span class="slds-show_inline slds-m-right_xx-small">
+                <c:AdvisorPortalMassTransferModal Contacts="{!v.Contacts}" ViewAsOptions="{!v.ViewAsOptions}" />
+            </span>
+            <span class="slds-show_inline slds-m-right_xx-small">
+                <c:AdvisorPortalMassEmailModal Contacts="{!v.Contacts}" />
+            </span>
+            <span class="slds-show_inline slds-m-right_xx-small">
+                <c:AdvisorPortalMassUpdateModal Contacts="{!v.Contacts}" />
+            </span>
+            <span class="slds-show_inline">
+                <lightning:buttonIcon
+                    iconName="utility:refresh"
+                    onclick="{!c.refreshUsersAndCaseContactWrappers}"
+                    variant="brand"
+                    alternativeText="Refresh Contacts"
+                />
+            </span>
+        </div>
+
         <div class="slds-p-vertical_x-small">
             <div class="slds-p-bottom_small">
                 <lightning:icon class="icn outreach-icn" iconName="utility:record" size="x-small" />

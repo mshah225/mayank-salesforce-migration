@@ -1,5 +1,4 @@
 <aura:component controller="AdvisorPortalController" access="public">
-    <aura:attribute name="Contacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="ContactsInView" type="AdvisorPortalContact[]" />
     <aura:attribute name="FilteredContacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="isProcessing" type="Boolean" default="true" />
@@ -32,8 +31,12 @@
         event="c:UpdateCaseContactWrappersEvent"
         action="{!c.updateCaseContactWrappers}"
     />
+    <aura:handler
+        name="refreshAdvisorPortalContacts"
+        event="c:RefreshAdvisorPortalContacts"
+        action="{!c.refreshUsersAndCaseContactWrappers}"
+    />
 
-    <aura:handler event="c:RefreshAdvisorPortalContacts" action="{!c.populateContacts}" />
     <lightning:spinner
         aura:id="spinner"
         variant="brand"
@@ -47,27 +50,10 @@
         <c:ClassicToast />
     </span>
     <c:AdvisorPortalTopLevelFilter />
-    <c:AdvisorPortalFilterSection SelectedViewAsUserOptions="{!v.SelectedUserOptions}" />
+    <c:AdvisorPortalFilterSection
+        aura:id="filterSectionAuraElement"
+        SelectedViewAsUserOptions="{!v.SelectedUserOptions}"
+    />
 
-    <div class="slds-grid slds-m-top_x-small">
-        <span class="slds-show_inline slds-m-right_xx-small">
-            <c:AdvisorPortalMassTransferModal Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" />
-        </span>
-        <span class="slds-show_inline slds-m-right_xx-small">
-            <c:AdvisorPortalMassEmailModal Contacts="{!v.FilteredContacts}" />
-        </span>
-        <span class="slds-show_inline slds-m-right_xx-small">
-            <c:AdvisorPortalMassUpdateModal Contacts="{!v.FilteredContacts}" />
-        </span>
-        <span class="slds-show_inline">
-            <lightning:buttonIcon
-                iconName="utility:refresh"
-                onclick="{!c.populateContacts}"
-                variant="brand"
-                alternativeText="Refresh Contacts"
-            />
-        </span>
-    </div>
-
-    <c:AdvisorPortalDataTable Contacts="{!v.FilteredContacts}" />
+    <c:AdvisorPortalDataTable Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" />
 </aura:component>

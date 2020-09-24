@@ -135,4 +135,8 @@
             component.set('v.OpenSections', []);
         }
     },
+
+    refreshUsersAndCaseContactWrappers: function (component, event, helper) {
+        component.getEvent('refreshAdvisorPortalContacts').fire();
+    },
 });

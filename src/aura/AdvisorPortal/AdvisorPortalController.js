@@ -1,6 +1,6 @@
 ({
     populateContacts: function (component, event, helper) {
-        component.set('v.isProcessing', true);
+        helper.incrementProcessingCounter(component);
         let userOptions = [];
         let selectedOptions;
 
@@ -20,7 +20,7 @@
         let action = component.get('c.getPortalContactsForViewOptions');
         action.setParams({allUserOptions: userOptions});
         action.setCallback(this, function (result) {
-            component.set('v.isProcessing', false);
+            helper.decrementProcessingCounter(component);
             component.set('v.Contacts', result.getReturnValue());
             helper.filterContactsBySelectedOptions(component);
         });
@@ -29,5 +29,14 @@
 
     filterContacts: function (component, event, helper) {
         helper.filterContactsBySelectedOptions(component);
+    },
+
+    updateViewAsOptions: function (component, event, helper) {},
+    updateCaseContactWrappers: function (component, event, helper) {},
+    callsIncrementProcessingCounter: function (component, event, helper) {
+        helper.incrementProcessingCounter(component);
+    },
+    callsDecrementProcessingCounter: function (component, event, helper) {
+        helper.decrementProcessingCounter(component);
     },
 });

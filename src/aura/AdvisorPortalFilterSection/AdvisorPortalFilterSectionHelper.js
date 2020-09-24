@@ -1,31 +1,28 @@
 ({
     getFilterPicklists: function (component) {
+        component.getEvent('incrementProcessingCounterEvent').fire();
         let residencyAction = component.get('c.getPicklistValues');
-        component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') + 1);
         residencyAction.setParams({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'});
         residencyAction.setCallback(this, function (response) {
             component.set('v.ResidencyPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
-            component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') - 1);
-            component.set('v.isProcessing', component.get('v.processingCounterForInit') == 0 ? false : true);
+            component.getEvent('decrementProcessingCounterEvent').fire();
         });
         $A.enqueueAction(residencyAction);
 
+        component.getEvent('incrementProcessingCounterEvent').fire();
         let caseStatusAction = component.get('c.getCaseStatusSettings');
-        component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') + 1);
         caseStatusAction.setCallback(this, function (response) {
             component.set('v.CaseStatusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
-            component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') - 1);
-            component.set('v.isProcessing', component.get('v.processingCounterForInit') == 0 ? false : true);
+            component.getEvent('decrementProcessingCounterEvent').fire();
         });
         $A.enqueueAction(caseStatusAction);
 
+        component.getEvent('incrementProcessingCounterEvent').fire();
         let campusOptionsAction = component.get('c.getPicklistValues');
-        component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') + 1);
         campusOptionsAction.setParams({objectName: 'Case', fieldName: 'Campus__c'});
         campusOptionsAction.setCallback(this, function (response) {
             component.set('v.CampusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
-            component.set('v.processingCounterForInit', component.get('v.processingCounterForInit') - 1);
-            component.set('v.isProcessing', component.get('v.processingCounterForInit') == 0 ? false : true);
+            component.getEvent('decrementProcessingCounterEvent').fire();
         });
         $A.enqueueAction(campusOptionsAction);
     },
@@ -45,7 +42,7 @@
             return;
         }
 
-        component.set('v.isProcessing', true);
+        component.getEvent('incrementProcessingCounterEvent').fire();
 
         let filterAction = component.get('c.getContactCaseWrappersWithLessQueries');
         filterAction.setParams({
@@ -61,7 +58,7 @@
                 component.set('v.FilteredContacts', response.getReturnValue());
             }
 
-            component.set('v.isProcessing', false);
+            component.getEvent('decrementProcessingCounterEvent').fire();
         });
         $A.enqueueAction(filterAction);
     },

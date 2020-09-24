@@ -59,4 +59,18 @@
             component.set('v.ContactsInView', selectedContacts);
         }
     },
+    incrementProcessingCounter: function (component, event, helper) {
+        let currentValue = component.get('v.processingCounter');
+        let newValue = currentValue + 1;
+
+        component.set('v.processingCounter', newValue);
+        component.set('v.isProcessing', newValue !== 0);
+    },
+    decrementProcessingCounter: function (component, event, helper) {
+        let currentValue = component.get('v.processingCounter');
+        let newValue = currentValue - 1;
+
+        component.set('v.processingCounter', newValue);
+        component.set('v.isProcessing', newValue !== 0);
+    },
 });

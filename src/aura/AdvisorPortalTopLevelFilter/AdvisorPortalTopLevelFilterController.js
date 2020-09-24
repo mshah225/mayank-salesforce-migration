@@ -84,7 +84,7 @@
     },
 
     selectAll: function (component, event, helper) {
-        component.set('v.isProcessing', true);
+        component.getEvent('incrementProcessingCounterEvent').fire();
 
         let allUserOpts = component.get('v.AllUserOptions');
         let selectedOptions = [];
@@ -100,11 +100,11 @@
         component.set('v.CurrentSelectedOptions', selectedOptions);
 
         helper.setCountSelected(component);
-        component.set('v.isProcessing', false);
+        component.getEvent('decrementProcessingCounterEvent').fire();
     },
 
     myQueue: function (component, event, helper) {
-        component.set('v.isProcessing', true);
+        component.getEvent('incrementProcessingCounterEvent').fire();
 
         let myQueue = [];
         let allUserOpts = component.get('v.AllUserOptions');
@@ -122,7 +122,7 @@
         component.set('v.CurrentSelectedOptions', myQueue);
 
         helper.setCountSelected(component);
-        component.set('v.isProcessing', false);
+        component.getEvent('decrementProcessingCounterEvent').fire();
     },
 
     onchangeNameSearch: function (component) {
@@ -166,7 +166,7 @@
     },
 
     applyChanges: function (component) {
-        component.set('v.isProcessing', true);
+        component.getEvent('incrementProcessingCounterEvent').fire();
         let ownerIdList = [];
         let ownerIdListParsed;
         let ownerIdListProxy = component.get('v.CurrentSelectedOptions');
@@ -186,7 +186,7 @@
         }
 
         action.setCallback(this, function (result) {
-            component.set('v.isProcessing', false);
+            component.getEvent('decrementProcessingCounterEvent').fire();
             $A.get('e.c:UpdateViewAsOptions')
                 .setParams({viewAsOptions: component.get('v.CurrentSelectedOptions')})
                 .fire();

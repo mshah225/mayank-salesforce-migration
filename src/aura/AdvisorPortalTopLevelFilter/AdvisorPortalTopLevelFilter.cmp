@@ -26,19 +26,13 @@
     <aura:attribute name="SelectedOptionsCount" type="Integer" />
     <aura:attribute name="DefaultPillsDisplayed" type="Integer" default="5" />
     <aura:attribute name="PillsDisplayedCount" type="Integer" />
-    <aura:attribute name="isProcessing" type="boolean" default="false" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.CurrentSelectedOptions}" action="{!c.collapsePillGroup}" />
     <aura:handler name="render" value="{!this}" action="{!c.setOwnerIdList}" />
     <aura:registerEvent name="updateOptions" type="c:UpdateViewAsOptions" />
 
-    <lightning:spinner
-        aura:id="spinner"
-        variant="brand"
-        size="large"
-        class="{!((v.isProcessing) ? '': 'slds-hide')}"
-        alternativeText="Loading..."
-    />
+    <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
+    <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />
 
     <div class="slds-card slds-p-around_small slds-m-bottom_x-small light-blue-background">
         <div class="slds-m-bottom_medium">

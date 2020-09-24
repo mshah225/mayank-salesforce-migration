@@ -47,20 +47,12 @@
     <aura:attribute name="ProactiveCasesState" type="Boolean" default="true" />
     <aura:attribute name="AllCasesState" type="Boolean" default="false" />
     <aura:attribute name="isFilterSectionShown" type="Boolean" default="true" />
-    <aura:attribute name="isProcessing" type="Boolean" default="true" />
-    <aura:attribute name="processingCounterForInit" type="Integer" default="0" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.Contacts}" action="{!c.refreshView}" />
     <aura:handler name="change" value="{!v.SelectedViewAsUserOptions}" action="{!c.buildUserIds}" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
-
-    <lightning:spinner
-        aura:id="spinner"
-        variant="brand"
-        size="large"
-        class="{!((v.isProcessing) ? '': 'slds-hide')}"
-        alternativeText="Loading..."
-    />
+    <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
+    <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />
 
     <lightning:buttonStateful
         aura:id="filtersToggle"

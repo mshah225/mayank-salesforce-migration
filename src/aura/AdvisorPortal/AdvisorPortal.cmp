@@ -1,23 +1,23 @@
-<!--
-  @File Name          : AdvisorPortal.cmp
-  @Description        :
-  @Author             :
-  @Group              :
-  @Last Modified By   : thom.clark@sierra-cedar.com
-  @Last Modified On   : 10/21/2019, 3:04:12 PM
-  @Modification Log   :
-  Ver       Date            Author      		    Modification
-  1.0                                                Initial Version
-  1.1   10/17/2019      thom.clark@sierra-cedar.com   Added "CurrentSelectedOptions" to allow for
-                                                      "Apply Filters" funcitonality
--->
 <aura:component controller="AdvisorPortalController" access="public">
     <aura:attribute name="Contacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="ContactsInView" type="AdvisorPortalContact[]" />
     <aura:attribute name="FilteredContacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="isProcessing" type="Boolean" default="true" />
+    <aura:attribute name="processingCounter" type="Integer" default="0" />
     <aura:attribute name="AllUserOptions" type="List" />
     <aura:attribute name="SelectedUserOptions" type="List" />
+    <aura:attribute name="CaseContactWrappers" type="List" />
+    <aura:handler
+        name="incrementProcessingCounterEvent"
+        event="c:IncrementProcessingCounterEvent"
+        action="{!c.callsIncrementProcessingCounter}"
+    />
+    <aura:handler
+        name="decrementProcessingCounterEvent"
+        event="c:DecrementProcessingCounterEvent"
+        action="{!c.callsDecrementProcessingCounter}"
+    />
+
     <aura:attribute name="CurrentSelectedOptions" type="List" />
     <aura:handler name="change" value="{!v.SelectedUserOptions}" action="{!c.filterContacts}" />
     <aura:handler event="c:RefreshAdvisorPortalContacts" action="{!c.populateContacts}" />
@@ -27,6 +27,7 @@
         variant="brand"
         size="large"
         class="{!((v.isProcessing) ? '': 'slds-hide')}"
+        style="position: fixed"
         alternativeText="Loading..."
     />
 

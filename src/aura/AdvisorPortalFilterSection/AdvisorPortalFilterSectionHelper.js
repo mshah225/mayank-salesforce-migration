@@ -53,9 +53,12 @@
             console.log(response.getError());
             console.log(response.getReturnValue());
             if (!response.getReturnValue()) {
-                component.set('v.FilteredContacts', []);
+                component.getEvent('updateCaseContactWrappersEvent').setParams({caseContactWrapperList: []}).fire();
             } else {
-                component.set('v.FilteredContacts', response.getReturnValue());
+                component
+                    .getEvent('updateCaseContactWrappersEvent')
+                    .setParams({caseContactWrapperList: response.getReturnValue()})
+                    .fire();
             }
 
             component.getEvent('decrementProcessingCounterEvent').fire();

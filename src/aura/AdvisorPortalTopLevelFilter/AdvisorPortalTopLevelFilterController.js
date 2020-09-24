@@ -1,21 +1,6 @@
-/**
- * @File Name          : AdvisorPortalTopLevelFilterController.js
- * @Description        :
- * @Author             :
- * @Group              :
- * @Last Modified By   : thom.clark@sierra-cedar.com
- * @Last Modified On   : 10/18/2019, 5:20:48 PM
- * @Modification Log   :
- * Ver       Date            Author      		    Modification
- * 1.0                                               Initial Version
- * 1.1      10/17/2019  thom.clark@sierra-cedar.com  Added "Apply Selection" button to stop delay of
- *                                                   filter on item selection of top filter.
- *          10/18/2019  thom.clark@sierra-cedar.com  Allowed for top filter to close onblur
- * 			10/30/2019  thom.clark@sierra-cedar.com  Set up spinner when Apply Selection is clicked to
- * 													 let user know processing is happening.
- **/
 ({
     doInit: function (component, event, helper) {
+        component.getEvent('incrementProcessingCounterEvent').fire();
         let allUserOptionsCount = 0;
         let action = component.get('c.viewAsOptions');
         action.setCallback(this, function (result) {
@@ -48,9 +33,10 @@
                     viewAsSelectOptions.push(option);
                 }
             }
-
-            $A.get('e.c:UpdateViewAsOptions')
-                .setParams({viewAsOptions: component.get('v.CurrentSelectedOptions')})
+            component.getEvent('updateAllUserOptionsEvent').setParams({allUserOptions: allUserOptions}).fire();
+            component
+                .getEvent('updateViewAsOptionsEvent')
+                .setParams({viewAsUsersList: component.get('v.CurrentSelectedOptions')})
                 .fire();
             component.set('v.AllUserOptions', allUserOptions);
             component.set('v.FilteredUserOptions', allUserOptions);
@@ -58,28 +44,8 @@
             component.set('v.PillsDisplayedCount', component.get('v.DefaultPillsDisplayed'));
 
             helper.setCountSelected(component);
+            component.getEvent('decrementProcessingCounterEvent').fire();
         });
-        $A.enqueueAction(action);
-    },
-
-    setOwnerIdList: function (component, event, helper) {
-        let ownerIdList = [];
-        let ownerIdListParsed;
-        let ownerIdListProxy = component.get('v.CurrentSelectedOptions');
-        let action = component.get('c.setOwnerIdListFromUserSelection');
-
-        if (ownerIdListProxy.length > 0) {
-            ownerIdListParsed = JSON.parse(JSON.stringify(ownerIdListProxy));
-            for (let i = 0; i < ownerIdListParsed.length; i++) {
-                if (ownerIdListParsed[i].isSelected) {
-                    ownerIdList.push(ownerIdListParsed[i].value);
-                }
-            }
-        }
-
-        if (ownerIdList != null) {
-            action.setParams({ownerIdList: ownerIdList});
-        }
         $A.enqueueAction(action);
     },
 
@@ -167,32 +133,11 @@
 
     applyChanges: function (component) {
         component.getEvent('incrementProcessingCounterEvent').fire();
-        let ownerIdList = [];
-        let ownerIdListParsed;
-        let ownerIdListProxy = component.get('v.CurrentSelectedOptions');
-        let action = component.get('c.setOwnerIdListFromUserSelection');
-
-        if (ownerIdListProxy.length > 0) {
-            ownerIdListParsed = JSON.parse(JSON.stringify(ownerIdListProxy));
-            for (let i = 0; i < ownerIdListParsed.length; i++) {
-                if (ownerIdListParsed[i].isSelected) {
-                    ownerIdList.push(ownerIdListParsed[i].value);
-                }
-            }
-        }
-
-        if (ownerIdList != null) {
-            action.setParams({ownerIdList: ownerIdList});
-        }
-
-        action.setCallback(this, function (result) {
-            component.getEvent('decrementProcessingCounterEvent').fire();
-            $A.get('e.c:UpdateViewAsOptions')
-                .setParams({viewAsOptions: component.get('v.CurrentSelectedOptions')})
-                .fire();
-        });
-
-        $A.enqueueAction(action);
+        component
+            .getEvent('updateViewAsOptionsEvent')
+            .setParams({viewAsUsersList: component.get('v.CurrentSelectedOptions')})
+            .fire();
+        component.getEvent('decrementProcessingCounterEvent').fire();
     },
 
     toggleDropdown: function (component, event, helper) {

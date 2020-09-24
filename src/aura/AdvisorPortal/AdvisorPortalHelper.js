@@ -1,14 +1,3 @@
-/**
- * @File Name          : AdvisorPortalHelper.js
- * @Description        :
- * @Author             :
- * @Group              :
- * @Last Modified By   : thom.clark@sierra-cedar.com
- * @Last Modified On   : 10/17/2019, 1:58:18 PM
- * @Modification Log   :
- * Ver       Date            Author      		    Modification
- * 1.0                                               Initial Version
- **/
 ({
     filterContactsBySelectedOptions: function (component) {
         let contacts = component.get('v.Contacts');
@@ -72,5 +61,22 @@
 
         component.set('v.processingCounter', newValue);
         component.set('v.isProcessing', newValue !== 0);
+    },
+    updateViewAsOptions: function (component, event, helper) {
+        helper.incrementProcessingCounter(component);
+        let selectedOptions;
+
+        if (event.getParam('viewAsUsersList')) {
+            selectedOptions = event.getParam('viewAsUsersList');
+        } else {
+            selectedOptions = component.get('v.AllUserOptions');
+        }
+
+        component.set('v.SelectedUserOptions', selectedOptions);
+
+        console.log(component.get('v.AllUserOptions'));
+        console.log(component.get('v.SelectedUserOptions'));
+
+        helper.decrementProcessingCounter(component);
     },
 });

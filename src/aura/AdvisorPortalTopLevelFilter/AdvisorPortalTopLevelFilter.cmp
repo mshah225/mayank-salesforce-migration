@@ -1,23 +1,7 @@
-<!--
-  @File Name          : AdvisorPortalTopLevelFilter.cmp
-  @Description        :
-  @Author             :
-  @Group              :
-  @Last Modified By   : thom.clark@sierra-cedar.com
-  @Last Modified On   : 10/18/2019, 5:21:05 PM
-  @Modification Log   :
-  Ver       Date            Author      		    Modification
-  1.0                                                Initial Version
-  1.1      10/17/2019   thom.clark@sierra-cedar.com   Added "Apply Selection" button
-                                                      Added "CurrentSelectedOptions" attribute to facilitate
-                                                      "Apply Selection" button functionality
--->
 <aura:component controller="AdvisorPortalTopLevelFilterController" access="public">
     <aura:attribute name="MyQueueId" type="String" />
     <aura:attribute name="AllUserOptions" type="List" />
     <aura:attribute name="FilteredUserOptions" type="List" />
-    <aura:attribute name="SelectedUserOptions" type="List" />
-    <!--added tclark-->
     <aura:attribute name="CurrentSelectedOptions" type="List" />
     <aura:attribute name="isFilterClosed" type="Boolean" Default="False" />
     <aura:attribute name="FilterValue" type="String" />
@@ -28,11 +12,12 @@
     <aura:attribute name="PillsDisplayedCount" type="Integer" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.CurrentSelectedOptions}" action="{!c.collapsePillGroup}" />
-    <aura:handler name="render" value="{!this}" action="{!c.setOwnerIdList}" />
     <aura:registerEvent name="updateOptions" type="c:UpdateViewAsOptions" />
 
     <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
     <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />
+    <aura:registerEvent name="updateViewAsOptionsEvent" type="c:UpdateViewAsOptionsEvent" />
+    <aura:registerEvent name="updateAllUserOptionsEvent" type="c:UpdateAllUserOptionsEvent" />
 
     <div class="slds-card slds-p-around_small slds-m-bottom_x-small light-blue-background">
         <div class="slds-m-bottom_medium">

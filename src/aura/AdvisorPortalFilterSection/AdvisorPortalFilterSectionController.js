@@ -66,7 +66,7 @@
         helper.validateDateFields(component);
     },
 
-    buildUserIds: function (component, event, helper) {
+    viewAsUsersHasChanged: function (component, event, helper) {
         let userIds = component.get('v.SelectedViewAsUserOptions').map((option) => option.value);
         component.set('v.UserIds', userIds);
 
@@ -99,5 +99,7 @@
             }
         });
         $A.enqueueAction(caseClassificationPicklistAction);
+
+        helper.applyFilters(component, true);
     },
 });

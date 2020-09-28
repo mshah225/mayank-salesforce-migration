@@ -1,10 +1,10 @@
 public class AdvisorPortalFilterSectionController {
     private static Map<String, Set<Decimal>> outlookScoresByLabels = new Map<String, Set<Decimal>>{
-        'very low' => new Set<Decimal>{0, 1, 2, 3},
-        'low' => new Set<Decimal>{4, 5},
-        'moderate' => new Set<Decimal>{6},
-        'high' => new Set<Decimal>{7},
-        'very high' => new Set<Decimal>{8, 9, 10}
+        'very low' => new Set<Decimal>{ 0, 1, 2, 3 },
+        'low' => new Set<Decimal>{ 4, 5 },
+        'moderate' => new Set<Decimal>{ 6 },
+        'high' => new Set<Decimal>{ 7 },
+        'very high' => new Set<Decimal>{ 8, 9, 10 }
     };
 
     private static Map<String, Decimal> outlookChangeByLabels = new Map<String, Decimal>{
@@ -12,7 +12,6 @@ public class AdvisorPortalFilterSectionController {
         'down' => 0,
         'no change' => -1
     };
-
 
     /**
      * Gets active picklist values for a provided Object and Field name.
@@ -26,7 +25,15 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getPicklistValues(String objectName, String fieldName) {
         Map<String, String> picklistValuesByLabel = new Map<String, String>();
 
-        for (Schema.PicklistEntry picklistValue : Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap().get(fieldName).getDescribe().getPicklistValues()) {
+        for (
+            Schema.PicklistEntry picklistValue : Schema.getGlobalDescribe()
+                .get(objectName)
+                .getDescribe()
+                .fields.getMap()
+                .get(fieldName)
+                .getDescribe()
+                .getPicklistValues()
+        ) {
             if (picklistValue.isActive()) {
                 picklistValuesByLabel.put(picklistValue.getLabel(), picklistValue.getValue());
             }
@@ -66,15 +73,15 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
+        Id recordType = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
+
         for (AggregateResult result : [
             SELECT Subject
             FROM Case
-            WHERE IsClosed = FALSE
-            AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
-            AND Subject != NULL
-            AND OwnerId IN :viewAsOptions
+            WHERE IsClosed = FALSE AND RecordTypeId = :recordType AND Subject != NULL AND OwnerId IN :viewAsOptions
             GROUP BY Subject
-            LIMIT 30000 
+            LIMIT :remainingQueries
         ]) {
             if (result.get('Subject') != null) {
                 caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
@@ -94,18 +101,25 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
+        Id recordType = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
+
         for (AggregateResult result : [
             SELECT CC_Category__r.Name CategoryName
             FROM Case
-            WHERE IsClosed = FALSE
-            AND RecordTypeId = :IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
-            AND CC_Category__c != NULL
-            AND OwnerId IN :viewAsOptions
+            WHERE
+                IsClosed = FALSE
+                AND RecordTypeId = :recordType
+                AND CC_Category__c != NULL
+                AND OwnerId IN :viewAsOptions
             GROUP BY CC_Category__r.Name
-            LIMIT 30000
+            LIMIT :remainingQueries
         ]) {
             if (result.get('CategoryName') != null) {
-                caseClassificationValuesByLabel.put((String) result.get('CategoryName'), (String) result.get('CategoryName'));
+                caseClassificationValuesByLabel.put(
+                    (String) result.get('CategoryName'),
+                    (String) result.get('CategoryName')
+                );
             }
         }
 
@@ -122,14 +136,17 @@ public class AdvisorPortalFilterSectionController {
      */
     // Limits.getQueryRows() += 36000
     @AuraEnabled
-    public static List<AdvisorPortalContact> getContactCaseWrappersWithLessQueries(List<Id> viewAsOptions, AdvisorPortalFilter filter){
+    public static List<AdvisorPortalContact> getContactCaseWrappersWithLessQueries(
+        List<Id> viewAsOptions,
+        AdvisorPortalFilter filter
+    ) {
         Set<Contact> allCaseContacts = new Set<Contact>();
         Set<Contact> filteredCaseContacts = new Set<Contact>();
         Set<Id> filteredContactIds = new Set<Id>();
         List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
         List<AdvisorPortalContact> shortenedAdvisorPortalContactResults = new List<AdvisorPortalContact>();
         Map<Id, List<Case>> casesByContactIds = new Map<Id, List<Case>>();
-        
+
         // Query for cases owned by viewAsOptions and following cases-related filters
         List<Case> filteredCases = queryForCasesWithContactData(viewAsOptions, filter);
 
@@ -140,9 +157,11 @@ public class AdvisorPortalFilterSectionController {
         // Filter contact list based on contact filter of filter string
         if (String.isNotBlank(filter.studentString)) {
             for (Contact eachContact : allCaseContacts) {
-                if ( eachContact.Name == filter.studentString 
-                  || eachContact.EmplId__c == filter.studentString 
-                  || eachContact.ASURite_ID__c == filter.studentString) {
+                if (
+                    eachContact.Name == filter.studentString ||
+                    eachContact.EmplId__c == filter.studentString ||
+                    eachContact.ASURite_ID__c == filter.studentString
+                ) {
                     filteredContactIds.add(eachContact.Id);
                 }
             }
@@ -150,7 +169,7 @@ public class AdvisorPortalFilterSectionController {
             for (Contact eachContact : allCaseContacts) {
                 if (eachContact != null && eachContact.Id != null) {
                     filteredContactIds.add(eachContact.Id);
-                }                
+                }
             }
         }
 
@@ -161,7 +180,7 @@ public class AdvisorPortalFilterSectionController {
         filteredContactIds = AdvisorPortalFilterHelper.filterStudentPlans(filter, filteredContactIds);
 
         // Remove cases that don't match contact filters and generate list of filteredContacts
-        for(Integer i=0; i<filteredCases.size(); i++) {
+        for (Integer i = 0; i < filteredCases.size(); i++) {
             Case eachCase = filteredCases.get(i);
             if (filteredContactIds.contains(eachCase.ContactId)) {
                 filteredCaseContacts.add(eachCase.Contact);
@@ -174,13 +193,11 @@ public class AdvisorPortalFilterSectionController {
         // Add mapping of contactId to case list
         for (Case eachCase : filteredCases) {
             if (!casesByContactIds.containsKey(eachCase.ContactId)) {
-                casesByContactIds.put(eachCase.ContactId, new List<Case>{eachCase});
+                casesByContactIds.put(eachCase.ContactId, new List<Case>{ eachCase });
             } else {
                 casesByContactIds.get(eachCase.ContactId).add(eachCase);
             }
         }
-
-
 
         // Add filtered Contact/Case records to wrapper.
         for (Contact contact : filteredCaseContacts) {
@@ -193,7 +210,10 @@ public class AdvisorPortalFilterSectionController {
 
             if (casesByContactIds.containsKey(contact.Id)) {
                 // Skip Contact if we filter by Case count and it has less than we want.
-                if ((filter.caseCount != null || filter.caseCount > 0) && casesByContactIds.get(contact.Id).size() < filter.caseCount) {
+                if (
+                    (filter.caseCount != null || filter.caseCount > 0) &&
+                    casesByContactIds.get(contact.Id).size() < filter.caseCount
+                ) {
                     continue;
                 }
 
@@ -209,9 +229,9 @@ public class AdvisorPortalFilterSectionController {
                 advisorPortalContactResults.add(contactWrapper);
             }
         }
-        
+
         // Limit to the first 3000 results to prevent massive page slowdown
-        for(Integer i=0; i<advisorPortalContactResults.size() && i<3000; i++) {
+        for (Integer i = 0; i < advisorPortalContactResults.size() && i < 3000; i++) {
             shortenedAdvisorPortalContactResults.add(advisorPortalContactResults.get(i));
         }
 
@@ -220,34 +240,37 @@ public class AdvisorPortalFilterSectionController {
 
     // Limits.getQueryRows() += 30000
     private static List<Case> queryForCasesWithContactData(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
-        String queryString = '' +
+        String queryString =
+            '' +
             'SELECT Priority, ' +
-                'CaseNumber, ' +
-                'Subject, ' +
-                'Status, ' +
-                'Followup_Date__c, ' +
-                'Owner.Name, ' +
-                'CreatedDate, ' +
-                'CC_Category__r.Name, ' +
-                'CC_Category__r.Parent__r.Name, ' +
-                'RecordType.Name, ' +
-                'Change_Date__c, ' +
-                'Curr_Cont_Prediction_Level__c, ' +
-                'Most_Recent_Outlook_Change_Direction__c, ' +
-                'OwnerId, ' +
-                'ContactId, ' +
-                'Id, ' +
-                'Contact.Id, ' +
-                'Contact.Name, ' +
-                'Contact.EmplId__c, ' +
-                'Contact.ASURite_Id__c, ' +
-                'Contact.US_Citizen__c, ' +
-                'Contact.Change_Date__c, ' +
-                'Contact.Most_Recent_Outlook_Change_Direction__c, ' +
-                'Contact.Curr_Cont_Prediction_Level__c ' +
+            'CaseNumber, ' +
+            'Subject, ' +
+            'Status, ' +
+            'Followup_Date__c, ' +
+            'Owner.Name, ' +
+            'CreatedDate, ' +
+            'CC_Category__r.Name, ' +
+            'CC_Category__r.Parent__r.Name, ' +
+            'RecordType.Name, ' +
+            'Change_Date__c, ' +
+            'Curr_Cont_Prediction_Level__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, ' +
+            'OwnerId, ' +
+            'ContactId, ' +
+            'Id, ' +
+            'Contact.Id, ' +
+            'Contact.Name, ' +
+            'Contact.EmplId__c, ' +
+            'Contact.ASURite_Id__c, ' +
+            'Contact.US_Citizen__c, ' +
+            'Contact.Change_Date__c, ' +
+            'Contact.Most_Recent_Outlook_Change_Direction__c, ' +
+            'Contact.Curr_Cont_Prediction_Level__c ' +
             'FROM Case ' +
             'WHERE IsClosed = FALSE ' +
-            'AND RecordTypeId = \'' + IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') + '\'';
+            'AND RecordTypeId = \'' +
+            IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') +
+            '\'';
 
         if (!String.isBlank(filter.caseCategory)) {
             List<String> categories = filter.caseCategory.split(';');
@@ -263,7 +286,7 @@ public class AdvisorPortalFilterSectionController {
             List<String> statuses = filter.caseStatus.split(';');
             queryString += ' AND Status IN :statuses';
         }
-        
+
         queryString += ' AND OwnerId IN :viewAsOptions';
 
         if (filter.watchlistCasesState != null && filter.watchlistCasesState) {
@@ -295,11 +318,15 @@ public class AdvisorPortalFilterSectionController {
         }
 
         if (!String.isBlank(filter.createdFromDate)) {
-            queryString += ' AND CreatedDate >= ' + Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+            queryString +=
+                ' AND CreatedDate >= ' +
+                Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
         }
 
         if (!String.isBlank(filter.createdToDate)) {
-            queryString += ' AND CreatedDate <= ' + Datetime.valueOf(filter.createdToDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+            queryString +=
+                ' AND CreatedDate <= ' +
+                Datetime.valueOf(filter.createdToDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
         }
 
         if (!String.isBlank(filter.followUpFromDate)) {

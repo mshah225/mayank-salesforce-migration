@@ -79,7 +79,6 @@
                     helper.buildPicklistOptionsArray(response.getReturnValue())
                 );
             } else {
-                console.log('Error!');
                 console.log(response.getError());
             }
         });
@@ -94,7 +93,6 @@
                     helper.buildPicklistOptionsArray(response.getReturnValue())
                 );
             } else {
-                console.log('Error!');
                 console.log(response.getError());
             }
         });

@@ -25,9 +25,6 @@
 
         component.set('v.SelectedUserOptions', selectedOptions);
 
-        console.log(component.get('v.AllUserOptions'));
-        console.log(component.get('v.SelectedUserOptions'));
-
         helper.decrementProcessingCounter(component);
     },
 });

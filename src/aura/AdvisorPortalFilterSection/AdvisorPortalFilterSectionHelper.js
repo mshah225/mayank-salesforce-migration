@@ -50,8 +50,6 @@
             filter: this.buildFilter(component),
         });
         filterAction.setCallback(this, function (response) {
-            console.log(response.getError());
-            console.log(response.getReturnValue());
             if (!response.getReturnValue()) {
                 component.getEvent('updateCaseContactWrappersEvent').setParams({caseContactWrapperList: []}).fire();
             } else {

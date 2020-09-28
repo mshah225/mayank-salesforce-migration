@@ -18,10 +18,14 @@ public with sharing class ConversationDispatcher {
     
     public void beforeDelete() {}
 
-    public void afterInsert() {}
+    public void afterInsert() {
+        ConversationServicer service = new ConversationServicer();
+        service.execute(newList);
+    }
 
     public void afterUpdate() {
         ConversationServicer service = new ConversationServicer();
+        service.execute(newList);
         service.updateSharing(oldMap, newMap);
     }
     

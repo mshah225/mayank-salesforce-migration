@@ -28,6 +28,7 @@
                 proactiveRTID="{!CoachCaseRTID}" rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}" caseEmailRTID="{!CoachEmailRTID}"
                 isCoaching="true" showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false" showCaseListSelection="true"
                 showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true" showCaseListStatus="true" showCaseListFollowupDate="true"
+                showCaseListTermSession="false" showCaseListTimeZone="false"
                 showCaseListTransfer="true" showCaseMassEmail="false" showProactiveCaseCount="false" showReactiveCaseCount="false"
                 showSearch="true" />
 
@@ -42,7 +43,8 @@
                     <c:coachPortalShowMyCases id="proactiveList" queryString="{!myProactiveQuery}" transferOptions="{!mySubordinateOptions}"
                         proactiveRTID="{!CoachCaseRTID}" emailRTID="{!CoachEmailRTID}" showSelection="true" showName="true" showEMPLID="true"
                         showSubject="true" showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="false"
-                        showProactive="false" showReactive="false" showSearch="true" showRefresh="true" showTimeZone="true" />
+                        showProactive="false" showReactive="false" showSearch="true" showRefresh="true" showTermSession="true"
+                        showTimeZone="true" />
                 </apex:tab>
 
                 <apex:tab label="Success Tools" switchType="client" styleClass="wsTabContent" id="toolsTab" rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}">
@@ -53,7 +55,7 @@
     </c:coachPortalViewAsComponent>
 
     <div style="text-align:center;padding:25px;">
-        <c:FeedbackButton carName="Coach Portal" />
+        <c:DynamicFeedbackButton betaTag="true" carName="Coach Portal" />
     </div>
 
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}" />

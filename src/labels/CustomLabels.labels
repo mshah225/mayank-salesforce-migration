@@ -1031,6 +1031,13 @@ Also, the package has changed the setting to prevent the creation of Contacts an
         <value>How can we help?</value>
     </labels>
     <labels>
+        <fullName>SilverPopName</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SilverPopName</shortDescription>
+        <value>INSERTOBJECTNAMEHERE</value>
+    </labels>
+    <labels>
         <fullName>ASU_Brand_Header_SSO_Login_URL</fullName>
         <language>en_US</language>
         <protected>false</protected>

@@ -188,9 +188,6 @@
                     <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')" title="New Case">
                         <apex:image value="{!$Resource.RedCase}" style="width:20px;height:20px;"/>
                     </apex:outputLink>&nbsp;&nbsp;
-                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Chat')" title="Direct Pitch Chat">
-                        <apex:image value="{!$Resource.RedChat}" style="width:20px;height:20px;"/>
-                    </apex:outputLink>&nbsp;&nbsp;
                     <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'All Cases')" title="All Cases">
                         <apex:image value="{!$Resource.RedCaseMulti}" style="width:20px;height:20px;"/>
                     </apex:outputLink>
@@ -266,8 +263,6 @@
                     if (result.success) {
                         if (type == 'Case') {
                             sforce.console.openSubtab(result.id, '/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' + contactId + '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach', true, 'New Case', null);
-                        } else if (type == 'Chat') {
-                            sforce.console.openSubtab(result.id, 'https://pitch.asuonline.asu.edu/direct/' + asurite, true, 'Pitch Chat - ' + contactName, null);
                         } else if (type == 'Profile') {
                             sforce.console.openSubtab(result.id, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
                         } else if (type == 'All Cases') {
@@ -286,8 +281,6 @@
                                         if (info.objectId == contactId.substring(0, 15)) { // contactId is 18 digit, ObjectId is 15
                                             if (type == 'Case') {
                                                 sforce.console.openSubtab(parentTabId, '/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' + contactId + '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach', true, 'New Case', null);
-                                            } else if (type == 'Chat') {
-                                                sforce.console.openSubtab(parentTabId, 'https://pitch.asuonline.asu.edu/direct/' + asurite, true, 'Pitch Chat - ' + contactName, null);
                                             } else if (type == 'Profile') {
                                                 sforce.console.openSubtab(parentTabId, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
                                             } else if (type == 'All Cases') {

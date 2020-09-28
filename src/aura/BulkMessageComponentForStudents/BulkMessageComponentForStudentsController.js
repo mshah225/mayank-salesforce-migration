@@ -55,6 +55,28 @@
         } else {
             helper.fetchData(component);
         }
+    },
+    handleRowAction: function (cmp, event, helper) {
+        var action = event.getParam('action');
+        var row = event.getParam('row');
+
+        if(action.name=='Show_Details'){    
+            sforce.console.openPrimaryTab(
+                null, 
+                '/' + row.Id, 
+                true, 
+                row.FirstName, 
+                openSuccess, 
+                row.Id
+            );
+            var openSuccess = function openSuccess(result) {
+                //Report whether opening the new tab was successful
+                if (result.success == true) {
+                    console.log('Tab open success');
+                } else {
+                    console.log('Tab open failed');
+                }
+            };
+        }
     }
-    
 })

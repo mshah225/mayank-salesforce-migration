@@ -66,7 +66,7 @@
         helper.validateDateFields(component);
     },
 
-    buildUserIds: function (component, event, helper) {
+    viewAsUsersHasChanged: function (component, event, helper) {
         let userIds = component.get('v.SelectedViewAsUserOptions').map((option) => option.value);
         component.set('v.UserIds', userIds);
 
@@ -79,7 +79,6 @@
                     helper.buildPicklistOptionsArray(response.getReturnValue())
                 );
             } else {
-                console.log('Error!');
                 console.log(response.getError());
             }
         });
@@ -94,10 +93,11 @@
                     helper.buildPicklistOptionsArray(response.getReturnValue())
                 );
             } else {
-                console.log('Error!');
                 console.log(response.getError());
             }
         });
         $A.enqueueAction(caseClassificationPicklistAction);
+
+        helper.applyFilters(component, true);
     },
 });

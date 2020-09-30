@@ -1,5 +1,5 @@
 .THIS .chosen-container .chosen-results {
-    max-height:150px;
+    max-height: 150px;
     overflow-y: scroll;
 }
 
@@ -8,7 +8,7 @@
 }
 
 .THIS .InputSelectMultiple {
-	width: 300px;
+    width: 300px;
 }
 .THIS .chosen-drop {
     width: 300px;
@@ -35,7 +35,7 @@
 }
 
 .THIS.light-blue-background {
-    background-color: rgba(0,112,210,0.1);
+    background-color: rgba(0, 112, 210, 0.1);
 }
 
 .THIS .slds-dropdown-trigger .slds-dropdown {

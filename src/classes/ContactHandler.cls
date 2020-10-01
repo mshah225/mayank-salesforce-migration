@@ -235,7 +235,7 @@ public without sharing class ContactHandler implements ITrigger
         }
     }
 
-    public void beforeDelete(SObject so) { }
+    public void beforeDelete(SObject so) {}
     
     public void beforeFinally() { 
         // If there are any Accounts to update, update them.
@@ -318,7 +318,7 @@ public without sharing class ContactHandler implements ITrigger
                     // Business Card Campaign Members map
                     bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name).add(cm);
                 }
-            } 
+            }
         }
 
         // If there are any new Contact/Account pairs, update them.

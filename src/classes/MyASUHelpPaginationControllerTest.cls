@@ -35,7 +35,7 @@ private class MyASUHelpPaginationControllerTest {
         vf.getCurrentPageNumber();
         vf.viewAllResults();
 
-        System.assertEquals('', vf.textToSearch);
+        System.assertEquals('Test', vf.textToSearch);
         System.assertEquals(1, vf.getCurrentPageNumber());
     }
 }

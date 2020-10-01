@@ -55,7 +55,7 @@
     </c:coachPortalViewAsComponent>
 
     <div style="text-align:center;padding:25px;">
-        <c:DynamicFeedbackButton betaTag="true" carName="Coach Portal" />
+        <c:FeedbackButton betaTag="true" carName="Coach Portal" />
     </div>
 
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}" />

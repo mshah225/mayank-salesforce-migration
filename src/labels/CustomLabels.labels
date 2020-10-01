@@ -1,11 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
         <fullName>EMPLIDMissing</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>EMPLIDMissing</shortDescription>
         <value>No Data is available since the EMPLID was not provided or not valid.</value>
+    </labels>
+    <labels>
+        <fullName>MyASU_Help_Base_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>MyASU Help Base URL</shortDescription>
+        <value>https://webapp4-qa.asu.edu</value>
     </labels>
     <labels>
         <fullName>PKB2M_aTypeConfig</fullName>

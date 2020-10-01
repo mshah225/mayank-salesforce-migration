@@ -37,7 +37,7 @@ private class CrossOrgShareUtilitiesTest {
 
         record.contactId = testContact.Id;
         record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
-        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/dd/yyyy'));
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/d/yyyy'));
         record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 
@@ -69,7 +69,7 @@ private class CrossOrgShareUtilitiesTest {
 
         record.contactId = testContact.Id;
         record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
-        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/dd/yyyy'));
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/d/yyyy'));
         record.sourceOrgId = UserInfo.getOrganizationId();
         mockResponse.add(record);
 

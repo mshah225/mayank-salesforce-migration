@@ -14,6 +14,13 @@
         <value>https://webapp4-qa.asu.edu</value>
     </labels>
     <labels>
+        <fullName>MyASU_Help_Finance_Chatbot</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>MyASU Help Finance Chatbot</shortDescription>
+        <value>https://chatbotweb-test.m.asu.edu/?full=true</value>
+    </labels>
+    <labels>
         <fullName>PKB2M_aTypeConfig</fullName>
         <language>en_US</language>
         <protected>true</protected>

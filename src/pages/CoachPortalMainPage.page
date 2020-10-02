@@ -13,7 +13,7 @@
 
         <!-- This bit is required in order to pass the mimic ID to the controller of the main page -->
         <!-- VF Components do not have a built in way to pass data up -->
-        <apex:form >
+        <apex:form>
             <apex:actionFunction name="setOwnerId" reRender="rerenderMe" status="ASUAjaxStatus">
                 <apex:param name="ownerId" assignTo="{!ownerId}" value="{!mimicId}" />
             </apex:actionFunction>
@@ -55,7 +55,7 @@
     </c:coachPortalViewAsComponent>
 
     <div style="text-align:center;padding:25px;">
-        <c:DynamicFeedbackButton betaTag="true" carName="Coach Portal" />
+        <c:FeedbackButton carName="Coach Portal" />
     </div>
 
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}" />

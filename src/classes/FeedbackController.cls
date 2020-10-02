@@ -25,7 +25,7 @@ public with sharing class FeedbackController {
         try {
             Queue = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'];
             c.OwnerId = Queue.Id;
-            c.Subject = 'MyASU Service Center Feedback';
+            c.Subject = 'My ASU Help Feedback';
             c.Description = comments;
             if (comments == '' || comments == null) {
                 return null;

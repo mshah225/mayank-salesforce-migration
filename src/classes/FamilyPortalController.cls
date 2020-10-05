@@ -508,8 +508,26 @@ public without sharing class FamilyPortalController {
         } else {
             familyPortalGuardian.Hash_ID__c = hashId;
         }
+        beautifyPhoneNumber();
         insertGuardianReturnUrl();
         insert familyPortalGuardian;
+    }
+
+    private void beautifyPhoneNumber() {
+        if (familyPortalGuardian.Phone__c != null) {
+            familyPortalGuardian.Phone__c = familyPortalGuardian.Phone__c.replaceAll('\\D', '');
+        }
+    }
+
+    private void insertGuardianReturnUrl() {
+        if (familyPortalGuardian.Hash_ID__c != null) {
+            String currentHeaderUrl = ApexPages.currentPage().getHeaders().get('Host');
+            familyPortalGuardian.Return_URL__c =
+                'https://' +
+                currentHeaderUrl +
+                '/FamilyPortal?hid=' +
+                familyPortalGuardian.Hash_ID__c;
+        }
     }
 
     private void insertGuardianInterests() {
@@ -526,17 +544,6 @@ public without sharing class FamilyPortalController {
                 familyPortalGuardianInterestList.add(guardianInterest);
             }
             insert familyPortalGuardianInterestList;
-        }
-    }
-
-    private void insertGuardianReturnUrl() {
-        if (familyPortalGuardian.Hash_ID__c != null) {
-            String currentHeaderUrl = ApexPages.currentPage().getHeaders().get('Host');
-            familyPortalGuardian.Return_URL__c =
-                'https://' +
-                currentHeaderUrl +
-                '/FamilyPortal?hid=' +
-                familyPortalGuardian.Hash_ID__c;
         }
     }
 

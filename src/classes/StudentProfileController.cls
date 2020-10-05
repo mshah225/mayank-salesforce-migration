@@ -5,13 +5,13 @@ global with sharing class StudentProfileController {
     private String contactId;
     private String aidYear;
 
-    public boolean urlParamsExistAndAreValid {get; set;}
+    public boolean urlParamsExistAndAreValid { get; set; }
     public String contactName { get; set; }
     public Contact theContact { get; set; }
     public List<Case> openCases { get; set; }
     public List<Student_Group__c> sGroupList { get; set; }
-    public List<GraduateProgramPlanWrapper> activeGraduatePrograms {get; set;}
-    public List<GraduateProgramPlanWrapper> completedGraduatePrograms {get; set;}
+    public List<GraduateProgramPlanWrapper> activeGraduatePrograms { get; set; }
+    public List<GraduateProgramPlanWrapper> completedGraduatePrograms { get; set; }
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
     public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
     public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
@@ -19,7 +19,7 @@ global with sharing class StudentProfileController {
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
-    public Map<Id, List<Student_Program_Plan_Advisor__c>> gradStudentCommittees {get; set;}
+    public Map<Id, List<Student_Program_Plan_Advisor__c>> gradStudentCommittees { get; set; }
     public Student_Account__c studentAccount { get; set; }
     public Financial_Aid_Package__c financialAidPackage { get; set; }
     public Me3__c me3Results { get; set; }
@@ -36,17 +36,20 @@ global with sharing class StudentProfileController {
     public String nextTerm { get; set; }
     public String nextTermName { get; set; }
     public String subPlanString { get; set; }
-    public Map<String, String> termToName { get; set;}
-    
+    public Map<String, String> termToName { get; set; }
 
-    public Student_Program_Plan__c ugStudentProgram { get {
+    public Student_Program_Plan__c ugStudentProgram {
+        get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];
         }
         set;
     }
 
-    public Student_Program_Plan__c gradStudentProgram { get {
-            return activeGraduatePrograms.isEmpty() ? new Student_Program_Plan__c() : activeGraduatePrograms[0].gradProgramPlan;
+    public Student_Program_Plan__c gradStudentProgram {
+        get {
+            return activeGraduatePrograms.isEmpty()
+                ? new Student_Program_Plan__c()
+                : activeGraduatePrograms[0].gradProgramPlan;
         }
         set;
     }
@@ -57,8 +60,7 @@ global with sharing class StudentProfileController {
                 List<Checklist_Item__c> academicIntegrity = [
                     SELECT Checklist_Item_Status__c
                     FROM Checklist_Item__c
-                    WHERE Checklist_Item_Code__c = 'SRACIN'
-                    AND Contact__c =: theContact.Id
+                    WHERE Checklist_Item_Code__c = 'SRACIN' AND Contact__c = :theContact.Id
                     LIMIT 1
                 ];
                 if (academicIntegrity.isEmpty()) {
@@ -106,7 +108,7 @@ global with sharing class StudentProfileController {
         }
     }
 
-    public void initializeValuesForNullContactId () {
+    public void initializeValuesForNullContactId() {
         testUndergradScoreList = new List<Test_Score__c>();
         testGradScoreList = new List<Test_Score__c>();
         studentMilestonesUGrad = new List<Student_Milestone__c>();
@@ -124,7 +126,9 @@ global with sharing class StudentProfileController {
         Boolean WICHE = false;
 
         for (Student_Group__c sg : sGroupList) {
-            if (sg.SG_Status__c && sg.SG_PeopleSoft_Code__c.equals('WRGP')) {
+            if (
+                sg.SG_Status__c && (sg.SG_PeopleSoft_Code__c.equals('WRGP') || sg.SG_PeopleSoft_Code__c.equals('SFX6'))
+            ) {
                 WICHE = true;
             }
         }
@@ -135,24 +139,26 @@ global with sharing class StudentProfileController {
     public Boolean getAccelerated() {
         Boolean accelerated = false;
 
-        for (Student_Group__c sg: sGroupList) {
-            if (sg.SG_Status__c && (sg.SG_PeopleSoft_Code__c.equals('GRAI') || (sg.SG_PeopleSoft_Code__c.equals('ADIP') && studentProgram.Education_Level__c == '17'))) {
+        for (Student_Group__c sg : sGroupList) {
+            if (
+                sg.SG_Status__c &&
+                (sg.SG_PeopleSoft_Code__c.equals('GRAI') ||
+                (sg.SG_PeopleSoft_Code__c.equals('ADIP') && studentProgram.Education_Level__c == '17'))
+            ) {
                 accelerated = true;
             }
         }
 
         return accelerated;
     }
-    
-    private void setContactRecord() {
 
+    private void setContactRecord() {
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
             throw new StudentProfileException('URL Parameters are missing or invalid');
-
         }
 
         if (isContactId) {
@@ -177,22 +183,51 @@ global with sharing class StudentProfileController {
 
     private void setStudentMilestoneUGrad() {
         studentMilestonesUGrad = [
-            SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c,
-                Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
-                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c
-            FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
-            AND Acad_Career__c = 'UGRD'
+            SELECT
+                Id,
+                Acad_Career__c,
+                Acad_Program__c,
+                Acad_Program__r.Name,
+                Acad_Plan__r.Name,
+                Milestone__c,
+                Milestone_Complete__c,
+                Descr__c,
+                Descrformal__c,
+                Milestone_Level__c,
+                Milestone_Title__c,
+                Term_Required__r.Name,
+                Date_Completed__c,
+                Anticipated_Term__c,
+                Milestone_Nbr__c,
+                Effdt__c
+            FROM Student_Milestone__c
+            WHERE Contact__c = :theContact.Id AND Acad_Career__c = 'UGRD'
             ORDER BY Effdt__c DESC
         ];
     }
 
     private void setStudentMilestoneGrad() {
         studentMilestonesGrad = [
-            SELECT Id, Acad_Career__c, Acad_Program__c, Acad_Program__r.Name, Acad_Plan__r.Name, Milestone__c, Milestone_Complete__c,
-                Descr__c, Descrformal__c, Milestone_Level__c, Milestone_Title__c, Term_Required__r.Name,
-                Date_Completed__c, Anticipated_Term__c, Milestone_Nbr__c, Effdt__c, Grad_Format_Advisor__c
-            FROM Student_Milestone__c WHERE Contact__c = :theContact.Id
-            AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
+            SELECT
+                Id,
+                Acad_Career__c,
+                Acad_Program__c,
+                Acad_Program__r.Name,
+                Acad_Plan__r.Name,
+                Milestone__c,
+                Milestone_Complete__c,
+                Descr__c,
+                Descrformal__c,
+                Milestone_Level__c,
+                Milestone_Title__c,
+                Term_Required__r.Name,
+                Date_Completed__c,
+                Anticipated_Term__c,
+                Milestone_Nbr__c,
+                Effdt__c,
+                Grad_Format_Advisor__c
+            FROM Student_Milestone__c
+            WHERE Contact__c = :theContact.Id AND (Acad_Career__c = 'GRAD' OR Acad_Career__c = 'LAW')
             ORDER BY Effdt__c DESC
         ];
     }
@@ -205,9 +240,8 @@ global with sharing class StudentProfileController {
 
         List<TERM__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c
-            FROM   TERM__c
-            WHERE  PeopleSoft_Code__c = :currentTerm
-            OR  PeopleSoft_Code__c = :nextTermPeoplesoftCode
+            FROM TERM__c
+            WHERE PeopleSoft_Code__c = :currentTerm OR PeopleSoft_Code__c = :nextTermPeoplesoftCode
         ];
 
         for (TERM__c term : termList) {
@@ -232,9 +266,10 @@ global with sharing class StudentProfileController {
         List<Service_Indicator__c> serviceIndicatorList = [
             SELECT SI_Code__c, SI_Description__c, SI_Reason__c, SI_Start_Date__c
             FROM Service_Indicator__c
-            WHERE SI_Contact__c = :theContact.Id
-            AND SI_Positive_Service_Indicator__c = FALSE
-            AND (SI_Start_Date__c < :Date.today()
+            WHERE
+                SI_Contact__c = :theContact.Id
+                AND SI_Positive_Service_Indicator__c = false
+                AND (SI_Start_Date__c < :Date.today()
                 OR SI_Start_Date__c = null)
             ORDER BY SI_Start_Date__c ASC, SI_Code__c ASC
         ];
@@ -251,20 +286,64 @@ global with sharing class StudentProfileController {
 
     private void setStudentProgramPlans() {
         List<Student_Program_Plan__c> allProgramPlans = [
-            SELECT Career__c, Adm_Appl_Dt__c, Adm_Appl_Prog__c,
-                Admit_Term__c, Admit_Term__r.Name, Admit_Type__c, Admission_Type_Description__c, Appt_Dt__c,
-                Appt_Dt_Pending__c, Enrl_Deposit__c, Enrl_Hrs__c, Enrl_Hrs_Pending__c, Education_Level__c,
-                Exp_Grad_Term__c, Exp_Grad_Term__r.Name, Cohort__c, Enrolled_Next_Term__c,
-                Residency__c, Cum_GPA__c, Grad_Max_Time_Limit__c, Grad_Max_Time_Limit__r.Name, Grad_iPOS_Status__c, Grad_iPOS_Status_Date__c, 
-                Tot_Cumulative__c, Academic_Standing__c, eAdvisor__c, Requirement_Term__c,
-                Status__c, Program_Description__c, Plan_Description__c, Degree__c, Campus__r.Name,
-                Primary_Flag__c, Completion_Term__c, Plan_Type_Text__c, Plan_Code__c, Plan_Transcript_Description__c,
-                ASU_AA_OVRL_GPA__c, ASU_AA_POS_GPA__c, Graduate_Specialization__c, Degree_Checkout_Status_Name__c,
-                Grad_Culminating_Event__c, Grad_Advanced_To_Candidacy__c, Degree_Level__c, Grad_Continuous_Enrollment__c,
-                Grad_Anticipated_Term__c, Grad_Anticipated_Term__r.Name, Grad_ASU_Hours_After__c, Grad_ASU_Hours_Before__c, Degree_Chkout_Stat_Code__c
+            SELECT
+                Career__c,
+                Adm_Appl_Dt__c,
+                Adm_Appl_Prog__c,
+                Admit_Term__c,
+                Admit_Term__r.Name,
+                Admit_Type__c,
+                Admission_Type_Description__c,
+                Appt_Dt__c,
+                Appt_Dt_Pending__c,
+                Enrl_Deposit__c,
+                Enrl_Hrs__c,
+                Enrl_Hrs_Pending__c,
+                Education_Level__c,
+                Exp_Grad_Term__c,
+                Exp_Grad_Term__r.Name,
+                Cohort__c,
+                Enrolled_Next_Term__c,
+                Residency__c,
+                Cum_GPA__c,
+                Grad_Max_Time_Limit__c,
+                Grad_Max_Time_Limit__r.Name,
+                Grad_iPOS_Status__c,
+                Grad_iPOS_Status_Date__c,
+                Tot_Cumulative__c,
+                Academic_Standing__c,
+                eAdvisor__c,
+                Requirement_Term__c,
+                Status__c,
+                Program_Description__c,
+                Plan_Description__c,
+                Degree__c,
+                Campus__r.Name,
+                Primary_Flag__c,
+                Completion_Term__c,
+                Plan_Type_Text__c,
+                Plan_Code__c,
+                ASU_AA_OVRL_GPA__c,
+                ASU_AA_POS_GPA__c,
+                Graduate_Specialization__c,
+                Degree_Checkout_Status_Name__c,
+                Grad_Culminating_Event__c,
+                Grad_Advanced_To_Candidacy__c,
+                Degree_Level__c,
+                Grad_Continuous_Enrollment__c,
+                Grad_Anticipated_Term__c,
+                Grad_Anticipated_Term__r.Name,
+                Grad_ASU_Hours_After__c,
+                Grad_ASU_Hours_Before__c,
+                Degree_Chkout_Stat_Code__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
-            ORDER BY Status__c, Primary_Flag__c DESC, Completion_Term__c DESC, Plan_Type_Text__c DESC, Plan_Description__c
+            ORDER BY
+                Status__c,
+                Primary_Flag__c DESC,
+                Completion_Term__c DESC,
+                Plan_Type_Text__c DESC,
+                Plan_Description__c
         ];
 
         if (allProgramPlans.isEmpty()) {
@@ -300,10 +379,10 @@ global with sharing class StudentProfileController {
 
         for (Student_Program_Plan__c programPlan : allProgramPlans) {
             if (programPlan == null || programPlan.Requirement_Term__c == null) {
-                    programPlan.Requirement_Term__c = '--';
-                } else {
-                    programPlan.Requirement_Term__c = termToName.get(programPlan.Requirement_Term__c);
-                }
+                programPlan.Requirement_Term__c = '--';
+            } else {
+                programPlan.Requirement_Term__c = termToName.get(programPlan.Requirement_Term__c);
+            }
         }
 
         setSubplanString();
@@ -313,7 +392,7 @@ global with sharing class StudentProfileController {
         if (terms.isEmpty()) {
             return;
         }
-        List<Term__c> termNames = [SELECT Name, PeopleSoft_Code__c FROM Term__c WHERE PeopleSoft_Code__c IN: terms];
+        List<Term__c> termNames = [SELECT Name, PeopleSoft_Code__c FROM Term__c WHERE PeopleSoft_Code__c IN :terms];
 
         termToName = new Map<String, String>();
 
@@ -324,7 +403,6 @@ global with sharing class StudentProfileController {
         for (Term__c term : termNames) {
             termToName.put(term.PeopleSoft_Code__c, term.Name);
         }
-
     }
 
     private void setSubplanString() {
@@ -334,7 +412,7 @@ global with sharing class StudentProfileController {
         List<Student_Program_Subplan__c> subplans = [
             SELECT Subplan_description__c, Student_Program_Plan__c
             FROM Student_Program_Subplan__c
-            WHERE Student_Program_Plan__c =: studentProgram.Id
+            WHERE Student_Program_Plan__c = :studentProgram.Id
         ];
         if (subplans == null || subplans.isEmpty()) {
             return;
@@ -347,23 +425,33 @@ global with sharing class StudentProfileController {
     }
 
     public void setUndergraduateStudentProgramPlanAdvisors() {
-       ugStudentProgramAdvisors = [
-           SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c,
-                  Name, Advisor_Phone__c, Advisor_Name__c
-           FROM Student_Program_Plan_Advisor__c
-           WHERE Student_Program_Plan__c = :ugStudentProgram.Id
-           AND Student_Program_Plan__r.Career__c = 'Undergraduate'
-           ORDER BY Name
-       ];
+        ugStudentProgramAdvisors = [
+            SELECT
+                Student_Program_Plan__r.Career__c,
+                Advisor_Email__c,
+                Advisor_Id__c,
+                Name,
+                Advisor_Phone__c,
+                Advisor_Name__c
+            FROM Student_Program_Plan_Advisor__c
+            WHERE Student_Program_Plan__c = :ugStudentProgram.Id AND Student_Program_Plan__r.Career__c = 'Undergraduate'
+            ORDER BY Name
+        ];
     }
 
     public void setGraduateStudentProgramPlanAdvisors() {
         gradStudentProgramAdvisors = [
-            SELECT Student_Program_Plan__r.Career__c, Advisor_Email__c, Advisor_Id__c,
-                Name, Advisor_Phone__c, Advisor_Name__c
+            SELECT
+                Student_Program_Plan__r.Career__c,
+                Advisor_Email__c,
+                Advisor_Id__c,
+                Name,
+                Advisor_Phone__c,
+                Advisor_Name__c
             FROM Student_Program_Plan_Advisor__c
-            WHERE Student_Program_Plan__c = :gradStudentProgram.Id
-            AND (Student_Program_Plan__r.Career__c = 'Graduate'
+            WHERE
+                Student_Program_Plan__c = :gradStudentProgram.Id
+                AND (Student_Program_Plan__r.Career__c = 'Graduate'
                 OR Student_Program_Plan__r.Career__c = 'Law')
             ORDER BY Name
         ];
@@ -375,14 +463,21 @@ global with sharing class StudentProfileController {
             programPlansUsed.add(gppw.gradProgramPlan.Id);
         }
         List<Student_Program_Plan_Advisor__c> committeesAndAdvisors = [
-            SELECT Business_Title__c, Committee_Name__c, Company_Description__c, Advisor_Role__c, Student_Program_Plan__c, Advisor_Name__c, Committee_Type__c, Committee_Member_Attend_Method__c
+            SELECT
+                Business_Title__c,
+                Committee_Name__c,
+                Company_Description__c,
+                Advisor_Role__c,
+                Student_Program_Plan__c,
+                Advisor_Name__c,
+                Committee_Type__c,
+                Committee_Member_Attend_Method__c
             FROM Student_Program_Plan_Advisor__c
-            WHERE Student_Program_Plan__c IN: programPlansUsed
-            AND (Student_Program_Plan__r.Career__c = 'Graduate')
+            WHERE Student_Program_Plan__c IN :programPlansUsed AND Student_Program_Plan__r.Career__c = 'Graduate'
             ORDER BY Student_Program_Plan__c, Advisor_Role__c, Advisor_Name__c
         ];
 
-        for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
             gppw.gradCommittees = new List<Student_Program_Plan_Advisor__c>();
             gppw.gradAdvisors = new List<Student_Program_Plan_Advisor__c>();
             String programPlanId = gppw.gradProgramPlan.Id;
@@ -402,30 +497,55 @@ global with sharing class StudentProfileController {
             planCode.add(gppw.gradProgramPlan.Plan_Code__c);
         }
         List<Student_Milestone__c> defenseMilestones = [
-            SELECT Defense_Building__c, Defense_Date_Time__c, Defense_Location__c, Defense_Room__c, Format_Document_Type__c, Format_Status__c, Defense_Status__c, Milestone__c,
-            Final_Defense_Results_Status_DtTm__c, Format_Final_Defense_Results_Status__c, Format_Status_Last_Updated__c, Acad_Plan__r.Plan_Code__c, Grad_Format_Advisor__c
+            SELECT
+                Defense_Building__c,
+                Defense_Date_Time__c,
+                Defense_Location__c,
+                Defense_Room__c,
+                Format_Document_Type__c,
+                Format_Status__c,
+                Defense_Status__c,
+                Milestone__c,
+                Final_Defense_Results_Status_DtTm__c,
+                Format_Final_Defense_Results_Status__c,
+                Format_Status_Last_Updated__c,
+                Acad_Plan__r.Plan_Code__c,
+                Grad_Format_Advisor__c
             FROM Student_Milestone__c
-            WHERE Contact__c =: theContact.Id
-            AND Acad_Plan__r.Plan_Code__c IN: planCode AND (Milestone__c = 'GRDEFENSE' OR Milestone__c = 'GRDISSERT' OR Milestone__c = 'GRTHESIS' OR Milestone__c = 'GRFORMAT' OR Milestone__c = 'GRRESPAPER' OR Milestone__c = 'GRPRACTIC' OR Milestone__c = 'GRBNDDOC')
-            AND Milestone_Level__c <> 'Not Required'
+            WHERE
+                Contact__c = :theContact.Id
+                AND Acad_Plan__r.Plan_Code__c IN :planCode
+                AND (Milestone__c = 'GRDEFENSE'
+                OR Milestone__c = 'GRDISSERT'
+                OR Milestone__c = 'GRTHESIS'
+                OR Milestone__c = 'GRFORMAT'
+                OR Milestone__c = 'GRRESPAPER'
+                OR Milestone__c = 'GRPRACTIC'
+                OR Milestone__c = 'GRBNDDOC')
+                AND Milestone_Level__c != 'Not Required'
             ORDER BY Effdt__c ASC
         ];
 
         for (Student_Milestone__c milestone : defenseMilestones) {
-            for (GraduateProgramPlanWrapper gppw: activeGraduatePrograms) {
+            for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
                 if (milestone.Acad_Plan__r.Plan_Code__c == gppw.gradProgramPlan.Plan_Code__c) {
                     if (milestone.Milestone__c == 'GRDEFENSE') {
                         gppw.gradMilestoneDefense = milestone;
-                    } else if (milestone.Milestone__c == 'GRDISSERT' || milestone.Milestone__c == 'GRTHESIS' || milestone.Milestone__c == 'GRRESPAPER' || milestone.Milestone__c == 'GRPRACTIC' || milestone.Milestone__c == 'GRBNDDOC') {
+                    } else if (
+                        milestone.Milestone__c == 'GRDISSERT' ||
+                        milestone.Milestone__c == 'GRTHESIS' ||
+                        milestone.Milestone__c == 'GRRESPAPER' ||
+                        milestone.Milestone__c == 'GRPRACTIC' ||
+                        milestone.Milestone__c == 'GRBNDDOC'
+                    ) {
                         gppw.gradMilestoneDiss = milestone;
                     } else if (milestone.Milestone__c == 'GRFORMAT') {
                         gppw.gradMilestoneFormat = milestone;
                     }
-                } 
+                }
             }
         }
     }
-    
 
     private void setTestScores() {
         setUndergradStudentTestScores();
@@ -433,25 +553,63 @@ global with sharing class StudentProfileController {
     }
 
     private void setUndergradStudentTestScores() {
-        Set<String> testCodes = new Set<String>{'ACT', 'AECP', 'AMPT', 'AP', 'CLEP', 'DSST', 'DSST2', 'GED', 'ALEKSMATH', 'ALEKSMATHPL', 'ACCUPLACER2', 'HISET', 'IELTS', 'MPT', 'PTE', 'SAT I', 'SAT II', 'TOEFL', 'TOEIC', 'SATII', 'GMAT', 'GRE', 'LSAT', 'MAT', 'MCAT'};
+        Set<String> testCodes = new Set<String>{
+            'ACT',
+            'AECP',
+            'AMPT',
+            'AP',
+            'CLEP',
+            'DSST',
+            'DSST2',
+            'GED',
+            'ALEKSMATH',
+            'ALEKSMATHPL',
+            'ACCUPLACER2',
+            'HISET',
+            'IELTS',
+            'MPT',
+            'PTE',
+            'SAT I',
+            'SAT II',
+            'TOEFL',
+            'TOEIC',
+            'SATII',
+            'GMAT',
+            'GRE',
+            'LSAT',
+            'MAT',
+            'MCAT'
+        };
         testUnderGradScoreList = [
-            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c
+            SELECT Test_Component_Score__c, Test_Component__c, Test_Date__c, Test_Type__c
             FROM Test_Score__c
-            WHERE Contact__c = :theContact.Id
-            AND Test_Type__c IN :testCodes
-            AND Integration_Source__c = 'Student Records'
+            WHERE
+                Contact__c = :theContact.Id
+                AND Test_Type__c IN :testCodes
+                AND Integration_Source__c = 'Student Records'
             ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
         ];
     }
 
     private void setGraduateStudentTestScores() {
-        Set<String> testCodes = new Set<String>{'GMAT', 'GRE', 'IELTS', 'LSAT', 'MAT', 'MCAT', 'PTE', 'TOEFL', 'TOEIC'};
+        Set<String> testCodes = new Set<String>{
+            'GMAT',
+            'GRE',
+            'IELTS',
+            'LSAT',
+            'MAT',
+            'MCAT',
+            'PTE',
+            'TOEFL',
+            'TOEIC'
+        };
         testGradScoreList = [
-            SELECT Test_Component_Score__c, Test_Component__c , Test_Date__c , Test_Type__c
+            SELECT Test_Component_Score__c, Test_Component__c, Test_Date__c, Test_Type__c
             FROM Test_Score__c
-            WHERE Contact__c = :theContact.Id
-            AND Test_Type__c IN :testCodes
-            AND Integration_Source__c = 'Student Records'
+            WHERE
+                Contact__c = :theContact.Id
+                AND Test_Type__c IN :testCodes
+                AND Integration_Source__c = 'Student Records'
             ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
         ];
     }
@@ -466,16 +624,24 @@ global with sharing class StudentProfileController {
         faWrapper = new FinancialAidWrapper();
 
         Set<String> tempAidYears = new Set<String>();
-        for (Financial_Aid_Detail__c faRecord: [
-            SELECT Acad_Career__c, Accept_Amount__c, Aid_Year__c, Descr__c, Contact__c,
-                Descr_Category__c, Disbursed_Amount__c, Id,
-                Offer_Amount__c, Name
+        for (Financial_Aid_Detail__c faRecord : [
+            SELECT
+                Acad_Career__c,
+                Accept_Amount__c,
+                Aid_Year__c,
+                Descr__c,
+                Contact__c,
+                Descr_Category__c,
+                Disbursed_Amount__c,
+                Id,
+                Offer_Amount__c,
+                Name
             FROM Financial_Aid_Detail__c
             WHERE Contact__c = :theContact.Id
             ORDER BY Aid_Year__c DESC, Descr_Category__c ASC, Name ASC
-         ]) {
-                tempAidYears.add(faRecord.Aid_Year__c);
-                faWrapper.summaryRecords.add(faRecord);
+        ]) {
+            tempAidYears.add(faRecord.Aid_Year__c);
+            faWrapper.summaryRecords.add(faRecord);
         }
         if (!tempAidYears.isEmpty()) {
             faWrapper.aidYears.addAll(tempAidYears);
@@ -500,13 +666,26 @@ global with sharing class StudentProfileController {
 
     private void setFinancialAidPackage() {
         List<Financial_Aid_Package__c> financesPackageList = [
-            SELECT Aid_Year__c, Contact__c, CreatedById, CreatedDate, EFC_Range__c,
-                   FA_Status_Time_Stamp__c, FAFSA_Date_Received__c, Fin_Aid_Package_Date__c,
-                   Financial_Aid_Status__c, Id, IsDeleted, LastModifiedById, LastModifiedDate,
-                   Name, Pell_Eligibility__c, Promise_Cohort__c, SystemModstamp
+            SELECT
+                Aid_Year__c,
+                Contact__c,
+                CreatedById,
+                CreatedDate,
+                EFC_Range__c,
+                FA_Status_Time_Stamp__c,
+                FAFSA_Date_Received__c,
+                Fin_Aid_Package_Date__c,
+                Financial_Aid_Status__c,
+                Id,
+                IsDeleted,
+                LastModifiedById,
+                LastModifiedDate,
+                Name,
+                Pell_Eligibility__c,
+                Promise_Cohort__c,
+                SystemModstamp
             FROM Financial_Aid_Package__c
-            WHERE Contact__c = :theContact.Id
-            AND Aid_Year__c =: aidYear
+            WHERE Contact__c = :theContact.Id AND Aid_Year__c = :aidYear
             LIMIT 1
         ];
         financialAidPackage = financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];
@@ -519,37 +698,84 @@ global with sharing class StudentProfileController {
 
     private void setMe3DegreeSearchResult() {
         List<me3__c> me3List = [
-            SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,
-                Source__c, Test_Completed_Date__c, User_Id__c,
-                (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id,
-                        Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c
-                 FROM   Me3_Careers__r
-                 WHERE Active__c = TRUE
-                 ORDER BY Updated_Date__c DESC, Position__c ASC
-                 LIMIT 10)
-             FROM   Me3__c
-             WHERE  Contact__c = :theContact.Id
-             AND Source__c = 'DegreeSearch'
-             ORDER BY Test_Completed_Date__c DESC
-             LIMIT 1
+            SELECT
+                Id,
+                A_Score__c,
+                C_Score__c,
+                Contact__c,
+                E_Score__c,
+                I_Score__c,
+                Name,
+                R_Score__c,
+                S_Score__c,
+                Source__c,
+                Test_Completed_Date__c,
+                User_Id__c,
+                (
+                    SELECT
+                        Active__c,
+                        Alternate_Title__c,
+                        Career_Interest__c,
+                        Career_Major__c,
+                        Degree_Interest__c,
+                        Id,
+                        Name,
+                        O_NET_SOC_Code__c,
+                        OwnerId,
+                        Plan_Code__c,
+                        Position__c,
+                        Updated_Date__c
+                    FROM Me3_Careers__r
+                    WHERE Active__c = true
+                    ORDER BY Updated_Date__c DESC, Position__c ASC
+                    LIMIT 10
+                )
+            FROM Me3__c
+            WHERE Contact__c = :theContact.Id AND Source__c = 'DegreeSearch'
+            ORDER BY Test_Completed_Date__c DESC
+            LIMIT 1
         ];
         me3Results = (!me3List.isEmpty() ? me3List[0] : new Me3__c());
     }
 
     private void setMe3HighScoolResult() {
         List<me3__c> me3List = [
-            SELECT Id, A_Score__c, C_Score__c, Contact__c, E_Score__c, I_Score__c, Name, R_Score__c, S_Score__c,
-                Source__c, Test_Completed_Date__c, User_Id__c,
-                (SELECT Active__c, Alternate_Title__c, Career_Interest__c, Career_Major__c, Degree_Interest__c, Id,
-                        Name, O_NET_SOC_Code__c, OwnerId, Plan_Code__c, Position__c, Updated_Date__c
-                 FROM   Me3_Careers__r
-                 WHERE Active__c = TRUE
-                 ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
-                 LIMIT 10)
-             FROM Me3__c
-             WHERE  Contact__c = :theContact.Id AND Source__c = 'me3hs'
-             ORDER BY Test_Completed_Date__c DESC
-             LIMIT 1
+            SELECT
+                Id,
+                A_Score__c,
+                C_Score__c,
+                Contact__c,
+                E_Score__c,
+                I_Score__c,
+                Name,
+                R_Score__c,
+                S_Score__c,
+                Source__c,
+                Test_Completed_Date__c,
+                User_Id__c,
+                (
+                    SELECT
+                        Active__c,
+                        Alternate_Title__c,
+                        Career_Interest__c,
+                        Career_Major__c,
+                        Degree_Interest__c,
+                        Id,
+                        Name,
+                        O_NET_SOC_Code__c,
+                        OwnerId,
+                        Plan_Code__c,
+                        Position__c,
+                        Updated_Date__c
+                    FROM Me3_Careers__r
+                    WHERE Active__c = true
+                    ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
+                    LIMIT 10
+                )
+            FROM Me3__c
+            WHERE Contact__c = :theContact.Id AND Source__c = 'me3hs'
+            ORDER BY Test_Completed_Date__c DESC
+            LIMIT 1
         ];
         me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new me3__c());
     }
@@ -563,7 +789,7 @@ global with sharing class StudentProfileController {
         } catch (Exception ex) {
             vars.add(ErrorLogger.convertStringToJSON('asurite', asurite));
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(ex, vars, FALSE);
+            ErrorLogger.log(ex, vars, false);
             return null;
         }
 
@@ -573,7 +799,10 @@ global with sharing class StudentProfileController {
     @RemoteAction
     global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplId, String jsonAdvisorNotes) {
         List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
-        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = (List<PS_ASU_SP_ADNOTE_V__x>)JSON.deserialize(jsonAdvisorNotes, List<PS_ASU_SP_ADNOTE_V__x>.class);
+        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = (List<PS_ASU_SP_ADNOTE_V__x>) JSON.deserialize(
+            jsonAdvisorNotes,
+            List<PS_ASU_SP_ADNOTE_V__x>.class
+        );
 
         List<String> advAsuRiteIds = new List<String>();
         for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
@@ -589,11 +818,11 @@ global with sharing class StudentProfileController {
         ];
 
         Map<String, String> advUserMap = new Map<String, String>();
-        for (User user: advUserList) {
+        for (User user : advUserList) {
             advUserMap.put(user.FederationIdentifier, user.Id);
         }
 
-        for (PS_ASU_SP_ADNOTE_V__x note: advisingNoteList) {
+        for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
             AdvisingNoteWrapper noteWrapper = new AdvisingNoteWrapper();
             noteWrapper.note = note;
             noteWrapper.advUserId = advUserMap.get(note.CREATEOPRID__c + '@admin.asu.edu');
@@ -605,28 +834,27 @@ global with sharing class StudentProfileController {
 
     @RemoteAction
     global static List<CommentWrapper> getComments(String emplId, String jsonComments) {
-        List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>)JSON.deserialize(jsonComments, List<PS_ASU_SP_COMMNT_V__x>.class);
+        List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>) JSON.deserialize(
+            jsonComments,
+            List<PS_ASU_SP_COMMNT_V__x>.class
+        );
 
         Set<String> commenterUserIds = new Set<String>();
-        for (PS_ASU_SP_COMMNT_V__x comment: commentsList) {
+        for (PS_ASU_SP_COMMNT_V__x comment : commentsList) {
             if (comment.COMNT_ID__c != null && comment.COMNT_ID__c != '') {
                 commenterUserIds.add(comment.COMNT_ID__c);
             }
         }
 
-        List<User> commenterUserList = [
-            SELECT Id, EmployeeNumber
-            FROM User
-            WHERE EmployeeNumber IN :commenterUserIds
-        ];
+        List<User> commenterUserList = [SELECT Id, EmployeeNumber FROM User WHERE EmployeeNumber IN :commenterUserIds];
 
         Map<String, String> commenterUserMap = new Map<String, String>();
-        for (User user: commenterUserList) {
+        for (User user : commenterUserList) {
             commenterUserMap.put(user.EmployeeNumber, user.Id);
         }
 
         List<CommentWrapper> commentWrapperList = new List<CommentWrapper>();
-        for (PS_ASU_SP_COMMNT_V__x comment: commentsList) {
+        for (PS_ASU_SP_COMMNT_V__x comment : commentsList) {
             CommentWrapper commentWrapper = new CommentWrapper();
             commentWrapper.comment = comment;
             commentWrapper.commenterUserId = commenterUserMap.get(comment.COMNT_ID__c);
@@ -635,92 +863,113 @@ global with sharing class StudentProfileController {
         return commentWrapperList;
     }
 
-   @RemoteAction
-   global static List<SortableClass> sortClasses(String paramToSortBy, String listOfClassesJSON, Boolean sortDirection) {
-       List<SortableClass> classList = new List<SortableClass>();
-       List<PS_ASU_SP_CLASS_V__x> listOfClasses = (List<PS_ASU_SP_CLASS_V__x>)JSON.deserialize(listOfClassesJSON, List<PS_ASU_SP_CLASS_V__x>.class);
-       for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
-           classList.add(new SortableClass(asuClass, paramToSortBy));
-       }
+    @RemoteAction
+    global static List<SortableClass> sortClasses(
+        String paramToSortBy,
+        String listOfClassesJSON,
+        Boolean sortDirection
+    ) {
+        List<SortableClass> classList = new List<SortableClass>();
+        List<PS_ASU_SP_CLASS_V__x> listOfClasses = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
+            listOfClassesJSON,
+            List<PS_ASU_SP_CLASS_V__x>.class
+        );
+        for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
+            classList.add(new SortableClass(asuClass, paramToSortBy));
+        }
 
-       classList.sort();
-       if(!sortDirection) {
-           List<SortableClass> reversedList = new List<SortableClass>();
-           for(SortableClass sc : classList) {
-               if (reversedList.size() == 0) {
-                   reversedList.add(sc);
-               } else {
-                   reversedList.add(0, sc);
-               }
-           }
-           return reversedList;
-       }
-       return classList;
-   }
+        classList.sort();
+        if (!sortDirection) {
+            List<SortableClass> reversedList = new List<SortableClass>();
+            for (SortableClass sc : classList) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return classList;
+    }
 
-   @RemoteAction
-   global static List<SortableCreditByExam> sortExams(String paramToSortBy, List<PS_ASU_SP_TRNSFR_V__x> listOfExams, Boolean sortDirection) {
-       List<SortableCreditByExam> examList = new List<SortableCreditByExam>();
-       for (PS_ASU_SP_TRNSFR_V__x exam : listOfExams) {
-           examList.add(new SortableCreditByExam(exam, paramToSortBy));
-       }
+    @RemoteAction
+    global static List<SortableCreditByExam> sortExams(
+        String paramToSortBy,
+        List<PS_ASU_SP_TRNSFR_V__x> listOfExams,
+        Boolean sortDirection
+    ) {
+        List<SortableCreditByExam> examList = new List<SortableCreditByExam>();
+        for (PS_ASU_SP_TRNSFR_V__x exam : listOfExams) {
+            examList.add(new SortableCreditByExam(exam, paramToSortBy));
+        }
 
-       examList.sort();
-       if (sortDirection) {
-           return examList;
-       }
+        examList.sort();
+        if (sortDirection) {
+            return examList;
+        }
 
-       List<SortableCreditByExam> reversedList = new List<SortableCreditByExam>();
-       for(SortableCreditByExam sc : examList) {
-           if (reversedList.size() == 0) {
-               reversedList.add(sc);
-           } else {
-               reversedList.add(0, sc);
-           }
-       }
-       return reversedList;
-   }
+        List<SortableCreditByExam> reversedList = new List<SortableCreditByExam>();
+        for (SortableCreditByExam sc : examList) {
+            if (reversedList.size() == 0) {
+                reversedList.add(sc);
+            } else {
+                reversedList.add(0, sc);
+            }
+        }
+        return reversedList;
+    }
 
-   @RemoteAction
-   global static List<SortableTransferWork> sortTransfers(String paramToSortBy, List<JBT_RET_CLASS_XFER__x> listOfTransfer, Boolean sortDirection) {
-       List<SortableTransferWork> transferList = new List<SortableTransferWork>();
-       for (JBT_RET_CLASS_XFER__x transferClass : listOfTransfer) {
-           transferList.add(new SortableTransferWork(transferClass, paramToSortBy));
-       }
+    @RemoteAction
+    global static List<SortableTransferWork> sortTransfers(
+        String paramToSortBy,
+        List<JBT_RET_CLASS_XFER__x> listOfTransfer,
+        Boolean sortDirection
+    ) {
+        List<SortableTransferWork> transferList = new List<SortableTransferWork>();
+        for (JBT_RET_CLASS_XFER__x transferClass : listOfTransfer) {
+            transferList.add(new SortableTransferWork(transferClass, paramToSortBy));
+        }
 
-       transferList.sort();
-       if (sortDirection) {
-           return transferList;
-       }
+        transferList.sort();
+        if (sortDirection) {
+            return transferList;
+        }
 
-       List<SortableTransferWork> reversedList = new List<SortableTransferWork>();
-       for(SortableTransferWork sc : transferList) {
-           if (reversedList.size() == 0) {
-               reversedList.add(sc);
-           } else {
-               reversedList.add(0, sc);
-           }
-       }
-       return reversedList;
-   }
+        List<SortableTransferWork> reversedList = new List<SortableTransferWork>();
+        for (SortableTransferWork sc : transferList) {
+            if (reversedList.size() == 0) {
+                reversedList.add(sc);
+            } else {
+                reversedList.add(0, sc);
+            }
+        }
+        return reversedList;
+    }
 
     @RemoteAction
     global static ClassesWrapper getClassesData(String classListJson, String asrListJson) {
-        List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>)JSON.deserialize(classListJson, List<PS_ASU_SP_CLASS_V__x>.class);
-        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>)JSON.deserialize(asrListJson, List<PS_ASU_SP_ASR_CLSV__x>.class);
+        List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
+            classListJson,
+            List<PS_ASU_SP_CLASS_V__x>.class
+        );
+        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>) JSON.deserialize(
+            asrListJson,
+            List<PS_ASU_SP_ASR_CLSV__x>.class
+        );
 
         ClassesWrapper classesData = new ClassesWrapper();
-        for (PS_ASU_SP_ASR_CLSV__x asr: asrList) {
+        for (PS_ASU_SP_ASR_CLSV__x asr : asrList) {
             classesData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
         }
 
-        for (PS_ASU_SP_CLASS_V__x course: classList) {
+        for (PS_ASU_SP_CLASS_V__x course : classList) {
             if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
                 classesData.enrolledClasses.add(course);
             } else {
                 classesData.droppedClasses.add(course);
             }
-            classesData.classTerms.add(course.STRM__c+ '|' + course.TERM_DESCR30__c);
+            classesData.classTerms.add(course.STRM__c + '|' + course.TERM_DESCR30__c);
             classesData.classSessions.add(course.SESSION_CODE__c);
         }
         if (!classList.isEmpty()) {
@@ -737,7 +986,7 @@ global with sharing class StudentProfileController {
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
         try {
-            Id student = [SELECT Id FROM Contact WHERE EmplId__c =: emplidIn LIMIT 1].Id;
+            Id student = [SELECT Id FROM Contact WHERE EmplId__c = :emplidIn LIMIT 1].Id;
             RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
             Case feedbackCase = new Case(
                 Status = 'New',
@@ -754,7 +1003,7 @@ global with sharing class StudentProfileController {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
             vars.add(ErrorLogger.convertStringToJSON('subjectIn', subjectIn));
             vars.add(ErrorLogger.convertStringToJSON('descriptionIn', descriptionIn));
-            ErrorLogger.log(e, vars, FALSE);
+            ErrorLogger.log(e, vars, false);
         }
         return null;
     }
@@ -770,8 +1019,8 @@ global with sharing class StudentProfileController {
     }
 
     global class AdvisingNoteWrapper {
-        public PS_ASU_SP_ADNOTE_V__x note {get; set;}
-        public String advUserId {get; set;}
+        public PS_ASU_SP_ADNOTE_V__x note { get; set; }
+        public String advUserId { get; set; }
     }
 
     global class ClassesWrapper {
@@ -783,21 +1032,25 @@ global with sharing class StudentProfileController {
     }
 
     global class CommentWrapper {
-        public PS_ASU_SP_COMMNT_V__x comment {get; set;}
-        public String commenterUserId {get; set;}
+        public PS_ASU_SP_COMMNT_V__x comment { get; set; }
+        public String commenterUserId { get; set; }
     }
 
     public class GraduateProgramPlanWrapper {
-        public Student_Milestone__c gradMilestoneDefense {get; set;}
-        public Student_Milestone__c gradMilestoneFormat {get; set;}
-        public Student_Milestone__c gradMilestoneDiss {get; set;}
+        public Student_Milestone__c gradMilestoneDefense { get; set; }
+        public Student_Milestone__c gradMilestoneFormat { get; set; }
+        public Student_Milestone__c gradMilestoneDiss { get; set; }
 
         public Date defenseDate {
             get {
                 if (gradMilestoneDefense == null || gradMilestoneDefense.Defense_Date_Time__c == null) {
                     return null;
                 } else {
-                    return Date.newInstance(gradMilestoneDefense.Defense_Date_Time__c.year(), gradMilestoneDefense.Defense_Date_Time__c.month(), gradMilestoneDefense.Defense_Date_Time__c.day());
+                    return Date.newInstance(
+                        gradMilestoneDefense.Defense_Date_Time__c.year(),
+                        gradMilestoneDefense.Defense_Date_Time__c.month(),
+                        gradMilestoneDefense.Defense_Date_Time__c.day()
+                    );
                 }
             }
             set;
@@ -813,10 +1066,11 @@ global with sharing class StudentProfileController {
             set;
         }
 
-        public Student_Program_Plan__c gradProgramPlan {get; set;}
-        public List<Student_Program_Plan_Advisor__c> gradCommittees {get; set;}
-        public List<Student_Program_Plan_Advisor__c> gradAdvisors {get; set;}
+        public Student_Program_Plan__c gradProgramPlan { get; set; }
+        public List<Student_Program_Plan_Advisor__c> gradCommittees { get; set; }
+        public List<Student_Program_Plan_Advisor__c> gradAdvisors { get; set; }
     }
 
-    private class StudentProfileException extends Exception {}
+    private class StudentProfileException extends Exception {
+    }
 }

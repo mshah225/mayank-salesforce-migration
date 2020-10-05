@@ -144,8 +144,8 @@ public class AdvisorPortalFilterSectionController {
         Set<Contact> filteredCaseContacts = new Set<Contact>();
         Set<Id> filteredContactIds = new Set<Id>();
         List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
-        List<AdvisorPortalContact> shortenedAdvisorPortalContactResults = new List<AdvisorPortalContact>();
         Map<Id, List<Case>> casesByContactIds = new Map<Id, List<Case>>();
+        Integer contactsLeft = 3000; // max number of contacts returned
 
         // Query for cases owned by viewAsOptions and following cases-related filters
         List<Case> filteredCases = queryForCasesWithContactData(viewAsOptions, filter);
@@ -201,6 +201,10 @@ public class AdvisorPortalFilterSectionController {
 
         // Add filtered Contact/Case records to wrapper.
         for (Contact contact : filteredCaseContacts) {
+            if (contactsLeft <= 0) {
+                break;
+            }
+
             // Skip contact if we filter by Case count, but there aren't any.
             if (!casesByContactIds.containsKey(contact.Id) && (filter.caseCount != null || filter.caseCount > 0)) {
                 continue;
@@ -225,17 +229,14 @@ public class AdvisorPortalFilterSectionController {
 
                 contactWrapper.addCases(caseWrappers);
                 advisorPortalContactResults.add(contactWrapper);
+                contactsLeft--;
             } else if (filter.allCasesState) {
                 advisorPortalContactResults.add(contactWrapper);
+                contactsLeft--;
             }
         }
 
-        // Limit to the first 3000 results to prevent massive page slowdown
-        for (Integer i = 0; i < advisorPortalContactResults.size() && i < 3000; i++) {
-            shortenedAdvisorPortalContactResults.add(advisorPortalContactResults.get(i));
-        }
-
-        return shortenedAdvisorPortalContactResults;
+        return advisorPortalContactResults;
     }
 
     // Limits.getQueryRows() += 30000

@@ -1,19 +1,22 @@
 public class ConstituentDetail {
-    public String asuriteId {get; set;}
-    public Date birthdate {get; set;}
-    public Id constituentId {get; set;}
-    public String email {get; set;}
-    public String emplid {get; set;}
-    public String firstName {get; set;}
-    public String lastName {get; set;}
-    public String mailingStreet {get; set;}
-    public String mailingCity {get; set;}
-    public String mailingCountry {get; set;}
-    public String mailingPostalCode {get; set;}
-    public String mailingState {get; set;}
-    public String phone {get; set;}
-    public String processingNotes {get; set;}
-    public String status {get; set;}
+    public String asuriteId { get; set; }
+    public Date birthdate { get; set; }
+    public Id constituentId { get; set; }
+    public String email { get; set; }
+    public String emplid { get; set; }
+    public String firstName { get; set; }
+    public String lastName { get; set; }
+    public String mailingStreet { get; set; }
+    public String mailingCity { get; set; }
+    public String mailingCountry { get; set; }
+    public String mailingPostalCode { get; set; }
+    public String mailingState { get; set; }
+    public String middleName { get; set; }
+    public String partialFirstName { get; set; }
+    public String phone { get; set; }
+    public String preferredName { get; set; }
+    public String processingNotes { get; set; }
+    public String status { get; set; }
 
     public ConstituentDetail(Map<String, String> constituentDetailMap) {
         if (constituentDetailMap.containsKey('asuriteId')) {
@@ -33,6 +36,12 @@ public class ConstituentDetail {
         }
         if (constituentDetailMap.containsKey('firstName')) {
             this.firstName = constituentDetailMap.get('firstName');
+            String firstNameCopy = firstName;
+            if (firstNameCopy.length() >= 3) {
+                partialFirstName = firstName.substring(0, 3) + '%';
+            } else if (firstNameCopy.length() < 3) {
+                partialFirstName = firstName.substring(0, firstNameCopy.length()) + '%';
+            }
         }
         if (constituentDetailMap.containsKey('lastName')) {
             this.lastName = constituentDetailMap.get('lastName');
@@ -52,8 +61,14 @@ public class ConstituentDetail {
         if (constituentDetailMap.containsKey('mailingState')) {
             this.mailingState = constituentDetailMap.get('mailingState');
         }
+        if (constituentDetailMap.containsKey('middleName')) {
+            this.middleName = constituentDetailMap.get('middleName');
+        }
         if (constituentDetailMap.containsKey('phone')) {
             this.phone = constituentDetailMap.get('phone');
+        }
+        if (constituentDetailMap.containsKey('preferredName')) {
+            this.preferredName = constituentDetailMap.get('preferredName');
         }
 
         if (constituentDetailMap.containsKey('processingNotes')) {

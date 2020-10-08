@@ -471,7 +471,7 @@ public without sharing class FamilyPortalController {
         detailFieldsMap.put('email', familyPortalGuardian.Email__c);
         ConstituentDetail guardianDetail = new ConstituentDetail(detailFieldsMap);
 
-        ConstituentMatcher contactMatcher = new ConstituentMatcher(guardianDetail, 'Contact');
+        ConstituentMatcher contactMatcher = new ConstituentMatcher(guardianDetail, 'Contact', 'familyportal');
         contactMatcher.searchConstituents();
         List<ConstituentDetail> matchedDetailsWithContacts = contactMatcher.getListOfConstituentsWithMatches();
         for (ConstituentDetail matchedDetailWithContact : matchedDetailsWithContacts) {

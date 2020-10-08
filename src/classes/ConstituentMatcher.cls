@@ -1836,18 +1836,7 @@ public without sharing class ConstituentMatcher {
 
     public void getLeadsMatchedByMappedValues() {
         List<Lead> matchedLeads = [
-            SELECT
-                Id,
-                EMPLID__c,
-                FirstName,
-                LastName,
-                Email,
-                Secondary_Email__c,
-                Recruiting_Email__c,
-                Street,
-                PostalCode,
-                MobilePhone,
-                Phone
+            SELECT Id, EMPLID__c, FirstName, LastName, Email, Secondary_Email__c, Recruiting_Email__c
             FROM Lead
             WHERE
                 ((FirstName IN :firstNameSet
@@ -1856,7 +1845,7 @@ public without sharing class ConstituentMatcher {
                 OR Secondary_Email__c IN :emailSet
                 OR Recruiting_Email__c IN :emailSet))
                 OR EMPLID__c IN :emplidWithDetail.keySet()
-            LIMIT 1
+            LIMIT 10000
         ];
 
         if (matchedLeads.size() > 0) {
@@ -1939,7 +1928,7 @@ public without sharing class ConstituentMatcher {
 
                     matchedDetail.constituentId = (Id) leadMatch.Id;
                     matchedDetail.processingNotes += String.format(
-                        'Found existing Contact ID: {0} based on email match: {1} and name match: {2} \n',
+                        'Found existing Contact ID: {0} based on email match: {1} and first name match: {2} \n',
                         new List<String>{ leadMatch.Id, leadMatchEmail, leadMatchFirstName }
                     );
                     detailsToReturn.add(matchedDetail);

@@ -827,8 +827,8 @@ public without sharing class ConstituentMatcher {
             }
             matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes += String.format(
-                'Found existing Contact ID: {1} based on Contact ID match: {2} \n',
-                new List<String>{ contactMatch.Id, contactMatch.Id }
+                'Found existing Contact ID: {0} based on Contact ID match: {0} \n',
+                new List<String>{ contactMatch.Id }
             );
             detailsToReturn.add(matchedDetail);
             return true;
@@ -845,7 +845,7 @@ public without sharing class ConstituentMatcher {
             }
             matchedDetail.constituentId = (Id) contactMatch.Id;
             matchedDetail.processingNotes += String.format(
-                'Found existing Contact ID: {1} based on Emplid match: {2} \n',
+                'Found existing Contact ID: {0} based on Emplid match: {1} \n',
                 new List<String>{ contactMatch.Id, contactMatch.EMPLID__c }
             );
             detailsToReturn.add(matchedDetail);
@@ -939,7 +939,7 @@ public without sharing class ConstituentMatcher {
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameEmailWithDetail.get(
                         (contactMatchFirstName + contactMatchEmail).toLowerCase()
                     );
@@ -1040,16 +1040,16 @@ public without sharing class ConstituentMatcher {
                                 break;
                             }
                         }
-                        if (foundMatch == true) {
+                        if (foundMatch) {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNameBirthdateZipWithDetail.get(
                         (contactMatchFirstName +
                             contactMatchLastName +
@@ -1157,12 +1157,12 @@ public without sharing class ConstituentMatcher {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNamePhoneWithDetail.get(
                         (contactMatchFirstName + contactMatchLastName + contactMatchPhone).toLowerCase()
                     );
@@ -1268,16 +1268,16 @@ public without sharing class ConstituentMatcher {
                                 break;
                             }
                         }
-                        if (foundMatch == true) {
+                        if (foundMatch) {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNameStreetZipWithDetail.get(
                         (contactMatchFirstName +
                             contactMatchLastName +
@@ -1391,12 +1391,12 @@ public without sharing class ConstituentMatcher {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNameEmailWithDetail.get(
                         (contactMatchFirstName + contactMatchLastName + contactMatchEmail).toLowerCase()
                     );
@@ -1526,16 +1526,16 @@ public without sharing class ConstituentMatcher {
                                 break;
                             }
                         }
-                        if (foundMatch == true) {
+                        if (foundMatch) {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNameEmailPhoneWithDetail.get(
                         (contactMatchFirstName +
                             contactMatchLastName +
@@ -1658,16 +1658,16 @@ public without sharing class ConstituentMatcher {
                                 break;
                             }
                         }
-                        if (foundMatch == true) {
+                        if (foundMatch) {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNameEmailMiddleNameWithDetail.get(
                         (contactMatchFirstName +
                             contactMatchLastName +
@@ -1793,16 +1793,16 @@ public without sharing class ConstituentMatcher {
                                 break;
                             }
                         }
-                        if (foundMatch == true) {
+                        if (foundMatch) {
                             break;
                         }
                     }
-                    if (foundMatch == true) {
+                    if (foundMatch) {
                         break;
                     }
                 }
 
-                if (foundMatch == true) {
+                if (foundMatch) {
                     matchedDetail = firstNameLastNameEmailStreetWithDetail.get(
                         (contactMatchFirstName +
                             contactMatchLastName +
@@ -1868,11 +1868,6 @@ public without sharing class ConstituentMatcher {
         for (SObject matchedConstituent : matchedConstituents) {
             if (matchLeadByEmplid(matchedConstituent)) {
             } else if (matchLeadByFirstNameEmail(matchedConstituent)) {
-            } else if (matchLeadByFirstNameSecondaryEmail(matchedConstituent)) {
-            } else if (matchLeadByFirstNameRecruitingEmail(matchedConstituent)) {
-            } else if (matchLeadByPartialFirstNameEmail(matchedConstituent)) {
-            } else if (matchLeadByPartialFirstNameEmail(matchedConstituent)) {
-            } else if (matchLeadByPartialFirstNameEmail(matchedConstituent)) {
             }
         }
     }
@@ -1897,156 +1892,59 @@ public without sharing class ConstituentMatcher {
 
     private Boolean matchLeadByFirstNameEmail(SObject constituentMatch) {
         Lead leadMatch = (Lead) constituentMatch;
-        if (
-            leadMatch.FirstName != null &&
-            leadMatch.Email != null &&
-            firstNameEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Email).toLowerCase())
-        ) {
-            ConstituentDetail matchedDetail = firstNameEmailWithDetail.get(
-                (leadMatch.FirstName + leadMatch.Email).toLowerCase()
-            );
-            if (matchedDetail.constituentId != null) {
-                return false;
-            }
-            matchedDetail.constituentId = (Id) leadMatch.Id;
-            matchedDetail.processingNotes += String.format(
-                'Found existing Lead ID: {0} based on Emplid match: {1} \n',
-                new List<String>{ leadMatch.Id, leadMatch.EMPLID__c }
-            );
-            detailsToReturn.add(matchedDetail);
-            return true;
-        }
-        return false;
-    }
-
-    private Boolean matchLeadByFirstNameSecondaryEmail(SObject constituentMatch) {
-        Lead leadMatch = (Lead) constituentMatch;
-        if (
-            leadMatch.FirstName != null &&
-            leadMatch.Secondary_Email__c != null &&
-            firstNameEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Secondary_Email__c).toLowerCase())
-        ) {
-            ConstituentDetail matchedDetail = firstNameEmailWithDetail.get(
-                (leadMatch.FirstName + leadMatch.Secondary_Email__c).toLowerCase()
-            );
-            if (matchedDetail.constituentId != null) {
-                return false;
-            }
-            matchedDetail.constituentId = (Id) leadMatch.Id;
-            matchedDetail.processingNotes += String.format(
-                'Found existing Lead ID: {0} based on secondary email match: {1} and name match: {2} \n',
-                new List<String>{ leadMatch.Id, leadMatch.Secondary_Email__c, leadMatch.FirstName }
-            );
-            detailsToReturn.add(matchedDetail);
-            return true;
-        }
-        return false;
-    }
-
-    private Boolean matchLeadByFirstNameRecruitingEmail(SObject constituentMatch) {
-        Lead leadMatch = (Lead) constituentMatch;
-        if (
-            leadMatch.FirstName != null &&
-            leadMatch.Recruiting_Email__c != null &&
-            firstNameEmailWithDetail.containsKey((leadMatch.FirstName + leadMatch.Recruiting_Email__c).toLowerCase())
-        ) {
-            ConstituentDetail matchedDetail = firstNameEmailWithDetail.get(
-                (leadMatch.FirstName + leadMatch.Recruiting_Email__c).toLowerCase()
-            );
-            if (matchedDetail.constituentId != null) {
-                return false;
-            }
-            matchedDetail.constituentId = (Id) leadMatch.Id;
-            matchedDetail.processingNotes += String.format(
-                'Found existing Lead ID: {0} based on recruiting email match: {1} and name match: {2} \n',
-                new List<String>{ leadMatch.Id, leadMatch.Recruiting_Email__c, leadMatch.FirstName }
-            );
-            detailsToReturn.add(matchedDetail);
-            return true;
-        }
-        return false;
-    }
-
-    private Boolean matchLeadByPartialFirstNameEmail(SObject constituentMatch) {
+        ConstituentDetail matchedDetail;
         String partialFirstName;
-        Lead leadMatch = (Lead) constituentMatch;
-        if (leadMatch.FirstName != null && leadMatch.Email != null) {
-            partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName));
-            if (partialFirstNameEmailWithDetail.containsKey((leadMatch.Email).toLowerCase())) {
-                ConstituentDetail matchedDetail = partialFirstNameEmailWithDetail.get((leadMatch.Email).toLowerCase());
-                if (matchedDetail.constituentId != null) {
-                    return false;
-                }
-                matchedDetail.constituentId = (Id) leadMatch.Id;
-                matchedDetail.processingNotes += String.format(
-                    'Found existing Lead ID: {0} based on email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new List<String>{
-                        leadMatch.Id,
-                        leadMatch.Email,
-                        String.valueOf(partialFirstName.length() - 1),
-                        partialFirstName
-                    }
-                );
-                detailsToReturn.add(matchedDetail);
-                return true;
-            }
-        }
-        return false;
-    }
+        String leadMatchFirstName;
+        String leadMatchEmail;
+        List<String> leadMatchFirstNameList = new List<String>();
+        List<String> leadMatchEmailList = new List<String>();
+        Boolean foundMatch = false;
 
-    private Boolean matchLeadByPartialFirstNameSecondaryEmail(SObject constituentMatch) {
-        Lead leadMatch = (Lead) constituentMatch;
-        String partialFirstName;
-        if (leadMatch.FirstName != null && leadMatch.Secondary_Email__c != null) {
+        if (leadMatch.FirstName != null) {
+            leadMatchFirstNameList.add(leadMatch.FirstName);
             partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName));
-            if (partialFirstNameEmailWithDetail.containsKey((leadMatch.Secondary_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = partialFirstNameEmailWithDetail.get(
-                    (leadMatch.Secondary_Email__c).toLowerCase()
-                );
-                if (matchedDetail.constituentId != null) {
-                    return false;
-                }
-                matchedDetail.constituentId = (Id) leadMatch.Id;
-                matchedDetail.processingNotes += String.format(
-                    'Found existing Lead ID: {0} based on secondary email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new List<String>{
-                        leadMatch.Id,
-                        leadMatch.Secondary_Email__c,
-                        String.valueOf(partialFirstName.length() - 1),
-                        partialFirstName
-                    }
-                );
-                detailsToReturn.add(matchedDetail);
-                return true;
-            }
         }
-        return false;
-    }
 
-    private Boolean matchLeadByPartialFirstNameRecruitingEmail(SObject constituentMatch) {
-        Lead leadMatch = (Lead) constituentMatch;
-        String partialFirstName;
-        if (leadMatch.FirstName != null && leadMatch.Recruiting_Email__c != null) {
-            partialFirstName = getPartialFirstName(String.valueOf(leadMatch.FirstName));
-            if (partialFirstNameEmailWithDetail.containsKey((leadMatch.Recruiting_Email__c).toLowerCase())) {
-                ConstituentDetail matchedDetail = partialFirstNameEmailWithDetail.get(
-                    (leadMatch.Recruiting_Email__c).toLowerCase()
-                );
-                if (matchedDetail.constituentId != null) {
-                    return false;
-                }
-                matchedDetail.constituentId = (Id) leadMatch.Id;
-                matchedDetail.processingNotes += String.format(
-                    'Found existing Lead ID: {0} based on recruiting email match: {1} and first {2} character(s) of first name match: {3} \n',
-                    new List<String>{
-                        leadMatch.Id,
-                        leadMatch.Recruiting_Email__c,
-                        String.valueOf(partialFirstName.length() - 1),
-                        partialFirstName
+        if (leadMatch.Email != null) {
+            leadMatchEmailList.add(leadMatch.Email);
+        }
+        if (leadMatch.Secondary_Email__c != null) {
+            leadMatchEmailList.add(leadMatch.Secondary_Email__c);
+        }
+        if (leadMatch.Recruiting_Email__c != null) {
+            leadMatchEmailList.add(leadMatch.Recruiting_Email__c);
+        }
+
+        if (leadMatchFirstNameList.size() > 0 && leadMatchEmailList.size() > 0) {
+            for (String leadMatchFirstNameListChoice : leadMatchFirstNameList) {
+                for (String leadMatchEmailListChoice : leadMatchEmailList) {
+                    if (
+                        firstNameEmailWithDetail.containsKey(
+                            (leadMatchFirstNameListChoice + leadMatchEmailListChoice).toLowerCase()
+                        )
+                    ) {
+                        leadMatchFirstName = leadMatchFirstNameListChoice;
+                        leadMatchEmail = leadMatchEmailListChoice;
+                        foundMatch = true;
+                        break;
                     }
-                );
-                detailsToReturn.add(matchedDetail);
-                return true;
+                }
+
+                if (foundMatch) {
+                    matchedDetail = firstNameEmailWithDetail.get((leadMatchFirstName + leadMatchEmail).toLowerCase());
+
+                    if (matchedDetail.constituentId != null) {
+                        return false;
+                    }
+
+                    matchedDetail.constituentId = (Id) leadMatch.Id;
+                    matchedDetail.processingNotes += String.format(
+                        'Found existing Contact ID: {0} based on email match: {1} and name match: {2} \n',
+                        new List<String>{ leadMatch.Id, leadMatchEmail, leadMatchFirstName }
+                    );
+                    detailsToReturn.add(matchedDetail);
+                    return true;
+                }
             }
         }
         return false;

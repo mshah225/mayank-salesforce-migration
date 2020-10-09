@@ -921,6 +921,20 @@
                                                         </apex:outputText>
                                                     </td>
                                                 </tr>
+                                                <tr id="futureEnrolledHours" class="grad-row-toggle">
+                                                    <th>
+                                                        <span class="hide" style="margin-right:5px;color:#990033;">
+                                                            <i class="fa fa-caret-right"></i>
+                                                        </span>
+                                                        {!futureTermName} Term Enrolled Hours
+                                                    </th>
+                                                    <td id="futureTermEnrolled" style="font-weight:bold;">
+                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')}
+                                                        <apex:outputText value="{0,number,####}">
+                                                            <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}" />
+                                                        </apex:outputText>
+                                                    </td>
+                                                </tr>
                                             </table>
                                         </div>
                                         <div id="expectedGradDateDiv">
@@ -3136,6 +3150,11 @@
                 },
                     { buffer: false, escape: true, timeout: 120000 }
                 );
+
+                var currentTermValue = "{!currentTerm}";
+                if(currentTermValue.slice(-1) != "1") {
+                    document.getElementById("futureEnrolledHours").style.display = "none";
+                }
                 cleanUpUndefined("UGgeneralIndicators");
             }
         }

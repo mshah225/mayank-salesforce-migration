@@ -1072,7 +1072,7 @@ public without sharing class ConstituentMatcher {
                             contactMatch.Id,
                             contactMatchFirstName,
                             contactMatchLastName,
-                            contactMatchBirthdate,
+                            contactMatchBirthdate.format(),
                             contactMatchZip
                         }
                     );

@@ -19,28 +19,28 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Database.update(guardianInterestsToUpdate, false);
                 }
             } catch (Exception e) {
-                guardianInterestsToUpdate.addError('Failed to update guardian interests: ' + e.getMessage());
+                //guardianInterestsToUpdate.addError('Failed to update guardian interests: ' + e.getMessage());
             }
             try {
                 if (studentsToUpdate != null && !studentsToUpdate.isEmpty()) {
                     Database.update(studentsToUpdate, false);
                 }
             } catch (Exception e) {
-                studentsToUpdate.addError('Failed to update students: ' + e.getMessage());
+                //studentsToUpdate.addError('Failed to update students: ' + e.getMessage());
             }
             try {
                 if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty()) {
                     Database.update(guardiansToUpdate, false);
                 }
             } catch (Exception e) {
-                guardiansToUpdate.addError('Failed to update guardians: ' + e.getMessage());
+                //guardiansToUpdate.addError('Failed to update guardians: ' + e.getMessage());
             }
             try {
                 if (guardiansToDelete != null && !guardiansToDelete.isEmpty()) {
                     Database.delete(guardiansToDelete, false);
                 }
             } catch (Exception e) {
-                guardiansToDelete.addError('Failed to delete guardians: ' + e.getMessage());
+                //guardiansToDelete.addError('Failed to delete guardians: ' + e.getMessage());
             }
         }
     }
@@ -130,7 +130,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     continue;
                 }
 
-                if (oldestGuardian.CreatedDate < matchedGuardian) {
+                if (oldestGuardian.CreatedDate < matchedGuardian.CreatedDate) {
                     relatedGuardiansToDelete.add(matchedGuardian);
                 } else {
                     relatedGuardiansToDelete.add(oldestGuardian);
@@ -140,7 +140,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             guardiansToDelete.addAll(relatedGuardiansToDelete);
 
             for (Family_Portal_Guardian__c relatedGuardianToDelete : relatedGuardiansToDelete) {
-                relatedGuardianIdsWithGuardianToDelete.put(relatedGuardianToDelete.Id, relatedGuardianToDelete);
+                relatedGuardianIdsWithGuardianToDelete.put(relatedGuardianToDelete.Id, relatedGuardiansToDelete);
             }
 
             for (Family_Portal_Guardian_Interest__c interestToReparent : [

@@ -40,7 +40,7 @@ public without sharing class ConstituentMatcher {
     public Map<String, ConstituentDetail> preferredNameLastNamePhoneWithDetail = new Map<String, ConstituentDetail>();
     public Map<String, ConstituentDetail> preferredNameLastNameStreetZipWithDetail = new Map<String, ConstituentDetail>();
 
-    public Set<Date> birthdateSet = new Set<String>();
+    public Set<Date> birthdateSet = new Set<Date>();
     public Set<String> emailSet = new Set<String>();
     public Set<String> firstNameSet = new Set<String>();
     public Set<String> lastNameSet = new Set<String>();
@@ -550,7 +550,8 @@ public without sharing class ConstituentMatcher {
                     Lead_Secondary_Email__c,
                     Personal_Email__c,
                     ASU_Email__c,
-                    ASU_Gmail__c EPO_Email__c,
+                    ASU_Gmail__c,
+                    EPO_Email__c,
                     MailingStreet,
                     SF_Mailing_Street__c,
                     MailingPostalCode,
@@ -595,7 +596,8 @@ public without sharing class ConstituentMatcher {
                     Lead_Secondary_Email__c,
                     Personal_Email__c,
                     ASU_Email__c,
-                    ASU_Gmail__c EPO_Email__c,
+                    ASU_Gmail__c,
+                    EPO_Email__c,
                     MailingStreet,
                     SF_Mailing_Street__c,
                     MailingPostalCode,
@@ -723,7 +725,8 @@ public without sharing class ConstituentMatcher {
                     Lead_Secondary_Email__c,
                     Personal_Email__c,
                     ASU_Email__c,
-                    ASU_Gmail__c EPO_Email__c,
+                    ASU_Gmail__c,
+                    EPO_Email__c,
                     MailingStreet,
                     SF_Mailing_Street__c,
                     MailingPostalCode,
@@ -812,7 +815,7 @@ public without sharing class ConstituentMatcher {
                 } else if (matchContactByFirstNameEmail(matchedConstituent)) {
                 } else if (matchContactByFirstNameLastNameBirthdateZip(matchedConstituent)) {
                 } else if (matchContactByFirstNameLastNamePhone(matchedConstituent)) {
-                } else if (matchContactByFirstNameStreetZip(matchedConstituent)) {
+                } else if (matchContactByFirstNameLastNameStreetZip(matchedConstituent)) {
                 }
             }
         }
@@ -1026,7 +1029,7 @@ public without sharing class ConstituentMatcher {
                             if (
                                 firstNameLastNameBirthdateZipWithDetail.containsKey(
                                     (contactMatchFirstNameListChoice +
-                                        contactMatchEmailListChoice +
+                                        contactMatchLastNameListChoice +
                                         contactMatchBirthdateListChoice.format() +
                                         contactMatchZipListChoice)
                                         .toLowerCase()
@@ -1145,7 +1148,7 @@ public without sharing class ConstituentMatcher {
                         if (
                             firstNameLastNamePhoneWithDetail.containsKey(
                                 (contactMatchFirstNameListChoice +
-                                    contactMatchEmailListChoice +
+                                    contactMatchLastNameListChoice +
                                     contactMatchPhoneListChoice)
                                     .toLowerCase()
                             )
@@ -1254,7 +1257,7 @@ public without sharing class ConstituentMatcher {
                             if (
                                 firstNameLastNameStreetZipWithDetail.containsKey(
                                     (contactMatchFirstNameListChoice +
-                                        contactMatchEmailListChoice +
+                                        contactMatchLastNameListChoice +
                                         contactMatchStreetListChoice +
                                         contactMatchZipListChoice)
                                         .toLowerCase()

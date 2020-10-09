@@ -2,6 +2,10 @@
 global with sharing class ConstituentMatcherCallout {
     public List<ConstituentDetail> contactDetailsToMatch;
 
+    public ConstituentMatcherCallout() {
+        contactDetailsToMatch = new List<ConstituentDetail>();
+    }
+
     @HttpGet
     global static String doGet() {
         RestRequest req = RestContext.request;
@@ -25,8 +29,6 @@ global with sharing class ConstituentMatcherCallout {
         // State
         // Zip
         // Country
-
-        contactDetailsToMatch = new List<ConstituentDetail>();
 
         // LOOP START
 

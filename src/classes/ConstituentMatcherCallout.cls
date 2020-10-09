@@ -2,10 +2,6 @@
 global with sharing class ConstituentMatcherCallout {
     public List<ConstituentDetail> contactDetailsToMatch;
 
-    public ConstituentMatcherCallout() {
-        contactDetailsToMatch = new List<ConstituentDetail>();
-    }
-
     @HttpGet
     global static String doGet() {
         RestRequest req = RestContext.request;
@@ -29,6 +25,8 @@ global with sharing class ConstituentMatcherCallout {
         // State
         // Zip
         // Country
+
+        // contactDetailsToMatch = new List<ConstituentDetail>();
 
         // LOOP START
 
@@ -74,16 +72,17 @@ global with sharing class ConstituentMatcherCallout {
             detailFieldsMap.put('mailingCountry', req.params.get('mailingCountry'));
         }
 
-        ConstituentDetail contactDetail = new ConstituentDetail(detailFieldsMap);
-        contactDetailsToMatch.add(contactDetail);
+        // ConstituentDetail contactDetail = new ConstituentDetail(detailFieldsMap);
+        // contactDetailsToMatch.add(contactDetail);
 
         // LOOP END
 
-        ConstituentMatcher contactMatcher = new ConstituentMatcher(contactDetailsToMatch);
-        contactMatcher.searchConstituents();
-        List<ConstituentDetail> matchedDetailsWithContacts = contactMatcher.getListOfConstituentsWithMatches();
+        // ConstituentMatcher contactMatcher = new ConstituentMatcher(contactDetailsToMatch);
+        // contactMatcher.searchConstituents();
+        // List<ConstituentDetail> matchedDetailsWithContacts = contactMatcher.getListOfConstituentsWithMatches();
 
-        String matchedDetailsWithContactsJSON = JSON.serialize(matchedDetailsWithContacts);
-        return matchedDetailsWithContactsJSON;
+        // String matchedDetailsWithContactsJSON = JSON.serialize(matchedDetailsWithContacts);
+        // return matchedDetailsWithContactsJSON;
+        return null;
     }
 }

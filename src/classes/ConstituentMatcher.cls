@@ -208,7 +208,7 @@ public without sharing class ConstituentMatcher {
                 detail
             );
 
-            birthdateSet.add(detail.birthdate);
+            birthdateSet.add(Date.valueOf(detail.birthdate));
             firstNameSet.add(detail.firstName);
             lastNameSet.add(detail.lastName);
             partialFirstNameSet.add(detail.partialFirstName);
@@ -230,7 +230,7 @@ public without sharing class ConstituentMatcher {
                 detail
             );
 
-            birthdateSet.add(detail.birthdate);
+            birthdateSet.add(Date.valueOf(detail.birthdate));
             preferredNameSet.add(detail.preferredName);
             lastNameSet.add(detail.lastName);
             zipSet.add(detail.mailingPostalCode);

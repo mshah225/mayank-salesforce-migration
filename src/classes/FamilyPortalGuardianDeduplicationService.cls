@@ -19,28 +19,36 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Database.update(guardianInterestsToUpdate, false);
                 }
             } catch (Exception e) {
-                //guardianInterestsToUpdate.addError('Failed to update guardian interests: ' + e.getMessage());
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('guardianInterestsToUpdate', guardianInterestsToUpdate));
+                ErrorLogger.log(e, vars, false);
             }
             try {
                 if (studentsToUpdate != null && !studentsToUpdate.isEmpty()) {
                     Database.update(studentsToUpdate, false);
                 }
             } catch (Exception e) {
-                //studentsToUpdate.addError('Failed to update students: ' + e.getMessage());
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('studentsToUpdate', studentsToUpdate));
+                ErrorLogger.log(e, vars, false);
             }
             try {
                 if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty()) {
                     Database.update(guardiansToUpdate, false);
                 }
             } catch (Exception e) {
-                //guardiansToUpdate.addError('Failed to update guardians: ' + e.getMessage());
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('guardiansToUpdate', guardiansToUpdate));
+                ErrorLogger.log(e, vars, false);
             }
             try {
                 if (guardiansToDelete != null && !guardiansToDelete.isEmpty()) {
                     Database.delete(guardiansToDelete, false);
                 }
             } catch (Exception e) {
-                //guardiansToDelete.addError('Failed to delete guardians: ' + e.getMessage());
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('guardiansToDelete', guardiansToDelete));
+                ErrorLogger.log(e, vars, false);
             }
         }
     }

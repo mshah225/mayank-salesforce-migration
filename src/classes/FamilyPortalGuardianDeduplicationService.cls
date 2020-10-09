@@ -2,6 +2,8 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private List<Family_Portal_Guardian__c> newlyInsertedGuardians;
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
     private static List<Family_Portal_Guardian__c> guardiansToUpdate;
+    private static List<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdate;
+    private static List<Family_Portal_Student__c> studentsToUpdate;
     private Map<Id, List<Family_Portal_Guardian_Interest__c>> guardianIdWithInterests;
     private Map<Id, List<Family_Portal_Student__c>> guardianIdWithStudents;
 
@@ -12,6 +14,20 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
     public void execute(QueueableContext context) {
         if (newlyInsertedGuardians.size() > 0) {
             gatherGuardiansAndStartDedup(newlyInsertedGuardians);
+            try {
+                if (guardianInterestsToUpdate != null && !guardianInterestsToUpdate.isEmpty()) {
+                    Database.update(guardianInterestsToUpdate, false);
+                }
+            } catch (Exception e) {
+                guardianInterestsToUpdate.addError('Failed to update guardian interests: ' + e.getMessage());
+            }
+            try {
+                if (studentsToUpdate != null && !studentsToUpdate.isEmpty()) {
+                    Database.update(studentsToUpdate, false);
+                }
+            } catch (Exception e) {
+                studentsToUpdate.addError('Failed to update students: ' + e.getMessage());
+            }
             try {
                 if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty()) {
                     Database.update(guardiansToUpdate, false);
@@ -34,6 +50,8 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         List<Family_Portal_Guardian__c> guardiansToCheck;
         guardiansToDelete = new List<Family_Portal_Guardian__c>();
         guardiansToUpdate = new List<Family_Portal_Guardian__c>();
+        guardianInterestsToUpdate = new List<Family_Portal_Guardian_Interest__c>();
+        studentsToUpdate = new List<Family_Portal_Student__c>();
 
         for (Family_Portal_Guardian__c insertedGuardian : insertedGuardians) {
             List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
@@ -132,6 +150,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             ]) {
                 interestToReparent.Active_Interest__c = false;
                 interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                guardianInterestsToUpdate.add(interestToReparent);
             }
 
             for (Family_Portal_Student__c studentToReparent : [
@@ -141,6 +160,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             ]) {
                 studentToReparent.Active_Relationship__c = false;
                 studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                studentsToUpdate.add(studentToReparent);
             }
 
             if (newestGuardian.ASU_Alumni__c != null) {
@@ -198,6 +218,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 WHERE Family_Portal_Guardian__c = :oldestGuardian.Id
             ]) {
                 interestToSetInactive.Active_Interest__c = false;
+                guardianInterestsToUpdate.add(interestToSetInactive);
             }
 
             for (Family_Portal_Student__c studentToSetInactive : [
@@ -206,6 +227,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 WHERE Family_Portal_Guardian__c = :oldestGuardian.Id
             ]) {
                 studentToSetInactive.Active_Relationship__c = false;
+                studentsToUpdate.add(studentToSetInactive);
             }
 
             for (Family_Portal_Guardian_Interest__c interestToReparent : [
@@ -214,6 +236,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id
             ]) {
                 interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                guardianInterestsToUpdate.add(interestToReparent);
             }
 
             for (Family_Portal_Student__c studentToReparent : [
@@ -222,6 +245,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id
             ]) {
                 studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                studentsToUpdate.add(studentToReparent);
             }
             guardiansToDelete.add(newestGuardian);
             guardiansToUpdate.add(oldestGuardian);

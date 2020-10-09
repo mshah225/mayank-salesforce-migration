@@ -1,6 +1,9 @@
 public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private List<Family_Portal_Guardian__c> newlyInsertedGuardians;
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
+    private static List<Family_Portal_Guardian__c> guardiansToUpdate;
+    private Map<Id, List<Family_Portal_Guardian_Interest__c>> guardianIdWithInterests;
+    private Map<Id, List<Family_Portal_Student__c>> guardianIdWithStudents;
 
     public FamilyPortalGuardianDeduplicationService(List<Family_Portal_Guardian__c> newlyInsertedGuardians) {
         this.newlyInsertedGuardians = newlyInsertedGuardians;
@@ -10,47 +13,218 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         if (newlyInsertedGuardians.size() > 0) {
             gatherGuardiansAndStartDedup(newlyInsertedGuardians);
             try {
-                if (guardiansToDelete != null && !guardiansToDelete.isEmpty()) {
-                    delete guardiansToDelete;
+                if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty()) {
+                    Database.update(guardiansToUpdate, false);
                 }
             } catch (Exception e) {
-                System.debug('Failed to update or delete guardians: ' + e.getMessage());
+                guardiansToUpdate.addError('Failed to update guardians: ' + e.getMessage());
+            }
+            try {
+                if (guardiansToDelete != null && !guardiansToDelete.isEmpty()) {
+                    Database.delete(guardiansToDelete, false);
+                }
+            } catch (Exception e) {
+                guardiansToDelete.addError('Failed to delete guardians: ' + e.getMessage());
             }
         }
     }
 
     public static void gatherGuardiansAndStartDedup(List<Family_Portal_Guardian__c> insertedGuardians) {
-        guardiansToDelete = new List<Family_Portal_Guardian__c>();
+        Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>> insertedGuardianWithMatchedGuardians = new Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>>();
         List<Family_Portal_Guardian__c> guardiansToCheck;
+        guardiansToDelete = new List<Family_Portal_Guardian__c>();
+        guardiansToUpdate = new List<Family_Portal_Guardian__c>();
 
         for (Family_Portal_Guardian__c insertedGuardian : insertedGuardians) {
             List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
-                SELECT Id, CreatedDate
+                SELECT
+                    Id,
+                    ASU_Alumni__c,
+                    ASURITE_ID__c,
+                    Business_Unit_Source__c,
+                    City__c,
+                    Contact__c,
+                    Country__c,
+                    CreatedById,
+                    CreatedDate,
+                    Email__c,
+                    EMPLID__c,
+                    First_Name__c,
+                    Hash_ID__c,
+                    LastModifiedById,
+                    Last_Name__c,
+                    Middle_Name__c,
+                    OwnerId,
+                    Phone__c,
+                    Name,
+                    Return_URL__c,
+                    State__c,
+                    Street__c,
+                    Zip_Code__c
                 FROM Family_Portal_Guardian__c
-                WHERE Email__c = :insertedGuardian.Email__c
+                WHERE
+                    (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Last_Name__c = :insertedGuardian.Last_Name__c
+                    AND Email__c = :insertedGuardian.Email__c
+                    AND Phone__c = :insertedGuardian.Phone__c)
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Last_Name__c = :insertedGuardian.Last_Name__c
+                    AND Email__c = :insertedGuardian.Email__c
+                    AND Middle_Name__c = :insertedGuardian.Middle_Name__c)
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Last_Name__c = :insertedGuardian.Last_Name__c
+                    AND Email__c = :insertedGuardian.Email__c
+                    AND Street__c = :insertedGuardian.Street__c)
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Last_Name__c = :insertedGuardian.Last_Name__c
+                    AND Email__c = :insertedGuardian.Email__c)
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Email__c = :insertedGuardian.Email__c)
             ];
+
             if (matchedGuardiansToCheck.size() > 0) {
-                determineGuardiansToDelete(matchedGuardiansToCheck);
+                insertedGuardianWithMatchedGuardians.put(insertedGuardian, matchedGuardiansToCheck);
             }
+        }
+        if (insertedGuardianWithMatchedGuardians.size() > 0) {
+            deduplicateGuardians(insertedGuardianWithMatchedGuardians);
         }
     }
 
-    private static void determineGuardiansToDelete(List<Family_Portal_Guardian__c> matchedGuardiansToCheck) {
-        Family_Portal_Guardian__c mostRecentGuardian;
-        for (Family_Portal_Guardian__c matchedGuardian : matchedGuardiansToCheck) {
-            if (mostRecentGuardian == null) {
-                mostRecentGuardian = matchedGuardian;
-                continue;
+    private static void deduplicateGuardians(
+        Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>> insertedGuardianWithMatchedGuardians
+    ) {
+        for (Family_Portal_Guardian__c insertedGuardian : insertedGuardianWithMatchedGuardians.keySet()) {
+            Family_Portal_Guardian__c oldestGuardian;
+            Family_Portal_Guardian__c newestGuardian = insertedGuardian;
+            List<Family_Portal_Guardian__c> relatedGuardiansToDelete = new List<Family_Portal_Guardian__c>();
+            Map<Id, List<Family_Portal_Guardian__c>> relatedGuardianIdsWithGuardianToDelete = new Map<Id, List<Family_Portal_Guardian__c>>();
+            List<Family_Portal_Guardian__c> matchedGuardiansToCheck = insertedGuardianWithMatchedGuardians.get(
+                insertedGuardian
+            );
+
+            for (Family_Portal_Guardian__c matchedGuardian : matchedGuardiansToCheck) {
+                if (oldestGuardian == null) {
+                    oldestGuardian = matchedGuardian;
+                    continue;
+                }
+                if (oldestGuardian.Id == matchedGuardian.Id) {
+                    continue;
+                }
+
+                if (oldestGuardian.CreatedDate < matchedGuardian) {
+                    relatedGuardiansToDelete.add(matchedGuardian);
+                } else {
+                    relatedGuardiansToDelete.add(oldestGuardian);
+                    oldestGuardian = matchedGuardian;
+                }
             }
-            if (mostRecentGuardian.Id == matchedGuardian.Id) {
-                continue;
+            guardiansToDelete.addAll(relatedGuardiansToDelete);
+
+            for (Family_Portal_Guardian__c relatedGuardianToDelete : relatedGuardiansToDelete) {
+                relatedGuardianIdsWithGuardianToDelete.put(relatedGuardianToDelete.Id, relatedGuardianToDelete);
             }
-            if (mostRecentGuardian.CreatedDate >= matchedGuardian.CreatedDate) {
-                guardiansToDelete.add(matchedGuardian);
-            } else if (mostRecentGuardian.CreatedDate < matchedGuardian.CreatedDate) {
-                guardiansToDelete.add(mostRecentGuardian);
-                mostRecentGuardian = matchedGuardian;
+
+            for (Family_Portal_Guardian_Interest__c interestToReparent : [
+                SELECT Id, Family_Portal_Guardian__c
+                FROM Family_Portal_Guardian_Interest__c
+                WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsWithGuardianToDelete.keySet()
+            ]) {
+                interestToReparent.Active_Interest__c = false;
+                interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
             }
+
+            for (Family_Portal_Student__c studentToReparent : [
+                SELECT Id, Family_Portal_Guardian__c
+                FROM Family_Portal_Student__c
+                WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsWithGuardianToDelete.keySet()
+            ]) {
+                studentToReparent.Active_Relationship__c = false;
+                studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+            }
+
+            if (newestGuardian.ASU_Alumni__c != null) {
+                oldestGuardian.ASU_Alumni__c = newestGuardian.ASU_Alumni__c;
+            }
+            if (newestGuardian.ASURITE_ID__c != null) {
+                oldestGuardian.ASURITE_ID__c = newestGuardian.ASURITE_ID__c;
+            }
+            if (newestGuardian.Business_Unit_Source__c != null) {
+                oldestGuardian.Business_Unit_Source__c = newestGuardian.Business_Unit_Source__c;
+            }
+            if (newestGuardian.City__c != null) {
+                oldestGuardian.City__c = newestGuardian.City__c;
+            }
+            if (newestGuardian.Contact__c != null) {
+                oldestGuardian.Contact__c = newestGuardian.Contact__c;
+            }
+            if (newestGuardian.Country__c != null) {
+                oldestGuardian.Country__c = newestGuardian.Country__c;
+            }
+            if (newestGuardian.Email__c != null) {
+                oldestGuardian.Email__c = newestGuardian.Email__c;
+            }
+            if (newestGuardian.EMPLID__c != null) {
+                oldestGuardian.EMPLID__c = newestGuardian.EMPLID__c;
+            }
+            if (newestGuardian.First_Name__c != null) {
+                oldestGuardian.First_Name__c = newestGuardian.First_Name__c;
+            }
+            if (newestGuardian.Last_Name__c != null) {
+                oldestGuardian.Last_Name__c = newestGuardian.Last_Name__c;
+            }
+            if (newestGuardian.Middle_Name__c != null) {
+                oldestGuardian.Middle_Name__c = newestGuardian.Middle_Name__c;
+            }
+            if (newestGuardian.OwnerId != null) {
+                oldestGuardian.OwnerId = newestGuardian.OwnerId;
+            }
+            if (newestGuardian.Phone__c != null) {
+                oldestGuardian.Phone__c = newestGuardian.Phone__c;
+            }
+            if (newestGuardian.State__c != null) {
+                oldestGuardian.State__c = newestGuardian.State__c;
+            }
+            if (newestGuardian.Street__c != null) {
+                oldestGuardian.Street__c = newestGuardian.Street__c;
+            }
+            if (newestGuardian.Zip_Code__c != null) {
+                oldestGuardian.Zip_Code__c = newestGuardian.Zip_Code__c;
+            }
+
+            for (Family_Portal_Guardian_Interest__c interestToSetInactive : [
+                SELECT Id, Family_Portal_Guardian__c
+                FROM Family_Portal_Guardian_Interest__c
+                WHERE Family_Portal_Guardian__c = :oldestGuardian.Id
+            ]) {
+                interestToSetInactive.Active_Interest__c = false;
+            }
+
+            for (Family_Portal_Student__c studentToSetInactive : [
+                SELECT Id, Family_Portal_Guardian__c
+                FROM Family_Portal_Student__c
+                WHERE Family_Portal_Guardian__c = :oldestGuardian.Id
+            ]) {
+                studentToSetInactive.Active_Relationship__c = false;
+            }
+
+            for (Family_Portal_Guardian_Interest__c interestToReparent : [
+                SELECT Id, Family_Portal_Guardian__c
+                FROM Family_Portal_Guardian_Interest__c
+                WHERE Family_Portal_Guardian__c = :newestGuardian.Id
+            ]) {
+                interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+            }
+
+            for (Family_Portal_Student__c studentToReparent : [
+                SELECT Id, Family_Portal_Guardian__c
+                FROM Family_Portal_Student__c
+                WHERE Family_Portal_Guardian__c = :newestGuardian.Id
+            ]) {
+                studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+            }
+            guardiansToDelete.add(newestGuardian);
+            guardiansToUpdate.add(oldestGuardian);
         }
     }
 }

@@ -800,11 +800,11 @@ public without sharing class ConstituentMatcher {
             } else if (requestSource == 'familyportal') {
                 if (matchContactByEmplid(matchedConstituent)) {
                 } else if (matchContactByAsurite(matchedConstituent)) {
-                } else if (matchContactByFirstNameEmail(matchedConstituent)) {
-                } else if (matchContactByFirstNameLastNameEmail(matchedConstituent)) {
                 } else if (matchContactByFirstNameLastNameEmailPhone(matchedConstituent)) {
                 } else if (matchContactByFirstNameLastNameEmailMiddleName(matchedConstituent)) {
                 } else if (matchContactByFirstNameLastNameEmailStreet(matchedConstituent)) {
+                } else if (matchContactByFirstNameLastNameEmail(matchedConstituent)) {
+                } else if (matchContactByFirstNameEmail(matchedConstituent)) {
                 }
             } else if (requestSource == 'api') {
                 if (matchContactByContactId(matchedConstituent)) {

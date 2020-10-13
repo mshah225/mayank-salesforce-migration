@@ -23,7 +23,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private boolean associateCaseToActiveOpportunity;
     private boolean neutralEmail = true; //Allows attachment, but doesn't save it
     private Email_Logging__c loggingSettings = Email_Logging__c.getValues('Current_Settings');
-    private String emailHeaders;
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
     protected String defaultCaseOwnerId;
@@ -715,7 +714,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         {
             if(this.emailHeaders != null)
             {
-                theEmail.Headers = this.emailHeaders;
+                theEmail.Headers = this.parseHeaders();
             }
         }
 
@@ -1253,8 +1252,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
                 }
             }
-            this.emailHeaders += email.headers[x].name + ' : ' + email.headers[x].value + '\n';
         }
+    }
+
+    private String parseHeaders(Messaging.InboundEmail email)
+    {
+        String header = '';
+        for(Integer x = 0; x < email.headers.size(); x++)
+        {
+            header += email.headers[x].name + ' : ' + email.headers[x].value + '\n';
+        }
+        return header;
     }
 
     // Make this public for unit test access

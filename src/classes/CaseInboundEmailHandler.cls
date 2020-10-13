@@ -23,6 +23,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private boolean associateCaseToActiveOpportunity;
     private boolean neutralEmail = true; //Allows attachment, but doesn't save it
     private Email_Logging__c loggingSettings = Email_Logging__c.getValues('Current_Settings');
+    private String emailHeaders;
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
     protected String defaultCaseOwnerId;
@@ -711,7 +712,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
         theEmail.CcAddress = limitLength(value,EmailMessage.CcAddress.getDescribe().getLength());
 
         if(loggingSettings.Header_Logging__c) {
-            theEmail.Headers = email.headers;
+            if(this.emailHeaders != null){
+                theEmail.Headers = this.emailHeaders;
+            }
         }
 
         insert theEmail;
@@ -1248,6 +1251,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                     }
                 }
             }
+            this.emailHeaders += email.headers[x].name + ' : ' + email.headers[x].value + '\n';
         }
     }
 

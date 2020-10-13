@@ -1258,7 +1258,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
     private String parseHeaders(Messaging.InboundEmail email)
     {
         String header = '';
-        for (Messaging.InboundEmail.Header h : email.headers) {
+        for (Messaging.InboundEmail.Header h : email.headers) 
+        {
             header += h.name + ' : ' + h.value + '\n';
         }
         return header;

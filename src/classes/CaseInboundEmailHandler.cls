@@ -712,9 +712,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         if(loggingSettings.Header_Logging__c) 
         {
-            if(this.emailHeaders != null)
+            if(email.headers != null)
             {
-                theEmail.Headers = this.parseHeaders();
+                theEmail.Headers = parseHeaders(email);
             }
         }
 

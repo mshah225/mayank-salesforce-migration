@@ -711,8 +711,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
 
         theEmail.CcAddress = limitLength(value,EmailMessage.CcAddress.getDescribe().getLength());
 
-        if(loggingSettings.Header_Logging__c) {
-            if(this.emailHeaders != null){
+        if(loggingSettings.Header_Logging__c) 
+        {
+            if(this.emailHeaders != null)
+            {
                 theEmail.Headers = this.emailHeaders;
             }
         }

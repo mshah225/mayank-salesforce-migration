@@ -81,30 +81,6 @@ public without sharing class ConstituentMatcher {
         return detailsToReturn;
     }
 
-    public Map<String, ConstituentDetail> getAsuriteWithDetailMap() {
-        return asuriteWithDetail;
-    }
-
-    public Map<String, ConstituentDetail> getEmplidWithDetailMap() {
-        return emplidWithDetail;
-    }
-
-    public Set<String> getEmailSet() {
-        return emailSet;
-    }
-
-    public Set<String> getfirstNameSet() {
-        return firstNameSet;
-    }
-
-    public Set<String> getPartialFirstNameSet() {
-        return partialFirstNameSet;
-    }
-
-    public String getConstituentType() {
-        return constituentType;
-    }
-
     public String getPartialFirstName(String firstName) {
         String firstNameCopy = firstName;
         String partialFirstName;

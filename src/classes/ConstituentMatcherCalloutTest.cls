@@ -1,5 +1,3 @@
-public with sharing class ConstituentMatcherCalloutTest {
-    public ConstituentMatcherCalloutTest() {
-
-    }
+@isTest
+private class ConstituentMatcherCalloutTest {
 }

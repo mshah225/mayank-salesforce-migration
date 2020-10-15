@@ -1326,6 +1326,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             lostEmail.PlainTextBody__c += attachmentInfo;
         }
 
+        if(loggingSettings.Header_Logging__c) 
+        {
+            if(email.headers != null)
+            {
+                lostEmail.Headers__c = parseHeaders(email);
+            }
+        }
+
         update lostEmail;
 
         return lostEmail;

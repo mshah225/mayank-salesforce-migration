@@ -3,6 +3,8 @@
     <title>ASU | Welcome ASU Families - Step 2</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     </head>
@@ -205,5 +207,14 @@
             </div>
         </div>
     </apex:form>
+    <script>
+        $('.family-portal-2-container td.dataCol').each(function () {
+            if ($(this).children('div').hasClass('requiredInput')) {
+                var tableHeaderText = $(this).prevAll('th.vfLabelColTextWrap').html();
+                $(this).prevAll('th.vfLabelColTextWrap').html(tableHeaderText + ' <span class="requiredInputAsterisk"><sup>*</sup></span>');
+                $('.requiredInputAsterisk').css('color', 'red');
+            }
+        });
+    </script>
     <c:ASUBrandFooter />
 </apex:page>

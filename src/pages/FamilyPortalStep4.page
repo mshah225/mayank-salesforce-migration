@@ -96,21 +96,23 @@
                                         </div>
                                     </apex:column>
                                     <apex:column styleClass="family-portal-4-student-remove-button-column">
-                                        <apex:commandLink styleClass="family-portal-4-student-remove-button" role="button" action="{!removeStudentRow}" reRender="family-portal-student-page-block">
-                                            <apex:param value="{!swl.studentIndex}" name="index" />
-                                            <i class="fa fa-3x fa-times-circle" />
-                                        </apex:commandLink>
+                                        <span role="button">
+                                            <apex:commandLink styleClass="family-portal-4-student-remove-button" action="{!removeStudentRow}" reRender="family-portal-student-page-block">
+                                                <apex:param value="{!swl.studentIndex}" name="index" />
+                                                <i class="fa fa-3x fa-times-circle" />
+                                            </apex:commandLink>
+                                        </span>
                                     </apex:column>
                                 </apex:dataTable>
                                 <div class="family-portal-4-no-students-text">Please add a student or submit the form without adding students.</div>
                                 <div class="family-portal-double-button-container">
-                                    <div class="family-portal-double-button">
-                                        <apex:commandLink styleClass="btn btn-secondary btn-block family-portal-4-add-student-button" role="button" action="{!addStudentRow}" reRender="family-portal-student-page-block">
+                                    <div class="family-portal-double-button" role="button">
+                                        <apex:commandLink styleClass="btn btn-secondary btn-block family-portal-4-add-student-button"  action="{!addStudentRow}" reRender="family-portal-student-page-block">
                                             Add A Student
                                         </apex:commandLink>
                                     </div>
-                                    <div class="family-portal-double-button">
-                                        <apex:commandLink role="button" styleClass="btn btn-primary btn-block" action="{!familyPortalStep5}">
+                                    <div class="family-portal-double-button" role="button">
+                                        <apex:commandLink styleClass="btn btn-primary btn-block" action="{!familyPortalStep5}">
                                             Submit
                                         </apex:commandLink>
                                     </div>

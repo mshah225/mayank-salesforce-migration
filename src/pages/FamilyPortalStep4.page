@@ -62,7 +62,7 @@
                                             </apex:inputField>
                                         </div>
                                         <div class="family-portal-4-field-wrapper col-sm-5">
-                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="High School Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}"
+                                            <apex:outputText styleClass="family-portal-4-student-field-label" value="High School Graduation Year" aria-label="High School Graduation Year" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}"
                                             />
                                             <apex:inputField styleClass="family-portal-4-student-field-input" value="{!swl.familyPortalStudentObj.Enrollment_Status_Year__c}"
                                                 rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'K-12 Student'}"

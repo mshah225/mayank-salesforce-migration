@@ -10,7 +10,7 @@
     <c:ASUBrandHeader />
     <div class="asu-header-site-title-container">
         <div>
-            <div id="asu-header-site-title" class="asu-header-width">
+            <div id="asu-header-site-title-welcome" class="asu-header-width">
                 <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
             </div>
         </div>
@@ -56,7 +56,7 @@
                                 <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
                                     <apex:selectOptions value="{!guardianInterestChoices}" />
                                 </apex:selectCheckboxes>
-                                <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
+                                <apex:commandLink action="{!familyPortalStep4}" role="button" styleClass="btn btn-primary btn-block">
                                     Next
                                 </apex:commandLink>
                             </apex:pageBlock>

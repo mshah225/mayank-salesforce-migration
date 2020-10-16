@@ -56,7 +56,7 @@
                                 <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
                                     <apex:selectOptions value="{!guardianInterestChoices}" />
                                 </apex:selectCheckboxes>
-                                <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
+                                <apex:commandLink action="{!familyPortalStep4}" role="button" styleClass="btn btn-primary btn-block">
                                     Next
                                 </apex:commandLink>
                             </apex:pageBlock>

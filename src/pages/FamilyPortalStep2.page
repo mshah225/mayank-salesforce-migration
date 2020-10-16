@@ -12,7 +12,7 @@
     <c:ASUBrandHeader />
     <div class="asu-header-site-title-container">
         <div>
-            <div id="asu-header-site-title" class="asu-header-width">
+            <div id="asu-header-site-title-welcome" class="asu-header-width">
                 <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
             </div>
         </div>

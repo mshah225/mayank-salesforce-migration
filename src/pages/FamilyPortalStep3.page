@@ -58,9 +58,11 @@
                                         <apex:selectOptions value="{!guardianInterestChoices}" />
                                     </apex:selectCheckboxes>
                                 </span>
-                                <apex:commandLink action="{!familyPortalStep4}" role="button" styleClass="btn btn-primary btn-block">
-                                    Next
-                                </apex:commandLink>
+                                <span role="button">
+                                    <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
+                                        Next
+                                    </apex:commandLink>
+                                </span>
                             </apex:pageBlock>
                         </div>
                     </div>

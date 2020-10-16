@@ -87,7 +87,7 @@
                                         <div class="family-portal-4-field-wrapper col-sm-12">
                                             <apex:outputText styleClass="family-portal-4-student-field-label" value="Student Type" rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}"
                                             />
-                                            <apex:selectCheckboxes styleClass="family-portal-4-student-field-input" layout="pageDirection" value="{!swl.guardianSelectedStudentTypes}"
+                                            <apex:selectCheckboxes styleClass="family-portal-4-student-field-input" aria-label="Student Type" layout="pageDirection" value="{!swl.guardianSelectedStudentTypes}"
                                                 rendered="{!swl.familyPortalStudentObj.Enrollment_Status__c == 'ASU Student'}">
                                                 <apex:selectOptions value="{!swl.studentTypeChoices}" />
                                             </apex:selectCheckboxes>

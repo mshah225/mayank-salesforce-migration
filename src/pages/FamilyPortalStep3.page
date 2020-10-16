@@ -53,9 +53,11 @@
                                 <div class="family-portal-3-header">
                                     <h3>I want to learn about...</h3>
                                 </div>
-                                <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
-                                    <apex:selectOptions value="{!guardianInterestChoices}" />
-                                </apex:selectCheckboxes>
+                                <span role="group">
+                                    <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
+                                        <apex:selectOptions value="{!guardianInterestChoices}" />
+                                    </apex:selectCheckboxes>
+                                </span>
                                 <apex:commandLink action="{!familyPortalStep4}" role="button" styleClass="btn btn-primary btn-block">
                                     Next
                                 </apex:commandLink>

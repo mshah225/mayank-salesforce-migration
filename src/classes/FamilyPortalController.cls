@@ -71,22 +71,8 @@ public without sharing class FamilyPortalController {
         setDefaultSafetyChecks();
         setupDefaultGuardian();
         checkUrlAndCookies();
-        if (isExistingGuardian()) {
-            try {
-                prepopulateExistingGuardianData();
-            } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Could not prepopulate guardian data. Check exception.');
-            }
-        }
-        if (isAsuriteUser()) {
-            try {
-                setExistingAsuUserData();
-            } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Could not prepopulate ASU user data. Check exception.');
-            }
-        }
+        checkForExistingAsuriteUser();
+        checkForExistingGuardian();
     }
 
     private void setDefaultSafetyChecks() {
@@ -130,40 +116,138 @@ public without sharing class FamilyPortalController {
         }
     }
 
-    private Boolean isExistingGuardian() {
-        Integer numberOfMatches = [SELECT COUNT() FROM Family_Portal_Guardian__c WHERE Hash_ID__c = :hashId];
-        if (numberOfMatches > 0) {
-            isExistingGuardian = true;
+    private void checkForExistingAsuriteUser() {
+        if (isAsuriteUser()) {
+            try {
+                setExistingAsuUserData();
+            } catch (Exception e) {
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertSObjectToJSON('Could not set existing ASU user data', familyPortalGuardian)
+                );
+                ErrorLogger.log(e, vars, false);
+            }
+        }
+    }
 
+    private Boolean isAsuriteUser() {
+        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
+            isAsuriteUser = true;
+            familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
+            familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
+            familyPortalGuardian.Email__c = UserInfo.getUserEmail();
+
+            return true;
+        } else if (familyPortalGuardian.ASURITE_ID__c != null) {
             return true;
         }
 
         return false;
     }
 
+    private void setExistingAsuUserData() {
+        if (UserInfo.getUserId() != null) {
+            User existingAsuUser = [
+                SELECT EmployeeNumber, ASURITE_for_External_ID__c
+                FROM User
+                WHERE Id = :UserInfo.getUserId() AND Email = :UserInfo.getUserEmail()
+            ];
+            if (existingAsuUser.EmployeeNumber != null) {
+                familyPortalGuardian.EMPLID__c = existingAsuUser.EmployeeNumber;
+            }
+            if (existingAsuUser.ASURITE_for_External_ID__c != null) {
+                familyPortalGuardian.ASURITE_ID__c = existingAsuUser.ASURITE_for_External_ID__c;
+            }
+        }
+    }
+
+    private void checkForExistingGuardian() {
+        if (isExistingGuardian()) {
+            try {
+                prepopulateExistingGuardianData();
+            } catch (Exception e) {
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertSObjectToJSON(
+                        'Could not prepopulate existing guardian data',
+                        familyPortalGuardian
+                    )
+                );
+                ErrorLogger.log(e, vars, false);
+            }
+        }
+    }
+
+    private Boolean isExistingGuardian() {
+        Integer numberOfMatches = [SELECT COUNT() FROM Family_Portal_Guardian__c WHERE Hash_ID__c = :hashId];
+        if (numberOfMatches > 0) {
+            isExistingGuardian = true;
+            return true;
+        }
+
+        if (isAsuriteUser) {
+            numberOfMatches = [SELECT COUNT() FROM Family_Portal_Guardian__c WHERE Email__c = :UserInfo.getUserEmail()];
+            if (numberOfMatches > 0) {
+                isExistingGuardian = true;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void prepopulateExistingGuardianData() {
-        Family_Portal_Guardian__c guardian = [
-            SELECT
-                Id,
-                ASU_Alumni__c,
-                ASURITE_ID__c,
-                Business_Unit_Source__c,
-                City__c,
-                Contact__c,
-                Country__c,
-                Email__c,
-                EMPLID__c,
-                First_Name__c,
-                Hash_ID__c,
-                Last_Name__c,
-                Phone__c,
-                State__c,
-                Street__c,
-                Zip_Code__c
-            FROM Family_Portal_Guardian__c
-            WHERE Hash_ID__c = :hashId
-            LIMIT 1
-        ];
+        Family_Portal_Guardian__c guardian = new Family_Portal_Guardian__c();
+
+        if (isAsuriteUser) {
+            guardian = [
+                SELECT
+                    Id,
+                    ASU_Alumni__c,
+                    ASURITE_ID__c,
+                    Business_Unit_Source__c,
+                    City__c,
+                    Contact__c,
+                    Country__c,
+                    Email__c,
+                    EMPLID__c,
+                    First_Name__c,
+                    Hash_ID__c,
+                    Last_Name__c,
+                    Middle_Name__c,
+                    Phone__c,
+                    State__c,
+                    Street__c,
+                    Zip_Code__c
+                FROM Family_Portal_Guardian__c
+                WHERE Email__c = :UserInfo.getUserEmail()
+                LIMIT 1
+            ];
+        } else {
+            guardian = [
+                SELECT
+                    Id,
+                    ASU_Alumni__c,
+                    ASURITE_ID__c,
+                    Business_Unit_Source__c,
+                    City__c,
+                    Contact__c,
+                    Country__c,
+                    Email__c,
+                    EMPLID__c,
+                    First_Name__c,
+                    Hash_ID__c,
+                    Last_Name__c,
+                    Middle_Name__c,
+                    Phone__c,
+                    State__c,
+                    Street__c,
+                    Zip_Code__c
+                FROM Family_Portal_Guardian__c
+                WHERE Hash_ID__c = :hashId
+                LIMIT 1
+            ];
+        }
 
         if (guardian.Id != null) {
             if (guardian.ASURITE_ID__c != null || guardian.Email__c.contains('@asu.edu')) {
@@ -209,6 +293,9 @@ public without sharing class FamilyPortalController {
         if (guardian.Last_Name__c != null) {
             familyPortalGuardian.Last_Name__c = guardian.Last_Name__c;
         }
+        if (guardian.Middle_Name__c != null) {
+            familyPortalGuardian.Middle_Name__c = guardian.Middle_Name__c;
+        }
         if (guardian.Phone__c != null) {
             familyPortalGuardian.Phone__c = guardian.Phone__c;
         }
@@ -227,7 +314,7 @@ public without sharing class FamilyPortalController {
         List<Family_Portal_Guardian_Interest__c> guardianInterests = [
             SELECT Id, Chosen_Interest__c
             FROM Family_Portal_Guardian_Interest__c
-            WHERE Family_Portal_Guardian__c = :guardian.Id
+            WHERE Family_Portal_Guardian__c = :guardian.Id AND Active_Interest__c = TRUE
         ];
 
         String interestString = '';
@@ -253,7 +340,7 @@ public without sharing class FamilyPortalController {
                 Academic_College__c,
                 Military_Affiliation__c
             FROM Family_Portal_Student__c
-            WHERE Family_Portal_Guardian__c = :guardian.Id
+            WHERE Family_Portal_Guardian__c = :guardian.Id AND Active_Relationship__c = TRUE
         ];
 
         for (Family_Portal_Student__c student : students) {
@@ -272,37 +359,6 @@ public without sharing class FamilyPortalController {
                     studentRowCount
                 )
             );
-        }
-    }
-
-    private Boolean isAsuriteUser() {
-        if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
-            isAsuriteUser = true;
-            familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
-            familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
-            familyPortalGuardian.Email__c = UserInfo.getUserEmail();
-
-            return true;
-        } else if (familyPortalGuardian.ASURITE_ID__c != null) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private void setExistingAsuUserData() {
-        if (UserInfo.getUserId() != null) {
-            User existingAsuUser = [
-                SELECT EmployeeNumber, ASURITE_for_External_ID__c
-                FROM User
-                WHERE Id = :UserInfo.getUserId() AND Email = :UserInfo.getUserEmail()
-            ];
-            if (existingAsuUser.EmployeeNumber != null) {
-                familyPortalGuardian.EMPLID__c = existingAsuUser.EmployeeNumber;
-            }
-            if (existingAsuUser.ASURITE_for_External_ID__c != null) {
-                familyPortalGuardian.ASURITE_ID__c = existingAsuUser.ASURITE_for_External_ID__c;
-            }
         }
     }
 
@@ -467,8 +523,11 @@ public without sharing class FamilyPortalController {
         detailFieldsMap.put('emplid', familyPortalGuardian.EMPLID__c);
         detailFieldsMap.put('asuriteId', familyPortalGuardian.ASURITE_ID__c);
         detailFieldsMap.put('firstName', familyPortalGuardian.First_Name__c);
+        detailFieldsMap.put('middleName', familyPortalGuardian.Middle_Name__c);
         detailFieldsMap.put('lastName', familyPortalGuardian.Last_Name__c);
         detailFieldsMap.put('email', familyPortalGuardian.Email__c);
+        detailFieldsMap.put('phone', familyPortalGuardian.Phone__c);
+        detailFieldsMap.put('mailingStreet', familyPortalGuardian.Street__c);
         ConstituentDetail guardianDetail = new ConstituentDetail(detailFieldsMap);
 
         ConstituentMatcher contactMatcher = new ConstituentMatcher(guardianDetail, 'Contact', 'familyportal');
@@ -509,7 +568,7 @@ public without sharing class FamilyPortalController {
             familyPortalGuardian.Hash_ID__c = hashId;
         }
         beautifyPhoneNumber();
-        insertGuardianReturnUrl();
+        setGuardianReturnUrl();
         insert familyPortalGuardian;
     }
 
@@ -519,7 +578,7 @@ public without sharing class FamilyPortalController {
         }
     }
 
-    private void insertGuardianReturnUrl() {
+    private void setGuardianReturnUrl() {
         if (familyPortalGuardian.Hash_ID__c != null) {
             String currentHeaderUrl = ApexPages.currentPage().getHeaders().get('Host');
             familyPortalGuardian.Return_URL__c =

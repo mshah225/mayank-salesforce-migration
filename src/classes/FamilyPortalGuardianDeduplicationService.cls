@@ -138,7 +138,8 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c)
                     OR (First_Name__c = :insertedGuardian.First_Name__c
-                    AND Email__c = :insertedGuardian.Email__c))
+                    AND Email__c = :insertedGuardian.Email__c)
+                    OR Hash_ID__c = :insertedGuardian.Hash_ID__c)
             ];
 
             if (matchedGuardiansToCheck.size() > 0) {

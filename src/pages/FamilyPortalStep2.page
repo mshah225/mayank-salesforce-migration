@@ -12,7 +12,7 @@
     <c:ASUBrandHeader />
     <div class="asu-header-site-title-container">
         <div>
-            <div id="asu-header-site-title-welcome" class="asu-header-width">
+            <div id="asu-header-site-title" class="asu-header-width">
                 <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
             </div>
         </div>
@@ -212,8 +212,8 @@
     <script>
         $('.family-portal-2-container td.dataCol').each(function () {
             if ($(this).children('div').hasClass('requiredInput')) {
-                var tableHeaderText = $(this).prevAll('th.vfLabelColTextWrap').html();
-                $(this).prevAll('th.vfLabelColTextWrap').html(tableHeaderText + ' <span class="requiredInputAsterisk"><sup>*</sup></span>');
+                var tableHeaderText = $(this).prev('th.vfLabelColTextWrap').html();
+                $(this).prev('th.vfLabelColTextWrap').html(tableHeaderText + ' <span class="requiredInputAsterisk"><sup>*</sup></span>');
                 $('.requiredInputAsterisk').css('color', 'red');
             }
         });

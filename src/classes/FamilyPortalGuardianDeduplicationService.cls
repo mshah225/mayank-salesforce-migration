@@ -22,7 +22,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
                     update guardianInterestsToUpdate;
                 }
-            } catch (Exception e) {
+            } catch (DmlException e) {
                 Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
                 guardianInterestsToUpdateSet.addAll(guardianInterestsToUpdate);
                 guardianInterestsToUpdate.clear();
@@ -39,7 +39,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     studentsToUpdate.addAll(studentsToUpdateSet);
                     update studentsToUpdate;
                 }
-            } catch (Exception e) {
+            } catch (DmlException e) {
                 Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
                 studentsToUpdateSet.addAll(studentsToUpdate);
                 studentsToUpdate.clear();
@@ -56,7 +56,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     guardiansToUpdate.addAll(guardiansToUpdateSet);
                     update guardiansToUpdate;
                 }
-            } catch (Exception e) {
+            } catch (DmlException e) {
                 Set<Family_Portal_Guardian__c> guardiansToUpdateSet = new Set<Family_Portal_Guardian__c>();
                 guardiansToUpdateSet.addAll(guardiansToUpdate);
                 guardiansToUpdate.clear();
@@ -73,7 +73,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     guardiansToDelete.addAll(guardiansToDeleteSet);
                     delete guardiansToDelete;
                 }
-            } catch (Exception e) {
+            } catch (DmlException e) {
                 Set<Family_Portal_Guardian__c> guardiansToDeleteSet = new Set<Family_Portal_Guardian__c>();
                 guardiansToDeleteSet.addAll(guardiansToDelete);
                 guardiansToDelete.clear();

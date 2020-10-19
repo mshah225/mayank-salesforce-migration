@@ -415,7 +415,7 @@ public with sharing class ViewCaseController {
             ' ' +
             currentUser.LastName +
             ' from the My ASU Help tab at ' +
-            DateTime.now();
+            DateTime.now().format('yyyy-MM-dd HH:mm:ss');
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(
             caseReply,
             caseId,

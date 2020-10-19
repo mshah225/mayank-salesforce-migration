@@ -75,16 +75,25 @@ public without sharing class FamilyPortalController {
             try {
                 prepopulateExistingGuardianData();
             } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Could not prepopulate guardian data. Check exception.');
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertSObjectToJSON(
+                        'Could not prepopulate existing guardian data',
+                        familyPortalGuardian
+                    )
+                );
+                ErrorLogger.log(e, vars, false);
             }
         }
         if (isAsuriteUser()) {
             try {
                 setExistingAsuUserData();
             } catch (Exception e) {
-                System.debug(e.getMessage());
-                System.debug('Could not prepopulate ASU user data. Check exception.');
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertSObjectToJSON('Could not set existing ASU user data', familyPortalGuardian)
+                );
+                ErrorLogger.log(e, vars, false);
             }
         }
     }

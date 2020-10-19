@@ -3745,12 +3745,16 @@
                             let currentTermEnrolled = 0;
                             let nextTermClassSessionMap = new Map();
                             let nextTermEnrolled = 0;
+                            let futureTermClassSessionMap = new Map();
+                            let futureTermEnrolled = 0;
 
                             classResponse.forEach(function (record) {
                                 delete record.attributes;
 
                                 if (record.STDNT_ENRL_STATUS__c === "E" && record.ENRL_STATUS_REASON__c === "ENRL") {
                                     if (record.STRM__c === "{!currentTerm}") {
+                                        console.log("record was current term");
+                                        
                                         currentTermEnrolled += record.UNT_TAKEN__c;
                                         if (!currentTermClassSessionMap.has(record.SESSION_CODE__c)) {
                                             currentTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
@@ -3758,11 +3762,22 @@
                                             currentTermClassSessionMap.set(record.SESSION_CODE__c, (currentTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
                                         }
                                     } else if (record.STRM__c === "{!nextTerm}") {
+                                        console.log("record was next term");
+
                                         nextTermEnrolled += record.UNT_TAKEN__c;
                                         if (!nextTermClassSessionMap.has(record.SESSION_CODE__c)) {
                                             nextTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
                                         } else {
                                             nextTermClassSessionMap.set(record.SESSION_CODE__c, (nextTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
+                                        }
+                                    } else if (record.STRM__c === "{!futureTerm}") {
+                                        console.log("record was future term");
+
+                                        futureTermEnrolled += record.UNT_TAKEN__c;
+                                        if (!futureTermClassSessionMap.has(record.SESSION_CODE__c)) {
+                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
+                                        } else {
+                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, (futureTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
                                         }
                                     }
                                 }
@@ -3770,10 +3785,10 @@
 
                             buildSessionRows(currentTermClassSessionMap, "#currentTermEnrolledHours", "#currentTermEnrolled", currentTermEnrolled);
                             buildSessionRows(nextTermClassSessionMap, "#nextTermEnrolledHours", "#nextTermEnrolled", nextTermEnrolled);
+                            buildSessionRows(futureTermClassSessionMap, "#futureEnrolledHours", "#futureTermEnrolled", futureTermEnrolled);
 
                             function buildSessionRows(sessionMap, termHoursId, termEnrolledId, termEnrolledHours) {
                                 let termRowHTML = "";
-
                                 new Map([...sessionMap.entries()].sort()).forEach(function (value, key) {
                                     termRowHTML += "" +
                                         "<tr class=\"gradExtraInfo hide\">\n" +
@@ -3784,7 +3799,10 @@
                                         "" + value + "\n" +
                                         "</td>\n" +
                                         "</tr>";
+
+                                        console.log("in buildSessionRows, saw session: " + key + ", " + termHoursId);
                                 });
+                                console.log("termHoursId " + termHoursId + " termEnrolledId " + termEnrolledId + " termEnrolledHours " + termEnrolledHours);
 
                                 if (termEnrolledHours > 0) {
                                     $j(termHoursId).after(termRowHTML).find("span.hide").removeClass("hide");

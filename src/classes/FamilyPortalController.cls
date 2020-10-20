@@ -196,6 +196,7 @@ public without sharing class FamilyPortalController {
         return false;
     }
 
+    @TestVisible
     private void prepopulateExistingGuardianData() {
         Family_Portal_Guardian__c guardian = new Family_Portal_Guardian__c();
 
@@ -220,7 +221,7 @@ public without sharing class FamilyPortalController {
                     Street__c,
                     Zip_Code__c
                 FROM Family_Portal_Guardian__c
-                WHERE Email__c = :UserInfo.getUserEmail()
+                WHERE Email__c = :familyPortalGuardian.Email__c
                 LIMIT 1
             ];
         } else {
@@ -259,6 +260,7 @@ public without sharing class FamilyPortalController {
         }
     }
 
+    @TestVisible
     private void setExistingGuardianData(Family_Portal_Guardian__c guardian) {
         if (guardian.ASU_Alumni__c != null) {
             familyPortalGuardian.ASU_Alumni__c = guardian.ASU_Alumni__c;
@@ -310,6 +312,7 @@ public without sharing class FamilyPortalController {
         }
     }
 
+    @TestVisible
     private void setExistingGuardianInterests(Family_Portal_Guardian__c guardian) {
         List<Family_Portal_Guardian_Interest__c> guardianInterests = [
             SELECT Id, Chosen_Interest__c
@@ -330,6 +333,7 @@ public without sharing class FamilyPortalController {
         }
     }
 
+    @TestVisible
     private void setExistingStudents(Family_Portal_Guardian__c guardian) {
         List<Family_Portal_Student__c> students = [
             SELECT
@@ -511,8 +515,14 @@ public without sharing class FamilyPortalController {
             insertGuardianInterests();
             insertStudents();
         } catch (Exception e) {
-            System.debug(e.getMessage());
-            System.debug('Something went wrong when submitting a guardian. Check exception.');
+            List<String> vars = new List<String>();
+            vars.add(
+                ErrorLogger.convertSObjectToJSON(
+                    'Something went wrong when submitting a guardian',
+                    familyPortalGuardian
+                )
+            );
+            ErrorLogger.log(e, vars, false);
         }
 
         return Page.FamilyPortalStep5;
@@ -680,11 +690,7 @@ public without sharing class FamilyPortalController {
 
         public void getProgressBarPercentage() {
             if (progressCounter != 0) {
-                if (Decimal.valueOf(progressCounter) > 100) {
-                    currentPercentage = 100;
-                } else {
-                    currentPercentage = (Decimal.valueOf(progressCounter)) / 100 * 100;
-                }
+                currentPercentage = (Decimal.valueOf(progressCounter)) / 100 * 100;
             } else {
                 currentPercentage = 0;
             }

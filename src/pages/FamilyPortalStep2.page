@@ -59,7 +59,7 @@
                                     <!-- ASURITE users -->
                                     <apex:outputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                    <apex:outputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
                                     />
                                     <apex:outputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
                                     />
@@ -129,8 +129,8 @@
                                     <!-- ASURITE & existing guardian users -->
                                     <apex:outputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" html-placeholder="{!familyPortalGuardian.Middle_Name__c}"
-                                        rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
+                                    <apex:outputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
+                                    />
                                     <apex:outputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
                                     />
                                     <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"

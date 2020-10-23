@@ -4,7 +4,7 @@ public class FamilyPortalInterestDispatcher implements IDispatch {
     private List<Family_Portal_Guardian_Interest__c> oldList;
     private Map<Id, Family_Portal_Guardian_Interest__c> oldMap;
 
-    public FamilyPortalGuardianDispatcher(
+    public FamilyPortalInterestDispatcher(
         List<Family_Portal_Guardian_Interest__c> newList,
         Map<Id, Family_Portal_Guardian_Interest__c> newMap,
         List<Family_Portal_Guardian_Interest__c> oldList,

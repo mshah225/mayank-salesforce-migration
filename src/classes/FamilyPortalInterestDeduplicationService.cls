@@ -1,5 +1,5 @@
 public class FamilyPortalInterestDeduplicationService implements Queueable {
-    private List<Family_Portal_Guardian__c> recentlyUpdatedInterests;
+    private List<Family_Portal_Guardian_Interest__c> recentlyUpdatedInterests;
     private static List<Family_Portal_Guardian_Interest__c> interestsToDelete;
     private static List<Family_Portal_Guardian_Interest__c> interestsToUpdate;
 
@@ -49,9 +49,9 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
 
     public static void gatherInterestsAndStartDedupe(List<Family_Portal_Guardian_Interest__c> updatedInterests) {
         Map<Family_Portal_Guardian_Interest__c, List<Family_Portal_Guardian_Interest__c>> updatedInterestWithMatchedInterests = new Map<Family_Portal_Guardian_Interest__c, List<Family_Portal_Guardian_Interest__c>>();
-        List<Family_Portal_Guardian__c> guardiansToCheck;
-        interestsToDelete = new List<Family_Portal_Guardian__c>();
-        interestsToUpdate = new List<Family_Portal_Guardian__c>();
+        List<Family_Portal_Guardian_Interest__c> guardiansToCheck;
+        interestsToDelete = new List<Family_Portal_Guardian_Interest__c>();
+        interestsToUpdate = new List<Family_Portal_Guardian_Interest__c>();
 
         for (Family_Portal_Guardian_Interest__c updatedInterest : updatedInterests) {
             List<Family_Portal_Guardian_Interest__c> matchedInterestsToCheck = [
@@ -73,14 +73,14 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
     }
 
     // private static void deduplicateInterests(
-    //     Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>> insertedGuardianWithMatchedGuardians
+    //     Map<Family_Portal_Guardian_Interest__c, List<Family_Portal_Guardian_Interest__c>> updatedInterestWithMatchedInterests
     // ) {
-    //     for (Family_Portal_Guardian__c insertedGuardian : insertedGuardianWithMatchedGuardians.keySet()) {
-    //         Family_Portal_Guardian__c oldestGuardian;
-    //         Family_Portal_Guardian__c newestGuardian = insertedGuardian;
-    //         List<Family_Portal_Guardian__c> relatedinterestsToDelete = new List<Family_Portal_Guardian__c>();
-    //         Map<Id, List<Family_Portal_Guardian__c>> relatedGuardianIdsWithinterestsToDelete = new Map<Id, List<Family_Portal_Guardian__c>>();
-    //         List<Family_Portal_Guardian__c> matchedGuardiansToCheck = insertedGuardianWithMatchedGuardians.get(
+    //     for (Family_Portal_Guardian_Interest__c updatedInterest : updatedInterestWithMatchedInterests.keySet()) {
+    //         Family_Portal_Guardian_Interest__c oldestGuardian;
+    //         Family_Portal_Guardian_Interest__c newestGuardian = insertedGuardian;
+    //         List<Family_Portal_Guardian_Interest__c> relatedinterestsToDelete = new List<Family_Portal_Guardian_Interest__c>();
+    //         Map<Id, List<Family_Portal_Guardian_Interest__c>> relatedGuardianIdsWithinterestsToDelete = new Map<Id, List<Family_Portal_Guardian_Interest__c>>();
+    //         List<Family_Portal_Guardian_Interest__c> matchedGuardiansToCheck = insertedGuardianWithMatchedGuardians.get(
     //             insertedGuardian
     //         );
 

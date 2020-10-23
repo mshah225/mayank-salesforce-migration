@@ -553,6 +553,7 @@ public without sharing class FamilyPortalController {
             newGuardianContact.FirstName = familyPortalGuardian.First_Name__c;
             newGuardianContact.LastName = familyPortalGuardian.Last_Name__c;
             newGuardianContact.Email = familyPortalGuardian.Email__c;
+            newGuardianContact.Phone = familyPortalGuardian.Phone__c;
 
             insert newGuardianContact;
             familyPortalGuardian.Contact__c = newGuardianContact.Id;
@@ -601,19 +602,48 @@ public without sharing class FamilyPortalController {
 
     private void insertGuardianInterests() {
         if (familyPortalGuardianInterest.Interest_Choices__c != null) {
+            List<String> allInterestList = buildGuardianInterestList();
+
             List<Family_Portal_Guardian_Interest__c> familyPortalGuardianInterestList = new List<Family_Portal_Guardian_Interest__c>();
             List<String> guardianChosenInterestsFromPicklist = familyPortalGuardianInterest.Interest_Choices__c.split(
                 ';'
             );
 
-            for (String guardianChosenInterest : guardianChosenInterestsFromPicklist) {
+            Map<String, Boolean> guardianChosenInterestsFromPicklistMap = new Map<String, Boolean>();
+            for (String chosenInterest : guardianChosenInterestsFromPicklist) {
+                guardianChosenInterestsFromPicklistMap.put(chosenInterest, true);
+            }
+
+            for (String interest : allInterestList) {
+                if (!guardianChosenInterestsFromPicklistMap.containsKey(interest)) {
+                    guardianChosenInterestsFromPicklistMap.put(interest, false);
+                }
+            }
+
+            for (String guardianChosenInterest : guardianChosenInterestsFromPicklistMap.keySet()) {
                 Family_Portal_Guardian_Interest__c guardianInterest = new Family_Portal_Guardian_Interest__c();
                 guardianInterest.Chosen_Interest__c = guardianChosenInterest;
+                guardianInterest.Active_Interest__c = guardianChosenInterestsFromPicklistMap.get(
+                    guardianChosenInterest
+                );
                 guardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
                 familyPortalGuardianInterestList.add(guardianInterest);
             }
             insert familyPortalGuardianInterestList;
         }
+    }
+
+    public List<String> buildGuardianInterestList() {
+        List<String> optionsToReturn = new List<String>();
+        Schema.DescribeFieldResult describeResult = Family_Portal_Guardian_Interest__c.Interest_Choices__c.getDescribe();
+        List<Schema.PicklistEntry> picklistOptions = describeResult.getPicklistValues();
+        for (Schema.PicklistEntry picklistItem : picklistOptions) {
+            if (picklistItem.isActive()) {
+                optionsToReturn.add(picklistItem.getLabel());
+            }
+        }
+
+        return optionsToReturn;
     }
 
     private void insertStudents() {

@@ -186,22 +186,24 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             }
 
             for (Family_Portal_Guardian_Interest__c interestToReparent : [
-                SELECT Id, Active_Interest__c, Family_Portal_Guardian__c
+                SELECT Id, Active_Interest__c, Family_Portal_Guardian__c, Guardian_Contact__c
                 FROM Family_Portal_Guardian_Interest__c
                 WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsWithGuardianToDelete.keySet()
             ]) {
                 interestToReparent.Active_Interest__c = false;
                 interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                interestToReparent.Guardian_Contact__c = oldestGuardian.Contact__c;
                 guardianInterestsToUpdate.add(interestToReparent);
             }
 
             for (Family_Portal_Student__c studentToReparent : [
-                SELECT Id, Active_Relationship__c, Family_Portal_Guardian__c
+                SELECT Id, Active_Relationship__c, Family_Portal_Guardian__c, Guardian_Contact__c
                 FROM Family_Portal_Student__c
                 WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsWithGuardianToDelete.keySet()
             ]) {
                 studentToReparent.Active_Relationship__c = false;
                 studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                studentToReparent.Guardian_Contact__c = oldestGuardian.Contact__c;
                 studentsToUpdate.add(studentToReparent);
             }
 
@@ -273,20 +275,22 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             }
 
             for (Family_Portal_Guardian_Interest__c interestToReparent : [
-                SELECT Id, Family_Portal_Guardian__c
+                SELECT Id, Family_Portal_Guardian__c, Guardian_Contact__c
                 FROM Family_Portal_Guardian_Interest__c
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id
             ]) {
                 interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                interestToReparent.Guardian_Contact__c = oldestGuardian.Contact__c;
                 guardianInterestsToUpdate.add(interestToReparent);
             }
 
             for (Family_Portal_Student__c studentToReparent : [
-                SELECT Id, Family_Portal_Guardian__c
+                SELECT Id, Family_Portal_Guardian__c, Guardian_Contact__c
                 FROM Family_Portal_Student__c
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id
             ]) {
                 studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
+                studentToReparent.Guardian_Contact__c = oldestGuardian.Contact__c;
                 studentsToUpdate.add(studentToReparent);
             }
 

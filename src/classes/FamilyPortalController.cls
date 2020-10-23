@@ -627,6 +627,7 @@ public without sharing class FamilyPortalController {
                     guardianChosenInterest
                 );
                 guardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+                guardianInterest.Guardian_Contact__c = familyPortalGuardian.Contact__c;
                 familyPortalGuardianInterestList.add(guardianInterest);
             }
             insert familyPortalGuardianInterestList;
@@ -655,6 +656,7 @@ public without sharing class FamilyPortalController {
 
         for (Family_Portal_Student__c reportedStudent : familyPortalStudentList) {
             reportedStudent.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+            reportedStudent.Guardian_Contact__c = familyPortalGuardian.Contact__c;
         }
         insert familyPortalStudentList;
     }

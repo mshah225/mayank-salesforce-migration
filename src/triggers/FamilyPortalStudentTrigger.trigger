@@ -6,7 +6,7 @@ trigger FamilyPortalStudentTrigger on Family_Portal_Student__c(
     before insert,
     before update
 ) {
-    FamilyPortalStudentTrigger dispatcher = new FamilyPortalStudentTrigger(
+    FamilyPortalStudentDispatcher dispatcher = new FamilyPortalStudentDispatcher(
         Trigger.new,
         Trigger.newMap,
         Trigger.old,

@@ -1,10 +1,19 @@
 public class FamilyPortalInterestDeduplicationService implements Queueable {
+    private List<Family_Portal_Student__c> updatedStudents;
     private List<Family_Portal_Guardian_Interest__c> updatedInterests;
     private static List<Family_Portal_Guardian_Interest__c> interestsToDelete;
     private static List<Family_Portal_Guardian_Interest__c> interestsToUpdate;
 
     public FamilyPortalInterestDeduplicationService(List<Family_Portal_Guardian_Interest__c> updatedInterests) {
         this.updatedInterests = updatedInterests;
+    }
+
+    public FamilyPortalInterestDeduplicationService(
+        List<Family_Portal_Guardian_Interest__c> updatedInterests,
+        List<Family_Portal_Student__c> updatedStudents
+    ) {
+        this.updatedInterests = updatedInterests;
+        this.updatedStudents = updatedStudents;
     }
 
     public void execute(QueueableContext context) {
@@ -44,6 +53,10 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
                 vars.add(ErrorLogger.convertListToJSON('interestsToDelete', interestsToDelete));
                 ErrorLogger.log(e, vars, false);
             }
+        }
+
+        if (updatedStudents.size() > 0) {
+            System.enqueueJob(new FamilyPortalStudentDeduplicationService(studentsToUpdate));
         }
     }
 

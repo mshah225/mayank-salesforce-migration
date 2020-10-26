@@ -23,12 +23,21 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     guardianInterestsToUpdate != null && !guardianInterestsToUpdate.isEmpty() &&
                     guardianInterestsToUpdate.size() > 0
                 ) {
+                    Boolean oneOrMoreUpdateErrors = false;
                     Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
                     guardianInterestsToUpdateSet.addAll(guardianInterestsToUpdate);
                     guardianInterestsToUpdate.clear();
                     guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
-                    update guardianInterestsToUpdate;
-                    hasInterestsToUpdate = true;
+
+                    Database.SaveResult[] updateResult = Database.update(guardianInterestsToUpdate);
+                    for (Database.SaveResult result : updateResult) {
+                        if (!result.isSuccess()) {
+                            oneOrMoreUpdateErrors = true;
+                        }
+                    }
+                    if (!oneOrMoreUpdateErrors) {
+                        hasInterestsToUpdate = true;
+                    }
                 }
             } catch (DmlException e) {
                 Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
@@ -46,7 +55,16 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     studentsToUpdate.clear();
                     studentsToUpdate.addAll(studentsToUpdateSet);
                     update studentsToUpdate;
-                    hasStudentsToUpdate = true;
+
+                    Database.SaveResult[] updateResult = Database.update(studentsToUpdate);
+                    for (Database.SaveResult result : updateResult) {
+                        if (!result.isSuccess()) {
+                            oneOrMoreUpdateErrors = true;
+                        }
+                    }
+                    if (!oneOrMoreUpdateErrors) {
+                        hasStudentsToUpdate = true;
+                    }
                 }
             } catch (DmlException e) {
                 Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
@@ -92,12 +110,14 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 ErrorLogger.log(e, vars, false);
             }
 
-            if (hasInterestsToUpdate && !hasStudentsToUpdate) {
-                System.enqueueJob(new FamilyPortalInterestDeduplicationService(guardianInterestsToUpdate));
-            } else if (hasInterestsToUpdate && hasStudentsToUpdate) {
+            if (hasInterestsToUpdate && hasStudentsToUpdate) {
                 System.enqueueJob(
                     new FamilyPortalInterestDeduplicationService(guardianInterestsToUpdate, studentsToUpdate)
                 );
+            } else if (hasInterestsToUpdate && !hasStudentsToUpdate) {
+                System.enqueueJob(new FamilyPortalInterestDeduplicationService(guardianInterestsToUpdate));
+            } else if (!hasInterestsToUpdate && hasStudentsToUpdate) {
+                System.enqueueJob(new FamilyPortalStudentDeduplicationService(studentsToUpdate));
             }
         }
     }

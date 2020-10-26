@@ -56,7 +56,7 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
         }
 
         if (updatedStudents.size() > 0) {
-            System.enqueueJob(new FamilyPortalStudentDeduplicationService(studentsToUpdate));
+            System.enqueueJob(new FamilyPortalStudentDeduplicationService(updatedStudents));
         }
     }
 

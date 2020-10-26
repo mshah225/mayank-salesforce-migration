@@ -23,12 +23,12 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     guardianInterestsToUpdate != null && !guardianInterestsToUpdate.isEmpty() &&
                     guardianInterestsToUpdate.size() > 0
                 ) {
-                    Boolean oneOrMoreUpdateErrors = false;
                     Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
                     guardianInterestsToUpdateSet.addAll(guardianInterestsToUpdate);
                     guardianInterestsToUpdate.clear();
                     guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
 
+                    Boolean oneOrMoreUpdateErrors = false;
                     Database.SaveResult[] updateResult = Database.update(guardianInterestsToUpdate);
                     for (Database.SaveResult result : updateResult) {
                         if (!result.isSuccess()) {
@@ -56,6 +56,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     studentsToUpdate.addAll(studentsToUpdateSet);
                     update studentsToUpdate;
 
+                    Boolean oneOrMoreUpdateErrors = false;
                     Database.SaveResult[] updateResult = Database.update(studentsToUpdate);
                     for (Database.SaveResult result : updateResult) {
                         if (!result.isSuccess()) {

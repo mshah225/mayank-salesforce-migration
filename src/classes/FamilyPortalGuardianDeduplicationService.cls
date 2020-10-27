@@ -18,64 +18,26 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
     public void execute(QueueableContext context) {
         if (newlyInsertedGuardians.size() > 0) {
             gatherGuardiansAndStartDedup(newlyInsertedGuardians);
-            try {
-                if (
-                    guardianInterestsToUpdate != null && !guardianInterestsToUpdate.isEmpty() &&
-                    guardianInterestsToUpdate.size() > 0
-                ) {
-                    Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
-                    guardianInterestsToUpdateSet.addAll(guardianInterestsToUpdate);
-                    guardianInterestsToUpdate.clear();
-                    guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
-
-                    Boolean oneOrMoreUpdateErrors = false;
-                    Database.SaveResult[] updateResult = Database.update(guardianInterestsToUpdate);
-                    for (Database.SaveResult result : updateResult) {
-                        if (!result.isSuccess()) {
-                            oneOrMoreUpdateErrors = true;
-                        }
-                    }
-                    if (!oneOrMoreUpdateErrors) {
-                        hasInterestsToUpdate = true;
-                    }
-                }
-            } catch (DmlException e) {
+            if (
+                guardianInterestsToUpdate != null && !guardianInterestsToUpdate.isEmpty() &&
+                guardianInterestsToUpdate.size() > 0
+            ) {
                 Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
                 guardianInterestsToUpdateSet.addAll(guardianInterestsToUpdate);
                 guardianInterestsToUpdate.clear();
                 guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertListToJSON('guardianInterestsToUpdate', guardianInterestsToUpdate));
-                ErrorLogger.log(e, vars, false);
+                update guardianInterestsToUpdate;
+                hasInterestsToUpdate = true;
             }
-            try {
-                if (studentsToUpdate != null && !studentsToUpdate.isEmpty() && studentsToUpdate.size() > 0) {
-                    Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
-                    studentsToUpdateSet.addAll(studentsToUpdate);
-                    studentsToUpdate.clear();
-                    studentsToUpdate.addAll(studentsToUpdateSet);
-                    update studentsToUpdate;
-
-                    Boolean oneOrMoreUpdateErrors = false;
-                    Database.SaveResult[] updateResult = Database.update(studentsToUpdate);
-                    for (Database.SaveResult result : updateResult) {
-                        if (!result.isSuccess()) {
-                            oneOrMoreUpdateErrors = true;
-                        }
-                    }
-                    if (!oneOrMoreUpdateErrors) {
-                        hasStudentsToUpdate = true;
-                    }
-                }
-            } catch (DmlException e) {
+            if (studentsToUpdate != null && !studentsToUpdate.isEmpty() && studentsToUpdate.size() > 0) {
                 Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
                 studentsToUpdateSet.addAll(studentsToUpdate);
                 studentsToUpdate.clear();
                 studentsToUpdate.addAll(studentsToUpdateSet);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertListToJSON('studentsToUpdate', studentsToUpdate));
-                ErrorLogger.log(e, vars, false);
+                update studentsToUpdate;
+                hasStudentsToUpdate = true;
             }
+
             try {
                 if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty() && guardiansToUpdate.size() > 0) {
                     Set<Family_Portal_Guardian__c> guardiansToUpdateSet = new Set<Family_Portal_Guardian__c>();
@@ -109,16 +71,6 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertListToJSON('guardiansToDelete', guardiansToDelete));
                 ErrorLogger.log(e, vars, false);
-            }
-
-            if (hasInterestsToUpdate && hasStudentsToUpdate) {
-                System.enqueueJob(
-                    new FamilyPortalInterestDeduplicationService(guardianInterestsToUpdate, studentsToUpdate)
-                );
-            } else if (hasInterestsToUpdate && !hasStudentsToUpdate) {
-                System.enqueueJob(new FamilyPortalInterestDeduplicationService(guardianInterestsToUpdate));
-            } else if (!hasInterestsToUpdate && hasStudentsToUpdate) {
-                System.enqueueJob(new FamilyPortalStudentDeduplicationService(studentsToUpdate));
             }
         }
     }

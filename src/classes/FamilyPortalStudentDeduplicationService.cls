@@ -1,4 +1,4 @@
-public class FamilyPortalStudentDeduplicationService implements Queueable {
+public class FamilyPortalStudentDeduplicationService {
     private List<Family_Portal_Student__c> updatedStudents;
     private static List<Family_Portal_Student__c> studentsToDelete;
     private static List<Family_Portal_Student__c> studentsToUpdate;
@@ -7,42 +7,37 @@ public class FamilyPortalStudentDeduplicationService implements Queueable {
         this.updatedStudents = updatedStudents;
     }
 
-    public void execute(QueueableContext context) {
+    public void initialize() {
         if (updatedStudents.size() > 0) {
             gatherStudentsAndStartDedupe(updatedStudents);
-            try {
-                if (studentsToUpdate != null && !studentsToUpdate.isEmpty()) {
-                    Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
-                    studentsToUpdateSet.addAll(studentsToUpdate);
-                    studentsToUpdate.clear();
-                    studentsToUpdate.addAll(studentsToUpdateSet);
-                    update studentsToUpdate;
-                }
-            } catch (DmlException e) {
+            if (studentsToUpdate != null && !studentsToUpdate.isEmpty()) {
                 Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
                 studentsToUpdateSet.addAll(studentsToUpdate);
                 studentsToUpdate.clear();
                 studentsToUpdate.addAll(studentsToUpdateSet);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertListToJSON('studentsToUpdate', studentsToUpdate));
-                ErrorLogger.log(e, vars, false);
-            }
-            try {
-                if (studentsToDelete != null && !studentsToDelete.isEmpty()) {
-                    Set<Family_Portal_Student__c> studentsToDeleteSet = new Set<Family_Portal_Student__c>();
-                    studentsToDeleteSet.addAll(studentsToDelete);
-                    studentsToDelete.clear();
-                    studentsToDelete.addAll(studentsToDeleteSet);
-                    delete studentsToDelete;
+
+                Set<Id> studentsToUpdateIds = new Set<Id>();
+                for (Family_Portal_Student__c student : studentsToUpdate) {
+                    studentsToUpdateIds.add(student.Id);
                 }
-            } catch (DmlException e) {
+                if (!System.isFuture()) {
+                    updateStudents(studentsToUpdateIds);
+                }
+            }
+
+            if (studentsToDelete != null && !studentsToDelete.isEmpty()) {
                 Set<Family_Portal_Student__c> studentsToDeleteSet = new Set<Family_Portal_Student__c>();
                 studentsToDeleteSet.addAll(studentsToDelete);
                 studentsToDelete.clear();
                 studentsToDelete.addAll(studentsToDeleteSet);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertListToJSON('studentsToDelete', studentsToDelete));
-                ErrorLogger.log(e, vars, false);
+
+                Set<Id> studentsToDeleteIds = new Set<Id>();
+                for (Family_Portal_Student__c student : studentsToDelete) {
+                    studentsToDeleteIds.add(student.Id);
+                }
+                if (!System.isFuture()) {
+                    deleteInterests(studentsToDeleteIds);
+                }
             }
         }
     }
@@ -63,7 +58,8 @@ public class FamilyPortalStudentDeduplicationService implements Queueable {
                     Enrollment_Status_Year__c,
                     Family_Portal_Guardian__c,
                     Military_Affiliation__c,
-                    Type__c
+                    Type__c,
+                    CreatedDate
                 FROM Family_Portal_Student__c
                 WHERE
                     Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
@@ -139,6 +135,22 @@ public class FamilyPortalStudentDeduplicationService implements Queueable {
             if (!studentsToUpdate.contains(oldestStudent)) {
                 studentsToUpdate.add(oldestStudent);
             }
+        }
+    }
+
+    @future
+    public static void updateStudents(Set<Id> studentIds) {
+        List<Family_Portal_Student__c> students = [SELECT Id FROM Family_Portal_Student__c WHERE Id IN :studentIds];
+        if (students.size() > 0) {
+            update students;
+        }
+    }
+
+    @future
+    public static void deleteInterests(Set<Id> studentIds) {
+        List<Family_Portal_Student__c> students = [SELECT Id FROM Family_Portal_Student__c WHERE Id IN :studentIds];
+        if (students.size() > 0) {
+            delete students;
         }
     }
 }

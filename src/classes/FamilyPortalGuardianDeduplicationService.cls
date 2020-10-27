@@ -6,13 +6,9 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private static List<Family_Portal_Student__c> studentsToUpdate;
     private Map<Id, List<Family_Portal_Guardian_Interest__c>> guardianIdWithInterests;
     private Map<Id, List<Family_Portal_Student__c>> guardianIdWithStudents;
-    private Boolean hasInterestsToUpdate;
-    private Boolean hasStudentsToUpdate;
 
     public FamilyPortalGuardianDeduplicationService(List<Family_Portal_Guardian__c> newlyInsertedGuardians) {
         this.newlyInsertedGuardians = newlyInsertedGuardians;
-        hasInterestsToUpdate = false;
-        hasStudentsToUpdate = false;
     }
 
     public void execute(QueueableContext context) {
@@ -27,7 +23,6 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 guardianInterestsToUpdate.clear();
                 guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
                 update guardianInterestsToUpdate;
-                hasInterestsToUpdate = true;
             }
             if (studentsToUpdate != null && !studentsToUpdate.isEmpty() && studentsToUpdate.size() > 0) {
                 Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
@@ -35,7 +30,6 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 studentsToUpdate.clear();
                 studentsToUpdate.addAll(studentsToUpdateSet);
                 update studentsToUpdate;
-                hasStudentsToUpdate = true;
             }
 
             try {

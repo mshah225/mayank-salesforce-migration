@@ -1,5 +1,4 @@
-public class FamilyPortalInterestDeduplicationService implements Queueable {
-    private List<Family_Portal_Student__c> updatedStudents;
+public class FamilyPortalInterestDeduplicationService {
     private List<Family_Portal_Guardian_Interest__c> updatedInterests;
     private static List<Family_Portal_Guardian_Interest__c> interestsToDelete;
     private static List<Family_Portal_Guardian_Interest__c> interestsToUpdate;
@@ -8,55 +7,39 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
         this.updatedInterests = updatedInterests;
     }
 
-    public FamilyPortalInterestDeduplicationService(
-        List<Family_Portal_Guardian_Interest__c> updatedInterests,
-        List<Family_Portal_Student__c> updatedStudents
-    ) {
-        this.updatedInterests = updatedInterests;
-        this.updatedStudents = updatedStudents;
-    }
-
-    public void execute(QueueableContext context) {
+    public void initialize() {
         if (updatedInterests.size() > 0) {
             gatherInterestsAndStartDedupe(updatedInterests);
-            try {
-                if (interestsToUpdate != null && !interestsToUpdate.isEmpty()) {
-                    Set<Family_Portal_Guardian_Interest__c> interestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
-                    interestsToUpdateSet.addAll(interestsToUpdate);
-                    interestsToUpdate.clear();
-                    interestsToUpdate.addAll(interestsToUpdateSet);
-                    update interestsToUpdate;
-                }
-            } catch (DmlException e) {
+
+            if (interestsToUpdate != null && !interestsToUpdate.isEmpty()) {
                 Set<Family_Portal_Guardian_Interest__c> interestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
                 interestsToUpdateSet.addAll(interestsToUpdate);
                 interestsToUpdate.clear();
                 interestsToUpdate.addAll(interestsToUpdateSet);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertListToJSON('interestsToUpdate', interestsToUpdate));
-                ErrorLogger.log(e, vars, false);
-            }
-            try {
-                if (interestsToDelete != null && !interestsToDelete.isEmpty()) {
-                    Set<Family_Portal_Guardian_Interest__c> interestsToDeleteSet = new Set<Family_Portal_Guardian_Interest__c>();
-                    interestsToDeleteSet.addAll(interestsToDelete);
-                    interestsToDelete.clear();
-                    interestsToDelete.addAll(interestsToDeleteSet);
-                    delete interestsToDelete;
+
+                Set<Id> interestsToUpdateIds = new Set<Id>();
+                for (Family_Portal_Guardian_Interest__c interest : interestsToUpdate) {
+                    interestsToUpdateIds.add(interest.Id);
                 }
-            } catch (DmlException e) {
+                if (!System.isFuture()) {
+                    updateInterests(interestsToUpdateIds);
+                }
+            }
+
+            if (interestsToDelete != null && !interestsToDelete.isEmpty()) {
                 Set<Family_Portal_Guardian_Interest__c> interestsToDeleteSet = new Set<Family_Portal_Guardian_Interest__c>();
                 interestsToDeleteSet.addAll(interestsToDelete);
                 interestsToDelete.clear();
                 interestsToDelete.addAll(interestsToDeleteSet);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertListToJSON('interestsToDelete', interestsToDelete));
-                ErrorLogger.log(e, vars, false);
-            }
-        }
 
-        if (updatedStudents.size() > 0) {
-            System.enqueueJob(new FamilyPortalStudentDeduplicationService(updatedStudents));
+                Set<Id> interestsToDeleteIds = new Set<Id>();
+                for (Family_Portal_Guardian_Interest__c interest : interestsToDelete) {
+                    interestsToDeleteIds.add(interest.Id);
+                }
+                if (!System.isFuture()) {
+                    deleteInterests(interestsToDeleteIds);
+                }
+            }
         }
     }
 
@@ -68,7 +51,14 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
 
         for (Family_Portal_Guardian_Interest__c updatedInterest : updatedInterests) {
             List<Family_Portal_Guardian_Interest__c> matchedInterestsToCheck = [
-                SELECT Id, Active_Interest__c, Chosen_Interest__c, Family_Portal_Guardian__c, Interest_Choices__c, Name
+                SELECT
+                    Id,
+                    Active_Interest__c,
+                    Chosen_Interest__c,
+                    Family_Portal_Guardian__c,
+                    Interest_Choices__c,
+                    Name,
+                    CreatedDate
                 FROM Family_Portal_Guardian_Interest__c
                 WHERE
                     Family_Portal_Guardian__c = :updatedInterest.Family_Portal_Guardian__c
@@ -127,6 +117,30 @@ public class FamilyPortalInterestDeduplicationService implements Queueable {
             if (!interestsToUpdate.contains(oldestInterest)) {
                 interestsToUpdate.add(oldestInterest);
             }
+        }
+    }
+
+    @future
+    public static void updateInterests(Set<Id> interestIds) {
+        List<Family_Portal_Guardian_Interest__c> interests = [
+            SELECT Id
+            FROM Family_Portal_Guardian_Interest__c
+            WHERE Id IN :interestIds
+        ];
+        if (interests.size() > 0) {
+            update interests;
+        }
+    }
+
+    @future
+    public static void deleteInterests(Set<Id> interestIds) {
+        List<Family_Portal_Guardian_Interest__c> interests = [
+            SELECT Id
+            FROM Family_Portal_Guardian_Interest__c
+            WHERE Id IN :interestIds
+        ];
+        if (interests.size() > 0) {
+            delete interests;
         }
     }
 }

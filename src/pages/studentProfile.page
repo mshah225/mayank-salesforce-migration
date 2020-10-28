@@ -901,10 +901,7 @@
                                                         {!currentTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="currentTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                                 <tr id="nextTermEnrolledHours" class="grad-row-toggle">
@@ -915,10 +912,7 @@
                                                         {!nextTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="nextTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                                 <tr id="futureEnrolledHours" class="grad-row-toggle">
@@ -929,10 +923,7 @@
                                                         {!futureTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="futureTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                             </table>

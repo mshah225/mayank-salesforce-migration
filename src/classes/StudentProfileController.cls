@@ -240,9 +240,7 @@ global with sharing class StudentProfileController {
         String futureTermPeoplesoftCode = currentTermData.FutureTerm__c;
         currentTerm = currentTermData.CurrTerm__c;
         nextTerm = currentTermData.NextTerm__c;
-        System.debug('nextTerm: ' + nextTerm);
         futureTerm = currentTermData.FutureTerm__c;
-        System.debug('futureTerm: ' + futureTerm);
 
         List<TERM__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c
@@ -255,14 +253,11 @@ global with sharing class StudentProfileController {
         for (TERM__c term : termList) {
             if (term.PeopleSoft_Code__c == currentTerm) {
                 currentTermName = term.Name;
-                System.debug('current: ' + currentTermName);
                 aidYear = term.Aid_Year__c;
             } else if (term.PeopleSoft_Code__c == nextTermPeoplesoftCode) {
                 nextTermName = term.Name;
-                System.debug('next: ' + nextTermName);
             } else if (term.PeopleSoft_Code__c == futureTermPeoplesoftCode) {
                 futureTermName = term.Name;
-                System.debug('future: ' + futureTermName);
             }
         }
     }

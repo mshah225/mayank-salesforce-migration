@@ -80,6 +80,7 @@ public class showMyCoachCasesController extends ListViewController {
         this.caseList = new List<CaseWrapper>();
         for (Case c : cases) {
             CaseWrapper cw = new CaseWrapper(c);
+            cw.termSession = parseTermSession(c);
             this.caseList.add(cw);
         }
         resetCaseCounts();
@@ -212,6 +213,7 @@ public class showMyCoachCasesController extends ListViewController {
         public Case obj { get; set; }
         public String changeDir { get; set; }
         public String imageName { get; set; }
+        public String termSession { get; set; }
 
         public caseWrapper(Case wrappedCase) {
             selected = false;

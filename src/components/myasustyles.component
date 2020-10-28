@@ -1,4 +1,4 @@
-<apex:component >
+<apex:component>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif!important
@@ -86,13 +86,13 @@
             border: none!important
         }
 
-        .navbar-nav > li > a {
+        .navbar-nav>li>a {
             padding-top: 10px!important;
             padding-bottom: 10px!important;
             vertical-align: bottom!important
         }
 
-        .navbar-nav > li {
+        .navbar-nav>li {
             margin: 0!important;
             padding-left: -10px!important;
             padding-right: -10px!important
@@ -315,19 +315,19 @@
             color: #903!important
         }
 
-        div#asu_content_well {
+        div#asu-content-container {
             margin-top: 10px!important
         }
 
-        #asu_content_well li {
+        #asu-content-container li {
             padding: 0!important
         }
 
-        #asu_content_well a {
+        #asu-content-container a {
             border-bottom: none
         }
 
-        #asu_content_well .container {
+        #asu-content-container .container {
             max-width: 1270px!important;
             margin: auto!important
         }
@@ -816,7 +816,7 @@
                 margin-top: -15px;
                 padding: 10px
             }
-            div#asu_content_well {
+            div#asu-content-container {
                 margin-top: 45px!important
             }
             #asu_hdr {

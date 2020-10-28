@@ -559,7 +559,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
         }
 
-        List<Attachment> allEmailAttachments = new List<Attachment>();
         if (email.textAttachments!=null && email.textAttachments.size() >0)
         {
             for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments)
@@ -581,7 +580,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.ParentId = parentObject.Id;
                         if(!tAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
-                            allEmailAttachments.add(attachment);
+                            insert attachment;
                         }
                     }
                 }
@@ -614,7 +613,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
                         attachment.ParentId = parentObject.Id;
                         if(!bAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
-                            allEmailAttachments.add(attachment);
+                            insert attachment;
                         }
                     }
                 }
@@ -626,8 +625,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler
             }
         }
 
-        insert allEmailAttachments;
-        
         if (attachmentSize > 25000000)
         {
             successfulAttachment = false;

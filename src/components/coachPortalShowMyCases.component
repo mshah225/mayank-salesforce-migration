@@ -18,6 +18,7 @@
     <apex:attribute name="showSubject" type="boolean" description="" default="false" />
     <apex:attribute name="showStatus" type="boolean" description="" default="false" />
     <apex:attribute name="showFollowupDate" type="boolean" description="" default="false" />
+    <apex:attribute name="showTermSession" type="boolean" description="" default="false" />
     <apex:attribute name="showTransfer" type="boolean" description="" default="false" />
     <apex:attribute name="showMassEmail" type="boolean" description="" default="false" />
     <apex:attribute name="showProactive" type="boolean" description="" default="false" />
@@ -192,7 +193,6 @@
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-
                 <apex:column headerValue="Time Zone" value="{!c.obj.Contact.EdPlus_Student_Reported_Timezone__c}" rendered="{! showTimeZone}"
                     headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
@@ -202,6 +202,20 @@
                                 <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.EdPlus_Student_Reported_Timezone__c'}">
+                            <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+                <apex:column headerValue="Term/Session" value="{!c.termSession}" rendered="{! showTermSession}" headerClass="ASUColumnHead"
+                    styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="termSession" value="STRM__c, Session__c" assignTo="{!sortField}" /> Term/Session&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'STRM__c, Session__c'}">
+                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'STRM__c, Session__c'}">
                                 <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
@@ -215,7 +229,7 @@
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="persistenceLevel" value="Curr_Cont_Prediction_Level__c" assignTo="{!sortField}" /> Persistence Outlook&nbsp;
-                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'}">
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'} ">
                                 <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Curr_Cont_Prediction_Level__c'}">

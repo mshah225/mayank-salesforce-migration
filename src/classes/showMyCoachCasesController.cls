@@ -85,6 +85,18 @@ public class showMyCoachCasesController extends ListViewController {
         resetCaseCounts();
     }
 
+    private String parseTermSession(Case currentCase) {
+        String termSession = '';
+        if (currentCase.STRM__c != null) {
+            termSession += currentCase.STRM__c;
+        }
+        if (currentCase.Session__c != null) {
+            termSession += currentCase.Session__c;
+        }
+
+        return termSession;
+    }
+
     /**
      *  Gets a list of Contact IDs associated with the given list of Cases.
      */
@@ -93,6 +105,7 @@ public class showMyCoachCasesController extends ListViewController {
         for (Case c : cases) {
             contactIds.add(c.ContactId);
         }
+
         return contactIds;
     }
 
@@ -238,6 +251,7 @@ public class showMyCoachCasesController extends ListViewController {
             } else {
                 searched = true;
             }
+
             return searched;
         }
         set;
@@ -253,7 +267,7 @@ public class showMyCoachCasesController extends ListViewController {
         }
         set {
             searchString = value;
-            if (searchString != null) {
+            if (searchString != '') {
                 String tempQuery = removeSearchString();
                 Integer loc = tempQuery.indexOf('WHERE');
                 String tempQueryLeft = tempQuery.substring(0, loc + 5);
@@ -283,7 +297,7 @@ public class showMyCoachCasesController extends ListViewController {
      * Used to refresh the list to it's orignal state
      */
     public void resetSearch() {
-        searchString = null;
+        searchString = '';
         query = removeSearchString();
     }
 
@@ -299,6 +313,7 @@ public class showMyCoachCasesController extends ListViewController {
             String right = tmpQuery.substring(loc + 3);
             tmpQuery = left + right;
         }
+
         return tmpQuery;
     }
 }

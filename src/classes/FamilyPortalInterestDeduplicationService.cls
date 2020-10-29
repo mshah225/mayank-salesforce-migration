@@ -34,8 +34,6 @@ public class FamilyPortalInterestDeduplicationService {
         interestsToDelete = new List<Family_Portal_Guardian_Interest__c>();
         interestsToUpdate = new List<Family_Portal_Guardian_Interest__c>();
 
-        System.debug('----- GATHERING INTERESTS TO DEDUPE -----');
-
         for (Family_Portal_Guardian_Interest__c updatedInterest : updatedInterests) {
             List<Family_Portal_Guardian_Interest__c> matchedInterestsToCheck = [
                 SELECT
@@ -96,11 +94,6 @@ public class FamilyPortalInterestDeduplicationService {
                 }
             }
 
-            System.debug('oldest interest --> ' + oldestInterest.Id);
-            System.debug('oldest interest created date --> ' + oldestInterest.CreatedDate);
-            System.debug('newest interest --> ' + newestInterest.Id);
-            System.debug('newest interest created date --> ' + newestInterest.CreatedDate);
-
             interestsToDelete.addAll(relatedInterestsToDelete);
 
             if (newestInterest.Active_Interest__c != null) {
@@ -115,13 +108,6 @@ public class FamilyPortalInterestDeduplicationService {
             }
             if (!interestsToUpdate.contains(oldestInterest)) {
                 interestsToUpdate.add(oldestInterest);
-            }
-
-            for (Family_Portal_Guardian_Interest__c interest : interestsToDelete) {
-                System.debug('interest to delete --> ' + interest.Id);
-            }
-            for (Family_Portal_Guardian_Interest__c interest : interestsToUpdate) {
-                System.debug('interest to update --> ' + interest.Id);
             }
         }
     }

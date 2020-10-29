@@ -18,17 +18,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             guardiansToUpdate.clear();
             guardiansToUpdate.addAll(guardiansToUpdateSet);
             try {
-                Set<Id> guardianIds = new Set<Id>();
-                for (Family_Portal_Guardian__c guardian : guardiansToUpdate) {
-                    guardianIds.add(guardian.Id);
-                }
-                List<Family_Portal_Guardian__c> queuedGuardians = [
-                    SELECT Id
-                    FROM Family_Portal_Guardian__c
-                    WHERE Id IN :guardianIds
-                ];
-                System.debug('guardiansToUpdate --> ' + queuedGuardians);
-                update queuedGuardians;
+                update guardiansToUpdate;
             } catch (DmlException e) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertListToJSON('guardiansToUpdate', guardiansToUpdate));
@@ -60,17 +50,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             guardiansToDelete.clear();
             guardiansToDelete.addAll(guardiansToDeleteSet);
             try {
-                Set<Id> guardianIds = new Set<Id>();
-                for (Family_Portal_Guardian__c guardian : guardiansToDelete) {
-                    guardianIds.add(guardian.Id);
-                }
-                List<Family_Portal_Guardian__c> queuedGuardians = [
-                    SELECT Id
-                    FROM Family_Portal_Guardian__c
-                    WHERE Id IN :guardianIds
-                ];
-                System.debug('guardiansToDelete --> ' + queuedGuardians);
-                delete queuedGuardians;
+                delete guardiansToDelete;
             } catch (DmlException e) {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertListToJSON('guardiansToDelete', guardiansToDelete));
@@ -119,8 +99,6 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             FROM Family_Portal_Guardian__c
             WHERE Id IN :guardiansToCloneIds
         ];
-
-        System.debug('----- GATHERING GUARDIANS TO DEDUPE -----');
 
         for (Family_Portal_Guardian__c insertedGuardian : insertedGuardiansList) {
             List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
@@ -217,11 +195,6 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     relatedGuardiansToDelete.add(matchedGuardian);
                 }
             }
-
-            System.debug('oldest guardian --> ' + oldestGuardian.Id);
-            System.debug('oldest guardian created date --> ' + oldestGuardian.CreatedDate);
-            System.debug('newest guardian --> ' + newestGuardian.Id);
-            System.debug('newest guardian created date --> ' + newestGuardian.CreatedDate);
 
             guardiansToDelete.addAll(relatedGuardiansToDelete);
 
@@ -360,13 +333,6 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             }
             if (!guardiansToUpdate.contains(oldestGuardian)) {
                 guardiansToUpdate.add(oldestGuardian);
-            }
-
-            for (Family_Portal_Guardian__c guardian : guardiansToDelete) {
-                System.debug('guardian to delete --> ' + guardian.Id);
-            }
-            for (Family_Portal_Guardian__c guardian : guardiansToUpdate) {
-                System.debug('guardian to update --> ' + guardian.Id);
             }
         }
     }

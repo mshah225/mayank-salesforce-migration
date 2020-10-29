@@ -34,8 +34,6 @@ public class FamilyPortalStudentDeduplicationService {
         studentsToDelete = new List<Family_Portal_Student__c>();
         studentsToUpdate = new List<Family_Portal_Student__c>();
 
-        System.debug('----- GATHERING STUDENTS TO DEDUPE -----');
-
         for (Family_Portal_Student__c updatedStudent : updatedStudents) {
             List<Family_Portal_Student__c> matchedStudentsToCheck = [
                 SELECT
@@ -104,11 +102,6 @@ public class FamilyPortalStudentDeduplicationService {
                 }
             }
 
-            System.debug('oldest student --> ' + oldestStudent.Id);
-            System.debug('oldest student created date --> ' + oldestStudent.CreatedDate);
-            System.debug('newest student --> ' + newestStudent.Id);
-            System.debug('newest student created date --> ' + newestStudent.CreatedDate);
-
             studentsToDelete.addAll(relatedstudentsToDelete);
 
             if (newestStudent.Active_Relationship__c != null) {
@@ -120,13 +113,6 @@ public class FamilyPortalStudentDeduplicationService {
             }
             if (!studentsToUpdate.contains(oldestStudent)) {
                 studentsToUpdate.add(oldestStudent);
-            }
-
-            for (Family_Portal_Student__c student : studentsToDelete) {
-                System.debug('student to delete --> ' + student.Id);
-            }
-            for (Family_Portal_Student__c student : studentsToUpdate) {
-                System.debug('student to update --> ' + student.Id);
             }
         }
     }

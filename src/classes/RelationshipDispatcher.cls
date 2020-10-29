@@ -43,7 +43,7 @@ public class RelationshipDispatcher implements IDispatch {
      * Contains business logic to process after updating relationships
      */
     public void afterUpdate() {
-        if (checkRecursive.runCount < 1) {
+        if (CheckRecursion.runCount < 1) {
             RelationshipService.updateReciprocal(newList);
         }
     }

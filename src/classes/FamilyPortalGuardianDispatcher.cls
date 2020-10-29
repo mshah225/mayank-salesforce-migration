@@ -23,7 +23,9 @@ public class FamilyPortalGuardianDispatcher implements IDispatch {
     public void beforeDelete() {
     }
     public void afterInsert() {
-        System.enqueueJob(new FamilyPortalGuardianDeduplicationService(newList));
+        if (CheckRecursion.runCount < 1) {
+            System.enqueueJob(new FamilyPortalGuardianDeduplicationService(newList));
+        }
     }
     public void afterUpdate() {
     }

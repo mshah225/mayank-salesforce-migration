@@ -1,52 +1,40 @@
 public class FamilyPortalStudentDeduplicationService {
-    private List<Family_Portal_Student__c> updatedStudents;
+    private List<Family_Portal_Student__c> studentsWithChanges;
     private static List<Family_Portal_Student__c> studentsToDelete;
     private static List<Family_Portal_Student__c> studentsToUpdate;
 
-    public FamilyPortalStudentDeduplicationService(List<Family_Portal_Student__c> updatedStudents) {
-        this.updatedStudents = updatedStudents;
+    public FamilyPortalStudentDeduplicationService(List<Family_Portal_Student__c> studentsWithChanges) {
+        this.studentsWithChanges = studentsWithChanges;
     }
 
     public void initialize() {
-        if (updatedStudents.size() > 0) {
-            gatherStudentsAndStartDedupe(updatedStudents);
-            if (studentsToUpdate != null && !studentsToUpdate.isEmpty()) {
-                Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
-                studentsToUpdateSet.addAll(studentsToUpdate);
-                studentsToUpdate.clear();
-                studentsToUpdate.addAll(studentsToUpdateSet);
+        if (studentsWithChanges.size() > 0) {
+            gatherStudentsAndStartDedupe(studentsWithChanges);
 
-                Set<Id> studentsToUpdateIds = new Set<Id>();
-                for (Family_Portal_Student__c student : studentsToUpdate) {
-                    studentsToUpdateIds.add(student.Id);
-                }
-                if (!System.isFuture()) {
-                    updateStudents(studentsToUpdateIds);
-                }
+            Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
+            studentsToUpdateSet.addAll(studentsToUpdate);
+            studentsToUpdate.clear();
+            studentsToUpdate.addAll(studentsToUpdateSet);
+            if (studentsToUpdate.size() > 0) {
+                updateStudents(studentsToUpdate);
             }
 
-            if (studentsToDelete != null && !studentsToDelete.isEmpty()) {
-                Set<Family_Portal_Student__c> studentsToDeleteSet = new Set<Family_Portal_Student__c>();
-                studentsToDeleteSet.addAll(studentsToDelete);
-                studentsToDelete.clear();
-                studentsToDelete.addAll(studentsToDeleteSet);
-
-                Set<Id> studentsToDeleteIds = new Set<Id>();
-                for (Family_Portal_Student__c student : studentsToDelete) {
-                    studentsToDeleteIds.add(student.Id);
-                }
-                if (!System.isFuture()) {
-                    deleteInterests(studentsToDeleteIds);
-                }
+            Set<Family_Portal_Student__c> studentsToDeleteSet = new Set<Family_Portal_Student__c>();
+            studentsToDeleteSet.addAll(studentsToDelete);
+            studentsToDelete.clear();
+            studentsToDelete.addAll(studentsToDeleteSet);
+            if (studentsToDelete.size() > 0) {
+                deleteStudents(studentsToDelete);
             }
         }
     }
 
     public static void gatherStudentsAndStartDedupe(List<Family_Portal_Student__c> updatedStudents) {
         Map<Family_Portal_Student__c, List<Family_Portal_Student__c>> updatedStudentWithMatchedStudents = new Map<Family_Portal_Student__c, List<Family_Portal_Student__c>>();
-        List<Family_Portal_Student__c> guardiansToCheck;
         studentsToDelete = new List<Family_Portal_Student__c>();
         studentsToUpdate = new List<Family_Portal_Student__c>();
+
+        System.debug('----- GATHERING STUDENTS TO DEDUPE -----');
 
         for (Family_Portal_Student__c updatedStudent : updatedStudents) {
             List<Family_Portal_Student__c> matchedStudentsToCheck = [
@@ -69,88 +57,97 @@ public class FamilyPortalStudentDeduplicationService {
                     OR (Academic_College__c = :updatedStudent.Academic_College__c
                     AND Type__c = :updatedStudent.Type__c
                     AND Military_Affiliation__c = :updatedStudent.Military_Affiliation__c))
+                ORDER BY CreatedDate ASC
             ];
 
             if (matchedStudentsToCheck.size() > 0) {
                 updatedStudentWithMatchedStudents.put(updatedStudent, matchedStudentsToCheck);
             }
         }
-
-        if (updatedStudentWithMatchedStudents.size() > 0) {
-            deduplicateStudents(updatedStudentWithMatchedStudents);
-        }
+        deduplicateStudents(updatedStudentWithMatchedStudents);
     }
 
     private static void deduplicateStudents(
         Map<Family_Portal_Student__c, List<Family_Portal_Student__c>> updatedStudentWithMatchedStudents
     ) {
         for (Family_Portal_Student__c updatedStudent : updatedStudentWithMatchedStudents.keySet()) {
-            Family_Portal_Student__c oldestStudent;
+            Family_Portal_Student__c oldestStudent = updatedStudent;
+            Family_Portal_Student__c newestStudent = updatedStudent;
             List<Family_Portal_Student__c> relatedstudentsToDelete = new List<Family_Portal_Student__c>();
-            Map<Id, List<Family_Portal_Student__c>> relatedStudentIdsWithstudentsToDelete = new Map<Id, List<Family_Portal_Student__c>>();
             List<Family_Portal_Student__c> matchedStudentsToCheck = updatedStudentWithMatchedStudents.get(
                 updatedStudent
             );
 
-            for (Family_Portal_Student__c matchedStudent : matchedStudentsToCheck) {
-                if (oldestStudent == null) {
-                    oldestStudent = matchedStudent;
-                    continue;
-                }
-                if (oldestStudent.Id == matchedStudent.Id) {
-                    continue;
-                }
+            Set<Id> studentIdsToDelete = new Set<Id>();
+            for (Family_Portal_Student__c student : studentsToDelete) {
+                studentIdsToDelete.add(student.Id);
+            }
 
-                if (oldestStudent.CreatedDate < matchedStudent.CreatedDate) {
+            if (studentIdsToDelete.contains(updatedStudent.Id)) {
+                continue;
+            }
+            if (matchedStudentsToCheck.size() == 1 && matchedStudentsToCheck[0].Id == oldestStudent.Id) {
+                continue;
+            }
+            if (matchedStudentsToCheck.size() > 1) {
+                oldestStudent = matchedStudentsToCheck[0];
+                newestStudent = matchedStudentsToCheck[matchedStudentsToCheck.size() - 1];
+            }
+
+            for (Family_Portal_Student__c matchedStudent : matchedStudentsToCheck) {
+                if (
+                    matchedStudent.Id != oldestStudent.Id &&
+                    matchedStudent.Id != newestStudent.Id &&
+                    matchedStudent.CreatedDate > oldestStudent.CreatedDate
+                ) {
                     relatedstudentsToDelete.add(matchedStudent);
-                } else if (oldestStudent.CreatedDate >= matchedStudent.CreatedDate) {
-                    relatedstudentsToDelete.add(oldestStudent);
-                    oldestStudent = matchedStudent;
                 }
             }
+
+            System.debug('oldest student --> ' + oldestStudent.Id);
+            System.debug('oldest student created date --> ' + oldestStudent.CreatedDate);
+            System.debug('newest student --> ' + newestStudent.Id);
+            System.debug('newest student created date --> ' + newestStudent.CreatedDate);
+
             studentsToDelete.addAll(relatedstudentsToDelete);
 
-            if (updatedStudent.Academic_College__c != null) {
-                oldestStudent.Academic_College__c = updatedStudent.Academic_College__c;
-            }
-            if (updatedStudent.Active_Relationship__c != null) {
-                oldestStudent.Active_Relationship__c = updatedStudent.Active_Relationship__c;
-            }
-            if (updatedStudent.Enrollment_Status__c != null) {
-                oldestStudent.Enrollment_Status__c = updatedStudent.Enrollment_Status__c;
-            }
-            if (updatedStudent.Enrollment_Status_Year__c != null) {
-                oldestStudent.Enrollment_Status_Year__c = updatedStudent.Enrollment_Status_Year__c;
-            }
-            if (updatedStudent.Military_Affiliation__c != null) {
-                oldestStudent.Military_Affiliation__c = updatedStudent.Military_Affiliation__c;
-            }
-            if (updatedStudent.Type__c != null) {
-                oldestStudent.Type__c = updatedStudent.Type__c;
+            if (newestStudent.Active_Relationship__c != null) {
+                oldestStudent.Active_Relationship__c = newestStudent.Active_Relationship__c;
             }
 
-            if (!studentsToDelete.contains(updatedStudent)) {
-                studentsToDelete.add(updatedStudent);
+            if (!studentsToDelete.contains(newestStudent)) {
+                studentsToDelete.add(newestStudent);
             }
             if (!studentsToUpdate.contains(oldestStudent)) {
                 studentsToUpdate.add(oldestStudent);
             }
+
+            for (Family_Portal_Student__c student : studentsToDelete) {
+                System.debug('student to delete --> ' + student.Id);
+            }
+            for (Family_Portal_Student__c student : studentsToUpdate) {
+                System.debug('student to update --> ' + student.Id);
+            }
         }
     }
 
-    @future
-    public static void updateStudents(Set<Id> studentIds) {
-        List<Family_Portal_Student__c> students = [SELECT Id FROM Family_Portal_Student__c WHERE Id IN :studentIds];
-        if (students.size() > 0) {
+    public static void updateStudents(List<Family_Portal_Student__c> students) {
+        try {
             update students;
+        } catch (DmlException e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertListToJSON('students', students));
+            ErrorLogger.log(e, vars, false);
         }
     }
 
-    @future
-    public static void deleteInterests(Set<Id> studentIds) {
-        List<Family_Portal_Student__c> students = [SELECT Id FROM Family_Portal_Student__c WHERE Id IN :studentIds];
-        if (students.size() > 0) {
+    public static void deleteStudents(List<Family_Portal_Student__c> students) {
+        try {
             delete students;
+        } catch (DmlException e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertListToJSON('students', students));
+            ErrorLogger.log(e, vars, false);
         }
     }
 }

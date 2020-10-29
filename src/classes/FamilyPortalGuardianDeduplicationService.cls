@@ -2,10 +2,8 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
     private List<Family_Portal_Guardian__c> newlyInsertedGuardians;
     private static List<Family_Portal_Guardian__c> guardiansToDelete;
     private static List<Family_Portal_Guardian__c> guardiansToUpdate;
-    private static List<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdate;
+    private static List<Family_Portal_Guardian_Interest__c> interestsToUpdate;
     private static List<Family_Portal_Student__c> studentsToUpdate;
-    private Map<Id, List<Family_Portal_Guardian_Interest__c>> guardianIdWithInterests;
-    private Map<Id, List<Family_Portal_Student__c>> guardianIdWithStudents;
 
     public FamilyPortalGuardianDeduplicationService(List<Family_Portal_Guardian__c> newlyInsertedGuardians) {
         this.newlyInsertedGuardians = newlyInsertedGuardians;
@@ -13,55 +11,67 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
 
     public void execute(QueueableContext context) {
         if (newlyInsertedGuardians.size() > 0) {
-            gatherGuardiansAndStartDedup(newlyInsertedGuardians);
-            if (
-                guardianInterestsToUpdate != null && !guardianInterestsToUpdate.isEmpty() &&
-                guardianInterestsToUpdate.size() > 0
-            ) {
-                Set<Family_Portal_Guardian_Interest__c> guardianInterestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
-                guardianInterestsToUpdateSet.addAll(guardianInterestsToUpdate);
-                guardianInterestsToUpdate.clear();
-                guardianInterestsToUpdate.addAll(guardianInterestsToUpdateSet);
-                update guardianInterestsToUpdate;
-            }
-            if (studentsToUpdate != null && !studentsToUpdate.isEmpty() && studentsToUpdate.size() > 0) {
-                Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
-                studentsToUpdateSet.addAll(studentsToUpdate);
-                studentsToUpdate.clear();
-                studentsToUpdate.addAll(studentsToUpdateSet);
-                update studentsToUpdate;
-            }
+            gatherGuardiansAndStartDedupe(newlyInsertedGuardians);
 
+            Set<Family_Portal_Guardian__c> guardiansToUpdateSet = new Set<Family_Portal_Guardian__c>();
+            guardiansToUpdateSet.addAll(guardiansToUpdate);
+            guardiansToUpdate.clear();
+            guardiansToUpdate.addAll(guardiansToUpdateSet);
             try {
-                if (guardiansToUpdate != null && !guardiansToUpdate.isEmpty() && guardiansToUpdate.size() > 0) {
-                    Set<Family_Portal_Guardian__c> guardiansToUpdateSet = new Set<Family_Portal_Guardian__c>();
-                    guardiansToUpdateSet.addAll(guardiansToUpdate);
-                    guardiansToUpdate.clear();
-                    guardiansToUpdate.addAll(guardiansToUpdateSet);
-                    update guardiansToUpdate;
+                Set<Id> guardianIds = new Set<Id>();
+                for (Family_Portal_Guardian__c guardian : guardiansToUpdate) {
+                    guardianIds.add(guardian.Id);
                 }
+                List<Family_Portal_Guardian__c> queuedGuardians = [
+                    SELECT Id
+                    FROM Family_Portal_Guardian__c
+                    WHERE Id IN :guardianIds
+                ];
+                System.debug('guardiansToUpdate --> ' + queuedGuardians);
+                update queuedGuardians;
             } catch (DmlException e) {
-                Set<Family_Portal_Guardian__c> guardiansToUpdateSet = new Set<Family_Portal_Guardian__c>();
-                guardiansToUpdateSet.addAll(guardiansToUpdate);
-                guardiansToUpdate.clear();
-                guardiansToUpdate.addAll(guardiansToUpdateSet);
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertListToJSON('guardiansToUpdate', guardiansToUpdate));
                 ErrorLogger.log(e, vars, false);
             }
+
+            Set<Family_Portal_Guardian_Interest__c> interestsToUpdateSet = new Set<Family_Portal_Guardian_Interest__c>();
+            interestsToUpdateSet.addAll(interestsToUpdate);
+            interestsToUpdate.clear();
+            interestsToUpdate.addAll(interestsToUpdateSet);
+            update interestsToUpdate;
+            FamilyPortalInterestDeduplicationService interestDedupeService = new FamilyPortalInterestDeduplicationService(
+                interestsToUpdate
+            );
+            interestDedupeService.initialize();
+
+            Set<Family_Portal_Student__c> studentsToUpdateSet = new Set<Family_Portal_Student__c>();
+            studentsToUpdateSet.addAll(studentsToUpdate);
+            studentsToUpdate.clear();
+            studentsToUpdate.addAll(studentsToUpdateSet);
+            update studentsToUpdate;
+            FamilyPortalStudentDeduplicationService studentDedupeService = new FamilyPortalStudentDeduplicationService(
+                studentsToUpdate
+            );
+            studentDedupeService.initialize();
+
+            Set<Family_Portal_Guardian__c> guardiansToDeleteSet = new Set<Family_Portal_Guardian__c>();
+            guardiansToDeleteSet.addAll(guardiansToDelete);
+            guardiansToDelete.clear();
+            guardiansToDelete.addAll(guardiansToDeleteSet);
             try {
-                if (guardiansToDelete != null && !guardiansToDelete.isEmpty() && guardiansToDelete.size() > 0) {
-                    Set<Family_Portal_Guardian__c> guardiansToDeleteSet = new Set<Family_Portal_Guardian__c>();
-                    guardiansToDeleteSet.addAll(guardiansToDelete);
-                    guardiansToDelete.clear();
-                    guardiansToDelete.addAll(guardiansToDeleteSet);
-                    delete guardiansToDelete;
+                Set<Id> guardianIds = new Set<Id>();
+                for (Family_Portal_Guardian__c guardian : guardiansToDelete) {
+                    guardianIds.add(guardian.Id);
                 }
+                List<Family_Portal_Guardian__c> queuedGuardians = [
+                    SELECT Id
+                    FROM Family_Portal_Guardian__c
+                    WHERE Id IN :guardianIds
+                ];
+                System.debug('guardiansToDelete --> ' + queuedGuardians);
+                delete queuedGuardians;
             } catch (DmlException e) {
-                Set<Family_Portal_Guardian__c> guardiansToDeleteSet = new Set<Family_Portal_Guardian__c>();
-                guardiansToDeleteSet.addAll(guardiansToDelete);
-                guardiansToDelete.clear();
-                guardiansToDelete.addAll(guardiansToDeleteSet);
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertListToJSON('guardiansToDelete', guardiansToDelete));
                 ErrorLogger.log(e, vars, false);
@@ -69,15 +79,50 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         }
     }
 
-    public static void gatherGuardiansAndStartDedup(List<Family_Portal_Guardian__c> insertedGuardians) {
+    public static void gatherGuardiansAndStartDedupe(List<Family_Portal_Guardian__c> insertedGuardians) {
         Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>> insertedGuardianWithMatchedGuardians = new Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>>();
-        List<Family_Portal_Guardian__c> guardiansToCheck;
         guardiansToDelete = new List<Family_Portal_Guardian__c>();
         guardiansToUpdate = new List<Family_Portal_Guardian__c>();
-        guardianInterestsToUpdate = new List<Family_Portal_Guardian_Interest__c>();
+        interestsToUpdate = new List<Family_Portal_Guardian_Interest__c>();
         studentsToUpdate = new List<Family_Portal_Student__c>();
 
-        for (Family_Portal_Guardian__c insertedGuardian : insertedGuardians) {
+        Set<Id> guardiansToCloneIds = new Set<Id>();
+        for (Family_Portal_Guardian__c guardian : insertedGuardians) {
+            guardiansToCloneIds.add(guardian.Id);
+        }
+
+        List<Family_Portal_Guardian__c> insertedGuardiansList = [
+            SELECT
+                Id,
+                ASU_Alumni__c,
+                ASURITE_ID__c,
+                Business_Unit_Source__c,
+                City__c,
+                Contact__c,
+                Country__c,
+                CreatedById,
+                CreatedDate,
+                Email__c,
+                EMPLID__c,
+                First_Name__c,
+                Hash_ID__c,
+                LastModifiedById,
+                Last_Name__c,
+                Middle_Name__c,
+                OwnerId,
+                Phone__c,
+                Name,
+                Return_URL__c,
+                State__c,
+                Street__c,
+                Zip_Code__c
+            FROM Family_Portal_Guardian__c
+            WHERE Id IN :guardiansToCloneIds
+        ];
+
+        System.debug('----- GATHERING GUARDIANS TO DEDUPE -----');
+
+        for (Family_Portal_Guardian__c insertedGuardian : insertedGuardiansList) {
             List<Family_Portal_Guardian__c> matchedGuardiansToCheck = [
                 SELECT
                     Id,
@@ -105,8 +150,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Zip_Code__c
                 FROM Family_Portal_Guardian__c
                 WHERE
-                    Id != :insertedGuardian.Id
-                    AND ((First_Name__c = :insertedGuardian.First_Name__c
+                    (First_Name__c = :insertedGuardian.First_Name__c
                     AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c
                     AND Phone__c = :insertedGuardian.Phone__c)
@@ -123,7 +167,8 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     AND Email__c = :insertedGuardian.Email__c)
                     OR (First_Name__c = :insertedGuardian.First_Name__c
                     AND Email__c = :insertedGuardian.Email__c)
-                    OR Hash_ID__c = :insertedGuardian.Hash_ID__c)
+                    OR Hash_ID__c = :insertedGuardian.Hash_ID__c
+                ORDER BY CreatedDate ASC
             ];
 
             if (matchedGuardiansToCheck.size() > 0) {
@@ -139,51 +184,84 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
         Map<Family_Portal_Guardian__c, List<Family_Portal_Guardian__c>> insertedGuardianWithMatchedGuardians
     ) {
         for (Family_Portal_Guardian__c insertedGuardian : insertedGuardianWithMatchedGuardians.keySet()) {
-            Family_Portal_Guardian__c oldestGuardian;
+            Family_Portal_Guardian__c oldestGuardian = insertedGuardian;
             Family_Portal_Guardian__c newestGuardian = insertedGuardian;
             List<Family_Portal_Guardian__c> relatedGuardiansToDelete = new List<Family_Portal_Guardian__c>();
-            Map<Id, List<Family_Portal_Guardian__c>> relatedGuardianIdsWithGuardianToDelete = new Map<Id, List<Family_Portal_Guardian__c>>();
+            Set<Id> relatedGuardianIdsToDelete = new Set<Id>();
             List<Family_Portal_Guardian__c> matchedGuardiansToCheck = insertedGuardianWithMatchedGuardians.get(
                 insertedGuardian
             );
 
-            for (Family_Portal_Guardian__c matchedGuardian : matchedGuardiansToCheck) {
-                if (oldestGuardian == null) {
-                    oldestGuardian = matchedGuardian;
-                    continue;
-                }
-                if (oldestGuardian.Id == matchedGuardian.Id) {
-                    continue;
-                }
+            Set<Id> guardianIdsToDelete = new Set<Id>();
+            for (Family_Portal_Guardian__c guardian : guardiansToDelete) {
+                guardianIdsToDelete.add(guardian.Id);
+            }
 
-                if (oldestGuardian.CreatedDate < matchedGuardian.CreatedDate) {
+            if (guardianIdsToDelete.contains(insertedGuardian.Id)) {
+                continue;
+            }
+            if (matchedGuardiansToCheck.size() == 1 && matchedGuardiansToCheck[0].Id == oldestGuardian.Id) {
+                continue;
+            }
+            if (matchedGuardiansToCheck.size() > 1) {
+                oldestGuardian = matchedGuardiansToCheck[0];
+                newestGuardian = matchedGuardiansToCheck[matchedGuardiansToCheck.size() - 1];
+            }
+
+            for (Family_Portal_Guardian__c matchedGuardian : matchedGuardiansToCheck) {
+                if (
+                    matchedGuardian.Id != oldestGuardian.Id &&
+                    matchedGuardian.Id != newestGuardian.Id &&
+                    matchedGuardian.CreatedDate > oldestGuardian.CreatedDate
+                ) {
                     relatedGuardiansToDelete.add(matchedGuardian);
-                } else if (oldestGuardian.CreatedDate >= matchedGuardian.CreatedDate) {
-                    relatedGuardiansToDelete.add(oldestGuardian);
-                    oldestGuardian = matchedGuardian;
                 }
             }
+
+            System.debug('oldest guardian --> ' + oldestGuardian.Id);
+            System.debug('oldest guardian created date --> ' + oldestGuardian.CreatedDate);
+            System.debug('newest guardian --> ' + newestGuardian.Id);
+            System.debug('newest guardian created date --> ' + newestGuardian.CreatedDate);
+
             guardiansToDelete.addAll(relatedGuardiansToDelete);
 
             for (Family_Portal_Guardian__c relatedGuardianToDelete : relatedGuardiansToDelete) {
-                relatedGuardianIdsWithGuardianToDelete.put(relatedGuardianToDelete.Id, relatedGuardiansToDelete);
+                relatedGuardianIdsToDelete.add(relatedGuardianToDelete.Id);
             }
 
             for (Family_Portal_Guardian_Interest__c interestToReparent : [
-                SELECT Id, Active_Interest__c, Family_Portal_Guardian__c, Guardian_Contact__c
+                SELECT
+                    Id,
+                    Active_Interest__c,
+                    Chosen_Interest__c,
+                    Family_Portal_Guardian__c,
+                    Interest_Choices__c,
+                    Name,
+                    CreatedDate,
+                    Guardian_Contact__c
                 FROM Family_Portal_Guardian_Interest__c
-                WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsWithGuardianToDelete.keySet()
+                WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsToDelete
             ]) {
                 interestToReparent.Active_Interest__c = false;
                 interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
                 interestToReparent.Guardian_Contact__c = oldestGuardian.Contact__c;
-                guardianInterestsToUpdate.add(interestToReparent);
+                interestsToUpdate.add(interestToReparent);
             }
 
             for (Family_Portal_Student__c studentToReparent : [
-                SELECT Id, Active_Relationship__c, Family_Portal_Guardian__c, Guardian_Contact__c
+                SELECT
+                    Id,
+                    Academic_College__c,
+                    Active_Relationship__c,
+                    Enrollment_Status__c,
+                    Enrollment_Status_Year__c,
+                    Family_Portal_Guardian__c,
+                    Military_Affiliation__c,
+                    Type__c,
+                    CreatedDate,
+                    Guardian_Contact__c
                 FROM Family_Portal_Student__c
-                WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsWithGuardianToDelete.keySet()
+                WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsToDelete
             ]) {
                 studentToReparent.Active_Relationship__c = false;
                 studentToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
@@ -240,36 +318,35 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 oldestGuardian.Zip_Code__c = newestGuardian.Zip_Code__c;
             }
 
-            for (Family_Portal_Guardian_Interest__c interestToSetInactive : [
-                SELECT Id, Family_Portal_Guardian__c
-                FROM Family_Portal_Guardian_Interest__c
-                WHERE Family_Portal_Guardian__c = :oldestGuardian.Id
-            ]) {
-                interestToSetInactive.Active_Interest__c = false;
-                guardianInterestsToUpdate.add(interestToSetInactive);
-            }
-
-            for (Family_Portal_Student__c studentToSetInactive : [
-                SELECT Id, Family_Portal_Guardian__c
-                FROM Family_Portal_Student__c
-                WHERE Family_Portal_Guardian__c = :oldestGuardian.Id
-            ]) {
-                studentToSetInactive.Active_Relationship__c = false;
-                studentsToUpdate.add(studentToSetInactive);
-            }
-
             for (Family_Portal_Guardian_Interest__c interestToReparent : [
-                SELECT Id, Family_Portal_Guardian__c, Guardian_Contact__c
+                SELECT
+                    Id,
+                    Active_Interest__c,
+                    Chosen_Interest__c,
+                    Family_Portal_Guardian__c,
+                    Interest_Choices__c,
+                    CreatedDate,
+                    Guardian_Contact__c
                 FROM Family_Portal_Guardian_Interest__c
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id
             ]) {
                 interestToReparent.Family_Portal_Guardian__c = oldestGuardian.Id;
                 interestToReparent.Guardian_Contact__c = oldestGuardian.Contact__c;
-                guardianInterestsToUpdate.add(interestToReparent);
+                interestsToUpdate.add(interestToReparent);
             }
 
             for (Family_Portal_Student__c studentToReparent : [
-                SELECT Id, Family_Portal_Guardian__c, Guardian_Contact__c
+                SELECT
+                    Id,
+                    Academic_College__c,
+                    Active_Relationship__c,
+                    Enrollment_Status__c,
+                    Enrollment_Status_Year__c,
+                    Family_Portal_Guardian__c,
+                    Military_Affiliation__c,
+                    Type__c,
+                    CreatedDate,
+                    Guardian_Contact__c
                 FROM Family_Portal_Student__c
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id
             ]) {
@@ -283,6 +360,13 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             }
             if (!guardiansToUpdate.contains(oldestGuardian)) {
                 guardiansToUpdate.add(oldestGuardian);
+            }
+
+            for (Family_Portal_Guardian__c guardian : guardiansToDelete) {
+                System.debug('guardian to delete --> ' + guardian.Id);
+            }
+            for (Family_Portal_Guardian__c guardian : guardiansToUpdate) {
+                System.debug('guardian to update --> ' + guardian.Id);
             }
         }
     }

@@ -15,16 +15,24 @@ public class FamilyPortalStudentDeduplicationService {
             studentsToUpdateSet.addAll(studentsToUpdate);
             studentsToUpdate.clear();
             studentsToUpdate.addAll(studentsToUpdateSet);
-            if (studentsToUpdate.size() > 0) {
-                updateStudents(studentsToUpdate);
+            try {
+                update studentsToUpdate;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('studentsToUpdate', studentsToUpdate));
+                ErrorLogger.log(e, vars, false);
             }
 
             Set<Family_Portal_Student__c> studentsToDeleteSet = new Set<Family_Portal_Student__c>();
             studentsToDeleteSet.addAll(studentsToDelete);
             studentsToDelete.clear();
             studentsToDelete.addAll(studentsToDeleteSet);
-            if (studentsToDelete.size() > 0) {
-                deleteStudents(studentsToDelete);
+            try {
+                delete studentsToDelete;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('studentsToDelete', studentsToDelete));
+                ErrorLogger.log(e, vars, false);
             }
         }
     }
@@ -50,16 +58,21 @@ public class FamilyPortalStudentDeduplicationService {
                 WHERE
                     Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
                     AND Enrollment_Status__c = :updatedStudent.Enrollment_Status__c
-                    AND ((Enrollment_Status_Year__c = :updatedStudent.Enrollment_Status_Year__c
-                    AND Military_Affiliation__c = :updatedStudent.Military_Affiliation__c)
+                    AND (Enrollment_Status_Year__c = :updatedStudent.Enrollment_Status_Year__c
                     OR (Academic_College__c = :updatedStudent.Academic_College__c
-                    AND Type__c = :updatedStudent.Type__c
-                    AND Military_Affiliation__c = :updatedStudent.Military_Affiliation__c))
+                    AND Type__c = :updatedStudent.Type__c))
                 ORDER BY CreatedDate ASC
             ];
 
             if (matchedStudentsToCheck.size() > 0) {
                 updatedStudentWithMatchedStudents.put(updatedStudent, matchedStudentsToCheck);
+
+                List<Family_Portal_Student__c> allStudentsFromGuardian = [
+                    SELECT Id
+                    FROM Family_Portal_Student__c
+                    WHERE Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
+                    ORDER BY CreatedDate ASC
+                ];
             }
         }
         deduplicateStudents(updatedStudentWithMatchedStudents);
@@ -107,6 +120,9 @@ public class FamilyPortalStudentDeduplicationService {
             if (newestStudent.Active_Relationship__c != null) {
                 oldestStudent.Active_Relationship__c = newestStudent.Active_Relationship__c;
             }
+            if (newestStudent.Military_Affiliation__c != null) {
+                oldestStudent.Military_Affiliation__c = newestStudent.Military_Affiliation__c;
+            }
 
             if (!studentsToDelete.contains(newestStudent)) {
                 studentsToDelete.add(newestStudent);
@@ -114,26 +130,27 @@ public class FamilyPortalStudentDeduplicationService {
             if (!studentsToUpdate.contains(oldestStudent)) {
                 studentsToUpdate.add(oldestStudent);
             }
-        }
-    }
 
-    public static void updateStudents(List<Family_Portal_Student__c> students) {
-        try {
-            update students;
-        } catch (DmlException e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertListToJSON('students', students));
-            ErrorLogger.log(e, vars, false);
-        }
-    }
+            Set<Id> studentIdsWithAChange = new Set<Id>();
+            for (Family_Portal_Student__c student : studentsToUpdate) {
+                studentIdsWithAChange.add(student.Id);
+            }
+            for (Family_Portal_Student__c student : studentsToDelete) {
+                studentIdsWithAChange.add(student.Id);
+            }
 
-    public static void deleteStudents(List<Family_Portal_Student__c> students) {
-        try {
-            delete students;
-        } catch (DmlException e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertListToJSON('students', students));
-            ErrorLogger.log(e, vars, false);
+            List<Family_Portal_Student__c> studentsToSetInactive = [
+                SELECT Id, Active_Relationship__c
+                FROM Family_Portal_Student__c
+                WHERE
+                    Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
+                    AND Id NOT IN :studentIdsWithAChange
+            ];
+            if (studentsToSetInactive.size() > 0) {
+                for (Family_Portal_Student__c student : studentsToSetInactive) {
+                    student.Active_Relationship__c = false;
+                }
+            }
         }
     }
 }

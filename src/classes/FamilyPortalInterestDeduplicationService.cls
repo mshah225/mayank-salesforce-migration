@@ -15,16 +15,24 @@ public class FamilyPortalInterestDeduplicationService {
             interestsToUpdateSet.addAll(interestsToUpdate);
             interestsToUpdate.clear();
             interestsToUpdate.addAll(interestsToUpdateSet);
-            if (interestsToUpdate.size() > 0) {
-                updateInterests(interestsToUpdate);
+            try {
+                update interestsToUpdate;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('interestsToUpdate', interestsToUpdate));
+                ErrorLogger.log(e, vars, false);
             }
 
             Set<Family_Portal_Guardian_Interest__c> interestsToDeleteSet = new Set<Family_Portal_Guardian_Interest__c>();
             interestsToDeleteSet.addAll(interestsToDelete);
             interestsToDelete.clear();
             interestsToDelete.addAll(interestsToDeleteSet);
-            if (interestsToDelete.size() > 0) {
-                deleteInterests(interestsToDelete);
+            try {
+                delete interestsToDelete;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('interestsToDelete', interestsToDelete));
+                ErrorLogger.log(e, vars, false);
             }
         }
     }
@@ -109,26 +117,6 @@ public class FamilyPortalInterestDeduplicationService {
             if (!interestsToUpdate.contains(oldestInterest)) {
                 interestsToUpdate.add(oldestInterest);
             }
-        }
-    }
-
-    public static void updateInterests(List<Family_Portal_Guardian_Interest__c> interests) {
-        try {
-            update interests;
-        } catch (DmlException e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertListToJSON('interests', interests));
-            ErrorLogger.log(e, vars, false);
-        }
-    }
-
-    public static void deleteInterests(List<Family_Portal_Guardian_Interest__c> interests) {
-        try {
-            delete interests;
-        } catch (DmlException e) {
-            List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertListToJSON('interests', interests));
-            ErrorLogger.log(e, vars, false);
         }
     }
 }

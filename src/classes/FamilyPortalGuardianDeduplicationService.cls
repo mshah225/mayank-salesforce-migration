@@ -29,7 +29,14 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             interestsToUpdateSet.addAll(interestsToUpdate);
             interestsToUpdate.clear();
             interestsToUpdate.addAll(interestsToUpdateSet);
-            update interestsToUpdate;
+            try {
+                update interestsToUpdate;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('interestsToUpdate', interestsToUpdate));
+                ErrorLogger.log(e, vars, false);
+            }
+
             FamilyPortalInterestDeduplicationService interestDedupeService = new FamilyPortalInterestDeduplicationService(
                 interestsToUpdate
             );
@@ -39,7 +46,14 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             studentsToUpdateSet.addAll(studentsToUpdate);
             studentsToUpdate.clear();
             studentsToUpdate.addAll(studentsToUpdateSet);
-            update studentsToUpdate;
+            try {
+                update studentsToUpdate;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertListToJSON('studentsToUpdate', studentsToUpdate));
+                ErrorLogger.log(e, vars, false);
+            }
+
             FamilyPortalStudentDeduplicationService studentDedupeService = new FamilyPortalStudentDeduplicationService(
                 studentsToUpdate
             );
@@ -128,7 +142,11 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Zip_Code__c
                 FROM Family_Portal_Guardian__c
                 WHERE
-                    (First_Name__c = :insertedGuardian.First_Name__c
+                    Hash_ID__c = :insertedGuardian.Hash_ID__c
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Last_Name__c = :insertedGuardian.Last_Name__c
+                    AND Email__c = :insertedGuardian.Email__c)
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
                     AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c
                     AND Phone__c = :insertedGuardian.Phone__c)
@@ -141,11 +159,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     AND Email__c = :insertedGuardian.Email__c
                     AND Street__c = :insertedGuardian.Street__c)
                     OR (First_Name__c = :insertedGuardian.First_Name__c
-                    AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c)
-                    OR (First_Name__c = :insertedGuardian.First_Name__c
-                    AND Email__c = :insertedGuardian.Email__c)
-                    OR Hash_ID__c = :insertedGuardian.Hash_ID__c
                 ORDER BY CreatedDate ASC
             ];
 

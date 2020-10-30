@@ -188,6 +188,13 @@ public without sharing class FamilyPortalController {
         if (isAsuriteUser) {
             numberOfMatches = [SELECT COUNT() FROM Family_Portal_Guardian__c WHERE Email__c = :UserInfo.getUserEmail()];
             if (numberOfMatches > 0) {
+                Family_Portal_Guardian__c guardian = [
+                    SELECT Hash_ID__c
+                    FROM Family_Portal_Guardian__c
+                    WHERE Email__c = :UserInfo.getUserEmail()
+                    LIMIT 1
+                ];
+                hashId = guardian.Hash_ID__c;
                 isExistingGuardian = true;
                 return true;
             }
@@ -198,57 +205,29 @@ public without sharing class FamilyPortalController {
 
     @TestVisible
     private void prepopulateExistingGuardianData() {
-        Family_Portal_Guardian__c guardian = new Family_Portal_Guardian__c();
-
-        if (isAsuriteUser) {
-            guardian = [
-                SELECT
-                    Id,
-                    ASU_Alumni__c,
-                    ASURITE_ID__c,
-                    Business_Unit_Source__c,
-                    City__c,
-                    Contact__c,
-                    Country__c,
-                    Email__c,
-                    EMPLID__c,
-                    First_Name__c,
-                    Hash_ID__c,
-                    Last_Name__c,
-                    Middle_Name__c,
-                    Phone__c,
-                    State__c,
-                    Street__c,
-                    Zip_Code__c
-                FROM Family_Portal_Guardian__c
-                WHERE Email__c = :familyPortalGuardian.Email__c
-                LIMIT 1
-            ];
-        } else {
-            guardian = [
-                SELECT
-                    Id,
-                    ASU_Alumni__c,
-                    ASURITE_ID__c,
-                    Business_Unit_Source__c,
-                    City__c,
-                    Contact__c,
-                    Country__c,
-                    Email__c,
-                    EMPLID__c,
-                    First_Name__c,
-                    Hash_ID__c,
-                    Last_Name__c,
-                    Middle_Name__c,
-                    Phone__c,
-                    State__c,
-                    Street__c,
-                    Zip_Code__c
-                FROM Family_Portal_Guardian__c
-                WHERE Hash_ID__c = :hashId
-                LIMIT 1
-            ];
-        }
+        Family_Portal_Guardian__c guardian = [
+            SELECT
+                Id,
+                ASU_Alumni__c,
+                ASURITE_ID__c,
+                Business_Unit_Source__c,
+                City__c,
+                Contact__c,
+                Country__c,
+                Email__c,
+                EMPLID__c,
+                First_Name__c,
+                Hash_ID__c,
+                Last_Name__c,
+                Middle_Name__c,
+                Phone__c,
+                State__c,
+                Street__c,
+                Zip_Code__c
+            FROM Family_Portal_Guardian__c
+            WHERE Hash_ID__c = :hashId
+            LIMIT 1
+        ];
 
         if (guardian.Id != null) {
             if (guardian.ASURITE_ID__c != null || guardian.Email__c.contains('@asu.edu')) {

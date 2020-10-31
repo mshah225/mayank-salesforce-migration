@@ -9,7 +9,7 @@
     },
 
     applyFilters: function (component, event, helper) {
-        helper.applyFilters(component, false);
+        helper.applyFilters(component, component.get('v.AllCasesState'));
     },
 
     clearFilters: function (component, event, helper) {
@@ -37,16 +37,16 @@
         component.find('proactiveFilter').set('v.variant', 'brand');
         component.set('v.WatchlistCasesState', false);
         component.find('watchlistFilter').set('v.variant', 'neutral');
-        helper.applyFilters(component, true);
+        helper.applyFilters(component, component.get('v.AllCasesState'));
     },
 
     refreshView: function (component, event, helper) {
-        helper.applyFilters(component, true);
+        helper.applyFilters(component, component.get('v.AllCasesState'));
     },
 
     returnKeyPressed: function (component, event, helper) {
         if (event.which === 13) {
-            helper.applyFilters(component, false);
+            helper.applyFilters(component, component.get('v.AllCasesState'));
         }
     },
 
@@ -98,6 +98,6 @@
         });
         $A.enqueueAction(caseClassificationPicklistAction);
 
-        helper.applyFilters(component, true);
+        helper.applyFilters(component, component.get('v.AllCasesState'));
     },
 });

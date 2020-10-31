@@ -1,4 +1,4 @@
-<aura:component controller="AdvisorPortalController" access="public">
+<aura:component access="public">
     <aura:attribute name="ContactsInView" type="AdvisorPortalContact[]" />
     <aura:attribute name="FilteredContacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="isProcessing" type="Boolean" default="true" />

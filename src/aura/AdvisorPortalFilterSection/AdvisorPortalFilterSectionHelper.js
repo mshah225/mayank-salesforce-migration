@@ -37,18 +37,31 @@
         return optionsList;
     },
 
-    applyFilters: function (component, toggleButtonFired) {
+    applyFilters: function (component, allStudentsRequested) {
         if (!this.validateDateFields(component)) {
             return;
         }
 
         component.getEvent('incrementProcessingCounterEvent').fire();
 
-        let filterAction = component.get('c.getContactCaseWrappersWithLessQueries');
-        filterAction.setParams({
-            viewAsOptions: component.get('v.UserIds'),
-            filter: this.buildFilter(component),
-        });
+        let filterAction = null;
+
+        if (!allStudentsRequested) {
+            // Use function that only looks at open cases
+            filterAction = component.get('c.getContactCaseWrappersWithLessQueries');
+            filterAction.setParams({
+                viewAsOptions: component.get('v.UserIds'),
+                filter: this.buildFilter(component),
+            });
+        } else {
+            // Use function that looks at all students, even those w/o cases
+            filterAction = component.get('c.getAllContactsAndRespectiveCases');
+            filterAction.setParams({
+                viewAsOptions: component.get('v.UserIds'),
+                filter: this.buildFilter(component),
+            });
+        }
+
         filterAction.setCallback(this, function (response) {
             if (!response.getReturnValue()) {
                 component.getEvent('updateCaseContactWrappersEvent').setParams({caseContactWrapperList: []}).fire();
@@ -116,7 +129,7 @@
                 component.find('watchlistFilter').set('v.variant', 'brand');
             }
 
-            this.applyFilters(component, true);
+            this.applyFilters(component, component.get('v.AllCasesState'));
         } else {
             component.set('v.' + attributeName, !component.get('v.' + attributeName));
             component.find(elementAuraId).set('v.variant', component.get('v.' + attributeName) ? 'brand' : 'neutral');

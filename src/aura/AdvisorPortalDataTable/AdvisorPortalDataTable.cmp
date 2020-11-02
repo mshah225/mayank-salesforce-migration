@@ -243,9 +243,7 @@
                                         </td>
                                         <td data-label="Owner">
                                             <div class="slds-truncate" title="Owner">
-                                                <a href="{!'/'+caseWrapper.portalCase.Owner.Id}"
-                                                    >{!caseWrapper.portalCase.Owner.Name}</a
-                                                >
+                                                {!caseWrapper.portalCase.Owner.Name}
                                             </div>
                                         </td>
                                         <td data-label="Created Date">

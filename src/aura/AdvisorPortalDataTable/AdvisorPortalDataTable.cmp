@@ -6,7 +6,6 @@
     <aura:attribute name="OpenSections" type="List" />
     <aura:attribute name="SectionsOpenState" type="Boolean" default="false" />
     <aura:attribute name="resetCheckboxesDuringViewRefresh" type="Boolean" default="true" />
-    <aura:attribute name="expandSectionsRunning" type="Boolean" default="false" />
     <aura:attribute name="SelectAll" type="Boolean" default="false" />
     <aura:attribute name="Page" default="1" type="Integer" description="Current page index number" />
     <aura:attribute name="TotalPages" type="Integer" description="Total number of pages" />

@@ -16,12 +16,14 @@
         component.set('v.ContactsDisplayed', allContacts.slice(recordOffsetRangeFrom, recordOffsetRangeTo));
 
         // Reset expanded sections
-        component.set('v.expandSectionsRunning', true);
         component.set('v.OpenSections', []);
         component
             .get('v.ContactsDisplayed')
             .forEach((contactWrapper) => allSections.push(contactWrapper.portalContact.Name));
         component.set('v.AllSections', allSections);
+        if (component.get('v.SectionsOpenState')) {
+            component.set('v.OpenSections', allSections);
+        }
     },
 
     openPrimaryAndSubTab: function (

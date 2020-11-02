@@ -27,6 +27,8 @@
             component.set('v.EmailBody', '');
             component.set('v.FormError', '');
         }
+
+        document.getElementById('massEmailBody').scrollTop = 0;
     },
 
     buildErrorMessage: function (errors) {

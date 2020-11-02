@@ -28,6 +28,9 @@
             component.set('v.FormError', '');
             component.get('v.ViewAsOptions');
         }
+
+        document.getElementById('massTransferBody').scrollTop = 0;
+        document.getElementById('topLevelDropdown').scrollTop = 0;
     },
 
     buildErrorMessage: function (errors) {

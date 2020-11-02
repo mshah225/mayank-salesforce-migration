@@ -57,6 +57,8 @@
         if ($A.util.hasClass(component.find('massUpdateModal'), 'slds-fade-in-open')) {
             this.resetComponentValues(component);
         }
+
+        document.getElementById('massUpdateBody').scrollTop = 0;
     },
 
     isFormValid: function (component) {

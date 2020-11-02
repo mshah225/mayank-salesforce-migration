@@ -192,7 +192,7 @@ public class AdvisorPortalFilterSectionController {
             }
 
             // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && (filter.caseCount != null || filter.caseCount > 0)) {
+            if (!casesByContactIds.containsKey(contact.Id) && filter.caseCount != null && filter.caseCount > 0) {
                 continue;
             }
 
@@ -202,7 +202,7 @@ public class AdvisorPortalFilterSectionController {
                 // Skip Contact if we filter by Case count and it has less than we want.
                 if (
                     (filter.caseCount != null || filter.caseCount > 0) &&
-                    casesByContactIds.get(contact.Id).size() < filter.caseCount
+                    casesByContactIds.get(contact.Id).size() != filter.caseCount
                 ) {
                     continue;
                 }
@@ -577,7 +577,7 @@ public class AdvisorPortalFilterSectionController {
             }
 
             // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && (filter.caseCount != null || filter.caseCount > 0)) {
+            if (!casesByContactIds.containsKey(contact.Id) && filter.caseCount != null && filter.caseCount > 0) {
                 continue;
             }
 
@@ -587,7 +587,7 @@ public class AdvisorPortalFilterSectionController {
                 // Skip Contact if we filter by Case count and it has less than we want.
                 if (
                     (filter.caseCount != null || filter.caseCount > 0) &&
-                    casesByContactIds.get(contact.Id).size() < filter.caseCount
+                    casesByContactIds.get(contact.Id).size() != filter.caseCount
                 ) {
                     continue;
                 }

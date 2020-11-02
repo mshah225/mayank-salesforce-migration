@@ -96,8 +96,8 @@
                                         rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
                                     <apex:inputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" html-placeholder="{!familyPortalGuardian.Last_Name__c}"
                                         rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
-                                    <apex:inputField label="Email" value="{!familyPortalGuardian.Email__c}" html-placeholder="{!familyPortalGuardian.Email__c}"
-                                        rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                    <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(!isAsuriteUser, isExistingGuardian)}"
+                                    />
                                     <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
                                         rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
                                     <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"

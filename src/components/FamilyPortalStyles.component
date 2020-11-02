@@ -133,11 +133,6 @@
             border-top: unset !important;
         }
 
-        .family-portal-3-container table>tbody>tr:first-child,
-        .family-portal-3-container table>tbody>tr:first-child>td {
-            display: none !important;
-        }
-
         .family-portal-3-container .pbBody td>label,
         .family-portal-4-container .pbBody td>label {
             display: unset;

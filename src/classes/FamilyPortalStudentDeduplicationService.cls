@@ -117,11 +117,23 @@ public class FamilyPortalStudentDeduplicationService {
 
             studentsToDelete.addAll(relatedstudentsToDelete);
 
+            if (newestStudent.Academic_College__c != null) {
+                oldestStudent.Academic_College__c = newestStudent.Academic_College__c;
+            }
             if (newestStudent.Active_Relationship__c != null) {
                 oldestStudent.Active_Relationship__c = newestStudent.Active_Relationship__c;
             }
+            if (newestStudent.Enrollment_Status__c != null) {
+                oldestStudent.Enrollment_Status__c = newestStudent.Enrollment_Status__c;
+            }
+            if (newestStudent.Enrollment_Status_Year__c != null) {
+                oldestStudent.Enrollment_Status_Year__c = newestStudent.Enrollment_Status_Year__c;
+            }
             if (newestStudent.Military_Affiliation__c != null) {
                 oldestStudent.Military_Affiliation__c = newestStudent.Military_Affiliation__c;
+            }
+            if (newestStudent.Type__c != null) {
+                oldestStudent.Type__c = newestStudent.Type__c;
             }
 
             if (!studentsToDelete.contains(newestStudent)) {

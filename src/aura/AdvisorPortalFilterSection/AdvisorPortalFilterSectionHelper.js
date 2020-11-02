@@ -49,18 +49,15 @@
         if (!allStudentsRequested) {
             // Use function that only looks at open cases
             filterAction = component.get('c.getContactCaseWrappersWithLessQueries');
-            filterAction.setParams({
-                viewAsOptions: component.get('v.UserIds'),
-                filter: this.buildFilter(component),
-            });
         } else {
             // Use function that looks at all students, even those w/o cases
             filterAction = component.get('c.getAllContactsAndRespectiveCases');
-            filterAction.setParams({
-                viewAsOptions: component.get('v.UserIds'),
-                filter: this.buildFilter(component),
-            });
         }
+
+        filterAction.setParams({
+            viewAsOptions: component.get('v.UserIds'),
+            filter: this.buildFilter(component),
+        });
 
         filterAction.setCallback(this, function (response) {
             if (!response.getReturnValue()) {

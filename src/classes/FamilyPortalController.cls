@@ -148,7 +148,7 @@ public without sharing class FamilyPortalController {
     private void setExistingAsuUserData() {
         if (UserInfo.getUserId() != null) {
             User existingAsuUser = [
-                SELECT EmployeeNumber, ASURITE_for_External_ID__c
+                SELECT EmployeeNumber, ASURITE_for_External_ID__c, ContactId
                 FROM User
                 WHERE Id = :UserInfo.getUserId() AND Email = :UserInfo.getUserEmail()
             ];
@@ -157,6 +157,9 @@ public without sharing class FamilyPortalController {
             }
             if (existingAsuUser.ASURITE_for_External_ID__c != null) {
                 familyPortalGuardian.ASURITE_ID__c = existingAsuUser.ASURITE_for_External_ID__c;
+            }
+            if (existingAsuUser.ContactId != null) {
+                familyPortalGuardian.Contact__c = existingAsuUser.ContactId;
             }
         }
     }
@@ -508,34 +511,36 @@ public without sharing class FamilyPortalController {
     }
 
     private void matchGuardianToExistingContact() {
-        Map<String, String> detailFieldsMap = new Map<String, String>();
-        detailFieldsMap.put('emplid', familyPortalGuardian.EMPLID__c);
-        detailFieldsMap.put('asuriteId', familyPortalGuardian.ASURITE_ID__c);
-        detailFieldsMap.put('firstName', familyPortalGuardian.First_Name__c);
-        detailFieldsMap.put('middleName', familyPortalGuardian.Middle_Name__c);
-        detailFieldsMap.put('lastName', familyPortalGuardian.Last_Name__c);
-        detailFieldsMap.put('email', familyPortalGuardian.Email__c);
-        detailFieldsMap.put('phone', familyPortalGuardian.Phone__c);
-        detailFieldsMap.put('mailingStreet', familyPortalGuardian.Street__c);
-        ConstituentDetail guardianDetail = new ConstituentDetail(detailFieldsMap);
+        if (!isAsuriteUser) {
+            Map<String, String> detailFieldsMap = new Map<String, String>();
+            detailFieldsMap.put('firstName', familyPortalGuardian.First_Name__c);
+            detailFieldsMap.put('middleName', familyPortalGuardian.Middle_Name__c);
+            detailFieldsMap.put('lastName', familyPortalGuardian.Last_Name__c);
+            detailFieldsMap.put('email', familyPortalGuardian.Email__c);
+            detailFieldsMap.put('phone', familyPortalGuardian.Phone__c);
+            detailFieldsMap.put('mailingStreet', familyPortalGuardian.Street__c);
+            ConstituentDetail guardianDetail = new ConstituentDetail(detailFieldsMap);
 
-        ConstituentMatcher contactMatcher = new ConstituentMatcher(guardianDetail, 'Contact', 'familyportal');
-        contactMatcher.searchConstituents();
-        List<ConstituentDetail> matchedDetailsWithContacts = contactMatcher.getListOfConstituentsWithMatches();
-        for (ConstituentDetail matchedDetailWithContact : matchedDetailsWithContacts) {
-            familyPortalGuardian.Contact__c = matchedDetailWithContact.constituentId;
-            break;
-        }
+            ConstituentMatcher contactMatcher = new ConstituentMatcher(guardianDetail, 'Contact', 'familyportal');
+            contactMatcher.searchConstituents();
+            List<ConstituentDetail> matchedDetailsWithContacts = contactMatcher.getListOfConstituentsWithMatches();
+            for (ConstituentDetail matchedDetailWithContact : matchedDetailsWithContacts) {
+                familyPortalGuardian.Contact__c = matchedDetailWithContact.constituentId;
+                break;
+            }
 
-        if (familyPortalGuardian.Contact__c == null) {
-            Contact newGuardianContact = new Contact();
-            newGuardianContact.FirstName = familyPortalGuardian.First_Name__c;
-            newGuardianContact.LastName = familyPortalGuardian.Last_Name__c;
-            newGuardianContact.Email = familyPortalGuardian.Email__c;
-            newGuardianContact.Phone = familyPortalGuardian.Phone__c;
+            if (familyPortalGuardian.Contact__c == null) {
+                Contact newGuardianContact = new Contact();
+                newGuardianContact.FirstName = familyPortalGuardian.First_Name__c;
+                newGuardianContact.Middle_Name__c = familyPortalGuardian.Middle_Name__c;
+                newGuardianContact.LastName = familyPortalGuardian.Last_Name__c;
+                newGuardianContact.Email = familyPortalGuardian.Email__c;
+                newGuardianContact.Phone = familyPortalGuardian.Phone__c;
+                newGuardianContact.MailingStreet = familyPortalGuardian.Street__c;
 
-            insert newGuardianContact;
-            familyPortalGuardian.Contact__c = newGuardianContact.Id;
+                insert newGuardianContact;
+                familyPortalGuardian.Contact__c = newGuardianContact.Id;
+            }
         }
     }
 

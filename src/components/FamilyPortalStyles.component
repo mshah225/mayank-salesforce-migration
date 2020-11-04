@@ -248,6 +248,10 @@
             padding-right: 2em !important;
         }
 
+        .family-portal-sidebar .well .lead {
+            margin-bottom: 0;
+        }
+
         .family-portal-sidebar-contact-info {
             max-width: 400px;
             padding-left: 0;

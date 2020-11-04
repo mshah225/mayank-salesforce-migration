@@ -229,6 +229,7 @@ public without sharing class FamilyPortalController {
                 Zip_Code__c
             FROM Family_Portal_Guardian__c
             WHERE Hash_ID__c = :hashId
+            ORDER BY CreatedDate DESC
             LIMIT 1
         ];
 

@@ -142,24 +142,24 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Zip_Code__c
                 FROM Family_Portal_Guardian__c
                 WHERE
-                    Hash_ID__c = :insertedGuardian.Hash_ID__c
-                    OR (First_Name__c = :insertedGuardian.First_Name__c
-                    AND Last_Name__c = :insertedGuardian.Last_Name__c
-                    AND Email__c = :insertedGuardian.Email__c)
-                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    (First_Name__c = :insertedGuardian.First_Name__c
                     AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c
                     AND Phone__c = :insertedGuardian.Phone__c)
                     OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Middle_Name__c = :insertedGuardian.Middle_Name__c
                     AND Last_Name__c = :insertedGuardian.Last_Name__c
-                    AND Email__c = :insertedGuardian.Email__c
-                    AND Middle_Name__c = :insertedGuardian.Middle_Name__c)
+                    AND Email__c = :insertedGuardian.Email__c)
                     OR (First_Name__c = :insertedGuardian.First_Name__c
                     AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c
                     AND Street__c = :insertedGuardian.Street__c)
                     OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Last_Name__c = :insertedGuardian.Last_Name__c
                     AND Email__c = :insertedGuardian.Email__c)
+                    OR (First_Name__c = :insertedGuardian.First_Name__c
+                    AND Email__c = :insertedGuardian.Email__c)
+                    OR Hash_ID__c = :insertedGuardian.Hash_ID__c
                 ORDER BY CreatedDate ASC
             ];
 
@@ -239,6 +239,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 SELECT
                     Id,
                     Academic_College__c,
+                    Academic_Year__c,
                     Active_Relationship__c,
                     Enrollment_Status__c,
                     Enrollment_Status_Year__c,
@@ -326,6 +327,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 SELECT
                     Id,
                     Academic_College__c,
+                    Academic_Year__c,
                     Active_Relationship__c,
                     Enrollment_Status__c,
                     Enrollment_Status_Year__c,

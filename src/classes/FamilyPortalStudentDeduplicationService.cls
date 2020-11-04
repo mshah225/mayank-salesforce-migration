@@ -47,6 +47,7 @@ public class FamilyPortalStudentDeduplicationService {
                 SELECT
                     Id,
                     Academic_College__c,
+                    Academic_Year__c,
                     Active_Relationship__c,
                     Enrollment_Status__c,
                     Enrollment_Status_Year__c,
@@ -57,12 +58,19 @@ public class FamilyPortalStudentDeduplicationService {
                 FROM Family_Portal_Student__c
                 WHERE
                     Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
-                    AND Enrollment_Status__c = :updatedStudent.Enrollment_Status__c
-                    AND (Enrollment_Status_Year__c = :updatedStudent.Enrollment_Status_Year__c
-                    OR (Academic_College__c = :updatedStudent.Academic_College__c
-                    AND Type__c = :updatedStudent.Type__c))
+                    AND ((Enrollment_Status__c = :updatedStudent.Enrollment_Status__c
+                    AND Enrollment_Status_Year__c = :updatedStudent.Enrollment_Status_Year__c
+                    AND Military_Affiliation__c = :updatedStudent.Military_Affiliation__c
+                    AND Academic_College__c = :updatedStudent.Academic_College__c
+                    AND Academic_Year__c = :updatedStudent.Academic_Year__c
+                    AND Type__c = :updatedStudent.Type__c)
+                    OR (Enrollment_Status__c = :updatedStudent.Enrollment_Status__c
+                    AND Enrollment_Status_Year__c = :updatedStudent.Enrollment_Status_Year__c
+                    AND Military_Affiliation__c = :updatedStudent.Military_Affiliation__c))
                 ORDER BY CreatedDate ASC
             ];
+
+            // add academic year
 
             if (matchedStudentsToCheck.size() > 0) {
                 updatedStudentWithMatchedStudents.put(updatedStudent, matchedStudentsToCheck);

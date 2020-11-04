@@ -133,9 +133,47 @@ public without sharing class FamilyPortalController {
     private Boolean isAsuriteUser() {
         if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
             isAsuriteUser = true;
-            familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
-            familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
-            familyPortalGuardian.Email__c = UserInfo.getUserEmail();
+
+            User guardianUser = [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+            if (guardianUser.ContactId != null) {
+                Contact guardianContact = [
+                    SELECT
+                        Id,
+                        Preferred_First_Name__c,
+                        FirstName,
+                        Middle_Name__c,
+                        LastName,
+                        Email,
+                        Phone,
+                        MailingStreet,
+                        MailingCity,
+                        MailingState,
+                        MailingPostalCode,
+                        MailingCountry
+                    FROM Contact
+                    WHERE Id = :guardianUser.ContactId
+                    LIMIT 1
+                ];
+
+                if (guardianContact.Preferred_First_Name__c != null) {
+                    familyPortalGuardian.First_Name__c = guardianContact.Preferred_First_Name__c;
+                } else {
+                    familyPortalGuardian.First_Name__c = guardianContact.FirstName;
+                }
+                familyPortalGuardian.Middle_Name__c = guardianContact.Middle_Name__c;
+                familyPortalGuardian.Last_Name__c = guardianContact.LastName;
+                familyPortalGuardian.Email__c = guardianContact.Email;
+                familyPortalGuardian.Phone__c = guardianContact.Phone;
+                familyPortalGuardian.Street__c = guardianContact.MailingStreet;
+                familyPortalGuardian.City__c = guardianContact.MailingCity;
+                familyPortalGuardian.State__c = guardianContact.MailingState;
+                familyPortalGuardian.Zip_Code__c = guardianContact.MailingPostalCode;
+                familyPortalGuardian.Country__c = guardianContact.MailingCountry;
+            } else {
+                familyPortalGuardian.First_Name__c = UserInfo.getFirstName();
+                familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
+                familyPortalGuardian.Email__c = UserInfo.getUserEmail();
+            }
 
             return true;
         } else if (familyPortalGuardian.ASURITE_ID__c != null) {
@@ -538,7 +576,14 @@ public without sharing class FamilyPortalController {
                 newGuardianContact.Email = familyPortalGuardian.Email__c;
                 newGuardianContact.Phone = familyPortalGuardian.Phone__c;
                 newGuardianContact.MailingStreet = familyPortalGuardian.Street__c;
+                newGuardianContact.MailingCity = familyPortalGuardian.City__c;
+                newGuardianContact.MailingState = familyPortalGuardian.State__c;
+                newGuardianContact.MailingPostalCode = familyPortalGuardian.Zip_Code__c;
+                newGuardianContact.MailingCountry = familyPortalGuardian.Country__c;
 
+                if (familyPortalGuardian.ASU_Alumni__c == 'Yes') {
+                    newGuardianContact.Affiliation_Alumni__c = 'Current';
+                }
                 insert newGuardianContact;
                 familyPortalGuardian.Contact__c = newGuardianContact.Id;
             }

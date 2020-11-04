@@ -70,8 +70,6 @@ public class FamilyPortalStudentDeduplicationService {
                 ORDER BY CreatedDate ASC
             ];
 
-            // add academic year
-
             if (matchedStudentsToCheck.size() > 0) {
                 updatedStudentWithMatchedStudents.put(updatedStudent, matchedStudentsToCheck);
 

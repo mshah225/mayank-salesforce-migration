@@ -14,6 +14,7 @@ public without sharing class FamilyPortalController {
             if (familyPortalGuardian.Country__c == 'United States' || familyPortalGuardian.Country__c == 'Canada') {
                 return true;
             } else {
+                familyPortalGuardian.State__c = '';
                 return false;
             }
         }
@@ -22,6 +23,7 @@ public without sharing class FamilyPortalController {
     public Boolean guardianSelectedCountryIsUS {
         get {
             if (familyPortalGuardian.Country__c == 'United States') {
+                familyPortalGuardian.State__c = 'Arizona';
                 return true;
             } else {
                 return false;
@@ -32,6 +34,7 @@ public without sharing class FamilyPortalController {
     public Boolean guardianSelectedCountryIsCanada {
         get {
             if (familyPortalGuardian.Country__c == 'Canada') {
+                familyPortalGuardian.State__c = 'Alberta';
                 return true;
             } else {
                 return false;
@@ -439,10 +442,55 @@ public without sharing class FamilyPortalController {
         Schema.DescribeFieldResult stateCodeFieldResult = User.StateCode.getDescribe();
         List<Schema.PicklistEntry> stateCodeValues = stateCodeFieldResult.getPicklistValues();
         for (Schema.PicklistEntry stateCode : stateCodeValues) {
-            stateCodeOptions.add(new SelectOption(stateCode.getLabel(), stateCode.getLabel()));
+            if (
+                stateCode.getLabel() != 'Alberta' &&
+                stateCode.getLabel() != 'British Columbia' &&
+                stateCode.getLabel() != 'Manitoba' &&
+                stateCode.getLabel() != 'New Brunswick' &&
+                stateCode.getLabel() != 'Manitoba' &&
+                stateCode.getLabel() != 'Newfoundland and Labrador' &&
+                stateCode.getLabel() != 'Northwest Territories' &&
+                stateCode.getLabel() != 'Nova Scotia' &&
+                stateCode.getLabel() != 'Nunavut' &&
+                stateCode.getLabel() != 'Ontario' &&
+                stateCode.getLabel() != 'Prince Edward Island' &&
+                stateCode.getLabel() != 'Quebec' &&
+                stateCode.getLabel() != 'Saskatchewan' &&
+                stateCode.getLabel() != 'Yukon Territories'
+            ) {
+                stateCodeOptions.add(new SelectOption(stateCode.getLabel(), stateCode.getLabel()));
+            }
         }
 
         return stateCodeOptions;
+    }
+
+    public List<SelectOption> getGuardianProvinceOptions() {
+        List<SelectOption> provinceCodeOptions = new List<SelectOption>();
+        Schema.DescribeFieldResult provinceCodeFieldResult = User.StateCode.getDescribe();
+        List<Schema.PicklistEntry> provinceCodeValues = provinceCodeFieldResult.getPicklistValues();
+        for (Schema.PicklistEntry provinceCode : provinceCodeValues) {
+            if (
+                provinceCode.getLabel() == 'Alberta' ||
+                provinceCode.getLabel() == 'British Columbia' ||
+                provinceCode.getLabel() == 'Manitoba' ||
+                provinceCode.getLabel() == 'New Brunswick' ||
+                provinceCode.getLabel() == 'Manitoba' ||
+                provinceCode.getLabel() == 'Newfoundland and Labrador' ||
+                provinceCode.getLabel() == 'Northwest Territories' ||
+                provinceCode.getLabel() == 'Nova Scotia' ||
+                provinceCode.getLabel() == 'Nunavut' ||
+                provinceCode.getLabel() == 'Ontario' ||
+                provinceCode.getLabel() == 'Prince Edward Island' ||
+                provinceCode.getLabel() == 'Quebec' ||
+                provinceCode.getLabel() == 'Saskatchewan' ||
+                provinceCode.getLabel() == 'Yukon Territories'
+            ) {
+                provinceCodeOptions.add(new SelectOption(provinceCode.getLabel(), provinceCode.getLabel()));
+            }
+        }
+
+        return provinceCodeOptions;
     }
 
     public List<SelectOption> getGuardianInterestChoices() {

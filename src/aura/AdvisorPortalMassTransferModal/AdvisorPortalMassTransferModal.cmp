@@ -53,7 +53,7 @@
                                     aria-haspopup="listbox"
                                     role="combobox"
                                     aria-label="Advising Committees"
-                                    aria-controls="topLevelDropdown"
+                                    aria-controls="transferToDropdownList"
                                 >
                                     <div
                                         class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
@@ -66,9 +66,7 @@
                                             class="slds-combobox__input"
                                             placeholder="--Select--"
                                             value="{!v.SelectedLabel}"
-                                            onchange="{!c.filterResults}"
                                             onclick="{!c.toggleDropdown}"
-                                            onblur="{!c.hideDropdown}"
                                             variant="label-hidden"
                                             readonly="true"
                                         />
@@ -83,16 +81,17 @@
                                         </span>
                                     </div>
                                     <div
-                                        id="topLevelDropdown"
+                                        id="transferToDropdownList"
                                         class="slds-dropdown slds-dropdown_length-7 slds-dropdown_fluid"
                                         role="listbox"
-                                        aria-label="Committee Options"
+                                        aria-label="Transfer To Options"
                                         aria-selected="false"
+                                        onmouseleave="{!c.closeDropdown}"
                                     >
                                         <ul
                                             class="slds-listbox slds-listbox_vertical"
                                             role="group"
-                                            aria-label="Committee Options List"
+                                            aria-label="Transfer To Options List"
                                         >
                                             <aura:iteration items="{!v.ViewAsOptions}" var="option">
                                                 <aura:if isTrue="{!option.isHeader}">

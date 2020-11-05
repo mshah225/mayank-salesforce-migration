@@ -30,7 +30,7 @@
         }
 
         document.getElementById('massTransferBody').scrollTop = 0;
-        document.getElementById('topLevelDropdown').scrollTop = 0;
+        document.getElementById('transferToDropdownList').scrollTop = 0;
     },
 
     buildErrorMessage: function (errors) {

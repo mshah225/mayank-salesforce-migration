@@ -51,13 +51,8 @@
         helper.toggleDropdown(component);
     },
 
-    hideDropdown: function (component) {
-        window.setTimeout(
-            $A.getCallback(function () {
-                $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
-            }),
-            150
-        );
+    closeDropdown: function (component) {
+        $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
     },
 
     toggleOption: function (component, event, helper) {

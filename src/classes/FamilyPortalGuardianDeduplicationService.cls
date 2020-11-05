@@ -247,6 +247,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Military_Affiliation__c,
                     Type__c,
                     CreatedDate,
+                    LastModifiedDate,
                     Guardian_Contact__c
                 FROM Family_Portal_Student__c
                 WHERE Family_Portal_Guardian__c IN :relatedGuardianIdsToDelete
@@ -335,6 +336,7 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                     Military_Affiliation__c,
                     Type__c,
                     CreatedDate,
+                    LastModifiedDate,
                     Guardian_Contact__c
                 FROM Family_Portal_Student__c
                 WHERE Family_Portal_Guardian__c = :newestGuardian.Id

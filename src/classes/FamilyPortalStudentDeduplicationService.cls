@@ -34,6 +34,31 @@ public class FamilyPortalStudentDeduplicationService {
                 vars.add(ErrorLogger.convertListToJSON('studentsToDelete', studentsToDelete));
                 ErrorLogger.log(e, vars, false);
             }
+
+            for (Family_Portal_Student__c updatedStudent : studentsToUpdate) {
+                Family_Portal_Student__c updatedStudentWithLMD = [
+                    SELECT Id, LastModifiedDate
+                    FROM Family_Portal_Student__c
+                    WHERE Id = :updatedStudent.Id
+                    LIMIT 1
+                ];
+                DateTime updatedStudentLastModifiedDate = updatedStudentWithLMD.LastModifiedDate;
+
+                List<Family_Portal_Student__c> studentsToSetInactive = [
+                    SELECT Id, Active_Relationship__c, LastModifiedDate
+                    FROM Family_Portal_Student__c
+                    WHERE
+                        Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
+                        AND Id != :updatedStudent.Id
+                        AND LastModifiedDate < :updatedStudentLastModifiedDate
+                ];
+                if (studentsToSetInactive.size() > 0) {
+                    for (Family_Portal_Student__c student : studentsToSetInactive) {
+                        student.Active_Relationship__c = false;
+                    }
+                    update studentsToSetInactive;
+                }
+            }
         }
     }
 
@@ -54,7 +79,8 @@ public class FamilyPortalStudentDeduplicationService {
                     Family_Portal_Guardian__c,
                     Military_Affiliation__c,
                     Type__c,
-                    CreatedDate
+                    CreatedDate,
+                    LastModifiedDate
                 FROM Family_Portal_Student__c
                 WHERE
                     Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
@@ -126,6 +152,9 @@ public class FamilyPortalStudentDeduplicationService {
             if (newestStudent.Academic_College__c != null) {
                 oldestStudent.Academic_College__c = newestStudent.Academic_College__c;
             }
+            if (newestStudent.Academic_Year__c != null) {
+                oldestStudent.Academic_Year__c = newestStudent.Academic_Year__c;
+            }
             if (newestStudent.Active_Relationship__c != null) {
                 oldestStudent.Active_Relationship__c = newestStudent.Active_Relationship__c;
             }
@@ -142,32 +171,11 @@ public class FamilyPortalStudentDeduplicationService {
                 oldestStudent.Type__c = newestStudent.Type__c;
             }
 
-            if (!studentsToDelete.contains(newestStudent)) {
-                studentsToDelete.add(newestStudent);
-            }
             if (!studentsToUpdate.contains(oldestStudent)) {
                 studentsToUpdate.add(oldestStudent);
             }
-
-            Set<Id> studentIdsWithAChange = new Set<Id>();
-            for (Family_Portal_Student__c student : studentsToUpdate) {
-                studentIdsWithAChange.add(student.Id);
-            }
-            for (Family_Portal_Student__c student : studentsToDelete) {
-                studentIdsWithAChange.add(student.Id);
-            }
-
-            List<Family_Portal_Student__c> studentsToSetInactive = [
-                SELECT Id, Active_Relationship__c
-                FROM Family_Portal_Student__c
-                WHERE
-                    Family_Portal_Guardian__c = :updatedStudent.Family_Portal_Guardian__c
-                    AND Id NOT IN :studentIdsWithAChange
-            ];
-            if (studentsToSetInactive.size() > 0) {
-                for (Family_Portal_Student__c student : studentsToSetInactive) {
-                    student.Active_Relationship__c = false;
-                }
+            if (!studentsToDelete.contains(newestStudent)) {
+                studentsToDelete.add(newestStudent);
             }
         }
     }

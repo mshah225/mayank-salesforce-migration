@@ -531,6 +531,7 @@ public without sharing class FamilyPortalController {
 
     public PageReference familyPortalStep5() {
         try {
+            beautifyPhoneNumber();
             matchGuardianToExistingContact();
             insertGuardian();
             insertGuardianInterests();
@@ -547,6 +548,12 @@ public without sharing class FamilyPortalController {
         }
 
         return Page.FamilyPortalStep5;
+    }
+
+    private void beautifyPhoneNumber() {
+        if (familyPortalGuardian.Phone__c != null) {
+            familyPortalGuardian.Phone__c = familyPortalGuardian.Phone__c.replaceAll('\\D', '');
+        }
     }
 
     private void matchGuardianToExistingContact() {
@@ -620,7 +627,6 @@ public without sharing class FamilyPortalController {
         } else {
             familyPortalGuardian.Hash_ID__c = hashId;
         }
-        beautifyPhoneNumber();
         setGuardianReturnUrl();
 
         try {
@@ -629,12 +635,6 @@ public without sharing class FamilyPortalController {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertSObjectToJSON('familyPortalGuardian', familyPortalGuardian));
             ErrorLogger.log(e, vars, false);
-        }
-    }
-
-    private void beautifyPhoneNumber() {
-        if (familyPortalGuardian.Phone__c != null) {
-            familyPortalGuardian.Phone__c = familyPortalGuardian.Phone__c.replaceAll('\\D', '');
         }
     }
 

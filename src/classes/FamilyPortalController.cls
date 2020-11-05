@@ -577,15 +577,27 @@ public without sharing class FamilyPortalController {
                 newGuardianContact.Phone = familyPortalGuardian.Phone__c;
                 newGuardianContact.MailingStreet = familyPortalGuardian.Street__c;
                 newGuardianContact.MailingCity = familyPortalGuardian.City__c;
-                newGuardianContact.MailingState = familyPortalGuardian.State__c;
                 newGuardianContact.MailingPostalCode = familyPortalGuardian.Zip_Code__c;
                 newGuardianContact.MailingCountry = familyPortalGuardian.Country__c;
 
+                if (familyPortalGuardian.Country__c == 'United States' || familyPortalGuardian.Country__c == 'Canada') {
+                    newGuardianContact.MailingState = familyPortalGuardian.State__c;
+                }
                 if (familyPortalGuardian.ASU_Alumni__c == 'Yes') {
                     newGuardianContact.Affiliation_Alumni__c = 'Current';
                 }
-                insert newGuardianContact;
-                familyPortalGuardian.Contact__c = newGuardianContact.Id;
+
+                try {
+                    insert newGuardianContact;
+                } catch (DmlException e) {
+                    List<String> vars = new List<String>();
+                    vars.add(ErrorLogger.convertSObjectToJSON('newGuardianContact', newGuardianContact));
+                    ErrorLogger.log(e, vars, false);
+                } finally {
+                    if (newGuardianContact.Id != null) {
+                        familyPortalGuardian.Contact__c = newGuardianContact.Id;
+                    }
+                }
             }
         }
     }
@@ -610,7 +622,14 @@ public without sharing class FamilyPortalController {
         }
         beautifyPhoneNumber();
         setGuardianReturnUrl();
-        insert familyPortalGuardian;
+
+        try {
+            insert familyPortalGuardian;
+        } catch (DmlException e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSObjectToJSON('familyPortalGuardian', familyPortalGuardian));
+            ErrorLogger.log(e, vars, false);
+        }
     }
 
     private void beautifyPhoneNumber() {
@@ -660,7 +679,16 @@ public without sharing class FamilyPortalController {
                 guardianInterest.Guardian_Contact__c = familyPortalGuardian.Contact__c;
                 familyPortalGuardianInterestList.add(guardianInterest);
             }
-            insert familyPortalGuardianInterestList;
+
+            try {
+                insert familyPortalGuardianInterestList;
+            } catch (DmlException e) {
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertListToJSON('familyPortalGuardianInterestList', familyPortalGuardianInterestList)
+                );
+                ErrorLogger.log(e, vars, false);
+            }
         }
     }
 
@@ -688,7 +716,14 @@ public without sharing class FamilyPortalController {
             reportedStudent.Family_Portal_Guardian__c = familyPortalGuardian.Id;
             reportedStudent.Guardian_Contact__c = familyPortalGuardian.Contact__c;
         }
-        insert familyPortalStudentList;
+
+        try {
+            insert familyPortalStudentList;
+        } catch (DmlException e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertListToJSON('familyPortalStudentList', familyPortalStudentList));
+            ErrorLogger.log(e, vars, false);
+        }
     }
 
     public class FamilyPortalStudentWrapper {

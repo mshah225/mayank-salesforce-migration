@@ -27,6 +27,12 @@
             component.set('v.SelectedLabel', '--Select--');
             component.set('v.FormError', '');
             component.get('v.ViewAsOptions');
+
+            let viewAsOptions = component.get('v.ViewAsOptions');
+            for (let i = 0, len = viewAsOptions.length; i < len; i++) {
+                viewAsOptions[i].isSelected = false;
+            }
+            component.set('v.ViewAsOptions', viewAsOptions);
         }
 
         document.getElementById('massTransferBody').scrollTop = 0;

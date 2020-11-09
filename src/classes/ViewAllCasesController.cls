@@ -1,10 +1,9 @@
-public with sharing class ViewAllCasesController 
-{
+public with sharing class ViewAllCasesController {
     private Id caseId;
     private Map<String, String> viewAsMap;
     private Decimal origPin;
-    private MyAsuViewAs viewAsService;
-    
+    private MyASUHelpViewAsService viewAsService;
+
     public String firstName { get; set; }
     public String lastName { get; set; }
     public String emplId { get; set; }
@@ -15,32 +14,31 @@ public with sharing class ViewAllCasesController
     public String masqScopeIdCookie { get; set; }
     public Contact userContact;
     public String userAsurite;
-    
-    public ViewAllCasesController() { 
+    public String siteTitleName { get; set; }
+    public String siteTitleUrl { get; set; }
+
+    public ViewAllCasesController() {
         viewingAs = false;
+        siteTitleName = 'My ASU';
+        siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu/student';
         checkForViewAs();
         popUserContact();
     }
 
-    public void checkForViewAs(){
-        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null){
-            
+    public void checkForViewAs() {
+        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
 
-            userAsurite = [
-                SELECT ASURite_Id__c
-                FROM User
-                WHERE Id = :UserInfo.getUserId()
-            ].ASURite_Id__C;
+            userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
 
-            viewAsService = new MyAsuViewAs(masqScopeIdCookie, userAsurite);
+            viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }
     }
 
-    public void popUserContact(){
-        if (viewAsService != null && viewAsService.hasViewAsRights){
+    public void popUserContact() {
+        if (viewAsService != null && viewAsService.hasViewAsRights) {
             userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
             stopViewAsUrl = viewAsService.getResponseValueFromMap('stopViewAsUrl');
             viewAsUrl = viewAsService.getResponseValueFromMap('viewAsUrl');
@@ -55,8 +53,8 @@ public with sharing class ViewAllCasesController
         origPin = userContact.Self_Service_PIN__c;
     }
 
-    public List<Case> getMyCases(){
-        List<Contact> contacts = new List<Contact> { userContact };
+    public List<Case> getMyCases() {
+        List<Contact> contacts = new List<Contact>{ userContact };
         Map<Id, List<Case>> openCaseMap;
 
         if (viewAsService != null) {
@@ -64,26 +62,25 @@ public with sharing class ViewAllCasesController
         } else {
             openCaseMap = CaseService.getVisibleOpenCases(contacts);
         }
-            
-        return (openCaseMap.get(userContact.Id) == null)
-            ? new List<Case>() : openCaseMap.get(userContact.Id);
+
+        return (openCaseMap.get(userContact.Id) == null) ? new List<Case>() : openCaseMap.get(userContact.Id);
     }
 
-    public PageReference viewCase(){
+    public PageReference viewCase() {
         caseId = ApexPages.currentPage().getParameters().get('caseId');
         String current = ApexPages.currentPage().getUrl();
         current = current.split('apex/')[1];
         PageReference viewCasePage = new PageReference('/viewcase');
         viewCasePage.getParameters().put('id', caseId);
         viewCasePage.getParameters().put('source', 'viewAllCases');
-        if (viewingAs){
+        if (viewingAs) {
             viewCasePage.getParameters().put('masqScopeIdCookie', masqScopeIdCookie);
         }
         return viewCasePage;
     }
 
-    public List<Case> getAllClosedCases(){
-        List<Contact> loggedInContacts = new List<Contact> { userContact };
+    public List<Case> getAllClosedCases() {
+        List<Contact> loggedInContacts = new List<Contact>{ userContact };
 
         Map<Id, List<Case>> closedCaseMap;
         if (viewAsService != null) {
@@ -95,13 +92,12 @@ public with sharing class ViewAllCasesController
         return closedCaseMap.get(userContact.Id) == null ? new List<Case>() : closedCaseMap.get(userContact.Id);
     }
 
-    public String getSource(){
+    public String getSource() {
         String source = ApexPages.currentPage().getParameters().get('source');
 
-        if (source == null){
+        if (source == null) {
             source = 'studentSC';
-        }
-        else if (source.equals('viewAllCases')){
+        } else if (source.equals('viewAllCases')) {
             source = 'viewAllCases?source=studentSC';
         }
         return source;

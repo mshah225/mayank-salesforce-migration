@@ -1981,7 +1981,8 @@
                                                     Format Advisor
                                                 </th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c==null, '--', gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c)}
+                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
+                                                    '--', gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -1998,7 +1999,8 @@
                                                     Format Status
                                                 </th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneFormat.Format_Status__c==null, '--', gradProgram.gradMilestoneFormat.Format_Status__c)}
+                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
+                                                    '--', gradProgram.gradMilestoneFormat.Format_Status__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2012,8 +2014,9 @@
                                                     Format Status Last Updated
                                                 </th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, '--', '')}
-                                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
+                                                    '--', '')}
+                                                    <apex:outputText rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}" value="{0, date, MM'/'dd'/'yyyy}">
                                                         <apex:param value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}" />
                                                     </apex:outputText>
                                                 </td>
@@ -2689,8 +2692,12 @@
                             if (onlineStudent === true) {
                                 result = '{!$Resource.blankAvatar}';
                             }
+
+                            var blankAvatarURL = '{!URLFOR($Resource.blankAvatar)}';
+
                             var html = '<img id="studentPhotoImg2" src="' + result + '" ' +
                                 ' alt="suncard photo" ' +
+                                ' onerror="if (this.src != \''+blankAvatarURL+')\') this.src=\''+blankAvatarURL+'\'" ' +
                                 ' class="img-responsive intro" ' +
                                 ' style="max-width:200px;width:100%;"/>';
                             document.getElementById('sunDevilImgDiv').innerHTML = html;

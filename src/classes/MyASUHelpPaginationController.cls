@@ -28,7 +28,6 @@ public with sharing class MyASUHelpPaginationController {
     }
     public String getForceRecalculatePaginationValues() {
         // When you attempt to {!forceRecalculatePaginationValues} - this will force the pagination values to all be recalculated.
-        checkSearchParams();
         setNumberOfResults();
         setLastPageNumber();
         setFirstAndLastPageStatuses();

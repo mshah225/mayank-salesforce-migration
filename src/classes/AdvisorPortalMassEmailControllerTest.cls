@@ -1,9 +1,9 @@
 /**
-* @author Mathew Ruff, Sierra-Cedar
-* @date 2019-02-08
-*
-* Unit Tests for AdvisorPortalMassEmailControllerTest
-*/
+ * @author Mathew Ruff, Sierra-Cedar
+ * @date 2019-02-08
+ *
+ * Unit Tests for AdvisorPortalMassEmailControllerTest
+ */
 @IsTest
 private class AdvisorPortalMassEmailControllerTest {
     @IsTest
@@ -23,14 +23,25 @@ private class AdvisorPortalMassEmailControllerTest {
 
         // Act
         Test.startTest();
-        AdvisorPortalMassEmailModalController.createPortalEmails(testCases, 'Test Subject', 'Testing some email body text.');
+        AdvisorPortalMassEmailModalController.createPortalEmails(
+            testCases,
+            'Test Subject',
+            'Testing some email body text.'
+        );
         Test.stopTest();
 
         // Assert
         Integer emailsFoundWithOnlyContact = 0;
         Case assertNewestCase = [SELECT Id FROM Case WHERE Subject = 'Latest Email Case' LIMIT 1];
-        List<Portal_Email__c> assertPortalEmails = [SELECT Subject__c, Additional_Message_Text__c, Contact__c, Case__c, Status__c FROM Portal_Email__c];
-        System.assertEquals(6, assertPortalEmails.size(), '6 Portal Emails should have been created, 1 for the Contact and 5 for each Case.');
+        List<Portal_Email__c> assertPortalEmails = [
+            SELECT Subject__c, Additional_Message_Text__c, Contact__c, Case__c, Status__c
+            FROM Portal_Email__c
+        ];
+        System.assertEquals(
+            6,
+            assertPortalEmails.size(),
+            '6 Portal Emails should have been created, 1 for the Contact and 5 for each Case.'
+        );
 
         for (Portal_Email__c email : assertPortalEmails) {
             if (String.isNotBlank(email.Contact__c) && String.isBlank(email.Case__c)) {
@@ -38,7 +49,11 @@ private class AdvisorPortalMassEmailControllerTest {
             }
 
             if (email.Case__c == assertNewestCase.Id) {
-                System.assertEquals('New', email.Status__c, 'The status should be set to \'New\' for the most recent Case.');
+                System.assertEquals(
+                    'New',
+                    email.Status__c,
+                    'The status should be set to \'New\' for the most recent Case.'
+                );
             } else {
                 System.assertEquals('Duplicate', email.Status__c, 'The status should have been set to \'Duplicate\'.');
             }

@@ -4,7 +4,7 @@
     },
 
     massEmail: function (component, event, helper) {
-        let casesToEmail = [];
+        let contactToCaseToEmailMapping = new Map();
         let isValid = true;
         component.set('v.FormError', '');
         let contacts = component.get('v.Contacts');
@@ -26,17 +26,25 @@
 
         for (let i = 0; i < contacts.length; i++) {
             if (contacts[i].isSelected) {
+                let casesForThisContact = [];
                 for (let j = 0; j < contacts[i].cases.length; j++) {
                     if (contacts[i].cases[j].isSelected) {
-                        casesToEmail.push(contacts[i].cases[j].portalCase);
+                        casesForThisContact.push(contacts[i].cases[j].portalCase);
                     }
                 }
+                contactToCaseToEmailMapping.set(contacts[i].portalContact.Id, casesForThisContact);
             }
+        }
+
+        // Tranform to format the Aura expects Maps to be
+        let auraMap = {};
+        for (var key of contactToCaseToEmailMapping.keys()) {
+            auraMap[key] = contactToCaseToEmailMapping.get(key);
         }
 
         let action = component.get('c.createPortalEmails');
         action.setParams({
-            portalCases: casesToEmail,
+            contactIdToCasesMap: auraMap,
             subject: component.get('v.EmailSubject'),
             body: component.get('v.EmailBody'),
         });

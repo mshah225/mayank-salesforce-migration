@@ -56,7 +56,7 @@
                 component.set('v.RequireReturnTerm', false);
             }
 
-            if (component.find('studentIntent').get('v.value') === 'Will enroll') {
+            if (component.find('studentIntent').get('v.value') === 'Enrolled') {
                 component.set('v.RequireStudentRisk', true);
             } else {
                 component.set('v.RequireStudentRisk', false);
@@ -72,7 +72,7 @@
         ) {
             if (
                 component.find('notReturning').get('v.value').indexOf('Other') !== -1 &&
-                component.find('studentIntent').get('v.value') !== 'Will enroll'
+                component.find('studentIntent').get('v.value') !== 'Enrolled'
             ) {
                 component.set('v.RenderRequireNotReturningOther', true);
             } else {

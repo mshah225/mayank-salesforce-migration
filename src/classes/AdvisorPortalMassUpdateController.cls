@@ -37,7 +37,7 @@ public class AdvisorPortalMassUpdateController {
         return new List<String>{
             'Not returning ever',
             'Not returning temporarily',
-            'Will enroll'
+            'Enrolled'
         };
     }
 

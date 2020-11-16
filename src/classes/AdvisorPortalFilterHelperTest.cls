@@ -163,8 +163,14 @@ private class AdvisorPortalFilterHelperTest {
 
         // Act
         Test.startTest();
-        Set<Id> results1 = AdvisorPortalFilterHelper.filterStudentGroups(filter1, new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id });
-        Set<Id> results2 = AdvisorPortalFilterHelper.filterStudentGroups(filter2, new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id });
+        Set<Id> results1 = AdvisorPortalFilterHelper.filterStudentGroups(
+            filter1,
+            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
+        );
+        Set<Id> results2 = AdvisorPortalFilterHelper.filterStudentGroups(
+            filter2,
+            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
+        );
         Test.stopTest();
 
         // Assert
@@ -182,31 +188,102 @@ private class AdvisorPortalFilterHelperTest {
     @IsTest
     static void testFilterStudentPlans() {
         // Arrange
-        Contact testContact = [SELECT Id FROM Contact LIMIT 1];
-
-        Location__c tempe = new Location__c(Name = 'Tempe', Location_Code__c = 'TEMPE');
-        insert tempe;
-
-        insert new Student_Program_Plan__c(
-            Contact__c = testContact.Id,
-            Cohort__c = 'Senior',
-            Campus__c = tempe.Id,
-            Residency__c = 'Resident',
-            Plan_Description__c = 'Computer Science'
+        List<Contact> listOfContacts = new List<Contact>();
+        listOfContacts.add(
+            new Contact(
+                FirstName = 'test',
+                LastName = 'rtn-advisorportal',
+                Email = 'test@email.rtn.test',
+                EmplId__c = '13000'
+            )
         );
+        listOfContacts.add(
+            new Contact(
+                FirstName = 'test2',
+                LastName = 'rtn-advisorportal',
+                Email = 'test@email.rtn.test',
+                EmplId__c = '13001'
+            )
+        );
+        insert listOfContacts;
 
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.academicLevel = 'senior;junior';
-        filter.campus = 'tempe;downtown';
-        filter.residency = 'resident;international';
-        filter.major = 'computer';
+        List<Location__c> listOfLocations = new List<Location__c>();
+        listOfLocations.add(new Location__c(Name = 'Test-r1', Location_Code__c = 'TEST-R1'));
+        listOfLocations.add(new Location__c(Name = 'Test-r2', Location_Code__c = 'TEST-R2'));
+        insert listOfLocations;
+
+        List<Student_Program_Plan__c> listOfStudentPrograms = new List<Student_Program_Plan__c>();
+        listOfStudentPrograms.add(
+            new Student_Program_Plan__c(
+                Contact__c = listOfContacts[0].Id,
+                Cohort__c = 'Senior',
+                Campus__c = listOfLocations[0].Id,
+                Residency__c = 'Resident',
+                Plan_Description__c = 'Computer Science'
+            )
+        );
+        listOfStudentPrograms.add(
+            new Student_Program_Plan__c(
+                Contact__c = listOfContacts[1].Id,
+                Cohort__c = 'Junior',
+                Campus__c = listOfLocations[1].Id,
+                Residency__c = 'International',
+                Plan_Description__c = 'Computer Science'
+            )
+        );
+        listOfStudentPrograms.add(
+            new Student_Program_Plan__c(
+                Contact__c = listOfContacts[1].Id,
+                Cohort__c = 'Senior',
+                Campus__c = listOfLocations[1].Id,
+                Residency__c = 'Resident',
+                Plan_Description__c = 'Law'
+            )
+        );
+        insert listOfStudentPrograms;
+
+        AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
+        filter1.academicLevel = 'senior;junior';
+        filter1.campus = 'test-r1;test-r2';
+        filter1.residency = 'resident;international';
+        filter1.major = 'computer';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.major = 'law';
 
         // Act
         Test.startTest();
-        Set<Id> results = AdvisorPortalFilterHelper.filterStudentPlans(filter, new Set<Id>{ testContact.Id });
+        Set<Id> results1 = AdvisorPortalFilterHelper.filterStudentPlans(
+            filter1,
+            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
+        );
+        Set<Id> results2 = AdvisorPortalFilterHelper.filterStudentPlans(
+            filter2,
+            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
+        );
         Test.stopTest();
 
+        System.debug(results1);
+        System.debug(results2);
+
         // Assert
-        System.assert(results.contains(testContact.Id), 'The testContact Id should have been returned.');
+        System.assertEquals(2, results1.size());
+        System.assertEquals(1, results2.size());
+        System.assert(
+            results1.contains(listOfContacts[0].Id),
+            'The first contact should be in the first set of results.'
+        );
+        System.assert(
+            results1.contains(listOfContacts[1].Id),
+            'The second contact should be in the first set of results.'
+        );
+        System.assert(
+            !results2.contains(listOfContacts[0].Id),
+            'The first contact should not be in the second set of results.'
+        );
+        System.assert(
+            results2.contains(listOfContacts[1].Id),
+            'The second contact should be in the second set of results.'
+        );
     }
 }

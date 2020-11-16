@@ -188,7 +188,10 @@ public class AdvisorPortalFilterHelper {
             for (AggregateResult studentPlanResult : [
                 SELECT SG_Contact__c
                 FROM Student_Group__c
-                WHERE SG_Contact__c IN :contactIds AND SG_PeopleSoft_Code__c = :filter.studentGroupCode
+                WHERE
+                    SG_Contact__c IN :contactIds
+                    AND SG_PeopleSoft_Code__c = :filter.studentGroupCode
+                    AND SG_Status__c = TRUE
                 GROUP BY SG_Contact__c
                 LIMIT 2000
             ]) {

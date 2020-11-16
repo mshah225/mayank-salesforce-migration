@@ -241,7 +241,12 @@ public class AdvisorPortalFilterHelper {
             }
 
             if (!String.isBlank(filter.major)) {
-                queryString += ' AND Plan_Description__c LIKE \'%' + filter.major + '%\'';
+                queryString +=
+                    ' AND ( Plan_Description__c LIKE \'%' +
+                    filter.major +
+                    '%\' OR Plan_Code__c LIKE \'%' +
+                    filter.major +
+                    '%\' )';
             }
 
             queryString += ' GROUP BY Contact__c LIMIT 2000';

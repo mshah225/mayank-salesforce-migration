@@ -5,10 +5,12 @@
     <aura:attribute name="SelectedLabel" type="String" />
     <aura:attribute name="SelectedOwnerId" type="String" />
     <aura:attribute name="FormError" type="String" />
+    <aura:attribute name="AllowedToUse" type="Boolean" default="false" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
     <aura:registerEvent name="refreshAdvisorPortalContacts" type="c:RefreshAdvisorPortalContacts" />
+    <aura:handler name="init" value="{!this}" action="{!c.verifyAllowedToUse}" />
 
-    <aura:if isTrue="{!not(empty(v.Contacts))}">
+    <aura:if isTrue="{!and(not(empty(v.Contacts)), v.AllowedToUse)}">
         <lightning:button label="Mass Transfer" variant="brand" onclick="{!c.toggleMassTransferModal}" />
 
         <section

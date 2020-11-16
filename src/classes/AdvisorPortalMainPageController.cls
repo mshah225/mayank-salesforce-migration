@@ -1,5 +1,6 @@
 public class AdvisorPortalMainPageController {
-    public AdvisorPortalMainPageController() {}
+    public AdvisorPortalMainPageController() {
+    }
 
     public Id ownerId {
         get {
@@ -9,17 +10,16 @@ public class AdvisorPortalMainPageController {
 
             return ownerId;
         }
-
         set;
     }
 
-    public List<String> ownerIdList {get; set;}
-    public String ownerIdString {get; set;}
+    public List<String> ownerIdList { get; set; }
+    public String ownerIdString { get; set; }
 
     public PageReference parseOwnerIdString() {
         if (ownerIdString != null && ownerIdString != '') {
             ownerIdList = ownerIdString.split(',');
-	} else {
+        } else {
             ownerIdList = null;
         }
         return null;
@@ -33,22 +33,22 @@ public class AdvisorPortalMainPageController {
                 // Insert myself
                 viewAsOptions.add(new selectOption(UserInfo.getUserId(), UserInfo.getName()));
 
-				// Insert My Comittees
+                // Insert My Comittees
                 if (myCommittees.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));
                     viewAsOptions.add(new selectOption('', '--My Committees--', true));
 
                     List<selectOption> sortableCommittee = new List<selectOption>();
-                	for (Id i : myCommittees.keySet()) {
+                    for (Id i : myCommittees.keySet()) {
                         sortableCommittee.add(new selectOption(i, myCommittees.get(i)));
                     }
                     sortableCommittee = sortSelectOptionList(sortableCommittee);
-                    for(Integer i = 0; i < sortableCommittee.size(); i++){
+                    for (Integer i = 0; i < sortableCommittee.size(); i++) {
                         viewAsOptions.add(sortableCommittee[i]);
                     }
-            	}
+                }
 
-				// Insert The committees for which I am a manager
+                // Insert The committees for which I am a manager
                 if (mySubordinateCommittees.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));
 
@@ -63,12 +63,12 @@ public class AdvisorPortalMainPageController {
                         sortableCommittee.add(new selectOption(i, mySubordinateCommittees.get(i)));
                     }
                     sortableCommittee = sortSelectOptionList(sortableCommittee);
-                    for(Integer i = 0; i < sortableCommittee.size(); i++){
+                    for (Integer i = 0; i < sortableCommittee.size(); i++) {
                         viewAsOptions.add(sortableCommittee[i]);
                     }
                 }
 
-				// Insert all of the users for all of the comittees for which I am a manager
+                // Insert all of the users for all of the comittees for which I am a manager
                 if (mySubordinates.size() > 0) {
                     viewAsOptions.add(new selectOption('', '', true));
 
@@ -83,7 +83,7 @@ public class AdvisorPortalMainPageController {
                         sortableAdvisor.add(new selectOption(i, mySubordinates.get(i)));
                     }
                     sortableAdvisor = sortSelectOptionList(sortableAdvisor);
-                    for(Integer i = 0; i < sortableAdvisor.size(); i++){
+                    for (Integer i = 0; i < sortableAdvisor.size(); i++) {
                         viewAsOptions.add(sortableAdvisor[i]);
                     }
                 }
@@ -91,7 +91,6 @@ public class AdvisorPortalMainPageController {
 
             return viewAsOptions;
         }
-
         set;
     }
 
@@ -101,7 +100,7 @@ public class AdvisorPortalMainPageController {
 
             if (myCommittees == null) {
                 Set<Id> myPodIds = new Set<Id>();
-            	myCommittees = new Map<Id, String>();
+                myCommittees = new Map<Id, String>();
 
                 for (Success_Resource__c sr : myResources) {
                     if (sr.Role__c == 'User') {
@@ -120,7 +119,6 @@ public class AdvisorPortalMainPageController {
 
             return myCommittees;
         }
-
         set;
     }
 
@@ -135,7 +133,7 @@ public class AdvisorPortalMainPageController {
                     committeeDisplayName = srpa.Success_Pod__r.Name;
 
                     if (srpa.Success_Pod__r.Committee__c != '' && srpa.Success_Pod__r.Committee__c != null) {
-                    	committeeDisplayName = committeeDisplayName + ' - ' + srpa.Success_Pod__r.Committee__c;
+                        committeeDisplayName = committeeDisplayName + ' - ' + srpa.Success_Pod__r.Committee__c;
                     }
 
                     mySubordinateCommittees.put(srpa.Success_Pod__r.OwnerId, committeeDisplayName);
@@ -144,7 +142,6 @@ public class AdvisorPortalMainPageController {
 
             return mySubordinateCommittees;
         }
-
         set;
     }
 
@@ -164,7 +161,6 @@ public class AdvisorPortalMainPageController {
 
             return mySubordinatePods;
         }
-
         set;
     }
 
@@ -181,15 +177,25 @@ public class AdvisorPortalMainPageController {
                 }
 
                 for (Success_Resource_Pod_Association__c srpa : [
-                    SELECT Success_Resource__r.Resource__c, Success_Resource__r.Resource__r.Name, Success_Resource__r.Resource__r.Alias, Success_Resource__r.IsActive__c
+                    SELECT
+                        Success_Resource__r.Resource__c,
+                        Success_Resource__r.Resource__r.Name,
+                        Success_Resource__r.Resource__r.Alias,
+                        Success_Resource__r.IsActive__c
                     FROM Success_Resource_Pod_Association__c
-                    WHERE (Success_Resource__r.IsActive__c = true) AND Success_Pod__c IN :podIds
+                    WHERE Success_Resource__r.IsActive__c = TRUE AND Success_Pod__c IN :podIds
                     ORDER BY Success_Resource__r.Resource__r.Name ASC
                 ]) {
                     subordinateDisplayName = srpa.Success_Resource__r.Resource__r.Name;
 
-                    if (srpa.Success_Resource__r.Resource__r.Alias != null && srpa.Success_Resource__r.Resource__r.Alias != '') {
-                        subordinateDisplayName = subordinateDisplayName + ' - ' + srpa.Success_Resource__r.Resource__r.Alias;
+                    if (
+                        srpa.Success_Resource__r.Resource__r.Alias != null &&
+                        srpa.Success_Resource__r.Resource__r.Alias != ''
+                    ) {
+                        subordinateDisplayName =
+                            subordinateDisplayName +
+                            ' - ' +
+                            srpa.Success_Resource__r.Resource__r.Alias;
                     }
 
                     mySubordinates.put(srpa.Success_Resource__r.Resource__c, subordinateDisplayName);
@@ -198,7 +204,6 @@ public class AdvisorPortalMainPageController {
 
             return mySubordinates;
         }
-
         set;
     }
 
@@ -206,22 +211,28 @@ public class AdvisorPortalMainPageController {
         get {
             if (myResources == null) {
                 myResources = [
-                    SELECT Role__c,
-                    (
-                        SELECT Success_Pod__c, Success_Pod__r.OwnerId, Success_Pod__r.Name, Success_Pod__r.Committee__c
-                        FROM Success_Resource_Pod_Associations__r
-                        ORDER BY Success_Pod__r.Name
-                    )
-                	FROM Success_Resource__c
-                	WHERE Resource__c = :UserInfo.getUserId()
-                	AND IsActive__c = true
-                	AND RecordTypeId = :AdvisorResourceRTID];
+                    SELECT
+                        Role__c,
+                        (
+                            SELECT
+                                Success_Pod__c,
+                                Success_Pod__r.OwnerId,
+                                Success_Pod__r.Name,
+                                Success_Pod__r.Committee__c
+                            FROM Success_Resource_Pod_Associations__r
+                            ORDER BY Success_Pod__r.Name
+                        )
+                    FROM Success_Resource__c
+                    WHERE
+                        Resource__c = :UserInfo.getUserId()
+                        AND IsActive__c = TRUE
+                        AND RecordTypeId = :AdvisorResourceRTID
+                ];
 
-            System.debug(myResources);
+                System.debug(myResources);
             }
             return myResources;
         }
-
         set;
     }
 
@@ -229,7 +240,7 @@ public class AdvisorPortalMainPageController {
         get {
             if (myRole == null) {
                 Map<String, Integer> roleMap = new Map<String, Integer>();
-            	roleMap.put('College Manager', 3);
+                roleMap.put('College Manager', 3);
                 roleMap.put('Department Manager', 2);
                 roleMap.put('User', 1);
 
@@ -243,22 +254,23 @@ public class AdvisorPortalMainPageController {
 
             return myRole;
         }
-
         set;
     }
 
     private Id AdvisorResourceRTID {
         get {
             if (AdvisorResourceRTID == null) {
-                AdvisorResourceRTID = [SELECT Id
+                AdvisorResourceRTID = [
+                    SELECT Id
                     FROM RecordType
-                    WHERE SObjectType = 'Success_Resource__c'
-                    AND Name = 'Advisor' LIMIT 1].Id;
+                    WHERE SObjectType = 'Success_Resource__c' AND Name = 'Advisor'
+                    LIMIT 1
+                ]
+                .Id;
             }
 
             return AdvisorResourceRTID;
         }
-
         set;
     }
 
@@ -270,7 +282,6 @@ public class AdvisorPortalMainPageController {
 
             return AdvisorProactiveCaseRTID;
         }
-
         set;
     }
 
@@ -282,7 +293,6 @@ public class AdvisorPortalMainPageController {
 
             return advisorEmailRTID;
         }
-
         set;
     }
 
@@ -294,7 +304,6 @@ public class AdvisorPortalMainPageController {
 
             return AdvisorReactiveCaseRTID;
         }
-
         set;
     }
     /*
@@ -304,19 +313,23 @@ public class AdvisorPortalMainPageController {
         get {
             String whereClause = '';
             if (ownerId != null) {
-                myProactiveQuery = 'SELECT CaseNumber, CC_Category__r.Name, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+                myProactiveQuery =
+                    'SELECT CaseNumber, CC_Category__r.Name, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ';
-               if(ownerIdList != null){
-                   whereClause = 'WHERE (OwnerId = \'' + ownerIdList[0] + '\' ';
-                   for(Id ownerIdFromList : ownerIdList) {
-                    whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
-                }
-               }
-                else {
+                if (ownerIdList != null) {
+                    whereClause = 'WHERE (OwnerId = \'' + ownerIdList[0] + '\' ';
+                    for (Id ownerIdFromList : ownerIdList) {
+                        whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
+                    }
+                } else {
                     whereClause = '(WHERE OwnerId = \'' + ownerId + '\' ';
                 }
-                myProactiveQuery = myProactiveQuery + whereClause +
-                    ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
+                myProactiveQuery =
+                    myProactiveQuery +
+                    whereClause +
+                    ')AND recordTypeId = \'' +
+                    AdvisorProactiveCaseRTID +
+                    '\' ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
             }
             return myProactiveQuery;
@@ -331,22 +344,28 @@ public class AdvisorPortalMainPageController {
         get {
             String whereClause = '';
             if (ownerId != null) {
-                myWatchlistQuery = 'SELECT CaseNumber, CC_Category__r.Name, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+                myWatchlistQuery =
+                    'SELECT CaseNumber, CC_Category__r.Name, ContactId, CreatedDate, Owner.Name, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.Email, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
-                    'WHERE (OwnerId = \'' + ownerId + '\' ';
+                    'WHERE (OwnerId = \'' +
+                    ownerId +
+                    '\' ';
                 if (ownerIdList != null) {
                     for (Id ownerIdFromList : ownerIdList) {
                         whereClause = whereClause + 'OR OwnerId = \'' + ownerIdFromList + '\' ';
                     }
                 }
-                myWatchlistQuery = myWatchlistQuery + whereClause +
-                    ')AND recordTypeId = \'' + AdvisorProactiveCaseRTID + '\' ' +
+                myWatchlistQuery =
+                    myWatchlistQuery +
+                    whereClause +
+                    ')AND recordTypeId = \'' +
+                    AdvisorProactiveCaseRTID +
+                    '\' ' +
                     'AND CC_Category__c IN (SELECT Id FROM Case_Classification__c WHERE RecordType.Name = \'Category\' AND Active__c = true AND Name = \'WatchList\' AND Parent__r.Name = \'ASU Advisor Outreach\') ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 3000';
             }
             return myWatchlistQuery;
         }
-
         set;
     }
 
@@ -359,22 +378,25 @@ public class AdvisorPortalMainPageController {
                 String whereClause = '';
                 myStudentsQuery =
                     'SELECT Student_Name__c, EMPLID__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, ' +
-                        'Prev_Cont_Prediction_Level__c, Change_Date__c, ' +
-                        'Student__c, Student__r.FirstName, Student__r.LastName ' +
+                    'Prev_Cont_Prediction_Level__c, Change_Date__c, ' +
+                    'Student__c, Student__r.FirstName, Student__r.LastName ' +
                     'FROM Success_Student__c ' +
-                    'WHERE (Success_Pod__r.OwnerId = \'' + ownerId + '\' ';
+                    'WHERE (Success_Pod__r.OwnerId = \'' +
+                    ownerId +
+                    '\' ';
                 if (ownerIdList != null) {
-                    for(Id ownerIdFromList : ownerIdList) {
+                    for (Id ownerIdFromList : ownerIdList) {
                         whereClause = whereClause + 'OR Success_Pod__r.OwnerId = \'' + ownerIdFromList + '\' ';
                     }
                 }
-                myStudentsQuery = myStudentsQuery + whereClause +
-                ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC LIMIT 3000';
+                myStudentsQuery =
+                    myStudentsQuery +
+                    whereClause +
+                    ')AND (Is_Active__c = true) ORDER BY Student_Name__c ASC LIMIT 3000';
             }
 
             return myStudentsQuery;
         }
-
         set;
     }
 
@@ -388,31 +410,30 @@ public class AdvisorPortalMainPageController {
             // the current user).
             return viewAsOptions.size() > 1 ? true : false;
         }
-
         set;
     }
 
-    public List<SelectOption> sortSelectOptionList(List<SelectOption> source)
-    {
-        List<string> sortable = new  List<string>();
-        for(SelectOption so: source)
-        {
+    public List<SelectOption> sortSelectOptionList(List<SelectOption> source) {
+        List<string> sortable = new List<string>();
+        for (SelectOption so : source) {
             // replace blank with '_!' so we know the final split will have two components
-            String stringSpliter = (string.isblank(so.getLabel())?'_!':so.getLabel()) + '@!@' + (string.isblank(so.getValue())?'_!':so.getValue());
+            String stringSpliter =
+                (string.isblank(so.getLabel()) ? '_!' : so.getLabel()) +
+                '@!@' +
+                (string.isblank(so.getValue()) ? '_!' : so.getValue());
             stringSpliter = stringSpliter.toUpperCase() + stringSpliter;
             sortable.Add(stringSpliter);
         }
         // sort the list
         sortable.sort();
         //Remove Capital Prefix
-        for(Integer i = 0; i < sortable.size(); i++){
-            sortable[i] = sortable[i].substring(sortable[i].length()/2);
+        for (Integer i = 0; i < sortable.size(); i++) {
+            sortable[i] = sortable[i].substring(sortable[i].length() / 2);
         }
-        List<SelectOption> targetList = new  List<SelectOption>();
+        List<SelectOption> targetList = new List<SelectOption>();
         // split the value/name components and re create the list
-        for(string s: sortable)
-        {
-            targetList.Add(new  SelectOption(s.split('@!@')[1].replace('_!',''), s.split('@!@')[0].replace('_!','')));
+        for (string s : sortable) {
+            targetList.Add(new SelectOption(s.split('@!@')[1].replace('_!', ''), s.split('@!@')[0].replace('_!', '')));
         }
         return targetList;
     }

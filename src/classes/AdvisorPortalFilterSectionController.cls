@@ -309,7 +309,7 @@ public class AdvisorPortalFilterSectionController {
         if (!String.isBlank(filter.createdToDate)) {
             queryString +=
                 ' AND CreatedDate <= ' +
-                Datetime.valueOf(filter.createdToDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+                Datetime.valueOf(filter.createdToDate + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
         }
 
         if (!String.isBlank(filter.followUpFromDate)) {

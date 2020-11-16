@@ -1,21 +1,16 @@
 ({
     toggleEmailModal: function (component) {
-        let countOfSelectedCases = 0;
+        let countOfSelectedContacts = 0;
         let contacts = component.get('v.Contacts');
 
         for (let i = 0; i < contacts.length; i++) {
             if (contacts[i].isSelected) {
-                for (let j = 0; j < contacts[i].cases.length; j++) {
-                    if (contacts[i].cases[j].isSelected) {
-                        countOfSelectedCases++;
-                        break;
-                    }
-                }
+                countOfSelectedContacts++;
             }
         }
 
-        if (countOfSelectedCases === 0) {
-            this.fireToast('', 'Please select a case first.', 'error');
+        if (countOfSelectedContacts === 0) {
+            this.fireToast('', 'Please select a case or contact first.', 'error');
             return;
         }
 

@@ -38,7 +38,7 @@ private class AdvisorPortalMassUpdateControllerTest {
 
         // Assert
         System.assertEquals(3, studentIntentionOptions.size());
-        System.assert(studentIntentionOptions.contains('Will enroll'));
+        System.assert(studentIntentionOptions.contains('Enrolled'));
     }
 
     @IsTest

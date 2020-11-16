@@ -75,4 +75,12 @@
             helper.toggleDropdown(component);
         }
     },
+
+    verifyAllowedToUse: function (component, event, helper) {
+        let action = component.get('c.checkIfAllowedToUse');
+        action.setCallback(this, function (response) {
+            component.set('v.AllowedToUse', response.getReturnValue());
+        });
+        $A.enqueueAction(action);
+    },
 });

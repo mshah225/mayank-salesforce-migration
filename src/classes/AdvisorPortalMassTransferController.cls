@@ -26,6 +26,7 @@ public class AdvisorPortalMassTransferController {
                 Resource__c = :UserInfo.getUserId()
                 AND (Role__c = 'Department Manager'
                 OR Role__c = 'College Manager')
+                AND IsActive__c = TRUE
         ];
 
         return resourceForCurrentUser.size() > 0;

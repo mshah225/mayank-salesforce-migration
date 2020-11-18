@@ -374,6 +374,7 @@
 
                     <apex:inputField value="{!opportunity.Term__c}" 
                                      id="term"
+                                     required="true"
                                      taborderhint="208"/>
 
                     <apex:inputField value="{!opportunity.International_Student__c}" 

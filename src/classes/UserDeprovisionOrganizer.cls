@@ -15,6 +15,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, String> userToDeprovisionChatterGroupMembershipMap;
     private Map<Id, String> userToDeprovisionPermissionSetMap;
     private Map<Id, String> userToDeprovisionPackageLicenseMap;
+    private Map<Id, String> userToOldProcessingNotes;
 
     public void setOldUsersMap(Map<Id, SObject> oldUsersMap) {
         this.oldUsersMap = (Map<Id, User>) oldUsersMap;
@@ -27,6 +28,7 @@ public without sharing class UserDeprovisionOrganizer {
     public void deprovisionUsersAfterUpdate() {
         List<UserDeprovisioner> userDeprovisionersList = new List<UserDeprovisioner>();
         List<User> deprovisionedUsersWithProcessingNotes = new List<User>();
+        userToOldProcessingNotes = new Map<Id, String>();
         userToDeprovisionIds = new List<Id>();
         deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
 
@@ -36,6 +38,10 @@ public without sharing class UserDeprovisionOrganizer {
                 UserDeprovisioner userDeprovisioner = new UserDeprovisioner();
                 userDeprovisioner.setUserToDeprovision(userToDeprovision);
                 userDeprovisionersList.add(userDeprovisioner);
+                userToOldProcessingNotes.put(
+                    userToDeprovision.Id,
+                    oldUsersMap.get(userToDeprovision.Id).Processing_Notes__c
+                );
             }
         }
 
@@ -64,19 +70,28 @@ public without sharing class UserDeprovisionOrganizer {
             }
 
             if (!deprovisionedUsersWithProcessingNotes.isEmpty()) {
-                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes);
+                for (User u : deprovisionedUsersWithProcessingNotes) {
+                    Id userId = (Id) u.Id;
+                    if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
+                        u.Processing_Notes__c =
+                            userToOldProcessingNotes.get(userId) +
+                            '\n---\n' +
+                            u.Processing_Notes__c;
+                    }
+                }
+                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToOldProcessingNotes);
             }
 
             if (!allUserPublicGroupMemberships.isEmpty()) {
-                deleteSobjectRecords('UserOrGroupId', allUserPublicGroupMemberships);
+                deleteSobjectRecords('UserOrGroupId', allUserPublicGroupMemberships, userToOldProcessingNotes);
             }
 
             if (!allUserPermissionSetAssignments.isEmpty()) {
-                deleteSobjectRecords('AssigneeId', allUserPermissionSetAssignments);
+                deleteSobjectRecords('AssigneeId', allUserPermissionSetAssignments, userToOldProcessingNotes);
             }
 
             if (!allUserPackageLicenses.isEmpty()) {
-                deleteSobjectRecords('UserId', allUserPackageLicenses);
+                deleteSobjectRecords('UserId', allUserPackageLicenses, userToOldProcessingNotes);
             }
 
             if (!updatedUserCases.isEmpty() || !allUserChatterGroupMemberships.isEmpty()) {
@@ -84,6 +99,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisionQueue.setUpdatedUserCases(updatedUserCases);
                 userDeprovisionQueue.setCaseToUserMap(caseToUserMap);
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(allUserChatterGroupMemberships);
+                userDeprovisionQueue.setUserToOldProcessingNotes(userToOldProcessingNotes);
                 System.enqueueJob(userDeprovisionQueue);
             }
         }
@@ -214,7 +230,11 @@ public without sharing class UserDeprovisionOrganizer {
         return packageLicenseIds;
     }
 
-    public void updateSobjectRecords(String userIdField, List<SObject> recordListToOperate) {
+    public static void updateSobjectRecords(
+        String userIdField,
+        List<SObject> recordListToOperate,
+        Map<Id, String> userToOldProcessingNotes
+    ) {
         List<User> usersWithErrors = new List<User>();
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
@@ -226,15 +246,23 @@ public without sharing class UserDeprovisionOrganizer {
                     processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
                     processingNotes += '\nUser fields that affected this error: ' + err.getFields();
                 }
-                usersWithErrors.add(
-                    new User(Id = (Id) recordListToOperate[i].get(userIdField), Processing_Notes__c = processingNotes)
-                );
+
+                Id userId = (Id) recordListToOperate[i].get(userIdField);
+                if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
+                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + processingNotes;
+                }
+
+                usersWithErrors.add(new User(Id = userId, Processing_Notes__c = processingNotes));
             }
         }
         update usersWithErrors;
     }
 
-    public static void deleteSobjectRecords(String userIdField, List<SObject> recordListToOperate) {
+    public static void deleteSobjectRecords(
+        String userIdField,
+        List<SObject> recordListToOperate,
+        Map<Id, String> userToOldProcessingNotes
+    ) {
         List<User> usersWithErrors = new List<User>();
 
         Database.DeleteResult[] deleteResult = Database.delete(recordListToOperate, false);
@@ -246,9 +274,13 @@ public without sharing class UserDeprovisionOrganizer {
                     processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
                     processingNotes += '\nUser fields that affected this error: ' + err.getFields();
                 }
-                usersWithErrors.add(
-                    new User(Id = (Id) recordListToOperate[i].get(userIdField), Processing_Notes__c = processingNotes)
-                );
+
+                Id userId = (Id) recordListToOperate[i].get(userIdField);
+                if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
+                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + processingNotes;
+                }
+
+                usersWithErrors.add(new User(Id = userId, Processing_Notes__c = processingNotes));
             }
         }
         update usersWithErrors;

@@ -2,6 +2,7 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     private List<Case> updatedUserCases;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private Map<Id, Id> caseToUserMap;
+    private Map<Id, String> userToOldProcessingNotes;
 
     public void setUpdatedUserCases(List<Case> updatedUserCases) {
         this.updatedUserCases = updatedUserCases;
@@ -15,12 +16,20 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         this.caseToUserMap = caseToUserMap;
     }
 
+    public void setUserToOldProcessingNotes(Map<Id, String> userToOldProcessingNotes) {
+        this.userToOldProcessingNotes = userToOldProcessingNotes;
+    }
+
     public void execute(QueueableContext context) {
         if (!updatedUserCases.isEmpty()) {
             updateCases();
         }
         if (!allUserChatterGroupMemberships.isEmpty()) {
-            UserDeprovisionOrganizer.deleteSobjectRecords('MemberId', allUserChatterGroupMemberships);
+            UserDeprovisionOrganizer.deleteSobjectRecords(
+                'MemberId',
+                allUserChatterGroupMemberships,
+                userToOldProcessingNotes
+            );
         }
     }
 
@@ -36,9 +45,13 @@ public without sharing class UserDeprovisionQueue implements Queueable {
                     processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
                     processingNotes += '\nUser fields that affected this error: ' + err.getFields();
                 }
-                usersWithErrors.add(
-                    new User(Id = caseToUserMap.get(updatedUserCases[i].Id), Processing_Notes__c = processingNotes)
-                );
+
+                Id userId = caseToUserMap.get(updatedUserCases[i].Id);
+                if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
+                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + processingNotes;
+                }
+
+                usersWithErrors.add(new User(Id = userId, Processing_Notes__c = processingNotes));
             }
         }
         update usersWithErrors;

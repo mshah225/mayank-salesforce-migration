@@ -79,6 +79,7 @@ public without sharing class UserDeprovisioner {
             deprovisionedUser.Id = userToDeprovision.Id;
             addToProcessingNotes(initialUserTimeStamp());
             if (matchProfileToIgnore()) {
+                deprovisionedUser.Deprovision_User__c = false;
                 return;
             }
             changeUserField('ProfileId');

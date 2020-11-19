@@ -1,5 +1,4 @@
 public without sharing class UserDeprovisionOrganizer {
-
     private List<User> newUsers;
     private Map<Id, User> oldUsersMap;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
@@ -92,7 +91,13 @@ public without sharing class UserDeprovisionOrganizer {
 
     private void populateUserToDeprovisionCaseMap() {
         allUserCases = [
-            SELECT Id, OwnerId, CC_Functional_Group__c, CC_Functional_Group__r.Name, CC_Functional_Group__r.Queue_Id__c, CC_Functional_Group__r.Is_Functional_Group_Private__c
+            SELECT
+                Id,
+                OwnerId,
+                CC_Functional_Group__c,
+                CC_Functional_Group__r.Name,
+                CC_Functional_Group__r.Queue_Id__c,
+                CC_Functional_Group__r.Is_Functional_Group_Private__c
             FROM Case
             WHERE OwnerId IN :userToDeprovisionIds
         ];
@@ -139,12 +144,20 @@ public without sharing class UserDeprovisionOrganizer {
         userToDeprovisionChatterGroupMembershipMap = new Map<Id, String>();
         for (CollaborationGroupMember collaborationGroupMember : allUserChatterGroupMemberships) {
             if (userToDeprovisionChatterGroupMembershipMap.containsKey(collaborationGroupMember.MemberId)) {
-                String chatterGroupMemberships = userToDeprovisionChatterGroupMembershipMap.get(collaborationGroupMember.MemberId);
+                String chatterGroupMemberships = userToDeprovisionChatterGroupMembershipMap.get(
+                    collaborationGroupMember.MemberId
+                );
                 chatterGroupMemberships += ', ' + collaborationGroupMember.CollaborationGroup.Name;
-                userToDeprovisionChatterGroupMembershipMap.put(collaborationGroupMember.MemberId, chatterGroupMemberships);
+                userToDeprovisionChatterGroupMembershipMap.put(
+                    collaborationGroupMember.MemberId,
+                    chatterGroupMemberships
+                );
             } else {
                 String chatterGroupMemberships = '' + collaborationGroupMember.CollaborationGroup.Name;
-                userToDeprovisionChatterGroupMembershipMap.put(collaborationGroupMember.MemberId, chatterGroupMemberships);
+                userToDeprovisionChatterGroupMembershipMap.put(
+                    collaborationGroupMember.MemberId,
+                    chatterGroupMemberships
+                );
             }
         }
     }
@@ -153,8 +166,7 @@ public without sharing class UserDeprovisionOrganizer {
         allUserPermissionSetAssignments = [
             SELECT AssigneeId, PermissionSet.Name
             FROM PermissionSetAssignment
-            WHERE AssigneeId IN :userToDeprovisionIds
-                AND PermissionSet.IsOwnedByProfile = false
+            WHERE AssigneeId IN :userToDeprovisionIds AND PermissionSet.IsOwnedByProfile = FALSE
         ];
 
         userToDeprovisionPermissionSetMap = new Map<Id, String>();
@@ -174,7 +186,8 @@ public without sharing class UserDeprovisionOrganizer {
         allUserPackageLicenses = [
             SELECT UserId, PackageLicense.NamespacePrefix
             FROM UserPackageLicense
-            WHERE UserId IN :userToDeprovisionIds
+            WHERE
+                UserId IN :userToDeprovisionIds
                 AND PackageLicenseId IN :getDeprovisionConfigurationPackageLicenseIds()
         ];
 
@@ -209,12 +222,13 @@ public without sharing class UserDeprovisionOrganizer {
         for (Integer i = 0; i < saveResult.size(); i++) {
             if (!saveResult[i].isSuccess()) {
                 String processingNotes = 'The following errors have occurred:';
-                for(Database.Error err : saveResult[i].getErrors()) {
+                for (Database.Error err : saveResult[i].getErrors()) {
                     processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
                     processingNotes += '\nUser fields that affected this error: ' + err.getFields();
                 }
-                usersWithErrors.add(new User(Id = (Id)recordListToOperate[i].get(userIdField),
-                    Processing_Notes__c = processingNotes));
+                usersWithErrors.add(
+                    new User(Id = (Id) recordListToOperate[i].get(userIdField), Processing_Notes__c = processingNotes)
+                );
             }
         }
         update usersWithErrors;
@@ -228,12 +242,13 @@ public without sharing class UserDeprovisionOrganizer {
         for (Integer i = 0; i < deleteResult.size(); i++) {
             if (!deleteResult[i].isSuccess()) {
                 String processingNotes = 'The following errors have occurred:';
-                for(Database.Error err : deleteResult[i].getErrors()) {
+                for (Database.Error err : deleteResult[i].getErrors()) {
                     processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
                     processingNotes += '\nUser fields that affected this error: ' + err.getFields();
                 }
-                usersWithErrors.add(new User(Id = (Id)recordListToOperate[i].get(userIdField),
-                    Processing_Notes__c = processingNotes));
+                usersWithErrors.add(
+                    new User(Id = (Id) recordListToOperate[i].get(userIdField), Processing_Notes__c = processingNotes)
+                );
             }
         }
         update usersWithErrors;

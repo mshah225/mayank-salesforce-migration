@@ -1,5 +1,4 @@
-public without sharing class UserDeprovisionQueue implements Queueable{
-
+public without sharing class UserDeprovisionQueue implements Queueable {
     private List<Case> updatedUserCases;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private Map<Id, Id> caseToUserMap;
@@ -37,11 +36,11 @@ public without sharing class UserDeprovisionQueue implements Queueable{
                     processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
                     processingNotes += '\nUser fields that affected this error: ' + err.getFields();
                 }
-                usersWithErrors.add(new User(Id = caseToUserMap.get(updatedUserCases[i].Id),
-                    Processing_Notes__c = processingNotes));
+                usersWithErrors.add(
+                    new User(Id = caseToUserMap.get(updatedUserCases[i].Id), Processing_Notes__c = processingNotes)
+                );
             }
         }
         update usersWithErrors;
     }
-
 }

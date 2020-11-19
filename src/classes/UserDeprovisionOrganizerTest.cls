@@ -37,6 +37,13 @@ public class UserDeprovisionOrganizerTest {
         deproivisionConfigurations.add(
             new Deprovision_User_Configuration__c(Name = 'SwitchToFalse_Sandbox_DEV', Name__c = 'Sandbox_DEV__c')
         );
+
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'RemovePackageLicense_icAgentConsole',
+                Id__c = '050d0000000Wl7IAAS'
+            )
+        );
         insert deproivisionConfigurations;
 
         oldUsersMap = new Map<Id, User>();
@@ -246,6 +253,40 @@ public class UserDeprovisionOrganizerTest {
     }
 
     @isTest
+    public static void checkUserDeprovisionedWithPackageLicenses() {
+        setupTestData(1);
+
+        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+        List<Id> packageLicenseIds = new List<Id>();
+
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            if (deprovisionConfigurationName.contains('RemovePackageLicense')) {
+                packageLicenseIds.add(Id.valueOf(deprovisionUserConfiguration.get(deprovisionConfigurationName).Id__c));
+            }
+        }
+
+        UserPackageLicense license = new UserPackageLicense(
+            UserId = usersToDeprovision[0].Id,
+            PackageLicenseId = packageLicenseIds[0]
+        );
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert license;
+            Test.startTest();
+            deprovisionOrganizer.deprovisionUsersAfterUpdate();
+            Test.stopTest();
+        }
+
+        List<UserPackageLicense> packageLicenseThatWasDeleted = [
+            SELECT UserId, PackageLicense.NamespacePrefix
+            FROM UserPackageLicense
+            WHERE UserId = :usersToDeprovision[0].Id AND PackageLicenseId = :packageLicenseIds[0]
+        ];
+
+        System.assertEquals(0, packageLicenseThatWasDeleted.size(), 'The license should have been deleted.');
+    }
+
+    @isTest
     public static void checkDeleteSobjectRecordsSuccess() {
         setupTestData(1);
 
@@ -265,7 +306,7 @@ public class UserDeprovisionOrganizerTest {
         }
 
         Test.startTest();
-        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete);
+        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
         Test.stopTest();
 
         casesToDelete = [SELECT Id FROM Case WHERE Id IN :caseIds];
@@ -293,7 +334,7 @@ public class UserDeprovisionOrganizerTest {
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
-            UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete);
+            UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
             Test.stopTest();
         }
 
@@ -333,7 +374,7 @@ public class UserDeprovisionOrganizerTest {
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
-            deprovisionOrganizer.updateSobjectRecords('OwnerId', casesToUpdate);
+            UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', casesToUpdate, null);
             Test.stopTest();
         }
 

@@ -246,7 +246,6 @@ public class UserDeprovisionOrganizerTest {
         }
 
         usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-        System.debug(usersToDeprovision[0].Processing_Notes__c);
 
         System.assert(
             usersToDeprovision[0]
@@ -335,6 +334,9 @@ public class UserDeprovisionOrganizerTest {
             caseIds.add(testCase.Id);
         }
 
+        List<Case> generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+        Integer countOfErrorLoggerCases = generatedErrorLoggerCase.size();
+
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
             UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
@@ -346,6 +348,12 @@ public class UserDeprovisionOrganizerTest {
         for (User testUser : usersToDeprovision) {
             if (testUser.Id == casesToDelete[1].OwnerId) {
                 System.assertEquals(true, testUser.Processing_Notes__c.contains('The following errors have occurred:'));
+                generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+                System.assertEquals(
+                    countOfErrorLoggerCases + 1,
+                    generatedErrorLoggerCase.size(),
+                    'Should have added an ErrorLogger case'
+                );
             } else {
                 System.assertEquals(null, testUser.Processing_Notes__c);
             }
@@ -375,6 +383,9 @@ public class UserDeprovisionOrganizerTest {
         casesToUpdate[1].CC_Functional_Group__c = '0050W000006Wgnk';
         Id errorCaseId = casesToUpdate[1].Id;
 
+        List<Case> generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+        Integer countOfErrorLoggerCases = generatedErrorLoggerCase.size();
+
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
             UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', casesToUpdate, null);
@@ -386,6 +397,13 @@ public class UserDeprovisionOrganizerTest {
         for (User testUser : usersToDeprovision) {
             if (testUser.Id == casesToUpdate[1].OwnerId) {
                 System.assertEquals(true, testUser.Processing_Notes__c.contains('The following errors have occurred:'));
+                generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+                System.assertEquals(
+                    countOfErrorLoggerCases + 1,
+                    generatedErrorLoggerCase.size(),
+                    'Should have added an ErrorLogger case'
+                );
+
             } else {
                 System.assertEquals(null, testUser.Processing_Notes__c);
             }

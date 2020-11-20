@@ -17,6 +17,8 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, String> userToDeprovisionPackageLicenseMap;
     private Map<Id, String> userToOldProcessingNotes;
 
+    private static Boolean debug = false;
+
     public void setOldUsersMap(Map<Id, SObject> oldUsersMap) {
         this.oldUsersMap = (Map<Id, User>) oldUsersMap;
     }
@@ -241,18 +243,26 @@ public without sharing class UserDeprovisionOrganizer {
 
         for (Integer i = 0; i < saveResult.size(); i++) {
             if (!saveResult[i].isSuccess()) {
-                String processingNotes = 'The following errors have occurred:';
+                String processingNotes;
+                String errorNote = 'The following errors have occurred:';
                 for (Database.Error err : saveResult[i].getErrors()) {
-                    processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
-                    processingNotes += '\nUser fields that affected this error: ' + err.getFields();
+                    errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
+                    errorNote += '\nUser fields that affected this error: ' + err.getFields();
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
                 if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
-                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + processingNotes;
+                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + errorNote;
+                } else {
+                    processingNotes = errorNote;
                 }
 
                 usersWithErrors.add(new User(Id = userId, Processing_Notes__c = processingNotes));
+
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
+                ErrorLogger.log(new DatabaseErrorException(errorNote), vars, debug);
             }
         }
         update usersWithErrors;
@@ -269,20 +279,31 @@ public without sharing class UserDeprovisionOrganizer {
 
         for (Integer i = 0; i < deleteResult.size(); i++) {
             if (!deleteResult[i].isSuccess()) {
-                String processingNotes = 'The following errors have occurred:';
+                String processingNotes;
+                String errorNote = 'The following errors have occurred:';
                 for (Database.Error err : deleteResult[i].getErrors()) {
-                    processingNotes += '\n' + err.getStatusCode() + ': ' + err.getMessage();
-                    processingNotes += '\nUser fields that affected this error: ' + err.getFields();
+                    errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
+                    errorNote += '\nUser fields that affected this error: ' + err.getFields();
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
                 if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
-                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + processingNotes;
+                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + errorNote;
+                } else {
+                    processingNotes = errorNote;
                 }
 
                 usersWithErrors.add(new User(Id = userId, Processing_Notes__c = processingNotes));
+
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
+                ErrorLogger.log(new DatabaseErrorException(errorNote), vars, debug);
             }
         }
         update usersWithErrors;
+    }
+
+    private class DatabaseErrorException extends Exception {
     }
 }

@@ -141,6 +141,7 @@ public without sharing class UserDeprovisioner {
     }
 
     private void transferPrivateCasesToFunctionalGroup() {
+        Integer countTransferred = 0;
         updatedUserCases = new List<Case>();
         caseToUserMap = new Map<Id, Id>();
         if (userCases != null) {
@@ -149,14 +150,12 @@ public without sharing class UserDeprovisioner {
                     userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
                     caseToUserMap.put(userCase.Id, userToDeprovision.Id);
                     updatedUserCases.add(userCase);
-                    addToProcessingNotes(
-                        'Transferred case: ' +
-                        userCase.Id +
-                        ' to Functional Group queue: ' +
-                        userCase.CC_Functional_Group__r.Name
-                    );
+
+                    countTransferred++;
                 }
             }
+
+            addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
         }
     }
 

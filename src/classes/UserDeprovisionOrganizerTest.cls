@@ -240,15 +240,18 @@ public class UserDeprovisionOrganizerTest {
         }
 
         casesToAdd = [SELECT Id, OwnerId FROM Case WHERE Id IN :caseIds];
-        System.assertEquals(numberOfCases, casesToAdd.size());
+        System.assertEquals(numberOfCases, casesToAdd.size(), 'Failed to move proper number of cases');
         for (Case testCase : casesToAdd) {
-            System.assertEquals(testGroup.Id, testCase.OwnerId);
+            System.assertEquals(testGroup.Id, testCase.OwnerId, 'Cases were not reasssigned properly');
         }
 
         usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
+        System.debug(usersToDeprovision[0].Processing_Notes__c);
+
         System.assert(
             usersToDeprovision[0]
-                .Processing_Notes__c.contains('to Functional Group queue: ' + privateFunctionalGroup.Name)
+                .Processing_Notes__c.contains('Transferred ' + numberOfCases + ' private cases to queue.'),
+            'Should record number of transferred cases.'
         );
     }
 

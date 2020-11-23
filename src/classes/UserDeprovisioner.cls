@@ -11,6 +11,8 @@ public without sharing class UserDeprovisioner {
     private String permissionSets;
     private String packageLicenses;
 
+    private static Boolean debug = false;
+
     public UserDeprovisioner() {
         processingNotes = '';
         deprovisionedUser = new User();
@@ -95,6 +97,15 @@ public without sharing class UserDeprovisioner {
         } catch (Exception e) {
             addToProcessingNotes('Exception Thrown: ' + e.getMessage());
             addToProcessingNotes('' + e.getStackTraceString());
+
+            List<String> vars = new List<String>();
+
+            if (deprovisionedUser != null) {
+                vars.add(ErrorLogger.convertIdToJSON('deprovisionedUser.Id', deprovisionedUser.Id));
+                deprovisionedUser.Deprovision_User__c = false;
+            }
+
+            ErrorLogger.log(e, vars, debug);
         }
     }
 

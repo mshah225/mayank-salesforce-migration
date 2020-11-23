@@ -1,6 +1,5 @@
 @isTest
 public class UserDeprovisionOrganizerTest {
-
     private static List<User> usersToDeprovision;
     private static Map<Id, Sobject> oldUsersMap;
     private static List<Sobject> newUsers;
@@ -8,7 +7,7 @@ public class UserDeprovisionOrganizerTest {
 
     private static void setupTestData(Integer numberOfUsers) {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        usersToDeprovision = (List<User>)userCreator.create(numberOfUsers);
+        usersToDeprovision = (List<User>) userCreator.create(numberOfUsers);
 
         Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
 
@@ -18,10 +17,33 @@ public class UserDeprovisionOrganizerTest {
         insert usersToDeprovision;
 
         List<Deprovision_User_Configuration__c> deproivisionConfigurations = new List<Deprovision_User_Configuration__c>();
-        deproivisionConfigurations.add(new Deprovision_User_Configuration__c(Name = 'Change UserRoleId To', Id__c = '00Ed00000017bQ5EAI', Name__c = 'Z Unassigned (Temporary Role)'));
-        deproivisionConfigurations.add(new Deprovision_User_Configuration__c(Name = 'Change ProfileId To', Id__c = '00ed00000019yCpAAI', Name__c = 'ASU Chatter User'));
-        deproivisionConfigurations.add(new Deprovision_User_Configuration__c(Name = 'RemoveValue_CallCenter', Name__c = 'CallCenterId'));
-        deproivisionConfigurations.add(new Deprovision_User_Configuration__c(Name = 'SwitchToFalse_Sandbox_DEV', Name__c = 'Sandbox_DEV__c'));
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'Change UserRoleId To',
+                Id__c = '00Ed00000017bQ5EAI',
+                Name__c = 'Z Unassigned (Temporary Role)'
+            )
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'Change ProfileId To',
+                Id__c = '00ed00000019yCpAAI',
+                Name__c = 'ASU Chatter User'
+            )
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(Name = 'RemoveValue_CallCenter', Name__c = 'CallCenterId')
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(Name = 'SwitchToFalse_Sandbox_DEV', Name__c = 'Sandbox_DEV__c')
+        );
+
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'RemovePackageLicense_icAgentConsole',
+                Id__c = '050d0000000Wl7IAAS'
+            )
+        );
         insert deproivisionConfigurations;
 
         oldUsersMap = new Map<Id, User>();
@@ -36,9 +58,6 @@ public class UserDeprovisionOrganizerTest {
         deprovisionOrganizer = new UserDeprovisionOrganizer();
         deprovisionOrganizer.setOldUsersMap(oldUsersMap);
         deprovisionOrganizer.setNewUsers(newUsers);
-
-
-
     }
 
     @isTest
@@ -74,7 +93,9 @@ public class UserDeprovisionOrganizerTest {
             insert groupsToAdd;
 
             for (Integer i = 0; i < numberOfGroups; i++) {
-                groupMembers.add(new GroupMember(UserOrGroupId = usersToDeprovision[0].Id, GroupId = groupsToAdd[i].Id));
+                groupMembers.add(
+                    new GroupMember(UserOrGroupId = usersToDeprovision[0].Id, GroupId = groupsToAdd[i].Id)
+                );
                 groupIds.add(groupsToAdd[i].Id);
             }
             insert groupMembers;
@@ -103,18 +124,21 @@ public class UserDeprovisionOrganizerTest {
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             for (Integer i = 0; i < numberOfPermissionSets; i++) {
-                permissionSetsToAdd.add(new PermissionSet(Name = 'testPermissionSet' + i, Label = 'testLabel'+i));
+                permissionSetsToAdd.add(new PermissionSet(Name = 'testPermissionSet' + i, Label = 'testLabel' + i));
             }
             insert permissionSetsToAdd;
 
             for (Integer i = 0; i < numberOfPermissionSets; i++) {
-                permissionSetAssignments.add(new PermissionSetAssignment(AssigneeId = usersToDeprovision[0].Id,
-                    PermissionSetId = permissionSetsToAdd[i].Id));
+                permissionSetAssignments.add(
+                    new PermissionSetAssignment(
+                        AssigneeId = usersToDeprovision[0].Id,
+                        PermissionSetId = permissionSetsToAdd[i].Id
+                    )
+                );
                 permissionSetIds.add(permissionSetsToAdd[i].Id);
             }
             insert permissionSetAssignments;
         }
-
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
@@ -139,13 +163,19 @@ public class UserDeprovisionOrganizerTest {
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             for (Integer i = 0; i < numberOfChatterGroups; i++) {
-                collaborationGroupsToAdd.add(new CollaborationGroup(Name = 'testChatterGroup' + i, CollaborationType = 'Public'));
+                collaborationGroupsToAdd.add(
+                    new CollaborationGroup(Name = 'testChatterGroup' + i, CollaborationType = 'Public')
+                );
             }
             insert collaborationGroupsToAdd;
 
             for (Integer i = 0; i < numberOfChatterGroups; i++) {
-                collaborationGroupMembers.add(new CollaborationGroupMember(MemberId = usersToDeprovision[0].Id,
-                    CollaborationGroupId = collaborationGroupsToAdd[i].Id));
+                collaborationGroupMembers.add(
+                    new CollaborationGroupMember(
+                        MemberId = usersToDeprovision[0].Id,
+                        CollaborationGroupId = collaborationGroupsToAdd[i].Id
+                    )
+                );
             }
             insert collaborationGroupMembers;
 
@@ -153,7 +183,6 @@ public class UserDeprovisionOrganizerTest {
                 collaborationGroupMemberIds.add(groupMember.Id);
             }
         }
-
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
@@ -180,7 +209,7 @@ public class UserDeprovisionOrganizerTest {
 
         Case_Classification__c privateFunctionalGroup = new Case_Classification__c();
         privateFunctionalGroup.Name = 'Test FG';
-        privateFunctionalGroup.RecordTypeId = [Select Id FROM RecordType WHERE Name = 'Functional Group'].Id;
+        privateFunctionalGroup.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Functional Group'].Id;
         privateFunctionalGroup.Active__c = true;
         privateFunctionalGroup.Visible__c = true;
         privateFunctionalGroup.Is_Functional_Group_Private__c = true;
@@ -188,8 +217,14 @@ public class UserDeprovisionOrganizerTest {
         insert privateFunctionalGroup;
 
         for (Integer i = 0; i < numberOfCases; i++) {
-            casesToAdd.add(new Case(Subject = 'Test Subject ' + i, Description = 'Test Description ' + i,
-            CC_Functional_Group__c = privateFunctionalGroup.Id, OwnerId = usersToDeprovision[0].Id));
+            casesToAdd.add(
+                new Case(
+                    Subject = 'Test Subject ' + i,
+                    Description = 'Test Description ' + i,
+                    CC_Functional_Group__c = privateFunctionalGroup.Id,
+                    OwnerId = usersToDeprovision[0].Id
+                )
+            );
         }
         insert casesToAdd;
 
@@ -205,13 +240,52 @@ public class UserDeprovisionOrganizerTest {
         }
 
         casesToAdd = [SELECT Id, OwnerId FROM Case WHERE Id IN :caseIds];
-        System.assertEquals(numberOfCases, casesToAdd.size());
+        System.assertEquals(numberOfCases, casesToAdd.size(), 'Failed to move proper number of cases');
         for (Case testCase : casesToAdd) {
-            System.assertEquals(testGroup.Id, testCase.OwnerId);
+            System.assertEquals(testGroup.Id, testCase.OwnerId, 'Cases were not reasssigned properly');
         }
 
         usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-        System.assert(usersToDeprovision[0].Processing_Notes__c.contains('to Functional Group queue: ' + privateFunctionalGroup.Name));
+
+        System.assert(
+            usersToDeprovision[0]
+                .Processing_Notes__c.contains('Transferred ' + numberOfCases + ' private cases to queue.'),
+            'Should record number of transferred cases.'
+        );
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithPackageLicenses() {
+        setupTestData(1);
+
+        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+        List<Id> packageLicenseIds = new List<Id>();
+
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            if (deprovisionConfigurationName.contains('RemovePackageLicense')) {
+                packageLicenseIds.add(Id.valueOf(deprovisionUserConfiguration.get(deprovisionConfigurationName).Id__c));
+            }
+        }
+
+        UserPackageLicense license = new UserPackageLicense(
+            UserId = usersToDeprovision[0].Id,
+            PackageLicenseId = packageLicenseIds[0]
+        );
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert license;
+            Test.startTest();
+            deprovisionOrganizer.deprovisionUsersAfterUpdate();
+            Test.stopTest();
+        }
+
+        List<UserPackageLicense> packageLicenseThatWasDeleted = [
+            SELECT UserId, PackageLicense.NamespacePrefix
+            FROM UserPackageLicense
+            WHERE UserId = :usersToDeprovision[0].Id AND PackageLicenseId = :packageLicenseIds[0]
+        ];
+
+        System.assertEquals(0, packageLicenseThatWasDeleted.size(), 'The license should have been deleted.');
     }
 
     @isTest
@@ -224,7 +298,6 @@ public class UserDeprovisionOrganizerTest {
         List<Case> casesToDelete = (List<Case>) caseCreator.create(4);
 
         for (Case testCase : casesToDelete) {
-
             testCase.OwnerId = testUser.Id;
         }
         insert casesToDelete;
@@ -235,7 +308,7 @@ public class UserDeprovisionOrganizerTest {
         }
 
         Test.startTest();
-        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete);
+        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
         Test.stopTest();
 
         casesToDelete = [SELECT Id FROM Case WHERE Id IN :caseIds];
@@ -261,9 +334,12 @@ public class UserDeprovisionOrganizerTest {
             caseIds.add(testCase.Id);
         }
 
+        List<Case> generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+        Integer countOfErrorLoggerCases = generatedErrorLoggerCase.size();
+
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
-            UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete);
+            UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
             Test.stopTest();
         }
 
@@ -272,6 +348,12 @@ public class UserDeprovisionOrganizerTest {
         for (User testUser : usersToDeprovision) {
             if (testUser.Id == casesToDelete[1].OwnerId) {
                 System.assertEquals(true, testUser.Processing_Notes__c.contains('The following errors have occurred:'));
+                generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+                System.assertEquals(
+                    countOfErrorLoggerCases + 1,
+                    generatedErrorLoggerCase.size(),
+                    'Should have added an ErrorLogger case'
+                );
             } else {
                 System.assertEquals(null, testUser.Processing_Notes__c);
             }
@@ -301,9 +383,12 @@ public class UserDeprovisionOrganizerTest {
         casesToUpdate[1].CC_Functional_Group__c = '0050W000006Wgnk';
         Id errorCaseId = casesToUpdate[1].Id;
 
+        List<Case> generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+        Integer countOfErrorLoggerCases = generatedErrorLoggerCase.size();
+
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
-            deprovisionOrganizer.updateSobjectRecords('OwnerId', casesToUpdate);
+            UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', casesToUpdate, null);
             Test.stopTest();
         }
 
@@ -312,6 +397,13 @@ public class UserDeprovisionOrganizerTest {
         for (User testUser : usersToDeprovision) {
             if (testUser.Id == casesToUpdate[1].OwnerId) {
                 System.assertEquals(true, testUser.Processing_Notes__c.contains('The following errors have occurred:'));
+                generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
+                System.assertEquals(
+                    countOfErrorLoggerCases + 1,
+                    generatedErrorLoggerCase.size(),
+                    'Should have added an ErrorLogger case'
+                );
+
             } else {
                 System.assertEquals(null, testUser.Processing_Notes__c);
             }
@@ -326,5 +418,4 @@ public class UserDeprovisionOrganizerTest {
             }
         }
     }
-
 }

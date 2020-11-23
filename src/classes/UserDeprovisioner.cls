@@ -1,5 +1,4 @@
 public without sharing class UserDeprovisioner {
-
     private String processingNotes;
     private User deprovisionedUser;
     private User userToDeprovision;
@@ -19,10 +18,11 @@ public without sharing class UserDeprovisioner {
 
     public void setUserToDeprovision(User userToDeprovision) {
         this.userToDeprovision = userToDeprovision;
-
     }
 
-    public void setDeprovisionUserConfiguration(Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration) {
+    public void setDeprovisionUserConfiguration(
+        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration
+    ) {
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
     }
 
@@ -79,6 +79,7 @@ public without sharing class UserDeprovisioner {
             deprovisionedUser.Id = userToDeprovision.Id;
             addToProcessingNotes(initialUserTimeStamp());
             if (matchProfileToIgnore()) {
+                deprovisionedUser.Deprovision_User__c = false;
                 return;
             }
             changeUserField('ProfileId');
@@ -91,7 +92,6 @@ public without sharing class UserDeprovisioner {
             logRemovedPackageLicenses();
             deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
-
         } catch (Exception e) {
             addToProcessingNotes('Exception Thrown: ' + e.getMessage());
             addToProcessingNotes('' + e.getStackTraceString());
@@ -103,7 +103,7 @@ public without sharing class UserDeprovisioner {
     }
 
     private String initialUserTimeStamp() {
-        return System.now() + ' UserId: ' + UserInfo.getUserId() + ', UserName: ' +UserInfo.getName();
+        return System.now() + ' UserId: ' + UserInfo.getUserId() + ', UserName: ' + UserInfo.getName();
     }
 
     private Boolean matchProfileToIgnore() {
@@ -111,7 +111,11 @@ public without sharing class UserDeprovisioner {
             if (deprovisionConfigurationName.contains('ProfileToIgnore')) {
                 Id profileIdToMatch = Id.valueOf(deprovisionUserConfiguration.get(deprovisionConfigurationName).Id__c);
                 if (userToDeprovision.ProfileId == profileIdToMatch) {
-                    addToProcessingNotes('Profile matched to: ' + deprovisionUserConfiguration.get(deprovisionConfigurationName).Name__c + ', Stopping User Deprovision');
+                    addToProcessingNotes(
+                        'Profile matched to: ' +
+                        deprovisionUserConfiguration.get(deprovisionConfigurationName).Name__c +
+                        ', Stopping User Deprovision'
+                    );
                     return true;
                 }
             }
@@ -120,12 +124,24 @@ public without sharing class UserDeprovisioner {
     }
 
     private void changeUserField(String fieldName) {
-        Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get('Change ' + fieldName + ' To');
-        addToProcessingNotes('Changed ' + fieldName +  ' from: ' + userToDeprovision.get(fieldName) + ' to ' + changeFieldTo.Name__c);
+        Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
+            'Change ' +
+            fieldName +
+            ' To'
+        );
+        addToProcessingNotes(
+            'Changed ' +
+            fieldName +
+            ' from: ' +
+            userToDeprovision.get(fieldName) +
+            ' to ' +
+            changeFieldTo.Name__c
+        );
         deprovisionedUser.put(fieldName, Id.valueOf(changeFieldTo.Id__c));
     }
 
     private void transferPrivateCasesToFunctionalGroup() {
+        Integer countTransferred = 0;
         updatedUserCases = new List<Case>();
         caseToUserMap = new Map<Id, Id>();
         if (userCases != null) {
@@ -134,24 +150,36 @@ public without sharing class UserDeprovisioner {
                     userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
                     caseToUserMap.put(userCase.Id, userToDeprovision.Id);
                     updatedUserCases.add(userCase);
-                    addToProcessingNotes('Transferred case: ' + userCase.Id + ' to Functional Group queue: ' + userCase.CC_Functional_Group__r.Name);
+
+                    countTransferred++;
                 }
             }
+
+            addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
         }
     }
 
     private void updateUserFields() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('SwitchToFalse')) {
-                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(deprovisionConfigurationName);
+                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
+                    deprovisionConfigurationName
+                );
                 if (userToDeprovision.get(configuration.Name__c) == true) {
                     deprovisionedUser.put(configuration.Name__c, false);
                     addToProcessingNotes('Switched ' + configuration.Name__c + ' to false');
                 }
             } else if (deprovisionConfigurationName.contains('RemoveValue')) {
-                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(deprovisionConfigurationName);
+                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
+                    deprovisionConfigurationName
+                );
                 if (userToDeprovision.get(configuration.Name__c) != null) {
-                    addToProcessingNotes('Removed value '+ userToDeprovision.get(configuration.Name__c) + ' for ' + configuration.Name__c);
+                    addToProcessingNotes(
+                        'Removed value ' +
+                        userToDeprovision.get(configuration.Name__c) +
+                        ' for ' +
+                        configuration.Name__c
+                    );
                     deprovisionedUser.put(configuration.Name__c, null);
                 }
             }

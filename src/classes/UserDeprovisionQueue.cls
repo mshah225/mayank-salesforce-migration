@@ -56,7 +56,9 @@ public without sharing class UserDeprovisionQueue implements Queueable {
                     processingNotes = errorNote;
                 }
 
-                usersWithErrors.add(new User(Id = userId, Processing_Notes__c = processingNotes));
+                usersWithErrors.add(
+                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
+                );
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));

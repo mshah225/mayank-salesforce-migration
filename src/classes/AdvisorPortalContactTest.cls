@@ -15,7 +15,16 @@ private class AdvisorPortalContactTest {
         Case testCase = TestDataFactory.createCase('Test Case');
         testCase.Status = 'Outreach Required';
         testCase.ContactId = testContact.Id;
-        insert testCase;
+
+        Case testCase2 = TestDataFactory.createCase('Test Case 2');
+        testCase2.Status = 'Outreach Required';
+        testCase2.ContactId = testContact.Id;
+
+        List<Case> testCases = new List<Case>();
+        testCases.add(testCase);
+        testCases.add(testCase2);
+
+        insert testCases;
 
         // Act
         Test.startTest();
@@ -23,6 +32,7 @@ private class AdvisorPortalContactTest {
             [SELECT LastName FROM Contact WHERE Id = :testContact.Id]
         );
         testAdvisorPortalContact.addCase(new AdvisorPortalCase(testCase));
+        testAdvisorPortalContact.addCases(new List<AdvisorPortalCase>{ new AdvisorPortalCase(testCase2) });
         Test.stopTest();
 
         // Assert
@@ -38,9 +48,14 @@ private class AdvisorPortalContactTest {
             'The Contact record should have been populated.'
         );
         System.assertEquals(
-            1,
+            2,
             testAdvisorPortalContact.cases.size(),
-            'An Advisor Portal Case record should have been added.'
+            '2 Advisor Portal Case records should have been added.'
+        );
+        System.assertEquals(
+            2,
+            testAdvisorPortalContact.getCases().size(),
+            '2 Advisor Portal Case records should have been added.'
         );
     }
 }

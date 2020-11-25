@@ -8,11 +8,20 @@ private class AdvisorPortalFilterSectionControllerTest {
     @IsTest
     static void testGetPicklistValues() {
         Test.startTest();
-        Map<String, String> picklistValuesMap = AdvisorPortalFilterSectionController.getPicklistValues('Student_Program_Plan__c', 'Residency__c');
+        Map<String, String> picklistValuesMap = AdvisorPortalFilterSectionController.getPicklistValues(
+            'Student_Program_Plan__c',
+            'Residency__c'
+        );
         Test.stopTest();
-        
-        System.assert(picklistValuesMap.size() > 0, 'Controller should have returned values for the Residency picklist.');
-        System.assert(picklistValuesMap.keySet().contains('Resident'), 'Ensure the picklist map contains at least one valid picklist value.');
+
+        System.assert(
+            picklistValuesMap.size() > 0,
+            'Controller should have returned values for the Residency picklist.'
+        );
+        System.assert(
+            picklistValuesMap.keySet().contains('Resident'),
+            'Ensure the picklist map contains at least one valid picklist value.'
+        );
     }
 
     @IsTest
@@ -21,8 +30,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         Map<String, String> caseStatusMap = AdvisorPortalFilterSectionController.getCaseStatusSettings();
         Test.stopTest();
 
-        System.assert(caseStatusMap.size() > 0, 'Controller should have returned values for the Case Status picklist based upon the custom metadata type.');
-        System.assert(caseStatusMap.keySet().contains('In Progress'), 'Ensure the picklist map contains at least one valid picklist value.');
+        System.assert(
+            caseStatusMap.size() > 0,
+            'Controller should have returned values for the Case Status picklist based upon the custom metadata type.'
+        );
+        System.assert(
+            caseStatusMap.keySet().contains('In Progress'),
+            'Ensure the picklist map contains at least one valid picklist value.'
+        );
     }
 
     @IsTest
@@ -74,14 +89,8 @@ private class AdvisorPortalFilterSectionControllerTest {
         Id categoryWatchlistId = classifications[2].Id;
 
         update new List<Case_Classification__c>{
-            new Case_Classification__c(
-                Id = categoryWatchlistId,
-                Name = 'Watchlist'
-            ),
-            new Case_Classification__c(
-                Id = functionalGroupId,
-                Name = 'ASU Advisor Outreach'
-            )
+            new Case_Classification__c(Id = categoryWatchlistId, Name = 'Watchlist'),
+            new Case_Classification__c(Id = functionalGroupId, Name = 'ASU Advisor Outreach')
         };
 
         CaseFactory.AdvisorOutreachCase watchlistCaseMaker = new CaseFactory.AdvisorOutreachCase(
@@ -91,7 +100,8 @@ private class AdvisorPortalFilterSectionControllerTest {
             functionalGroupId,
             categoryWatchlistId,
             testContact.Id,
-            null);
+            null
+        );
         Case caseToFind = (Case) watchlistCaseMaker.create(1)[0];
         caseToFind.Subject = 'Test Subject';
         caseToFind.Followup_Date__c = System.today().addDays(10);
@@ -104,7 +114,9 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         // Act
         Test.startTest();
-        Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(queueIds);
+        Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
+            queueIds
+        );
         Test.stopTest();
 
         // Assert
@@ -133,7 +145,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             queueIds.add(g.Id);
         }
 
-        Test.setFixedSearchResults(new List<String>{testContact.Id});
+        Test.setFixedSearchResults(new List<String>{ testContact.Id });
 
         // Act
         Test.startTest();
@@ -168,7 +180,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             queueIds.add(g.Id);
         }
 
-        Test.setFixedSearchResults(new List<String>{testContact.Id});
+        Test.setFixedSearchResults(new List<String>{ testContact.Id });
 
         // Act
         Test.startTest();
@@ -176,9 +188,17 @@ private class AdvisorPortalFilterSectionControllerTest {
         Test.stopTest();
 
         // Assert
-        System.assertEquals(results.size(), 1, 'One Contact (the test one) should have been returned, even though 0 cases are returned.');
+        System.assertEquals(
+            results.size(),
+            1,
+            'One Contact (the test one) should have been returned, even though 0 cases are returned.'
+        );
         System.assertEquals(results[0].portalContact.Name, 'TestContact0 Test Pod 1');
-        System.assertEquals(results[0].cases.size(), 0, 'The test cases should NOT have been returned, because they are not Advisor Outreach cases.');
+        System.assertEquals(
+            results[0].cases.size(),
+            0,
+            'The test cases should NOT have been returned, because they are not Advisor Outreach cases.'
+        );
     }
 
     @IsTest
@@ -204,7 +224,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             queueIds.add(g.Id);
         }
 
-        Test.setFixedSearchResults(new List<String>{testContact.Id});
+        Test.setFixedSearchResults(new List<String>{ testContact.Id });
 
         // Act
         Test.startTest();
@@ -212,6 +232,10 @@ private class AdvisorPortalFilterSectionControllerTest {
         Test.stopTest();
 
         // Assert
-        System.assertEquals(results.size(), 0, 'No results should have been returned as the casecount filter shoudl have filtered them out.');
+        System.assertEquals(
+            results.size(),
+            0,
+            'No results should have been returned as the casecount filter shoudl have filtered them out.'
+        );
     }
 }

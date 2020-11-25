@@ -1,9 +1,9 @@
 /**
-* @author Mathew Ruff, Sierra-Cedar
-* @date 2019-01-29
-*
-* Unit Tests for AdvisorPortalController.cls
-*/
+ * @author Mathew Ruff, Sierra-Cedar
+ * @date 2019-01-29
+ *
+ * Unit Tests for AdvisorPortalController.cls
+ */
 @IsTest
 private class AdvisorPortalControllerTest {
     private static final String ADVISOR_OUTREACH_RECORDTYPE = IdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -57,6 +57,10 @@ private class AdvisorPortalControllerTest {
         Test.stopTest();
 
         // Assert
-        System.assertEquals(1, assertContacts.size(), 'Contact list should NOT be empty, one Contact should have one Case record.');
+        System.assertEquals(
+            1,
+            assertContacts.size(),
+            'Contact list should NOT be empty, one Contact should have one Case record.'
+        );
     }
 }

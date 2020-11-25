@@ -3,27 +3,58 @@ global class EmailAPIService {
     static Map<String, String> configMap = new Map<String, String>();
 
     @HttpPost
-    global static void sendAutoReply(Id emailCaseId, Id emailContactId, Id carId) {
+    global static void sendAutoReply(String emailCaseId, String emailContactId, String carId) {
+        RestResponse res = RestContext.response;
         loadConfigurationSettings();
 
         // Get ReplyTo from CAR
         List<Case_Assignment_Rule__c> assignmentRule = new List<Case_Assignment_Rule__c>();
-        assignmentRule = [
-            SELECT Email_Address__c, Reply_To_Email_Address__c, Customer_Notice_Email_From_Name__c, Email_Template_ID__c
-            FROM Case_Assignment_Rule__c
-            WHERE Id = :carId
-        ];
-
-        String replyToAddress = assignmentRule[0].Reply_To_Email_Address__c;
-        String emailFromName = assignmentRule[0].Customer_Notice_Email_From_Name__c;
-        Id emailTemplateId = assignmentRule[0].Email_Template_ID__c;
+        String replyToAddress;
+        String emailFromName;
+        Id emailTemplateId;
+        try {
+            // Get required fields, ensure carId is valid
+            assignmentRule = [
+                SELECT
+                    Email_Address__c,
+                    Reply_To_Email_Address__c,
+                    Customer_Notice_Email_From_Name__c,
+                    Email_Template_ID__c
+                FROM Case_Assignment_Rule__c
+                WHERE Id = :carId
+            ];
+            replyToAddress = assignmentRule[0].Reply_To_Email_Address__c;
+            emailFromName = assignmentRule[0].Customer_Notice_Email_From_Name__c;
+            emailTemplateId = assignmentRule[0].Email_Template_ID__c;
+        } catch (Exception e) {
+            res.statusCode = 400;
+            String errorMessage = 'Invalid carId';
+            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, emailContactId, carId, errorMessage));
+        }
 
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setTargetObjectId(emailContactId);
-        mail.setTemplateId(emailTemplateId);
-
-        if (emailCaseId != null) {
-            mail.setWhatId(emailCaseId);
+        try {
+            // Ensure emailContactId is valid
+            List<Contact> emailContactIdCheck = new List<Contact>();
+            emailContactIdCheck = [SELECT Id FROM Contact WHERE Id = :emailContactId];
+            mail.setTargetObjectId(emailContactIdCheck[0].Id);
+        } catch (Exception e) {
+            res.statusCode = 400;
+            String errorMessage = 'Invalid emailContactId';
+            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, emailContactId, carId, errorMessage));
+        }
+        if (emailTemplateId != null) {
+            mail.setTemplateId(emailTemplateId);
+        }
+        try {
+            // Ensure emailCaseId is valid
+            List<Case> emailCaseIdCheck = new List<Case>();
+            emailCaseIdCheck = [SELECT Id FROM Case WHERE Id = :emailCaseId];
+            mail.setWhatId(emailCaseIdCheck[0].Id);
+        } catch (Exception e) {
+            res.statusCode = 400;
+            String errorMessage = 'Invalid emailCaseId';
+            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, emailContactId, carId, errorMessage));
         }
 
         OrgWideEmailAddress oweaToUse = new OrgWideEmailAddress();
@@ -36,7 +67,7 @@ global class EmailAPIService {
             mail.setOrgWideEmailAddressId(oweaToUse.Id);
         } catch (Exception e) {
             // Use context user's information if there is no default OrgWideEmailAddress configured
-            if (defaultOwea == null) {
+            if (defaultOwea == null && emailFromName != null) {
                 mail.setSenderDisplayName(emailFromName);
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
@@ -93,5 +124,15 @@ global class EmailAPIService {
                 configMap.put(c.Name, c.Value__c);
             }
         }
+    }
+    /**
+     * Rebuild payload for output on error
+     */
+    global static String buildErrorResponse(String emailCaseId, String emailContactId, String carId, String error) {
+        String response = 'Error Info: ' + error + '\n';
+        response += '{\n\t\"emailCaseId\": \"' + emailCaseId + '\",\n';
+        response += '\t\"emailContactId\": \"' + emailContactId + '\",\n';
+        response += '\t\"carId\": \"' + carId + '\"\n}';
+        return response;
     }
 }

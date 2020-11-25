@@ -3,7 +3,7 @@ global class EmailAPIService {
     static Map<String, String> configMap = new Map<String, String>();
 
     @HttpPost
-    global static void sendAutoReply(String emailCaseId, String emailContactId, String carId) {
+    global static void sendAutoReply(String emailCaseId, String carId) {
         RestResponse res = RestContext.response;
         loadConfigurationSettings();
 
@@ -29,32 +29,23 @@ global class EmailAPIService {
         } catch (Exception e) {
             res.statusCode = 400;
             String errorMessage = 'Invalid carId';
-            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, emailContactId, carId, errorMessage));
+            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, carId, errorMessage));
         }
 
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        try {
-            // Ensure emailContactId is valid
-            List<Contact> emailContactIdCheck = new List<Contact>();
-            emailContactIdCheck = [SELECT Id FROM Contact WHERE Id = :emailContactId];
-            mail.setTargetObjectId(emailContactIdCheck[0].Id);
-        } catch (Exception e) {
-            res.statusCode = 400;
-            String errorMessage = 'Invalid emailContactId';
-            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, emailContactId, carId, errorMessage));
-        }
         if (emailTemplateId != null) {
             mail.setTemplateId(emailTemplateId);
         }
         try {
-            // Ensure emailCaseId is valid
+            // Ensure emailCaseId is valid, get ContactId from Case
             List<Case> emailCaseIdCheck = new List<Case>();
-            emailCaseIdCheck = [SELECT Id FROM Case WHERE Id = :emailCaseId];
+            emailCaseIdCheck = [SELECT Id, ContactId FROM Case WHERE Id = :emailCaseId];
             mail.setWhatId(emailCaseIdCheck[0].Id);
+            mail.setTargetObjectId(emailCaseIdCheck[0].ContactId);
         } catch (Exception e) {
             res.statusCode = 400;
-            String errorMessage = 'Invalid emailCaseId';
-            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, emailContactId, carId, errorMessage));
+            String errorMessage = 'Invalid emailCaseId or associated Case was missing a valid Contact';
+            res.responseBody = blob.valueOf(buildErrorResponse(emailCaseId, carId, errorMessage));
         }
 
         OrgWideEmailAddress oweaToUse = new OrgWideEmailAddress();
@@ -128,10 +119,9 @@ global class EmailAPIService {
     /**
      * Rebuild payload for output on error
      */
-    global static String buildErrorResponse(String emailCaseId, String emailContactId, String carId, String error) {
+    global static String buildErrorResponse(String emailCaseId, String carId, String error) {
         String response = 'Error Info: ' + error + '\n';
         response += '{\n\t\"emailCaseId\": \"' + emailCaseId + '\",\n';
-        response += '\t\"emailContactId\": \"' + emailContactId + '\",\n';
         response += '\t\"carId\": \"' + carId + '\"\n}';
         return response;
     }

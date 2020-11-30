@@ -10,6 +10,7 @@
     <aura:attribute name="SelectedOptionsCount" type="Integer" />
     <aura:attribute name="DefaultPillsDisplayed" type="Integer" default="5" />
     <aura:attribute name="PillsDisplayedCount" type="Integer" />
+    <aura:attribute name="OnClickOutListenerSet" type="Boolean" default="false"/>
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.CurrentSelectedOptions}" action="{!c.collapsePillGroup}" />
 
@@ -25,12 +26,13 @@
                     <div class="slds-combobox_container slds-has-selection">
                         <div
                             aura:id="combobox-drop"
-                            class="{!'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click' + (v.isFilterClosed ? 'slds-is-closed': 'slds-is-open')}"
+                            class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
                             aria-expanded="false"
                             aria-haspopup="listbox"
                             role="combobox"
                             aria-label="Advising Committees"
                             aria-controls="topLevelDropdown"
+                            onclick="{!c.handleClickWithinDropdownSection}"
                         >
                             <div
                                 class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right"
@@ -50,7 +52,6 @@
                                     class="slds-combobox__input"
                                     placeholder="Loading..."
                                     value="{!v.FilterValue}"
-                                    onmouseover="{!c.onchangeNameSearch}"
                                     onclick="{!c.toggleDropdown}"
                                     onchange="{!c.onchangeNameSearch}"
                                     variant="label-hidden"
@@ -69,7 +70,6 @@
                                 role="listbox"
                                 aria-label="Committee Options"
                                 aria-selected="false"
-                                onblur="{!c.closeDropdown}"
                             >
                                 <ul
                                     class="slds-listbox slds-listbox_vertical"

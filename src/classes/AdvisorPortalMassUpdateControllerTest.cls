@@ -1,9 +1,9 @@
 /**
-* @author Mathew Ruff, Sierra-Cedar
-* @date 2019-02-15
-*
-* 
-*/
+ * @author Mathew Ruff, Sierra-Cedar
+ * @date 2019-02-15
+ *
+ *
+ */
 @IsTest
 private class AdvisorPortalMassUpdateControllerTest {
     @IsTest
@@ -83,7 +83,7 @@ private class AdvisorPortalMassUpdateControllerTest {
         // Act
         Test.startTest();
         testCase.Subject = 'Updated Subject';
-        AdvisorPortalMassUpdateController.updateCases(new List<Case>{testCase});
+        AdvisorPortalMassUpdateController.updateCases(new List<Case>{ testCase });
         Test.stopTest();
 
         // Assert

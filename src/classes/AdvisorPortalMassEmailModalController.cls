@@ -8,11 +8,18 @@ public class AdvisorPortalMassEmailModalController {
     private static final Id ADVISOR_PORTAL_EMAIL_RTID = IDHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
 
     @AuraEnabled
-    public static void createPortalEmails(Map<Id, Case[]> contactIdToCasesMap, String subject, String body) {
+    public static void createPortalEmails(
+        Map<Id, Case[]> contactIdToCasesMap,
+        String subject,
+        String body,
+        Boolean inAllStudentsState
+    ) {
         if (contactIdToCasesMap.keySet().isEmpty()) {
             return;
         }
-        List<Portal_Email__c> portalEmailsToInsert = new List<Portal_Email__c>();
+
+        List<Portal_Email__c> portalEmailsToInsertContactEmailsOnly = new List<Portal_Email__c>();
+        List<Portal_Email__c> portalEmailsToInsertCaseEmailsOnly = new List<Portal_Email__c>();
 
         for (String contactId : contactIdToCasesMap.keySet()) {
             Case newestCase = null;
@@ -26,11 +33,7 @@ public class AdvisorPortalMassEmailModalController {
                 Email_Template_Name__c = 'Advisor Ad-hoc template'
             );
 
-            if (contactIdToCasesMap.get(contactId).size() == 0) {
-                contactEmail.Status__c = 'New';
-            }
-
-            portalEmailsToInsert.add(contactEmail);
+            portalEmailsToInsertContactEmailsOnly.add(contactEmail);
 
             // Handle emails for contacts w/ cases
             for (Case portalCase : contactIdToCasesMap.get(contactId)) {
@@ -59,11 +62,23 @@ public class AdvisorPortalMassEmailModalController {
                 portalEmailMap.get(newestCase.Id).Status__c = 'New';
             }
 
-            portalEmailsToInsert.addAll(portalEmailMap.values());
+            portalEmailsToInsertCaseEmailsOnly.addAll(portalEmailMap.values());
         }
 
-        if (!portalEmailsToInsert.isEmpty()) {
-            insert portalEmailsToInsert;
+        if (inAllStudentsState) {
+            // Send for each contact
+            for (Portal_Email__c email : portalEmailsToInsertContactEmailsOnly) {
+                email.Status__c = 'New';
+            }
+
+            if (!portalEmailsToInsertContactEmailsOnly.isEmpty()) {
+                insert portalEmailsToInsertContactEmailsOnly;
+            }
+        } else {
+            // Send for each case
+            if (!portalEmailsToInsertCaseEmailsOnly.isEmpty()) {
+                insert portalEmailsToInsertCaseEmailsOnly;
+            }
         }
     }
 }

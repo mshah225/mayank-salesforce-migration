@@ -3,6 +3,7 @@
     <aura:attribute name="EmailSubject" type="String" />
     <aura:attribute name="EmailBody" type="String" />
     <aura:attribute name="FormError" type="String" />
+    <aura:attribute name="GlobalFilterData" type="Map" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
     <aura:if isTrue="{!not(empty(v.Contacts))}">

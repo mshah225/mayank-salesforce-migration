@@ -47,6 +47,7 @@
             contactIdToCasesMap: auraMap,
             subject: component.get('v.EmailSubject'),
             body: component.get('v.EmailBody'),
+            inAllStudentsState: (component.get('v.GlobalFilterData')['allStudentsState'])
         });
         action.setCallback(this, function (response) {
             if (response.getState() !== 'SUCCESS') {

@@ -18,6 +18,7 @@
     />
     <aura:attribute name="RecordOffsetRangeTo" type="Integer" description="Last record offset in range" />
     <aura:attribute name="Total" type="Integer" description="Total number of records" />
+    <aura:attribute name="GlobalFilterData" type="Map" />
     <aura:handler name="change" value="{!v.Contacts}" action="{!c.resetViews}" />
 
     <aura:registerEvent name="refreshAdvisorPortalContacts" type="c:RefreshAdvisorPortalContacts" />
@@ -30,7 +31,7 @@
                 <c:AdvisorPortalMassTransferModal Contacts="{!v.Contacts}" ViewAsOptions="{!v.ViewAsOptions}" />
             </span>
             <span class="slds-show_inline slds-m-right_xx-small">
-                <c:AdvisorPortalMassEmailModal Contacts="{!v.Contacts}" />
+                <c:AdvisorPortalMassEmailModal Contacts="{!v.Contacts}" GlobalFilterData="{!v.GlobalFilterData}"/>
             </span>
             <span class="slds-show_inline slds-m-right_xx-small">
                 <c:AdvisorPortalMassUpdateModal Contacts="{!v.Contacts}" />

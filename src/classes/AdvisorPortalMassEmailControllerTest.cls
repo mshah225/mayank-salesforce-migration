@@ -29,7 +29,8 @@ private class AdvisorPortalMassEmailControllerTest {
         AdvisorPortalMassEmailModalController.createPortalEmails(
             mapping,
             'Test Subject',
-            'Testing some email body text.'
+            'Testing some email body text.',
+            false
         );
         Test.stopTest();
 
@@ -41,9 +42,9 @@ private class AdvisorPortalMassEmailControllerTest {
             FROM Portal_Email__c
         ];
         System.assertEquals(
-            6,
+            5,
             assertPortalEmails.size(),
-            '6 Portal Emails should have been created, 1 for the Contact and 5 for each Case.'
+            '5 Portal Emails should have been created, one for each Case (none for the Contact).'
         );
 
         for (Portal_Email__c email : assertPortalEmails) {
@@ -65,7 +66,7 @@ private class AdvisorPortalMassEmailControllerTest {
             System.assert(String.isNotBlank(email.Additional_Message_Text__c));
         }
 
-        System.assertEquals(1, emailsFoundWithOnlyContact, 'Only 1 email should have been created for the Contact.');
+        System.assertEquals(0, emailsFoundWithOnlyContact, 'No email should have been created for the Contact.');
     }
     @IsTest
     static void testCreatePortalEmailsNoCases() {
@@ -81,7 +82,8 @@ private class AdvisorPortalMassEmailControllerTest {
         AdvisorPortalMassEmailModalController.createPortalEmails(
             mapping,
             'Test Subject',
-            'Testing some email body text.'
+            'Testing some email body text.',
+            true
         );
         Test.stopTest();
 

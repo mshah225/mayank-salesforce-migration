@@ -19,7 +19,8 @@
 
         component.set('v.SelectedOptionsCount', countSelected);
     },
-    closeDropdown: function (component) {
-        component.set('v.isFilterClosed', true);
+    closeDropdown: function (component, event, helper) {
+        helper.setCountSelected(component);
+        $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
     },
 });

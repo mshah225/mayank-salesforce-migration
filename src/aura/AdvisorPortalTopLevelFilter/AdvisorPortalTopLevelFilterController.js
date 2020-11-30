@@ -120,11 +120,7 @@
 
             component.set('v.FilteredUserOptions', filteredOpts);
             component.set('v.PrevFilterValue', filterString);
-
-            $A.util.addClass(component.find('combobox-drop').getElement(), 'slds-is-open');
         } else {
-            $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
-
             let allUserOpts = component.get('v.AllUserOptions');
             component.set('v.FilteredUserOptions', allUserOpts);
             component.set('v.PrevFilterValue', '');
@@ -140,13 +136,27 @@
         component.getEvent('decrementProcessingCounterEvent').fire();
     },
 
+    handleClickWithinDropdownSection: function (component, event, helper) {
+        event.stopPropagation(); // prevent this from triggering page-wide
+    },
+
     toggleDropdown: function (component, event, helper) {
+        if (!component.get('v.OnClickOutListenerSet')) {
+            component.set('v.OnClickOutListenerSet', true);
+            
+            // close modal and cleanup page-wide listener
+            helper.handleClickOutsideDropdownSection = function (e) {
+                $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
+                document.body.removeEventListener('click', helper.handleClickOutsideDropdownSection);
+                component.set('v.OnClickOutListenerSet', false);
+            };
+            document.body.addEventListener('click', helper.handleClickOutsideDropdownSection);
+        }
+        
         $A.util.toggleClass(component.find('combobox-drop').getElement(), 'slds-is-open');
 
         if (!$A.util.hasClass(component.find('combobox-drop').getElement(), 'slds-is-open')) {
             helper.setCountSelected(component);
-        } else {
-            component.set('v.FilterValue', '');
         }
 
         let actionToUpdateCheckmarks = component.get('c.onchangeNameSearch');

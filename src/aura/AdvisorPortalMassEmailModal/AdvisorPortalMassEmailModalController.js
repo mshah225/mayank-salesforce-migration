@@ -55,7 +55,7 @@
                 return;
             }
 
-            helper.fireToast('', 'Email message(s) sent.', 'success');
+            helper.fireToast('Success', 'Email message(s) sent.', 'success');
             component.set('v.EmailSubject', '');
             component.set('v.EmailBody', '');
             component.set('v.FormError', '');

@@ -2153,7 +2153,6 @@
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
-                                                <!-- if (value != null && value != 0) && degree type doctorate, show value , else hide or 'n/a' -->
                                                 <th class="gradTD alignTop">
                                                     <div class="planMargin">
                                                         Blanket Hours
@@ -2161,9 +2160,8 @@
                                                     </div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c), 'N/A', '')} {!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c
-                                                    == 0, 'N/A', '')} {!IF(gradProgram.gradProgramPlan.Degree_Level__c !=
-                                                    'Doctorate Degree', 'N/A', '')}
+                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c != 'Doctorate Degree' || ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c)
+                                                    , '--', '')}
                                                     <span style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
                                                             <apex:param value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}" />
@@ -2181,13 +2179,12 @@
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
-                                                <!-- if value != null && value != 0, show value, else hide or 'n/a' -->
                                                 <th class="gradTD alignTop">
                                                     <div class="planMargin">Transfer Hours</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c), 'N/A', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c
-                                                    == 0, 'N/A', '')}
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c
+                                                    == 0, '--', '')}
                                                     <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
                                                             <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}" />

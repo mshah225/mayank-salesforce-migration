@@ -23,7 +23,9 @@ public without sharing class FamilyPortalController {
     public Boolean guardianSelectedCountryIsUS {
         get {
             if (familyPortalGuardian.Country__c == 'United States') {
-                familyPortalGuardian.State__c = 'Arizona';
+                if (familyPortalGuardian.State__c == null) {
+                    familyPortalGuardian.State__c = 'Arizona';
+                }
                 return true;
             } else {
                 return false;
@@ -34,7 +36,9 @@ public without sharing class FamilyPortalController {
     public Boolean guardianSelectedCountryIsCanada {
         get {
             if (familyPortalGuardian.Country__c == 'Canada') {
-                familyPortalGuardian.State__c = 'Alberta';
+                if (familyPortalGuardian.State__c == null) {
+                    familyPortalGuardian.State__c = 'Alberta';
+                }
                 return true;
             } else {
                 return false;

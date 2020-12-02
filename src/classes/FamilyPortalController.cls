@@ -14,7 +14,7 @@ public without sharing class FamilyPortalController {
             if (familyPortalGuardian.Country__c == 'United States' || familyPortalGuardian.Country__c == 'Canada') {
                 return true;
             } else {
-                if (familyPortalGuardian.State__c == null) {
+                if (familyPortalGuardian.State__c == null || familyPortalGuardian.State__c == 'Arizona') {
                     familyPortalGuardian.State__c = '';
                 }
                 return false;

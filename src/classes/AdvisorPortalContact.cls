@@ -1,11 +1,9 @@
-/**
-* @author Mathew Ruff, Sierra-Cedar
-* @date 2019-01-29
-*
-* A wrapper class used on the Advisor Portal for Contacts.
-*/
 public class AdvisorPortalContact {
-    private static final Set<String> OUTREACH_CUSTOMER_STATUSES = new Set<String>{'Outreach Required', 'Customer Replied'};
+    private static final Set<String> OUTREACH_CUSTOMER_STATUSES = new Set<String>{
+        'Outreach Required',
+        'Outreach Required - Transferred',
+        'Customer Replied'
+    };
 
     @AuraEnabled
     public Boolean isSelected { get; set; }

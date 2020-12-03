@@ -66,39 +66,6 @@
         component.set('v.ContactsDisplayed', contacts);
     },
 
-    toggleParentContact: function (component, event) {
-        let updateClient = false;
-        let atleastOneCaseIsSelected = false;
-        let contactId = event.getSource().get('v.value');
-        let contacts = component.get('v.ContactsDisplayed');
-
-        for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].portalContact.Id === contactId) {
-                if (!contacts[i].isSelected) {
-                    contacts[i].isSelected = true;
-                    updateClient = true;
-                } else {
-                    // check to remove checkmark if all cases unchecked
-                    for (let j = 0; j < contacts[i].cases.length; j++) {
-                        if (contacts[i].cases[j].isSelected) {
-                            atleastOneCaseIsSelected = true;
-                            break;
-                        }
-                    }
-                    if (!atleastOneCaseIsSelected) {
-                        // no child cases selected
-                        contacts[i].isSelected = false;
-                        updateClient = true;
-                    }
-                }
-            }
-        }
-
-        if (updateClient) {
-            component.set('v.ContactsDisplayed', contacts);
-        }
-    },
-
     openCase: function (component, event, helper) {
         let caseId = event.currentTarget.getAttribute('data-caseId');
         let contactId = event.currentTarget.getAttribute('data-contactId');

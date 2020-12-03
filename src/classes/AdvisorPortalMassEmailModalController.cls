@@ -19,7 +19,7 @@ public class AdvisorPortalMassEmailModalController {
             Case newestCase = null;
             Map<Id, Portal_Email__c> portalEmailMap = new Map<Id, Portal_Email__c>();
             Portal_Email__c contactEmail = new Portal_Email__c(
-                Status__c = 'Duplicate',
+                Status__c = 'New',
                 Contact__c = contactId,
                 Subject__c = subject,
                 Additional_Message_Text__c = body,
@@ -58,7 +58,6 @@ public class AdvisorPortalMassEmailModalController {
                 portalEmailsToInsert.addAll(portalEmailMap.values());
             } else {
                 // Handle emails for contacts w/o cases
-                contactEmail.Status__c = 'New';
                 portalEmailsToInsert.add(contactEmail);
             }
         }

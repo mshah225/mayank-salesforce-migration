@@ -194,7 +194,6 @@
                                                     checked="{!caseWrapper.isSelected}"
                                                     label="Select Case"
                                                     value="{!contactWrapper.portalContact.Id}"
-                                                    onchange="{!c.toggleParentContact}"
                                                     variant="label-hidden"
                                                 />
                                             </div>

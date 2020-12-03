@@ -91,6 +91,25 @@
         component.getEvent('decrementProcessingCounterEvent').fire();
     },
 
+    clearAll: function (component, event, helper) {
+        component.getEvent('incrementProcessingCounterEvent').fire();
+
+        let allUserOpts = component.get('v.AllUserOptions');
+        let selectedOptions = [];
+
+        for (let i = 0, len = allUserOpts.length; i < len; i++) {
+            if (!allUserOpts[i].isHeader) {
+                allUserOpts[i].isSelected = false;
+            }
+        }
+
+        component.set('v.AllUserOptions', allUserOpts);
+        component.set('v.CurrentSelectedOptions', selectedOptions);
+
+        helper.setCountSelected(component);
+        component.getEvent('decrementProcessingCounterEvent').fire();
+    },
+
     onchangeNameSearch: function (component) {
         let filterString = component.get('v.FilterValue');
         let prevFilterString = component.get('v.PrevFilterValue');

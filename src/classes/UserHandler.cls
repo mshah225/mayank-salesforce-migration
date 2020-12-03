@@ -1,7 +1,7 @@
 public without sharing class UserHandler implements ITrigger {
 
     public static Map<String, List<CollaborationGroupMember>> dupeMemberCheckMap;
-    private UserDeprovisionOrganizer userDeprovisionOrganizer;
+
     public void bulkBefore()
     {
         if(Trigger.isInsert)
@@ -53,19 +53,6 @@ public without sharing class UserHandler implements ITrigger {
 
             //throw new ContactServiceException('This is the Contact: ' + );
         }
-
-        userDeprovisionOrganizer = new UserDeprovisionOrganizer();
-
-        if (Trigger.isUpdate) {
-            userDeprovisionOrganizer.setOldUsersMap(Trigger.oldMap);
-            userDeprovisionOrganizer.setNewUsers(Trigger.new);
-            userDeprovisionOrganizer.deprovisionUsersBeforeUpdate();
-            if (userDeprovisionOrganizer.getDeprovisionedUsersWithProcessingNotes().size() > 0) {
-                String deprovisionedUsersWithProcessingNotes =
-                    JSON.serialize(userDeprovisionOrganizer.getDeprovisionedUsersWithProcessingNotes());
-                updateDeprovisionedUserProcessingNotes(deprovisionedUsersWithProcessingNotes);
-            }
-        }
     }
 
     public void bulkAfter() {
@@ -82,6 +69,14 @@ public without sharing class UserHandler implements ITrigger {
         else
         {
             addToChatterGroupFuture(Trigger.newMap.keySet());
+        }
+
+        UserDeprovisionOrganizer userDeprovisionOrganizer = new UserDeprovisionOrganizer();
+
+        if (Trigger.isUpdate) {
+            userDeprovisionOrganizer.setOldUsersMap(Trigger.oldMap);
+            userDeprovisionOrganizer.setNewUsers(Trigger.new);
+            userDeprovisionOrganizer.deprovisionUsersAfterUpdate();
         }
 
     }
@@ -121,7 +116,7 @@ public without sharing class UserHandler implements ITrigger {
     */
     public static void addToChatterGroup(Set<Id> userIds) {
         Id collabGroupId;
-        Map <String, String> chatterSettingsMap = new Map<String, String>(); // map to hold Role vs Group Name from custom setting
+        Map <String, List<String>> chatterSettingsMap = new Map<String, List<String>>(); // map to hold Role vs Group Name from custom setting
         Map <String, String> roleToEFrequency = new Map<String, String>(); // map to hold Role vs Email Frequency from custom setting
         Map <String, String> chatterGroupsMap= new Map<String, String>(); // map to store Chatter Group name vs Group Id using SOQL
 
@@ -138,7 +133,18 @@ public without sharing class UserHandler implements ITrigger {
         // using Custom Setting method to save SOQL call and using application cache
         // map to hold Role vs Group Name from custom setting
         for (Chatter_Auto_Add_Users__c caau : Chatter_Auto_Add_Users__c.getall().values()) {
-            chatterSettingsMap.put(caau.PeopleSoft_Role__c, caau.Chatter_Group_Name__c);
+            if (chatterSettingsMap.get(caau.PeopleSoft_Role__c) == null) {
+                List<String> chatterGroup = new List<String>();
+                chatterGroup.add(caau.Chatter_Group_Name__c);
+
+                chatterSettingsMap.put(caau.PeopleSoft_Role__c, chatterGroup);
+            } else {
+                List<String> chatterGroup= chatterSettingsMap.get(caau.PeopleSoft_Role__c);
+                chatterGroup.add(caau.Chatter_Group_Name__c);
+
+                chatterSettingsMap.put(caau.PeopleSoft_Role__c, chatterGroup);
+            }
+            
             roleToEFrequency.put(caau.PeopleSoft_Role__c, caau.NotificationFrequency__c);
         }
 
@@ -181,20 +187,24 @@ public without sharing class UserHandler implements ITrigger {
                 // add collaboration members into one single list for insertion
                 for(String str : userRoleList) { // roles
                     if(chatterSettingsMap.containsKey(str)) { // check if role is in map of custom setting
-                        String chatterGrpName = chatterSettingsMap.get(str);
-                        // Loop through and add the collab member Ids to a set to check against.
-                        Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck(chatterGrpName);
-                        // do not create Collaboration member if the dupeSet has the User Id already present
-                        // check if group has already been used in this transaction,
-                        // as a chatter group can be common for multiple PeopleSoft roles
-                        if (!dupeMemberIdSet.contains(user.Id) && !chatterGroupUsedSet.contains(chatterGrpName)) {
-                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
-                            newCollabMember.MemberId = user.Id;
-                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get(chatterGrpName);
-                            newCollabMember.NotificationFrequency = roleToEFrequency.get(str);
-                            collabMembersToInsert.add(newCollabMember);
+                        
+                        List<String> chatterGroupsForRole = chatterSettingsMap.get(str);
 
-                            chatterGroupUsedSet.add(chatterGrpName); // to check if a group has been used in this transaction
+                        for (String chatterGrpName : chatterGroupsForRole) {
+                            // Loop through and add the collab member Ids to a set to check against.
+                            Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck(chatterGrpName);
+                            // do not create Collaboration member if the dupeSet has the User Id already present
+                            // check if group has already been used in this transaction,
+                            // as a chatter group can be common for multiple PeopleSoft roles
+                            if (!dupeMemberIdSet.contains(user.Id) && !chatterGroupUsedSet.contains(chatterGrpName)) {
+                                CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                                newCollabMember.MemberId = user.Id;
+                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(chatterGrpName);
+                                newCollabMember.NotificationFrequency = roleToEFrequency.get(str);
+                                collabMembersToInsert.add(newCollabMember);
+
+                                chatterGroupUsedSet.add(chatterGrpName); // to check if a group has been used in this transaction
+                            }
                         }
                     }
                 }
@@ -225,12 +235,6 @@ public without sharing class UserHandler implements ITrigger {
     @future
     public static void addToChatterGroupFuture(Set<Id> userIds) {
         addToChatterGroup(userIds);
-    }
-
-    @future
-    public static void updateDeprovisionedUserProcessingNotes(String deprovisionedUsersWithProcessingNotes) {
-        List<User> deprovisionedUsers = (List<User>) JSON.deserialize(deprovisionedUsersWithProcessingNotes, List<User>.class);
-        update deprovisionedUsers;
     }
 
 }

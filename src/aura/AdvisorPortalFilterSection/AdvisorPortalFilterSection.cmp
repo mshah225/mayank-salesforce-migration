@@ -54,7 +54,6 @@
     <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
     <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />
     <aura:registerEvent name="updateCaseContactWrappersEvent" type="c:UpdateCaseContactWrappersEvent" />
-    <aura:registerEvent name="updateGlobalFilterDataEvent" type="c:UpdateGlobalFilterDataEvent" />
 
     <lightning:buttonStateful
         aura:id="filtersToggle"

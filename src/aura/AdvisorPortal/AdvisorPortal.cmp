@@ -1,7 +1,6 @@
 <aura:component access="public">
     <aura:attribute name="ContactsInView" type="AdvisorPortalContact[]" />
     <aura:attribute name="FilteredContacts" type="AdvisorPortalContact[]" />
-    <aura:attribute name="GlobalFilterData" type="Map" />
     <aura:attribute name="isProcessing" type="Boolean" default="true" />
     <aura:attribute name="processingCounter" type="Integer" default="0" />
     <aura:attribute name="AllUserOptions" type="List" />
@@ -37,12 +36,6 @@
         event="c:RefreshAdvisorPortalContacts"
         action="{!c.refreshUsersAndCaseContactWrappers}"
     />
-    <aura:handler
-        name="updateGlobalFilterDataEvent"
-        event="c:UpdateGlobalFilterDataEvent"
-        action="{!c.updateGlobalFilterData}"
-    />
-
     <lightning:spinner
         aura:id="spinner"
         variant="brand"
@@ -61,5 +54,5 @@
         SelectedViewAsUserOptions="{!v.SelectedUserOptions}"
     />
 
-    <c:AdvisorPortalDataTable Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" GlobalFilterData="{!v.GlobalFilterData}"/>
+    <c:AdvisorPortalDataTable Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" />
 </aura:component>

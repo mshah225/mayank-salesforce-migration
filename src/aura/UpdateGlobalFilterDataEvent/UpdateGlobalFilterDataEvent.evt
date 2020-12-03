@@ -1,3 +1,0 @@
-<aura:event type="COMPONENT" description="Shared (between components) data about the filters on the advisor portal page">
-    <aura:attribute name="allStudentsState" type="Boolean" />
-</aura:event>

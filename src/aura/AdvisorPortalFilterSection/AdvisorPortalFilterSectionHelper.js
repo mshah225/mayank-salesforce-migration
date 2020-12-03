@@ -68,8 +68,6 @@
                     .setParams({caseContactWrapperList: response.getReturnValue()})
                     .fire();
             }
-            // Update information about if in all students state or not
-            component.getEvent('updateGlobalFilterDataEvent').setParams({allStudentsState: component.get("v.AllCasesState")}).fire();
             
             component.getEvent('decrementProcessingCounterEvent').fire();
         });

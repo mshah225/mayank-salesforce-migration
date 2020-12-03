@@ -1,10 +1,17 @@
 ({
+    doInit: function (component, event, helper) {
+        component.set('v.SectionsOpenState', true);
+    },
+    
     resetViews: function (component, event, helper) {
         if (component.get('v.resetCheckboxesDuringViewRefresh')) {
             component.set('v.SelectAll', false);
-            component.set('v.SectionsOpenState', false);
         }
         helper.setVisibleList(component, 1, component.get('v.PageSize'));
+
+        if (component.get('v.SectionsOpenState')) {
+            component.set('v.OpenSections', component.get('v.AllSections'));
+        }
     },
 
     setVisibleList: function (component, event, helper) {

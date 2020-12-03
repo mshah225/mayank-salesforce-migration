@@ -29,8 +29,7 @@ private class AdvisorPortalMassEmailControllerTest {
         AdvisorPortalMassEmailModalController.createPortalEmails(
             mapping,
             'Test Subject',
-            'Testing some email body text.',
-            false
+            'Testing some email body text.'
         );
         Test.stopTest();
 
@@ -82,8 +81,7 @@ private class AdvisorPortalMassEmailControllerTest {
         AdvisorPortalMassEmailModalController.createPortalEmails(
             mapping,
             'Test Subject',
-            'Testing some email body text.',
-            true
+            'Testing some email body text.'
         );
         Test.stopTest();
 

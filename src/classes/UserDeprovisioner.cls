@@ -95,6 +95,15 @@ public without sharing class UserDeprovisioner {
             deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
         } catch (Exception e) {
+            if (e.getTypeName().equals('System.SObjectException')) {
+                // If this is the type - one of the custom setting details might be wrong - add which to check
+                e.setMessage(
+                    e.getMessage() +
+                    '\nSuspected incorrect setting detail: ' +
+                    whichSettingDetailIsResponsible(e.getMessage())
+                );
+            }
+
             addToProcessingNotes('Exception Thrown: ' + e.getMessage());
             addToProcessingNotes('' + e.getStackTraceString());
 
@@ -106,6 +115,32 @@ public without sharing class UserDeprovisioner {
             }
 
             ErrorLogger.logFuture(e.getTypeName(), e.getMessage(), e.getStackTraceString(), vars, debug);
+        }
+    }
+
+    private String whichSettingDetailIsResponsible(String errorMessage) {
+        if (!errorMessage.contains('Invalid field') || !errorMessage.contains(' for User')) {
+            // No field name to check for
+            return '';
+        }
+
+        String fieldName = errorMessage.substring(
+            errorMessage.indexOf('Invalid field ') + 14,
+            errorMessage.indexOf(' for User')
+        );
+        String suspectedBrokenConfigOption = '';
+
+        for (String key : deprovisionUserConfiguration.keySet()) {
+            Deprovision_User_Configuration__c config = deprovisionUserConfiguration.get(key);
+            if (config.Name__c.equals(fieldName)) {
+                suspectedBrokenConfigOption += ', ' + key;
+            }
+        }
+
+        if (suspectedBrokenConfigOption.length() < 2) {
+            return '';
+        } else {
+            return suspectedBrokenConfigOption.substring(2);
         }
     }
 

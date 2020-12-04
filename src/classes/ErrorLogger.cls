@@ -183,6 +183,34 @@ public without sharing class ErrorLogger {
     /**
      * Report exceptions via desired method (system debug logs or cases). If case fails to
      * insert, send an email alert.
+     * Future variant
+     *
+     * @param Exception The exception that needs to be reported
+     * @param List<String> A list of strings that represent the variable names and values
+     * seperated by commas
+     * @param Boolean Flag to determine if errors are logged to console or as cases
+     */
+    @future
+    public static void logFuture(
+        String orgTypeName,
+        String orgMessage,
+        String orgStackTraceString,
+        List<String> variables,
+        Boolean debug
+    ) {
+        ErrorLoggerBuiltNowException buildNowException = new ErrorLoggerBuiltNowException();
+        String newMessage = 'Future ErrorLogger\n';
+        newMessage += 'Original TypeName: ' + orgTypeName;
+        newMessage += '\nOriginal Message: ' + orgMessage;
+        newMessage += '\nOriginal StackTrace: ' + orgStackTraceString;
+        buildNowException.setMessage(newMessage);
+
+        log(buildNowException, variables, debug, new Case(), null);
+    }
+
+    /**
+     * Report exceptions via desired method (system debug logs or cases). If case fails to
+     * insert, send an email alert.
      *
      * @param Exception The exception that needs to be reported
      * @param List<String> A list of strings that represent the variable names and values
@@ -369,5 +397,8 @@ public without sharing class ErrorLogger {
      */
     public static string convertSObjectToJSON(String varName, SObject value) {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
+    }
+
+    private class ErrorLoggerBuiltNowException extends Exception {
     }
 }

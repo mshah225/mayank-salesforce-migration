@@ -238,7 +238,7 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToOldProcessingNotes
     ) {
-        Map<Id, String> userIdsToProcessingNotes = new Map<Id, String>();
+        List<User> usersWithErrors = new List<User>();
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
 
@@ -258,7 +258,9 @@ public without sharing class UserDeprovisionOrganizer {
                     processingNotes = errorNote;
                 }
 
-                userIdsToProcessingNotes.put(userId, processingNotes);
+                usersWithErrors.add(
+                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
+                );
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
@@ -267,8 +269,8 @@ public without sharing class UserDeprovisionOrganizer {
             }
         }
 
-        if (userIdsToProcessingNotes.size() > 0) {
-            updateUsersWithErrors(userIdsToProcessingNotes);
+        if (usersWithErrors.size() > 0) {
+            update usersWithErrors;
         }
     }
 
@@ -277,7 +279,7 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToOldProcessingNotes
     ) {
-        Map<Id, String> userIdsToProcessingNotes = new Map<Id, String>();
+        List<User> usersWithErrors = new List<User>();
 
         Database.DeleteResult[] deleteResult = Database.delete(recordListToOperate, false);
 
@@ -297,7 +299,9 @@ public without sharing class UserDeprovisionOrganizer {
                     processingNotes = errorNote;
                 }
 
-                userIdsToProcessingNotes.put(userId, processingNotes);
+                usersWithErrors.add(
+                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
+                );
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
@@ -306,26 +310,9 @@ public without sharing class UserDeprovisionOrganizer {
             }
         }
 
-        if (userIdsToProcessingNotes.size() > 0) {
-            updateUsersWithErrors(userIdsToProcessingNotes);
+        if (usersWithErrors.size() > 0) {
+            update usersWithErrors;
         }
-    }
-
-    @future
-    public static void updateUsersWithErrors(Map<Id, String> userIdsToProcessingNotes) {
-        List<User> usersToUpdate = new List<User>();
-
-        for (Id userId : userIdsToProcessingNotes.keySet()) {
-            usersToUpdate.add(
-                new User(
-                    Id = userId,
-                    Processing_Notes__c = userIdsToProcessingNotes.get(userId),
-                    Deprovision_User__c = false
-                )
-            );
-        }
-
-        update usersToUpdate;
     }
 
     private class DatabaseErrorException extends Exception {

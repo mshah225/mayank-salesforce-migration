@@ -105,7 +105,7 @@ public without sharing class UserDeprovisioner {
                 deprovisionedUser.Deprovision_User__c = false;
             }
 
-            ErrorLogger.log(e, vars, debug);
+            ErrorLogger.logFuture(e.getTypeName(), e.getMessage(), e.getStackTraceString(), vars, debug);
         }
     }
 

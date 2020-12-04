@@ -265,7 +265,8 @@ public without sharing class UserDeprovisionOrganizer {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                ErrorLogger.log(new DatabaseErrorException(errorNote), vars, debug);
+                DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
+                ErrorLogger.logFuture(dbException.getTypeName(), dbException.getMessage(), dbException.getStackTraceString(), vars, debug);
             }
         }
 
@@ -306,7 +307,8 @@ public without sharing class UserDeprovisionOrganizer {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                ErrorLogger.log(new DatabaseErrorException(errorNote), vars, debug);
+                DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
+                ErrorLogger.logFuture(dbException.getTypeName(), dbException.getMessage(), dbException.getStackTraceString(), vars, debug);
             }
         }
 

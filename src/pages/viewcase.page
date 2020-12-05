@@ -217,7 +217,7 @@
                                                                         <br />
                                                                     </apex:outputPanel>
                                                                     <br />
-                                                                    <apex:outputText id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"
+                                                                    <apex:outputText id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important; white-space: pre-line !important;"
                                                                     />
                                                                 </div>
                                                             </div>

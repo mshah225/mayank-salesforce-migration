@@ -236,17 +236,26 @@ public without sharing class FamilyPortalController {
         }
 
         if (isAsuriteUser) {
-            numberOfMatches = [SELECT COUNT() FROM Family_Portal_Guardian__c WHERE Email__c = :UserInfo.getUserEmail()];
-            if (numberOfMatches > 0) {
-                Family_Portal_Guardian__c guardian = [
-                    SELECT Hash_ID__c
+            User guardianUser = [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+            if (guardianUser.ContactId != null) {
+                Contact guardianContact = [SELECT Email FROM Contact WHERE Id = :guardianUser.ContactId LIMIT 1];
+
+                numberOfMatches = [
+                    SELECT COUNT()
                     FROM Family_Portal_Guardian__c
-                    WHERE Email__c = :UserInfo.getUserEmail()
-                    LIMIT 1
+                    WHERE Email__c = :guardianContact.Email
                 ];
-                hashId = guardian.Hash_ID__c;
-                isExistingGuardian = true;
-                return true;
+                if (numberOfMatches > 0) {
+                    Family_Portal_Guardian__c guardian = [
+                        SELECT Hash_ID__c
+                        FROM Family_Portal_Guardian__c
+                        WHERE Email__c = :guardianContact.Email
+                        LIMIT 1
+                    ];
+                    hashId = guardian.Hash_ID__c;
+                    isExistingGuardian = true;
+                    return true;
+                }
             }
         }
 
@@ -372,6 +381,7 @@ public without sharing class FamilyPortalController {
                 Enrollment_Status_Year__c,
                 Type__c,
                 Academic_College__c,
+                Academic_Year__c,
                 Military_Affiliation__c
             FROM Family_Portal_Student__c
             WHERE Family_Portal_Guardian__c = :guardian.Id AND Active_Relationship__c = TRUE
@@ -388,6 +398,7 @@ public without sharing class FamilyPortalController {
                         Enrollment_Status_Year__c = student.Enrollment_Status_Year__c,
                         Type__c = student.Type__c,
                         Academic_College__c = student.Academic_College__c,
+                        Academic_Year__c = student.Academic_Year__c,
                         Military_Affiliation__c = student.Military_Affiliation__c
                     ),
                     studentRowCount

@@ -52,7 +52,7 @@
                             />
                         </lightning:layoutItem>
 
-                        Sincerely,
+                        Sincerely, <br/>
                         AgentFullName
                     </lightning:layout>
                 </div>

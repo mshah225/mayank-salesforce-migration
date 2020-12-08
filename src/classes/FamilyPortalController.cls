@@ -14,7 +14,7 @@ public without sharing class FamilyPortalController {
             if (familyPortalGuardian.Country__c == 'United States' || familyPortalGuardian.Country__c == 'Canada') {
                 return true;
             } else {
-                if (familyPortalGuardian.State__c == null) {
+                if (familyPortalGuardian.State__c == null || familyPortalGuardian.State__c == 'Arizona') {
                     familyPortalGuardian.State__c = '';
                 }
                 return false;
@@ -724,14 +724,16 @@ public without sharing class FamilyPortalController {
             }
 
             for (String guardianChosenInterest : guardianChosenInterestsFromPicklistMap.keySet()) {
-                Family_Portal_Guardian_Interest__c guardianInterest = new Family_Portal_Guardian_Interest__c();
-                guardianInterest.Chosen_Interest__c = guardianChosenInterest;
-                guardianInterest.Active_Interest__c = guardianChosenInterestsFromPicklistMap.get(
-                    guardianChosenInterest
-                );
-                guardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
-                guardianInterest.Guardian_Contact__c = familyPortalGuardian.Contact__c;
-                familyPortalGuardianInterestList.add(guardianInterest);
+                if (guardianChosenInterest != null && guardianChosenInterest != '') {
+                    Family_Portal_Guardian_Interest__c guardianInterest = new Family_Portal_Guardian_Interest__c();
+                    guardianInterest.Chosen_Interest__c = guardianChosenInterest;
+                    guardianInterest.Active_Interest__c = guardianChosenInterestsFromPicklistMap.get(
+                        guardianChosenInterest
+                    );
+                    guardianInterest.Family_Portal_Guardian__c = familyPortalGuardian.Id;
+                    guardianInterest.Guardian_Contact__c = familyPortalGuardian.Contact__c;
+                    familyPortalGuardianInterestList.add(guardianInterest);
+                }
             }
 
             try {

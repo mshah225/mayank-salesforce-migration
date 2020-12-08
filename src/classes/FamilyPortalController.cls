@@ -372,6 +372,7 @@ public without sharing class FamilyPortalController {
                 Enrollment_Status_Year__c,
                 Type__c,
                 Academic_College__c,
+                Academic_Year__c,
                 Military_Affiliation__c
             FROM Family_Portal_Student__c
             WHERE Family_Portal_Guardian__c = :guardian.Id AND Active_Relationship__c = TRUE
@@ -388,6 +389,7 @@ public without sharing class FamilyPortalController {
                         Enrollment_Status_Year__c = student.Enrollment_Status_Year__c,
                         Type__c = student.Type__c,
                         Academic_College__c = student.Academic_College__c,
+                        Academic_Year__c = student.Academic_Year__c,
                         Military_Affiliation__c = student.Military_Affiliation__c
                     ),
                     studentRowCount

@@ -37,6 +37,9 @@
     pageSizeChange: function (component, event, helper) {
         let numberOfRecordsDisplayed = component.get('v.PageSize');
         helper.setVisibleList(component, 1, numberOfRecordsDisplayed);
+        if (component.get('v.SectionsOpenState')) {
+            component.set('v.OpenSections', component.get('v.AllSections'));
+        }
     },
 
     toggleSelectAll: function (component) {

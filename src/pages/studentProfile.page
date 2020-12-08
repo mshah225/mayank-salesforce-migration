@@ -2160,7 +2160,8 @@
                                                     </div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c != 'Doctorate Degree' || ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c)
+                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c != 'Doctorate Degree', 'N/A', '')} {!IF(gradProgram.gradProgramPlan.Degree_Level__c
+                                                    == 'Doctorate Degree' && ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c)
                                                     , '--', '')}
                                                     <span style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">

@@ -773,8 +773,33 @@ public without sharing class FamilyPortalController {
             reportedStudent.Guardian_Contact__c = familyPortalGuardian.Contact__c;
         }
 
+        if (familyPortalStudentList.size() == 0) {
+            List<Family_Portal_Guardian__c> matchingGuardians = [
+                SELECT Id
+                FROM Family_Portal_Guardian__c
+                WHERE Hash_ID__c = :hashId
+            ];
+
+            Set<Id> guardianIdsForDeactivation = new Set<Id>();
+            for (Family_Portal_Guardian__c matchingGuardian : matchingGuardians) {
+                guardianIdsForDeactivation.add(matchingGuardian.Id);
+            }
+
+            List<Family_Portal_Student__c> studentsToDeactivate = [
+                SELECT Id, Active_Relationship__c
+                FROM Family_Portal_Student__c
+                WHERE Family_Portal_Guardian__c IN :guardianIdsForDeactivation
+            ];
+
+            for (Family_Portal_Student__c studentToDeactivate : studentsToDeactivate) {
+                studentToDeactivate.Active_Relationship__c = false;
+            }
+
+            familyPortalStudentList.addAll(studentsToDeactivate);
+        }
+
         try {
-            insert familyPortalStudentList;
+            upsert familyPortalStudentList;
         } catch (DmlException e) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertListToJSON('familyPortalStudentList', familyPortalStudentList));

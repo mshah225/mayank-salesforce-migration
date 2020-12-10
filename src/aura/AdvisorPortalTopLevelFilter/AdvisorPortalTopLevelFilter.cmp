@@ -174,6 +174,6 @@
         <lightning:button label="Select All" title="Select All" onclick="{!c.selectAll}" />
         <lightning:button label="My Queue" title="My Queue" onclick="{!c.myQueue}" />
         <lightning:button label="Clear Selection" title="Clear Selection" onclick="{!c.clearAll}" />        
-        <lightning:button label="Apply Selected Users" title="Apply" onclick="{!c.applyChanges}" />
+        <lightning:button label="Apply Selected Users" variant="brand" title="Apply" onclick="{!c.applyChanges}" />
     </div>
 </aura:component>

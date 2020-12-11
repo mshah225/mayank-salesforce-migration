@@ -582,7 +582,7 @@ public class AdvisorPortalFilterSectionController {
 
             if (!String.isBlank(filter.major)) {
                 queryString +=
-                    ' AND ( Plan_Description__c LIKE \'%' +
+                    ' AND  Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
                     filter.major +
                     '%\' OR Plan_Code__c LIKE \'%' +
                     filter.major +

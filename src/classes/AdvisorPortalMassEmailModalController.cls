@@ -7,6 +7,12 @@
 public class AdvisorPortalMassEmailModalController {
     private static final Id ADVISOR_PORTAL_EMAIL_RTID = IDHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
 
+    @AuraEnabled 
+    public static user fetchUser() {
+        User userDetail = [SELECT Name FROM User WHERE id =: userInfo.getUserId()];
+        return userDetail;
+    }
+
     @AuraEnabled
     public static void createPortalEmails(Map<Id, Case[]> contactIdToCasesMap, String subject, String body) {
         if (contactIdToCasesMap.keySet().isEmpty()) {

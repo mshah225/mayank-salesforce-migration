@@ -37,7 +37,7 @@
                 return;
             }
 
-            helper.fireToast('', 'Case(s) Successfully Transferred.', 'success');
+            helper.fireToast('Success', 'Case(s) Successfully Transferred.', 'success');
             component.set('v.SelectedOwnerId', '');
             component.set('v.FormError', '');
             helper.toggleTransferModal(component);

@@ -104,6 +104,49 @@
             </div>
         </div>
 
+        <div style="padding:20px; background-color: rgb(250, 250, 249); padding-top:4px; padding-bottom:4px; margin-bottom:10px">
+            <nav role="navigation" style="position:relative" aria-label="Contact-Cases Navigation">
+                <div class="navigationSide navigationLeft">
+                    <lightning:button
+                        disabled="{!v.Page == 1}"
+                        variant="base"
+                        label="&lt;&lt; First"
+                        title="First Page"
+                        onclick="{!c.firstPageNavigation}"
+                    />
+                    <lightning:button
+                        disabled="{!v.Page == 1}"
+                        variant="base"
+                        label="&lt; Previous"
+                        title="Previous Page"
+                        onclick="{!c.previousPageNavigation}"
+                    />
+                </div>
+                <div class="navigationCenter">
+                    <span>Showing {!v.RecordOffsetRangeFrom} - {!v.RecordOffsetRangeTo} of {!v.Total} Contacts</span><br />
+                    <span>Page {!v.Page} of {!v.TotalPages}</span>
+                </div>
+                <div class="navigationSide navigationRight">
+                    <lightning:button
+                        disabled="{!v.Page == v.TotalPages}"
+                        class="slds-float_right"
+                        variant="base"
+                        label="Last &gt;&gt;"
+                        title="Last Page"
+                        onclick="{!c.lastPageNavigation}"
+                    />
+                    <lightning:button
+                        disabled="{!v.Page == v.TotalPages}"
+                        class="slds-float_right"
+                        variant="base"
+                        label="Next &gt;"
+                        title="Next Page"
+                        onclick="{!c.nextPageNavigation}"
+                    />
+                </div>
+            </nav>
+        </div>
+
         <lightning:accordion
             aura:id="casesAccordion"
             allowMultipleSectionsOpen="true"
@@ -262,7 +305,7 @@
             </aura:iteration>
         </lightning:accordion>
 
-        <div class="slds-page-header" role="banner">
+        <nav role="navigation" class="slds-page-header" aria-label="Contact-Cases Navigation">
             <p>
                 <lightning:button
                     disabled="{!v.Page == 1}"
@@ -309,7 +352,7 @@
                 Showing {!v.RecordOffsetRangeFrom} - {!v.RecordOffsetRangeTo} of {!v.Total} Contacts
             </p>
             <p class="slds-align_absolute-center">Page {!v.Page} of {!v.TotalPages}</p>
-        </div>
+        </nav>
     </aura:if>
 
     <aura:if isTrue="{!empty(v.ContactsDisplayed)}">

@@ -47,7 +47,7 @@
         }
 
         if (countOfSelectedCases === 0) {
-            this.fireToast('', 'Please select a case first.', 'error');
+            this.fireToast('Error', 'Please select a case first.', 'error');
             return;
         }
 

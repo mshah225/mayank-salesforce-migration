@@ -10,7 +10,7 @@
         }
 
         if (countOfSelectedContacts === 0) {
-            this.fireToast('', 'Please select a case or contact first.', 'error');
+            this.fireToast('Error', 'Please select a case or contact first.', 'error');
             return;
         }
 

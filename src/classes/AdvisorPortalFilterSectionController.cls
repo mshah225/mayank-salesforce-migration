@@ -257,6 +257,8 @@ public class AdvisorPortalFilterSectionController {
             'Id, ' +
             'Contact.Id, ' +
             'Contact.Name, ' +
+            'Contact.FirstName, ' +
+            'Contact.LastName, ' +
             'Contact.EmplId__c, ' +
             'Contact.ASURite_Id__c, ' +
             'Contact.US_Citizen__c, ' +
@@ -352,7 +354,7 @@ public class AdvisorPortalFilterSectionController {
             queryString += '\') ';
         }
 
-        queryString += ' ORDER BY Contact.Name ASC';
+        queryString += ' ORDER BY Contact.LastName ASC';
         queryString += ' LIMIT 30000';
 
         return Database.query(queryString);

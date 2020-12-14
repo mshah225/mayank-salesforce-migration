@@ -2,6 +2,10 @@
     padding: 0 8px !important;
 }
 
+.THIS .slds-truncate {
+    max-width: calc(100% - 1.75rem);
+}
+
 .THIS .slds-form-element .compound-form-adjust {
     padding: 0 !important;
 }

@@ -23,7 +23,18 @@ public class ConstituentDetail {
             this.asuriteId = constituentDetailMap.get('asuriteId');
         }
         if (constituentDetailMap.containsKey('birthdate')) {
-            this.birthdate = Date.valueOf(constituentDetailMap.get('birthdate'));
+            try {
+                this.birthdate = Date.valueOf(constituentDetailMap.get('birthdate'));
+            } catch (TypeException e) {
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertMapToJSON(
+                        'Could not get date value from provided birthdate',
+                        constituentDetailMap
+                    )
+                );
+                ErrorLogger.log(e, vars, false);
+            }
         }
         if (constituentDetailMap.containsKey('constituentId')) {
             this.constituentId = constituentDetailMap.get('constituentId');

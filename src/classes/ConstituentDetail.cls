@@ -28,9 +28,9 @@ public class ConstituentDetail {
             } catch (TypeException e) {
                 List<String> vars = new List<String>();
                 vars.add(
-                    ErrorLogger.convertMapToJSON(
+                    ErrorLogger.convertStringToJSON(
                         'Could not get date value from provided birthdate',
-                        constituentDetailMap
+                        constituentDetailMap.get('birthdate')
                     )
                 );
                 ErrorLogger.log(e, vars, false);

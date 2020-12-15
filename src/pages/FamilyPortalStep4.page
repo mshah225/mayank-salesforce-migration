@@ -1,5 +1,5 @@
 <apex:page controller="FamilyPortalController" action="{!familyPortalStep4OnLoad}" standardStylesheets="false" showHeader="false"
-    html-lang="en-US">
+    html-lang="en-US" cache="false">
     <title>ASU | Welcome ASU Families - Step 4</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 

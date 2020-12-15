@@ -75,9 +75,6 @@ global with sharing class ContactMatcherAPI {
         if (contactMatches.size() > 0) {
             res.statusCode = 200;
             res.responseBody = Blob.valueOf(JSON.serialize(contactMatches, true).replace('\n', ''));
-        } else {
-            res.statusCode = 500;
-            res.responseBody = Blob.valueOf('No matching contacts based on provided data.');
         }
     }
 }

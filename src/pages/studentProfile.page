@@ -757,7 +757,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>First Generation</th>
-                                                        <td>{!IF(theContact.First_Generation_Student__c, 'Y', 'N')}</td>
+                                                        <td>{!theContact.First_Generation_Student__c}</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Birthdate</th>

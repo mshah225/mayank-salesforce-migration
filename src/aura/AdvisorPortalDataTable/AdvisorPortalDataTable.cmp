@@ -124,7 +124,6 @@
                 </div>
                 <div class="navigationCenter">
                     <span>Showing {!v.RecordOffsetRangeFrom} - {!v.RecordOffsetRangeTo} of {!v.Total} Contacts</span><br />
-                    <span>Page {!v.Page} of {!v.TotalPages}</span>
                 </div>
                 <div class="navigationSide navigationRight">
                     <lightning:button

@@ -82,49 +82,7 @@ public without sharing class ConstituentMatcher {
     }
 
     public List<Contact> getContactsWithMatches() {
-        Set<Id> matchedContactIds = new Set<Id>();
-        for (ConstituentDetail detail : detailsToReturn) {
-            matchedContactIds.add(detail.constituentId);
-        }
-
-        List<Contact> contactMatches = [
-            SELECT
-                Id,
-                ASURite_ID__c,
-                Birthdate,
-                Email,
-                EMPLID__c,
-                FirstName,
-                LastName,
-                MailingCity,
-                MailingCountry,
-                MailingCountryCode,
-                MailingPostalCode,
-                MailingState,
-                MailingStreet,
-                Middle_Name__c,
-                Phone,
-                Preferred_First_Name__c,
-                SF_First_Name__c,
-                PS_Preferred_First_Name__c,
-                SF_Last_Name__c,
-                HomePhone,
-                MobilePhone,
-                OtherPhone,
-                SF_Mobile__c,
-                Lead_Email__c,
-                Lead_Secondary_Email__c,
-                Personal_Email__c,
-                ASU_Email__c,
-                ASU_Gmail__c,
-                EPO_Email__c,
-                SF_Mailing_Street__c,
-                SF_Mailing_ZIP__c,
-                SF_Birthdate__c
-            FROM Contact
-            WHERE Id IN :matchedContactIds
-        ];
-        return contactMatches;
+        return (List<Contact>) matchedConstituents;
     }
 
     public String getPartialFirstName(String firstName) {

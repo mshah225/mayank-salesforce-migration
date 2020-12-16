@@ -1,15 +1,24 @@
 ({
     toggleEmailModal: function (component) {
-        let countOfSelectedContacts = 0;
         let contacts = component.get('v.Contacts');
 
+        let hasSomethingSelected = false;
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].isSelected) {
-                countOfSelectedContacts++;
+            if (hasSomethingSelected) {
+                break;
+            }
+            
+            hasSomethingSelected = contacts[i].isSelected;
+
+            for (let j = 0; j < contacts[i].cases.length; j++) {
+                if (contacts[i].cases[j].isSelected) {
+                    hasSomethingSelected = true;
+                    break;
+                }
             }
         }
 
-        if (countOfSelectedContacts === 0) {
+        if (!hasSomethingSelected) {
             this.fireToast('Error', 'Please select a case or contact first.', 'error');
             return;
         }

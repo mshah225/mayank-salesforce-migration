@@ -4,12 +4,10 @@
         let contacts = component.get('v.Contacts');
 
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].isSelected) {
-                for (let j = 0; j < contacts[i].cases.length; j++) {
-                    if (contacts[i].cases[j].isSelected) {
-                        countOfSelectedCases++;
-                        break;
-                    }
+            for (let j = 0; j < contacts[i].cases.length; j++) {
+                if (contacts[i].cases[j].isSelected) {
+                    countOfSelectedCases++;
+                    break;
                 }
             }
         }

@@ -38,13 +38,17 @@
         }
 
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].isSelected) {
-                let casesForThisContact = [];
-                for (let j = 0; j < contacts[i].cases.length; j++) {
-                    if (contacts[i].cases[j].isSelected) {
-                        casesForThisContact.push(contacts[i].cases[j].portalCase);
-                    }
+            let hasSomethingSelected = contacts[i].isSelected;
+
+            let casesForThisContact = [];
+            for (let j = 0; j < contacts[i].cases.length; j++) {
+                if (contacts[i].cases[j].isSelected) {
+                    casesForThisContact.push(contacts[i].cases[j].portalCase);
+                    hasSomethingSelected = true;
                 }
+            }
+
+            if (hasSomethingSelected) {
                 contactToCaseToEmailMapping.set(contacts[i].portalContact.Id, casesForThisContact);
             }
         }

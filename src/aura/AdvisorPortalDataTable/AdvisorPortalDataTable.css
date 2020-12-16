@@ -52,3 +52,25 @@
 .THIS .persistence-icon.legend {
     margin-top: -3px;
 }
+
+.THIS .navigationSide {
+    display: inline-block;
+    position: absolute;
+    width: 120px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.THIS .navigationLeft {
+    left: 0%;
+}
+
+.THIS .navigationRight {
+    left: calc(100% - 120px);
+}
+
+.THIS .navigationCenter {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}

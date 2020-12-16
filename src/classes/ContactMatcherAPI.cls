@@ -1,12 +1,61 @@
 @RestResource(urlMapping='/ContactMatcher')
 global with sharing class ContactMatcherAPI {
+    private static List<ConstituentDetail> contactDetailsToSearch;
+
     @HttpPost
     global static void matchContacts() {
         RestRequest req = RestContext.request;
         String body = req.requestBody.toString();
         Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(body);
-        Map<String, Object> properties = (Map<String, Object>) payload.get('properties');
 
+        if (
+            (String) payload.get('type') == 'object' &&
+            (String) payload.get('description') == 'Contact Matcher Singular'
+        ) {
+            matchSingleContact(payload);
+        } else if (
+            (String) payload.get('type') == 'array' &&
+            (String) payload.get('description') == 'Contact Matcher Bulk'
+        ) {
+            matchMultipleContacts(payload);
+        }
+    }
+
+    private static void matchSingleContact(Map<String, Object> payload) {
+        ConstituentMatcher contactMatcher = new ConstituentMatcher(
+            processPayloadProperties((Map<String, Object>) payload.get('properties'))
+        );
+        contactMatcher.searchConstituents();
+        List<Contact> contactMatches = contactMatcher.getContactsWithMatches();
+
+        RestResponse res = RestContext.response;
+        if (contactMatches.size() > 0) {
+            res.statusCode = 200;
+            res.responseBody = Blob.valueOf(JSON.serialize(contactMatches, true).replace('\n', ''));
+        }
+    }
+
+    private static void matchMultipleContacts(Map<String, Object> payload) {
+        List<Object> items = (List<Object>) payload.get('items');
+        contactDetailsToSearch = new List<ConstituentDetail>();
+
+        for (Object item : items) {
+            Map<String, Object> itemMap = (Map<String, Object>) item;
+            contactDetailsToSearch.add(processPayloadProperties((Map<String, Object>) itemMap.get('properties')));
+        }
+
+        ConstituentMatcher contactMatcher = new ConstituentMatcher(contactDetailsToSearch);
+        contactMatcher.searchConstituents();
+        List<Contact> contactMatches = contactMatcher.getContactsWithMatches();
+
+        RestResponse res = RestContext.response;
+        if (contactMatches.size() > 0) {
+            res.statusCode = 200;
+            res.responseBody = Blob.valueOf(JSON.serialize(contactMatches, true).replace('\n', ''));
+        }
+    }
+
+    private static ConstituentDetail processPayloadProperties(Map<String, Object> properties) {
         String asurite = (String) ((Map<String, Object>) properties.get('asurite')).get('value');
         String birthDate = (String) ((Map<String, Object>) properties.get('birthDate')).get('value');
         String city = (String) ((Map<String, Object>) properties.get('city')).get('value');
@@ -66,15 +115,6 @@ global with sharing class ContactMatcherAPI {
             detailFieldsMap.put('mailingStreet', streetAddress);
         }
 
-        ConstituentDetail contactDetail = new ConstituentDetail(detailFieldsMap);
-        ConstituentMatcher contactMatcher = new ConstituentMatcher(contactDetail);
-        contactMatcher.searchConstituents();
-        List<Contact> contactMatches = contactMatcher.getContactsWithMatches();
-
-        RestResponse res = RestContext.response;
-        if (contactMatches.size() > 0) {
-            res.statusCode = 200;
-            res.responseBody = Blob.valueOf(JSON.serialize(contactMatches, true).replace('\n', ''));
-        }
+        return new ConstituentDetail(detailFieldsMap);
     }
 }

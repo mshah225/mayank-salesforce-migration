@@ -16,11 +16,9 @@
         }
 
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].isSelected) {
-                for (let j = 0; j < contacts[i].cases.length; j++) {
-                    if (contacts[i].cases[j].isSelected) {
-                        casesToTransfer.push(contacts[i].cases[j].portalCase);
-                    }
+            for (let j = 0; j < contacts[i].cases.length; j++) {
+                if (contacts[i].cases[j].isSelected) {
+                    casesToTransfer.push(contacts[i].cases[j].portalCase);
                 }
             }
         }

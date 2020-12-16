@@ -36,12 +36,10 @@
         let contacts = component.get('v.Contacts');
 
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].isSelected) {
-                for (let j = 0; j < contacts[i].cases.length; j++) {
-                    if (contacts[i].cases[j].isSelected) {
-                        countOfSelectedCases++;
-                        break;
-                    }
+            for (let j = 0; j < contacts[i].cases.length; j++) {
+                if (contacts[i].cases[j].isSelected) {
+                    countOfSelectedCases++;
+                    break;
                 }
             }
         }
@@ -156,82 +154,80 @@
         let contacts = component.get('v.Contacts');
 
         for (let i = 0; i < contacts.length; i++) {
-            if (contacts[i].isSelected) {
-                for (let j = 0; j < contacts[i].cases.length; j++) {
-                    if (contacts[i].cases[j].isSelected) {
-                        let theCase = contacts[i].cases[j].portalCase;
-                        theCase.Status = component.get('v.CaseStatus');
+            for (let j = 0; j < contacts[i].cases.length; j++) {
+                if (contacts[i].cases[j].isSelected) {
+                    let theCase = contacts[i].cases[j].portalCase;
+                    theCase.Status = component.get('v.CaseStatus');
 
-                        if (component.get('v.CaseStatus') === 'Closed: Administratively Resolved (No Outreach)') {
-                            theCase.Reason_Administratively_Closed__c = component.get(
-                                'v.ReasonsAdministrativelyClosed'
+                    if (component.get('v.CaseStatus') === 'Closed: Administratively Resolved (No Outreach)') {
+                        theCase.Reason_Administratively_Closed__c = component.get(
+                            'v.ReasonsAdministrativelyClosed'
+                        );
+                    }
+
+                    if (component.find('recommendedActions').get('v.value')) {
+                        for (let i = 0; i < component.find('recommendedActions').get('v.value').length; i++) {
+                            if (!theCase.Recommended_Actions__c) {
+                                theCase.Recommended_Actions__c = '';
+                            }
+
+                            if (component.find('recommendedActions').get('v.value')[i]) {
+                                theCase.Recommended_Actions__c +=
+                                    component.find('recommendedActions').get('v.value')[i] + ';';
+                            }
+                        }
+
+                        if (theCase.Recommended_Actions__c && theCase.Recommended_Actions__c.endsWith(';')) {
+                            theCase.Recommended_Actions__c = theCase.Recommended_Actions__c.substr(
+                                0,
+                                theCase.Recommended_Actions__c.length - 1
                             );
                         }
-
-                        if (component.find('recommendedActions').get('v.value')) {
-                            for (let i = 0; i < component.find('recommendedActions').get('v.value').length; i++) {
-                                if (!theCase.Recommended_Actions__c) {
-                                    theCase.Recommended_Actions__c = '';
-                                }
-
-                                if (component.find('recommendedActions').get('v.value')[i]) {
-                                    theCase.Recommended_Actions__c +=
-                                        component.find('recommendedActions').get('v.value')[i] + ';';
-                                }
-                            }
-
-                            if (theCase.Recommended_Actions__c && theCase.Recommended_Actions__c.endsWith(';')) {
-                                theCase.Recommended_Actions__c = theCase.Recommended_Actions__c.substr(
-                                    0,
-                                    theCase.Recommended_Actions__c.length - 1
-                                );
-                            }
-                        }
-
-                        if (component.get('v.RenderRecommendedActionOther')) {
-                            theCase.Recommended_Actions_Other__c = component.get('v.RecommendedActionOther');
-                        }
-
-                        if (component.get('v.StudentsIntentions')) {
-                            theCase.Student_Intention__c = component.get('v.StudentsIntentions');
-                        }
-
-                        if (component.find('notReturning') && component.find('notReturning').get('v.value')) {
-                            theCase.Reasons_Not_Returning__c = '';
-
-                            for (let i = 0; i < component.find('notReturning').get('v.value').length; i++) {
-                                if (component.find('notReturning').get('v.value')[i]) {
-                                    theCase.Reasons_Not_Returning__c +=
-                                        component.find('notReturning').get('v.value')[i] + ';';
-                                }
-                            }
-
-                            if (theCase.Reasons_Not_Returning__c && theCase.Reasons_Not_Returning__c.endsWith(';')) {
-                                theCase.Reasons_Not_Returning__c = theCase.Reasons_Not_Returning__c.substr(
-                                    0,
-                                    theCase.Reasons_Not_Returning__c.length - 1
-                                );
-                            }
-                        }
-
-                        if (component.get('v.RenderNotReturningOther')) {
-                            theCase.Reasons_Not_Returning_Other__c = component.get('v.NotReturningOther');
-                        }
-
-                        if (component.get('v.StudentReturnTerm')) {
-                            theCase.What_term_is_the_student_planning_to_ret__c = component.get('v.StudentReturnTerm');
-                        }
-
-                        if (component.get('v.StudentRisk')) {
-                            theCase.Student_Presented_Risk_for__c = component.get('v.StudentRisk');
-                        }
-
-                        if (component.get('v.StudentRisk') === 'Other') {
-                            theCase.Student_Presented_Risk_for_Other__c = component.get('v.StudentRiskOther');
-                        }
-
-                        casesToUpdate.push(theCase);
                     }
+
+                    if (component.get('v.RenderRecommendedActionOther')) {
+                        theCase.Recommended_Actions_Other__c = component.get('v.RecommendedActionOther');
+                    }
+
+                    if (component.get('v.StudentsIntentions')) {
+                        theCase.Student_Intention__c = component.get('v.StudentsIntentions');
+                    }
+
+                    if (component.find('notReturning') && component.find('notReturning').get('v.value')) {
+                        theCase.Reasons_Not_Returning__c = '';
+
+                        for (let i = 0; i < component.find('notReturning').get('v.value').length; i++) {
+                            if (component.find('notReturning').get('v.value')[i]) {
+                                theCase.Reasons_Not_Returning__c +=
+                                    component.find('notReturning').get('v.value')[i] + ';';
+                            }
+                        }
+
+                        if (theCase.Reasons_Not_Returning__c && theCase.Reasons_Not_Returning__c.endsWith(';')) {
+                            theCase.Reasons_Not_Returning__c = theCase.Reasons_Not_Returning__c.substr(
+                                0,
+                                theCase.Reasons_Not_Returning__c.length - 1
+                            );
+                        }
+                    }
+
+                    if (component.get('v.RenderNotReturningOther')) {
+                        theCase.Reasons_Not_Returning_Other__c = component.get('v.NotReturningOther');
+                    }
+
+                    if (component.get('v.StudentReturnTerm')) {
+                        theCase.What_term_is_the_student_planning_to_ret__c = component.get('v.StudentReturnTerm');
+                    }
+
+                    if (component.get('v.StudentRisk')) {
+                        theCase.Student_Presented_Risk_for__c = component.get('v.StudentRisk');
+                    }
+
+                    if (component.get('v.StudentRisk') === 'Other') {
+                        theCase.Student_Presented_Risk_for_Other__c = component.get('v.StudentRiskOther');
+                    }
+
+                    casesToUpdate.push(theCase);
                 }
             }
         }

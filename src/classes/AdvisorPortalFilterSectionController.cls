@@ -406,7 +406,7 @@ public class AdvisorPortalFilterSectionController {
                     AND (Student__r.Name = :filter.studentString
                     OR Student__r.EmplId__c = :filter.studentString
                     OR Student__r.ASURite_ID__c = :filter.studentString)
-                ORDER BY Student__r.Name ASC
+                ORDER BY Student__r.LastName ASC
                 LIMIT 10000
             ];
         } else {
@@ -425,7 +425,7 @@ public class AdvisorPortalFilterSectionController {
                     Student__r.Curr_Cont_Prediction_Level__c
                 FROM Success_Student__c
                 WHERE Success_Pod__r.OwnerId IN :viewAsOptions AND Is_Active__c = TRUE
-                ORDER BY Student__r.Name ASC
+                ORDER BY Student__r.LastName ASC
                 LIMIT 10000
             ];
         }

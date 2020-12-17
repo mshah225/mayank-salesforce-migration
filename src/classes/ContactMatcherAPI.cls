@@ -10,12 +10,12 @@ global with sharing class ContactMatcherAPI {
 
         if (
             (String) payload.get('type') == 'object' &&
-            (String) payload.get('description') == 'Contact Matcher Singular'
+            (String) payload.get('description') == 'Contact Matcher One-to-Many'
         ) {
             matchSingleContact(payload);
         } else if (
             (String) payload.get('type') == 'array' &&
-            (String) payload.get('description') == 'Contact Matcher Bulk'
+            (String) payload.get('description') == 'Contact Matcher Many-to-Many'
         ) {
             matchMultipleContacts(payload);
         }

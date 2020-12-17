@@ -10,18 +10,18 @@ global with sharing class ContactMatcherAPI {
 
         if (
             (String) payload.get('type') == 'object' &&
-            (String) payload.get('description') == 'Contact Matcher Singular'
+            (String) payload.get('description') == 'Contact Matcher One-to-Many'
         ) {
-            matchSingleContact(payload);
+            matchOneToMany(payload);
         } else if (
             (String) payload.get('type') == 'array' &&
-            (String) payload.get('description') == 'Contact Matcher Bulk'
+            (String) payload.get('description') == 'Contact Matcher Many-to-Many'
         ) {
-            matchMultipleContacts(payload);
+            matchManyToMany(payload);
         }
     }
 
-    private static void matchSingleContact(Map<String, Object> payload) {
+    private static void matchOneToMany(Map<String, Object> payload) {
         ConstituentMatcher contactMatcher = new ConstituentMatcher(
             processPayloadProperties((Map<String, Object>) payload.get('properties'))
         );
@@ -35,7 +35,7 @@ global with sharing class ContactMatcherAPI {
         }
     }
 
-    private static void matchMultipleContacts(Map<String, Object> payload) {
+    private static void matchManyToMany(Map<String, Object> payload) {
         List<Object> items = (List<Object>) payload.get('items');
         contactDetailsToSearch = new List<ConstituentDetail>();
 

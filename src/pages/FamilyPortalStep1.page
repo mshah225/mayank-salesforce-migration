@@ -1,6 +1,6 @@
 <apex:page controller="FamilyPortalController" action="{!familyPortalStep1OnLoad}" standardStylesheets="false" showHeader="false"
     html-lang="en-US" cache="false">
-    <title>ASU | Welcome ASU Families - Step 1</title>
+    <title>ASU | ASU Family - Step 1</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
     <head>
@@ -11,7 +11,7 @@
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title-welcome" class="asu-header-width">
-                <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
+                <a href="https://webapp4.asu.edu/myasu">ASU Family</a>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
                                         </apex:commandLink>
                                     </apex:outputPanel>
                                     <apex:outputPanel id="family-portal-1-header-h2-anonymous" layout="none" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}">
-                                        <h2>Welcome to the ASU portal for family members!</h2>
+                                        <h2>Welcome to the ASU Family</h2>
                                         <p class="lead">By filling out your information, we will be able to keep in touch with you with updates
                                             and information about ASU that matter to you and your family.</p>
                                         <div class="family-portal-1-body">

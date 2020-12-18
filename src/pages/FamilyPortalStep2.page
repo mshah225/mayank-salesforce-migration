@@ -1,6 +1,6 @@
 <apex:page controller="FamilyPortalController" action="{!familyPortalStep2OnLoad}" standardStylesheets="false" showHeader="false"
     html-lang="en-US" cache="false">
-    <title>ASU | Welcome ASU Families - Step 2</title>
+    <title>ASU | ASU Family - Step 2</title>
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -13,7 +13,7 @@
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title" class="asu-header-width">
-                <a href="https://webapp4.asu.edu/myasu">Welcome ASU Families</a>
+                <a href="https://webapp4.asu.edu/myasu">ASU Family</a>
             </div>
         </div>
     </div>

@@ -28,7 +28,8 @@ public class PortalEmailService {
         }
     }
 
-    @Future @TestVisible
+    @Future
+    @TestVisible
     private static void enqueueAdvisor(Set<Id> emailIds) {
         Map<Id, String> studentPrimaryEmailMap = new Map<Id, String>();
         Map<Id, String> studentPrimaryEmailTemplateMap = new Map<Id, String>();
@@ -43,12 +44,20 @@ public class PortalEmailService {
                 throw new PortalEmailServiceException('EmailIds parameter is null');
             }
 
-            emailsToUpdate = new Map<Id, Portal_Email__c>([
-                SELECT Primary_Owner_Id__c, Case_Most_Recent_Queue__c, RecordTypeId, From_Address__c,
-                    Success_Student__c, Email_Template_Name__c, Contact__r.FirstName
-                FROM Portal_Email__c
-                WHERE Id IN :emailIds
-            ]);
+            emailsToUpdate = new Map<Id, Portal_Email__c>(
+                [
+                    SELECT
+                        Primary_Owner_Id__c,
+                        Case_Most_Recent_Queue__c,
+                        RecordTypeId,
+                        From_Address__c,
+                        Success_Student__c,
+                        Email_Template_Name__c,
+                        Contact__r.FirstName
+                    FROM Portal_Email__c
+                    WHERE Id IN :emailIds
+                ]
+            );
 
             // Prep the validator
             Validator.setPrefix(Group.class);
@@ -149,7 +158,8 @@ public class PortalEmailService {
         }
     }
 
-    @Future @TestVisible
+    @Future
+    @TestVisible
     private static void enqueueCoach(Set<Id> emailIds) {
         Map<Id, Portal_Email__c> emailsToUpdate;
         List<String> vars = new List<String>();
@@ -159,11 +169,9 @@ public class PortalEmailService {
                 throw new PortalEmailServiceException('EmailIds parameter is null');
             }
 
-            emailsToUpdate = new Map<Id, Portal_Email__c>([
-                SELECT From_Address__c, CreatedBy.Recruiter_Email__c
-                FROM Portal_Email__c
-                WHERE Id IN :emailIds
-            ]);
+            emailsToUpdate = new Map<Id, Portal_Email__c>(
+                [SELECT From_Address__c, CreatedBy.Recruiter_Email__c FROM Portal_Email__c WHERE Id IN :emailIds]
+            );
 
             for (Portal_Email__c pe : emailsToUpdate.values()) {
                 pe.From_Address__c = pe.CreatedBy.Recruiter_Email__c;
@@ -183,25 +191,43 @@ public class PortalEmailService {
         List<EmailMessage> newMessages = new List<EmailMessage>();
 
         for (Portal_Email__c pe : [
-            SELECT From_Address__c, Contact_Email__c, Subject__c, Additional_Message_Text__c, Case__c, From_Name__c,
-                Email_Template_Name__c, Contact__r.FirstName, CreatedBy.Name, Status__c
+            SELECT
+                From_Address__c,
+                Contact_Email__c,
+                Subject__c,
+                Additional_Message_Text__c,
+                Case__c,
+                From_Name__c,
+                Email_Template_Name__c,
+                Contact__r.FirstName,
+                CreatedBy.Name,
+                Status__c
             FROM Portal_Email__c
             WHERE Id IN :emailIds
         ]) {
             if ((pe.Case__c != null || pe.Contact__c != null) && pe.Status__c != 'Cancelled') {
-                newMessages.add(new EmailMessage(
-                    FromAddress = pe.From_Address__c,
-                    FromName = pe.From_Name__c,
-                    ToAddress = pe.Contact_Email__c,
-                    ParentId = (pe.Case__c != null) ? pe.Case__c : pe.Contact__c,
-                    Subject = pe.Subject__c,
-                    HtmlBody = 'Dear ' + pe.Contact__r.FirstName + ',<br/><br/>' + pe.Additional_Message_Text__c +
-                        '<br/><br/>Sincerely,<br/>' + pe.CreatedBy.Name,
-                    TextBody = 'Dear ' + pe.Contact__r.FirstName + ',\n\n' + pe.Additional_Message_Text__c +
-                        '\n\nSincerely,\n' + pe.CreatedBy.Name
-                ));
+                newMessages.add(
+                    new EmailMessage(
+                        FromAddress = pe.From_Address__c,
+                        FromName = pe.From_Name__c,
+                        ToAddress = pe.Contact_Email__c,
+                        ParentId = (pe.Case__c != null) ? pe.Case__c : pe.Contact__c,
+                        Subject = pe.Subject__c,
+                        HtmlBody = 'Dear ' +
+                            pe.Contact__r.FirstName +
+                            ',<br/><br/>' +
+                            pe.Additional_Message_Text__c +
+                            '<br/><br/>Sincerely,<br/>' +
+                            pe.CreatedBy.Name,
+                        TextBody = 'Dear ' +
+                            pe.Contact__r.FirstName +
+                            ',\n\n' +
+                            pe.Additional_Message_Text__c +
+                            '\n\nSincerely,\n' +
+                            pe.CreatedBy.Name
+                    )
+                );
             }
-
         }
 
         if (newMessages.size() > 0) {
@@ -209,5 +235,6 @@ public class PortalEmailService {
         }
     }
 
-    private class PortalEmailServiceException extends Exception { }
+    private class PortalEmailServiceException extends Exception {
+    }
 }

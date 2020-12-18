@@ -11,6 +11,7 @@ public class UserFactory {
                     TimeZoneSidKey = 'America/Phoenix',
                     LocaleSidKey = 'en_US',
                     EmailEncodingKey = 'ISO-8859-1',
+                    ProfileId='00ed00000017Iob', 
                     LanguageLocaleKey = 'en_US'
                 )
             );

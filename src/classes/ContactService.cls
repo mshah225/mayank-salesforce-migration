@@ -264,6 +264,5 @@ public class ContactService
         return getContactInformation(contactId, '');
     }
 
-
     public class ContactServiceException extends Exception {}
 }

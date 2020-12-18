@@ -1,19 +1,19 @@
-<apex:component >
+<apex:component>
     <!-- This component renders the necessary resources used by the page. -->
-    <apex:attribute name="linkList" description="The list of links from My ASU" type="Link[]"/>
+    <apex:attribute name="menuLinks" description="The list of links from My ASU" type="Link[]" />
 
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}"/>
-    <apex:includeScript value="{!URLFOR($Resource.jquery_2_1_1)}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}" />
+    <apex:includeScript value="{!URLFOR($Resource.jquery_2_1_1)}" />
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303,
-            '/dist/css/bootstrap.min.css')}"/>
+            '/dist/css/bootstrap.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/css/asu_header.min.css')}"/>
+            'MyASUHeader4_3/css/asu_header.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/css/myASUHeader.min.css')}"/>
+            'MyASUHeader4_3/css/myASUHeader.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"/>
+            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
     <c:myASUStylesMin />
     <apex:stylesheet value="{!URLFOR($Resource.wrappedBrandGuide,
         'systemtheme.css')}" />
@@ -23,7 +23,7 @@
         'innovation-main.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.wrappedBrandGuide,
         'forms.css')}" />
-    
+
     <!--[if IE 9]>
     <style type="text/css">
         #asu_universal_nav ul ul {
@@ -40,7 +40,7 @@
         var jsonHeaderString = '[';
     </script>
 
-    <apex:repeat value="{!linkList}" var="link">
+    <apex:repeat value="{!menuLinks}" var="link">
         <script>
             jsonHeaderString += '{"title":"{!link.name}","path":"{!link.url}"},';
         </script>
@@ -52,9 +52,9 @@
         window.ASUHeader = window.ASUHeader || {};
         ASUHeader.site_menu = ASUHeader.site_menu || {};
 
-        if ("{!linkList.size}" > 0) {
+        if ("{!menuLinks.size}" > 0) {
             var pos = jsonHeaderString.lastIndexOf(',');
-            jsonHeaderString = jsonHeaderString.substring(0,pos);
+            jsonHeaderString = jsonHeaderString.substring(0, pos);
             jsonHeaderString += ']';
             ASUHeader.site_menu.json = jsonHeaderString;
         }
@@ -69,7 +69,7 @@
 
         ASUHeader.site_menu.site_name = "Student Service Center";
         ASUHeader.user_signedin = true;
-        ASUHeader.user_displayname = '{!$User.FirstName}';
+        ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
     </script>
 
     <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->

@@ -1,6 +1,5 @@
 <apex:page contentType="text/plain" showHeader="false">
-User-Agent: gsa-crawler 
-Disallow: 
 User-Agent: * 
-Disallow: / 
+Disallow: /SubscriptionCenter
+Disallow: /asuchat
 </apex:page>

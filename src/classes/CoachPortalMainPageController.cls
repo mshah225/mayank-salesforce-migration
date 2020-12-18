@@ -1,10 +1,11 @@
 /*****************************************
-* File: CoachPortalMainPageController
-* Author: meruff, adapted from AdvisingPortalMainPageController.cls
-* Description: Controller for CoachPortalMainPage
-******************************************/
+ * File: CoachPortalMainPageController
+ * Author: meruff, adapted from AdvisingPortalMainPageController.cls
+ * Description: Controller for CoachPortalMainPage
+ ******************************************/
 public with sharing class CoachPortalMainPageController {
-    public CoachPortalMainPageController() { }
+    public CoachPortalMainPageController() {
+    }
 
     /*
      * The ID provided by the view as component to be passed to the view as Body
@@ -17,7 +18,6 @@ public with sharing class CoachPortalMainPageController {
 
             return ownerId;
         }
-
         set;
     }
 
@@ -37,7 +37,6 @@ public with sharing class CoachPortalMainPageController {
 
             return myResource;
         }
-
         set;
     }
 
@@ -52,7 +51,6 @@ public with sharing class CoachPortalMainPageController {
 
             return mySuccessRole;
         }
-
         set;
     }
 
@@ -67,7 +65,6 @@ public with sharing class CoachPortalMainPageController {
 
             return mySuccessPod;
         }
-
         set;
     }
 
@@ -102,7 +99,6 @@ public with sharing class CoachPortalMainPageController {
 
             return viewAsOptions;
         }
-
         set;
     }
 
@@ -125,7 +121,6 @@ public with sharing class CoachPortalMainPageController {
 
             return mySubordinateOptions;
         }
-
         set;
     }
 
@@ -139,10 +134,11 @@ public with sharing class CoachPortalMainPageController {
             for (Success_Resource__c sr : [
                 SELECT Id, Name, Resource__r.Name, Resource_Name__c
                 FROM Success_Resource__c
-                WHERE RecordTypeId = :CoachResourceRTID
-                AND Success_POD__c = :mySuccessPod
-                AND Resource__c != :ownerId
-                AND isActive__c = true
+                WHERE
+                    RecordTypeId = :CoachResourceRTID
+                    AND Success_POD__c = :mySuccessPod
+                    AND Resource__c != :ownerId
+                    AND isActive__c = true
                 ORDER BY Name ASC
             ]) {
                 mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);
@@ -150,7 +146,6 @@ public with sharing class CoachPortalMainPageController {
 
             return mySubordinates;
         }
-
         set;
     }
 
@@ -165,7 +160,6 @@ public with sharing class CoachPortalMainPageController {
 
             return CoachResourceRTID;
         }
-
         set;
     }
 
@@ -180,7 +174,6 @@ public with sharing class CoachPortalMainPageController {
 
             return CoachCaseRTID;
         }
-
         set;
     }
 
@@ -195,7 +188,6 @@ public with sharing class CoachPortalMainPageController {
 
             return CoachEmailRTID;
         }
-
         set;
     }
 
@@ -205,19 +197,23 @@ public with sharing class CoachPortalMainPageController {
     public String myProactiveQuery {
         get {
             if (ownerId != null) {
-                myProactiveQuery = '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, ' +
-                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+                myProactiveQuery =
+                    '' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.EdPlus_Student_Reported_Timezone__c, ' +
+                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, STRM__c, Session__c ' +
                     'FROM Case ' +
-                    'WHERE OwnerId = \'' + ownerId + '\' ' +
+                    'WHERE OwnerId = \'' +
+                    ownerId +
+                    '\' ' +
                     'AND Category__c != \'Watchlist\' ' +
-                    'AND recordTypeId = \'' + CoachCaseRTID + '\' ' +
+                    'AND recordTypeId = \'' +
+                    CoachCaseRTID +
+                    '\' ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC';
             }
 
             return myProactiveQuery;
         }
-
         set;
     }
 
@@ -227,19 +223,23 @@ public with sharing class CoachPortalMainPageController {
     public String myWatchlistQuery {
         get {
             if (ownerId != null) {
-                myWatchlistQuery = '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Contact.FirstName, Contact.LastName, ' +
+                myWatchlistQuery =
+                    '' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Contact.FirstName, Contact.LastName, Contact.EdPlus_Student_Reported_Timezone__c, ' +
                     'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                     'FROM Case ' +
-                    'WHERE OwnerId = \'' + ownerId + '\' ' +
+                    'WHERE OwnerId = \'' +
+                    ownerId +
+                    '\' ' +
                     'AND Category__c = \'Watchlist\' ' +
-                    'AND recordTypeId = \'' + CoachCaseRTID + '\' ' +
+                    'AND recordTypeId = \'' +
+                    CoachCaseRTID +
+                    '\' ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC';
             }
 
             return myWatchlistQuery;
         }
-
         set;
     }
 
@@ -249,18 +249,20 @@ public with sharing class CoachPortalMainPageController {
     public String myStudentsQuery {
         get {
             if (ownerId != null) {
-                myStudentsQuery = '' +
+                myStudentsQuery =
+                    '' +
                     'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ' +
                     'ASURiteID__c,Student__r.FirstName, Student__r.LastName ' +
                     'FROM Success_Student__c ' +
-                    'WHERE Success_Resource__r.Resource__c = \'' + ownerId + '\' ' +
+                    'WHERE Success_Resource__r.Resource__c = \'' +
+                    ownerId +
+                    '\' ' +
                     'AND Is_Active__c = true ' +
                     'AND Coaching_Student__c = true ORDER BY Student_Name__c ASC';
             }
 
             return myStudentsQuery;
         }
-
         set;
     }
 
@@ -270,11 +272,16 @@ public with sharing class CoachPortalMainPageController {
     public String mySummaryListQuery {
         get {
             if (ownerId != null) {
-                mySummaryListQuery = '' +
+                mySummaryListQuery =
+                    '' +
                     'SELECT count(Id) total, Subject ' +
                     'FROM Case ' +
-                    'WHERE OwnerId = \'' + ownerId + '\' ' +
-                    'AND recordTypeId = \'' + CoachCaseRTID + '\' ' +
+                    'WHERE OwnerId = \'' +
+                    ownerId +
+                    '\' ' +
+                    'AND recordTypeId = \'' +
+                    CoachCaseRTID +
+                    '\' ' +
                     'AND IsClosed = false ' +
                     'AND Category__c != \'Watchlist\' ' +
                     'GROUP BY Subject ' +
@@ -283,7 +290,6 @@ public with sharing class CoachPortalMainPageController {
 
             return mySummaryListQuery;
         }
-
         set;
     }
 
@@ -303,7 +309,6 @@ public with sharing class CoachPortalMainPageController {
 
             return viewAsOptions.size() > 1 ? true : false;
         }
-
         set;
     }
 }

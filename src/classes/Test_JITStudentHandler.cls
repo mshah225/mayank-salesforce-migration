@@ -1,6 +1,6 @@
 @isTest
 public with sharing class Test_JITStudentHandler {
-    @testSetup static void createTestData() {
+    @testSetup static void setUpData() {
         Contact testContact = ContactService.createTestContact();
         testContact.ASURite_ID__c = 'testJIT';
 

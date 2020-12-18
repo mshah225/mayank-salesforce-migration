@@ -205,13 +205,13 @@ public class PortalEmailService {
             FROM Portal_Email__c
             WHERE Id IN :emailIds
         ]) {
-            if ((pe.Case__c != null || pe.Contact__c != null) && pe.Status__c != 'Cancelled') {
+            if (pe.Case__c != null && pe.Contact__c != null && pe.Status__c != 'Cancelled') {
                 newMessages.add(
                     new EmailMessage(
                         FromAddress = pe.From_Address__c,
                         FromName = pe.From_Name__c,
                         ToAddress = pe.Contact_Email__c,
-                        ParentId = (pe.Case__c != null) ? pe.Case__c : pe.Contact__c,
+                        ParentId = pe.Case__c,
                         Subject = pe.Subject__c,
                         HtmlBody = 'Dear ' +
                             pe.Contact__r.FirstName +

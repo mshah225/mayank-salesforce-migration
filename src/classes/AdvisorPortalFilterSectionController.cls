@@ -252,6 +252,7 @@ public class AdvisorPortalFilterSectionController {
             'Change_Date__c, ' +
             'Curr_Cont_Prediction_Level__c, ' +
             'Most_Recent_Outlook_Change_Direction__c, ' +
+            'Most_Recent_Queue__c, ' +
             'OwnerId, ' +
             'ContactId, ' +
             'Id, ' +

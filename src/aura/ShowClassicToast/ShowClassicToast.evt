@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="ShowClassicToast">
+    <aura:attribute name="title" type="String" description="Optional title of the message."/>
+    <aura:attribute name="message" type="String" required="true" description="The message to display."/>
+    <aura:attribute name="type" type="String" required="true" default="info" description="'error', 'success', or 'info'"/>
+    <aura:attribute name="duration" type="Integer" default="5000" description="How long the message should show on screen, default is 5 seconds."/>
+</aura:event>

@@ -64,27 +64,12 @@ public class CivitasPersistenceController {
                     LIMIT 1
                 ].Session_A_C_Start_Date__c;
                 startMonth = startDate.month();
-                startDate = startDate.addDays(CENSUS_OFFSET);
-                modifyDatesIfTodayIsBeforeCensusDate();
             }
             return startDate;
         }
         set;
     }
     
-    private void modifyDatesIfTodayIsBeforeCensusDate() {
-        if (startDate >= TODAY) {
-                endMonth = startDate.month();
-                endDate = startDate.addDays(CENSUS_OFFSET*-1);
-                startDate = [Select Session_A_C_Start_Date__c 
-                             FROM Term__c 
-                             WHERE PeopleSoft_Code__c =: prevTerm
-                             LIMIT 1].Session_A_C_Start_Date__c;
-                startMonth = startDate.month();
-                startDate = startdate.addDays(CENSUS_OFFSET);
-        }
-    }
-
     public Date endDate {
         get {
             if (endDate == null) {
@@ -93,7 +78,6 @@ public class CivitasPersistenceController {
                     WHERE PeopleSoft_Code__c =: nextTerm
                     LIMIT 1
                 ].Session_A_C_Start_Date__c;
-                endDate = endDate.addDays(CENSUS_OFFSET);
                 endMonth = endDate.month();
             }
             return endDate;

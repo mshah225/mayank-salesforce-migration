@@ -603,7 +603,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Contact>{ testContact1, testContact2 };
 
         Case_Classification__c parent = new Case_Classification__c(
-            Name = 'test-parent-ap-r1',
+            Name = 'ASU Advisor Outreach',
             Active__c = true,
             Visible__c = true,
             Record_Types_String__c = 'wer',

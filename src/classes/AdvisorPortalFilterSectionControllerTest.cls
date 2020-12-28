@@ -45,10 +45,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         // Arrange
         Contact testContact = [SELECT Id FROM Contact LIMIT 1];
 
-        List<String> queueIds = new List<String>();
-        for (Group g : [SELECT Id FROM Group WHERE Type = 'Queue']) {
-            queueIds.add(g.Id);
-        }
+        String queueId = [SELECT QueueId FROM QueueSobject WHERE SobjectType = 'Case' LIMIT 1].QueueId;
 
         List<Case> testCases = TestDataFactory.createCases(3);
         Integer i = 0;
@@ -56,14 +53,16 @@ private class AdvisorPortalFilterSectionControllerTest {
             c.ContactId = testContact.Id;
             c.Subject = 'Subject ' + i;
             c.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-            c.OwnerId = queueIds[0];
+            c.OwnerId = queueId;
             i++;
         }
         insert testCases;
 
         // Act
         Test.startTest();
-        Map<String, String> subjectMap = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(queueIds);
+        Map<String, String> subjectMap = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(
+            new List<String>{ queueId }
+        );
         Test.stopTest();
 
         // Assert
@@ -94,10 +93,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             new Case_Classification__c(Id = functionalGroupId, Name = 'ASU Advisor Outreach')
         };
 
-        List<String> queueIds = new List<String>();
-        for (Group g : [SELECT Id FROM Group WHERE Type = 'Queue']) {
-            queueIds.add(g.Id);
-        }
+        String queueId = [SELECT QueueId FROM QueueSobject WHERE SobjectType = 'Case' LIMIT 1].QueueId;
 
         CaseFactory.AdvisorOutreachCase watchlistCaseMaker = new CaseFactory.AdvisorOutreachCase(
             UserInfo.getUserId(),
@@ -111,13 +107,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case caseToFind = (Case) watchlistCaseMaker.create(1)[0];
         caseToFind.Subject = 'Test Subject';
         caseToFind.Followup_Date__c = System.today().addDays(10);
-        caseToFind.ownerId = queueIds[0];
+        caseToFind.ownerId = queueId;
         insert caseToFind;
 
         // Act
         Test.startTest();
         Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
-            queueIds
+            new List<String>{ queueId }
         );
         Test.stopTest();
 
@@ -455,10 +451,12 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         Student_Program_Plan__c studentProgramPlan1 = new Student_Program_Plan__c(
             Contact__c = testContact1.Id,
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'test-code-ap-r1'
         );
         Student_Program_Plan__c studentProgramPlan2 = new Student_Program_Plan__c(
             Contact__c = testContact2.Id,
+            Plan_Type_Text__c = 'MAJ',
             Plan_Description__c = 'test-description-ap-r2'
         );
 
@@ -605,7 +603,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Contact>{ testContact1, testContact2 };
 
         Case_Classification__c parent = new Case_Classification__c(
-            Name = 'test-parent-ap-r1',
+            Name = 'ASU Advisor Outreach',
             Active__c = true,
             Visible__c = true,
             Record_Types_String__c = 'wer',
@@ -1397,6 +1395,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Cohort__c = 'Senior',
                 Campus__c = listOfLocations[0].Id,
                 Residency__c = 'Resident',
+                Plan_Type_Text__c = 'MAJ',
                 Plan_Description__c = 'Computer Science'
             )
         );
@@ -1406,6 +1405,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Cohort__c = 'Junior',
                 Campus__c = listOfLocations[1].Id,
                 Residency__c = 'International',
+                Plan_Type_Text__c = 'MAJ',
                 Plan_Description__c = 'Computer Science'
             )
         );
@@ -1415,6 +1415,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Cohort__c = 'Senior',
                 Campus__c = listOfLocations[1].Id,
                 Residency__c = 'Resident',
+                Plan_Type_Text__c = 'MAJ',
                 Plan_Description__c = 'Law'
             )
         );

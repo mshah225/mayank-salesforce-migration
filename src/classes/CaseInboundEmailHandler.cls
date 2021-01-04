@@ -1336,9 +1336,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             removeFrom = '';
         }
         return removeFrom.replaceAll(
-            '[\\s|\\u00A0|\\u0085|\\u2007|\\u202F|\\u180E|\\u200B|\\u200C|\\u200D|\\u2060|\\uFEFF]',
-            ''
-        );
+                '[\\s|\\u00A0|\\u0085|\\u2007|\\u202F|\\u180E|\\u200B|\\u200C|\\u200D|\\u2060|\\uFEFF]',
+                ''
+            )
+            .replaceAll('&nbsp;', '');
     }
     private Boolean htmlBodyIsEmpty(String htmlBody) {
         if (htmlBody == null) {

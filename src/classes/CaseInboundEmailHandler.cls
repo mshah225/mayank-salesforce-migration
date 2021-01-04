@@ -512,6 +512,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     // Save attachments, if any
     private boolean handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
         Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
+        List<Attachment> allEmailAttachments = new List<Attachment>();
         boolean successfulAttachment = true;
         Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
@@ -543,7 +544,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         attachment.ParentId = parentObject.Id;
                         if (!tAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
-                            insert attachment;
+                            allEmailAttachments.add(attachment);
                         }
                     }
                 } else if (!validFileExtensionSet.isEmpty()) {
@@ -573,7 +574,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         attachment.ParentId = parentObject.Id;
                         if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
-                            insert attachment;
+                            allEmailAttachments.add(attachment);
                         }
 
                         if (bAttachment.headers != null) {
@@ -598,14 +599,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
 
-        // change any cid links to new url
-        for (String headerValue : cidToAttachmentMap.keySet()) {
-            String refLink = '/servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
-            email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
-        }
-
         if (attachmentSize > 25000000) {
             successfulAttachment = false;
+        } else {
+            insert allEmailAttachments;
+
+            // change any cid links to new url
+            for (String headerValue : cidToAttachmentMap.keySet()) {
+                String refLink = '/servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
+                email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
+            }
         }
 
         return successfulAttachment;

@@ -452,8 +452,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
             }
 
+            Boolean success = handleAttachments(theCase, emailContact, email); // must run before createEmailMessage to cleanup cid images
             createEmailMessage(theCase, email);
-            Boolean success = handleAttachments(theCase, emailContact, email);
             Boolean hasAttachments =
                 (email.textAttachments != null && email.textAttachments.size() > 0) ||
                 (email.binaryAttachments != null &&
@@ -511,6 +511,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
     // Save attachments, if any
     private boolean handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
+        Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
         boolean successfulAttachment = true;
         Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
@@ -574,12 +575,33 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             neutralEmail = false;
                             insert attachment;
                         }
+
+                        if (bAttachment.headers != null) {
+                            for (Integer i = 0; i < bAttachment.headers.size(); i++) {
+                                String headerValue = bAttachment.headers[i].value;
+                                String headerName = bAttachment.headers[i].name;
+                                if (
+                                    headerValue.startsWith('ii') ||
+                                    headerValue.startsWith('< image') ||
+                                    headerName.equals('Content-ID')
+                                ) {
+                                    headerValue = headerValue.replaceAll('<', '').replaceAll('>', '');
+                                    cidToAttachmentMap.put(headerValue, attachment);
+                                }
+                            }
+                        }
                     }
                 } else if (!validFileExtensionSet.isEmpty()) {
                     successfulAttachment = false;
                     badBinaryAttachments.add(bAttachment);
                 }
             }
+        }
+
+        // change any cid links to new url
+        for (String headerValue : cidToAttachmentMap.keySet()) {
+            String refLink = '/servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
+            email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
         }
 
         if (attachmentSize > 25000000) {

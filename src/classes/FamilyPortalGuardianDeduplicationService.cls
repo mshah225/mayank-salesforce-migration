@@ -59,29 +59,27 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
             );
             studentDedupeService.initialize();
 
-            Set<Id> guardianIdsForDeactivationCheck = new Set<Id>();
+            Set<Id> guardianIdsToCheck = new Set<Id>();
             for (Family_Portal_Guardian__c guardian : guardiansToUpdate) {
                 if (!guardiansToDelete.contains(guardian)) {
-                    guardianIdsForDeactivationCheck.add(guardian.Id);
+                    guardianIdsToCheck.add(guardian.Id);
                 }
             }
 
-            Set<Id> studentIdsForDeactivationCheck = new Set<Id>();
-            if (guardianIdsForDeactivationCheck.size() > 0) {
+            Set<Id> studentIdsToAvoid = new Set<Id>();
+            if (guardianIdsToCheck.size() > 0) {
                 for (Family_Portal_Student__c student : studentsToUpdate) {
-                    if (guardianIdsForDeactivationCheck.contains(student.Family_Portal_Guardian__c)) {
-                        studentIdsForDeactivationCheck.add(student.Id);
+                    if (guardianIdsToCheck.contains(student.Family_Portal_Guardian__c)) {
+                        studentIdsToAvoid.add(student.Id);
                     }
                 }
             }
 
-            if (guardianIdsForDeactivationCheck.size() > 0) {
+            if (guardianIdsToCheck.size() > 0) {
                 List<Family_Portal_Student__c> studentsToDeactivate = [
                     SELECT Id
                     FROM Family_Portal_Student__c
-                    WHERE
-                        Id NOT IN :studentIdsForDeactivationCheck
-                        AND Family_Portal_Guardian__c IN :guardianIdsForDeactivationCheck
+                    WHERE Id NOT IN :studentIdsToAvoid AND Family_Portal_Guardian__c IN :guardianIdsToCheck
                 ];
 
                 if (studentsToDeactivate.size() > 0) {

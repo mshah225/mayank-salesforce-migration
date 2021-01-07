@@ -300,15 +300,14 @@
                 });
             } else if( isLightningExperienceOrSalesforce1() ){
                 if (type == 'Case') {
-                    var newWindow = window.open('/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' + contactId + '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach');
+                    var message = "/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=" + contactId + "&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach";
+                    parent.postMessage(message, '*');
                 } else if (type == 'Profile') {
-                    //not part of mockup
-                    //sforce.console.openSubtab(result.id, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
+                    //need to link to a new lightning tab embedded student profile, or open student profile in new window
                 } else if (type == 'All Cases') {
-                    //notpart of mockup
-                    //sforce.console.openSubtab(result.id, '003?rlid=RelatedCaseList&id=' + contactId, true, contactName + ' All Cases', null);
+                    var message = "/lightning/r/Case/" + contactId + "/related/Cases/view";
+                    parent.postMessage(message, '*');
                 }
-                newWindow.focus();
             }
         }
     </script>

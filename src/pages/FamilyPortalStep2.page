@@ -65,7 +65,7 @@
                                     />
                                     <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                    <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
                                     />
                                     <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
                                     />
@@ -98,7 +98,7 @@
                                         rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
                                     <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(!isAsuriteUser, isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
+                                    <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
                                         rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
                                     <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
                                         rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
@@ -135,7 +135,7 @@
                                     />
                                     <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
+                                    <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
                                         rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
                                     <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
                                         rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
@@ -172,7 +172,7 @@
                                     />
                                     <apex:inputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
                                     />
-                                    <apex:inputField label="Phone" value="{!familyPortalGuardian.Phone__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                    <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
                                     />
                                     <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
                                     />
@@ -210,6 +210,14 @@
         </div>
     </apex:form>
     <script>
+        $(document).ready(function () {
+            $('.family-portal-2-body-phone').keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+            });
+        });
+
         $('.family-portal-2-container td.dataCol').each(function () {
             if ($(this).children('div').hasClass('requiredInput')) {
                 var tableHeaderText = $(this).prev('th.vfLabelColTextWrap').html();

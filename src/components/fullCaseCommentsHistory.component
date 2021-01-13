@@ -26,8 +26,8 @@
 
         function openCaseSubTab(theCaseId, caseNumber) {
             if(isLightningExperienceOrSalesforce1()) {
-                var newWindow = window.open('/' + theCaseId);
-                newWindow.focus();
+                var message = "/lightning/r/Case/" + theCaseId + "/view";        
+                parent.postMessage(message, '*');
             } else {
                 sforce.console.getEnclosingPrimaryTabId(function(result) {
                     sforce.console.openSubtab(result.id, '/' + theCaseId, true, caseNumber, null);

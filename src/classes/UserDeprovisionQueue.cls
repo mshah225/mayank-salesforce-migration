@@ -3,7 +3,7 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private List<UserPackageLicense> allUserPackageLicenses;
     private Map<Id, Id> caseToUserMap;
-    private Map<Id, String> userToOldProcessingNotes;
+    private Map<Id, String> userToProcessingNotes;
 
     private static Boolean debug = false;
 
@@ -19,8 +19,8 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         this.caseToUserMap = caseToUserMap;
     }
 
-    public void setUserToOldProcessingNotes(Map<Id, String> userToOldProcessingNotes) {
-        this.userToOldProcessingNotes = userToOldProcessingNotes;
+    public void setUserToProcessingNotesMap(Map<Id, String> userToProcessingNotes) {
+        this.userToProcessingNotes = userToProcessingNotes;
     }
 
     public void setAllUserPackageLicenses(List<UserPackageLicense> allUserPackageLicenses) {
@@ -29,17 +29,17 @@ public without sharing class UserDeprovisionQueue implements Queueable {
 
     public void execute(QueueableContext context) {
         if (!updatedUserCases.isEmpty()) {
-            UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', updatedUserCases, userToOldProcessingNotes);
+            UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', updatedUserCases, userToProcessingNotes);
         }
         if (!allUserChatterGroupMemberships.isEmpty()) {
             UserDeprovisionOrganizer.deleteSobjectRecords(
                 'MemberId',
                 allUserChatterGroupMemberships,
-                userToOldProcessingNotes
+                userToProcessingNotes
             );
         }
         if (!allUserPackageLicenses.isEmpty()) {
-            UserDeprovisionOrganizer.deleteSobjectRecords('UserId', allUserPackageLicenses, userToOldProcessingNotes);
+            UserDeprovisionOrganizer.deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotes);
         }
     }
 

@@ -15,7 +15,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, String> userToDeprovisionChatterGroupMembershipMap;
     private Map<Id, String> userToDeprovisionPermissionSetMap;
     private Map<Id, String> userToDeprovisionPackageLicenseMap;
-    private Map<Id, String> userToOldProcessingNotes;
+    private Map<Id, String> userToProcessingNotesMap;
 
     private static Boolean debug = false;
 
@@ -30,7 +30,7 @@ public without sharing class UserDeprovisionOrganizer {
     public void deprovisionUsersAfterUpdate() {
         List<UserDeprovisioner> userDeprovisionersList = new List<UserDeprovisioner>();
         List<User> deprovisionedUsersWithProcessingNotes = new List<User>();
-        userToOldProcessingNotes = new Map<Id, String>();
+        userToProcessingNotesMap = new Map<Id, String>();
         userToDeprovisionIds = new List<Id>();
         deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
 
@@ -40,10 +40,6 @@ public without sharing class UserDeprovisionOrganizer {
                 UserDeprovisioner userDeprovisioner = new UserDeprovisioner();
                 userDeprovisioner.setUserToDeprovision(userToDeprovision);
                 userDeprovisionersList.add(userDeprovisioner);
-                userToOldProcessingNotes.put(
-                    userToDeprovision.Id,
-                    oldUsersMap.get(userToDeprovision.Id).Processing_Notes__c
-                );
             }
         }
 
@@ -65,31 +61,25 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setChatterGroupMemberships(userToDeprovisionChatterGroupMembershipMap.get(userId));
                 userDeprovisioner.setPermissionSets(userToDeprovisionPermissionSetMap.get(userId));
                 userDeprovisioner.setPackageLicenses(userToDeprovisionPackageLicenseMap.get(userId));
+                userDeprovisioner.setOldProcessingNotes(oldUsersMap.get(userId).Processing_Notes__c); // append to previous notes
                 userDeprovisioner.deprovisionUser();
                 updatedUserCases.addAll(userDeprovisioner.getUpdatedUserCases());
                 caseToUserMap.putAll(userDeprovisioner.getCaseToUserMap());
-                deprovisionedUsersWithProcessingNotes.add(userDeprovisioner.getDeprovisionedUserWithProcessingNotes());
+                User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
+                deprovisionedUsersWithProcessingNotes.add(userWithProcessingNotes);
+                userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
             }
 
             if (!deprovisionedUsersWithProcessingNotes.isEmpty()) {
-                for (User u : deprovisionedUsersWithProcessingNotes) {
-                    Id userId = (Id) u.Id;
-                    if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
-                        u.Processing_Notes__c =
-                            userToOldProcessingNotes.get(userId) +
-                            '\n---\n' +
-                            u.Processing_Notes__c;
-                    }
-                }
-                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToOldProcessingNotes);
+                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToProcessingNotesMap);
             }
 
             if (!allUserPublicGroupMemberships.isEmpty()) {
-                deleteSobjectRecords('UserOrGroupId', allUserPublicGroupMemberships, userToOldProcessingNotes);
+                deleteSobjectRecords('UserOrGroupId', allUserPublicGroupMemberships, userToProcessingNotesMap);
             }
 
             if (!allUserPermissionSetAssignments.isEmpty()) {
-                deleteSobjectRecords('AssigneeId', allUserPermissionSetAssignments, userToOldProcessingNotes);
+                deleteSobjectRecords('AssigneeId', allUserPermissionSetAssignments, userToProcessingNotesMap);
             }
 
             if (
@@ -101,7 +91,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisionQueue.setUpdatedUserCases(updatedUserCases);
                 userDeprovisionQueue.setCaseToUserMap(caseToUserMap);
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(allUserChatterGroupMemberships);
-                userDeprovisionQueue.setUserToOldProcessingNotes(userToOldProcessingNotes);
+                userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
                 userDeprovisionQueue.setAllUserPackageLicenses(allUserPackageLicenses);
                 System.enqueueJob(userDeprovisionQueue);
             }
@@ -236,7 +226,7 @@ public without sharing class UserDeprovisionOrganizer {
     public static void updateSobjectRecords(
         String userIdField,
         List<SObject> recordListToOperate,
-        Map<Id, String> userToOldProcessingNotes
+        Map<Id, String> userToProcessingNotes
     ) {
         List<User> usersWithErrors = new List<User>();
 
@@ -252,8 +242,8 @@ public without sharing class UserDeprovisionOrganizer {
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
-                if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
-                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + errorNote;
+                if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '\n---\n' + errorNote;
                 } else {
                     processingNotes = errorNote;
                 }
@@ -266,7 +256,13 @@ public without sharing class UserDeprovisionOrganizer {
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.logFuture(dbException.getTypeName(), dbException.getMessage(), dbException.getStackTraceString(), vars, debug);
+                ErrorLogger.logFuture(
+                    dbException.getTypeName(),
+                    dbException.getMessage(),
+                    dbException.getStackTraceString(),
+                    vars,
+                    debug
+                );
             }
         }
 
@@ -278,7 +274,7 @@ public without sharing class UserDeprovisionOrganizer {
     public static void deleteSobjectRecords(
         String userIdField,
         List<SObject> recordListToOperate,
-        Map<Id, String> userToOldProcessingNotes
+        Map<Id, String> userToProcessingNotes
     ) {
         List<User> usersWithErrors = new List<User>();
 
@@ -294,8 +290,8 @@ public without sharing class UserDeprovisionOrganizer {
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
-                if (userToOldProcessingNotes != null && userToOldProcessingNotes.get(userId) != null) {
-                    processingNotes = userToOldProcessingNotes.get(userId) + '\n---\n' + errorNote;
+                if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '\n---\n' + errorNote;
                 } else {
                     processingNotes = errorNote;
                 }
@@ -308,7 +304,13 @@ public without sharing class UserDeprovisionOrganizer {
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.logFuture(dbException.getTypeName(), dbException.getMessage(), dbException.getStackTraceString(), vars, debug);
+                ErrorLogger.logFuture(
+                    dbException.getTypeName(),
+                    dbException.getMessage(),
+                    dbException.getStackTraceString(),
+                    vars,
+                    debug
+                );
             }
         }
 

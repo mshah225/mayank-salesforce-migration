@@ -99,7 +99,7 @@ public without sharing class UserDeprovisioner {
             deprovisionedUser.Id = userToDeprovision.Id;
             addToProcessingNotes(this.oldUserProcessingNotes + '\n---\n');
             addToProcessingNotes(initialUserTimeStamp());
-            if (matchProfileToIgnore()) {
+            if (matchProfileToIgnore() || matchSFAdminOrDeveloper()) {
                 deprovisionedUser.Deprovision_User__c = false;
                 return;
             }
@@ -185,6 +185,16 @@ public without sharing class UserDeprovisioner {
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    private Boolean matchSFAdminOrDeveloper() {
+        if (userToDeprovision.Role_Administrator_Developer__c) {
+            addToProcessingNotes(
+                'Detected SF Developer or Admin based on PeopleSoft Roles Administrator/Developer. Stopping User Deprovision'
+            );
+            return true;
         }
         return false;
     }

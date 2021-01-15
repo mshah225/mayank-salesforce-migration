@@ -9,8 +9,10 @@ public without sharing class UserDeprovisionOrganizer {
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private List<PermissionSetAssignment> allUserPermissionSetAssignments;
     private List<UserPackageLicense> allUserPackageLicenses;
+    private List<UserLogin> allUserLogins;
 
     private Map<Id, List<Case>> userToDeprovisionCaseMap;
+    private Map<Id, UserLogin> userToUserLoginMap;
     private Map<Id, String> userToDeprovisionGroupMembershipMap;
     private Map<Id, String> userToDeprovisionChatterGroupMembershipMap;
     private Map<Id, String> userToDeprovisionPermissionSetMap;
@@ -49,9 +51,11 @@ public without sharing class UserDeprovisionOrganizer {
             populateUserToDeprovisionChatterGroupMembershipMap();
             populateUserToDeprovisionPermissionSetMap();
             populateUserToDeprovisionPackageLicenseMap();
+            populateUserToUserLoginMap();
 
             List<Case> updatedUserCases = new List<Case>();
             Map<Id, Id> caseToUserMap = new Map<Id, Id>();
+            List<UserLogin> updatedUserLogins = new List<UserLogin>();
 
             for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
                 Id userId = userDeprovisioner.getUserToDeprovision().Id;
@@ -62,8 +66,10 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setPermissionSets(userToDeprovisionPermissionSetMap.get(userId));
                 userDeprovisioner.setPackageLicenses(userToDeprovisionPackageLicenseMap.get(userId));
                 userDeprovisioner.setOldProcessingNotes(oldUsersMap.get(userId).Processing_Notes__c); // append to previous notes
+                userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
                 userDeprovisioner.deprovisionUser();
                 updatedUserCases.addAll(userDeprovisioner.getUpdatedUserCases());
+                updatedUserLogins.add(userDeprovisioner.getUpdatedUserLogin());
                 caseToUserMap.putAll(userDeprovisioner.getCaseToUserMap());
                 User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
                 deprovisionedUsersWithProcessingNotes.add(userWithProcessingNotes);
@@ -93,8 +99,18 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(allUserChatterGroupMemberships);
                 userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
                 userDeprovisionQueue.setAllUserPackageLicenses(allUserPackageLicenses);
+                userDeprovisionQueue.setUpdatedUserLogins(updatedUserLogins);
                 System.enqueueJob(userDeprovisionQueue);
             }
+        }
+    }
+
+    private void populateUserToUserLoginMap() {
+        allUserLogins = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId IN :userToDeprovisionIds];
+
+        userToUserLoginMap = new Map<Id, UserLogin>();
+        for (UserLogin ul : allUserLogins) {
+            userToUserLoginMap.put(ul.UserId, ul);
         }
     }
 

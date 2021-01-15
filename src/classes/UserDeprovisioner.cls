@@ -5,6 +5,8 @@ public without sharing class UserDeprovisioner {
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
     private List<Case> userCases;
     private List<Case> updatedUserCases;
+    private UserLogin userLogin;
+    private UserLogin updatedUserLogin;
     private Map<Id, Id> caseToUserMap;
     private String groupMemberships;
     private String chatterGroupMemberships;
@@ -53,6 +55,13 @@ public without sharing class UserDeprovisioner {
         return updatedUserCases;
     }
 
+    public UserLogin getUpdatedUserLogin() {
+        if (updatedUserLogin == null) {
+            updatedUserLogin = userLogin;
+        }
+        return updatedUserLogin;
+    }
+
     public void setGroupMemberships(String groupMemberships) {
         this.groupMemberships = groupMemberships;
     }
@@ -71,6 +80,10 @@ public without sharing class UserDeprovisioner {
 
     public void setOldProcessingNotes(String oldUserProcessingNotes) {
         this.oldUserProcessingNotes = oldUserProcessingNotes;
+    }
+
+    public void setUserLogin(UserLogin userLogin) {
+        this.userLogin = userLogin;
     }
 
     public Map<Id, Id> getCaseToUserMap() {
@@ -94,6 +107,7 @@ public without sharing class UserDeprovisioner {
             changeUserField('UserRoleId');
             transferPrivateCasesToFunctionalGroup();
             updateUserFields();
+            updateUserLogin();
             logRemovedGroupMemberships();
             logRemovedPermissionSets();
             logRemovedChatterGroupMemberships();
@@ -260,5 +274,13 @@ public without sharing class UserDeprovisioner {
         if (packageLicenses != null) {
             addToProcessingNotes('Removed user from Package Licenses: ' + packageLicenses);
         }
+    }
+
+    private void updateUserLogin() {
+        if (userLogin.IsFrozen) {
+            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
+        }
+        updatedUserLogin = userLogin;
+        updatedUserLogin.IsFrozen = false;
     }
 }

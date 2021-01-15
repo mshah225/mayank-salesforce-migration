@@ -92,11 +92,7 @@ public without sharing class UserDeprovisionOrganizer {
                 deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotesMap);
             }
 
-            if (
-                !updatedUserCases.isEmpty() ||
-                !allUserChatterGroupMemberships.isEmpty() ||
-                !allUserPackageLicenses.isEmpty()
-            ) {
+            if (!updatedUserCases.isEmpty() || !allUserChatterGroupMemberships.isEmpty() || !allUserLogins.isEmpty()) {
                 UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
                 userDeprovisionQueue.setUpdatedUserCases(updatedUserCases);
                 userDeprovisionQueue.setCaseToUserMap(caseToUserMap);

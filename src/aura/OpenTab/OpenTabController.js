@@ -15,8 +15,9 @@
                 messageValid = true;
             }
             // Avoid letting multiple 'New Case' tabs open
+            var coachURL = (window.location.href).toLowerCase();
             if (event.data.includes("/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=")
-                && !window.location.href.includes('CoachPortal')) {
+                && !(coachURL.includes('coach') && coachURL.includes('portal'))) {
                 messageValid = false;
             }
             if (validOrigin && messageValid) {

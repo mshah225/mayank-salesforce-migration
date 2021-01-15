@@ -9,16 +9,9 @@
                 validOrigin = true;
             }
             // List of valid messages
-            if (event.data.includes("/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=")
-                || event.data.includes("/lightning/r/Case/")
+            if (event.data.includes("/lightning/r/Case/")
                 || event.data.includes("lightning/r/et4ae5__IndividualEmailResult__c/")) {
                 messageValid = true;
-            }
-            // Avoid letting multiple 'New Case' tabs open
-            var coachURL = (window.location.href).toLowerCase();
-            if (event.data.includes("/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=")
-                && !(coachURL.includes('coach') && coachURL.includes('portal'))) {
-                messageValid = false;
             }
             if (validOrigin && messageValid) {
                 workspaceAPI.openTab({

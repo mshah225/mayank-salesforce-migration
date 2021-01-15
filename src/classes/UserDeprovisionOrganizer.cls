@@ -88,6 +88,10 @@ public without sharing class UserDeprovisionOrganizer {
                 deleteSobjectRecords('AssigneeId', allUserPermissionSetAssignments, userToProcessingNotesMap);
             }
 
+            if (!allUserPackageLicenses.isEmpty()) {
+                deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotesMap);
+            }
+
             if (
                 !updatedUserCases.isEmpty() ||
                 !allUserChatterGroupMemberships.isEmpty() ||
@@ -98,7 +102,6 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisionQueue.setCaseToUserMap(caseToUserMap);
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(allUserChatterGroupMemberships);
                 userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
-                userDeprovisionQueue.setAllUserPackageLicenses(allUserPackageLicenses);
                 userDeprovisionQueue.setUpdatedUserLogins(updatedUserLogins);
                 System.enqueueJob(userDeprovisionQueue);
             }

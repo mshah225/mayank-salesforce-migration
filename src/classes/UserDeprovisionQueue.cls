@@ -1,7 +1,6 @@
 public without sharing class UserDeprovisionQueue implements Queueable {
     private List<Case> updatedUserCases;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
-    private List<UserPackageLicense> allUserPackageLicenses;
     private List<UserLogin> updatedUserLogins;
     private Map<Id, Id> caseToUserMap;
     private Map<Id, String> userToProcessingNotes;
@@ -24,10 +23,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         this.userToProcessingNotes = userToProcessingNotes;
     }
 
-    public void setAllUserPackageLicenses(List<UserPackageLicense> allUserPackageLicenses) {
-        this.allUserPackageLicenses = allUserPackageLicenses;
-    }
-
     public void setUpdatedUserLogins(List<UserLogin> updatedUserLogins) {
         this.updatedUserLogins = updatedUserLogins;
     }
@@ -42,9 +37,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
                 allUserChatterGroupMemberships,
                 userToProcessingNotes
             );
-        }
-        if (!allUserPackageLicenses.isEmpty()) {
-            UserDeprovisionOrganizer.deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotes);
         }
         if (!updatedUserLogins.isEmpty()) {
             UserDeprovisionOrganizer.updateSobjectRecords('UserId', updatedUserLogins, userToProcessingNotes);

@@ -79,7 +79,11 @@ public without sharing class UserDeprovisioner {
     }
 
     public void setOldProcessingNotes(String oldUserProcessingNotes) {
-        this.oldUserProcessingNotes = oldUserProcessingNotes;
+        if (oldUserProcessingNotes != null && oldUserProcessingNotes.length() > 0) {
+            this.oldUserProcessingNotes = oldUserProcessingNotes;
+        } else {
+            this.oldUserProcessingNotes = '';
+        }
     }
 
     public void setUserLogin(UserLogin userLogin) {
@@ -97,7 +101,7 @@ public without sharing class UserDeprovisioner {
         try {
             System.debug(userToDeprovision);
             deprovisionedUser.Id = userToDeprovision.Id;
-            addToProcessingNotes(this.oldUserProcessingNotes + '\n---\n');
+            addToProcessingNotes(this.oldUserProcessingNotes + '\n---');
             addToProcessingNotes(initialUserTimeStamp());
             if (matchProfileToIgnore() || matchSFAdminOrDeveloper()) {
                 deprovisionedUser.Deprovision_User__c = false;

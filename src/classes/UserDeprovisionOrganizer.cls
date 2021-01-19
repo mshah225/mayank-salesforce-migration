@@ -82,10 +82,6 @@ public without sharing class UserDeprovisionOrganizer {
                 userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
             }
 
-            if (!deprovisionedUsersWithProcessingNotes.isEmpty()) {
-                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToProcessingNotesMap);
-            }
-
             if (!allUserPublicGroupMemberships.isEmpty()) {
                 deleteSobjectRecords('UserOrGroupId', allUserPublicGroupMemberships, userToProcessingNotesMap);
             }
@@ -96,6 +92,11 @@ public without sharing class UserDeprovisionOrganizer {
 
             if (!allUserPackageLicenses.isEmpty()) {
                 deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotesMap);
+            }
+
+            // Update user last so triggers don't modify licenses/perm sets unexpectedly
+            if (!deprovisionedUsersWithProcessingNotes.isEmpty()) {
+                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToProcessingNotesMap);
             }
 
             // And handle all non-setup objects here

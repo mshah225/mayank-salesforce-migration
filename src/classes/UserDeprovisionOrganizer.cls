@@ -277,6 +277,13 @@ public without sharing class UserDeprovisionOrganizer {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
+                vars.add(
+                    ErrorLogger.convertStringToJSON(
+                        'saveResult[i].getId().getSObjectType()',
+                        '' + saveResult[i].getId().getSObjectType()
+                    )
+                );
+                vars.add(ErrorLogger.convertIdToJSON('saveResult[i].getId()', saveResult[i].getId()));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
                 ErrorLogger.logFuture(
                     dbException.getTypeName(),
@@ -325,6 +332,13 @@ public without sharing class UserDeprovisionOrganizer {
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
+                vars.add(
+                    ErrorLogger.convertStringToJSON(
+                        'deleteResult[i].getId().getSObjectType()',
+                        '' + deleteResult[i].getId().getSObjectType()
+                    )
+                );
+                vars.add(ErrorLogger.convertIdToJSON('deleteResult[i].getId()', deleteResult[i].getId()));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
                 ErrorLogger.logFuture(
                     dbException.getTypeName(),

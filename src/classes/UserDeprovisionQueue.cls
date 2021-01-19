@@ -47,7 +47,4 @@ public without sharing class UserDeprovisionQueue implements Queueable {
             UserDeprovisionOrganizer.updateSobjectRecords('UserId', updatedUserLogins, userToProcessingNotes);
         }
     }
-
-    private class DatabaseErrorException extends Exception {
-    }
 }

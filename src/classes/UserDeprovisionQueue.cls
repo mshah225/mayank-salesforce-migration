@@ -1,4 +1,9 @@
 public without sharing class UserDeprovisionQueue implements Queueable {
+    /** All non-setup objects should be updated through here.  And setup objects in the UserDeprovisionerOrganizer
+     * https://developer.salesforce.com/docs/atlas.en-us.230.0.apexcode.meta/apexcode/apex_dml_non_mix_sobjects.htm
+     * contains a list of setup objects, but it is incomplete so you should perform a quick test via the developer
+     * console if you are unsure if an object is a setup object or not.
+     */
     private List<Case> updatedUserCases;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private List<UserLogin> updatedUserLogins;

@@ -10,7 +10,8 @@
             }
             // List of valid messages
             if (event.data.includes("/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=")
-                || event.data.includes("/lightning/r/Case/")) {
+                || event.data.includes("/lightning/r/Case/")
+                || event.data.includes("/apex/successRecoding")) {
                 messageValid = true;
             }
             if (validOrigin && messageValid) {

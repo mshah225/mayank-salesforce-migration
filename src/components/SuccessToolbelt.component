@@ -3,10 +3,20 @@
     <apex:stylesheet value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.css') }"/>
 
     <script type="text/javascript">
+
+        function isLightningExperienceOrSalesforce1() {
+            return((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
         function openRecodingTab() {
-            sforce.console.openPrimaryTab(
+            if(isLightningExperienceOrSalesforce1()) {
+                var message = "/apex/successRecoding";
+                    parent.postMessage(message, '*');
+            } else {
+                sforce.console.openPrimaryTab(
                     null, '/apex/successRecoding', true, 'Student Success Recoding', null, null
-            );
+                );
+            }
         }
     </script>
 

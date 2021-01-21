@@ -1,5 +1,5 @@
 global class SortableClass implements Comparable {
-    private PS_ASU_SP_CLASS_V__x classInfo;
+    public PS_ASU_SP_CLASS_V__x classInfo{private set; get;}
     private String classParamSort;
 
     global SortableClass(PS_ASU_SP_CLASS_V__x classInfo, String sortBy) {

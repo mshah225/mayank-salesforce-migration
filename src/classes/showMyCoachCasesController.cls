@@ -77,12 +77,10 @@ public class showMyCoachCasesController extends ListViewController {
      */
     public override void resetRecordList() {
         List<Case> cases = (List<Case>) setCon.getRecords();
-        Map<Id, String> timeZones = this.getTimeZones(cases);
         this.caseList = new List<CaseWrapper>();
         for (Case c : cases) {
             CaseWrapper cw = new CaseWrapper(c);
             cw.termSession = parseTermSession(c);
-            cw.timeZone = timeZones.get(cw.obj.ContactId);
             this.caseList.add(cw);
         }
         resetCaseCounts();
@@ -98,33 +96,6 @@ public class showMyCoachCasesController extends ListViewController {
         }
 
         return termSession;
-    }
-
-    /**
-     *  Given a list of Cases, generates a map from Contact ID to Time Zone
-     *  for the Contacts associated with the given Cases.
-     */
-    private Map<Id, String> getTimeZones(List<Case> cases) {
-        List<Id> contactIds = this.getContactIds(cases);
-        List<Contact> contacts = [
-            SELECT
-                (
-                    SELECT Time_Zone__c
-                    FROM Success_Students__r
-                    WHERE Coaching_Student__c = true AND Is_Active__c = true
-                    ORDER BY Time_Zone__c DESC NULLS LAST
-                )
-            FROM Contact
-            WHERE Id IN :contactIds
-        ];
-        Map<Id, String> timeZones = new Map<Id, String>();
-        for (Contact c : contacts) {
-            if (c.Success_Students__r != null && c.Success_Students__r.size() >= 1) {
-                timeZones.put(c.Id, c.Success_Students__r[0].Time_Zone__c);
-            }
-        }
-
-        return timeZones;
     }
 
     /**
@@ -242,7 +213,6 @@ public class showMyCoachCasesController extends ListViewController {
         public Case obj { get; set; }
         public String changeDir { get; set; }
         public String imageName { get; set; }
-        public String timeZone { get; set; }
         public String termSession { get; set; }
 
         public caseWrapper(Case wrappedCase) {
@@ -290,7 +260,7 @@ public class showMyCoachCasesController extends ListViewController {
     }
 
     /**
-     * Used to modify the query based on search parameter inputted by user
+     *Used to modify the query based on search parameter inputted by user
      *
      */
     public string searchString {

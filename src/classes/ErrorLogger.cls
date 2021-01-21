@@ -305,6 +305,23 @@ public without sharing class  ErrorLogger {
          }
     }
 
+     /**
+     * Convert Supplied Map - String to String - to a JSON string
+     *
+     * @param String Name of the list being passed to lable the object
+     * @param Map<String,String> Map - String to String - to be converted to JSON string
+     * @return String JSON string from converted set
+     */
+    public static string convertMapToJSON(String varName, Map<String,String> stringToStringMap) {
+         if (stringToStringMap != null && stringToStringMap.size() > 0) {
+             return '{' + varName + ':[' + string.valueOf(stringToStringMap) + ']}';
+         } else if (stringToStringMap == null) {
+             return '{' + varName + ':null}';
+         } else {
+             return '{' + varName + ':{size:0, objects[]}}';
+         }
+    }
+
     /**
      * Convert Supplied Boolean value to a JSON string
      *

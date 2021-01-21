@@ -48,6 +48,11 @@
     <span class="slds-notify_container slds-is-fixed slds-align_absolute-center">
         <c:ClassicToast />
     </span>
+    <div>
+        <div class="feedbackButtonWrapper">
+            <c:feedbackButton iconSize="xx-small"></c:feedbackButton>
+        </div>
+    </div>
     <c:AdvisorPortalTopLevelFilter />
     <c:AdvisorPortalFilterSection
         aura:id="filterSectionAuraElement"

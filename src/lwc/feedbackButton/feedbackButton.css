@@ -1,0 +1,25 @@
+:host .openButton {
+    display: inline-block;
+}
+
+:host .openButton > lightning-icon {
+    display: inline;
+    margin-right: 5px;
+    filter: invert(51%) sepia(11%) saturate(5749%) hue-rotate(179deg) brightness(79%) contrast(75%);
+}
+
+:host .error {
+    border: 2px solid red;
+    background-color: rgb(255, 190, 190);
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    padding: 5px;
+}
+
+:host .error > lightning-icon {
+    filter: invert(82%) sepia(95%) saturate(7497%) hue-rotate(2deg) brightness(106%) contrast(116%);
+}
+
+:host .error > h4 {
+    display: inline;
+    margin-left: 5px;
+}

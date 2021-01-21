@@ -1,5 +1,5 @@
-global class SortableTransferWork {
-    private JBT_RET_CLASS_XFER__x  transferInfo;
+global class SortableTransferWork implements Comparable {
+    public JBT_RET_CLASS_XFER__x  transferInfo{private set; get;}
     private String transferParamSort;
     
     global SortableTransferWork(JBT_RET_CLASS_XFER__x  transferInfo, String sortBy) {

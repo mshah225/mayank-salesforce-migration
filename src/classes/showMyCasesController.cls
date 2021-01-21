@@ -573,7 +573,7 @@ public class showMyCasesController extends ListViewController {
                 studentIntentionOptions.add(new SelectOption('', '--'));
                 studentIntentionOptions.add(new SelectOption('Not returning ever', 'Not returning ever'));
                 studentIntentionOptions.add(new SelectOption('Not returning temporarily', 'Not returning temporarily'));
-                studentIntentionOptions.add(new SelectOption('Will enroll', 'Will enroll'));
+                studentIntentionOptions.add(new SelectOption('Enrolled', 'Enrolled'));
             }
             return studentIntentionOptions;
         }

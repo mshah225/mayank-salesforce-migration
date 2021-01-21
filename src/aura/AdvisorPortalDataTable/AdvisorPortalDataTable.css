@@ -1,0 +1,76 @@
+.THIS .top-level-select {
+    padding-left: 5px;
+}
+
+.THIS .contact-select {
+    position: absolute !important;
+    top: 13px;
+    left: 5px;
+}
+
+.THIS .slds-accordion__summary {
+    padding-left: 25px;
+}
+
+.THIS .slds-accordion__section .outreach-icn {
+    margin-top: 2px;
+}
+
+.THIS .slds-accordion__summary-heading .slds-truncate {
+    padding-left: 65px;
+}
+
+.THIS .profile-link {
+    position: absolute;
+    left: 75px;
+    text-decoration: underline;
+}
+
+.THIS .slds-accordion__section .profile-icn {
+    margin-top: 2px;
+}
+
+.THIS lightning-icon.outreach-icn > lightning-primitive-icon > svg > use {
+    fill: green;
+}
+
+.THIS .slds-accordion__summary-heading {
+    flex-grow: 0.005 !important;
+}
+
+.THIS .slds-button[disabled],
+.THIS .slds-button:disabled {
+    color: #666;
+}
+
+.THIS .persistence-icon {
+    height: 100%;
+    width: 25px;
+    margin-top: 2px;
+}
+
+.THIS .persistence-icon.legend {
+    margin-top: -3px;
+}
+
+.THIS .navigationSide {
+    display: inline-block;
+    position: absolute;
+    width: 120px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.THIS .navigationLeft {
+    left: 0%;
+}
+
+.THIS .navigationRight {
+    left: calc(100% - 120px);
+}
+
+.THIS .navigationCenter {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}

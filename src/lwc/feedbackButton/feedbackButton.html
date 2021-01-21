@@ -3,7 +3,6 @@
         <lightning-icon icon-name='utility:anywhere_chat' alternative-text='Provide Feedback' variant='inverse' size={iconSize} ></lightning-icon>
         <span>Feedback</span>
     </div>
-    
 
     <section role='dialog' tabindex='-1' aria-modal='true' class='slds-modal'>
         <div class='slds-modal__container'>
@@ -14,13 +13,6 @@
             <div class='slds-modal__content slds-p-around_medium'>
                 <h3 class='slds-text-small'> ASU values your experience and wants to ensure that you receive quality service. Tell us how we can improve your experience below.</h3>
                 <lightning-textarea label="Feedback Comments"></lightning-textarea>
-                <template if:true={showError}>
-                    <div class='error'>
-                        <lightning-icon icon-name='utility:error' alternative-text='Error' variant='inverse' size='x-small'></lightning-icon>
-                        <h4>Error</h4> <br/>
-                        <span>Feedback must contain some content.</span>
-                    </div>
-                </template>
             </div>
             <footer class="slds-modal__footer">
                 <lightning-button variant="neutral" label="Cancel" title="Cancel" onclick={closeModal} class="slds-m-left_x-small"></lightning-button>

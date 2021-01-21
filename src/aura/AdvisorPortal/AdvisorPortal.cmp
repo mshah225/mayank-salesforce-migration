@@ -50,7 +50,7 @@
     </span>
     <div>
         <div class="feedbackButtonWrapper">
-            <c:feedbackButton iconSize="xx-small"></c:feedbackButton>
+            <c:feedbackButton></c:feedbackButton>
         </div>
     </div>
     <c:AdvisorPortalTopLevelFilter />

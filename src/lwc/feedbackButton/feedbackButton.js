@@ -1,7 +1,7 @@
 import { LightningElement, api } from 'lwc';
 
 export default class FeedbackButton extends LightningElement {
-    @api iconSize = 'small';
+    @api iconSize = 'xx-small';
     showError = false;
 
     openModal() {

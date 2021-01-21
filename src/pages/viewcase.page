@@ -162,12 +162,11 @@
                                             <apex:outputField value="{!caseDetails.Description}" />
                                             <apex:outputField value="{!caseDetails.CC_Functional_Group__r.Name}" label="Department" rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
                                             />
-                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d','  yyyy, hh:mm a z}" label="Date Opened">
-                                                <apex:param value="{!caseDetails.CreatedDate}" />
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0}" label="Date Opened">
+                                                <apex:param value="{!formattedCreatedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d',' yyyy, hh:mm a z}" label="Date Closed"
-                                                rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
-                                                <apex:param value="{!caseDetails.ClosedDate}" />
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0}" label="Date Closed" rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
+                                                <apex:param value="{!formattedClosedDate}" />
                                             </apex:outputText>
                                             <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
                                                 && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}"
@@ -192,7 +191,7 @@
                                             <div id="myasu-help-region-request-details-view-responses" class="panel-collapse collapse">
                                                 <div class="panel-body">
                                                     <apex:outputPanel id="myasu-help-region-request-details-view-responses-panel" rendered="{!!EmailMessages.empty}">
-                                                        <apex:repeat value="{!EmailMessages}" var="EM">
+                                                        <apex:repeat value="{!EmailMessagesWithFormattedDateTime}" var="EM">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-body">
                                                                     <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
@@ -203,7 +202,7 @@
                                                                         <br />
                                                                     </apex:outputPanel>
                                                                     <apex:outputLabel for="emailSentDate" value="Date:" />
-                                                                    <apex:outputText id="emailSentDate" value="{0, date, MMMM d',' yyyy, hh:mm a z}">
+                                                                    <apex:outputText id="emailSentDate" value="{0}">
                                                                         <apex:param value="{!EM.MessageDate}" />
                                                                     </apex:outputText>
                                                                     <br />
@@ -218,7 +217,7 @@
                                                                         <br />
                                                                     </apex:outputPanel>
                                                                     <br />
-                                                                    <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"
+                                                                    <apex:outputText id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important; white-space: pre-line !important;"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -270,12 +269,12 @@
                                                 <div class="panel-body">
                                                     <apex:outputPanel rendered="{!showCaseAttachments}">
                                                         <apex:pageBlock>
-                                                            <apex:pageBlockTable value="{!allCaseAttachments}" var="eachAttachment" columns="2">
+                                                            <apex:pageBlockTable value="{!allCaseAttachmentsFormattedTime}" var="eachAttachment" columns="2">
                                                                 <apex:column headerValue="Name">
                                                                     <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
                                                                 </apex:column>
                                                                 <apex:column headerValue="Created Date">
-                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy, hh:mm a z}" label="Date Opened">
+                                                                    <apex:outputText value="{0}" label="Date Opened">
                                                                         <apex:param value="{!eachAttachment.CreatedDate}" />
                                                                     </apex:outputText>
                                                                 </apex:column>

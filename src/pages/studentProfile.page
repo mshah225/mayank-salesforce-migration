@@ -901,10 +901,7 @@
                                                         {!currentTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="currentTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                                 <tr id="nextTermEnrolledHours" class="grad-row-toggle">
@@ -915,10 +912,18 @@
                                                         {!nextTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="nextTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr id="futureEnrolledHours" class="grad-row-toggle">
+                                                    <th>
+                                                        <span class="hide" style="margin-right:5px;color:#990033;">
+                                                            <i class="fa fa-caret-right"></i>
+                                                        </span>
+                                                        {!futureTermName} Term Enrolled Hours
+                                                    </th>
+                                                    <td id="futureTermEnrolled" style="font-weight:bold;">
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -3175,6 +3180,11 @@
                 },
                     { buffer: false, escape: true, timeout: 120000 }
                 );
+
+                var currentTermValue = "{!currentTerm}";
+                if(currentTermValue.slice(-1) != "1") {
+                    document.getElementById("futureEnrolledHours").style.display = "none";
+                }
                 cleanUpUndefined("UGgeneralIndicators");
             }
         }
@@ -3765,6 +3775,8 @@
                             let currentTermEnrolled = 0;
                             let nextTermClassSessionMap = new Map();
                             let nextTermEnrolled = 0;
+                            let futureTermClassSessionMap = new Map();
+                            let futureTermEnrolled = 0;
 
                             classResponse.forEach(function (record) {
                                 delete record.attributes;
@@ -3784,16 +3796,23 @@
                                         } else {
                                             nextTermClassSessionMap.set(record.SESSION_CODE__c, (nextTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
                                         }
+                                    } else if (record.STRM__c === "{!futureTerm}") {
+                                        futureTermEnrolled += record.UNT_TAKEN__c;
+                                        if (!futureTermClassSessionMap.has(record.SESSION_CODE__c)) {
+                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
+                                        } else {
+                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, (futureTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
+                                        }
                                     }
                                 }
                             });
 
                             buildSessionRows(currentTermClassSessionMap, "#currentTermEnrolledHours", "#currentTermEnrolled", currentTermEnrolled);
                             buildSessionRows(nextTermClassSessionMap, "#nextTermEnrolledHours", "#nextTermEnrolled", nextTermEnrolled);
+                            buildSessionRows(futureTermClassSessionMap, "#futureEnrolledHours", "#futureTermEnrolled", futureTermEnrolled);
 
                             function buildSessionRows(sessionMap, termHoursId, termEnrolledId, termEnrolledHours) {
                                 let termRowHTML = "";
-
                                 new Map([...sessionMap.entries()].sort()).forEach(function (value, key) {
                                     termRowHTML += "" +
                                         "<tr class=\"gradExtraInfo hide\">\n" +

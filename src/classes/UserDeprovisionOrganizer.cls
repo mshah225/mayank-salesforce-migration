@@ -17,15 +17,37 @@ public without sharing class UserDeprovisionOrganizer {
     private List<UserPackageLicense> allUserPackageLicenses;
     private List<UserLogin> allUserLogins;
 
-    private Map<Id, List<Case>> userToDeprovisionCaseMap;
+    private Map<Id, List<Case>> userToCaseMap;
     private Map<Id, UserLogin> userToUserLoginMap;
-    private Map<Id, String> userToDeprovisionGroupMembershipMap;
-    private Map<Id, String> userToDeprovisionChatterGroupMembershipMap;
-    private Map<Id, String> userToDeprovisionPermissionSetMap;
-    private Map<Id, String> userToDeprovisionPackageLicenseMap;
+    private Map<Id, String> userToGroupMembershipMap;
+    private Map<Id, String> userToChatterGroupMembershipMap;
+    private Map<Id, String> userToPermissionSetMap;
+    private Map<Id, String> userToPackageLicenseMap;
     private Map<Id, String> userToProcessingNotesMap;
 
     private static Boolean debug = false;
+
+    public UserDeprovisionOrganizer() {
+        this.newUsers = new List<User>();
+        this.oldUsersMap = new Map<Id, User>();
+        this.deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+
+        this.userToDeprovisionIds = new List<Id>();
+        this.allUserCases = new List<Case>();
+        this.allUserPublicGroupMemberships = new List<GroupMember>();
+        this.allUserChatterGroupMemberships = new List<CollaborationGroupMember>();
+        this.allUserPermissionSetAssignments = new List<PermissionSetAssignment>();
+        this.allUserPackageLicenses = new List<UserPackageLicense>();
+        this.allUserLogins = new List<UserLogin>();
+
+        this.userToCaseMap = new Map<Id, List<Case>>();
+        this.userToUserLoginMap = new Map<Id, UserLogin>();
+        this.userToGroupMembershipMap = new Map<Id, String>();
+        this.userToChatterGroupMembershipMap = new Map<Id, String>();
+        this.userToPermissionSetMap = new Map<Id, String>();
+        this.userToPackageLicenseMap = new Map<Id, String>();
+        this.userToProcessingNotesMap = new Map<Id, String>();
+    }
 
     public void setOldUsersMap(Map<Id, SObject> oldUsersMap) {
         this.oldUsersMap = (Map<Id, User>) oldUsersMap;
@@ -37,10 +59,6 @@ public without sharing class UserDeprovisionOrganizer {
 
     public void deprovisionUsersAfterUpdate() {
         List<UserDeprovisioner> userDeprovisionersList = new List<UserDeprovisioner>();
-        List<User> deprovisionedUsersWithProcessingNotes = new List<User>();
-        userToProcessingNotesMap = new Map<Id, String>();
-        userToDeprovisionIds = new List<Id>();
-        deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
 
         for (User userToDeprovision : newUsers) {
             if (userToDeprovision.Deprovision_User__c && !oldUsersMap.get(userToDeprovision.Id).Deprovision_User__c) {
@@ -62,16 +80,16 @@ public without sharing class UserDeprovisionOrganizer {
             List<Case> updatedUserCases = new List<Case>();
             Map<Id, Id> caseToUserMap = new Map<Id, Id>();
             List<UserLogin> updatedUserLogins = new List<UserLogin>();
+            List<User> deprovisionedUsersWithProcessingNotes = new List<User>();
 
             for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
                 Id userId = userDeprovisioner.getUserToDeprovision().Id;
                 userDeprovisioner.setDeprovisionUserConfiguration(deprovisionUserConfiguration);
-                userDeprovisioner.setUserCases(userToDeprovisionCaseMap.get(userId));
-                userDeprovisioner.setGroupMemberships(userToDeprovisionGroupMembershipMap.get(userId));
-                userDeprovisioner.setChatterGroupMemberships(userToDeprovisionChatterGroupMembershipMap.get(userId));
-                userDeprovisioner.setPermissionSets(userToDeprovisionPermissionSetMap.get(userId));
-                userDeprovisioner.setPackageLicenses(userToDeprovisionPackageLicenseMap.get(userId));
-                userDeprovisioner.setOldProcessingNotes(oldUsersMap.get(userId).Processing_Notes__c); // append to previous notes
+                userDeprovisioner.setUserCases(userToCaseMap.get(userId));
+                userDeprovisioner.setGroupMemberships(userToGroupMembershipMap.get(userId));
+                userDeprovisioner.setChatterGroupMemberships(userToChatterGroupMembershipMap.get(userId));
+                userDeprovisioner.setPermissionSets(userToPermissionSetMap.get(userId));
+                userDeprovisioner.setPackageLicenses(userToPackageLicenseMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
                 userDeprovisioner.deprovisionUser();
                 updatedUserCases.addAll(userDeprovisioner.getUpdatedUserCases());
@@ -112,15 +130,6 @@ public without sharing class UserDeprovisionOrganizer {
         }
     }
 
-    private void populateUserToUserLoginMap() {
-        allUserLogins = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId IN :userToDeprovisionIds];
-
-        userToUserLoginMap = new Map<Id, UserLogin>();
-        for (UserLogin ul : allUserLogins) {
-            userToUserLoginMap.put(ul.UserId, ul);
-        }
-    }
-
     private void populateUserToDeprovisionCaseMap() {
         allUserCases = [
             SELECT
@@ -134,14 +143,13 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE OwnerId IN :userToDeprovisionIds
         ];
 
-        userToDeprovisionCaseMap = new Map<Id, List<Case>>();
         for (Case userCase : allUserCases) {
-            if (userToDeprovisionCaseMap.containsKey(userCase.OwnerId)) {
-                userToDeprovisionCaseMap.get(userCase.OwnerId).add(userCase);
+            if (userToCaseMap.containsKey(userCase.OwnerId)) {
+                userToCaseMap.get(userCase.OwnerId).add(userCase);
             } else {
                 List<Case> userCases = new List<Case>();
                 userCases.add(userCase);
-                userToDeprovisionCaseMap.put(userCase.OwnerId, userCases);
+                userToCaseMap.put(userCase.OwnerId, userCases);
             }
         }
     }
@@ -153,15 +161,14 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE UserOrGroupId IN :userToDeprovisionIds
         ];
 
-        userToDeprovisionGroupMembershipMap = new Map<Id, String>();
         for (GroupMember groupMember : allUserPublicGroupMemberships) {
-            if (userToDeprovisionGroupMembershipMap.containsKey(groupMember.UserOrGroupId)) {
-                String groupMemberships = userToDeprovisionGroupMembershipMap.get(groupMember.UserOrGroupId);
+            if (userToGroupMembershipMap.containsKey(groupMember.UserOrGroupId)) {
+                String groupMemberships = userToGroupMembershipMap.get(groupMember.UserOrGroupId);
                 groupMemberships += ', ' + groupMember.Group.Name;
-                userToDeprovisionGroupMembershipMap.put(groupMember.UserOrGroupId, groupMemberships);
+                userToGroupMembershipMap.put(groupMember.UserOrGroupId, groupMemberships);
             } else {
                 String groupMemberships = '' + groupMember.Group.Name;
-                userToDeprovisionGroupMembershipMap.put(groupMember.UserOrGroupId, groupMemberships);
+                userToGroupMembershipMap.put(groupMember.UserOrGroupId, groupMemberships);
             }
         }
     }
@@ -173,23 +180,14 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE MemberId IN :userToDeprovisionIds
         ];
 
-        userToDeprovisionChatterGroupMembershipMap = new Map<Id, String>();
         for (CollaborationGroupMember collaborationGroupMember : allUserChatterGroupMemberships) {
-            if (userToDeprovisionChatterGroupMembershipMap.containsKey(collaborationGroupMember.MemberId)) {
-                String chatterGroupMemberships = userToDeprovisionChatterGroupMembershipMap.get(
-                    collaborationGroupMember.MemberId
-                );
+            if (userToChatterGroupMembershipMap.containsKey(collaborationGroupMember.MemberId)) {
+                String chatterGroupMemberships = userToChatterGroupMembershipMap.get(collaborationGroupMember.MemberId);
                 chatterGroupMemberships += ', ' + collaborationGroupMember.CollaborationGroup.Name;
-                userToDeprovisionChatterGroupMembershipMap.put(
-                    collaborationGroupMember.MemberId,
-                    chatterGroupMemberships
-                );
+                userToChatterGroupMembershipMap.put(collaborationGroupMember.MemberId, chatterGroupMemberships);
             } else {
                 String chatterGroupMemberships = '' + collaborationGroupMember.CollaborationGroup.Name;
-                userToDeprovisionChatterGroupMembershipMap.put(
-                    collaborationGroupMember.MemberId,
-                    chatterGroupMemberships
-                );
+                userToChatterGroupMembershipMap.put(collaborationGroupMember.MemberId, chatterGroupMemberships);
             }
         }
     }
@@ -201,15 +199,14 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE AssigneeId IN :userToDeprovisionIds AND PermissionSet.IsOwnedByProfile = FALSE
         ];
 
-        userToDeprovisionPermissionSetMap = new Map<Id, String>();
         for (PermissionSetAssignment permissionSetAssignment : allUserPermissionSetAssignments) {
-            if (userToDeprovisionPermissionSetMap.containsKey(permissionSetAssignment.AssigneeId)) {
-                String permissionSets = userToDeprovisionPermissionSetMap.get(permissionSetAssignment.AssigneeId);
+            if (userToPermissionSetMap.containsKey(permissionSetAssignment.AssigneeId)) {
+                String permissionSets = userToPermissionSetMap.get(permissionSetAssignment.AssigneeId);
                 permissionSets += ', ' + permissionSetAssignment.PermissionSet.Name;
-                userToDeprovisionPermissionSetMap.put(permissionSetAssignment.AssigneeId, permissionSets);
+                userToPermissionSetMap.put(permissionSetAssignment.AssigneeId, permissionSets);
             } else {
                 String permissionSets = permissionSetAssignment.PermissionSet.Name;
-                userToDeprovisionPermissionSetMap.put(permissionSetAssignment.AssigneeId, permissionSets);
+                userToPermissionSetMap.put(permissionSetAssignment.AssigneeId, permissionSets);
             }
         }
     }
@@ -223,16 +220,24 @@ public without sharing class UserDeprovisionOrganizer {
                 AND PackageLicenseId IN :getDeprovisionConfigurationPackageLicenseIds()
         ];
 
-        userToDeprovisionPackageLicenseMap = new Map<Id, String>();
         for (UserPackageLicense userPackageLicense : allUserPackageLicenses) {
-            if (userToDeprovisionPackageLicenseMap.containsKey(userPackageLicense.UserId)) {
-                String packageLicenses = userToDeprovisionPackageLicenseMap.get(userPackageLicense.UserId);
+            if (userToPackageLicenseMap.containsKey(userPackageLicense.UserId)) {
+                String packageLicenses = userToPackageLicenseMap.get(userPackageLicense.UserId);
                 packageLicenses += userPackageLicense.PackageLicense.NamespacePrefix;
-                userToDeprovisionPackageLicenseMap.put(userPackageLicense.UserId, packageLicenses);
+                userToPackageLicenseMap.put(userPackageLicense.UserId, packageLicenses);
             } else {
                 String packageLicenses = userPackageLicense.PackageLicense.NamespacePrefix;
-                userToDeprovisionPackageLicenseMap.put(userPackageLicense.UserId, packageLicenses);
+                userToPackageLicenseMap.put(userPackageLicense.UserId, packageLicenses);
             }
+        }
+    }
+
+    private void populateUserToUserLoginMap() {
+        allUserLogins = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId IN :userToDeprovisionIds];
+
+        userToUserLoginMap = new Map<Id, UserLogin>();
+        for (UserLogin ul : allUserLogins) {
+            userToUserLoginMap.put(ul.UserId, ul);
         }
     }
 

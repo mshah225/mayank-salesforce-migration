@@ -12,7 +12,6 @@ public without sharing class UserDeprovisioner {
     private String chatterGroupMemberships;
     private String permissionSets;
     private String packageLicenses;
-    private String oldUserProcessingNotes;
 
     private static Boolean debug = false;
 
@@ -78,14 +77,6 @@ public without sharing class UserDeprovisioner {
         this.packageLicenses = packageLicenses;
     }
 
-    public void setOldProcessingNotes(String oldUserProcessingNotes) {
-        if (oldUserProcessingNotes != null && oldUserProcessingNotes.length() > 0) {
-            this.oldUserProcessingNotes = oldUserProcessingNotes;
-        } else {
-            this.oldUserProcessingNotes = '';
-        }
-    }
-
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
     }
@@ -101,7 +92,11 @@ public without sharing class UserDeprovisioner {
         try {
             System.debug(userToDeprovision);
             deprovisionedUser.Id = userToDeprovision.Id;
-            addToProcessingNotes(this.oldUserProcessingNotes + '\n---');
+            if (userToDeprovision.Processing_Notes__c != null) {
+                addToProcessingNotes(
+                    userToDeprovision.Processing_Notes__c + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
+                );
+            }
             addToProcessingNotes(initialUserTimeStamp());
             if (matchProfileToIgnore() || matchSFAdminOrDeveloper()) {
                 deprovisionedUser.Deprovision_User__c = false;

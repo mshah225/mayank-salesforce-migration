@@ -8,13 +8,19 @@ export default class SimpleToast extends LightningElement {
     @track icon = "";
     @track hide = true;
     @track nothide = false;
+    timeoutToClose = null;
+    timeoutToDisplayNone = null;
  
     @api fire() {
         this.icon = "utility:"+this.variant;
         this.openToast();
 
         // auto close in duration milliseconds
-        setTimeout(() => {
+        if (this.timeoutToClose) {
+            clearTimeout(this.timeoutToClose);
+            this.timeoutToClose = null;
+        }
+        this.timeoutToClose = setTimeout(() => {
             if (!this.hide) {
                 this.closeToast();
             }
@@ -31,18 +37,24 @@ export default class SimpleToast extends LightningElement {
     openToast() {
         this.hide = false;
         this.nothide = true;
+        this.template.querySelector('.toastWrapper').classList.remove('displayNone');
         this.template.querySelector('.toastWrapper').classList.remove('fadeOutTransition');
-        this.template.querySelector('.toastWrapper').classList.remove('fadedOut');
         this.template.querySelector('.toastWrapper').classList.add('fadeInTransition');
-        this.template.querySelector('.toastWrapper').classList.add('fadedIn');
         this.template.querySelector('.toastWrapper').focus();
     }
     closeToast() {
         this.hide = true;
         this.nothide = false;
         this.template.querySelector('.toastWrapper').classList.remove('fadeInTransition');
-        this.template.querySelector('.toastWrapper').classList.remove('fadedIn');
         this.template.querySelector('.toastWrapper').classList.add('fadeOutTransition');
-        this.template.querySelector('.toastWrapper').classList.add('fadedOut');
+
+        // Display set to none after fade out
+        if (this.timeoutToDisplayNone) {
+            clearTimeout(this.timeoutToDisplayNone);
+            this.timeoutToDisplayNone = null;
+        }
+        this.timeoutToDisplayNone = setTimeout(() => {
+            this.template.querySelector('.toastWrapper').classList.add('displayNone');
+        }, 2000)
     }
 }

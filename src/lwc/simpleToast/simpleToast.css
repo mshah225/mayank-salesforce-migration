@@ -1,57 +1,11 @@
-:host .toastWrapper {
-    position: fixed;
-    min-width: 200px;
-    max-width: 500px;
-    left: 50%;
-    z-index: 10000;
-    transform: translateX(-50%);
-}
-:host .toastWrapper > div {
-    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
-    padding: 5px;
-    overflow: auto;
-}
-
-:host .toastWrapper :focus {
-    border: 5px solid mediumseagreen;
-}
-
-:host .toastWrapper > div > div {
-    display: inline-block;
-}
-:host .toastWrapper > div > lightning-button-icon {
-    float: right;
-    padding-left: 3px;
-}
-:host .toastWrapper > div > lightning-icon {
-    float: left;
-    padding: 5px;
-    margin-right: 5px;
-}
-
-:host .error {
-    border: 2px solid red;
-    background-color: rgb(255, 190, 190);
-}
-:host .success {
-    border: 2px solid green;
-    background-color: rgb(192, 255, 190);
-}
-:host .info {
-    border: 2px solid gray;
-    background-color: rgb(201, 201, 201);
-}
-:host .warning {
-    border: 2px solid orange;
-    background-color: rgb(255, 234, 177);
-}
-
 .fadeInTransition {
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;
     -moz-animation: fadeIn ease 2s;
     -o-animation: fadeIn ease 2s;
     -ms-animation: fadeIn ease 2s;
+
+    opacity: 1;
 }
 @keyframes fadeIn {
     0% {
@@ -93,9 +47,6 @@
         opacity: 1;
     }
 }
-:host .fadedIn {
-    opacity: 1;
-}
 
 :host .fadeOutTransition {
     animation: fadeOut ease 2s;
@@ -103,6 +54,8 @@
     -moz-animation: fadeOut ease 2s;
     -o-animation: fadeOut ease 2s;
     -ms-animation: fadeOut ease 2s;
+
+    opacity: 0;
 }
 @keyframes fadeOut {
     0% {
@@ -144,6 +97,7 @@
         opacity: 0;
     }
 }
-:host .fadedOut {
-    opacity: 0;
+
+.displayNone {
+    display: none;
 }

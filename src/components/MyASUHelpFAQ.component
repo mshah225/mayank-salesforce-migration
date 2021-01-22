@@ -36,6 +36,7 @@
                 <apex:actionRegion>
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
+                            <div style="display:none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
                             <div class="myasu-help-region-sub-header">
                                 Showing all results for '{!textToSearch}'
                             </div>

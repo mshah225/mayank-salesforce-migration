@@ -5,11 +5,14 @@ public without sharing class UserDeprovisioner {
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
     private List<Case> userCases;
     private List<Case> updatedUserCases;
+    private UserLogin userLogin;
+    private UserLogin updatedUserLogin;
     private Map<Id, Id> caseToUserMap;
     private String groupMemberships;
     private String chatterGroupMemberships;
     private String permissionSets;
     private String packageLicenses;
+    private String oldUserProcessingNotes;
 
     private static Boolean debug = false;
 
@@ -52,6 +55,13 @@ public without sharing class UserDeprovisioner {
         return updatedUserCases;
     }
 
+    public UserLogin getUpdatedUserLogin() {
+        if (updatedUserLogin == null) {
+            updatedUserLogin = userLogin;
+        }
+        return updatedUserLogin;
+    }
+
     public void setGroupMemberships(String groupMemberships) {
         this.groupMemberships = groupMemberships;
     }
@@ -68,6 +78,18 @@ public without sharing class UserDeprovisioner {
         this.packageLicenses = packageLicenses;
     }
 
+    public void setOldProcessingNotes(String oldUserProcessingNotes) {
+        if (oldUserProcessingNotes != null && oldUserProcessingNotes.length() > 0) {
+            this.oldUserProcessingNotes = oldUserProcessingNotes;
+        } else {
+            this.oldUserProcessingNotes = '';
+        }
+    }
+
+    public void setUserLogin(UserLogin userLogin) {
+        this.userLogin = userLogin;
+    }
+
     public Map<Id, Id> getCaseToUserMap() {
         if (caseToUserMap == null) {
             caseToUserMap = new Map<Id, Id>();
@@ -79,8 +101,9 @@ public without sharing class UserDeprovisioner {
         try {
             System.debug(userToDeprovision);
             deprovisionedUser.Id = userToDeprovision.Id;
+            addToProcessingNotes(this.oldUserProcessingNotes + '\n---');
             addToProcessingNotes(initialUserTimeStamp());
-            if (matchProfileToIgnore()) {
+            if (matchProfileToIgnore() || matchSFAdminOrDeveloper()) {
                 deprovisionedUser.Deprovision_User__c = false;
                 return;
             }
@@ -88,6 +111,7 @@ public without sharing class UserDeprovisioner {
             changeUserField('UserRoleId');
             transferPrivateCasesToFunctionalGroup();
             updateUserFields();
+            updateUserLogin();
             logRemovedGroupMemberships();
             logRemovedPermissionSets();
             logRemovedChatterGroupMemberships();
@@ -144,7 +168,7 @@ public without sharing class UserDeprovisioner {
         }
     }
 
-    private void addToProcessingNotes(String message) {
+    public void addToProcessingNotes(String message) {
         processingNotes += message + '\n';
     }
 
@@ -165,6 +189,16 @@ public without sharing class UserDeprovisioner {
                     return true;
                 }
             }
+        }
+        return false;
+    }
+
+    private Boolean matchSFAdminOrDeveloper() {
+        if (userToDeprovision.Role_Administrator_Developer__c) {
+            addToProcessingNotes(
+                'Detected SF Developer or Admin based on PeopleSoft Roles Administrator/Developer. Stopping User Deprovision'
+            );
+            return true;
         }
         return false;
     }
@@ -254,5 +288,13 @@ public without sharing class UserDeprovisioner {
         if (packageLicenses != null) {
             addToProcessingNotes('Removed user from Package Licenses: ' + packageLicenses);
         }
+    }
+
+    private void updateUserLogin() {
+        if (userLogin.IsFrozen) {
+            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
+        }
+        updatedUserLogin = userLogin;
+        updatedUserLogin.IsFrozen = false;
     }
 }

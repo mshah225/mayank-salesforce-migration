@@ -5,7 +5,6 @@ salesforce.schema
 /.settings/
 /.idea/
 /IlluminatedCloud/
-/config/
 /debug/
 /deploy/
 /build/
@@ -35,9 +34,11 @@ salesforce.schema
 .profile
 .profileE
 .ssh/
-README.md
 workspace/
 /src/package.xml
 workspace
 .codeintel/
 /src/staticresources
+src/lwc/jsconfig.json
+src/package-lock.json
+src/package.json

@@ -20,7 +20,6 @@ export default class FeedbackButton extends LightningElement {
         this.template.querySelector('.slds-backdrop').classList.remove('slds-backdrop_open');
         this.hideModal = true;
         this.notHideModal = false;
-        this.template.querySelector('.slds-modal').unfocus();
     }
     
     sendFeedback() {

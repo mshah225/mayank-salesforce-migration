@@ -44,6 +44,5 @@ export default class SimpleToast extends LightningElement {
         this.template.querySelector('.toastWrapper').classList.remove('fadedIn');
         this.template.querySelector('.toastWrapper').classList.add('fadeOutTransition');
         this.template.querySelector('.toastWrapper').classList.add('fadedOut');
-        this.template.querySelector('.toastWrapper').unfocus();
     }
 }

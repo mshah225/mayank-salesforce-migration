@@ -168,7 +168,11 @@ public without sharing class UserDeprovisioner {
     }
 
     private String initialUserTimeStamp() {
-        return System.now() + ' UserId: ' + UserInfo.getUserId() + ', UserName: ' + UserInfo.getName();
+        return System.now().format('YYYY-MM-DD HH:mm:ss') +
+            ' UserId: ' +
+            UserInfo.getUserId() +
+            ', UserName: ' +
+            UserInfo.getName();
     }
 
     private Boolean matchProfileToIgnore() {

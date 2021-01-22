@@ -5,6 +5,7 @@ salesforce.schema
 /.settings/
 /.idea/
 /IlluminatedCloud/
+/config/
 /debug/
 /deploy/
 /build/

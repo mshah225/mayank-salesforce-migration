@@ -12,6 +12,10 @@
     overflow: auto;
 }
 
+:host .toastWrapper :focus {
+    border: 5px solid mediumseagreen;
+}
+
 :host .toastWrapper > div > div {
     display: inline-block;
 }

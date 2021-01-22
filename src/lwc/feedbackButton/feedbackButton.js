@@ -1,17 +1,26 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import submitFeedback from '@salesforce/apex/FeedbackButtonService.submitFeedback';
 
 export default class FeedbackButton extends LightningElement {
     @api iconSize = 'xx-small';
     @api carName;
+    @track hideModal = true;
+    @track notHideModal = false;
+    @track loading = false;
 
     openModal() {
+        this.hideModal = false;
+        this.notHideModal = true;
         this.template.querySelector('.slds-modal').classList.add('slds-fade-in-open');
         this.template.querySelector('.slds-backdrop').classList.add('slds-backdrop_open');
+        this.template.querySelector('.slds-modal').focus();
     }
     closeModal() {
         this.template.querySelector('.slds-modal').classList.remove('slds-fade-in-open');
         this.template.querySelector('.slds-backdrop').classList.remove('slds-backdrop_open');
+        this.hideModal = true;
+        this.notHideModal = false;
+        this.template.querySelector('.slds-modal').unfocus();
     }
     
     sendFeedback() {
@@ -20,6 +29,7 @@ export default class FeedbackButton extends LightningElement {
             feedback = this.template.querySelector('lightning-textarea').value.trim();
         }
         if (feedback.length > 0) {
+            this.loading = true;
             submitFeedback({ carName: this.carName, feedbackText: feedback })
                 .then(result => {
                     this.makeToast('success', 'Success', 'Feedback successfully submitted');
@@ -30,6 +40,9 @@ export default class FeedbackButton extends LightningElement {
                     } else {
                         this.makeToast('error', 'Error', error.body.message+'. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080');
                     }
+                })
+                .finally(() => {
+                    this.loading = false;
                 });
         } else {
             this.makeToast('error','Error','Feedback must contain some content.')
@@ -37,8 +50,6 @@ export default class FeedbackButton extends LightningElement {
     }
 
     makeToast(type, title, body) {
-        console.log(type);
-        console.log(title);
-        console.log(body);
+        this.template.querySelector('c-simple-toast').fireParams(title, body, type, 15000);
     }
 }

@@ -35,6 +35,7 @@ export default class SimpleToast extends LightningElement {
         this.template.querySelector('.toastWrapper').classList.remove('fadedOut');
         this.template.querySelector('.toastWrapper').classList.add('fadeInTransition');
         this.template.querySelector('.toastWrapper').classList.add('fadedIn');
+        this.template.querySelector('.toastWrapper').focus();
     }
     closeToast() {
         this.hide = true;
@@ -43,5 +44,6 @@ export default class SimpleToast extends LightningElement {
         this.template.querySelector('.toastWrapper').classList.remove('fadedIn');
         this.template.querySelector('.toastWrapper').classList.add('fadeOutTransition');
         this.template.querySelector('.toastWrapper').classList.add('fadedOut');
+        this.template.querySelector('.toastWrapper').unfocus();
     }
 }

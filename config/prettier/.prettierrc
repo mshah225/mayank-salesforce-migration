@@ -1,0 +1,19 @@
+{
+    "bracketSpacing": false,
+    "jsxSingleQuote": true,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "es5",
+    "printWidth": 120,
+    "quoteProps": "consistent",
+    "overrides": [
+        {
+            "files": "**/lwc/**/*.html",
+            "options": {"parser": "lwc"}
+        },
+        {
+            "files": "*.{cmp,page,component}",
+            "options": {"parser": "html"}
+        }
+    ]
+}

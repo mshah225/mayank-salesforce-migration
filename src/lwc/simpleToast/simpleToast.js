@@ -13,6 +13,7 @@ export default class SimpleToast extends LightningElement {
  
     @api fire() {
         this.icon = "utility:"+this.variant;
+        this.setModalType();
         this.openToast();
 
         // auto close in duration milliseconds
@@ -32,6 +33,23 @@ export default class SimpleToast extends LightningElement {
         this.variant = variant;
         this.duration = duration;
         this.fire();
+    }
+
+    setModalType() {
+        let classList = this.template.querySelector('.toastStatus').classList;
+        let removeList = [];
+        // find existing applied themes
+        for (let i=0; i<classList.length; i++) {
+            if (classList[i].includes('slds-theme_')) {
+                removeList.push(classList[i]);
+            }
+        }
+        // remove any theming classes
+        for (let i=0; i<removeList.length; i++) {
+            this.template.querySelector('.toastStatus').classList.remove(removeList[i]);
+        }
+        // add the one we need
+        this.template.querySelector('.toastStatus').classList.add('slds-theme_' + this.variant);
     }
 
     openToast() {

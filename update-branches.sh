@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Fetch and apply all branch updates
 git fetch --all
 hub sync

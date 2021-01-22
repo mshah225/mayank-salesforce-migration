@@ -1,0 +1,10 @@
+<template>
+    <div role="alert" tabindex="-1" aria-hidden={hide} aria-modal={nothide} class='toastWrapper fadedOut'>
+        <div class={variant}>
+            <lightning-icon icon-name={icon} variant={variant} alternative-text={variant}></lightning-icon>
+            <lightning-button-icon icon-name="utility:close" variant='bare' alternative-text="Close" onclick={closeToast}></lightning-button-icon>
+            <b>{title}</b>
+            <p>{body}</p>
+        </div>
+    </div>
+</template>

@@ -31,3 +31,9 @@ The following metadata types are contained in this repository:
 * RemoteSiteSetting
 * SamlSsoConfig
 * Settings
+
+### Code Formatting
+Prettier, a code formatter, is required for development on asu-salesforce-metadata. It's maintained [within the repository](vscode/prettier/.prettierrc).
+
+### Updating Feature Branches
+See https://asudev.jira.com/l/c/15zCXpB6 for details on how to update all feature branches after commits are pushed to master.

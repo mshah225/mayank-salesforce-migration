@@ -1,0 +1,301 @@
+<aura:component controller="AdvisorPortalFilterSectionController">
+    <aura:attribute name="Filter" type="AdvisorPortalFilter" />
+    <aura:attribute name="SelectedViewAsUserOptions" type="List" />
+    <aura:attribute name="UserIds" type="List" />
+    <aura:attribute name="Student" type="String" default="" />
+    <aura:attribute name="Campus" type="String" default="" />
+    <aura:attribute name="CampusPicklistValues" type="List" />
+    <aura:attribute name="Major" type="String" default="" />
+    <aura:attribute name="Residency" type="String" default="" />
+    <aura:attribute name="ResidencyPicklistValues" type="List" />
+    <aura:attribute name="CaseStatus" type="String" default="" />
+    <aura:attribute name="CaseStatusPicklistValues" type="List" />
+    <aura:attribute name="CaseSubject" type="String" default="" />
+    <aura:attribute name="CaseSubjectPicklistValues" type="List" />
+    <aura:attribute name="AcademicLevel" type="String" default="" />
+    <aura:attribute
+        name="AcademicLevelPicklistValues"
+        type="List"
+        default="[{ label: 'Freshman', value: 'Freshman' }, { label: 'Sophomore', value: 'Sophomore' }, { label: 'Junior', value: 'Junior' }, { label: 'Senior', value: 'Senior' }, { label: 'Graduate', value: 'Graduate'}]"
+    />
+    <aura:attribute name="CaseCategory" type="String" default="" />
+    <aura:attribute name="CaseCategoryPicklistValues" type="List" />
+    <aura:attribute name="StudentGroup" type="String" default="" />
+    <aura:attribute name="OutlookScore" type="String" default="" />
+    <aura:attribute
+        name="OutlookScoreOptions"
+        type="List"
+        default="[{ label: 'Very Low', value: 'Very Low'}, { label: 'Low', value: 'Low' }, { label: 'Moderate', value: 'Moderate' }, { label: 'High', value: 'High' }, { label: 'Very High', value: 'Very High' }]"
+    />
+    <aura:attribute name="OutlookChange" type="String" default="" />
+    <aura:attribute
+        name="OutlookChangeOptions"
+        type="List"
+        default="[{ label: 'Up', value: 'Up'}, { label: 'Down', value: 'Down'}, { label: 'No change', value: 'No Change'}]"
+    />
+    <aura:attribute name="CaseCount" type="Integer" />
+    <aura:attribute name="CreatedFromDate" type="String" default="" />
+    <aura:attribute name="CreatedToDate" type="String" default="" />
+    <aura:attribute name="FollowUpFromDate" type="String" default="" />
+    <aura:attribute name="FollowUpToDate" type="String" default="" />
+    <aura:attribute name="PersistenceFromDate" type="String" default="" />
+    <aura:attribute name="PersistenceToDate" type="String" default="" />
+    <aura:attribute name="FilterToggleState" type="Boolean" default="true" />
+    <aura:attribute name="WatchlistCasesState" type="Boolean" default="false" />
+    <aura:attribute name="ProactiveCasesState" type="Boolean" default="true" />
+    <aura:attribute name="AllCasesState" type="Boolean" default="false" />
+    <aura:attribute name="isFilterSectionShown" type="Boolean" default="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.SelectedViewAsUserOptions}" action="{!c.viewAsUsersHasChanged}" />
+    <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
+
+    <aura:method name="forceApplyFilters" action="{!c.applyFilters}"></aura:method>
+
+    <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
+    <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />
+    <aura:registerEvent name="updateCaseContactWrappersEvent" type="c:UpdateCaseContactWrappersEvent" />
+
+    <lightning:buttonStateful
+        aura:id="filtersToggle"
+        labelWhenOff="Show Filters"
+        labelWhenOn="Hide Filters"
+        variant="brand"
+        iconNameWhenOff="utility:chevronright"
+        iconNameWhenOn="utility:chevrondown"
+        state="{!v.FilterToggleState}"
+        onclick="{!c.toggleFilterListPanel}"
+    />
+
+    <aura:renderIf isTrue="{!v.isFilterSectionShown}">
+        <div aura:id="filterSection" class="slds-card slds-p-around_small slds-m-vertical_x-small slds-form_horizontal">
+            <div class="slds-grid slds-wrap slds-gutters_x-small">
+                <span
+                    onkeypress="{!c.returnKeyPressed}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-p-around_none"
+                >
+                    <lightning:input
+                        placeholder="Name, EmplId, or ASURite"
+                        type="text"
+                        name="StudentField"
+                        value="{!v.Student}"
+                        label="Student: "
+                        onblur="{!c.applyFilters}"
+                    />
+                </span>
+                <c:ComboBoxMultiSelect
+                    aura:id="campusPicklist"
+                    label="Campus:"
+                    value="{!v.Campus}"
+                    options="{!v.CampusPicklistValues}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="academicLevelPicklist"
+                    label="Academic Level:"
+                    value="{!v.AcademicLevel}"
+                    options="{!v.AcademicLevelPicklistValues}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <lightning:input
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                    type="text"
+                    name="Student Group"
+                    value="{!v.StudentGroup}"
+                    label="Student Group: "
+                />
+                <lightning:input
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                    type="text"
+                    name="Major"
+                    value="{!v.Major}"
+                    label="Major: "
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="residencyPicklist"
+                    label="Residency:"
+                    value="{!v.Residency}"
+                    options="{!v.ResidencyPicklistValues}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="caseStatusPicklist"
+                    label="Case Status:"
+                    value="{!v.CaseStatus}"
+                    options="{!v.CaseStatusPicklistValues}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="caseCategoryPicklist"
+                    label="Case Category:"
+                    value="{!v.CaseCategory}"
+                    options="{!v.CaseCategoryPicklistValues}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="caseSubjectPicklist"
+                    label="Case Subject:"
+                    value="{!v.CaseSubject}"
+                    options="{!v.CaseSubjectPicklistValues}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="outlookScoreOptionsPicklist"
+                    label="Outlook Score:"
+                    value="{!v.OutlookScore}"
+                    options="{!v.OutlookScoreOptions}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <c:ComboBoxMultiSelect
+                    aura:id="outlookChangePicklist"
+                    label="Outlook Change:"
+                    value="{!v.OutlookChange}"
+                    options="{!v.OutlookChangeOptions}"
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                />
+                <lightning:input
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
+                    type="number"
+                    name="CaseCount"
+                    value="{!v.CaseCount}"
+                    label="Case Count: "
+                />
+            </div>
+
+            <div class="slds-grid slds-wrap slds-gutters_x-small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                    <fieldset class="slds-form-element slds-form-element_compound">
+                        <legend class="slds-form-element__legend slds-form-element__label">Created Date</legend>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__row">
+                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                    <lightning:input
+                                        class="compound-form-adjust"
+                                        type="date"
+                                        label="From:"
+                                        name="fromDate"
+                                        value="{!v.CreatedFromDate}"
+                                        onchange="{!c.validateDates}"
+                                    />
+                                </div>
+                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                    <lightning:input
+                                        class="compound-form-adjust"
+                                        type="date"
+                                        label="To:"
+                                        name="toDate"
+                                        value="{!v.CreatedToDate}"
+                                        onchange="{!c.validateDates}"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                    <fieldset class="slds-form-element slds-form-element_compound">
+                        <legend class="slds-form-element__legend slds-form-element__label">Follow Up Date</legend>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__row">
+                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                    <lightning:input
+                                        class="compound-form-adjust"
+                                        type="date"
+                                        label="From:"
+                                        name="followUpFromDate"
+                                        value="{!v.FollowUpFromDate}"
+                                        onchange="{!c.validateDates}"
+                                    />
+                                </div>
+                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                    <lightning:input
+                                        class="compound-form-adjust"
+                                        type="date"
+                                        label="To:"
+                                        name="followUpToDate"
+                                        value="{!v.FollowUpToDate}"
+                                        onchange="{!c.validateDates}"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                    <fieldset class="slds-form-element slds-form-element_compound">
+                        <legend class="slds-form-element__legend slds-form-element__label">
+                            Persistence Change Date
+                        </legend>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__row">
+                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                    <lightning:input
+                                        class="compound-form-adjust"
+                                        type="date"
+                                        label="From:"
+                                        name="persistenceFromDate"
+                                        value="{!v.PersistenceFromDate}"
+                                        onchange="{!c.validateDates}"
+                                    />
+                                </div>
+                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                    <lightning:input
+                                        class="compound-form-adjust"
+                                        type="date"
+                                        label="To:"
+                                        name="persistenceToDate"
+                                        value="{!v.PersistenceToDate}"
+                                        onchange="{!c.validateDates}"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div>
+                <lightning:button label="Clear Filters" title="Clear Filters" onclick="{!c.clearFilters}" />
+                <lightning:button
+                    variant="brand"
+                    label="Apply Filters"
+                    title="Apply Filters"
+                    onclick="{!c.applyFilters}"
+                />
+            </div>
+        </div>
+    </aura:renderIf>
+
+    <span class="slds-m-vertical_x-small" aria-label="Case Filter Buttons">
+        <lightning:buttonGroup>
+            <lightning:buttonStateful
+                aura:id="allCasesFilter"
+                labelWhenOff="All Students"
+                labelWhenOn="All Students"
+                variant="neutral"
+                iconNameWhenOn="utility:check"
+                state="{!v.AllCasesState}"
+                onclick="{!c.handleAllCasesState}"
+            />
+            <lightning:buttonStateful
+                aura:id="proactiveFilter"
+                labelWhenOff="Proactive Cases"
+                labelWhenOn="Proactive Cases"
+                variant="brand"
+                iconNameWhenOn="utility:check"
+                state="{!v.ProactiveCasesState}"
+                onclick="{!c.handleProactiveCasesState}"
+            />
+            <lightning:buttonStateful
+                aura:id="watchlistFilter"
+                labelWhenOff="Watchlist Cases"
+                labelWhenOn="Watchlist Cases"
+                variant="neutral"
+                iconNameWhenOn="utility:check"
+                state="{!v.WatchlistCasesState}"
+                onclick="{!c.handleWatchlistCasesState}"
+            />
+        </lightning:buttonGroup>
+    </span>
+</aura:component>

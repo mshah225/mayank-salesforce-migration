@@ -225,7 +225,7 @@
             <div class="row intro">
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom:20px;">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">
-                        <apex:form >
+                        <apex:form>
                             <div id="sunDevilImgDiv" style="{!IF(urlParamsExistAndAreValid, 'display:block', 'display:none')}">
                                 <img id="studentPhotoImg2" src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}" alt="suncard photo"
                                     class="img-responsive intro" style="max-width:200px;width:100%;" />
@@ -444,7 +444,7 @@
 
             <div class="customErrorBox" style="{!IF(urlParamsExistAndAreValid, 'display: none', 'display:block')}">
                 <apex:outputPanel styleClass="customErrorMessage">
-                    <apex:pageMessages ></apex:pageMessages>
+                    <apex:pageMessages></apex:pageMessages>
                 </apex:outputPanel>
             </div>
 
@@ -901,10 +901,7 @@
                                                         {!currentTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="currentTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                                 <tr id="nextTermEnrolledHours" class="grad-row-toggle">
@@ -915,10 +912,18 @@
                                                         {!nextTermName} Term Enrolled Hours
                                                     </th>
                                                     <td id="nextTermEnrolled" style="font-weight:bold;">
-                                                        {!IF(ISBLANK(studentProgram.Enrl_Hrs_Pending__c), '--', '')}
-                                                        <apex:outputText value="{0,number,####}">
-                                                            <apex:param value="{!studentProgram.Enrl_Hrs_Pending__c}" />
-                                                        </apex:outputText>
+                                                        <i class="fa fa-spinner fa-pulse"></i>
+                                                    </td>
+                                                </tr>
+                                                <tr id="futureEnrolledHours" class="grad-row-toggle">
+                                                    <th>
+                                                        <span class="hide" style="margin-right:5px;color:#990033;">
+                                                            <i class="fa fa-caret-right"></i>
+                                                        </span>
+                                                        {!futureTermName} Term Enrolled Hours
+                                                    </th>
+                                                    <td id="futureTermEnrolled" style="font-weight:bold;">
+                                                        <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -2154,14 +2159,18 @@
                                             </tr>
                                             <tr class="gradExtraInfo hide">
                                                 <th class="gradTD alignTop">
-                                                    <div class="planMargin">iPOS Total Hours</div>
+                                                    <div class="planMargin">
+                                                        Blanket Hours
+                                                        <i class="fa fa-question-circle " title="Please note that Blanket Hours only applies to doctoral programs."></i>
+                                                    </div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c
-                                                    == 0, '--', '')}
-                                                    <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
+                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c != 'Doctorate Degree', 'N/A', '')} {!IF(gradProgram.gradProgramPlan.Degree_Level__c
+                                                    == 'Doctorate Degree' && ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c)
+                                                    , '--', '')}
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}" />
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}" />
                                                         </apex:outputText>
                                                     </span>
                                                 </td>
@@ -2173,6 +2182,34 @@
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
                                                         <apex:param value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}" />
                                                     </apex:outputText>
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th class="gradTD alignTop">
+                                                    <div class="planMargin">Transfer Hours</div>
+                                                </th>
+                                                <td colspan="2" class="gradTD">
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c
+                                                    == 0, '--', '')}
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0, 'display: none;', '')}">
+                                                        <apex:outputText value="{0,number,###.00}">
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}" />
+                                                        </apex:outputText>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="gradExtraInfo hide">
+                                                <th class="gradTD alignTop">
+                                                    <div class="planMargin">iPOS Total Hours</div>
+                                                </th>
+                                                <td colspan="2" class="gradTD">
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c
+                                                    == 0, '--', '')}
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
+                                                        <apex:outputText value="{0,number,###.00}">
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}" />
+                                                        </apex:outputText>
+                                                    </span>
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2692,8 +2729,12 @@
                             if (onlineStudent === true) {
                                 result = '{!$Resource.blankAvatar}';
                             }
+
+                            var blankAvatarURL = '{!URLFOR($Resource.blankAvatar)}';
+
                             var html = '<img id="studentPhotoImg2" src="' + result + '" ' +
                                 ' alt="suncard photo" ' +
+                                ' onerror="if (this.src != \'' + blankAvatarURL + ')\') this.src=\'' + blankAvatarURL + '\'" ' +
                                 ' class="img-responsive intro" ' +
                                 ' style="max-width:200px;width:100%;"/>';
                             document.getElementById('sunDevilImgDiv').innerHTML = html;
@@ -3139,6 +3180,11 @@
                 },
                     { buffer: false, escape: true, timeout: 120000 }
                 );
+
+                var currentTermValue = "{!currentTerm}";
+                if(currentTermValue.slice(-1) != "1") {
+                    document.getElementById("futureEnrolledHours").style.display = "none";
+                }
                 cleanUpUndefined("UGgeneralIndicators");
             }
         }
@@ -3729,6 +3775,8 @@
                             let currentTermEnrolled = 0;
                             let nextTermClassSessionMap = new Map();
                             let nextTermEnrolled = 0;
+                            let futureTermClassSessionMap = new Map();
+                            let futureTermEnrolled = 0;
 
                             classResponse.forEach(function (record) {
                                 delete record.attributes;
@@ -3748,16 +3796,23 @@
                                         } else {
                                             nextTermClassSessionMap.set(record.SESSION_CODE__c, (nextTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
                                         }
+                                    } else if (record.STRM__c === "{!futureTerm}") {
+                                        futureTermEnrolled += record.UNT_TAKEN__c;
+                                        if (!futureTermClassSessionMap.has(record.SESSION_CODE__c)) {
+                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
+                                        } else {
+                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, (futureTermClassSessionMap.get(record.SESSION_CODE__c) + record.UNT_TAKEN__c));
+                                        }
                                     }
                                 }
                             });
 
                             buildSessionRows(currentTermClassSessionMap, "#currentTermEnrolledHours", "#currentTermEnrolled", currentTermEnrolled);
                             buildSessionRows(nextTermClassSessionMap, "#nextTermEnrolledHours", "#nextTermEnrolled", nextTermEnrolled);
+                            buildSessionRows(futureTermClassSessionMap, "#futureEnrolledHours", "#futureTermEnrolled", futureTermEnrolled);
 
                             function buildSessionRows(sessionMap, termHoursId, termEnrolledId, termEnrolledHours) {
                                 let termRowHTML = "";
-
                                 new Map([...sessionMap.entries()].sort()).forEach(function (value, key) {
                                     termRowHTML += "" +
                                         "<tr class=\"gradExtraInfo hide\">\n" +

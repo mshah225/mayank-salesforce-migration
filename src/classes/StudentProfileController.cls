@@ -35,6 +35,8 @@ global with sharing class StudentProfileController {
     public String currentTermName { get; set; }
     public String nextTerm { get; set; }
     public String nextTermName { get; set; }
+    public string futureTerm { get; set; }
+    public string futureTermName { get; set; }
     public String subPlanString { get; set; }
     public Map<String, String> termToName { get; set; }
 
@@ -235,13 +237,17 @@ global with sharing class StudentProfileController {
     private void setCurrentAndNextTerms() {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         String nextTermPeoplesoftCode = currentTermData.NextTerm__c;
+        String futureTermPeoplesoftCode = currentTermData.FutureTerm__c;
         currentTerm = currentTermData.CurrTerm__c;
         nextTerm = currentTermData.NextTerm__c;
+        futureTerm = currentTermData.FutureTerm__c;
 
         List<TERM__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c
             FROM TERM__c
-            WHERE PeopleSoft_Code__c = :currentTerm OR PeopleSoft_Code__c = :nextTermPeoplesoftCode
+            WHERE PeopleSoft_Code__c = :currentTerm 
+            OR PeopleSoft_Code__c = :nextTermPeoplesoftCode 
+            OR PeopleSoft_Code__c = :futureTermPeoplesoftCode 
         ];
 
         for (TERM__c term : termList) {
@@ -250,6 +256,8 @@ global with sharing class StudentProfileController {
                 aidYear = term.Aid_Year__c;
             } else if (term.PeopleSoft_Code__c == nextTermPeoplesoftCode) {
                 nextTermName = term.Name;
+            } else if (term.PeopleSoft_Code__c == futureTermPeoplesoftCode) {
+                futureTermName = term.Name;
             }
         }
     }
@@ -335,6 +343,8 @@ global with sharing class StudentProfileController {
                 Grad_Anticipated_Term__r.Name,
                 Grad_ASU_Hours_After__c,
                 Grad_ASU_Hours_Before__c,
+                Grad_ASU_Hours_Transfer__c,
+                Grad_Blanket_Hours__c,
                 Degree_Chkout_Stat_Code__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id

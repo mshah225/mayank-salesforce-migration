@@ -28,6 +28,9 @@ public with sharing class ViewCaseController {
     public Boolean showOpenNewCaseAlert { get; set; }
     public String siteTitleName { get; set; }
     public String siteTitleUrl { get; set; }
+    public String formattedClosedDate { get; set; }
+    public String formattedCreatedDate { get; set; }
+    public List<AttachmentWithFormattedDateTime> allCaseAttachmentsFormattedTime { get; set; }
 
     public ViewCaseController() {
         siteTitleName = 'My ASU';
@@ -68,6 +71,17 @@ public with sharing class ViewCaseController {
             showCaseAttachments = false;
         } else {
             showCaseAttachments = true;
+        }
+
+        if (allCaseAttachmentsFormattedTime == null) {
+            allCaseAttachmentsFormattedTime = new List<AttachmentWithFormattedDateTime>();
+        }
+        for (Attachment a : allCaseAttachments) {
+            AttachmentWithFormattedDateTime awfdt = new AttachmentWithFormattedDateTime();
+            awfdt.Id = a.Id;
+            awfdt.Name = a.Name;
+            awfdt.CreatedDate = (a.CreatedDate == null ? null : a.CreatedDate.format('MMMM d,  yyyy, hh:mm a z'));
+            allCaseAttachmentsFormattedTime.add(awfdt);
         }
     }
 
@@ -146,6 +160,13 @@ public with sharing class ViewCaseController {
                 LIMIT 1
             ];
 
+            if (returnCase.CreatedDate != null) {
+                formattedCreatedDate = ((DateTime) returnCase.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
+            }
+            if (returnCase.ClosedDate != null) {
+                formattedClosedDate = ((DateTime) returnCase.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
+            }
+
             return returnCase;
         }
     }
@@ -186,6 +207,29 @@ public with sharing class ViewCaseController {
                 emailAddresses
             );
         }
+    }
+    public EmailMessageWithFormattedDateTime[] getEmailMessagesWithFormattedDateTime() {
+        EmailMessage[] EMS = getEmailMessages();
+        EmailMessageWithFormattedDateTime[] EMSWithDatesFormatted = new List<EmailMessageWithFormattedDateTime>();
+        for (EmailMessage e : EMS) {
+            EmailMessageWithFormattedDateTime emwfdt = new EmailMessageWithFormattedDateTime();
+
+            emwfdt.CreatedDate = (e.CreatedDate == null ? null : e.CreatedDate.format('MMMM d, yyyy, hh:mm a z'));
+            emwfdt.LastModifiedDate = (e.LastModifiedDate == null
+                ? null
+                : e.LastModifiedDate.format('MMMM d, yyyy, hh:mm a z'));
+            emwfdt.TextBody = e.TextBody;
+            emwfdt.HtmlBody = e.HtmlBody;
+            emwfdt.Subject = e.Subject;
+            emwfdt.FromName = e.FromName;
+            emwfdt.FromAddress = e.FromAddress;
+            emwfdt.ToAddress = e.ToAddress;
+            emwfdt.CcAddress = e.CcAddress;
+            emwfdt.MessageDate = (e.MessageDate == null ? null : e.MessageDate.format('MMMM d, yyyy, hh:mm a z'));
+
+            EMSWithDatesFormatted.add(emwfdt);
+        }
+        return EMSWithDatesFormatted;
     }
 
     public List<ChatMessage> getChatMessages() {
@@ -371,7 +415,7 @@ public with sharing class ViewCaseController {
             ' ' +
             currentUser.LastName +
             ' from the My ASU Help tab at ' +
-            DateTime.now();
+            DateTime.now().format('yyyy-MM-dd HH:mm:ss');
         InsertEmailMessageCalloutBody emailMessageObjectBody = new InsertEmailMessageCalloutBody(
             caseReply,
             caseId,
@@ -432,6 +476,29 @@ public with sharing class ViewCaseController {
             ErrorLogger.log(e, varsForErrorLogging, false);
             clearReplyAttachment();
             return 'failure';
+        }
+    }
+
+    private class AttachmentWithFormattedDateTime {
+        public String Id { get; set; }
+        public String Name { get; set; }
+        public String CreatedDate { get; set; }
+        public AttachmentWithFormattedDateTime() {
+        }
+    }
+
+    private class EmailMessageWithFormattedDateTime {
+        public String CreatedDate { get; set; }
+        public String LastModifiedDate { get; set; }
+        public String TextBody { get; set; }
+        public String HtmlBody { get; set; }
+        public String Subject { get; set; }
+        public String FromName { get; set; }
+        public String FromAddress { get; set; }
+        public String ToAddress { get; set; }
+        public String CcAddress { get; set; }
+        public String MessageDate { get; set; }
+        public EmailMessageWithFormattedDateTime() {
         }
     }
 }

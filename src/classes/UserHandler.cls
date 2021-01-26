@@ -63,11 +63,11 @@ public without sharing class UserHandler implements ITrigger {
             addToChatterGroupFuture(Trigger.newMap.keySet());
         }
 
-        UserDeprovisionOrganizer userDeprovisionOrganizer = new UserDeprovisionOrganizer();
-
         if (Trigger.isUpdate) {
-            userDeprovisionOrganizer.setOldUsersMap(Trigger.oldMap);
-            userDeprovisionOrganizer.setNewUsers(Trigger.new);
+            UserDeprovisionOrganizer userDeprovisionOrganizer = new UserDeprovisionOrganizer(
+                (Map<Id, User>) Trigger.oldMap,
+                (List<User>) Trigger.new
+            );
             userDeprovisionOrganizer.deprovisionUsersAfterUpdate();
         }
     }

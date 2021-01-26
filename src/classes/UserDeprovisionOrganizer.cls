@@ -9,6 +9,8 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, User> oldUsersMap;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
 
+    List<UserDeprovisioner> userDeprovisionersList;
+
     private List<Id> userToDeprovisionIds;
     private List<Case> allUserCases;
     private List<GroupMember> allUserPublicGroupMemberships;
@@ -27,18 +29,13 @@ public without sharing class UserDeprovisionOrganizer {
 
     private static Boolean debug = false;
 
-    public UserDeprovisionOrganizer() {
-        this.newUsers = new List<User>();
-        this.oldUsersMap = new Map<Id, User>();
+    public UserDeprovisionOrganizer(Map<Id, User> oldUsersMap, List<User> newUsers) {
+        this.newUsers = newUsers;
+        this.oldUsersMap = oldUsersMap;
         this.deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
 
         this.userToDeprovisionIds = new List<Id>();
-        this.allUserCases = new List<Case>();
-        this.allUserPublicGroupMemberships = new List<GroupMember>();
-        this.allUserChatterGroupMemberships = new List<CollaborationGroupMember>();
-        this.allUserPermissionSetAssignments = new List<PermissionSetAssignment>();
-        this.allUserPackageLicenses = new List<UserPackageLicense>();
-        this.allUserLogins = new List<UserLogin>();
+        this.userDeprovisionersList = new List<UserDeprovisioner>();
 
         this.userToCaseMap = new Map<Id, List<Case>>();
         this.userToUserLoginMap = new Map<Id, UserLogin>();
@@ -47,19 +44,8 @@ public without sharing class UserDeprovisionOrganizer {
         this.userToPermissionSetMap = new Map<Id, String>();
         this.userToPackageLicenseMap = new Map<Id, String>();
         this.userToProcessingNotesMap = new Map<Id, String>();
-    }
 
-    public void setOldUsersMap(Map<Id, SObject> oldUsersMap) {
-        this.oldUsersMap = (Map<Id, User>) oldUsersMap;
-    }
-
-    public void setNewUsers(List<SObject> newUsers) {
-        this.newUsers = (List<User>) newUsers;
-    }
-
-    public void deprovisionUsersAfterUpdate() {
-        List<UserDeprovisioner> userDeprovisionersList = new List<UserDeprovisioner>();
-
+        // Make list of user's that need deprovisioning
         for (User userToDeprovision : newUsers) {
             if (userToDeprovision.Deprovision_User__c && !oldUsersMap.get(userToDeprovision.Id).Deprovision_User__c) {
                 userToDeprovisionIds.add(userToDeprovision.Id);
@@ -76,7 +62,11 @@ public without sharing class UserDeprovisionOrganizer {
             populateUserToDeprovisionPermissionSetMap();
             populateUserToDeprovisionPackageLicenseMap();
             populateUserToUserLoginMap();
+        }
+    }
 
+    public void deprovisionUsersAfterUpdate() {
+        if (!userDeprovisionersList.isEmpty()) {
             List<Case> updatedUserCases = new List<Case>();
             Map<Id, Id> caseToUserMap = new Map<Id, Id>();
             List<UserLogin> updatedUserLogins = new List<UserLogin>();

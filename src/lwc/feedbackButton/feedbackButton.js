@@ -31,6 +31,7 @@ export default class FeedbackButton extends LightningElement {
             this.loading = true;
             submitFeedback({ carName: this.carName, feedbackText: feedback })
                 .then(result => {
+                    this.closeModal();
                     this.makeToast('success', 'Success', 'Feedback successfully submitted');
                 })
                 .catch(error => {

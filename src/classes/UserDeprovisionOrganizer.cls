@@ -112,7 +112,6 @@ public without sharing class UserDeprovisionOrganizer {
                 deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotesMap);
             }
 
-            // Update user last so triggers don't modify licenses/perm sets unexpectedly
             if (!deprovisionedUsersWithProcessingNotes.isEmpty()) {
                 updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToProcessingNotesMap);
             }
@@ -257,6 +256,7 @@ public without sharing class UserDeprovisionOrganizer {
         Map<Id, String> userToProcessingNotes
     ) {
         List<User> usersWithErrors = new List<User>();
+        Boolean updatingUser = recordListToOperate[0] instanceof User;
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
 
@@ -271,9 +271,16 @@ public without sharing class UserDeprovisionOrganizer {
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
                 if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '\n---\n' + errorNote;
+                    processingNotes = userToProcessingNotes.get(userId) + '---\n' + errorNote;
                 } else {
                     processingNotes = errorNote;
+                }
+
+                if (
+                    updatingUser &&
+                    errorNote.contains('FIELD_INTEGRITY_EXCEPTION: This user is a delegated administrator')
+                ) {
+                    processingNotes += '\n---\nPlease remove this user from being a delegated administrator before deprovisioning.';
                 }
 
                 usersWithErrors.add(
@@ -282,14 +289,19 @@ public without sharing class UserDeprovisionOrganizer {
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                if (saveResult[i] != null) {
+                    vars.add(ErrorLogger.convertIdToJSON('saveResult[i].getId()', saveResult[i].getId()));
+                }
+                if (saveResult[i].getId() != null) {
+                    vars.add(
+                        ErrorLogger.convertStringToJSON(
+                            'saveResult[i].getId().getSObjectType()',
+                            '' + saveResult[i].getId().getSObjectType()
+                        )
+                    );
+                }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                vars.add(
-                    ErrorLogger.convertStringToJSON(
-                        'saveResult[i].getId().getSObjectType()',
-                        '' + saveResult[i].getId().getSObjectType()
-                    )
-                );
-                vars.add(ErrorLogger.convertIdToJSON('saveResult[i].getId()', saveResult[i].getId()));
+
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
                 ErrorLogger.logFuture(
                     dbException.getTypeName(),
@@ -337,14 +349,19 @@ public without sharing class UserDeprovisionOrganizer {
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                if (deleteResult[i] != null) {
+                    vars.add(ErrorLogger.convertIdToJSON('deleteResult[i].getId()', deleteResult[i].getId()));
+                }
+                if (deleteResult[i].getId() != null) {
+                    vars.add(
+                        ErrorLogger.convertStringToJSON(
+                            'deleteResult[i].getId().getSObjectType()',
+                            '' + deleteResult[i].getId().getSObjectType()
+                        )
+                    );
+                }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                vars.add(
-                    ErrorLogger.convertStringToJSON(
-                        'deleteResult[i].getId().getSObjectType()',
-                        '' + deleteResult[i].getId().getSObjectType()
-                    )
-                );
-                vars.add(ErrorLogger.convertIdToJSON('deleteResult[i].getId()', deleteResult[i].getId()));
+
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
                 ErrorLogger.logFuture(
                     dbException.getTypeName(),

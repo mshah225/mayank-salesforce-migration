@@ -8,6 +8,10 @@
     filter: invert(51%) sepia(11%) saturate(5749%) hue-rotate(179deg) brightness(79%) contrast(75%);
 }
 
+:host .openButton:hover > lightning-icon {
+    filter: invert(72%) sepia(11%) saturate(4787%) hue-rotate(173deg) brightness(85%) contrast(83%);
+}
+
 :host lightning-spinner {
     position: fixed;
     left: 0px;

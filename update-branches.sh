@@ -52,6 +52,8 @@ printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
 # Iterate over all branches and attempt to apply any new changes in master to the selected branch
 message="Attempting changes............................"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+successCount=0
+failureCount=0
 for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
     message=">> Checking out "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
     message="$branch"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;34m${message:$i:1}\033[0m"; done; echo -ne;
@@ -66,6 +68,7 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
         printf "\n\t"
         message="> PUSHING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
         git push origin $branch &>/dev/null
+        successCount=$((successCount+1))
     else
         # Conflicted merge, abort and handle manually
         printf "\n\t"
@@ -73,10 +76,16 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
         printf "\n\t"
         message="> ABORTING MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
         git merge --abort &>/dev/null
+        failureCount=$((failureCount+1))
     fi
     printf "\n"
 done
-message="Applied changes to all clean branches."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message="==================================="; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message=">>> Number of successful pushes: "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+message="$successCount"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message=">>> Number of failed merges: $failureCount"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
+message="$failureCount"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message="==================================="; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
 
 # Switch back to master because it looks cleaner at the end
 git checkout master &>/dev/null

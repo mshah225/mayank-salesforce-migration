@@ -1,31 +1,61 @@
 #!/bin/bash
 
+# Title screen
+reset
+echo "                                                                  ";
+echo "                                                                  ";
+echo "        ██    ██ ██████  ██████   █████  ████████ ███████         ";
+echo "        ██    ██ ██   ██ ██   ██ ██   ██    ██    ██              ";
+echo "        ██    ██ ██████  ██   ██ ███████    ██    █████           ";
+echo "        ██    ██ ██      ██   ██ ██   ██    ██    ██              ";
+echo "         ██████  ██      ██████  ██   ██    ██    ███████         ";
+echo "                                                                  ";
+echo "                                                                  ";
+echo "    ███████ ███████  █████  ████████ ██    ██ ██████  ███████     ";
+echo "    ██      ██      ██   ██    ██    ██    ██ ██   ██ ██          ";
+echo "    █████   █████   ███████    ██    ██    ██ ██████  █████       ";
+echo "    ██      ██      ██   ██    ██    ██    ██ ██   ██ ██          ";
+echo "    ██      ███████ ██   ██    ██     ██████  ██   ██ ███████     ";
+echo "                                                                  ";
+echo "                                                                  ";
+echo "██████  ██████   █████  ███    ██  ██████ ██   ██ ███████ ███████ ";
+echo "██   ██ ██   ██ ██   ██ ████   ██ ██      ██   ██ ██      ██      ";
+echo "██████  ██████  ███████ ██ ██  ██ ██      ███████ █████   ███████ ";
+echo "██   ██ ██   ██ ██   ██ ██  ██ ██ ██      ██   ██ ██           ██ ";
+echo "██████  ██   ██ ██   ██ ██   ████  ██████ ██   ██ ███████ ███████ ";
+echo "                                                                  ";
+echo "                                                                  ";
+sleep 3
+
 # Completely necessary narrative to begin script
 reset
-message="Hello there, traveler."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+echo "########################################################################";
+message="# Hello there, traveler."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 sleep 1
 message=" I'm Alius."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
 sleep 1
-printf "\n"
-message="You look as though you have wondrous tales to share."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
+printf "#\n"
+message="# You look as though you have wondrous tales to share."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
 sleep 1
-message="Unfortunately, I was not created with the ability to listen to them."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
+message="# Unfortunately, I was not created with the ability to listen to them."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
 sleep 1
-printf "\n"
-message="I trust that you have not come with devious intent."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
+printf "#\n"
+message="# I trust that you have not come with devious intent."; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
 sleep 1
-message="Shall we begin? (y/n) "; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+message="# Shall we begin? (y/n) "; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 
 read input
 if [ "$input" = "Y" ] || [ "$input" = "y" ] || [ "$input" = "yes" ] || [ "$input" = "Yes" ] || [ "$input" = "YES" ]; then
-    printf "\n"
-    message='Our code savior lives!'; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
-    sleep 1
+    printf "#\n"
+    message='# Our code savior lives!'; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
+    echo "########################################################################";
+    sleep 3
     reset
 else
-    printf "\n"
-    message='I have no time for hooligans. Be gone!'; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
-    sleep 1
+    printf "#\n"
+    message='# I have no time for hooligans. Be gone!'; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
+    echo "########################################################################";
+    sleep 3
     return
 fi
 

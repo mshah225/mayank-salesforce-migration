@@ -12,6 +12,7 @@ public without sharing class UserDeprovisioner {
     private String chatterGroupMemberships;
     private String permissionSets;
     private String packageLicenses;
+    private Boolean uncheckAsynchronously;
 
     private static Boolean debug = false;
 
@@ -81,6 +82,10 @@ public without sharing class UserDeprovisioner {
         this.userLogin = userLogin;
     }
 
+    public void setUncheckAsynchronously(Boolean uncheckAsynchronously) {
+        this.uncheckAsynchronously = uncheckAsynchronously;
+    }
+
     public Map<Id, Id> getCaseToUserMap() {
         if (caseToUserMap == null) {
             caseToUserMap = new Map<Id, Id>();
@@ -111,7 +116,7 @@ public without sharing class UserDeprovisioner {
             logRemovedPermissionSets();
             logRemovedChatterGroupMemberships();
             logRemovedPackageLicenses();
-            deprovisionedUser.Deprovision_User__c = false;
+            deprovisionedUser.Deprovision_User__c = uncheckAsynchronously; // if uncheckAsynchronously is true, then we will set Deprovision_User__c=false in a future call
             deprovisionedUser.IsActive = false;
         } catch (Exception e) {
             if (e.getTypeName().equals('System.SObjectException')) {
@@ -290,10 +295,10 @@ public without sharing class UserDeprovisioner {
     }
 
     private void updateUserLogin() {
-        if (userLogin.IsFrozen) {
-            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
-        }
         updatedUserLogin = userLogin;
-        updatedUserLogin.IsFrozen = false;
+        if (userLogin != null && userLogin.IsFrozen) {
+            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
+            updatedUserLogin.IsFrozen = false;
+        }
     }
 }

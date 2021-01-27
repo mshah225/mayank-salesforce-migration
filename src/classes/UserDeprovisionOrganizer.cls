@@ -18,6 +18,8 @@ public without sharing class UserDeprovisionOrganizer {
     private List<PermissionSetAssignment> allUserPermissionSetAssignments;
     private List<UserPackageLicense> allUserPackageLicenses;
     private List<UserLogin> allUserLogins;
+    private List<Id> usersToUncheckSynchronously;
+    private List<Id> usersToUncheckAsynchronously;
 
     private Map<Id, List<Case>> userToCaseMap;
     private Map<Id, UserLogin> userToUserLoginMap;
@@ -26,6 +28,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, String> userToPermissionSetMap;
     private Map<Id, String> userToPackageLicenseMap;
     private Map<Id, String> userToProcessingNotesMap;
+    private Map<Id, Boolean> usersToUncheckAsynchronouslyMap;
 
     private static Boolean debug = false;
 
@@ -37,6 +40,9 @@ public without sharing class UserDeprovisionOrganizer {
         this.userToDeprovisionIds = new List<Id>();
         this.userDeprovisionersList = new List<UserDeprovisioner>();
 
+        this.usersToUncheckSynchronously = new List<Id>();
+        this.usersToUncheckAsynchronously = new List<Id>();
+
         this.userToCaseMap = new Map<Id, List<Case>>();
         this.userToUserLoginMap = new Map<Id, UserLogin>();
         this.userToGroupMembershipMap = new Map<Id, String>();
@@ -44,6 +50,7 @@ public without sharing class UserDeprovisionOrganizer {
         this.userToPermissionSetMap = new Map<Id, String>();
         this.userToPackageLicenseMap = new Map<Id, String>();
         this.userToProcessingNotesMap = new Map<Id, String>();
+        this.usersToUncheckAsynchronouslyMap = new Map<Id, Boolean>();
 
         // Make list of user's that need deprovisioning
         for (User userToDeprovision : newUsers) {
@@ -53,6 +60,8 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setUserToDeprovision(userToDeprovision);
                 userDeprovisionersList.add(userDeprovisioner);
             }
+
+            usersToUncheckAsynchronouslyMap.put(userToDeprovision.Id, false);
         }
 
         if (!userDeprovisionersList.isEmpty()) {
@@ -62,6 +71,25 @@ public without sharing class UserDeprovisionOrganizer {
             populateUserToDeprovisionPermissionSetMap();
             populateUserToDeprovisionPackageLicenseMap();
             populateUserToUserLoginMap();
+        }
+
+        // For all non-setup objects, mark their users to unmark later after those are done
+        for (Id uid : userToCaseMap.keySet()) {
+            usersToUncheckAsynchronouslyMap.put(uid, true);
+        }
+        for (Id uid : userToChatterGroupMembershipMap.keySet()) {
+            usersToUncheckAsynchronouslyMap.put(uid, true);
+        }
+        for (Id uid : userToUserLoginMap.keySet()) {
+            usersToUncheckAsynchronouslyMap.put(uid, true);
+        }
+
+        for (Id uid : usersToUncheckAsynchronouslyMap.keySet()) {
+            if (usersToUncheckAsynchronouslyMap.get(uid)) {
+                usersToUncheckAsynchronously.add(uid);
+            } else {
+                usersToUncheckSynchronously.add(uid);
+            }
         }
     }
 
@@ -81,6 +109,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setPermissionSets(userToPermissionSetMap.get(userId));
                 userDeprovisioner.setPackageLicenses(userToPackageLicenseMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
+                userDeprovisioner.setUncheckAsynchronously(usersToUncheckAsynchronouslyMap.get(userId));
                 userDeprovisioner.deprovisionUser();
                 updatedUserCases.addAll(userDeprovisioner.getUpdatedUserCases());
                 updatedUserLogins.add(userDeprovisioner.getUpdatedUserLogin());
@@ -107,14 +136,20 @@ public without sharing class UserDeprovisionOrganizer {
             }
 
             // And handle all non-setup objects here
-            if (!updatedUserCases.isEmpty() || !allUserChatterGroupMemberships.isEmpty() || !allUserLogins.isEmpty()) {
+            if (
+                !updatedUserCases.isEmpty() ||
+                !allUserChatterGroupMemberships.isEmpty() ||
+                !allUserLogins.isEmpty() ||
+                !usersToUncheckAsynchronouslyMap.isEmpty()
+            ) {
                 UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
                 userDeprovisionQueue.setUpdatedUserCases(updatedUserCases);
                 userDeprovisionQueue.setCaseToUserMap(caseToUserMap);
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(allUserChatterGroupMemberships);
                 userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
                 userDeprovisionQueue.setUpdatedUserLogins(updatedUserLogins);
-                System.enqueueJob(userDeprovisionQueue);
+                userDeprovisionQueue.setUsersToUncheckAsynchronously(usersToUncheckAsynchronously);
+                Id jobId = System.enqueueJob(userDeprovisionQueue);
             }
         }
     }

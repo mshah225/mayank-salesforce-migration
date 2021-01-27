@@ -9,8 +9,18 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     private List<UserLogin> updatedUserLogins;
     private Map<Id, Id> caseToUserMap;
     private Map<Id, String> userToProcessingNotes;
+    private List<Id> usersToUncheckAsynchronously;
 
     private static Boolean debug = false;
+
+    public UserDeprovisionQueue() {
+        updatedUserCases = new List<Case>();
+        allUserChatterGroupMemberships = new List<CollaborationGroupMember>();
+        updatedUserLogins = new List<UserLogin>();
+        caseToUserMap = new Map<Id, Id>();
+        userToProcessingNotes = new Map<Id, String>();
+        usersToUncheckAsynchronously = new List<Id>();
+    }
 
     public void setUpdatedUserCases(List<Case> updatedUserCases) {
         this.updatedUserCases = updatedUserCases;
@@ -32,10 +42,14 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         this.updatedUserLogins = updatedUserLogins;
     }
 
+    public void setUsersToUncheckAsynchronously(List<Id> usersToUncheckAsynchronously) {
+        this.usersToUncheckAsynchronously = usersToUncheckAsynchronously;
+    }
+
     public void execute(QueueableContext context) {
         if (!updatedUserCases.isEmpty()) {
             UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', updatedUserCases, userToProcessingNotes);
-        }
+        } 
         if (!allUserChatterGroupMemberships.isEmpty()) {
             UserDeprovisionOrganizer.deleteSobjectRecords(
                 'MemberId',
@@ -45,6 +59,16 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         }
         if (!updatedUserLogins.isEmpty()) {
             UserDeprovisionOrganizer.updateSobjectRecords('UserId', updatedUserLogins, userToProcessingNotes);
+        }
+
+        // Set all these user's User_Deprovision__c to FALSE now that we are done.
+        List<User> updatedUsers = new List<User>();
+        for (Id uid : usersToUncheckAsynchronously) {
+            User u = new User(Id = uid, Deprovision_User__c = false);
+            updatedUsers.add(u);
+        }
+        if (!updatedUsers.isEmpty()) {
+            UserDeprovisionOrganizer.updateSobjectRecords('Id', updatedUsers, userToProcessingNotes);
         }
     }
 }

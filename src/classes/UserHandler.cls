@@ -120,7 +120,7 @@ public without sharing class UserHandler implements ITrigger {
         for (Schema.FieldSetMember f : SObjectType.User.FieldSets.PeopleSoft_Role_Fieldset.getFields()) {
             query += f.getFieldPath() + ', ';
         }
-        query += ' Id, UserRole.Name, Profile.Name, isActive FROM User WHERE Id IN: userIds';
+        query += ' Id, UserRole.Name, Profile.Name, isActive FROM User WHERE Id IN: userIds AND Deprovision_User__c=FALSE';
 
         // SOQL
         List<User> userList = Database.query(query);

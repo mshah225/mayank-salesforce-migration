@@ -32,7 +32,7 @@ message=" Fetched "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 message="Syncing all branch updates...................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 hub sync &>/dev/null
-message=" Synced "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+message=" Synced  "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
 # Switch to master and update from origin

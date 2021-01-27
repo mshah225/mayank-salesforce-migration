@@ -28,45 +28,50 @@ fi
 # Fetch and apply all branch updates
 message="Fetching all branch updates..................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 git fetch --all &>/dev/null
-message=" Fetched."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message=" Fetched "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 message="Syncing all branch updates...................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 hub sync &>/dev/null
-message=" Synced."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message=" Synced "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
 # Switch to master and update from origin
 message="Updating master from remote origin............"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 git checkout master &>/dev/null
 git pull origin master &>/dev/null
-message=" Updated."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message=" Updated "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
 # Check over all origin branches and track any new ones
 message="Tracking new remote origin branches..........."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 for remote in `git branch -r`; do 
     git branch --track ${remote#origin/} $remote &>/dev/null
 done
-message=" Tracked."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
+message=" Tracked "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
 # Iterate over all branches and attempt to apply any new changes in master to the selected branch
 message="Attempting changes............................"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
 for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
-    message=">> Checking out $branch"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+    message=">> Checking out "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+    message="$branch"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;34m${message:$i:1}\033[0m"; done; echo -ne;
     git checkout $branch &>/dev/null
     printf "\n\t"
-    message="> PULLING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+    message="> PULLING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;33m${message:$i:1}\033[0m"; done; echo -ne;
     git pull --no-edit origin master &>/dev/null
     if [ $? -eq 0 ]; then
         # Clean merge, proceed with pushing
         printf "\n\t"
-        message="> CLEAN MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+        message="> CLEAN MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
         printf "\n\t"
-        message="> PUSHING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+        message="> PUSHING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
         git push origin $branch &>/dev/null
     else
         # Conflicted merge, abort and handle manually
         printf "\n\t"
-        message="> CONFLICTED MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+        message="> CONFLICTED MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
         printf "\n\t"
-        message="> ABORTING MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+        message="> ABORTING MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
         git merge --abort &>/dev/null
     fi
     printf "\n"

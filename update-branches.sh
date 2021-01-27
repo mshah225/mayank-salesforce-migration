@@ -18,10 +18,12 @@ message="Shall we begin? (y/n) "; for ((i=0; i<${#message}; i++)); do echo "afte
 
 read input
 if [ "$input" = "Y" ] || [ "$input" = "y" ] || [ "$input" = "yes" ] || [ "$input" = "Yes" ] || [ "$input" = "YES" ]; then
+    printf "\n"
     message='Our code savior lives!'; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
     sleep 1
     reset
 else
+    printf "\n"
     message='I have no time for hooligans. Be gone!'; for ((i=0; i<${#message}; i++)); do echo "after 30" | tclsh; printf "${message:$i:1}"; done; echo;
     sleep 1
     return

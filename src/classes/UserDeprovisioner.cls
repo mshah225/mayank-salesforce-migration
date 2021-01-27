@@ -3,22 +3,21 @@ public without sharing class UserDeprovisioner {
     private User deprovisionedUser;
     private User userToDeprovision;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
-    private Map<Id, Id> caseToUserMap;
     private Boolean uncheckAsynchronously;
 
     // original data
-    private List<Case> userCases;
+    private List<Case> cases;
     private UserLogin userLogin;
-    private List<GroupMember> userGroupMembers;
-    private List<CollaborationGroupMember> userChatterGroupMemberships;
-    private List<PermissionSetAssignment> userPermissionSetAssignments;
+    private List<GroupMember> groupMemberships;
+    private List<CollaborationGroupMember> chatterGroupMemberships;
+    private List<PermissionSetAssignment> permissionSetAssignments;
     private List<UserPackageLicense> userPackageLicenses;
     // Data to delete/update data
+    private List<Case> toUpdateCases;
     private UserLogin toUpdateUserLogin;
-    private List<Case> toUpdateUserCases;
-    private List<GroupMember> toDeleteUserGroupMembers;
-    private List<CollaborationGroupMember> toDeleteUserChatterGroupMemberships;
-    private List<PermissionSetAssignment> toDeleteUserPermissionSetAssignments;
+    private List<GroupMember> toDeleteGroupMemberships;
+    private List<CollaborationGroupMember> toDeleteChatterGroupMemberships;
+    private List<PermissionSetAssignment> toDeletePermissionSetAssignments;
     private List<UserPackageLicense> toDeleteUserPackageLicenses;
 
     private static Boolean debug = false;
@@ -31,12 +30,21 @@ public without sharing class UserDeprovisioner {
         this.userToDeprovision = userToDeprovision;
         this.deprovisionedUser = new User(Id = userToDeprovision.Id);
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
+        uncheckAsynchronously = false;
+
+        toUpdateCases = new List<Case>();
+        toUpdateUserLogin = null;
+        toDeleteGroupMemberships = new List<GroupMember>();
+        toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
+        toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
+        toDeleteUserPackageLicenses = new List<UserPackageLicense>();
     }
 
+    // Wraps together all the logic
+    // Returns true if Deprovision_User__c needs to be updated asynchronously
     public void deprovisionUser() {
         try {
             System.debug(userToDeprovision);
-            deprovisionedUser.Id = userToDeprovision.Id;
             if (userToDeprovision.Processing_Notes__c != null) {
                 addToProcessingNotes(
                     userToDeprovision.Processing_Notes__c + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
@@ -49,13 +57,13 @@ public without sharing class UserDeprovisioner {
             }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
-            transferPrivateCasesToFunctionalGroup();
+            transferCases();
             updateUserFields();
             updateUserLogin();
-            logRemovedGroupMemberships();
-            logRemovedPermissionSets();
-            logRemovedChatterGroupMemberships();
-            logRemovedPackageLicenses();
+            removeGroupMemberships();
+            removePermissionSetAssignments();
+            removeChatterGroupMemberships();
+            removeUserPackageLicenses();
             deprovisionedUser.Deprovision_User__c = uncheckAsynchronously; // if uncheckAsynchronously is true, then we will set Deprovision_User__c=false in a future call
             deprovisionedUser.IsActive = false;
         } catch (Exception e) {
@@ -82,25 +90,24 @@ public without sharing class UserDeprovisioner {
         }
     }
 
-    private void transferPrivateCasesToFunctionalGroup() {
+    // Do the logic for each object type
+    private void transferCases() {
         Integer countTransferred = 0;
-        updatedUserCases = new List<Case>();
-        caseToUserMap = new Map<Id, Id>();
-        if (userCases != null) {
-            for (Case userCase : userCases) {
+        if (cases != null && !cases.isEmpty()) {
+            for (Case userCase : cases) {
                 if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
                     userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                    caseToUserMap.put(userCase.Id, userToDeprovision.Id);
-                    updatedUserCases.add(userCase);
+                    toUpdateCases.add(userCase);
 
                     countTransferred++;
+
+                    uncheckAsynchronously = true;
                 }
             }
 
             addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
         }
     }
-
     private void updateUserFields() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('SwitchToFalse')) {
@@ -127,39 +134,56 @@ public without sharing class UserDeprovisioner {
             }
         }
     }
-
-    private void logRemovedGroupMemberships() {
-        if (groupMemberships != null) {
-            addToProcessingNotes('Removed user from Public Groups: ' + groupMemberships);
+    private void removeGroupMemberships() {
+        if (groupMemberships != null && !groupMemberships.isEmpty()) {
+            String removedStr = 'Removed user from Public Groups: ';
+            for (GroupMember membership : groupMemberships) {
+                toDeleteGroupMemberships.add(membership);
+                removedStr += membership.Group.Name + ', ';
+            }
+            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
         }
     }
-
-    private void logRemovedChatterGroupMemberships() {
-        if (chatterGroupMemberships != null) {
-            addToProcessingNotes('Removed user from Chatter Groups: ' + chatterGroupMemberships);
+    private void removeChatterGroupMemberships() {
+        if (chatterGroupMemberships != null && !chatterGroupMemberships.isEmpty()) {
+            String removedStr = 'Removed user from Chatter Groups: ';
+            for (CollaborationGroupMember chatterMembership : chatterGroupMemberships) {
+                toDeleteChatterGroupMemberships.add(chatterMembership);
+                removedStr += chatterMembership.CollaborationGroup.Name + ', ';
+            }
+            uncheckAsynchronously = true;
+            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
         }
     }
-
-    private void logRemovedPermissionSets() {
-        if (permissionSets != null) {
-            addToProcessingNotes('Removed user from permissionSets: ' + permissionSets);
+    private void removePermissionSetAssignments() {
+        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
+            String removedStr = 'Removed user from permissionSets: ';
+            for (PermissionSetAssignment permSet : permissionSetAssignments) {
+                toDeletePermissionSetAssignments.add(permSet);
+                removedStr += permSet.PermissionSet.Name + ', ';
+            }
+            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
         }
     }
-
-    private void logRemovedPackageLicenses() {
-        if (packageLicenses != null) {
-            addToProcessingNotes('Removed user from Package Licenses: ' + packageLicenses);
+    private void removeUserPackageLicenses() {
+        if (userPackageLicenses != null && !userPackageLicenses.isEmpty()) {
+            String removedStr = 'Removed user from Package Licenses: ';
+            for (UserPackageLicense license : userPackageLicenses) {
+                toDeleteUserPackageLicenses.add(license);
+                removedStr += license.PackageLicense.NamespacePrefix + ', ';
+            }
+            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
         }
     }
-
     private void updateUserLogin() {
-        updatedUserLogin = userLogin;
         if (userLogin != null && userLogin.IsFrozen) {
             addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
-            updatedUserLogin.IsFrozen = false;
+            toUpdateUserLogin = new UserLogin(Id = userLogin.Id, IsFrozen = false);
+            uncheckAsynchronously = true;
         }
     }
 
+    // Helper functionality
     private String whichSettingDetailIsResponsible(String errorMessage) {
         if (!errorMessage.contains('Invalid field') || !errorMessage.contains(' for User')) {
             // No field name to check for
@@ -185,11 +209,9 @@ public without sharing class UserDeprovisioner {
             return suspectedBrokenConfigOption.substring(2);
         }
     }
-
     public void addToProcessingNotes(String message) {
         processingNotes += message + '\n';
     }
-
     private String initialUserTimeStamp() {
         return System.now().format('YYYY-MM-DD HH:mm:ss') +
             ' UserId: ' +
@@ -197,7 +219,6 @@ public without sharing class UserDeprovisioner {
             ', UserName: ' +
             UserInfo.getName();
     }
-
     private Boolean matchProfileToIgnore() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('ProfileToIgnore')) {
@@ -214,7 +235,6 @@ public without sharing class UserDeprovisioner {
         }
         return false;
     }
-
     private Boolean matchSFAdminOrDeveloper() {
         if (userToDeprovision.Role_Administrator_Developer__c) {
             addToProcessingNotes(
@@ -224,7 +244,6 @@ public without sharing class UserDeprovisioner {
         }
         return false;
     }
-
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
             'Change ' +
@@ -242,65 +261,53 @@ public without sharing class UserDeprovisioner {
         deprovisionedUser.put(fieldName, Id.valueOf(changeFieldTo.Id__c));
     }
 
-    public void setUserCases(List<Case> userCases) {
-        this.userCases = userCases;
+    // Set optional attributes
+    public void setCases(List<Case> cases) {
+        this.cases = cases;
     }
-
-    public void setGroupMemberships(String groupMemberships) {
+    public void setGroupMemberships(List<GroupMember> groupMemberships) {
         this.groupMemberships = groupMemberships;
     }
-
-    public void setChatterGroupMemberships(String chatterGroupMemberships) {
+    public void setChatterGroupMemberships(List<CollaborationGroupMember> chatterGroupMemberships) {
         this.chatterGroupMemberships = chatterGroupMemberships;
     }
-
-    public void setPermissionSets(String permissionSets) {
-        this.permissionSets = permissionSets;
+    public void setPermissionSetAssignments(List<PermissionSetAssignment> permissionSetAssignments) {
+        this.permissionSetAssignments = permissionSetAssignments;
     }
-
-    public void setPackageLicenses(String packageLicenses) {
-        this.packageLicenses = packageLicenses;
+    public void setUserPackageLicenses(List<UserPackageLicense> userPackageLicenses) {
+        this.userPackageLicenses = userPackageLicenses;
     }
-
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
     }
 
-    public void setUncheckAsynchronously(Boolean uncheckAsynchronously) {
-        this.uncheckAsynchronously = uncheckAsynchronously;
-    }
-
+    // Access values that are ready for alteration/deletion
     public User getUserToDeprovision() {
         return userToDeprovision;
     }
-
-    public String getProcessingNotes() {
-        return processingNotes;
-    }
-
     public User getDeprovisionedUserWithProcessingNotes() {
-        deprovisionedUser.Processing_Notes__c = getProcessingNotes();
+        deprovisionedUser.Processing_Notes__c = processingNotes;
         return deprovisionedUser;
     }
-
-    public List<Case> getUpdatedUserCases() {
-        if (updatedUserCases == null) {
-            updatedUserCases = new List<Case>();
-        }
-        return updatedUserCases;
+    public Boolean getNeedToUncheckAsynchronously() {
+        return uncheckAsynchronously;
     }
-
-    public UserLogin getUpdatedUserLogin() {
-        if (updatedUserLogin == null) {
-            updatedUserLogin = userLogin;
-        }
-        return updatedUserLogin;
+    public List<Case> getToUpdateUserCases() {
+        return toUpdateCases;
     }
-
-    public Map<Id, Id> getCaseToUserMap() {
-        if (caseToUserMap == null) {
-            caseToUserMap = new Map<Id, Id>();
-        }
-        return caseToUserMap;
+    public UserLogin getToUpdateUserLogin() {
+        return toUpdateUserLogin;
+    }
+    public List<GroupMember> getToDeleteGroupMemberships() {
+        return toDeleteGroupMemberships;
+    }
+    public List<CollaborationGroupMember> getToDeleteChatterGroupMemberships() {
+        return toDeleteChatterGroupMemberships;
+    }
+    public List<PermissionSetAssignment> getToDeletePermissionSetAssignments() {
+        return toDeletePermissionSetAssignments;
+    }
+    public List<UserPackageLicense> getToDeleteUserPackageLicenses() {
+        return toDeleteUserPackageLicenses;
     }
 }

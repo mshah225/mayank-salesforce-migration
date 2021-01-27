@@ -7,7 +7,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     private List<Case> updatedUserCases;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private List<UserLogin> updatedUserLogins;
-    private Map<Id, Id> caseToUserMap;
     private Map<Id, String> userToProcessingNotes;
     private List<Id> usersToUncheckAsynchronously;
 
@@ -17,7 +16,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         updatedUserCases = new List<Case>();
         allUserChatterGroupMemberships = new List<CollaborationGroupMember>();
         updatedUserLogins = new List<UserLogin>();
-        caseToUserMap = new Map<Id, Id>();
         userToProcessingNotes = new Map<Id, String>();
         usersToUncheckAsynchronously = new List<Id>();
     }
@@ -28,10 +26,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
 
     public void setAllUserChatterGroupMemberships(List<CollaborationGroupMember> allUserChatterGroupMemberships) {
         this.allUserChatterGroupMemberships = allUserChatterGroupMemberships;
-    }
-
-    public void setCaseToUserMap(Map<Id, Id> caseToUserMap) {
-        this.caseToUserMap = caseToUserMap;
     }
 
     public void setUserToProcessingNotesMap(Map<Id, String> userToProcessingNotes) {
@@ -49,7 +43,7 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     public void execute(QueueableContext context) {
         if (!updatedUserCases.isEmpty()) {
             UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', updatedUserCases, userToProcessingNotes);
-        } 
+        }
         if (!allUserChatterGroupMemberships.isEmpty()) {
             UserDeprovisionOrganizer.deleteSobjectRecords(
                 'MemberId',

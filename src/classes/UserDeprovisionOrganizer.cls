@@ -56,9 +56,7 @@ public without sharing class UserDeprovisionOrganizer {
         for (User userToDeprovision : newUsers) {
             if (userToDeprovision.Deprovision_User__c && !oldUsersMap.get(userToDeprovision.Id).Deprovision_User__c) {
                 userToDeprovisionIds.add(userToDeprovision.Id);
-                UserDeprovisioner userDeprovisioner = new UserDeprovisioner();
-                userDeprovisioner.setUserToDeprovision(userToDeprovision);
-                userDeprovisionersList.add(userDeprovisioner);
+                userDeprovisionersList.add(new UserDeprovisioner(deprovisionUserConfiguration, userToDeprovision));
             }
 
             usersToUncheckAsynchronouslyMap.put(userToDeprovision.Id, false);
@@ -101,8 +99,8 @@ public without sharing class UserDeprovisionOrganizer {
             List<User> deprovisionedUsersWithProcessingNotes = new List<User>();
 
             for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
+                // Setup deprovision
                 Id userId = userDeprovisioner.getUserToDeprovision().Id;
-                userDeprovisioner.setDeprovisionUserConfiguration(deprovisionUserConfiguration);
                 userDeprovisioner.setUserCases(userToCaseMap.get(userId));
                 userDeprovisioner.setGroupMemberships(userToGroupMembershipMap.get(userId));
                 userDeprovisioner.setChatterGroupMemberships(userToChatterGroupMembershipMap.get(userId));
@@ -110,7 +108,9 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setPackageLicenses(userToPackageLicenseMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
                 userDeprovisioner.setUncheckAsynchronously(usersToUncheckAsynchronouslyMap.get(userId));
+                // Deprovision
                 userDeprovisioner.deprovisionUser();
+                // Get all updated and deleted data
                 updatedUserCases.addAll(userDeprovisioner.getUpdatedUserCases());
                 updatedUserLogins.add(userDeprovisioner.getUpdatedUserLogin());
                 caseToUserMap.putAll(userDeprovisioner.getCaseToUserMap());

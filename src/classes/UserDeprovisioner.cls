@@ -3,94 +3,34 @@ public without sharing class UserDeprovisioner {
     private User deprovisionedUser;
     private User userToDeprovision;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
-    private List<Case> userCases;
-    private List<Case> updatedUserCases;
-    private UserLogin userLogin;
-    private UserLogin updatedUserLogin;
     private Map<Id, Id> caseToUserMap;
-    private String groupMemberships;
-    private String chatterGroupMemberships;
-    private String permissionSets;
-    private String packageLicenses;
     private Boolean uncheckAsynchronously;
+
+    // original data
+    private List<Case> userCases;
+    private UserLogin userLogin;
+    private List<GroupMember> userGroupMembers;
+    private List<CollaborationGroupMember> userChatterGroupMemberships;
+    private List<PermissionSetAssignment> userPermissionSetAssignments;
+    private List<UserPackageLicense> userPackageLicenses;
+    // Data to delete/update data
+    private UserLogin toUpdateUserLogin;
+    private List<Case> toUpdateUserCases;
+    private List<GroupMember> toDeleteUserGroupMembers;
+    private List<CollaborationGroupMember> toDeleteUserChatterGroupMemberships;
+    private List<PermissionSetAssignment> toDeleteUserPermissionSetAssignments;
+    private List<UserPackageLicense> toDeleteUserPackageLicenses;
 
     private static Boolean debug = false;
 
-    public UserDeprovisioner() {
-        processingNotes = '';
-        deprovisionedUser = new User();
-    }
-
-    public void setUserToDeprovision(User userToDeprovision) {
-        this.userToDeprovision = userToDeprovision;
-    }
-
-    public void setDeprovisionUserConfiguration(
-        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration
+    public UserDeprovisioner(
+        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
+        User userToDeprovision
     ) {
+        processingNotes = '';
+        this.userToDeprovision = userToDeprovision;
+        this.deprovisionedUser = new User(Id = userToDeprovision.Id);
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
-    }
-
-    public User getUserToDeprovision() {
-        return userToDeprovision;
-    }
-
-    public void setUserCases(List<Case> userCases) {
-        this.userCases = userCases;
-    }
-
-    public String getProcessingNotes() {
-        return processingNotes;
-    }
-
-    public User getDeprovisionedUserWithProcessingNotes() {
-        deprovisionedUser.Processing_Notes__c = getProcessingNotes();
-        return deprovisionedUser;
-    }
-
-    public List<Case> getUpdatedUserCases() {
-        if (updatedUserCases == null) {
-            updatedUserCases = new List<Case>();
-        }
-        return updatedUserCases;
-    }
-
-    public UserLogin getUpdatedUserLogin() {
-        if (updatedUserLogin == null) {
-            updatedUserLogin = userLogin;
-        }
-        return updatedUserLogin;
-    }
-
-    public void setGroupMemberships(String groupMemberships) {
-        this.groupMemberships = groupMemberships;
-    }
-
-    public void setChatterGroupMemberships(String chatterGroupMemberships) {
-        this.chatterGroupMemberships = chatterGroupMemberships;
-    }
-
-    public void setPermissionSets(String permissionSets) {
-        this.permissionSets = permissionSets;
-    }
-
-    public void setPackageLicenses(String packageLicenses) {
-        this.packageLicenses = packageLicenses;
-    }
-
-    public void setUserLogin(UserLogin userLogin) {
-        this.userLogin = userLogin;
-    }
-
-    public void setUncheckAsynchronously(Boolean uncheckAsynchronously) {
-        this.uncheckAsynchronously = uncheckAsynchronously;
-    }
-
-    public Map<Id, Id> getCaseToUserMap() {
-        if (caseToUserMap == null) {
-            caseToUserMap = new Map<Id, Id>();
-        }
-        return caseToUserMap;
     }
 
     public void deprovisionUser() {
@@ -139,6 +79,84 @@ public without sharing class UserDeprovisioner {
             }
 
             ErrorLogger.logFuture(e.getTypeName(), e.getMessage(), e.getStackTraceString(), vars, debug);
+        }
+    }
+
+    private void transferPrivateCasesToFunctionalGroup() {
+        Integer countTransferred = 0;
+        updatedUserCases = new List<Case>();
+        caseToUserMap = new Map<Id, Id>();
+        if (userCases != null) {
+            for (Case userCase : userCases) {
+                if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
+                    userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
+                    caseToUserMap.put(userCase.Id, userToDeprovision.Id);
+                    updatedUserCases.add(userCase);
+
+                    countTransferred++;
+                }
+            }
+
+            addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
+        }
+    }
+
+    private void updateUserFields() {
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            if (deprovisionConfigurationName.contains('SwitchToFalse')) {
+                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
+                    deprovisionConfigurationName
+                );
+                if (userToDeprovision.get(configuration.Name__c) == true) {
+                    deprovisionedUser.put(configuration.Name__c, false);
+                    addToProcessingNotes('Switched ' + configuration.Name__c + ' to false');
+                }
+            } else if (deprovisionConfigurationName.contains('RemoveValue')) {
+                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
+                    deprovisionConfigurationName
+                );
+                if (userToDeprovision.get(configuration.Name__c) != null) {
+                    addToProcessingNotes(
+                        'Removed value ' +
+                        userToDeprovision.get(configuration.Name__c) +
+                        ' for ' +
+                        configuration.Name__c
+                    );
+                    deprovisionedUser.put(configuration.Name__c, null);
+                }
+            }
+        }
+    }
+
+    private void logRemovedGroupMemberships() {
+        if (groupMemberships != null) {
+            addToProcessingNotes('Removed user from Public Groups: ' + groupMemberships);
+        }
+    }
+
+    private void logRemovedChatterGroupMemberships() {
+        if (chatterGroupMemberships != null) {
+            addToProcessingNotes('Removed user from Chatter Groups: ' + chatterGroupMemberships);
+        }
+    }
+
+    private void logRemovedPermissionSets() {
+        if (permissionSets != null) {
+            addToProcessingNotes('Removed user from permissionSets: ' + permissionSets);
+        }
+    }
+
+    private void logRemovedPackageLicenses() {
+        if (packageLicenses != null) {
+            addToProcessingNotes('Removed user from Package Licenses: ' + packageLicenses);
+        }
+    }
+
+    private void updateUserLogin() {
+        updatedUserLogin = userLogin;
+        if (userLogin != null && userLogin.IsFrozen) {
+            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
+            updatedUserLogin.IsFrozen = false;
         }
     }
 
@@ -224,81 +242,65 @@ public without sharing class UserDeprovisioner {
         deprovisionedUser.put(fieldName, Id.valueOf(changeFieldTo.Id__c));
     }
 
-    private void transferPrivateCasesToFunctionalGroup() {
-        Integer countTransferred = 0;
-        updatedUserCases = new List<Case>();
-        caseToUserMap = new Map<Id, Id>();
-        if (userCases != null) {
-            for (Case userCase : userCases) {
-                if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
-                    userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                    caseToUserMap.put(userCase.Id, userToDeprovision.Id);
-                    updatedUserCases.add(userCase);
-
-                    countTransferred++;
-                }
-            }
-
-            addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
-        }
+    public void setUserCases(List<Case> userCases) {
+        this.userCases = userCases;
     }
 
-    private void updateUserFields() {
-        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
-            if (deprovisionConfigurationName.contains('SwitchToFalse')) {
-                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
-                    deprovisionConfigurationName
-                );
-                if (userToDeprovision.get(configuration.Name__c) == true) {
-                    deprovisionedUser.put(configuration.Name__c, false);
-                    addToProcessingNotes('Switched ' + configuration.Name__c + ' to false');
-                }
-            } else if (deprovisionConfigurationName.contains('RemoveValue')) {
-                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
-                    deprovisionConfigurationName
-                );
-                if (userToDeprovision.get(configuration.Name__c) != null) {
-                    addToProcessingNotes(
-                        'Removed value ' +
-                        userToDeprovision.get(configuration.Name__c) +
-                        ' for ' +
-                        configuration.Name__c
-                    );
-                    deprovisionedUser.put(configuration.Name__c, null);
-                }
-            }
-        }
+    public void setGroupMemberships(String groupMemberships) {
+        this.groupMemberships = groupMemberships;
     }
 
-    private void logRemovedGroupMemberships() {
-        if (groupMemberships != null) {
-            addToProcessingNotes('Removed user from Public Groups: ' + groupMemberships);
-        }
+    public void setChatterGroupMemberships(String chatterGroupMemberships) {
+        this.chatterGroupMemberships = chatterGroupMemberships;
     }
 
-    private void logRemovedChatterGroupMemberships() {
-        if (chatterGroupMemberships != null) {
-            addToProcessingNotes('Removed user from Chatter Groups: ' + chatterGroupMemberships);
-        }
+    public void setPermissionSets(String permissionSets) {
+        this.permissionSets = permissionSets;
     }
 
-    private void logRemovedPermissionSets() {
-        if (permissionSets != null) {
-            addToProcessingNotes('Removed user from permissionSets: ' + permissionSets);
-        }
+    public void setPackageLicenses(String packageLicenses) {
+        this.packageLicenses = packageLicenses;
     }
 
-    private void logRemovedPackageLicenses() {
-        if (packageLicenses != null) {
-            addToProcessingNotes('Removed user from Package Licenses: ' + packageLicenses);
-        }
+    public void setUserLogin(UserLogin userLogin) {
+        this.userLogin = userLogin;
     }
 
-    private void updateUserLogin() {
-        updatedUserLogin = userLogin;
-        if (userLogin != null && userLogin.IsFrozen) {
-            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
-            updatedUserLogin.IsFrozen = false;
+    public void setUncheckAsynchronously(Boolean uncheckAsynchronously) {
+        this.uncheckAsynchronously = uncheckAsynchronously;
+    }
+
+    public User getUserToDeprovision() {
+        return userToDeprovision;
+    }
+
+    public String getProcessingNotes() {
+        return processingNotes;
+    }
+
+    public User getDeprovisionedUserWithProcessingNotes() {
+        deprovisionedUser.Processing_Notes__c = getProcessingNotes();
+        return deprovisionedUser;
+    }
+
+    public List<Case> getUpdatedUserCases() {
+        if (updatedUserCases == null) {
+            updatedUserCases = new List<Case>();
         }
+        return updatedUserCases;
+    }
+
+    public UserLogin getUpdatedUserLogin() {
+        if (updatedUserLogin == null) {
+            updatedUserLogin = userLogin;
+        }
+        return updatedUserLogin;
+    }
+
+    public Map<Id, Id> getCaseToUserMap() {
+        if (caseToUserMap == null) {
+            caseToUserMap = new Map<Id, Id>();
+        }
+        return caseToUserMap;
     }
 }

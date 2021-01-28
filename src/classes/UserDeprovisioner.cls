@@ -86,7 +86,8 @@ public without sharing class UserDeprovisioner {
                 deprovisionedUser.Deprovision_User__c = false;
             }
 
-            ErrorLogger.logFuture(e.getTypeName(), e.getMessage(), e.getStackTraceString(), vars, debug);
+            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug);
+            System.enqueueJob(logQueue);
         }
     }
 

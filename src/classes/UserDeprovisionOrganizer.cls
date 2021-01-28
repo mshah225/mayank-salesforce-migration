@@ -253,8 +253,8 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToProcessingNotes
     ) {
-        List<User> usersWithErrors = new List<User>();
         Boolean updatingUser = recordListToOperate[0] instanceof User;
+        Map<Id, String> usersWithErrors = new Map<Id, String>();
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
 
@@ -281,9 +281,7 @@ public without sharing class UserDeprovisionOrganizer {
                     processingNotes += '\n---\nPlease remove this user from being a delegated administrator before deprovisioning.';
                 }
 
-                usersWithErrors.add(
-                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
-                );
+                usersWithErrors.put(userId, processingNotes);
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
@@ -301,18 +299,21 @@ public without sharing class UserDeprovisionOrganizer {
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
 
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.logFuture(
-                    dbException.getTypeName(),
-                    dbException.getMessage(),
-                    dbException.getStackTraceString(),
-                    vars,
-                    debug
-                );
+                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(dbException, vars, debug);
+                try {
+                    ErrorLogger.log(dbException, vars, debug);
+                } catch (System.DmlException dmle) {
+                    if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                        System.enqueueJob(logQueue);
+                    } else {
+                        throw dmle;
+                    }
+                }
             }
         }
 
-        if (usersWithErrors.size() > 0) {
-            update usersWithErrors;
+        if (!usersWithErrors.isEmpty()) {
+            updateUsersProcessingNotes(usersWithErrors);
         }
     }
 
@@ -321,7 +322,7 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToProcessingNotes
     ) {
-        List<User> usersWithErrors = new List<User>();
+        Map<Id, String> usersWithErrors = new Map<Id, String>();
 
         Database.DeleteResult[] deleteResult = Database.delete(recordListToOperate, false);
 
@@ -341,10 +342,7 @@ public without sharing class UserDeprovisionOrganizer {
                     processingNotes = errorNote;
                 }
 
-                usersWithErrors.add(
-                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
-                );
-
+                usersWithErrors.put(userId, processingNotes);
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 if (deleteResult[i] != null) {
@@ -359,21 +357,32 @@ public without sharing class UserDeprovisionOrganizer {
                     );
                 }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.logFuture(
-                    dbException.getTypeName(),
-                    dbException.getMessage(),
-                    dbException.getStackTraceString(),
-                    vars,
-                    debug
-                );
+                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(dbException, vars, debug);
+                try {
+                    ErrorLogger.log(dbException, vars, debug);
+                } catch (System.DmlException dmle) {
+                    if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                        System.enqueueJob(logQueue);
+                    } else {
+                        throw dmle;
+                    }
+                }
             }
         }
 
-        if (usersWithErrors.size() > 0) {
-            update usersWithErrors;
+        if (!usersWithErrors.isEmpty()) {
+            updateUsersProcessingNotes(usersWithErrors);
         }
+    }
+
+    @future
+    public static void updateUsersProcessingNotes(Map<Id, String> uidToNewNotesMap) {
+        List<User> users = new List<User>();
+        for (Id uid : uidToNewNotesMap.keySet()) {
+            users.add(new User(Id = uid, Processing_Notes__c = uidToNewNotesMap.get(uid), Deprovision_User__c = false));
+        }
+        update users;
     }
 
     private class DatabaseErrorException extends Exception {

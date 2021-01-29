@@ -139,25 +139,19 @@
             document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length - 1].levelDesc;
             document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length - 1].fullDate + '<br />';
 
-            var loopCount = result.length - 1;
-            var found = false;
-            var chgDirection = 'None';
-            while (loopCount > 0 && !found) {
-                loopCount--;
-                if (result[loopCount].outlookLevel < result[result.length - 1].outlookLevel) {
-                    found = true;
-                    cngDirection = 'Up';
-                    loopCount++;
-                } else if (result[loopCount].outlookLevel > result[result.length - 1].outlookLevel) {
-                    found = true;
-                    cngDirection = 'Down';
-                    loopCount++;
-                }
+            var changeDirection = result[result.length - 1].direction;
+            if (changeDirection == 1) {
+            	changeDirection = 'Up';    
+            } else if (changeDirection == 0) {
+                changeDirection = 'No Change';   
+            } else if (changeDirection == -1) {
+                changeDirection = 'Down';   
+            } else {
+                changeDirection = 'N/A';   
             }
-
-            if (loopCount > 0) {
-                document.getElementById("change").innerHTML = '<b>Change: </b> ' + cngDirection;
-                document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[loopCount].fullDate;
+            if (changeDirection != 'N/A') {
+                document.getElementById("change").innerHTML = '<b>Change: </b> ' + changeDirection;
+                document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[result.length - 1].fullDate;
             } else {
                 document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
                 document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';

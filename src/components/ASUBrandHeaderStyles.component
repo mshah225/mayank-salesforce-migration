@@ -47,14 +47,14 @@
         }
 
         .btn-primary {
-            background: #8C1D40 !important;
+            background: #8c1d40 !important;
         }
 
         .btn-primary:hover,
         .btn-primary:focus,
         .btn-primary:active,
         .btn-primary.active,
-        .open>.btn-primary.dropdown-toggle {
+        .open > .btn-primary.dropdown-toggle {
             background-color: #d23153 !important;
             color: white !important;
         }
@@ -63,7 +63,7 @@
         .btn-secondary:focus,
         .btn-secondary:active,
         .btn-secondary.active,
-        .open>.btn-secondary.dropdown-toggle {
+        .open > .btn-secondary.dropdown-toggle {
             background-color: #f2f2f2 !important;
             color: #2a2a2a !important;
         }
@@ -107,14 +107,14 @@
             background-color: transparent !important;
         }
 
-        .confirmM3 .messageTable>tbody>tr>td,
-        .warningM3 .messageTable>tbody>tr>td,
-        .errorM3 .messageTable>tbody>tr>td,
-        .infoM3 .messageTable>tbody>tr>td {
+        .confirmM3 .messageTable > tbody > tr > td,
+        .warningM3 .messageTable > tbody > tr > td,
+        .errorM3 .messageTable > tbody > tr > td,
+        .infoM3 .messageTable > tbody > tr > td {
             border-top: transparent;
         }
 
-        .messageTable>tbody>tr>td:first-child {
+        .messageTable > tbody > tr > td:first-child {
             display: none;
         }
 
@@ -169,7 +169,7 @@
             position: absolute;
         }
 
-        [class*="col-md-"] {
+        [class*='col-md-'] {
             padding: 0;
         }
 
@@ -183,7 +183,7 @@
         @media only screen and (max-width: 768px) {
             .asu-header-site-title-container {
                 background: #505558;
-                padding: 12px .5em !important;
+                padding: 12px 0.5em !important;
             }
             .asu-header-site-title-container a {
                 color: #fff !important;
@@ -192,7 +192,7 @@
             }
             #asu_footer ul li {
                 display: list-item !important;
-                margin-bottom: .5em !important;
+                margin-bottom: 0.5em !important;
                 margin-left: 2em !important;
             }
             #innovation-footer .footer-menu ul li {

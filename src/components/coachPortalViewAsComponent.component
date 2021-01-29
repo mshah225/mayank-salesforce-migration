@@ -1,38 +1,38 @@
 <apex:component id="coachPortalViewAsComponent" controller="ViewAsController">
-    <apex:stylesheet value="{!URLFOR($Resource.viewAsComponentResources, 'viewAsContainer.css')}"/>
-    <apex:includeScript value="/support/console/38.0/integration.js"/>
+    <apex:stylesheet value="{!URLFOR($Resource.viewAsComponentResources, 'viewAsContainer.css')}" />
+    <apex:includeScript value="/support/console/38.0/integration.js" />
 
-    <apex:attribute name="hasViewAs" type="boolean" description="Does this user have the view as ability?"/>
+    <apex:attribute name="hasViewAs" type="boolean" description="Does this user have the view as ability?" />
     <apex:attribute name="mimicId" type="string" description="" />
     <apex:attribute name="selectOptions" type="selectOption[]" description="" />
 
     <!-- Not in static resource as this method calls an action function to rerender -->
     <script>
-    function closeAllConsoleTabs() {
-        if (sforce.console.isInConsole()) {
-            sforce.console.getPrimaryTabIds(function (result) {
-                if (result.success) {
-                    for (x = 0; x < result.ids.length; x++) {
-                        sforce.console.closeTab(result.ids[x]);
+        function closeAllConsoleTabs() {
+            if (sforce.console.isInConsole()) {
+                sforce.console.getPrimaryTabIds(function (result) {
+                    if (result.success) {
+                        for (x = 0; x < result.ids.length; x++) {
+                            sforce.console.closeTab(result.ids[x]);
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        doIt();
-    }
+            doIt();
+        }
     </script>
 
     <apex:form rendered="{!hasViewAs}" styleClass="rich-tabpanel viewAsForm buffer">
-        <apex:actionFunction name="doIt" reRender="componentContent" status="ASUAjaxStatus"/>
+        <apex:actionFunction name="doIt" reRender="componentContent" status="ASUAjaxStatus" />
         <apex:selectList size="1" onchange="closeAllConsoleTabs()" value="{!viewAsId}" styleClass="viewAsList">
-            <apex:selectOptions value="{!selectOptions}"/>
+            <apex:selectOptions value="{!selectOptions}" />
         </apex:selectList>
     </apex:form>
 
     <apex:outputPanel id="componentContent">
-        <apex:componentBody >
-            <apex:variable var="mimicId" value="{!viewAsId}"/>
+        <apex:componentBody>
+            <apex:variable var="mimicId" value="{!viewAsId}" />
         </apex:componentBody>
     </apex:outputPanel>
 </apex:component>

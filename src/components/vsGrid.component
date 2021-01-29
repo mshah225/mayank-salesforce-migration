@@ -2,5 +2,5 @@
     <ul class="grid">
         <apex:componentBody />
     </ul>
-    <div style="clear:both"/>
+    <div style="clear: both" />
 </apex:component>

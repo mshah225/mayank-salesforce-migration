@@ -1,4 +1,4 @@
-<apex:component >
+<apex:component>
     <!-- This component renders the Service Center Footer -->
     <br />
     <br />
@@ -13,10 +13,16 @@
         </ul>
     </div>
 
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
-            '/dist/js/jquery-1.10.2.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/js/asu_header.min.js')}"/>
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
-            '/dist/js/bootstrap.min.js')}"/>
+    <apex:includeScript
+        value="{!URLFOR($Resource.bootstrap_303,
+            '/dist/js/jquery-1.10.2.min.js')}"
+    />
+    <apex:includeScript
+        value="{!URLFOR($Resource.MyASUHeader4_3,
+            'MyASUHeader4_3/js/asu_header.min.js')}"
+    />
+    <apex:includeScript
+        value="{!URLFOR($Resource.bootstrap_303,
+            '/dist/js/bootstrap.min.js')}"
+    />
 </apex:component>

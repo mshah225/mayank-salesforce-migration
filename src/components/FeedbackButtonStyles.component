@@ -3,10 +3,10 @@
     <style>
         .feedback-button {
             float: right;
-            padding-left: .6em !important;
-            padding-right: .6em !important;
-            padding-top: .4em !important;
-            padding-bottom: .4em !important;
+            padding-left: 0.6em !important;
+            padding-right: 0.6em !important;
+            padding-top: 0.4em !important;
+            padding-bottom: 0.4em !important;
         }
 
         .feedback-button-text {

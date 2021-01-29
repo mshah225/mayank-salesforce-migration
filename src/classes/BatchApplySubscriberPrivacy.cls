@@ -3,10 +3,10 @@ public class BatchApplySubscriberPrivacy implements Database.Batchable<sObject>,
     private Set<Id> subscriptionIdSet = new Set<Id>();
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        String query = 
-            'SELECT Id, OwnerId, Apex_Owner_Should_Be__c, Private_in_Salesforce__c, ' + 
-                'Apex_Private_in_Salesforce_Should_Be__c, Subscription__c ' +
-            'FROM Subscriber__c ' + 
+        String query =
+            'SELECT Id, OwnerId, Apex_Owner_Should_Be__c, Private_in_Salesforce__c, ' +
+            'Apex_Private_in_Salesforce_Should_Be__c, Subscription__c ' +
+            'FROM Subscriber__c ' +
             'WHERE Subscription__r.Subscriber_Privacy_Changed__c = true';
         return Database.getQueryLocator(query);
     }
@@ -16,7 +16,8 @@ public class BatchApplySubscriberPrivacy implements Database.Batchable<sObject>,
         // calculated by their corresponding formula fields if they don't match
         List<Subscriber__c> subUpdateList = new List<Subscriber__c>();
         for (Subscriber__c sub : (List<Subscriber__c>) scope) {
-            if (sub.OwnerId != sub.Apex_Owner_Should_Be__c || 
+            if (
+                sub.OwnerId != sub.Apex_Owner_Should_Be__c ||
                 sub.Private_in_Salesforce__c != Boolean.valueOf(sub.Apex_Private_in_Salesforce_Should_Be__c)
             ) {
                 sub.OwnerId = sub.Apex_Owner_Should_Be__c;

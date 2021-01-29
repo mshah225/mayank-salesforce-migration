@@ -1,13 +1,10 @@
-public with sharing class CARService
-{
+public with sharing class CARService {
     /**
-	* Returns all the fields on Case Assignment Rule in a String
-	* @return A string containing all the Case Assignment Rule fields
-	*/
-    public static String CARFieldsToString()
-    {
-        Map<String, SObjectField> CARFieldMap =
-            ObjectService.getObjectFieldMap('Case_Assignment_Rule__c');
+     * Returns all the fields on Case Assignment Rule in a String
+     * @return A string containing all the Case Assignment Rule fields
+     */
+    public static String CARFieldsToString() {
+        Map<String, SObjectField> CARFieldMap = ObjectService.getObjectFieldMap('Case_Assignment_Rule__c');
 
         String CARFields = ObjectService.objectFieldsToString(CARFieldMap);
 
@@ -15,14 +12,16 @@ public with sharing class CARService
     }
 
     /**
-    * A list of all CARs that are General
-    * @return A list of CARs
-    */
-    public static List<Case_Assignment_Rule__c> getGeneralCARs()
-    {
+     * A list of all CARs that are General
+     * @return A list of CARs
+     */
+    public static List<Case_Assignment_Rule__c> getGeneralCARs() {
         String CARFields = CARFieldsToString();
 
-        String queryString = 'SELECT ' + CARFields + ' ' +
+        String queryString =
+            'SELECT ' +
+            CARFields +
+            ' ' +
             'FROM Case_Assignment_Rule__c ' +
             'WHERE CTPColumn__c != null ' +
             'AND CTPGroup__c != null ' +
@@ -36,14 +35,16 @@ public with sharing class CARService
     }
 
     /**
-    * A list of all CARs that are NOT General CARs
-    * @return A list of CARs that are not General CARs
-    */
-    public static List<Case_Assignment_Rule__c> getNonGeneralCARs()
-    {
+     * A list of all CARs that are NOT General CARs
+     * @return A list of CARs that are not General CARs
+     */
+    public static List<Case_Assignment_Rule__c> getNonGeneralCARs() {
         String CARFields = CARFieldsToString();
 
-        String queryString = 'SELECT ' + CARFields + ' ' +
+        String queryString =
+            'SELECT ' +
+            CARFields +
+            ' ' +
             'FROM Case_Assignment_Rule__c ' +
             'WHERE CTPColumn__c != null ' +
             'AND CTPGroup__c != null ' +
@@ -58,17 +59,14 @@ public with sharing class CARService
     }
 
     /**
-    * Returns a CAR Object from the Id you pass in.
-    * @param the Id of the CAR you would like to query for
-    * @return The CAR Object
-    */
-    public static Case_Assignment_Rule__c getCAR(Id selectedId)
-    {
+     * Returns a CAR Object from the Id you pass in.
+     * @param the Id of the CAR you would like to query for
+     * @return The CAR Object
+     */
+    public static Case_Assignment_Rule__c getCAR(Id selectedId) {
         String CARFields = CARFieldsToString();
 
-        String queryString = 'SELECT ' + CARFields + ' ' +
-            'FROM Case_Assignment_Rule__c ' +
-            'WHERE Id = :selectedId';
+        String queryString = 'SELECT ' + CARFields + ' ' + 'FROM Case_Assignment_Rule__c ' + 'WHERE Id = :selectedId';
 
         Case_Assignment_Rule__c theCAR = Database.query(queryString);
 
@@ -78,7 +76,10 @@ public with sharing class CARService
     public static Case_Assignment_Rule__c getCARWithSharingGroup(Id selectedId) {
         String CARFields = CARFieldsToString();
 
-        String queryString = 'SELECT ' + CARFields + ', CC_Functional_Group__r.Is_Functional_Group_Private__c ' +
+        String queryString =
+            'SELECT ' +
+            CARFields +
+            ', CC_Functional_Group__r.Is_Functional_Group_Private__c ' +
             'FROM Case_Assignment_Rule__c ' +
             'WHERE Id = :selectedId';
 

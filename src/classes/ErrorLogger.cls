@@ -183,34 +183,6 @@ public without sharing class ErrorLogger {
     /**
      * Report exceptions via desired method (system debug logs or cases). If case fails to
      * insert, send an email alert.
-     * Future variant
-     *
-     * @param Exception The exception that needs to be reported
-     * @param List<String> A list of strings that represent the variable names and values
-     * seperated by commas
-     * @param Boolean Flag to determine if errors are logged to console or as cases
-     */
-    @future
-    public static void logFuture(
-        String orgTypeName,
-        String orgMessage,
-        String orgStackTraceString,
-        List<String> variables,
-        Boolean debug
-    ) {
-        ErrorLoggerBuiltNowException buildNowException = new ErrorLoggerBuiltNowException();
-        String newMessage = 'Future ErrorLogger\n';
-        newMessage += 'Original TypeName: ' + orgTypeName;
-        newMessage += '\nOriginal Message: ' + orgMessage;
-        newMessage += '\nOriginal StackTrace: ' + orgStackTraceString;
-        buildNowException.setMessage(newMessage);
-
-        log(buildNowException, variables, debug, new Case(), null);
-    }
-
-    /**
-     * Report exceptions via desired method (system debug logs or cases). If case fails to
-     * insert, send an email alert.
      *
      * @param Exception The exception that needs to be reported
      * @param List<String> A list of strings that represent the variable names and values
@@ -333,21 +305,21 @@ public without sharing class ErrorLogger {
         }
     }
 
-     /**
+    /**
      * Convert Supplied Map - String to String - to a JSON string
      *
      * @param String Name of the list being passed to lable the object
      * @param Map<String,String> Map - String to String - to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertMapToJSON(String varName, Map<String,String> stringToStringMap) {
-         if (stringToStringMap != null && stringToStringMap.size() > 0) {
-             return '{' + varName + ':[' + string.valueOf(stringToStringMap) + ']}';
-         } else if (stringToStringMap == null) {
-             return '{' + varName + ':null}';
-         } else {
-             return '{' + varName + ':{size:0, objects[]}}';
-         }
+    public static string convertMapToJSON(String varName, Map<String, String> stringToStringMap) {
+        if (stringToStringMap != null && stringToStringMap.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(stringToStringMap) + ']}';
+        } else if (stringToStringMap == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
     }
 
     /**
@@ -416,6 +388,31 @@ public without sharing class ErrorLogger {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
     }
 
-    private class ErrorLoggerBuiltNowException extends Exception {
+    public without sharing class ErrorLoggerQueue implements Queueable {
+        Exception error;
+        List<String> variables;
+        Boolean debug;
+
+        public ErrorLoggerQueue() {
+        }
+        public ErrorLoggerQueue(Exception error, List<String> variables, Boolean debug) {
+            this.error = error;
+            this.variables = variables;
+            this.debug = debug;
+        }
+
+        public void setError(Exception error) {
+            this.error = error;
+        }
+        public void setVariables(List<String> variables) {
+            this.variables = variables;
+        }
+        public void setDebug(Boolean debug) {
+            this.debug = debug;
+        }
+
+        public void execute(QueueableContext context) {
+            ErrorLogger.log(error, variables, debug);
+        }
     }
 }

@@ -1,33 +1,48 @@
 @isTest
 public class UserDeprovisionOrganizerTest {
-    private static List<User> usersToDeprovision;
-    private static Map<Id, Sobject> oldUsersMap;
-    private static List<Sobject> newUsers;
-    private static UserDeprovisionOrganizer deprovisionOrganizer;
+    private static final Integer numberOfGroups = 2;
+    private static final Integer numberOfPermissionSets = 2;
+    private static final Integer numberOfChatterGroups = 2;
+    private static final Integer numberOfCases = 2;
 
-    private static void setupTestData(Integer numberOfUsers) {
+    private static final String icAgentConsoleId = '050d0000000Wl7IAAS';
+    private static final String changeToUserRoleId = '00Ed00000017bQ5EAI';
+    private static final String changeToProfileId = '00ed00000019yCpAAI';
+
+    @TestSetup
+    private static void setupTestData() {
+        // 5 Users
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        usersToDeprovision = (List<User>) userCreator.create(numberOfUsers);
-
+        List<User> usersToDeprovision = (List<User>) userCreator.create(5);
         Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
-
-        for (User user : usersToDeprovision) {
+        for (Integer i = 0; i < usersToDeprovision.size(); i++) {
+            User user = usersToDeprovision[i];
             user.ProfileId = standardProfile;
+            user.FirstName = 'userDepro.testUser' + i;
+            user.Username = 'userDepro.testUser' + i + '@test.example.com';
+            user.CommunityNickname = 'userDepro.testUser' + i;
         }
-        insert usersToDeprovision;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert usersToDeprovision;
+        }
+        List<Id> uids = new List<Id>();
+        for (User u : usersToDeprovision) {
+            uids.add(u.Id);
+        }
 
+        // The custom setting
         List<Deprovision_User_Configuration__c> deproivisionConfigurations = new List<Deprovision_User_Configuration__c>();
         deproivisionConfigurations.add(
             new Deprovision_User_Configuration__c(
                 Name = 'Change UserRoleId To',
-                Id__c = '00Ed00000017bQ5EAI',
+                Id__c = changeToUserRoleId,
                 Name__c = 'Z Unassigned (Temporary Role)'
             )
         );
         deproivisionConfigurations.add(
             new Deprovision_User_Configuration__c(
                 Name = 'Change ProfileId To',
-                Id__c = '00ed00000019yCpAAI',
+                Id__c = changeToProfileId,
                 Name__c = 'ASU Chatter User'
             )
         );
@@ -37,385 +52,442 @@ public class UserDeprovisionOrganizerTest {
         deproivisionConfigurations.add(
             new Deprovision_User_Configuration__c(Name = 'SwitchToFalse_Sandbox_DEV', Name__c = 'Sandbox_DEV__c')
         );
-
         deproivisionConfigurations.add(
             new Deprovision_User_Configuration__c(
                 Name = 'RemovePackageLicense_icAgentConsole',
-                Id__c = '050d0000000Wl7IAAS'
+                Id__c = icAgentConsoleId
             )
         );
-        insert deproivisionConfigurations;
-
-        oldUsersMap = new Map<Id, User>();
-        newUsers = new List<User>();
-
-        for (User user : usersToDeprovision) {
-            user.Deprovision_User__c = false;
-            oldUsersMap.put(user.Id, user);
-            newUsers.add(new User(Id = user.Id, Deprovision_User__c = true));
-        }
-
-        deprovisionOrganizer = new UserDeprovisionOrganizer();
-        deprovisionOrganizer.setOldUsersMap(oldUsersMap);
-        deprovisionOrganizer.setNewUsers(newUsers);
-    }
-
-    @isTest
-    public static void checkDeprovisionUsersAfterUpdate() {
-        setupTestData(5);
-
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            deprovisionOrganizer.deprovisionUsersAfterUpdate();
-            Test.stopTest();
+            insert deproivisionConfigurations;
         }
 
-        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-
-        for (User user : usersToDeprovision) {
-            System.assert(user.Processing_Notes__c.contains('UserName'));
-            System.assert(!user.Processing_Notes__c.contains('Exception'));
-        }
-    }
-
-    @isTest
-    public static void checkUserDeprovisionedWithPublicGroupMemberships() {
-        setupTestData(1);
-        Integer numberOfGroups = 2;
+        // Groups
         List<Group> groupsToAdd = new List<Group>();
         List<GroupMember> groupMembers = new List<GroupMember>();
-        List<Id> groupIds = new List<Id>();
-
+        for (Integer i = 0; i < numberOfGroups; i++) {
+            groupsToAdd.add(new Group(Name = 'userDepro.testGroup' + i));
+        }
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            for (Integer i = 0; i < numberOfGroups; i++) {
-                groupsToAdd.add(new Group(Name = 'testGroup' + i));
-            }
             insert groupsToAdd;
-
-            for (Integer i = 0; i < numberOfGroups; i++) {
-                groupMembers.add(
-                    new GroupMember(UserOrGroupId = usersToDeprovision[0].Id, GroupId = groupsToAdd[i].Id)
-                );
-                groupIds.add(groupsToAdd[i].Id);
-            }
+        }
+        // and Members
+        for (Integer i = 0; i < numberOfGroups; i++) {
+            groupMembers.add(new GroupMember(UserOrGroupId = usersToDeprovision[0].Id, GroupId = groupsToAdd[i].Id));
+        }
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             insert groupMembers;
         }
 
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            deprovisionOrganizer.deprovisionUsersAfterUpdate();
-            Test.stopTest();
-        }
-
-        groupMembers = [SELECT Id FROM GroupMember WHERE GroupId IN :groupIds];
-        System.assert(groupMembers.isEmpty());
-
-        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-        System.assert(usersToDeprovision[0].Processing_Notes__c.contains('Removed user from Public Groups:'));
-    }
-
-    @isTest
-    public static void checkUserDeprovisionedWithPermissionSetAssignments() {
-        setupTestData(1);
-        Integer numberOfPermissionSets = 2;
+        // Permission Sets
         List<PermissionSet> permissionSetsToAdd = new List<PermissionSet>();
         List<PermissionSetAssignment> permissionSetAssignments = new List<PermissionSetAssignment>();
-        List<Id> permissionSetIds = new List<Id>();
-
+        for (Integer i = 0; i < numberOfPermissionSets; i++) {
+            permissionSetsToAdd.add(
+                new PermissionSet(Name = 'userDepro_testPermissionSet' + i, Label = 'userDepro_testPermissionSet' + i)
+            );
+        }
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            for (Integer i = 0; i < numberOfPermissionSets; i++) {
-                permissionSetsToAdd.add(new PermissionSet(Name = 'testPermissionSet' + i, Label = 'testLabel' + i));
-            }
             insert permissionSetsToAdd;
-
-            for (Integer i = 0; i < numberOfPermissionSets; i++) {
-                permissionSetAssignments.add(
-                    new PermissionSetAssignment(
-                        AssigneeId = usersToDeprovision[0].Id,
-                        PermissionSetId = permissionSetsToAdd[i].Id
-                    )
-                );
-                permissionSetIds.add(permissionSetsToAdd[i].Id);
-            }
+        }
+        // and Assignments
+        for (Integer i = 0; i < numberOfPermissionSets; i++) {
+            permissionSetAssignments.add(
+                new PermissionSetAssignment(
+                    AssigneeId = usersToDeprovision[0].Id,
+                    PermissionSetId = permissionSetsToAdd[i].Id
+                )
+            );
+        }
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             insert permissionSetAssignments;
         }
 
+        // Licenses
+        UserPackageLicense license = new UserPackageLicense(
+            UserId = usersToDeprovision[0].Id,
+            PackageLicenseId = Id.valueOf(icAgentConsoleId)
+        );
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            deprovisionOrganizer.deprovisionUsersAfterUpdate();
-            Test.stopTest();
+            insert license;
         }
 
-        permissionSetAssignments = [SELECT Id FROM PermissionSetAssignment WHERE PermissionSetId IN :permissionSetIds];
-        System.assert(permissionSetAssignments.isEmpty());
-
-        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-        System.assert(usersToDeprovision[0].Processing_Notes__c.contains('Removed user from permissionSets:'));
-    }
-
-    @isTest
-    public static void checkUserDeprovisionedWithChatterGroups() {
-        setupTestData(1);
-        Integer numberOfChatterGroups = 2;
+        // Chatter Groups
         List<CollaborationGroup> collaborationGroupsToAdd = new List<CollaborationGroup>();
         List<CollaborationGroupMember> collaborationGroupMembers = new List<CollaborationGroupMember>();
-        List<Id> collaborationGroupMemberIds = new List<Id>();
-
+        for (Integer i = 0; i < numberOfChatterGroups; i++) {
+            collaborationGroupsToAdd.add(
+                new CollaborationGroup(Name = 'userDepro.testChatterGroup' + i, CollaborationType = 'Public')
+            );
+        }
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            for (Integer i = 0; i < numberOfChatterGroups; i++) {
-                collaborationGroupsToAdd.add(
-                    new CollaborationGroup(Name = 'testChatterGroup' + i, CollaborationType = 'Public')
-                );
-            }
             insert collaborationGroupsToAdd;
-
-            for (Integer i = 0; i < numberOfChatterGroups; i++) {
-                collaborationGroupMembers.add(
-                    new CollaborationGroupMember(
-                        MemberId = usersToDeprovision[0].Id,
-                        CollaborationGroupId = collaborationGroupsToAdd[i].Id
-                    )
-                );
-            }
-            insert collaborationGroupMembers;
-
-            for (CollaborationGroupMember groupMember : collaborationGroupMembers) {
-                collaborationGroupMemberIds.add(groupMember.Id);
-            }
         }
-
+        // and Members
+        for (Integer i = 0; i < numberOfChatterGroups; i++) {
+            collaborationGroupMembers.add(
+                new CollaborationGroupMember(
+                    MemberId = usersToDeprovision[0].Id,
+                    CollaborationGroupId = collaborationGroupsToAdd[i].Id
+                )
+            );
+        }
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            deprovisionOrganizer.deprovisionUsersAfterUpdate();
-            Test.stopTest();
+            insert collaborationGroupMembers;
         }
-
-        collaborationGroupMembers = [SELECT Id FROM CollaborationGroupMember WHERE Id IN :collaborationGroupMemberIds];
-        System.assert(collaborationGroupMembers.isEmpty());
-
-        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-        System.assert(usersToDeprovision[0].Processing_Notes__c.contains('Removed user from Chatter Groups:'));
-    }
-
-    @isTest
-    public static void checkUserDeprovisionedWithCases() {
-        setupTestData(1);
-        Integer numberOfCases = 2;
+        // Cases
         List<Case> casesToAdd = new List<Case>();
-
-        List<String> sObjectTypes = new List<String>();
-        sObjectTypes.add('Case');
-        Group testGroup = TestDataFactory.createTestGroupAndQueue(sObjectTypes);
-
+        // the functional group
         Case_Classification__c privateFunctionalGroup = new Case_Classification__c();
-        privateFunctionalGroup.Name = 'Test FG';
+        privateFunctionalGroup.Name = 'userDepro.FunctionalGroup';
         privateFunctionalGroup.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Functional Group'].Id;
         privateFunctionalGroup.Active__c = true;
         privateFunctionalGroup.Visible__c = true;
         privateFunctionalGroup.Is_Functional_Group_Private__c = true;
-        privateFunctionalGroup.Queue_Id__c = testGroup.Id;
-        insert privateFunctionalGroup;
+        privateFunctionalGroup.Queue_Id__c = usersToDeprovision[1].Id;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert privateFunctionalGroup;
+        }
 
+        // and the cases
         for (Integer i = 0; i < numberOfCases; i++) {
             casesToAdd.add(
                 new Case(
-                    Subject = 'Test Subject ' + i,
-                    Description = 'Test Description ' + i,
+                    Subject = 'userDepro.CaseSubject ' + i,
+                    Description = 'userDepro.CaseDescription ' + i,
                     CC_Functional_Group__c = privateFunctionalGroup.Id,
                     OwnerId = usersToDeprovision[0].Id
                 )
             );
         }
-        insert casesToAdd;
-
-        List<Id> caseIds = new List<Id>();
-        for (Case testCase : casesToAdd) {
-            caseIds.add(testCase.Id);
-        }
-
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            deprovisionOrganizer.deprovisionUsersAfterUpdate();
-            Test.stopTest();
+            insert casesToAdd;
         }
 
-        casesToAdd = [SELECT Id, OwnerId FROM Case WHERE Id IN :caseIds];
-        System.assertEquals(numberOfCases, casesToAdd.size(), 'Failed to move proper number of cases');
-        for (Case testCase : casesToAdd) {
-            System.assertEquals(testGroup.Id, testCase.OwnerId, 'Cases were not reasssigned properly');
+        UserLogin freezeFirstUserLogin = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = :uids[0]][0];
+        freezeFirstUserLogin.IsFrozen = true;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            update freezeFirstUserLogin;
         }
+    }
+
+    @isTest
+    public static void checkDeprovisionUsersAfterUpdate() {
+        List<User> usersToDeprovision;
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+
+        for (User user : [SELECT Id FROM User WHERE FirstName LIKE 'userDepro.testUser%' ORDER BY FirstName ASC]) {
+            user.Deprovision_User__c = false;
+            oldUsersMap.put(user.Id, user);
+            newUsers.add(new User(Id = user.Id, Deprovision_User__c = true));
+        }
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
 
         usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
 
+        for (User user : usersToDeprovision) {
+            System.assert(user.Processing_Notes__c.contains('UserName'), 'Should have deleted user and noted as much');
+            System.assert(
+                !user.Processing_Notes__c.contains('Exception'),
+                'Should have no errors during these deletions'
+            );
+        }
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithPublicGroupMemberships() {
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
+
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        List<GroupMember> groupMemberships = [SELECT Id FROM GroupMember WHERE UserOrGroupId = :theUser.Id];
+        System.assert(!groupMemberships.isEmpty(), 'This user should have some group memberships pre-deprovision');
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        groupMemberships = [SELECT Id FROM GroupMember WHERE UserOrGroupId = :theUser.Id];
+        System.assert(groupMemberships.isEmpty(), 'Should have deleted group memberships');
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
         System.assert(
-            usersToDeprovision[0]
-                .Processing_Notes__c.contains('Transferred ' + numberOfCases + ' private cases to queue.'),
-            'Should record number of transferred cases.'
+            theUserPostDeprovision.Processing_Notes__c.contains('Removed user from Public Groups:'),
+            'The deletion of group memberships should have been recorded on the user'
+        );
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithPermissionSetAssignments() {
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
+
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        List<PermissionSetAssignment> permissionSetAssignments = [
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :theUser.Id
+        ];
+        System.assert(
+            !permissionSetAssignments.isEmpty(),
+            'This user should have some permission set assignments pre-deprovision'
+        );
+        Integer permSetsForThisUser = permissionSetAssignments.size();
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        permissionSetAssignments = [
+            SELECT Id, PermissionSet.Label, Assignee.Name
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :theUser.Id
+        ];
+        System.assertEquals(
+            permSetsForThisUser - numberOfPermissionSets,
+            permissionSetAssignments.size(),
+            'Should have deleted permission set assignments'
+        );
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(
+            theUserPostDeprovision.Processing_Notes__c.contains('Removed user from permissionSets:'),
+            'The deletion of permission set assignments should have been recorded on the user'
+        );
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithChatterGroups() {
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
+
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        List<CollaborationGroupMember> collaborationGroupMembers = [
+            SELECT Id
+            FROM CollaborationGroupMember
+            WHERE MemberId = :theUser.Id
+        ];
+        System.assert(
+            !collaborationGroupMembers.isEmpty(),
+            'This user should have some chatter group memberships pre-deprovision'
+        );
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        collaborationGroupMembers = [SELECT Id FROM CollaborationGroupMember WHERE MemberId = :theUser.Id];
+        System.assert(collaborationGroupMembers.isEmpty(), 'Should have deleted chatter group memberships');
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(
+            theUserPostDeprovision.Processing_Notes__c.contains('Removed user from Chatter Groups:'),
+            'The deletion of chatter group memberships should have been recorded on the user'
+        );
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithCases() {
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
+
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        List<Case> usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
+        System.assert(!usersCases.isEmpty(), 'This user should have some cases assigned pre-deprovision');
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
+        System.assert(usersCases.isEmpty(), 'Should have deleted chatter group memberships');
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(
+            theUserPostDeprovision.Processing_Notes__c.contains(
+                'Transferred ' +
+                numberOfCases +
+                ' private cases to queue.'
+            ),
+            'The transfer of cases should have been recorded on the user'
         );
     }
 
     @isTest
     public static void checkUserDeprovisionedWithPackageLicenses() {
-        setupTestData(1);
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
 
-        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
-        List<Id> packageLicenseIds = new List<Id>();
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
 
-        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
-            if (deprovisionConfigurationName.contains('RemovePackageLicense')) {
-                packageLicenseIds.add(Id.valueOf(deprovisionUserConfiguration.get(deprovisionConfigurationName).Id__c));
-            }
-        }
-
-        UserPackageLicense license = new UserPackageLicense(
-            UserId = usersToDeprovision[0].Id,
-            PackageLicenseId = packageLicenseIds[0]
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
         );
 
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            insert license;
-            Test.startTest();
-            deprovisionOrganizer.deprovisionUsersAfterUpdate();
-            Test.stopTest();
-        }
-
-        List<UserPackageLicense> packageLicenseThatWasDeleted = [
+        List<UserPackageLicense> packageLicenses = [
             SELECT UserId, PackageLicense.NamespacePrefix
             FROM UserPackageLicense
-            WHERE UserId = :usersToDeprovision[0].Id AND PackageLicenseId = :packageLicenseIds[0]
+            WHERE UserId = :theUser.Id AND PackageLicenseId = :icAgentConsoleId
         ];
+        System.assert(!packageLicenses.isEmpty(), 'This user should have a license pre-deprovision');
 
-        System.assertEquals(0, packageLicenseThatWasDeleted.size(), 'The license should have been deleted.');
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        packageLicenses = [
+            SELECT UserId, PackageLicense.NamespacePrefix
+            FROM UserPackageLicense
+            WHERE UserId = :theUser.Id AND PackageLicenseId = :icAgentConsoleId
+        ];
+        System.assert(packageLicenses.isEmpty(), 'Should have deleted license');
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(
+            theUserPostDeprovision.Processing_Notes__c.contains('Removed user from Package Licenses:'),
+            'The deletion of license should have been recorded on the user'
+        );
     }
 
     @isTest
     public static void checkDeleteSobjectRecordsSuccess() {
-        setupTestData(1);
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
 
-        User testUser = usersToDeprovision[0];
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
 
-        CaseFactory.DefaultCase caseCreator = new CaseFactory.DefaultCase();
-        List<Case> casesToDelete = (List<Case>) caseCreator.create(4);
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
 
-        for (Case testCase : casesToDelete) {
-            testCase.OwnerId = testUser.Id;
-        }
-        insert casesToDelete;
+        List<Case> usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
 
-        List<Id> caseIds = new List<Id>();
-        for (Case testCase : casesToDelete) {
-            caseIds.add(testCase.Id);
-        }
+        usersCases = [SELECT Id FROM Case WHERE OwnerId = :theUser.Id];
+        System.assert(!usersCases.isEmpty(), 'Should have some cases');
 
         Test.startTest();
-        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
+        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', usersCases, null);
         Test.stopTest();
 
-        casesToDelete = [SELECT Id FROM Case WHERE Id IN :caseIds];
-
-        System.assert(casesToDelete.isEmpty());
+        usersCases = [SELECT Id FROM Case WHERE OwnerId = :theUser.Id];
+        System.assert(usersCases.isEmpty(), 'Should have deleted cases');
     }
 
     @isTest
     public static void checkDeleteSobjectRecordsErrors() {
-        setupTestData(2);
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
 
-        CaseFactory.DefaultCase caseCreator = new CaseFactory.DefaultCase();
-        List<Case> casesToDelete = (List<Case>) caseCreator.create(7);
-        for (Integer i = 0; i < casesToDelete.size(); i++) {
-            casesToDelete[i].OwnerId = usersToDeprovision[math.mod(i, 2)].Id;
-        }
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
 
-        insert casesToDelete;
-        delete casesToDelete[1];
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
 
-        List<Id> caseIds = new List<Id>();
-        for (Case testCase : casesToDelete) {
-            caseIds.add(testCase.Id);
-        }
+        List<Case> usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
 
-        List<Case> generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
-        Integer countOfErrorLoggerCases = generatedErrorLoggerCase.size();
+        delete usersCases;
+        Test.startTest();
+        UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', usersCases, null);
+        Test.stopTest();
 
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            UserDeprovisionOrganizer.deleteSobjectRecords('OwnerId', casesToDelete, null);
-            Test.stopTest();
-        }
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('The following errors have occurred:'));
 
-        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-
-        for (User testUser : usersToDeprovision) {
-            if (testUser.Id == casesToDelete[1].OwnerId) {
-                System.assertEquals(true, testUser.Processing_Notes__c.contains('The following errors have occurred:'));
-                generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
-                System.assertEquals(
-                    countOfErrorLoggerCases + 1,
-                    generatedErrorLoggerCase.size(),
-                    'Should have added an ErrorLogger case'
-                );
-            } else {
-                System.assertEquals(null, testUser.Processing_Notes__c);
-            }
-        }
-
-        casesToDelete = [SELECT Id, OwnerId FROM Case WHERE Id IN :caseIds];
-        System.assert(casesToDelete.isEmpty());
+        List<Case> generatedErrorLoggerCases = [
+            SELECT Id, Subject, Description
+            FROM Case
+            WHERE Subject LIKE '%DatabaseErrorException%'
+        ];
+        System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
     }
 
     @isTest
     public static void checkUpdateSobjectRecordsErrors() {
-        setupTestData(2);
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
 
-        CaseFactory.DefaultCase caseCreator = new CaseFactory.DefaultCase();
-        List<Case> casesToUpdate = (List<Case>) caseCreator.create(7);
-        for (Integer i = 0; i < casesToUpdate.size(); i++) {
-            casesToUpdate[i].OwnerId = usersToDeprovision[math.mod(i, 2)].Id;
-        }
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
 
-        insert casesToUpdate;
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
 
-        List<Id> caseIds = new List<Id>();
-        for (Case testCase : casesToUpdate) {
-            testCase.Subject = 'Test update subject';
-            caseIds.add(testCase.Id);
-        }
-        casesToUpdate[1].CC_Functional_Group__c = '0050W000006Wgnk';
-        Id errorCaseId = casesToUpdate[1].Id;
+        List<Case> usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
 
-        List<Case> generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
-        Integer countOfErrorLoggerCases = generatedErrorLoggerCase.size();
+        delete usersCases;
+        Test.startTest();
+        UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', usersCases, null);
+        Test.stopTest();
 
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            Test.startTest();
-            UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', casesToUpdate, null);
-            Test.stopTest();
-        }
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('The following errors have occurred:'));
 
-        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
-
-        for (User testUser : usersToDeprovision) {
-            if (testUser.Id == casesToUpdate[1].OwnerId) {
-                System.assertEquals(true, testUser.Processing_Notes__c.contains('The following errors have occurred:'));
-                generatedErrorLoggerCase = [SELECT Id FROM Case WHERE Subject LIKE '%DatabaseErrorException%'];
-                System.assertEquals(
-                    countOfErrorLoggerCases + 1,
-                    generatedErrorLoggerCase.size(),
-                    'Should have added an ErrorLogger case'
-                );
-
-            } else {
-                System.assertEquals(null, testUser.Processing_Notes__c);
-            }
-        }
-
-        casesToUpdate = [SELECT Id, Subject, OwnerId FROM Case WHERE Id IN :caseIds];
-        for (Case testCase : casesToUpdate) {
-            if (testCase.Id == errorCaseId) {
-                System.assert(!testCase.Subject.contains('Test update subject'));
-            } else {
-                System.assert(testCase.Subject.contains('Test update subject'));
-            }
-        }
+        List<Case> generatedErrorLoggerCases = [
+            SELECT Id, Subject, Description
+            FROM Case
+            WHERE Subject LIKE '%DatabaseErrorException%'
+        ];
+        System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
     }
 }

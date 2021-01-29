@@ -9,6 +9,8 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, User> oldUsersMap;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
 
+    List<UserDeprovisioner> userDeprovisionersList;
+
     private List<Id> userToDeprovisionIds;
     private List<Case> allUserCases;
     private List<GroupMember> allUserPublicGroupMemberships;
@@ -16,38 +18,41 @@ public without sharing class UserDeprovisionOrganizer {
     private List<PermissionSetAssignment> allUserPermissionSetAssignments;
     private List<UserPackageLicense> allUserPackageLicenses;
     private List<UserLogin> allUserLogins;
+    private List<Id> usersToUncheckAsynchronously;
 
-    private Map<Id, List<Case>> userToDeprovisionCaseMap;
+    private Map<Id, List<Case>> userToCaseMap;
     private Map<Id, UserLogin> userToUserLoginMap;
-    private Map<Id, String> userToDeprovisionGroupMembershipMap;
-    private Map<Id, String> userToDeprovisionChatterGroupMembershipMap;
-    private Map<Id, String> userToDeprovisionPermissionSetMap;
-    private Map<Id, String> userToDeprovisionPackageLicenseMap;
+    private Map<Id, List<GroupMember>> userToGroupMembershipMap;
+    private Map<Id, List<CollaborationGroupMember>> userToChatterGroupMembershipMap;
+    private Map<Id, List<PermissionSetAssignment>> userToPermissionSetMap;
+    private Map<Id, List<UserPackageLicense>> userToPackageLicenseMap;
     private Map<Id, String> userToProcessingNotesMap;
 
     private static Boolean debug = false;
 
-    public void setOldUsersMap(Map<Id, SObject> oldUsersMap) {
-        this.oldUsersMap = (Map<Id, User>) oldUsersMap;
-    }
+    public UserDeprovisionOrganizer(Map<Id, User> oldUsersMap, List<User> newUsers) {
+        this.newUsers = newUsers;
+        this.oldUsersMap = oldUsersMap;
+        this.deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
 
-    public void setNewUsers(List<SObject> newUsers) {
-        this.newUsers = (List<User>) newUsers;
-    }
+        this.userToDeprovisionIds = new List<Id>();
+        this.userDeprovisionersList = new List<UserDeprovisioner>();
 
-    public void deprovisionUsersAfterUpdate() {
-        List<UserDeprovisioner> userDeprovisionersList = new List<UserDeprovisioner>();
-        List<User> deprovisionedUsersWithProcessingNotes = new List<User>();
-        userToProcessingNotesMap = new Map<Id, String>();
-        userToDeprovisionIds = new List<Id>();
-        deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+        this.usersToUncheckAsynchronously = new List<Id>();
 
+        this.userToCaseMap = new Map<Id, List<Case>>();
+        this.userToUserLoginMap = new Map<Id, UserLogin>();
+        this.userToGroupMembershipMap = new Map<Id, List<GroupMember>>();
+        this.userToChatterGroupMembershipMap = new Map<Id, List<CollaborationGroupMember>>();
+        this.userToPermissionSetMap = new Map<Id, List<PermissionSetAssignment>>();
+        this.userToPackageLicenseMap = new Map<Id, List<UserPackageLicense>>();
+        this.userToProcessingNotesMap = new Map<Id, String>();
+
+        // Make list of user's that need deprovisioning
         for (User userToDeprovision : newUsers) {
             if (userToDeprovision.Deprovision_User__c && !oldUsersMap.get(userToDeprovision.Id).Deprovision_User__c) {
                 userToDeprovisionIds.add(userToDeprovision.Id);
-                UserDeprovisioner userDeprovisioner = new UserDeprovisioner();
-                userDeprovisioner.setUserToDeprovision(userToDeprovision);
-                userDeprovisionersList.add(userDeprovisioner);
+                userDeprovisionersList.add(new UserDeprovisioner(deprovisionUserConfiguration, userToDeprovision));
             }
         }
 
@@ -58,66 +63,83 @@ public without sharing class UserDeprovisionOrganizer {
             populateUserToDeprovisionPermissionSetMap();
             populateUserToDeprovisionPackageLicenseMap();
             populateUserToUserLoginMap();
-
-            List<Case> updatedUserCases = new List<Case>();
-            Map<Id, Id> caseToUserMap = new Map<Id, Id>();
-            List<UserLogin> updatedUserLogins = new List<UserLogin>();
-
-            for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
-                Id userId = userDeprovisioner.getUserToDeprovision().Id;
-                userDeprovisioner.setDeprovisionUserConfiguration(deprovisionUserConfiguration);
-                userDeprovisioner.setUserCases(userToDeprovisionCaseMap.get(userId));
-                userDeprovisioner.setGroupMemberships(userToDeprovisionGroupMembershipMap.get(userId));
-                userDeprovisioner.setChatterGroupMemberships(userToDeprovisionChatterGroupMembershipMap.get(userId));
-                userDeprovisioner.setPermissionSets(userToDeprovisionPermissionSetMap.get(userId));
-                userDeprovisioner.setPackageLicenses(userToDeprovisionPackageLicenseMap.get(userId));
-                userDeprovisioner.setOldProcessingNotes(oldUsersMap.get(userId).Processing_Notes__c); // append to previous notes
-                userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
-                userDeprovisioner.deprovisionUser();
-                updatedUserCases.addAll(userDeprovisioner.getUpdatedUserCases());
-                updatedUserLogins.add(userDeprovisioner.getUpdatedUserLogin());
-                caseToUserMap.putAll(userDeprovisioner.getCaseToUserMap());
-                User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
-                deprovisionedUsersWithProcessingNotes.add(userWithProcessingNotes);
-                userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
-            }
-
-            if (!allUserPublicGroupMemberships.isEmpty()) {
-                deleteSobjectRecords('UserOrGroupId', allUserPublicGroupMemberships, userToProcessingNotesMap);
-            }
-
-            if (!allUserPermissionSetAssignments.isEmpty()) {
-                deleteSobjectRecords('AssigneeId', allUserPermissionSetAssignments, userToProcessingNotesMap);
-            }
-
-            if (!allUserPackageLicenses.isEmpty()) {
-                deleteSobjectRecords('UserId', allUserPackageLicenses, userToProcessingNotesMap);
-            }
-
-            // Update user last so triggers don't modify licenses/perm sets unexpectedly
-            if (!deprovisionedUsersWithProcessingNotes.isEmpty()) {
-                updateSobjectRecords('Id', deprovisionedUsersWithProcessingNotes, userToProcessingNotesMap);
-            }
-
-            // And handle all non-setup objects here
-            if (!updatedUserCases.isEmpty() || !allUserChatterGroupMemberships.isEmpty() || !allUserLogins.isEmpty()) {
-                UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
-                userDeprovisionQueue.setUpdatedUserCases(updatedUserCases);
-                userDeprovisionQueue.setCaseToUserMap(caseToUserMap);
-                userDeprovisionQueue.setAllUserChatterGroupMemberships(allUserChatterGroupMemberships);
-                userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
-                userDeprovisionQueue.setUpdatedUserLogins(updatedUserLogins);
-                System.enqueueJob(userDeprovisionQueue);
-            }
         }
     }
 
-    private void populateUserToUserLoginMap() {
-        allUserLogins = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId IN :userToDeprovisionIds];
+    public void deprovisionUsersAfterUpdate() {
+        if (!userDeprovisionersList.isEmpty()) {
+            List<User> toUpdateUsers = new List<User>();
+            List<Case> toUpdateUserCases = new List<Case>();
+            List<UserLogin> toUpdateUserLogins = new List<UserLogin>();
+            List<GroupMember> toDeletePublicGroupMemberships = new List<GroupMember>();
+            List<CollaborationGroupMember> toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
+            List<PermissionSetAssignment> toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
+            List<UserPackageLicense> toDeleteUserPackageLicense = new List<UserPackageLicense>();
 
-        userToUserLoginMap = new Map<Id, UserLogin>();
-        for (UserLogin ul : allUserLogins) {
-            userToUserLoginMap.put(ul.UserId, ul);
+            for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
+                // Setup deprovision
+                Id userId = userDeprovisioner.getUserToDeprovision().Id;
+                userDeprovisioner.setCases(userToCaseMap.get(userId));
+                userDeprovisioner.setGroupMemberships(userToGroupMembershipMap.get(userId));
+                userDeprovisioner.setChatterGroupMemberships(userToChatterGroupMembershipMap.get(userId));
+                userDeprovisioner.setPermissionSetAssignments(userToPermissionSetMap.get(userId));
+                userDeprovisioner.setUserPackageLicenses(userToPackageLicenseMap.get(userId));
+                userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
+                // Deprovision
+                userDeprovisioner.deprovisionUser();
+                // Get all updated and deleted data
+                toUpdateUserCases.addAll(userDeprovisioner.getToUpdateUserCases());
+                UserLogin needToUpdateUserLogin = userDeprovisioner.getToUpdateUserLogin();
+                if (needToUpdateUserLogin != null) {
+                    toUpdateUserLogins.add(needToUpdateUserLogin);
+                }
+                toDeletePublicGroupMemberships.addAll(userDeprovisioner.getToDeleteGroupMemberships());
+                toDeleteChatterGroupMemberships.addAll(userDeprovisioner.getToDeleteChatterGroupMemberships());
+                toDeletePermissionSetAssignments.addAll(userDeprovisioner.getToDeletePermissionSetAssignments());
+                toDeleteUserPackageLicense.addAll(userDeprovisioner.getToDeleteUserPackageLicenses());
+
+                User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
+                toUpdateUsers.add(userWithProcessingNotes);
+                userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
+
+                // Make sure we uncheck User_Deprovision__c asynchronously, after altering queued objects
+                if (userDeprovisioner.getNeedToUncheckAsynchronously()) {
+                    usersToUncheckAsynchronously.add(userDeprovisioner.getUserToDeprovision().Id);
+                }
+            }
+
+            if (!toDeletePublicGroupMemberships.isEmpty()) {
+                deleteSobjectRecords('UserOrGroupId', toDeletePublicGroupMemberships, userToProcessingNotesMap);
+            }
+
+            if (!toDeletePermissionSetAssignments.isEmpty()) {
+                deleteSobjectRecords('AssigneeId', toDeletePermissionSetAssignments, userToProcessingNotesMap);
+            }
+
+            if (!toDeleteUserPackageLicense.isEmpty()) {
+                deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
+            }
+
+            if (!toUpdateUsers.isEmpty()) {
+                updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
+            }
+
+            // And handle all non-setup objects here
+            if (
+                !toUpdateUserCases.isEmpty() ||
+                !toDeleteChatterGroupMemberships.isEmpty() ||
+                !toUpdateUserLogins.isEmpty() ||
+                !usersToUncheckAsynchronously.isEmpty()
+            ) {
+                UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
+                userDeprovisionQueue.setUpdatedUserCases(toUpdateUserCases);
+                userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
+                userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
+                userDeprovisionQueue.setUsersToUncheckAsynchronously(usersToUncheckAsynchronously);
+
+                userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
+                System.enqueueJob(userDeprovisionQueue);
+            }
         }
     }
 
@@ -134,15 +156,11 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE OwnerId IN :userToDeprovisionIds
         ];
 
-        userToDeprovisionCaseMap = new Map<Id, List<Case>>();
         for (Case userCase : allUserCases) {
-            if (userToDeprovisionCaseMap.containsKey(userCase.OwnerId)) {
-                userToDeprovisionCaseMap.get(userCase.OwnerId).add(userCase);
-            } else {
-                List<Case> userCases = new List<Case>();
-                userCases.add(userCase);
-                userToDeprovisionCaseMap.put(userCase.OwnerId, userCases);
+            if (!userToCaseMap.containsKey(userCase.OwnerId)) {
+                userToCaseMap.put(userCase.OwnerId, new List<Case>());
             }
+            userToCaseMap.get(userCase.OwnerId).add(userCase);
         }
     }
 
@@ -153,16 +171,11 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE UserOrGroupId IN :userToDeprovisionIds
         ];
 
-        userToDeprovisionGroupMembershipMap = new Map<Id, String>();
         for (GroupMember groupMember : allUserPublicGroupMemberships) {
-            if (userToDeprovisionGroupMembershipMap.containsKey(groupMember.UserOrGroupId)) {
-                String groupMemberships = userToDeprovisionGroupMembershipMap.get(groupMember.UserOrGroupId);
-                groupMemberships += ', ' + groupMember.Group.Name;
-                userToDeprovisionGroupMembershipMap.put(groupMember.UserOrGroupId, groupMemberships);
-            } else {
-                String groupMemberships = '' + groupMember.Group.Name;
-                userToDeprovisionGroupMembershipMap.put(groupMember.UserOrGroupId, groupMemberships);
+            if (!userToGroupMembershipMap.containsKey(groupMember.UserOrGroupId)) {
+                userToGroupMembershipMap.put(groupMember.UserOrGroupId, new List<GroupMember>());
             }
+            userToGroupMembershipMap.get(groupMember.UserOrGroupId).add(groupMember);
         }
     }
 
@@ -173,24 +186,14 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE MemberId IN :userToDeprovisionIds
         ];
 
-        userToDeprovisionChatterGroupMembershipMap = new Map<Id, String>();
         for (CollaborationGroupMember collaborationGroupMember : allUserChatterGroupMemberships) {
-            if (userToDeprovisionChatterGroupMembershipMap.containsKey(collaborationGroupMember.MemberId)) {
-                String chatterGroupMemberships = userToDeprovisionChatterGroupMembershipMap.get(
-                    collaborationGroupMember.MemberId
-                );
-                chatterGroupMemberships += ', ' + collaborationGroupMember.CollaborationGroup.Name;
-                userToDeprovisionChatterGroupMembershipMap.put(
+            if (!userToChatterGroupMembershipMap.containsKey(collaborationGroupMember.MemberId)) {
+                userToChatterGroupMembershipMap.put(
                     collaborationGroupMember.MemberId,
-                    chatterGroupMemberships
-                );
-            } else {
-                String chatterGroupMemberships = '' + collaborationGroupMember.CollaborationGroup.Name;
-                userToDeprovisionChatterGroupMembershipMap.put(
-                    collaborationGroupMember.MemberId,
-                    chatterGroupMemberships
+                    new List<CollaborationGroupMember>()
                 );
             }
+            userToChatterGroupMembershipMap.get(collaborationGroupMember.MemberId).add(collaborationGroupMember);
         }
     }
 
@@ -201,16 +204,11 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE AssigneeId IN :userToDeprovisionIds AND PermissionSet.IsOwnedByProfile = FALSE
         ];
 
-        userToDeprovisionPermissionSetMap = new Map<Id, String>();
         for (PermissionSetAssignment permissionSetAssignment : allUserPermissionSetAssignments) {
-            if (userToDeprovisionPermissionSetMap.containsKey(permissionSetAssignment.AssigneeId)) {
-                String permissionSets = userToDeprovisionPermissionSetMap.get(permissionSetAssignment.AssigneeId);
-                permissionSets += ', ' + permissionSetAssignment.PermissionSet.Name;
-                userToDeprovisionPermissionSetMap.put(permissionSetAssignment.AssigneeId, permissionSets);
-            } else {
-                String permissionSets = permissionSetAssignment.PermissionSet.Name;
-                userToDeprovisionPermissionSetMap.put(permissionSetAssignment.AssigneeId, permissionSets);
+            if (!userToPermissionSetMap.containsKey(permissionSetAssignment.AssigneeId)) {
+                userToPermissionSetMap.put(permissionSetAssignment.AssigneeId, new List<PermissionSetAssignment>());
             }
+            userToPermissionSetMap.get(permissionSetAssignment.AssigneeId).add(permissionSetAssignment);
         }
     }
 
@@ -223,16 +221,20 @@ public without sharing class UserDeprovisionOrganizer {
                 AND PackageLicenseId IN :getDeprovisionConfigurationPackageLicenseIds()
         ];
 
-        userToDeprovisionPackageLicenseMap = new Map<Id, String>();
         for (UserPackageLicense userPackageLicense : allUserPackageLicenses) {
-            if (userToDeprovisionPackageLicenseMap.containsKey(userPackageLicense.UserId)) {
-                String packageLicenses = userToDeprovisionPackageLicenseMap.get(userPackageLicense.UserId);
-                packageLicenses += userPackageLicense.PackageLicense.NamespacePrefix;
-                userToDeprovisionPackageLicenseMap.put(userPackageLicense.UserId, packageLicenses);
-            } else {
-                String packageLicenses = userPackageLicense.PackageLicense.NamespacePrefix;
-                userToDeprovisionPackageLicenseMap.put(userPackageLicense.UserId, packageLicenses);
+            if (!userToPackageLicenseMap.containsKey(userPackageLicense.UserId)) {
+                userToPackageLicenseMap.put(userPackageLicense.UserId, new List<UserPackageLicense>());
             }
+            userToPackageLicenseMap.get(userPackageLicense.UserId).add(userPackageLicense);
+        }
+    }
+
+    private void populateUserToUserLoginMap() {
+        allUserLogins = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId IN :userToDeprovisionIds];
+
+        userToUserLoginMap = new Map<Id, UserLogin>();
+        for (UserLogin ul : allUserLogins) {
+            userToUserLoginMap.put(ul.UserId, ul);
         }
     }
 
@@ -251,13 +253,14 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToProcessingNotes
     ) {
-        List<User> usersWithErrors = new List<User>();
+        Boolean updatingUser = recordListToOperate[0] instanceof User;
+        Map<Id, String> usersWithErrors = new Map<Id, String>();
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
 
         for (Integer i = 0; i < saveResult.size(); i++) {
             if (!saveResult[i].isSuccess()) {
-                String processingNotes;
+                String processingNotes = '';
                 String errorNote = 'The following errors have occurred:';
                 for (Database.Error err : saveResult[i].getErrors()) {
                     errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
@@ -265,39 +268,55 @@ public without sharing class UserDeprovisionOrganizer {
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
-                if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '\n---\n' + errorNote;
-                } else {
-                    processingNotes = errorNote;
+
+                // Append to exisiting processing notes / other errors for this user
+                if (usersWithErrors.keySet().contains(userId)) {
+                    processingNotes = usersWithErrors.get(userId) + '---\n';
+                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
+                }
+                processingNotes += errorNote + '\n';
+
+                if (
+                    updatingUser &&
+                    errorNote.contains('FIELD_INTEGRITY_EXCEPTION: This user is a delegated administrator')
+                ) {
+                    processingNotes += '---\nPlease remove this user from being a delegated administrator before deprovisioning.\n';
                 }
 
-                usersWithErrors.add(
-                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
-                );
+                usersWithErrors.put(userId, processingNotes);
 
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                if (saveResult[i] != null) {
+                    vars.add(ErrorLogger.convertIdToJSON('saveResult[i].getId()', saveResult[i].getId()));
+                }
+                if (saveResult[i].getId() != null) {
+                    vars.add(
+                        ErrorLogger.convertStringToJSON(
+                            'saveResult[i].getId().getSObjectType()',
+                            '' + saveResult[i].getId().getSObjectType()
+                        )
+                    );
+                }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                vars.add(
-                    ErrorLogger.convertStringToJSON(
-                        'saveResult[i].getId().getSObjectType()',
-                        '' + saveResult[i].getId().getSObjectType()
-                    )
-                );
-                vars.add(ErrorLogger.convertIdToJSON('saveResult[i].getId()', saveResult[i].getId()));
+
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.logFuture(
-                    dbException.getTypeName(),
-                    dbException.getMessage(),
-                    dbException.getStackTraceString(),
-                    vars,
-                    debug
-                );
+                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(dbException, vars, debug);
+                try {
+                    ErrorLogger.log(dbException, vars, debug);
+                } catch (System.DmlException dmle) {
+                    if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                        System.enqueueJob(logQueue);
+                    } else {
+                        throw dmle;
+                    }
+                }
             }
         }
 
-        if (usersWithErrors.size() > 0) {
-            update usersWithErrors;
+        if (!usersWithErrors.isEmpty()) {
+            updateUsersProcessingNotes(usersWithErrors);
         }
     }
 
@@ -306,13 +325,13 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToProcessingNotes
     ) {
-        List<User> usersWithErrors = new List<User>();
+        Map<Id, String> usersWithErrors = new Map<Id, String>();
 
         Database.DeleteResult[] deleteResult = Database.delete(recordListToOperate, false);
 
         for (Integer i = 0; i < deleteResult.size(); i++) {
             if (!deleteResult[i].isSuccess()) {
-                String processingNotes;
+                String processingNotes = '';
                 String errorNote = 'The following errors have occurred:';
                 for (Database.Error err : deleteResult[i].getErrors()) {
                     errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
@@ -320,40 +339,56 @@ public without sharing class UserDeprovisionOrganizer {
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
-                if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '\n---\n' + errorNote;
-                } else {
-                    processingNotes = errorNote;
+
+                // Append to exisiting processing notes / other errors for this user
+                if (usersWithErrors.keySet().contains(userId)) {
+                    processingNotes = usersWithErrors.get(userId) + '---\n';
+                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
                 }
+                processingNotes += errorNote + '\n';
 
-                usersWithErrors.add(
-                    new User(Id = userId, Processing_Notes__c = processingNotes, Deprovision_User__c = false)
-                );
-
+                usersWithErrors.put(userId, processingNotes);
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                if (deleteResult[i] != null) {
+                    vars.add(ErrorLogger.convertIdToJSON('deleteResult[i].getId()', deleteResult[i].getId()));
+                }
+                if (deleteResult[i].getId() != null) {
+                    vars.add(
+                        ErrorLogger.convertStringToJSON(
+                            'deleteResult[i].getId().getSObjectType()',
+                            '' + deleteResult[i].getId().getSObjectType()
+                        )
+                    );
+                }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                vars.add(
-                    ErrorLogger.convertStringToJSON(
-                        'deleteResult[i].getId().getSObjectType()',
-                        '' + deleteResult[i].getId().getSObjectType()
-                    )
-                );
-                vars.add(ErrorLogger.convertIdToJSON('deleteResult[i].getId()', deleteResult[i].getId()));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.logFuture(
-                    dbException.getTypeName(),
-                    dbException.getMessage(),
-                    dbException.getStackTraceString(),
-                    vars,
-                    debug
-                );
+                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(dbException, vars, debug);
+                try {
+                    ErrorLogger.log(dbException, vars, debug);
+                } catch (System.DmlException dmle) {
+                    if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                        System.enqueueJob(logQueue);
+                    } else {
+                        throw dmle;
+                    }
+                }
             }
         }
 
-        if (usersWithErrors.size() > 0) {
-            update usersWithErrors;
+        if (!usersWithErrors.isEmpty()) {
+            updateUsersProcessingNotes(usersWithErrors);
         }
+    }
+
+    @future
+    public static void updateUsersProcessingNotes(Map<Id, String> uidToNewNotesMap) {
+        List<User> users = new List<User>();
+        for (Id uid : uidToNewNotesMap.keySet()) {
+            users.add(new User(Id = uid, Processing_Notes__c = uidToNewNotesMap.get(uid), Deprovision_User__c = false));
+        }
+        update users;
     }
 
     private class DatabaseErrorException extends Exception {

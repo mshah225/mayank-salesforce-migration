@@ -44,7 +44,6 @@ public without sharing class UserDeprovisioner {
     // Returns true if Deprovision_User__c needs to be updated asynchronously
     public void deprovisionUser() {
         try {
-            System.debug(userToDeprovision);
             if (userToDeprovision.Processing_Notes__c != null) {
                 addToProcessingNotes(
                     userToDeprovision.Processing_Notes__c + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'

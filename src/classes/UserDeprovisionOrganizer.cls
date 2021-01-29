@@ -260,7 +260,7 @@ public without sharing class UserDeprovisionOrganizer {
 
         for (Integer i = 0; i < saveResult.size(); i++) {
             if (!saveResult[i].isSuccess()) {
-                String processingNotes;
+                String processingNotes = '';
                 String errorNote = 'The following errors have occurred:';
                 for (Database.Error err : saveResult[i].getErrors()) {
                     errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
@@ -268,17 +268,20 @@ public without sharing class UserDeprovisionOrganizer {
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
-                if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '---\n' + errorNote;
-                } else {
-                    processingNotes = errorNote;
+
+                // Append to exisiting processing notes / other errors for this user
+                if (usersWithErrors.keySet().contains(userId)) {
+                    processingNotes = usersWithErrors.get(userId) + '---\n';
+                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
                 }
+                processingNotes += errorNote + '\n';
 
                 if (
                     updatingUser &&
                     errorNote.contains('FIELD_INTEGRITY_EXCEPTION: This user is a delegated administrator')
                 ) {
-                    processingNotes += '\n---\nPlease remove this user from being a delegated administrator before deprovisioning.';
+                    processingNotes += '---\nPlease remove this user from being a delegated administrator before deprovisioning.\n';
                 }
 
                 usersWithErrors.put(userId, processingNotes);
@@ -328,7 +331,7 @@ public without sharing class UserDeprovisionOrganizer {
 
         for (Integer i = 0; i < deleteResult.size(); i++) {
             if (!deleteResult[i].isSuccess()) {
-                String processingNotes;
+                String processingNotes = '';
                 String errorNote = 'The following errors have occurred:';
                 for (Database.Error err : deleteResult[i].getErrors()) {
                     errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
@@ -336,11 +339,14 @@ public without sharing class UserDeprovisionOrganizer {
                 }
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
-                if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '\n---\n' + errorNote;
-                } else {
-                    processingNotes = errorNote;
+
+                // Append to exisiting processing notes / other errors for this user
+                if (usersWithErrors.keySet().contains(userId)) {
+                    processingNotes = usersWithErrors.get(userId) + '---\n';
+                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
                 }
+                processingNotes += errorNote + '\n';
 
                 usersWithErrors.put(userId, processingNotes);
                 List<String> vars = new List<String>();

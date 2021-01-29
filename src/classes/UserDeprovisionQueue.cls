@@ -56,13 +56,18 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         }
 
         // Set all these user's User_Deprovision__c to FALSE now that we are done.
+        if (!usersToUncheckAsynchronously.isEmpty()) {
+            futureDecheckmarkDeprovisionUser(usersToUncheckAsynchronously);
+        }
+    }
+
+    @future
+    private static void futureDecheckmarkDeprovisionUser(List<Id> uids) {
         List<User> updatedUsers = new List<User>();
-        for (Id uid : usersToUncheckAsynchronously) {
+        for (Id uid : uids) {
             User u = new User(Id = uid, Deprovision_User__c = false);
             updatedUsers.add(u);
         }
-        if (!updatedUsers.isEmpty()) {
-            UserDeprovisionOrganizer.updateSobjectRecords('Id', updatedUsers, userToProcessingNotes);
-        }
+        update updatedUsers;
     }
 }

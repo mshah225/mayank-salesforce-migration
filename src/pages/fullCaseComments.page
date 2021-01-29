@@ -1,8 +1,10 @@
-<apex:page id="fullCaseComments"
+<apex:page
+    id="fullCaseComments"
     standardController="Case"
     extensions="FullCaseCommentsController"
     sideBar="false"
     showHeader="false"
-    tabStyle="Case">
+    tabStyle="Case"
+>
     <c:fullCaseCommentsHistory caseComments="{!comments}" />
 </apex:page>

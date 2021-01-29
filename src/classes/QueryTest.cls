@@ -4,8 +4,7 @@ public class QueryTest {
      * Test external data query helper
      */
     public static testMethod void testQueryHelper() {
-
-        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
 
         // Begin
         Test.startTest();
@@ -16,7 +15,7 @@ public class QueryTest {
 
         // Test passthrough
         List<SObject> results = Query.records(internalContacts);
-        System.assertEquals(5, results.size() );
+        System.assertEquals(5, results.size());
 
         // End
         Test.stopTest();

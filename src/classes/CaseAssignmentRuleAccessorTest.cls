@@ -1,6 +1,5 @@
 @isTest
 public class CaseAssignmentRuleAccessorTest {
-
     @isTest
     public static void checkDefualtErrorLoggerCar() {
         List<Case_Assignment_Rule__c> cars;
@@ -9,11 +8,7 @@ public class CaseAssignmentRuleAccessorTest {
         insert CaseAssignmentRuleAccessor.createDefaultCarForErrorLogger();
         Test.stopTest();
 
-        cars = [
-            SELECT Id, Priority__c
-            FROM Case_Assignment_Rule__c
-            WHERE Origin__c = 'Error Logger'
-        ];
+        cars = [SELECT Id, Priority__c FROM Case_Assignment_Rule__c WHERE Origin__c = 'Error Logger'];
 
         System.assertEquals(1, cars.size());
         System.assertEquals(10000, integer.valueOf(cars[0].Priority__c));
@@ -38,5 +33,4 @@ public class CaseAssignmentRuleAccessorTest {
         System.assertEquals(2, cars.size());
         System.assertEquals(10001, integer.valueOf(cars[0].Priority__c));
     }
-
 }

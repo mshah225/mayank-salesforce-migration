@@ -5,31 +5,31 @@ private class PicklistDescriber_Tests {
     public static Case case1;
     public static String contactRecordTypeId;
     public static RecordType caseRecordType;
-   
-    @isTest static void testDescribe1()
-    {
+
+    @isTest
+    static void testDescribe1() {
         createTestData();
         Test.StartTest();
-        
+
         PageReference pageRef = Page.PicklistDesc;
-        Test.setCurrentPage(pageRef);     
+        Test.setCurrentPage(pageRef);
         List<String> options = PicklistDescriber.describe(case1.Id, 'Status');
 
         Test.StopTest();
     }
-    
-    @isTest static void testDescribe2()
-    {
+
+    @isTest
+    static void testDescribe2() {
         createTestData();
         Test.StartTest();
-        
+
         List<String> options = PicklistDescriber.describe('Case', 'ASU_Success_Coach', 'Status');
 
         Test.StopTest();
     }
-    
-    @isTest static void testDescribe3()
-    {
+
+    @isTest
+    static void testDescribe3() {
         createTestData();
         Test.StartTest();
 
@@ -38,16 +38,24 @@ private class PicklistDescriber_Tests {
         Test.StopTest();
     }
 
-    static private void createTestData()
-    {
+    static private void createTestData() {
         contactRecordTypeId = '';
-        List<RecordType> rectype1 = [SELECT Id FROM RecordType WHERE DeveloperName =: 'External_Mastered' AND SobjectType = 'Contact'];
-        if(rectype1.size()>0)contactRecordTypeId=rectype1[0].Id;
-        
-        caseRecordType = [SELECT Id FROM RecordType WHERE DeveloperName =: 'ASU_Coach_Outreach' AND SobjectType = 'Case'];
-        
-        Id profileId = [SELECT Id FROM Profile WHERE Name ='System Administrator'].Id;
-      
+        List<RecordType> rectype1 = [
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = :'External_Mastered' AND SobjectType = 'Contact'
+        ];
+        if (rectype1.size() > 0)
+            contactRecordTypeId = rectype1[0].Id;
+
+        caseRecordType = [
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = :'ASU_Coach_Outreach' AND SobjectType = 'Case'
+        ];
+
+        Id profileId = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
         //create user
         user1 = new User();
         user1.Lastname = 'coach';
@@ -60,7 +68,7 @@ private class PicklistDescriber_Tests {
         user1.ProfileId = profileId;
         user1.LanguageLocaleKey = 'en_US';
         insert user1;
-   
+
         //create contact
         contact1 = new Contact();
         contact1.RecordTypeId = contactRecordTypeId;
@@ -86,9 +94,5 @@ private class PicklistDescriber_Tests {
         case1.ASR_Reasons__c = 'reasons here';
         case1.ASR_Actions__c = 'actions here';
         insert case1;
-
     }
-    
-    
-    
 }

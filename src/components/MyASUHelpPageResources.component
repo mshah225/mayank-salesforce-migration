@@ -2,21 +2,20 @@
     <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean" />
     <apex:attribute name="masqScopeIdCookie" description="Cookie" type="String" />
     <script>
-
         viewAsLinks();
         function viewAsLinks() {
-            var masqCookie = "{!masqScopeIdCookie}";
-            var viewingAs = "{!viewingAs}";
-            if (masqCookie != "" && viewingAs == "true") {
-                $("a").each(function () {
+            var masqCookie = '{!masqScopeIdCookie}';
+            var viewingAs = '{!viewingAs}';
+            if (masqCookie != '' && viewingAs == 'true') {
+                $('a').each(function () {
                     var href = this.href;
-                    if (href.indexOf("force") > -1) {
-                        if (href.indexOf("?") != -1) {
-                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                    if (href.indexOf('force') > -1) {
+                        if (href.indexOf('?') != -1) {
+                            href = href + '&masqScopeIdCookie={!masqScopeIdCookie}';
                         } else {
-                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
+                            href = href + '?masqScopeIdCookie={!masqScopeIdCookie}';
                         }
-                        $(this).attr("href", href);
+                        $(this).attr('href', href);
                     }
                 });
             }

@@ -9,9 +9,9 @@ public class EdPlusAggregatedNotesControllerTest {
      * Extend our Query class to mock our external data
      */
     class Mock extends Query {
-        final Map<SObjectType, List<SObject> > cache;
+        final Map<SObjectType, List<SObject>> cache;
         public Mock() {
-            cache = new Map<SObjectType, List<SObject> >();
+            cache = new Map<SObjectType, List<SObject>>();
         }
         public Mock setDataStore(List<SObject> records) {
             cache.put(records.getSObjectType(), records);
@@ -19,7 +19,7 @@ public class EdPlusAggregatedNotesControllerTest {
             return this;
         }
         protected override List<SObject> passthrough(List<SObject> records) {
-            return cache.get( records.getSObjectType() );
+            return cache.get(records.getSObjectType());
         }
     }
 
@@ -27,15 +27,19 @@ public class EdPlusAggregatedNotesControllerTest {
      * Setup the test for the main controller
      */
     public static testMethod void edPlusAggregatedNotesControllerTest() {
-
         // Create mocked data
         createTestData();
 
         // Set HTTP mock for the controller we are testing
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
 
         // Query the test contacts and get an ID
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
+        Contact testContact = [
+            SELECT Id, SSB_CRMSYSTEM_Contact_ID__c
+            FROM Contact
+            WHERE FirstName = 'Mister' AND LastName = '0'
+            LIMIT 1
+        ];
         Id testContactId = testContact.Id;
 
         // Set the necessary parameters on the page
@@ -53,13 +57,13 @@ public class EdPlusAggregatedNotesControllerTest {
         EdPlusAggregatedNotesController controller = new EdPlusAggregatedNotesController(stdController);
 
         // There should be 5 records total
-        System.assertEquals( 5, controller.dataWrapper.size() );
+        System.assertEquals(5, controller.dataWrapper.size());
 
         // Populate our picklist with our possible filter values
         controller.getFilterOptions();
 
         // Confirm that we have the correct picklist values
-        System.assertEquals( 'Created Date', controller.options[0].getLabel() );
+        System.assertEquals('Created Date', controller.options[0].getLabel());
 
         // Set up our filter criteria for 'Created Date'
         controller.filterType = 'Created';
@@ -84,20 +88,23 @@ public class EdPlusAggregatedNotesControllerTest {
         Test.stopTest();
     }
 
-
     /**
      * Test ability to insert tracking record
      */
-    public static testMethod void insertTracking(){
-
+    public static testMethod void insertTracking() {
         // Create mocked data
         createTestData();
 
         // Set HTTP mock for the controller we are testing
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
 
         // Query the test contacts and get an ID
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE FirstName = 'Mister' AND LastName = '0' Limit 1];
+        Contact testContact = [
+            SELECT Id, SSB_CRMSYSTEM_Contact_ID__c
+            FROM Contact
+            WHERE FirstName = 'Mister' AND LastName = '0'
+            LIMIT 1
+        ];
         Id testContactId = testContact.Id;
 
         // Set the necessary parameters on the page
@@ -118,7 +125,11 @@ public class EdPlusAggregatedNotesControllerTest {
         controller.relatedRecordId = 'ABC123';
         controller.trackUsage();
 
-        List<EntCrossOrgUsageStats__c> usage = [SELECT Id FROM EntCrossOrgUsageStats__c WHERE Related_Record_Id__c = 'ABC123'];
+        List<EntCrossOrgUsageStats__c> usage = [
+            SELECT Id
+            FROM EntCrossOrgUsageStats__c
+            WHERE Related_Record_Id__c = 'ABC123'
+        ];
 
         // Check for inserted record
         System.assertEquals(1, usage.size());
@@ -131,23 +142,19 @@ public class EdPlusAggregatedNotesControllerTest {
      * Create the test data
      */
     public static void createTestData() {
-
         // Create test contacts
         List<Contact> internalContacts = TestDataFactory.createContacts(5);
         for (Integer i = 0; i < 5; i++) {
-            internalContacts[i].SSB_CRMSYSTEM_Contact_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D'+i;
-        } 
+            internalContacts[i].SSB_CRMSYSTEM_Contact_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D' + i;
+        }
         insert internalContacts;
 
         // Insert mocked tasks
         List<EdPlusTask__x> mockExternalTasks = new List<EdPlusTask__x>();
         for (Integer i = 0; i < 5; i++) {
             mockExternalTasks.add(
-                new EdPlusTask__x(
-                Subject_edpl__c = 'Test Task #' + i,
-                Description_edpl__c = 'Test Task Description'
-                )
-                );
+                new EdPlusTask__x(Subject_edpl__c = 'Test Task #' + i, Description_edpl__c = 'Test Task Description')
+            );
         }
 
         // Change dates on records for testing
@@ -155,8 +162,7 @@ public class EdPlusAggregatedNotesControllerTest {
         mockExternalTasks[4].Created_Date_edpl__c = Date.today().addDays(-2);
 
         // Insert the mocked data into our cache
-        Mock m = new Mock()
-            .setDataStore(mockExternalTasks);
+        Mock m = new Mock().setDataStore(mockExternalTasks);
 
         // Set the mocked data
         Query.setMock(m);

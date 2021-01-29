@@ -38,12 +38,12 @@ private class ASUBrandControllerTest {
         testUser.ContactId = testContact.Id;
 
         insert testUser;
-        
+
         List<Live_Agent_Button__c> buttonsToInsert = new List<Live_Agent_Button__c>();
         buttonsToInsert.add(new Live_Agent_Button__c(Name = 'Finances_Live_Chat'));
         buttonsToInsert.add(new Live_Agent_Button__c(Name = 'ASU_Services_Live_Chat'));
         buttonsToInsert.add(new Live_Agent_Button__c(Name = 'Technical_Support_Live_Chat'));
-        
+
         insert buttonsToInsert;
 
         PageReference myASUHelp = Page.studentSC;

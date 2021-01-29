@@ -1,5 +1,6 @@
 public with sharing class HTTPRestService_EnterpriseContact {
-    public HTTPRestService_EnterpriseContact() {}
+    public HTTPRestService_EnterpriseContact() {
+    }
 
     public String get(Map<String, String> parmMap) {
         String queryString = '';
@@ -25,10 +26,12 @@ public with sharing class HTTPRestService_EnterpriseContact {
             response = http.send(req);
         } catch (System.CalloutException calloutException) {
             List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in GET: ', calloutException.getMessage()));
+            vars.add(
+                ErrorLogger.convertStringToJSON('Callout Exception Message in GET: ', calloutException.getMessage())
+            );
             ErrorLogger.log(calloutException, vars, false);
         }
-         if (response != null && response.getStatusCode() == 200) {
+        if (response != null && response.getStatusCode() == 200) {
             returnValue = response.getBody();
         }
 
@@ -46,7 +49,7 @@ public with sharing class HTTPRestService_EnterpriseContact {
         for (String key : parmMap.keySet()) {
             reqBody.writeStringField(key, parmMap.get(key));
         }
-        
+
         reqBody.writeEndObject();
         req.setEndpoint(endPoint);
         req.setMethod('POST');
@@ -58,7 +61,9 @@ public with sharing class HTTPRestService_EnterpriseContact {
             response = http.send(req);
         } catch (System.CalloutException calloutException) {
             List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('Callout Exception Message in POST: ', calloutException.getMessage()));
+            vars.add(
+                ErrorLogger.convertStringToJSON('Callout Exception Message in POST: ', calloutException.getMessage())
+            );
             ErrorLogger.log(calloutException, vars, false);
         }
         if (response != null && response.getStatusCode() == 201) {

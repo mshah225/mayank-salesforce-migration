@@ -1,5 +1,5 @@
 ({
-    createCase : function (component, event, helper) {
+    createCase: function (component, event, helper) {
         helper.validateAndCreateCase(component);
-	}
-})
+    },
+});

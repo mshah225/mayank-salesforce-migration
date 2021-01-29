@@ -12,11 +12,10 @@ public class SubscriptionHashUpdateBatch implements Database.Batchable<sObject> 
     public void execute(Database.BatchableContext bc, List<Subscription__c> scope) {
         for (Subscription__c sub : scope) {
             sub.HashSubscriptionId__c = Hasher.hashId(sub.Id);
-        }     
+        }
         update scope;
     }
 
-   public void finish(Database.BatchableContext bc) {
-
-   }
+    public void finish(Database.BatchableContext bc) {
+    }
 }

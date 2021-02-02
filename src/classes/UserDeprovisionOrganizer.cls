@@ -18,7 +18,6 @@ public without sharing class UserDeprovisionOrganizer {
     private List<PermissionSetAssignment> allUserPermissionSetAssignments;
     private List<UserPackageLicense> allUserPackageLicenses;
     private List<UserLogin> allUserLogins;
-    private List<Id> usersToUncheckAsynchronously;
 
     private Map<Id, List<Case>> userToCaseMap;
     private Map<Id, UserLogin> userToUserLoginMap;
@@ -37,8 +36,6 @@ public without sharing class UserDeprovisionOrganizer {
 
         this.userToDeprovisionIds = new List<Id>();
         this.userDeprovisionersList = new List<UserDeprovisioner>();
-
-        this.usersToUncheckAsynchronously = new List<Id>();
 
         this.userToCaseMap = new Map<Id, List<Case>>();
         this.userToUserLoginMap = new Map<Id, UserLogin>();
@@ -101,11 +98,6 @@ public without sharing class UserDeprovisionOrganizer {
                 User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
                 toUpdateUsers.add(userWithProcessingNotes);
                 userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
-
-                // Make sure we uncheck User_Deprovision__c asynchronously, after altering queued objects
-                if (userDeprovisioner.getNeedToUncheckAsynchronously()) {
-                    usersToUncheckAsynchronously.add(userDeprovisioner.getUserToDeprovision().Id);
-                }
             }
 
             if (!toDeletePublicGroupMemberships.isEmpty()) {
@@ -128,14 +120,12 @@ public without sharing class UserDeprovisionOrganizer {
             if (
                 !toUpdateUserCases.isEmpty() ||
                 !toDeleteChatterGroupMemberships.isEmpty() ||
-                !toUpdateUserLogins.isEmpty() ||
-                !usersToUncheckAsynchronously.isEmpty()
+                !toUpdateUserLogins.isEmpty()
             ) {
                 UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
                 userDeprovisionQueue.setUpdatedUserCases(toUpdateUserCases);
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
                 userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
-                userDeprovisionQueue.setUsersToUncheckAsynchronously(usersToUncheckAsynchronously);
 
                 userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
                 System.enqueueJob(userDeprovisionQueue);

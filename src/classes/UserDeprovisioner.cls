@@ -3,7 +3,6 @@ public without sharing class UserDeprovisioner {
     private User deprovisionedUser;
     private User userToDeprovision;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
-    private Boolean uncheckAsynchronously;
 
     // original data
     private List<Case> cases;
@@ -30,7 +29,6 @@ public without sharing class UserDeprovisioner {
         this.userToDeprovision = userToDeprovision;
         this.deprovisionedUser = new User(Id = userToDeprovision.Id);
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
-        uncheckAsynchronously = false;
 
         toUpdateCases = new List<Case>();
         toUpdateUserLogin = null;
@@ -63,7 +61,7 @@ public without sharing class UserDeprovisioner {
             removePermissionSetAssignments();
             removeChatterGroupMemberships();
             removeUserPackageLicenses();
-            deprovisionedUser.Deprovision_User__c = uncheckAsynchronously; // if uncheckAsynchronously is true, then we will set Deprovision_User__c=false in a future call
+            deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
         } catch (Exception e) {
             if (e.getTypeName().equals('System.SObjectException')) {
@@ -100,8 +98,6 @@ public without sharing class UserDeprovisioner {
                     toUpdateCases.add(userCase);
 
                     countTransferred++;
-
-                    uncheckAsynchronously = true;
                 }
             }
 
@@ -151,7 +147,6 @@ public without sharing class UserDeprovisioner {
                 toDeleteChatterGroupMemberships.add(chatterMembership);
                 removedStr += chatterMembership.CollaborationGroup.Name + ', ';
             }
-            uncheckAsynchronously = true;
             addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
         }
     }
@@ -179,7 +174,6 @@ public without sharing class UserDeprovisioner {
         if (userLogin != null && userLogin.IsFrozen) {
             addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
             toUpdateUserLogin = new UserLogin(Id = userLogin.Id, IsFrozen = false);
-            uncheckAsynchronously = true;
         }
     }
 
@@ -288,9 +282,6 @@ public without sharing class UserDeprovisioner {
     public User getDeprovisionedUserWithProcessingNotes() {
         deprovisionedUser.Processing_Notes__c = processingNotes;
         return deprovisionedUser;
-    }
-    public Boolean getNeedToUncheckAsynchronously() {
-        return uncheckAsynchronously;
     }
     public List<Case> getToUpdateUserCases() {
         return toUpdateCases;

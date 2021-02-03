@@ -120,7 +120,7 @@ public without sharing class UserHandler implements ITrigger {
         for (Schema.FieldSetMember f : SObjectType.User.FieldSets.PeopleSoft_Role_Fieldset.getFields()) {
             query += f.getFieldPath() + ', ';
         }
-        query += ' Id, UserRole.Name, Profile.Name, isActive FROM User WHERE Id IN: userIds AND Deprovision_User__c=FALSE';
+        query += ' Id, UserRole.Name, Profile.Name, isActive FROM User WHERE Id IN: userIds';
 
         // SOQL
         List<User> userList = Database.query(query);
@@ -181,6 +181,48 @@ public without sharing class UserHandler implements ITrigger {
                 Set<String> chatterGroupUsedSet = new Set<String>();
                 // iterate over above list and get the Chatter groups from chatterSettingsMap and
                 // add collaboration members into one single list for insertion
+
+                if (user.Profile.Name.contains('ASU Service')) {
+                    if (chatterGroupsMap.containsKey('ASU Service')) {
+                        Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck('ASU Service');
+
+                        if (!dupeMemberIdSet.contains(user.Id) && !chatterGroupUsedSet.contains('ASU Service')) {
+                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                            newCollabMember.MemberId = user.Id;
+                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Service');
+                            collabMembersToInsert.add(newCollabMember);
+
+                            chatterGroupUsedSet.add('ASU Service'); // to check if a group has been used in this transaction
+                        }
+                    }
+                } else if (user.Profile.Name.contains('ASU Recruit')) {
+                    if (chatterGroupsMap.containsKey('ASU Recruitment')) {
+                        Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck('ASU Recruitment');
+
+                        if (!dupeMemberIdSet.contains(user.Id) && !chatterGroupUsedSet.contains('ASU Recruitment')) {
+                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                            newCollabMember.MemberId = user.Id;
+                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU Recruitment');
+                            collabMembersToInsert.add(newCollabMember);
+
+                            chatterGroupUsedSet.add('ASU Recruitment'); // to check if a group has been used in this transaction
+                        }
+                    }
+                } else if (!user.Profile.Name.contains('ASU Community')) {
+                    if (chatterGroupsMap.containsKey('ASU - Everyone')) {
+                        Set<Id> dupeMemberIdSet = collabUserIdsToDupeCheck('ASU - Everyone');
+
+                        if (!dupeMemberIdSet.contains(user.Id) && !chatterGroupUsedSet.contains('ASU Recruitment')) {
+                            CollaborationGroupMember otherCollabMember = new CollaborationGroupMember();
+                            otherCollabMember.MemberId = user.Id;
+                            otherCollabMember.CollaborationGroupId = chatterGroupsMap.get('ASU - Everyone');
+                            collabMembersToInsert.add(otherCollabMember);
+
+                            chatterGroupUsedSet.add('ASU - Everyone'); // to check if a group has been used in this transaction
+                        }
+                    }
+                }
+
                 for (String str : userRoleList) {
                     // roles
                     if (chatterSettingsMap.containsKey(str)) {

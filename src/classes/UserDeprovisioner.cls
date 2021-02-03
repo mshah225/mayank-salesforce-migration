@@ -207,7 +207,7 @@ public without sharing class UserDeprovisioner {
         processingNotes += message + '\n';
     }
     private String initialUserTimeStamp() {
-        return System.now().format('YYYY-MM-DD HH:mm:ss') +
+        return System.now().format('YYYY-MM-dd HH:mm:ss') +
             ' UserId: ' +
             UserInfo.getUserId() +
             ', UserName: ' +

@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component >
     <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.ASUHeader4_9, 'ASUHeader4_9/css/asu_header_media.min.css')}" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />

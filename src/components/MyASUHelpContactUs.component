@@ -37,7 +37,7 @@
         });
     </script>
 
-    <apex:outputPanel>
+    <apex:outputPanel >
         <div class="myasu-help-region-contact-us">
             <div class="myasu-help-region-header">
                 Contact Us
@@ -63,7 +63,7 @@
                             </a>
                             <div id="myasu-help-contact-us-email-link" class="panel-collapse collapse">
                                 <div class="panel-body">
-                                    <apex:form>
+                                    <apex:form >
                                         <label for="myasu-help-contact-us-email-subject" class="myasu-help-contact-us-email-subject-label">Subject</label>
                                         <apex:inputField id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject" value="{!newCase.Subject}"
                                             required="true" label="" />

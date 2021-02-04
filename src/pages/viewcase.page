@@ -268,7 +268,7 @@
                                             <div id="myasu-help-region-request-details-view-attachments" class="panel-collapse collapse">
                                                 <div class="panel-body">
                                                     <apex:outputPanel rendered="{!showCaseAttachments}">
-                                                        <apex:pageBlock>
+                                                        <apex:pageBlock >
                                                             <apex:pageBlockTable value="{!allCaseAttachmentsFormattedTime}" var="eachAttachment" columns="2">
                                                                 <apex:column headerValue="Name">
                                                                     <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>

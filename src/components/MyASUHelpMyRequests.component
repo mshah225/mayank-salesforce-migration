@@ -1,5 +1,5 @@
 <apex:component controller="MyASUHelpController" allowDML="true">
-    <apex:outputPanel>
+    <apex:outputPanel >
         <div class="myasu-help-region-my-requests">
             <div class="myasu-help-region-header">
                 My Requests
@@ -8,7 +8,7 @@
             <div class="myasu-help-region-my-requests-content">
                 <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
                     through a webform.</p>
-                <apex:form>
+                <apex:form >
                     <div class="myasu-help-region-my-requests-sub-header">Pending Requests</div>
                     <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="">
@@ -27,7 +27,7 @@
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
-                <apex:form>
+                <apex:form >
                     <div class="myasu-help-region-my-requests-sub-header">Completed Requests</div>
                     <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable rendered="{!closedCases.size > 0}" value="{!closedCases}" var="case" styleClass="">
@@ -48,7 +48,7 @@
                 </apex:form>
                 <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Click the View All button to see a history of your request(s), including chat and email history.</p>
                 <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
-                    <apex:form>
+                    <apex:form >
                         <apex:pageBlock mode="maindetail">
                             <a href="/viewAllCases?source=studentSC" class="btn btn-secondary">
                                 View All

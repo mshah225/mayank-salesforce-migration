@@ -45,7 +45,9 @@
         
         function startChat() {
             setTimeout(function() { 
-                document.getElementById("liveagent_button_online").click();
+                if (document.getElementById('online').style.display != 'none') {
+                	document.getElementById("liveagent_button_online").click();
+                }
             }, 1000);
         }
         

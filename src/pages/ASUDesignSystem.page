@@ -3,9 +3,9 @@
     <c:ASUBrandHeader2 siteTitleName="Salesforce at ASU" siteTitleUrl="/" />
 
     <div style="margin-top: 10em; margin-left: auto; margin-right: auto; display: block; width: 1170px">
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-info" role="alert">
             <div class="alert-icon">
-                <span title="Alert" class="fa fa-icon fa-bell"></span>
+                <span title="Information" class="fa fa-icon fa-info-circle"></span>
             </div>
             <div class="alert-content">
                 <strong
@@ -29,7 +29,7 @@
         </div>
 
         <h3>Static Component Types:</h3>
-        <ul class="uds-list smokemode">
+        <ul class="uds-list">
             <li>Alerts</li>
             <li>Banners</li>
             <li>Blockquotes</li>

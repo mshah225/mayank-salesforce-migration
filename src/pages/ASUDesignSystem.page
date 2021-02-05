@@ -28,6 +28,29 @@
             </div>
         </div>
 
+        <h3>Static Component Types:</h3>
+        <ul class="uds-list smokemode">
+            <li>Alerts</li>
+            <li>Banners</li>
+            <li>Blockquotes</li>
+            <li>Breadcrumbs</li>
+            <li>Buttons</li>
+            <li>Dividers</li>
+            <li>Global Footer</li>
+            <li>Global Header</li>
+            <li>Heroes</li>
+            <li>Images</li>
+            <li>List</li>
+            <li>Pagination</li>
+            <li>Sidebar</li>
+            <li>Testimonials</li>
+            <li>Accordions</li>
+            <li>Cards</li>
+            <li>Quick Links</li>
+        </ul>
+
+        <hr />
+
         <h1>This is an h1.</h1>
         <h2>This is an h2.</h2>
         <h3>This is an h3.</h3>

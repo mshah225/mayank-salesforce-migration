@@ -2,7 +2,32 @@
 <apex:page standardStylesheets="false">
     <c:ASUBrandHeader2 siteTitleName="Salesforce at ASU" siteTitleUrl="/" />
 
-    <div style="margin-top: 145px;margin-left: auto;margin-right: auto;display: block;width: 1170px;">
+    <div style="margin-top: 10em; margin-left: auto; margin-right: auto; display: block; width: 1170px">
+        <div class="alert alert-warning" role="alert">
+            <div class="alert-icon">
+                <span title="Alert" class="fa fa-icon fa-bell"></span>
+            </div>
+            <div class="alert-content">
+                <strong
+                    >This page is an example implementation of select ASU Design System components. Please see the
+                    Storybook for the
+                    <a target="_blank" href="https://unity.web.asu.edu/@asu-design-system/bootstrap4-theme"
+                        >most recent static component source code</a
+                    >.</strong
+                >
+            </div>
+            <div class="alert-close">
+                <button
+                    type="button"
+                    class="btn btn-circle btn-circle-alt-white close"
+                    aria-label="Close"
+                    onclick="event.target.parentNode.parentNode.style.display='none';"
+                >
+                    x
+                </button>
+            </div>
+        </div>
+
         <h1>This is an h1.</h1>
         <h2>This is an h2.</h2>
         <h3>This is an h3.</h3>
@@ -380,7 +405,7 @@
         </nav>
     </div>
 
-    <div style="display:block;">
+    <div style="display: block">
         <c:ASUBrandFooter2 />
     </div>
 </apex:page>

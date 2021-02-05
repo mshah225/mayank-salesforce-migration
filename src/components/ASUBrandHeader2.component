@@ -15,7 +15,9 @@
 
     <!-- include bundled scripts from Preact packages -->
     <script src="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js"
+    ></script>
 
     <link
         rel="stylesheet"

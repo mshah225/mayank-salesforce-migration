@@ -43,33 +43,35 @@
         </div>
     </apex:form>
 
-    <apex:form>
-        <div id="accessible-body">
-            <div class="family-portal-body-container">
-                <div class="family-portal-3-container container">
-                    <div class="row">
-                        <div class="col-sm-12 family-portal-body-margin">
-                            <apex:pageBlock>
-                                <div class="family-portal-3-header">
-                                    <h3>I want to learn about...</h3>
-                                </div>
-                                <span role="group">
-                                    <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
-                                        <apex:selectOptions value="{!guardianInterestChoices}" />
-                                    </apex:selectCheckboxes>
-                                </span>
-                                <span role="button">
-                                    <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
-                                        Next
-                                    </apex:commandLink>
-                                </span>
-                            </apex:pageBlock>
+    <div id="asu-content-container" role="main">
+        <apex:form>
+            <div id="accessible-body">
+                <div class="family-portal-body-container">
+                    <div class="family-portal-3-container container">
+                        <div class="row">
+                            <div class="col-sm-12 family-portal-body-margin">
+                                <apex:pageBlock>
+                                    <div class="family-portal-3-header">
+                                        <h3>I want to learn about...</h3>
+                                    </div>
+                                    <span role="group">
+                                        <apex:selectCheckboxes layout="pageDirection" value="{!guardianSelectedInterests}">
+                                            <apex:selectOptions value="{!guardianInterestChoices}" />
+                                        </apex:selectCheckboxes>
+                                    </span>
+                                    <span role="button">
+                                        <apex:commandLink action="{!familyPortalStep4}" styleClass="btn btn-primary btn-block">
+                                            Next
+                                        </apex:commandLink>
+                                    </span>
+                                </apex:pageBlock>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </apex:form>
+        </apex:form>
+    </div>
     <c:ASUBrandFooter />
 
     <script>

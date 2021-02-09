@@ -1,9 +1,5 @@
 <apex:component>
-    <apex:attribute
-        name="siteTitleName"
-        description="The name of the site to display in the ASU header"
-        type="String"
-    />
+    <apex:attribute name="siteTitleName" description="The name of the site to display in the ASU header" type="String" />
     <apex:attribute name="siteTitleUrl" description="The URL for the site title name link" type="String" />
 
     <!-- google "lightning web component iframe" -->
@@ -15,14 +11,7 @@
 
     <!-- include bundled scripts from Preact packages -->
     <script src="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js"
-    ></script>
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/bootstrap4-theme/dist/css/bootstrap-asu.min.css"
-    />
+    <script src="https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js"></script>
 
     <script>
         // @TODO: Convert nav tree to apex:attribute

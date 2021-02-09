@@ -1,4 +1,4 @@
-<apex:component >
+<apex:component>
     <br />
     <br />
     <div id="innovation-footer" role="contentinfo">
@@ -11,9 +11,7 @@
                 </div>
                 <div class="innovation-hidden">
                     <a href="https://www.asu.edu/rankings">
-                        <img
-                            src="//www.asu.edu/asuthemes/4.9/assets/ASU-number-1-innovation-best-colleges.png"
-                            alt="Best Colleges U.S. News Most Innovative 2020"
+                        <img src="//www.asu.edu/asuthemes/4.9/assets/ASU-number-1-innovation-best-colleges.png" alt="Best Colleges U.S. News Most Innovative 2020"
                         />
                     </a>
                 </div>

@@ -1,10 +1,5 @@
 <!-- @author: aesanch2 -->
-<apex:page
-    standardController="Opportunity"
-    recordSetvar="unused"
-    extensions="UpdateOpportunityOwnerController"
-    id="page"
->
+<apex:page standardController="Opportunity" recordSetvar="unused" extensions="UpdateOpportunityOwnerController" id="page">
     <apex:form id="wizard">
         <apex:sectionHeader title="Update Opportunity Owner" />
 

@@ -4,14 +4,14 @@
     <div id="lightning" />
 
     <script>
-        <apex:includeScript value='/support/console/42.0/integration.js' />;
+        <apex: includeScript value='/support/console/42.0/integration.js' />;
 
         $Lightning.use('c:BulkMessageComponentForStudentsApp', function () {
             $Lightning.createComponent(
                 'c:BulkMessageComponentForStudents',
-                {console: sforce.console},
+                { console: sforce.console },
                 'lightning',
-                function (cmp) {}
+                function (cmp) { }
             );
         });
     </script>

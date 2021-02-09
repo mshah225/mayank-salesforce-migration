@@ -11,7 +11,7 @@
                     recordId: recordId,
                 },
                 'lightning',
-                function (cmp) {}
+                function (cmp) { }
             );
         });
     </script>

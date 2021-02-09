@@ -1,14 +1,6 @@
-<apex:page
-    sideBar="false"
-    showHeader="false"
-    standardController="Contact"
-    extensions="SuncardPhotoController"
-    docType="HTML-5.0"
->
-    <apex:includeScript
-        value="{!URLFOR($Resource.bootstrap_303,
-            '/dist/js/jquery-1.10.2.min.js')}"
-    />
+<apex:page sideBar="false" showHeader="false" standardController="Contact" extensions="SuncardPhotoController" docType="HTML-5.0">
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303,
+            '/dist/js/jquery-1.10.2.min.js')}" />
 
     <img id="sunCard" src="{!SuncardPhotoURL}" style="border-radius: 50%; max-width: 100px" />
 

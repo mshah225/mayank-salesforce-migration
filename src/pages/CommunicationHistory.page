@@ -1,19 +1,12 @@
-<apex:page
-    standardController="Contact"
-    extensions="CommunicationHistoryController"
-    sidebar="false"
-    showHeader="false"
-    docType="HTML-5.0"
->
+<apex:page standardController="Contact" extensions="CommunicationHistoryController" sidebar="false" showHeader="false" docType="HTML-5.0">
+
     <head>
         <!-- jQuery -->
         <apex:includeScript value="//code.jquery.com/jquery-2.1.1.min.js" />
 
         <!-- Library for client-side sorting. I am using this because it will respond more quickly with large data sets, and
         doesn't require time-consuming manual sorting or re-queries. -->
-        <apex:includeScript
-            value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/js/jquery.tablesorter.js"
-        />
+        <apex:includeScript value="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.18.3/js/jquery.tablesorter.js" />
 
         <style>
             body {
@@ -73,12 +66,7 @@
                     <apex:outputLabel styleClass="indent">End: </apex:outputLabel>
                     <apex:input type="date" value="{!endDate}" />
 
-                    <apex:commandButton
-                        styleClass="indent"
-                        id="searchButton"
-                        action="{!getFilterResults}"
-                        value="Search"
-                    />
+                    <apex:commandButton styleClass="indent" id="searchButton" action="{!getFilterResults}" value="Search" />
                     <apex:commandLink styleClass="indent" id="clearFilterLink" action="{!clearFilter}">
                         Reset
                     </apex:commandLink>
@@ -132,9 +120,9 @@
                 </apex:column>
             </apex:pageBlockTable>
 
-            <apex:outputPanel styleClass="btn exportButton" rendered="{!showExportButton}"
-                ><a href="CommunicationHistory_CSV?id={!Contact.Id}">Export to CSV</a></apex:outputPanel
-            >
+            <apex:outputPanel styleClass="btn exportButton" rendered="{!showExportButton}">
+                <a href="CommunicationHistory_CSV?id={!Contact.Id}">Export to CSV</a>
+            </apex:outputPanel>
         </apex:pageBlock>
 
         <script>

@@ -1,4 +1,5 @@
 <apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+
     <head>
         <title>My ASU | Error</title>
         <meta charset="utf-8" />
@@ -23,8 +24,8 @@
                 <p>
                     ASU was unable to process your request. We apologize for the inconvenience.
                     <br />
-                    <br /> Please return to the <a href="/">Help tab in My ASU</a> to ask questions, report an issue,
-                    and get help.
+                    <br /> Please return to the
+                    <a href="/">Help tab in My ASU</a> to ask questions, report an issue, and get help.
                     <br />
                     <br /> If you’re unable to access the My ASU Help tab or need immediate assistance, please call
                     <a href="tel:1-855-ASU-5080">1-855-ASU-5080</a>.

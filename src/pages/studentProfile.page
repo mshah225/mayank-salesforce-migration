@@ -227,7 +227,7 @@
                         <apex:form>
                             <div id="sunDevilImgDiv" style="{!IF(urlParamsExistAndAreValid, 'display:block', 'display:none')}">
                                 <img id="studentPhotoImg2" src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}" alt="suncard photo"
-                                    class="img-responsive intro" style="max-width:200px;width:100%;" />
+                                    class="img-responsive intro" style="max-width: 200px; width: 100%" />
                             </div>
                         </apex:form>
                     </apex:outputPanel>

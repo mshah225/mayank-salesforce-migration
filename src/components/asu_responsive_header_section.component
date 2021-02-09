@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component >
     <!-- This component renders the necessary resources used by the page. -->
     <apex:attribute name="menuLinks" description="The list of links from My ASU" type="Link[]" />
 

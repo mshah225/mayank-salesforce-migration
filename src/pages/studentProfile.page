@@ -1,13 +1,5 @@
-<apex:page
-    id="studentProfile"
-    controller="StudentProfileController"
-    cache="true"
-    showHeader="false"
-    sideBar="false"
-    standardStylesheets="false"
-    docType="HTML-5.0"
-    action="{!init}"
->
+<apex:page id="studentProfile" controller="StudentProfileController" cache="true" showHeader="false" sideBar="false" standardStylesheets="false"
+    docType="HTML-5.0" action="{!init}">
     <apex:includeScript value="/support/console/42.0/integration.js" />
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
 
@@ -16,17 +8,11 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <!-- Latest compiled and minified CSS -->
-        <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-            integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-            crossorigin="anonymous"
-        />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+            crossorigin="anonymous" />
         <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
-        <apex:stylesheet
-            value="{!URLFOR($Resource.MyASUHeader4_3,
-                'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
-        />
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
+                'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
         <c:StudentProfileStyles />
         <style>
             .gradTable {
@@ -159,8 +145,8 @@
                     text-align: left;
                 }
 
-                #ps_enrolled_classes .table td[data-header] > *,
-                #ps_dropped_withdrawn_classes .table td[data-header] > * {
+                #ps_enrolled_classes .table td[data-header]>*,
+                #ps_dropped_withdrawn_classes .table td[data-header]>* {
                     display: block;
                     width: 50%;
                     float: right;
@@ -239,17 +225,9 @@
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom: 20px">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">
                         <apex:form>
-                            <div
-                                id="sunDevilImgDiv"
-                                style="{!IF(urlParamsExistAndAreValid, 'display:block', 'display:none')}"
-                            >
-                                <img
-                                    id="studentPhotoImg2"
-                                    src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}"
-                                    alt="suncard photo"
-                                    class="img-responsive intro"
-                                    style="max-width: 200px; width: 100%"
-                                />
+                            <div id="sunDevilImgDiv" style="{!IF(urlParamsExistAndAreValid, 'display:block', 'display:none')}">
+                                <img id="studentPhotoImg2" src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}" alt="suncard photo"
+                                    class="img-responsive intro" style="max-width:200px;width:100%;" />
                             </div>
                         </apex:form>
                     </apex:outputPanel>
@@ -258,10 +236,7 @@
                 <div class="col-xs-8 col-md-4">
                     <div style="padding-top: 10px">
                         <span style="color: #6e7d83; font-weight: 200">
-                            <h2
-                                style="{!IF(!urlParamsExistAndAreValid, 'display:block', 'display:none')}"
-                                class="intro"
-                            >
+                            <h2 style="{!IF(!urlParamsExistAndAreValid, 'display:block', 'display:none')}" class="intro">
                                 <span class="headerTextColor"> {!contactName} </span>
                             </h2>
                             <h2 style="margin-top: 0px" class="intro">
@@ -270,18 +245,13 @@
                                     <span style="font-size: 12pt; margin-left: 20px"> {!deceased} </span>
                                 </apex:outputPanel>
                             </h2>
-                            <h4
-                                class="intro"
-                                style="{!IF(urlParamsExistAndAreValid, 'display:block; color:#6e7d83 !important;', 'display:none;')}"
-                            >
+                            <h4 class="intro" style="{!IF(urlParamsExistAndAreValid, 'display:block; color:#6e7d83 !important;', 'display:none;')}">
                                 &nbsp;{!theContact.EMPLID__c}
                                 <span style="color: #353535">|</span>
                                 &nbsp;{!theContact.ASURite_ID__c}
                             </h4>
 
-                            <apex:outputPanel
-                                rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}"
-                            >
+                            <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}">
                                 <h4 class="intro" style="color: #6e7d83 !important">
                                     &nbsp;{!studentProgram.Career__c}
                                 </h4>
@@ -291,8 +261,7 @@
                                 </h4>
 
                                 <h4 class="intro" style="color: #6e7d83 !important">
-                                    &nbsp;{!studentProgram.Plan_Description__c +
-                                    IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
+                                    &nbsp;{!studentProgram.Plan_Description__c + IF(ISBLANK(studentProgram.Degree__c),'', ', ' + studentProgram.Degree__c)}
                                     <apex:outputPanel rendered="{!activeGraduatePrograms.size > 1}">
                                         <div class="program-indicator-count" title="Count of Enrolled Active Plans">
                                             {!activeGraduatePrograms.size}
@@ -321,26 +290,20 @@
                         <table class="table table-borderless">
                             <tr>
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/ASU_STUDENT_RECORDS.ASU_PP_PROXY_INQ.GBL?EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/ASU_STUDENT_RECORDS.ASU_PP_PROXY_INQ.GBL?EMPLID={!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Parent and Guest Access
                                     </a>
                                 </td>
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_STUDENT_RECORDS.ASU_TSRQST_UNOFF.GBL?EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_STUDENT_RECORDS.ASU_TSRQST_UNOFF.GBL?EMPLID={!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Unofficial Transcript
                                     </a>
                                 </td>
                                 <td>
-                                    <a
-                                        href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
+                                        target="_blank">
                                         AppXtender
                                     </a>
                                 </td>
@@ -365,26 +328,19 @@
 
                             <tr>
                                 <td>
-                                    <a
-                                        href="https://webapp4.asu.edu/myasu/viewas?id={!theContact.ASURite_ID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://webapp4.asu.edu/myasu/viewas?id={!theContact.ASURite_ID__c}" target="_blank">
                                         My ASU View As Student
                                     </a>
                                 </td>
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Student's PeopleSoft
                                     </a>
                                 </td>
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Gportal
                                     </a>
                                 </td>
@@ -400,12 +356,7 @@
                                         <!-- Modal content-->
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <button
-                                                    type="button"
-                                                    class="close"
-                                                    onclick="clearError()"
-                                                    data-dismiss="modal"
-                                                >
+                                                <button type="button" class="close" onclick="clearError()" data-dismiss="modal">
                                                     &times;
                                                 </button>
                                                 <h4 class="modal-title">New Service Case</h4>
@@ -418,23 +369,14 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="comment">Description:</label>
-                                                    <textarea
-                                                        class="form-control"
-                                                        rows="5"
-                                                        id="usrDescription"
-                                                    ></textarea>
+                                                    <textarea class="form-control" rows="5" id="usrDescription"></textarea>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default" onclick="submitCase();">
                                                     Submit
                                                 </button>
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-default"
-                                                    onclick="clearError()"
-                                                    data-dismiss="modal"
-                                                >
+                                                <button type="button" class="btn btn-default" onclick="clearError()" data-dismiss="modal">
                                                     Cancel
                                                 </button>
                                             </div>
@@ -443,10 +385,8 @@
                                 </div>
 
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ACADEMIC_ADVISING_STAFF.ASU_AA_POS_SRCH_FL.GBL?EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ACADEMIC_ADVISING_STAFF.ASU_AA_POS_SRCH_FL.GBL?EMPLID={!theContact.EMPLID__c}"
+                                        target="_blank">
                                         iPOS
                                     </a>
                                 </td>
@@ -470,8 +410,7 @@
                                             text-decoration: none;
                                         }
                                     </style>
-                                    <a
-                                        style="
+                                    <a style="
                                             border-radius: 4px;
                                             margin-left: -7px;
                                             padding-left: 6px;
@@ -482,10 +421,8 @@
                                             background-color: RGB(140, 29, 64);
                                             font-size: 16px;
                                             text-align: center;
-                                        "
-                                        href="./dynamicfeedback?carName=Student Profile&misc={!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                        " href="./dynamicfeedback?carName=Student Profile&misc={!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Feedback
                                     </a>
                                 </td>
@@ -513,22 +450,14 @@
 
                                 <div class="pull-right">
                                     <apex:outputPanel rendered="{!$User.UITheme == 'Theme3'}">
-                                        <a
-                                            href="#"
-                                            onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}', 'All Cases');return false"
-                                            class="pull-right sideBoxMoreLink"
-                                            style="font-size: 11pt; margin-top: 2px"
-                                        >
+                                        <a href="#" onclick="openNewSubtab('/500?rlid=RelatedCaseList\&id={!theContact.Id}', 'All Cases');return false" class="pull-right sideBoxMoreLink"
+                                            style="font-size: 11pt; margin-top: 2px">
                                             See all cases...
                                         </a>
                                     </apex:outputPanel>
                                     <apex:outputPanel rendered="{!CONTAINS($User.UITheme, 'Theme4')}">
-                                        <a
-                                            href="#"
-                                            onclick="openNewSubtab('/lightning/r/{!theContact.Id}/related/Cases/view', 'All Cases');return false"
-                                            class="pull-right sideBoxMoreLink"
-                                            style="font-size: 11pt; margin-top: 2px"
-                                        >
+                                        <a href="#" onclick="openNewSubtab('/lightning/r/{!theContact.Id}/related/Cases/view', 'All Cases');return false" class="pull-right sideBoxMoreLink"
+                                            style="font-size: 11pt; margin-top: 2px">
                                             See all cases...
                                         </a>
                                     </apex:outputPanel>
@@ -536,15 +465,8 @@
                             </div>
 
                             <div class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <apex:dataTable
-                                    rendered="{!openCases.size > 0}"
-                                    styleClass="table"
-                                    value="{!openCases}"
-                                    var="oc"
-                                    cellPadding="10"
-                                    rowClasses="sideBoxTableRow"
-                                    headerClass="sideBoxTableHeader"
-                                >
+                                <apex:dataTable rendered="{!openCases.size > 0}" styleClass="table" value="{!openCases}" var="oc" cellPadding="10" rowClasses="sideBoxTableRow"
+                                    headerClass="sideBoxTableHeader">
                                     <apex:column headerValue="Last Modified">
                                         <apex:outputText value="{0, date, MM/d/YY}">
                                             <apex:param value="{!oc.LastModifiedDate}" />
@@ -554,17 +476,13 @@
                                     <apex:column headerValue="Subject">
                                         <!--a href="/{!oc.Id}" target="_blank"-->
                                         <a href="#" onclick="openNewSubtab('/{!oc.Id}','null');return false">
-                                            <apex:outputText
-                                                rendered="{!IF(LEN(oc.Subject) > 100
-                                                , true, false)}"
-                                            >
+                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) > 100
+                                                , true, false)}">
                                                 {!LEFT(oc.Subject, 100)}
                                             </apex:outputText>
 
-                                            <apex:outputText
-                                                rendered="{!IF(LEN(oc.Subject) < 100
-                                                , true, false)}"
-                                            >
+                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) < 100
+                                                , true, false)}">
                                                 {!oc.Subject}
                                             </apex:outputText>
                                         </a>
@@ -589,22 +507,14 @@
                                 </h4>
 
                                 <div class="pull-right">
-                                    <a
-                                        href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/MAINTAIN_SERVICE_IND_STDNT.ACTIVE_SRVC_INDICA.GBL?EMPLID={!theContact.EMPLID__c}"
-                                        class="pull-right sideBoxMoreLink"
-                                        target="_blank"
-                                        style="font-size: 11pt; margin-top: 2px"
-                                    >
+                                    <a href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/MAINTAIN_SERVICE_IND_STDNT.ACTIVE_SRVC_INDICA.GBL?EMPLID={!theContact.EMPLID__c}"
+                                        class="pull-right sideBoxMoreLink" target="_blank" style="font-size: 11pt; margin-top: 2px">
                                         Manage...
                                     </a>
                                 </div>
                             </div>
 
-                            <div
-                                id="serviceIndicatorsDiv"
-                                class="hide"
-                                style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50"
-                            >
+                            <div id="serviceIndicatorsDiv" class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
                                 <div class="col-sm-12" style="padding: 0px">
                                     <apex:outputPanel rendered="{!serviceIndicators.size > 0}">
                                         <div class="table-responsive">
@@ -654,22 +564,14 @@
 
                                 <div class="pull-right">
                                     <apex:outputPanel rendered="{!$User.UITheme == 'Theme3'}">
-                                        <a
-                                            href="#"
-                                            onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false"
-                                            class="pull-right sideBoxMoreLink"
-                                            style="margin-top: 2px"
-                                        >
+                                        <a href="#" onclick="openNewSubtab('/a0N?rlid=00Nd0000007tI9X\&id={!theContact.Id}','Student Groups');return false" class="pull-right sideBoxMoreLink"
+                                            style="margin-top: 2px">
                                             See all {!sGroupList.size}...
                                         </a>
                                     </apex:outputPanel>
                                     <apex:outputPanel rendered="{!CONTAINS($User.UITheme, 'Theme4')}">
-                                        <a
-                                            href="#"
-                                            onclick="openNewSubtab('/lightning/r/{!theContact.Id}/related/Student_Groups_Contact__r/view','Student Groups');return false"
-                                            class="pull-right sideBoxMoreLink"
-                                            style="margin-top: 2px"
-                                        >
+                                        <a href="#" onclick="openNewSubtab('/lightning/r/{!theContact.Id}/related/Student_Groups_Contact__r/view','Student Groups');return false"
+                                            class="pull-right sideBoxMoreLink" style="margin-top: 2px">
                                             See all {!sGroupList.size}...
                                         </a>
                                     </apex:outputPanel>
@@ -677,15 +579,8 @@
                             </div>
 
                             <div class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <apex:dataTable
-                                    rendered="{!sGroupList.size > 0}"
-                                    styleClass="table"
-                                    value="{!sGroupList}"
-                                    var="sg"
-                                    cellPadding="10"
-                                    rowClasses="sideBoxTableRow"
-                                    headerClass="sideBoxTableHeader"
-                                >
+                                <apex:dataTable rendered="{!sGroupList.size > 0}" styleClass="table" value="{!sGroupList}" var="sg" cellPadding="10" rowClasses="sideBoxTableRow"
+                                    headerClass="sideBoxTableHeader">
                                     <apex:column headerValue="Date">
                                         <apex:outputText value="{0, date, MM/d/YY}">
                                             <apex:param value="{!sg.SG_Effective_Date__c}" />
@@ -693,10 +588,8 @@
                                     </apex:column>
                                     <apex:column headerValue="Code" value="{!sg.SG_PeopleSoft_Code__c}" />
                                     <apex:column headerValue="Description">
-                                        <apex:outputText
-                                            value="{!LEFT(sg.SG_Description__c, 100)}
-                                    ..."
-                                        />
+                                        <apex:outputText value="{!LEFT(sg.SG_Description__c, 100)}
+                                    ..." />
                                     </apex:column>
                                 </apex:dataTable>
 
@@ -714,13 +607,7 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs responsive" id="mainTabs" role="tablist">
                         <li role="presentation" class="active">
-                            <a
-                                href="#general"
-                                aria-controls="general"
-                                role="tab"
-                                data-toggle="tab"
-                                class="tabLink active"
-                            >
+                            <a href="#general" aria-controls="general" role="tab" data-toggle="tab" class="tabLink active">
                                 General
                             </a>
                         </li>
@@ -744,67 +631,35 @@
                         </li>
 
                         <li role="presentation">
-                            <a
-                                href="#careerdevelopment"
-                                aria-controls="careerdevelopment"
-                                role="tab"
-                                data-toggle="tab"
-                                style="padding: 5px; text-align: center"
-                                class="tabLink"
-                            >
+                            <a href="#careerdevelopment" aria-controls="careerdevelopment" role="tab" data-toggle="tab" style="padding: 5px; text-align: center"
+                                class="tabLink">
                                 Career Development
                             </a>
                         </li>
 
                         <li role="presentation">
-                            <a
-                                href="#ugAcademics"
-                                aria-controls="ugAcademics"
-                                role="tab"
-                                data-toggle="tab"
-                                style="padding: 5px; text-align: center"
-                                class="tabLink"
-                            >
+                            <a href="#ugAcademics" aria-controls="ugAcademics" role="tab" data-toggle="tab" style="padding: 5px; text-align: center"
+                                class="tabLink">
                                 Undergraduate Academics
                             </a>
                         </li>
 
                         <li role="presentation">
-                            <a
-                                href="#ugIndicators"
-                                id="ugIndicatorsLink"
-                                aria-controls="ugIndicators"
-                                role="tab"
-                                data-toggle="tab"
-                                style="padding: 5px; text-align: center"
-                                class="tabLink"
-                            >
+                            <a href="#ugIndicators" id="ugIndicatorsLink" aria-controls="ugIndicators" role="tab" data-toggle="tab" style="padding: 5px; text-align: center"
+                                class="tabLink">
                                 Undergraduate Indicators
                             </a>
                         </li>
 
                         <li role="presentation">
-                            <a
-                                href="#Gacademics"
-                                aria-controls="Gacademics"
-                                role="tab"
-                                data-toggle="tab"
-                                style="padding: 5px; text-align: center"
-                                class="tabLink"
-                            >
+                            <a href="#Gacademics" aria-controls="Gacademics" role="tab" data-toggle="tab" style="padding: 5px; text-align: center" class="tabLink">
                                 Graduate Academics
                             </a>
                         </li>
 
                         <li role="presentation">
-                            <a
-                                href="#GIndicators"
-                                aria-controls="GIndicators"
-                                role="tab"
-                                data-toggle="tab"
-                                style="padding: 5px; text-align: center"
-                                class="tabLink"
-                            >
+                            <a href="#GIndicators" aria-controls="GIndicators" role="tab" data-toggle="tab" style="padding: 5px; text-align: center"
+                                class="tabLink">
                                 Graduate Indicators
                             </a>
                         </li>
@@ -829,8 +684,7 @@
                                                     <td>
                                                         {!theContact.MailingStreet}
                                                         <br /> {!theContact.MailingCity}
-                                                        <br /> {!theContact.MailingStateCode}
-                                                        -{!theContact.MailingPostalCode}
+                                                        <br /> {!theContact.MailingStateCode} -{!theContact.MailingPostalCode}
                                                         <br /> {!theContact.MailingCountryCode}
                                                     </td>
                                                 </tr>
@@ -842,26 +696,21 @@
                                                 <tr>
                                                     <th>ASU Email</th>
                                                     <td>
-                                                        <a href="mailto:{!theContact.ASU_Email__c}"
-                                                            >{!theContact.ASU_Email__c}</a
-                                                        >
+                                                        <a href="mailto:{!theContact.ASU_Email__c}">{!theContact.ASU_Email__c}</a>
                                                     </td>
                                                 </tr>
 
                                                 <tr>
                                                     <th>Other Email</th>
                                                     <td>
-                                                        <a href="mailto:{!theContact.Personal_Email__c}"
-                                                            >{!theContact.Personal_Email__c}</a
-                                                        >
+                                                        <a href="mailto:{!theContact.Personal_Email__c}">{!theContact.Personal_Email__c}</a>
                                                     </td>
                                                 </tr>
 
                                                 <tr>
                                                     <th>Cell Phone</th>
                                                     <td class="phone">
-                                                        {!IF(ISBLANK(theContact.MobilePhone),'--',
-                                                        theContact.MobilePhone)}
+                                                        {!IF(ISBLANK(theContact.MobilePhone),'--', theContact.MobilePhone)}
                                                     </td>
                                                 </tr>
 
@@ -875,8 +724,7 @@
                                                 <tr>
                                                     <th>Local Phone</th>
                                                     <td class="phone">
-                                                        {!IF(ISBLANK(theContact.OtherPhone), '--',
-                                                        theContact.OtherPhone)}
+                                                        {!IF(ISBLANK(theContact.OtherPhone), '--', theContact.OtherPhone)}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -900,15 +748,13 @@
                                                     <tr>
                                                         <th>Gender</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.Gender__c), '--',
-                                                            theContact.Gender__c)}
+                                                            {!IF(ISBLANK(theContact.Gender__c), '--', theContact.Gender__c)}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Ethnicity</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.Ethnicity__c), '--',
-                                                            theContact.Ethnicity__c)}
+                                                            {!IF(ISBLANK(theContact.Ethnicity__c), '--', theContact.Ethnicity__c)}
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -927,8 +773,7 @@
                                                     <tr>
                                                         <th>Age</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.Current_Age__c), '--',
-                                                            theContact.Current_Age__c)}
+                                                            {!IF(ISBLANK(theContact.Current_Age__c), '--', theContact.Current_Age__c)}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -941,54 +786,42 @@
                                                     <tr>
                                                         <th title="Western Undergraduate Exchange">
                                                             WUE
-                                                            <i
-                                                                class="fa fa-question-circle"
-                                                                title="Western Undergraduate Exchange"
-                                                            ></i>
+                                                            <i class="fa fa-question-circle" title="Western Undergraduate Exchange"></i>
                                                         </th>
                                                         <td>{!IF(theContact.WUE__c, 'Y', 'N')}</td>
                                                     </tr>
                                                     <tr>
                                                         <th title="Western Interstate Commission for Higher Educations">
                                                             WICHE
-                                                            <i
-                                                                class="fa fa-question-circle"
-                                                                title="Western Interstate Commission for Higher Educations"
-                                                            ></i>
+                                                            <i class="fa fa-question-circle" title="Western Interstate Commission for Higher Educations"></i>
                                                         </th>
                                                         <td>{!IF(WICHE, 'Y', 'N')}</td>
                                                     </tr>
                                                     <tr>
                                                         <th>Residency</th>
                                                         <td>
-                                                            {!IF(ISBLANK(studentProgram.Residency__c), '--',
-                                                            studentProgram.Residency__c)}
+                                                            {!IF(ISBLANK(studentProgram.Residency__c), '--', studentProgram.Residency__c)}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Country of Citizenship</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--',
-                                                            theContact.Country_of_Citizenship__r.Name)}
+                                                            {!IF(ISBLANK(theContact.Country_of_Citizenship__c), '--', theContact.Country_of_Citizenship__r.Name)}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>FERPA Level</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--',
-                                                            theContact.FERPA_Directory_Hold__c)}
+                                                            {!IF(ISBLANK(theContact.FERPA_Directory_Hold__c), '--', theContact.FERPA_Directory_Hold__c)}
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th
-                                                            title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}"
-                                                        >
+                                                        <th title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}">
                                                             Financial Need Level
                                                             <i class="fa fa-question-circle"></i>
                                                         </th>
                                                         <td>
-                                                            {!IF(ISBLANK(financialAidPackage.EFC_Range__c), '--',
-                                                            financialAidPackage.EFC_Range__c)}
+                                                            {!IF(ISBLANK(financialAidPackage.EFC_Range__c), '--', financialAidPackage.EFC_Range__c)}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -1012,21 +845,13 @@
                                                     <th>Residence Hall</th>
                                                     <td>
                                                         {!IF(ISBLANK(theContact.Booking_Floor_Suite__c), '--', '')}
-                                                        <span id="residenceFloor"
-                                                            >{!theContact.Booking_Floor_Suite__c}</span
-                                                        >
+                                                        <span id="residenceFloor">{!theContact.Booking_Floor_Suite__c}</span>
                                                         <br />
-                                                        <span id="residenceSection"
-                                                            >{!theContact.Booking_Section__c}</span
-                                                        >
+                                                        <span id="residenceSection">{!theContact.Booking_Section__c}</span>
                                                         <br />
-                                                        <span id="residenceHall"
-                                                            >{!theContact.Booking_Building__c}</span
-                                                        >
+                                                        <span id="residenceHall">{!theContact.Booking_Building__c}</span>
                                                         <br />
-                                                        <span id="residenceCampus"
-                                                            >{!theContact.Booking_Campus__c}</span
-                                                        >
+                                                        <span id="residenceCampus">{!theContact.Booking_Campus__c}</span>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -1057,8 +882,7 @@
                                                 <tr>
                                                     <th>Room Status</th>
                                                     <td id="roomStatus">
-                                                        {!IF(ISBLANK(theContact.Booking_Status__c), '--',
-                                                        theContact.Booking_Status__c)}
+                                                        {!IF(ISBLANK(theContact.Booking_Status__c), '--', theContact.Booking_Status__c)}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -1080,8 +904,7 @@
                                                 <tr>
                                                     <th>Current Academic Level</th>
                                                     <td id="profileHeaderTD">
-                                                        {!IF(ISBLANK(studentProgram.Cohort__c), '--',
-                                                        studentProgram.Cohort__c)}
+                                                        {!IF(ISBLANK(studentProgram.Cohort__c), '--', studentProgram.Cohort__c)}
                                                     </td>
                                                 </tr>
                                                 <tr id="currentTermEnrolledHours" class="grad-row-toggle">
@@ -1125,8 +948,7 @@
                                                     <tr>
                                                         <th>Expected Graduation Date</th>
                                                         <td>
-                                                            {!IF(ISBLANK(studentProgram.Exp_Grad_Term__r.Name), '--',
-                                                            studentProgram.Exp_Grad_Term__r.Name)}
+                                                            {!IF(ISBLANK(studentProgram.Exp_Grad_Term__r.Name), '--', studentProgram.Exp_Grad_Term__r.Name)}
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1143,9 +965,7 @@
                                                         <td>
                                                             {!IF(ISBLANK(studentProgram.Appt_Dt_Pending__c), '--', '')}
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param
-                                                                    value="{!studentProgram.Appt_Dt_Pending__c}"
-                                                                />
+                                                                <apex:param value="{!studentProgram.Appt_Dt_Pending__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>
@@ -1240,11 +1060,7 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <apex:outputPanel
-                                        id="ps_financial_aid_summary"
-                                        layout="block"
-                                        rendered="{!IF(faWrapper.summaryRecords.size > 0, true, false)}"
-                                    >
+                                    <apex:outputPanel id="ps_financial_aid_summary" layout="block" rendered="{!IF(faWrapper.summaryRecords.size > 0, true, false)}">
                                         <div class="table-responsive">
                                             <table id="financial_aid_table" class="table table-striped table-bordered">
                                                 <thead>
@@ -1258,33 +1074,24 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <apex:repeat
-                                                        value="{!faWrapper.summaryRecords}"
-                                                        var="financialSummary"
-                                                    >
+                                                    <apex:repeat value="{!faWrapper.summaryRecords}" var="financialSummary">
                                                         <tr>
                                                             <td>{!financialSummary.Descr__c}</td>
                                                             <td>{!financialSummary.Name}</td>
                                                             <td>{!financialSummary.Descr_Category__c}</td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}">
-                                                                    <apex:param
-                                                                        value="{!financialSummary.Offer_Amount__c}"
-                                                                    />
+                                                                    <apex:param value="{!financialSummary.Offer_Amount__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}">
-                                                                    <apex:param
-                                                                        value="{!financialSummary.Accept_Amount__c}"
-                                                                    />
+                                                                    <apex:param value="{!financialSummary.Accept_Amount__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}">
-                                                                    <apex:param
-                                                                        value="{!financialSummary.Disbursed_Amount__c}"
-                                                                    />
+                                                                    <apex:param value="{!financialSummary.Disbursed_Amount__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td style="display: none">
@@ -1305,10 +1112,7 @@
                                             </table>
                                         </div>
                                     </apex:outputPanel>
-                                    <apex:outputPanel
-                                        id="psFinancialAidSummaryErrors"
-                                        rendered="{!IF(faWrapper.summaryRecords.size > 0, false, true)}"
-                                    >
+                                    <apex:outputPanel id="psFinancialAidSummaryErrors" rendered="{!IF(faWrapper.summaryRecords.size > 0, false, true)}">
                                         No Financial Aid data found.
                                     </apex:outputPanel>
                                 </div>
@@ -1329,11 +1133,7 @@
                                                     <tr>
                                                         <th>
                                                             Past Due TIP
-                                                            <i
-                                                                class="fa fa-question-circle"
-                                                                title="Tuition Installment Plan"
-                                                                data-placement="right"
-                                                            ></i>
+                                                            <i class="fa fa-question-circle" title="Tuition Installment Plan" data-placement="right"></i>
                                                         </th>
                                                         <td id="account_balance_past_due_tip">
                                                             {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
@@ -1347,27 +1147,22 @@
                                                         <td id="account_balance_outstanding">
                                                             {!IF(ISBLANK(studentAccount.Account_Balance__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
-                                                                <apex:param
-                                                                    value="{!studentAccount.Account_Balance__c}"
-                                                                />
+                                                                <apex:param value="{!studentAccount.Account_Balance__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Total Account Balance</th>
                                                         <td id="account_balance_total">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c +
-                                                            studentAccount.Future_Balance__c),'--','')}
+                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c + studentAccount.Future_Balance__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
-                                                                <apex:param
-                                                                    value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"
-                                                                />
+                                                                <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>
                                                 </table>
-                                                <b>Note:</b>&nbsp;Account balances are a day old and may not be up to
-                                                date. Please check MyASU for accurate balances.
+                                                <b>Note:</b>&nbsp;Account balances are a day old and may not be up to date.
+                                                Please check MyASU for accurate balances.
                                             </div>
                                         </div>
                                     </div>
@@ -1379,20 +1174,16 @@
                             <apex:pageBlock mode="maindetail">
                                 <br />
                                 <div class="btn btn-default btn-adjust">
-                                    <a
-                                        href="https://www.asu.edu/go/cs/bo/?dest=/EMPLOYEE/CAMP/c/ASU_STUDENT_RECORDS.ASU_MACS_STDNT.GBL%3FEMPLID%3D{!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://www.asu.edu/go/cs/bo/?dest=/EMPLOYEE/CAMP/c/ASU_STUDENT_RECORDS.ASU_MACS_STDNT.GBL%3FEMPLID%3D{!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Add Advising Notes &nbsp;&nbsp;
                                         <i class="fa fa-external-link"></i>
                                     </a>
                                 </div>
 
                                 <div class="btn btn-default btn-adjust">
-                                    <a
-                                        href="https://www.asu.edu/go/cs/bo/?dest=/EMPLOYEE/CAMP/c/CREATE_COMMENTS.CMNT_ENTRY.GBL%3FCOMMON_ID%3D{!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="https://www.asu.edu/go/cs/bo/?dest=/EMPLOYEE/CAMP/c/CREATE_COMMENTS.CMNT_ENTRY.GBL%3FCOMMON_ID%3D{!theContact.EMPLID__c}"
+                                        target="_blank">
                                         Add Comments &nbsp;&nbsp;
                                         <i class="fa fa-external-link"></i>
                                     </a>
@@ -1457,17 +1248,11 @@
                                         &nbsp;me3@ASU Results
                                     </h4>
                                 </div>
-                                <apex:outputPanel
-                                    layout="block"
-                                    rendered="{!ISNULL(me3Results.Test_Completed_Date__c)}"
-                                >
+                                <apex:outputPanel layout="block" rendered="{!ISNULL(me3Results.Test_Completed_Date__c)}">
                                     No me3 results found.
                                 </apex:outputPanel>
                                 <div id="Me3Results" style="width: 100%">
-                                    <apex:outputPanel
-                                        layout="block"
-                                        rendered="{!NOT(ISNULL(me3Results.Test_Completed_Date__c))}"
-                                    >
+                                    <apex:outputPanel layout="block" rendered="{!NOT(ISNULL(me3Results.Test_Completed_Date__c))}">
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <table class="table table-striped">
@@ -1475,9 +1260,7 @@
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_completion_date">
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param
-                                                                    value="{!me3Results.Test_Completed_Date__c}"
-                                                                />
+                                                                <apex:param value="{!me3Results.Test_Completed_Date__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>
@@ -1562,25 +1345,18 @@
                                             <div class="table-responsive">
                                                 <table id="career_dev_table" class="table table-striped table-bordered">
                                                     <tbody>
-                                                        <apex:repeat
-                                                            value="{!me3Results.me3_Careers__r}"
-                                                            var="me3Career"
-                                                        >
+                                                        <apex:repeat value="{!me3Results.me3_Careers__r}" var="me3Career">
                                                             <tr style="font-weight: normal">
                                                                 <td style="min-width: 75px">
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param
-                                                                            value="{!me3Career.Updated_Date__c}"
-                                                                        />
+                                                                        <apex:param value="{!me3Career.Updated_Date__c}" />
                                                                     </apex:outputText>
                                                                 </td>
-                                                                <td
-                                                                    style="
+                                                                <td style="
                                                                         font-weight: bold;
                                                                         color: green;
                                                                         display: none;
-                                                                    "
-                                                                >
+                                                                    ">
                                                                     {!IF(me3Career.Active__c, '✔', '')}
                                                                 </td>
                                                                 <td>
@@ -1589,8 +1365,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <b>Degree Interest:</b>
-                                                                    {!me3Career.Degree_Interest__c}
-                                                                    ({!me3Career.Plan_Code__c})
+                                                                    {!me3Career.Degree_Interest__c} ({!me3Career.Plan_Code__c})
                                                                 </td>
                                                             </tr>
                                                         </apex:repeat>
@@ -1608,17 +1383,11 @@
                                         &nbsp;me3 High School Results
                                     </h4>
                                 </div>
-                                <apex:outputPanel
-                                    layout="block"
-                                    rendered="{!ISNULL(me3HighSchoolResults.Test_Completed_Date__c)}"
-                                >
+                                <apex:outputPanel layout="block" rendered="{!ISNULL(me3HighSchoolResults.Test_Completed_Date__c)}">
                                     No me3 high school results found.
                                 </apex:outputPanel>
                                 <div id="Me3HighSschoolResults" style="width: 100%">
-                                    <apex:outputPanel
-                                        layout="block"
-                                        rendered="{!NOT(ISNULL(me3HighSchoolResults.Test_Completed_Date__c))}"
-                                    >
+                                    <apex:outputPanel layout="block" rendered="{!NOT(ISNULL(me3HighSchoolResults.Test_Completed_Date__c))}">
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <table class="table table-striped">
@@ -1626,9 +1395,7 @@
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_hs_completion_date">
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.Test_Completed_Date__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.Test_Completed_Date__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>
@@ -1648,9 +1415,7 @@
                                                         <th>Realistic (R) Score</th>
                                                         <td id="me3_hs_r_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.R_Score__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.R_Score__c}" />
                                                             </apex:outputText>
                                                             / 100
                                                         </td>
@@ -1659,9 +1424,7 @@
                                                         <th>Investigative (I) Score</th>
                                                         <td id="me3_hs_i_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.I_Score__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.I_Score__c}" />
                                                             </apex:outputText>
                                                             / 100
                                                         </td>
@@ -1674,9 +1437,7 @@
                                                         <th>Artistic (A) Score</th>
                                                         <td id="me3_hs_a_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.A_Score__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.A_Score__c}" />
                                                             </apex:outputText>
                                                             / 100
                                                         </td>
@@ -1685,9 +1446,7 @@
                                                         <th>Social (S) Score</th>
                                                         <td id="me3_hs_s_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.S_Score__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.S_Score__c}" />
                                                             </apex:outputText>
                                                             / 100
                                                         </td>
@@ -1700,9 +1459,7 @@
                                                         <th>Enterprising (E) Score</th>
                                                         <td id="me3_hs_e_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.E_Score__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.E_Score__c}" />
                                                             </apex:outputText>
                                                             / 100
                                                         </td>
@@ -1711,9 +1468,7 @@
                                                         <th>Conventional (C) Score</th>
                                                         <td id="me3_hs_c_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.C_Score__c}"
-                                                                />
+                                                                <apex:param value="{!me3HighSchoolResults.C_Score__c}" />
                                                             </apex:outputText>
                                                             / 100
                                                         </td>
@@ -1725,25 +1480,18 @@
                                             <div class="table-responsive">
                                                 <table id="career_dev_table" class="table table-striped table-bordered">
                                                     <tbody>
-                                                        <apex:repeat
-                                                            value="{!me3HighSchoolResults.me3_Careers__r}"
-                                                            var="me3Career"
-                                                        >
+                                                        <apex:repeat value="{!me3HighSchoolResults.me3_Careers__r}" var="me3Career">
                                                             <tr style="font-weight: normal">
                                                                 <td style="min-width: 75px">
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param
-                                                                            value="{!me3Career.Updated_Date__c}"
-                                                                        />
+                                                                        <apex:param value="{!me3Career.Updated_Date__c}" />
                                                                     </apex:outputText>
                                                                 </td>
-                                                                <td
-                                                                    style="
+                                                                <td style="
                                                                         font-weight: bold;
                                                                         color: green;
                                                                         display: none;
-                                                                    "
-                                                                >
+                                                                    ">
                                                                     {!IF(me3Career.Active__c, '✔', '')}
                                                                 </td>
                                                                 <td>
@@ -1752,8 +1500,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <b>Degree Interest:</b>
-                                                                    {!me3Career.Degree_Interest__c}
-                                                                    ({!me3Career.Plan_Code__c})
+                                                                    {!me3Career.Degree_Interest__c} ({!me3Career.Plan_Code__c})
                                                                 </td>
                                                             </tr>
                                                         </apex:repeat>
@@ -1779,12 +1526,7 @@
                                     </div>
 
                                     <div class="table-responsive">
-                                        <apex:dataTable
-                                            styleClass="table table-striped table-bordered"
-                                            value="{!ugProgramPlans}"
-                                            var="app"
-                                            rendered="{!IF(ugProgramPlans.size > 0,true,false)}"
-                                        >
+                                        <apex:dataTable styleClass="table table-striped table-bordered" value="{!ugProgramPlans}" var="app" rendered="{!IF(ugProgramPlans.size > 0,true,false)}">
                                             <apex:column headerValue="Status" value="{!app.Status__c}" />
                                             <apex:column headerValue="Program" value="{!app.Program_Description__c}" />
                                             <apex:column headerValue="Plan">
@@ -1793,14 +1535,8 @@
                                                 </apex:outputLink>
                                             </apex:column>
                                             <apex:column headerValue="Sub-Plan">
-                                                <apex:outputText
-                                                    rendered="{!IF(subPlanString==null,false,true)}"
-                                                    value="{!subPlanString}"
-                                                />
-                                                <apex:outputText
-                                                    rendered="{!IF(subPlanString==null,true,false)}"
-                                                    value="--"
-                                                />
+                                                <apex:outputText rendered="{!IF(subPlanString==null,false,true)}" value="{!subPlanString}" />
+                                                <apex:outputText rendered="{!IF(subPlanString==null,true,false)}" value="--" />
                                             </apex:column>
                                             <apex:column headerValue="Plan Type" value="{!app.Plan_Type_Text__c}" />
                                             <apex:column headerValue="Degree" value="{!app.Degree__c}" />
@@ -1810,10 +1546,7 @@
                                         </apex:dataTable>
                                     </div>
 
-                                    <apex:outputText
-                                        rendered="{!IF(ugProgramPlans.size > 0, false, true)}"
-                                        value="No undergraduate programs/plans found."
-                                    />
+                                    <apex:outputText rendered="{!IF(ugProgramPlans.size > 0, false, true)}" value="No undergraduate programs/plans found." />
 
                                     <div class="page-header-smaller">
                                         <h4>
@@ -1829,18 +1562,10 @@
                                                     <tr>
                                                         <th>Cumulative GPA</th>
                                                         <td id="ugap_gpa">
-                                                            <a
-                                                                href="https://students.asu.edu/gpa-calculator"
-                                                                target="_blank"
-                                                            >
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">
                                                                 <c:sp_GPA gpa="{!ugStudentProgram.Cum_GPA__c}" />
                                                             </a>
-                                                            <a
-                                                                href="https://students.asu.edu/gpa-calculator"
-                                                                target="_blank"
-                                                                class="fa fa-calculator"
-                                                                aria-hidden="true"
-                                                            ></a>
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1848,34 +1573,27 @@
                                                         <td id="ugap_cumulative_hours">
                                                             {!IF(ISBLANK(ugStudentProgram.Tot_Cumulative__c), '--', '')}
                                                             <apex:outputText value="{0,number,####}">
-                                                                <apex:param
-                                                                    value="{!ugStudentProgram.Tot_Cumulative__c}"
-                                                                />
+                                                                <apex:param value="{!ugStudentProgram.Tot_Cumulative__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>eAdvisor Status</th>
                                                         <td id="ugap_eadvisor_status">
-                                                            {!IF(ISBLANK(ugStudentProgram.eAdvisor__c), '--',
-                                                            ugStudentProgram.eAdvisor__c)}
+                                                            {!IF(ISBLANK(ugStudentProgram.eAdvisor__c), '--', ugStudentProgram.eAdvisor__c)}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Academic Standing</th>
                                                         <td id="ugap_academic_standing">
-                                                            {!IF(ISBLANK(ugStudentProgram.Academic_Standing__c), '--',
-                                                            ugStudentProgram.Academic_Standing__c)}
+                                                            {!IF(ISBLANK(ugStudentProgram.Academic_Standing__c), '--', ugStudentProgram.Academic_Standing__c)}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th>Advisors</th>
                                                         <td id="ugap_advisors">
                                                             {!IF(ugStudentProgramAdvisors.size > 0, '', '--')}
-                                                            <apex:repeat
-                                                                value="{!ugStudentProgramAdvisors}"
-                                                                var="advisors"
-                                                            >
+                                                            <apex:repeat value="{!ugStudentProgramAdvisors}" var="advisors">
                                                                 <a href="mailto:{!advisors.Advisor_Email__c}">
                                                                     {!advisors.Advisor_Name__c}
                                                                 </a>
@@ -1915,9 +1633,7 @@
                                                             <td>{!testScore.Test_Component__c}</td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,##.##}">
-                                                                    <apex:param
-                                                                        value="{!testScore.Test_Component_Score__c}"
-                                                                    />
+                                                                    <apex:param value="{!testScore.Test_Component_Score__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
@@ -1927,9 +1643,7 @@
                                                             </td>
                                                         </tr>
                                                     </apex:repeat>
-                                                    <apex:outputPanel
-                                                        rendered="{!IF(testUndergradScoreList.size > 0, false, true)}"
-                                                    >
+                                                    <apex:outputPanel rendered="{!IF(testUndergradScoreList.size > 0, false, true)}">
                                                         <div>No undergraduate test scores found.</div>
                                                     </apex:outputPanel>
                                                 </tbody>
@@ -1967,17 +1681,11 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <apex:outputPanel
-                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}"
-                                                        >
-                                                            <apex:repeat
-                                                                value="{!studentMilestonesUGrad}"
-                                                                var="milestone"
-                                                            >
+                                                        <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}">
+                                                            <apex:repeat value="{!studentMilestonesUGrad}" var="milestone">
                                                                 <tr>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Acad_Program__r.Name),
-                                                                        '--', milestone.Acad_Program__r.Name)}
+                                                                        {!IF(ISBLANK(milestone.Acad_Program__r.Name), '--', milestone.Acad_Program__r.Name)}
                                                                     </td>
                                                                     <td>
                                                                         <apex:outputText value="{0,date,MM/dd/yyyy}">
@@ -1985,46 +1693,35 @@
                                                                         </apex:outputText>
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Milestone_Nbr__c), '--',
-                                                                        milestone.Milestone_Nbr__c)}
+                                                                        {!IF(ISBLANK(milestone.Milestone_Nbr__c), '--', milestone.Milestone_Nbr__c)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Milestone__c), '--',
-                                                                        milestone.Milestone__c)}
+                                                                        {!IF(ISBLANK(milestone.Milestone__c), '--', milestone.Milestone__c)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Milestone_Title__c),
-                                                                        '--', milestone.Milestone_Title__c)}
+                                                                        {!IF(ISBLANK(milestone.Milestone_Title__c), '--', milestone.Milestone_Title__c)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Milestone_Level__c),
-                                                                        '--', milestone.Milestone_Level__c)}
+                                                                        {!IF(ISBLANK(milestone.Milestone_Level__c), '--', milestone.Milestone_Level__c)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Descrformal__c), '--',
-                                                                        milestone.Descrformal__c)}
+                                                                        {!IF(ISBLANK(milestone.Descrformal__c), '--', milestone.Descrformal__c)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Acad_Plan__r.Name), '--',
-                                                                        milestone.Acad_Plan__r.Name)}
+                                                                        {!IF(ISBLANK(milestone.Acad_Plan__r.Name), '--', milestone.Acad_Plan__r.Name)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Descr__c), '--',
-                                                                        milestone.Descr__c)}
+                                                                        {!IF(ISBLANK(milestone.Descr__c), '--', milestone.Descr__c)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Term_Required__r.Name),
-                                                                        '--', milestone.Term_Required__r.Name)}
+                                                                        {!IF(ISBLANK(milestone.Term_Required__r.Name), '--', milestone.Term_Required__r.Name)}
                                                                     </td>
                                                                     <td>
-                                                                        {!IF(ISBLANK(milestone.Anticipated_Term__c),
-                                                                        '--', milestone.Anticipated_Term__c)}
+                                                                        {!IF(ISBLANK(milestone.Anticipated_Term__c), '--', milestone.Anticipated_Term__c)}
                                                                     </td>
                                                                     <td>
                                                                         <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                            <apex:param
-                                                                                value="{!milestone.Date_Completed__c}"
-                                                                            />
+                                                                            <apex:param value="{!milestone.Date_Completed__c}" />
                                                                         </apex:outputText>
                                                                     </td>
                                                                     <td>
@@ -2033,9 +1730,7 @@
                                                                 </tr>
                                                             </apex:repeat>
                                                         </apex:outputPanel>
-                                                        <apex:outputPanel
-                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
-                                                        >
+                                                        <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}">
                                                             <div>No undergraduate milestones found.</div>
                                                         </apex:outputPanel>
                                                     </tbody>
@@ -2059,34 +1754,28 @@
                                                             <tr>
                                                                 <th>Application Admit Type</th>
                                                                 <td>
-                                                                    {!IF(ISBLANK(ugStudentProgram.Admit_Type__c), '--',
-                                                                    ugStudentProgram.Admit_Type__c)}
+                                                                    {!IF(ISBLANK(ugStudentProgram.Admit_Type__c), '--', ugStudentProgram.Admit_Type__c)}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Applied Program</th>
                                                                 <td>
-                                                                    {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Prog__c),
-                                                                    '--', ugStudentProgram.Adm_Appl_Prog__c)}
+                                                                    {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Prog__c), '--', ugStudentProgram.Adm_Appl_Prog__c)}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Applied Date</th>
                                                                 <td>
-                                                                    {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Dt__c), '--',
-                                                                    '')}
+                                                                    {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Dt__c), '--', '')}
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param
-                                                                            value="{!ugStudentProgram.Adm_Appl_Dt__c}"
-                                                                        />
+                                                                        <apex:param value="{!ugStudentProgram.Adm_Appl_Dt__c}" />
                                                                     </apex:outputText>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Admit Term</th>
                                                                 <td>
-                                                                    {!IF(ISBLANK(ugStudentProgram.Admit_Term__r.Name),
-                                                                    '--', ugStudentProgram.Admit_Term__r.Name)}
+                                                                    {!IF(ISBLANK(ugStudentProgram.Admit_Term__r.Name), '--', ugStudentProgram.Admit_Term__r.Name)}
                                                                 </td>
                                                             </tr>
                                                         </table>
@@ -2096,22 +1785,15 @@
                                                             <tr>
                                                                 <th>Enroll Deposit</th>
                                                                 <td>
-                                                                    {!IF(ISBLANK(ugStudentProgram.Enrl_Deposit__c),
-                                                                    '--', ugStudentProgram.Enrl_Deposit__c)}
+                                                                    {!IF(ISBLANK(ugStudentProgram.Enrl_Deposit__c), '--', ugStudentProgram.Enrl_Deposit__c)}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <th>Orientation Date</th>
                                                                 <td>
-                                                                    {!IF(OR(ISBLANK(theContact.Orient_Dt__c),
-                                                                    ISBLANK(ugStudentProgram.Admit_Type__c)), '--', '')}
-                                                                    <apex:outputText
-                                                                        value="{0,date,MM/dd/yyyy}"
-                                                                        rendered="{!IF(ISBLANK(ugStudentProgram.Admit_Type__c), FALSE, TRUE)}"
-                                                                    >
-                                                                        <apex:param
-                                                                            value="{!theContact.Orient_Dt__c}"
-                                                                        />
+                                                                    {!IF(OR(ISBLANK(theContact.Orient_Dt__c), ISBLANK(ugStudentProgram.Admit_Type__c)), '--', '')}
+                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}" rendered="{!IF(ISBLANK(ugStudentProgram.Admit_Type__c), FALSE, TRUE)}">
+                                                                        <apex:param value="{!theContact.Orient_Dt__c}" />
                                                                     </apex:outputText>
                                                                 </td>
                                                             </tr>
@@ -2131,13 +1813,8 @@
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
                                         &nbsp;Persistence Outlook
-                                        <a
-                                            class="fa fa-question-circle"
-                                            data-html="true"
-                                            title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab("/articles/FAQ/What-is-a-Persistence-Outlook/p","Details");return false">Visit knowledge article.</a>.</span>'
-                                            data-placement="right"
-                                            data-trigger="manual"
-                                        ></a>
+                                        <a class="fa fa-question-circle" data-html="true" title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab("/articles/FAQ/What-is-a-Persistence-Outlook/p","Details");return false">Visit knowledge article.</a>.</span>'
+                                            data-placement="right" data-trigger="manual"></a>
                                     </h4>
                                 </div>
 
@@ -2166,10 +1843,7 @@
                                                             FinAid Unresolved Items
                                                             <br />
                                                             <div class="overflow:auto;max-height:400px;">
-                                                                <table
-                                                                    id="sr_finAid_unresolved_table"
-                                                                    class="table table-striped table-bordered"
-                                                                ></table>
+                                                                <table id="sr_finAid_unresolved_table" class="table table-striped table-bordered"></table>
                                                             </div>
                                                         </th>
                                                     </tr>
@@ -2182,10 +1856,7 @@
                                                             ASR Information
                                                             <br />
                                                             <div class="overflow:auto;max-height:400px;">
-                                                                <table
-                                                                    id="sr_asr_info_table"
-                                                                    class="table table-striped table-bordered"
-                                                                ></table>
+                                                                <table id="sr_asr_info_table" class="table table-striped table-bordered"></table>
                                                             </div>
                                                         </th>
                                                     </tr>
@@ -2198,10 +1869,7 @@
                                                             Enrollment Holds Information
                                                             <br />
                                                             <div class="overflow:auto;max-height:400px;">
-                                                                <table
-                                                                    id="sr_en_holds_info_table"
-                                                                    class="table table-striped table-bordered"
-                                                                ></table>
+                                                                <table id="sr_en_holds_info_table" class="table table-striped table-bordered"></table>
                                                             </div>
                                                         </th>
                                                     </tr>
@@ -2245,10 +1913,7 @@
                                                 <tr>
                                                     <th>
                                                         Past Due TIP
-                                                        <i
-                                                            class="fa fa-question-circle"
-                                                            title="Tuition Installment Plan"
-                                                        ></i>
+                                                        <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="sr_past_due_tip"></td>
                                                 </tr>
@@ -2298,10 +1963,7 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <div style="margin-bottom: 10px">
-                                        <button
-                                            class="btn btn-default btn-adjust"
-                                            onclick="getRetentionSNPs(); return false;"
-                                        >
+                                        <button class="btn btn-default btn-adjust" onclick="getRetentionSNPs(); return false;">
                                             <a href="#">
                                                 Load Indicators History &nbsp;&nbsp;
                                                 <i class="fa"></i>
@@ -2324,10 +1986,7 @@
                                     </h4>
                                 </div>
 
-                                <div
-                                    class="activeGradTable"
-                                    rendered="{!IF(activeGraduatePrograms.size > 0, true, false)}"
-                                >
+                                <div class="activeGradTable" rendered="{!IF(activeGraduatePrograms.size > 0, true, false)}">
                                     <table class="gradTable">
                                         <tr>
                                             <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">
@@ -2344,8 +2003,7 @@
                                         <apex:repeat value="{!activeGraduatePrograms}" var="gradProgram">
                                             <tr class="gradTR grad-row-toggle">
                                                 <td class="gradTD">
-                                                    <i class="fa fa-caret-right"></i
-                                                    >{!gradProgram.gradProgramPlan.Program_Description__c}
+                                                    <i class="fa fa-caret-right"></i>{!gradProgram.gradProgramPlan.Program_Description__c}
                                                 </td>
                                                 <td class="gradTD">
                                                     {!gradProgram.gradProgramPlan.Plan_Description__c}
@@ -2354,12 +2012,8 @@
                                                 <td class="gradTD">{!gradProgram.gradProgramPlan.Degree__c}</td>
                                                 <td class="gradTD">{!gradProgram.gradProgramPlan.Campus__r.Name}</td>
                                                 <td class="gradTD">
-                                                    <img
-                                                        src="{!IF(gradProgram.gradProgramPlan.Primary_Flag__c, '/img/checkbox_checked.gif', '/img/checkbox_unchecked.gif')}"
-                                                        width="21"
-                                                        height="16"
-                                                        class="checkImg"
-                                                    />
+                                                    <img src="{!IF(gradProgram.gradProgramPlan.Primary_Flag__c, '/img/checkbox_checked.gif', '/img/checkbox_unchecked.gif')}"
+                                                        width="21" height="16" class="checkImg" />
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2368,17 +2022,13 @@
                                                 </th>
                                                 <td colspan="2" class="gradTD">
                                                     {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
-                                                    <apex:outputText
-                                                        value="{0,number,####.00}"
-                                                        style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}"
-                                                    >
+                                                    <apex:outputText value="{0,number,####.00}" style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}">
                                                         <apex:param value="{!gradProgram.gradProgramPlan.Cum_GPA__c}" />
                                                     </apex:outputText>
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Document Type</th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null,
-                                                    '--', gradProgram.gradMilestoneDiss.Format_Document_Type__c)}
+                                                    {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', gradProgram.gradMilestoneDiss.Format_Document_Type__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2390,19 +2040,15 @@
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Format Advisor</th>
                                                 <td class="gradTD">
-                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c==null,
-                                                    gradProgram.gradMilestoneDiss.Format_Document_Type__c==null), '--',
-                                                    gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c)}
+                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
+                                                    '--', gradProgram.gradMilestoneFormat.Grad_Format_Advisor__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
                                                 <th class="gradTD alignTop">
                                                     <div class="planMargin">
                                                         iPOS GPA
-                                                        <i
-                                                            class="fa fa-question-circle"
-                                                            title="Please note that the iPOS GPA is not calculated until iPOS is approved."
-                                                        ></i>
+                                                        <i class="fa fa-question-circle" title="Please note that the iPOS GPA is not calculated until iPOS is approved."></i>
                                                     </div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
@@ -2410,9 +2056,8 @@
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Format Status</th>
                                                 <td class="gradTD">
-                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status__c==null,
-                                                    gradProgram.gradMilestoneDiss.Format_Document_Type__c==null), '--',
-                                                    gradProgram.gradMilestoneFormat.Format_Status__c)}
+                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
+                                                    '--', gradProgram.gradMilestoneFormat.Format_Status__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2420,21 +2065,14 @@
                                                     <div class="planMargin">Defense Required</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null,
-                                                    '--', 'Yes')}
+                                                    {!IF(gradProgram.gradMilestoneDiss.Format_Document_Type__c==null, '--', 'Yes')}
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Format Status Last Updated</th>
                                                 <td class="gradTD">
-                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null,
-                                                    gradProgram.gradMilestoneDiss.Format_Document_Type__c==null), '--',
-                                                    '')}
-                                                    <apex:outputText
-                                                        rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}"
-                                                        value="{0, date, MM'/'dd'/'yyyy}"
-                                                    >
-                                                        <apex:param
-                                                            value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}"
-                                                        />
+                                                    {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null, gradProgram.gradMilestoneDiss.Format_Document_Type__c==null),
+                                                    '--', '')}
+                                                    <apex:outputText rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}" value="{0, date, MM'/'dd'/'yyyy}">
+                                                        <apex:param value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}" />
                                                     </apex:outputText>
                                                 </td>
                                             </tr>
@@ -2455,13 +2093,11 @@
                                                     <div class="planMargin">iPOS Status</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, 'Not
-                                                    Applicable', gradProgram.gradProgramPlan.Grad_iPOS_Status__c)}
+                                                    {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status__c==null, 'Not Applicable', gradProgram.gradProgramPlan.Grad_iPOS_Status__c)}
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Defense Status</th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Status__c==null, '--',
-                                                    gradProgram.gradMilestoneDefense.Defense_Status__c)}
+                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Status__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Status__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2469,12 +2105,9 @@
                                                     <div class="planMargin">iPOS Status Date</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null,
-                                                    '--', '')}
+                                                    {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null, '--', '')}
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
-                                                        <apex:param
-                                                            value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}"
-                                                        />
+                                                        <apex:param value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}" />
                                                     </apex:outputText>
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Defense Date</th>
@@ -2490,8 +2123,7 @@
                                                     <div class="planMargin">Specialization</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null,
-                                                    '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
+                                                    {!IF(gradProgram.gradProgramPlan.Graduate_Specialization__c==null, '--', gradProgram.gradProgramPlan.Graduate_Specialization__c)}
                                                 </td>
 
                                                 <th colspan="2" class="gradTD alignTop">Defense Time</th>
@@ -2504,13 +2136,11 @@
                                                     <div class="planMargin">Degree Requirements</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null,
-                                                    '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
+                                                    {!IF(gradProgram.gradProgramPlan.Grad_Culminating_Event__c==null, '--', gradProgram.gradProgramPlan.Grad_Culminating_Event__c)}
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Building</th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Building__c==null,
-                                                    '--', gradProgram.gradMilestoneDefense.Defense_Building__c)}
+                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Building__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Building__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2518,13 +2148,11 @@
                                                     <div class="planMargin">Requirement Term</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Requirement_Term__c==null, '--',
-                                                    gradProgram.gradProgramPlan.Requirement_Term__c)}
+                                                    {!IF(gradProgram.gradProgramPlan.Requirement_Term__c==null, '--', gradProgram.gradProgramPlan.Requirement_Term__c)}
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Room</th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Room__c==null, '--',
-                                                    gradProgram.gradMilestoneDefense.Defense_Room__c)}
+                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Room__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Room__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2532,23 +2160,17 @@
                                                     <div class="planMargin">ASU Hours Before Admit</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c),
-                                                    '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c
                                                     == 0, '--', '')}
-                                                    <span
-                                                        style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}"
-                                                    >
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"
-                                                            />
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}" />
                                                         </apex:outputText>
                                                     </span>
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Location</th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Location__c==null,
-                                                    '--', gradProgram.gradMilestoneDefense.Defense_Location__c)}
+                                                    {!IF(gradProgram.gradMilestoneDefense.Defense_Location__c==null, '--', gradProgram.gradMilestoneDefense.Defense_Location__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
@@ -2556,50 +2178,33 @@
                                                     <div class="planMargin">ASU Hours After Admit</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c),
-                                                    '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c
                                                     == 0, '--', '')}
-                                                    <span
-                                                        style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}"
-                                                    >
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"
-                                                            />
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}" />
                                                         </apex:outputText>
                                                     </span>
                                                 </td>
                                                 <th colspan="2" class="gradTD alignTop">Final Defense Results</th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDiss.Format_Final_Defense_Results_Status__c==null,
-                                                    '--',
-                                                    gradProgram.gradMilestoneDiss.Format_Final_Defense_Results_Status__c)}
+                                                    {!IF(gradProgram.gradMilestoneDiss.Format_Final_Defense_Results_Status__c==null, '--', gradProgram.gradMilestoneDiss.Format_Final_Defense_Results_Status__c)}
                                                 </td>
                                             </tr>
                                             <tr class="gradExtraInfo hide">
                                                 <th class="gradTD alignTop">
                                                     <div class="planMargin">
                                                         Blanket Hours
-                                                        <i
-                                                            class="fa fa-question-circle"
-                                                            title="Please note that Blanket Hours only applies to doctoral programs."
-                                                        ></i>
+                                                        <i class="fa fa-question-circle" title="Please note that Blanket Hours only applies to doctoral programs."></i>
                                                     </div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c != 'Doctorate
-                                                    Degree', 'N/A', '')}
-                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c == 'Doctorate
-                                                    Degree' &&
-                                                    ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c) , '--',
-                                                    '')}
-                                                    <span
-                                                        style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}"
-                                                    >
+                                                    {!IF(gradProgram.gradProgramPlan.Degree_Level__c != 'Doctorate Degree', 'N/A', '')} {!IF(gradProgram.gradProgramPlan.Degree_Level__c
+                                                    == 'Doctorate Degree' && ISBLANK(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c)
+                                                    , '--', '')}
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}"
-                                                            />
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}" />
                                                         </apex:outputText>
                                                     </span>
                                                 </td>
@@ -2607,12 +2212,9 @@
                                                     Final Defense Results Status Date
                                                 </th>
                                                 <td class="gradTD">
-                                                    {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null,
-                                                    '--', '')}
+                                                    {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null, '--', '')}
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
-                                                        <apex:param
-                                                            value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}"
-                                                        />
+                                                        <apex:param value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}" />
                                                     </apex:outputText>
                                                 </td>
                                             </tr>
@@ -2621,17 +2223,11 @@
                                                     <div class="planMargin">Transfer Hours</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c),
-                                                    '--', '')}
-                                                    {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0,
-                                                    '--', '')}
-                                                    <span
-                                                        style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0, 'display: none;', '')}"
-                                                    >
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c
+                                                    == 0, '--', '')}
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}"
-                                                            />
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}" />
                                                         </apex:outputText>
                                                     </span>
                                                 </td>
@@ -2641,16 +2237,11 @@
                                                     <div class="planMargin">iPOS Total Hours</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--',
-                                                    '')} {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, '--',
-                                                    '')}
-                                                    <span
-                                                        style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}"
-                                                    >
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.Tot_Cumulative__c), '--', '')} {!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c
+                                                    == 0, '--', '')}
+                                                    <span style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}">
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"
-                                                            />
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}" />
                                                         </apex:outputText>
                                                     </span>
                                                 </td>
@@ -2660,8 +2251,7 @@
                                                     <div class="planMargin">Maximum Time Limit</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--',
-                                                    gradProgram.gradProgramPlan.Grad_Max_Time_Limit__r.Name)}
+                                                    {!IF(gradProgram.gradProgramPlan.Grad_Max_Time_Limit__c==null, '--', gradProgram.gradProgramPlan.Grad_Max_Time_Limit__r.Name)}
                                                 </td>
                                                 <th colspan="2" class="gradTD"></th>
                                                 <td class="gradTD"></td>
@@ -2671,8 +2261,7 @@
                                                     <div class="planMargin">Anticipated Grad Term</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Grad_Anticipated_Term__c==null,
-                                                    '--', gradProgram.gradProgramPlan.Grad_Anticipated_Term__r.Name)}
+                                                    {!IF(gradProgram.gradProgramPlan.Grad_Anticipated_Term__c==null, '--', gradProgram.gradProgramPlan.Grad_Anticipated_Term__r.Name)}
                                                 </td>
                                                 <th colspan="2" class="gradTD"></th>
                                                 <td class="gradTD"></td>
@@ -2682,8 +2271,7 @@
                                                     <div class="planMargin">Applied to Graduate</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), '--',
-                                                    'Yes')}
+                                                    {!IF(ISBLANK(gradProgram.gradProgramPlan.EXP_GRAD_TERM__c), '--', 'Yes')}
                                                 </td>
                                                 <th colspan="2" class="gradTD"></th>
                                                 <td class="gradTD"></td>
@@ -2693,8 +2281,7 @@
                                                     <div class="planMargin">Application Term</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__c==null, '--',
-                                                    gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
+                                                    {!IF(gradProgram.gradProgramPlan.Exp_Grad_Term__c==null, '--', gradProgram.gradProgramPlan.Exp_Grad_Term__r.Name)}
                                                 </td>
                                                 <th colspan="2" class="gradTD"></th>
                                                 <td class="gradTD"></td>
@@ -2704,24 +2291,20 @@
                                                     <div class="planMargin">Graduation Checkout Status</div>
                                                 </th>
                                                 <td colspan="2" class="gradTD">
-                                                    {!IF(gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c==null,
-                                                    '--', gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c)}
+                                                    {!IF(gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c==null, '--', gradProgram.gradProgramPlan.Degree_Checkout_Status_Name__c)}
                                                 </td>
                                                 <th colspan="2" class="gradTD"></th>
                                                 <td class="gradTD"></td>
                                             </tr>
 
-                                            <tr
-                                                class="gradTR committee-row-toggle gradExtraInfo hide"
-                                                style="
+                                            <tr class="gradTR committee-row-toggle gradExtraInfo hide" style="
                                                     background: white;
                                                     border: 0px !important;
                                                     color: #9f2b50;
                                                     font-size: 16px !important;
                                                     font-weight: 16px;
                                                     padding-top: ;
-                                                "
-                                            >
+                                                ">
                                                 <td style="padding: 20px 0px 10px 75px">
                                                     <i class="fa fa-caret-right"></i>
                                                     &nbsp;Faculty Committee
@@ -2730,42 +2313,30 @@
 
                                             <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
                                                 <th class="gradTD innerHeaders" style="padding-left: 75px; width: 20%">
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                         Name
                                                     </div>
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradCommittees.size > 0, 'none', 'block')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'none', 'block')}">
                                                         There are no Faculty Committee Members for {!theContact.Name}.
                                                     </div>
                                                 </th>
                                                 <th class="gradTD innerHeaders" style="width: 20%">
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                         Committee Role
                                                     </div>
                                                 </th>
                                                 <th class="gradTD innerHeaders" style="width: 20%">
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                         Title
                                                     </div>
                                                 </th>
                                                 <th class="gradTD innerHeaders" style="width: 20%">
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                         Department
                                                     </div>
                                                 </th>
                                                 <th class="gradTD innerHeaders" style="width: 20%">
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'block', 'none')}">
                                                         Attendance Method
                                                     </div>
                                                 </th>
@@ -2774,56 +2345,42 @@
                                                 <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart">
                                                     <td class="gradTD planMargin">
                                                         <div class="planMargin">
-                                                            {!IF(gradCommittee.Advisor_Name__c==null, '--',
-                                                            gradCommittee.Advisor_Name__c)}
+                                                            {!IF(gradCommittee.Advisor_Name__c==null, '--', gradCommittee.Advisor_Name__c)}
                                                         </div>
                                                     </td>
                                                     <td class="gradTD">
-                                                        {!IF(gradCommittee.Advisor_Role__c==null, '--',
-                                                        gradCommittee.Advisor_Role__c)}
+                                                        {!IF(gradCommittee.Advisor_Role__c==null, '--', gradCommittee.Advisor_Role__c)}
                                                     </td>
                                                     <td class="gradTD">
-                                                        {!IF(gradCommittee.Business_Title__c==null, '--',
-                                                        gradCommittee.Business_Title__c)}
+                                                        {!IF(gradCommittee.Business_Title__c==null, '--', gradCommittee.Business_Title__c)}
                                                     </td>
                                                     <td class="gradTD">
-                                                        {!IF(gradCommittee.Company_Description__c==null, '--',
-                                                        gradCommittee.Company_Description__c)}
+                                                        {!IF(gradCommittee.Company_Description__c==null, '--', gradCommittee.Company_Description__c)}
                                                     </td>
                                                     <td class="gradTD">
-                                                        {!IF(gradCommittee.Committee_Member_Attend_Method__c==null,
-                                                        '--', gradCommittee.Committee_Member_Attend_Method__c)}
+                                                        {!IF(gradCommittee.Committee_Member_Attend_Method__c==null, '--', gradCommittee.Committee_Member_Attend_Method__c)}
                                                     </td>
                                                 </tr>
                                             </apex:repeat>
-                                            <tr
-                                                class="committeeExtraInfo hide gradExtraInfo hideOnStart"
-                                                style="
+                                            <tr class="committeeExtraInfo hide gradExtraInfo hideOnStart" style="
                                                     background: white;
                                                     border: 0px !important;
                                                     color: #9f2b50;
                                                     font-size: 16px !important;
                                                     font-weight: 16px;
                                                     padding-top: ;
-                                                "
-                                            >
-                                                <td
-                                                    class="gradTD"
-                                                    style="background: white; border: 0px !important"
-                                                ></td>
+                                                ">
+                                                <td class="gradTD" style="background: white; border: 0px !important"></td>
                                             </tr>
 
-                                            <tr
-                                                class="gradTR advisor-row-toggle gradExtraInfo hide"
-                                                style="
+                                            <tr class="gradTR advisor-row-toggle gradExtraInfo hide" style="
                                                     background: white;
                                                     border: 0px !important;
                                                     color: #9f2b50;
                                                     font-size: 16px !important;
                                                     font-weight: 16px;
                                                     padding-top: ;
-                                                "
-                                            >
+                                                ">
                                                 <td style="padding: 10px 75px">
                                                     <i class="fa fa-caret-right"></i>
                                                     &nbsp;Staff Advisors
@@ -2832,14 +2389,10 @@
 
                                             <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
                                                 <th class="gradTD innerHeaders" style="padding-left: 75px; width: 20%">
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'block', 'none')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'block', 'none')}">
                                                         Name
                                                     </div>
-                                                    <div
-                                                        style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'none', 'block')}"
-                                                    >
+                                                    <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'none', 'block')}">
                                                         There are no Staff Advisors for {!theContact.Name}.
                                                     </div>
                                                 </th>
@@ -2849,35 +2402,26 @@
                                                 <tr class="advisorExtraInfo hide gradExtraInfo hideOnStart">
                                                     <td class="gradTD">
                                                         <div class="planMargin">
-                                                            {!IF(gradAdvisors.Advisor_Name__c==null, '--',
-                                                            gradAdvisors.Advisor_Name__c)}
+                                                            {!IF(gradAdvisors.Advisor_Name__c==null, '--', gradAdvisors.Advisor_Name__c)}
                                                         </div>
                                                     </td>
                                                 </tr>
                                             </apex:repeat>
-                                            <tr
-                                                class="advisorExtraInfo hide"
-                                                style="
+                                            <tr class="advisorExtraInfo hide" style="
                                                     background: white;
                                                     border: 0px !important;
                                                     color: #9f2b50;
                                                     font-size: 16px !important;
                                                     font-weight: 16px;
                                                     padding-top: ;
-                                                "
-                                            >
-                                                <td
-                                                    class="gradTD"
-                                                    style="background: white; border: 0px !important"
-                                                ></td>
+                                                ">
+                                                <td class="gradTD" style="background: white; border: 0px !important"></td>
                                             </tr>
                                         </apex:repeat>
                                     </table>
                                 </div>
 
-                                <apex:outputText
-                                    rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
-                                    value="No active graduate programs/plans found."
+                                <apex:outputText rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}" value="No active graduate programs/plans found."
                                 />
 
                                 <div class="page-header-smaller">
@@ -2887,10 +2431,7 @@
                                     </h4>
                                 </div>
 
-                                <div
-                                    class="completedGradTable"
-                                    rendered="{!IF(completedGraduatePrograms.size > 0, true, false)}"
-                                >
+                                <div class="completedGradTable" rendered="{!IF(completedGraduatePrograms.size > 0, true, false)}">
                                     <table class="gradTable">
                                         <tr>
                                             <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">
@@ -2923,9 +2464,7 @@
                                     </table>
                                 </div>
 
-                                <apex:outputText
-                                    rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
-                                    value="No completed graduate programs/plans found."
+                                <apex:outputText rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}" value="No completed graduate programs/plans found."
                                 />
 
                                 <div class="page-header-smaller">
@@ -2953,9 +2492,7 @@
                                                         <td>{!testScore.Test_Component__c}</td>
                                                         <td>
                                                             <apex:outputText value="{0,number,##.##}">
-                                                                <apex:param
-                                                                    value="{!testScore.Test_Component_Score__c}"
-                                                                />
+                                                                <apex:param value="{!testScore.Test_Component_Score__c}" />
                                                             </apex:outputText>
                                                         </td>
                                                         <td>
@@ -2965,9 +2502,7 @@
                                                         </td>
                                                     </tr>
                                                 </apex:repeat>
-                                                <apex:outputPanel
-                                                    rendered="{!IF(testGradScoreList.size > 0, false, true)}"
-                                                >
+                                                <apex:outputPanel rendered="{!IF(testGradScoreList.size > 0, false, true)}">
                                                     <div>No graduate test scores found.</div>
                                                 </apex:outputPanel>
                                             </tbody>
@@ -2993,34 +2528,28 @@
                                                         <tr>
                                                             <th>Application Admit Type</th>
                                                             <td>
-                                                                {!IF(ISBLANK(gradStudentProgram.Admission_Type_Description__c),
-                                                                '--', gradStudentProgram.Admission_Type_Description__c)}
+                                                                {!IF(ISBLANK(gradStudentProgram.Admission_Type_Description__c), '--', gradStudentProgram.Admission_Type_Description__c)}
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Applied Program</th>
                                                             <td>
-                                                                {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Prog__c), '--',
-                                                                gradStudentProgram.Adm_Appl_Prog__c)}
+                                                                {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Prog__c), '--', gradStudentProgram.Adm_Appl_Prog__c)}
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Applied Date</th>
                                                             <td>
-                                                                {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Dt__c), '--',
-                                                                '')}
+                                                                {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Dt__c), '--', '')}
                                                                 <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                    <apex:param
-                                                                        value="{!gradStudentProgram.Adm_Appl_Dt__c}"
-                                                                    />
+                                                                    <apex:param value="{!gradStudentProgram.Adm_Appl_Dt__c}" />
                                                                 </apex:outputText>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <th>Admit Term</th>
                                                             <td>
-                                                                {!IF(ISBLANK(gradStudentProgram.Admit_Term__r.Name),
-                                                                '--', gradStudentProgram.Admit_Term__r.Name)}
+                                                                {!IF(ISBLANK(gradStudentProgram.Admit_Term__r.Name), '--', gradStudentProgram.Admit_Term__r.Name)}
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -3030,8 +2559,7 @@
                                                         <tr>
                                                             <th>Enroll Deposit</th>
                                                             <td>
-                                                                {!IF(ISBLANK(gradStudentProgram.Enrl_Deposit__c), '--',
-                                                                gradStudentProgram.Enrl_Deposit__c)}
+                                                                {!IF(ISBLANK(gradStudentProgram.Enrl_Deposit__c), '--', gradStudentProgram.Enrl_Deposit__c)}
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -3065,8 +2593,7 @@
                                                 <tr>
                                                     <th>Continuous Enrollment</th>
                                                     <td id="gr_continuousEnrollment">
-                                                        {!IF(ISBLANK(gradStudentProgram.Grad_Continuous_Enrollment__c),
-                                                        '--', gradStudentProgram.Grad_Continuous_Enrollment__c)}
+                                                        {!IF(ISBLANK(gradStudentProgram.Grad_Continuous_Enrollment__c), '--', gradStudentProgram.Grad_Continuous_Enrollment__c)}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -3076,24 +2603,17 @@
                                             </table>
 
                                             <div class="overflow:auto;max-height:400px;">
-                                                <table
-                                                    id="gr_en_holds_info_table"
-                                                    class="table table-striped table-bordered"
-                                                ></table>
+                                                <table id="gr_en_holds_info_table" class="table table-striped table-bordered"></table>
                                             </div>
 
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
                                                     <th>
                                                         Past Due Tip
-                                                        <i
-                                                            class="fa fa-question-circle"
-                                                            title="Tuition Installment Plan"
-                                                        ></i>
+                                                        <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="gr_pastDueTip">
-                                                        {!IF(ISBLANK(theContact.Past_Due_Tip__c), '--',
-                                                        theContact.Past_Due_Tip__c)}
+                                                        {!IF(ISBLANK(theContact.Past_Due_Tip__c), '--', theContact.Past_Due_Tip__c)}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -3105,8 +2625,7 @@
                                                 <tr>
                                                     <th>Financial Aid Issue</th>
                                                     <td id="gr_financialAidIssue">
-                                                        {!IF(ISBLANK(theContact.Financial_Aid_Indicator__c), '--',
-                                                        theContact.Financial_Aid_Indicator__c)}
+                                                        {!IF(ISBLANK(theContact.Financial_Aid_Indicator__c), '--', theContact.Financial_Aid_Indicator__c)}
                                                     </td>
                                                 </tr>
                                             </table>
@@ -3117,25 +2636,16 @@
                                                 <tr>
                                                     <th>Enrolled in Next Term</th>
                                                     <td id="gr_enrolledInNextTerm">
-                                                        {!IF(ISBLANK(gradStudentProgram.Enrolled_Next_Term__c), '--',
-                                                        gradStudentProgram.Enrolled_Next_Term__c)}
+                                                        {!IF(ISBLANK(gradStudentProgram.Enrolled_Next_Term__c), '--', gradStudentProgram.Enrolled_Next_Term__c)}
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
                                                     <td id="gr_cumulativeGPA">
-                                                        <a
-                                                            href="https://students.asu.edu/gpa-calculator"
-                                                            target="_blank"
-                                                        >
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank">
                                                             <c:sp_GPA gpa="{!gradStudentProgram.Cum_GPA__c}" />
                                                         </a>
-                                                        <a
-                                                            href="https://students.asu.edu/gpa-calculator"
-                                                            target="_blank"
-                                                            class="fa fa-calculator"
-                                                            aria-hidden="true"
-                                                        ></a>
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -3321,7 +2831,7 @@
                         jQuery('#sunImgSpinner').remove();
                     }
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -3505,7 +3015,7 @@
                     'PAST_DUE_TIP__c, TERM_MYASU_USAGE__c ' +
                     'FROM ASU_STDNT_RETENTION__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     retentionQuery,
                     function (err, response) {
@@ -3555,7 +3065,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
             }
         }
@@ -3569,7 +3079,7 @@
                     'FROM JBT_RET_FINAID_INDICATORS__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                     'LIMIT 1';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     financialAidQuery,
                     function (err, response) {
@@ -3583,7 +3093,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
 
                 var financialAidUnresolvedQuery =
@@ -3593,7 +3103,7 @@
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                     "AND STRM__c = '{!currentTerm}' " +
                     'ORDER BY AID_YEAR__c DESC, CHECKLIST_CD__c ASC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     financialAidUnresolvedQuery,
                     function (err, response) {
@@ -3656,7 +3166,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
 
                 var asrIndicatorQuery =
@@ -3679,7 +3189,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
 
                 var asrInformationQuery =
@@ -3759,7 +3269,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
 
                 var enrollmentHoldsQuery =
@@ -3830,7 +3340,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
 
                 var currentTermValue = '{!currentTerm}';
@@ -3844,7 +3354,7 @@
         // Method to get transcripts
         function getTranscripts() {
             if (!transcriptsLoaded) {
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 document.getElementById('psTranscriptErrors').innerHTML =
                     "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
                 document.getElementById('grpsTranscriptErrors').innerHTML =
@@ -3953,7 +3463,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
             }
         }
@@ -3973,7 +3483,7 @@
                     'FROM ASU_STDNT_RETENTION_SNP__x ' +
                     "WHERE emplId__c = '{!theContact.EMPLID__c}' " +
                     'ORDER BY CREATED_EW_DTTM__c DESC, STRM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     rententionQuery,
                     function (err, response) {
@@ -4118,7 +3628,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
             }
         }
@@ -4135,7 +3645,7 @@
                     'FROM PS_ASU_SP_ADNOTE_V__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                     'ORDER BY CREATDTTM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(advisorNoteQuery, function (err, response) {
                     if (err) {
                         document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
@@ -4177,8 +3687,8 @@
                                                     (result[i].advUserId == undefined
                                                         ? ''
                                                         : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
-                                                          result[i].advUserId +
-                                                          "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
+                                                        result[i].advUserId +
+                                                        "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
                                                     result[i].note.NAME__c +
                                                     (result[i].advUserId == undefined ? '' : '</a>') +
                                                     '</h4>' +
@@ -4210,7 +3720,7 @@
                                             event.message;
                                     }
                                 },
-                                {buffer: false, escape: true, timeout: 120000}
+                                { buffer: false, escape: true, timeout: 120000 }
                             );
                         } else {
                             document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
@@ -4244,7 +3754,7 @@
                     'FROM PS_ASU_SP_COMMNT_V__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' AND CMNT_Category__c  <> 'GRPOS'" +
                     'ORDER BY COMMENT_DTTM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(commentQuery, function (err, response) {
                     if (err) {
                         document.getElementById('psCommentsResponseErrors').innerHTML = err;
@@ -4285,8 +3795,8 @@
                                                 (result[i].commenterUserId == undefined
                                                     ? ''
                                                     : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
-                                                      result[i].commenterUserId +
-                                                      "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
+                                                    result[i].commenterUserId +
+                                                    "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
                                                 result[i].comment.NAME__c +
                                                 (result[i].commenterUserId == undefined ? '' : '</a>') +
                                                 '</h4>' +
@@ -4318,7 +3828,7 @@
                                     document.getElementById('psCommentsResponseErrors').innerHTML = event.message;
                                 }
                             },
-                            {buffer: false, escape: true, timeout: 120000}
+                            { buffer: false, escape: true, timeout: 120000 }
                         );
                     }
                 });
@@ -4336,7 +3846,7 @@
                     'FROM PS_ASU_SP_GUEST_V__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                     'ORDER BY COMMENT_DT__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     guestQuery,
                     function (err, response) {
@@ -4393,7 +3903,7 @@
                             }
                         }
                     },
-                    {buffer: false, escape: true, timeout: 120000}
+                    { buffer: false, escape: true, timeout: 120000 }
                 );
             }
         }
@@ -4482,7 +3992,7 @@
                 'FROM PS_ASU_SP_ASR_CLSV__x ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                 "AND STRM__c = '{!currentTerm}'";
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
             conn.query(classQuery, function (err, response) {
                 if (err) {
                     document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
@@ -4512,7 +4022,7 @@
                                             currentTermClassSessionMap.set(
                                                 record.SESSION_CODE__c,
                                                 currentTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
+                                                record.UNT_TAKEN__c
                                             );
                                         }
                                     } else if (record.STRM__c === '{!nextTerm}') {
@@ -4523,7 +4033,7 @@
                                             nextTermClassSessionMap.set(
                                                 record.SESSION_CODE__c,
                                                 nextTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
+                                                record.UNT_TAKEN__c
                                             );
                                         }
                                     } else if (record.STRM__c === '{!futureTerm}') {
@@ -4534,7 +4044,7 @@
                                             futureTermClassSessionMap.set(
                                                 record.SESSION_CODE__c,
                                                 futureTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
+                                                record.UNT_TAKEN__c
                                             );
                                         }
                                     }
@@ -4733,10 +4243,10 @@
                                                 if (
                                                     result.asrClasses.indexOf(
                                                         result.enrolledClasses[i].STRM__c +
-                                                            '|' +
-                                                            result.enrolledClasses[i].SESSION_CODE__c +
-                                                            '|' +
-                                                            result.enrolledClasses[i].CLASS_NBR__c
+                                                        '|' +
+                                                        result.enrolledClasses[i].SESSION_CODE__c +
+                                                        '|' +
+                                                        result.enrolledClasses[i].CLASS_NBR__c
                                                     ) > -1
                                                 ) {
                                                     // ASR link opens Undergraduate Indicators tab when clicked
@@ -4845,7 +4355,7 @@
                                             event.message;
                                     }
                                 },
-                                {buffer: false, escape: true, timeout: 120000}
+                                { buffer: false, escape: true, timeout: 120000 }
                             );
                         }
                     });
@@ -5027,7 +4537,7 @@
                     filterClasses();
                     cleanUpUndefined('ps_enrolled_classes');
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -5108,7 +4618,7 @@
                     }
                     filterClasses();
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -5122,7 +4632,7 @@
                 'ExternalId, Id, SCORE__c, STRM__c, TITLE__c, UNT_TRNSFR__c  ' +
                 'FROM PS_ASU_SP_TRNSFR_V__x ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
             conn.query(
                 creditByExamQuery,
                 function (err, response) {
@@ -5177,7 +4687,7 @@
                         }
                     }
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -5233,7 +4743,7 @@
                         document.getElementById('psCreditByExamErrors').innerHTML = 'No credit by exam found.';
                     }
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -5248,7 +4758,7 @@
                 'FROM JBT_RET_CLASS_XFER__x ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                 'ORDER BY COURSE__c, TERM__c';
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
             conn.query(
                 transferQuery,
                 function (err, response) {
@@ -5327,7 +4837,7 @@
                         }
                     }
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -5407,7 +4917,7 @@
                         document.getElementById('psTransferWorkErrors').innerHTML = 'No transfer work found.';
                     }
                 },
-                {buffer: false, escape: true, timeout: 120000}
+                { buffer: false, escape: true, timeout: 120000 }
             );
         }
 
@@ -5438,7 +4948,7 @@
                 faTable.rows[r].style.display = displayStyle;
             }
             var o = 'en-US';
-            var s = {style: 'currency', currency: 'USD'};
+            var s = { style: 'currency', currency: 'USD' };
             document.getElementById('fa_offered_total').innerHTML = offeredTotal.toLocaleString(o, s);
             document.getElementById('fa_accepted_total').innerHTML = acceptedTotal.toLocaleString(o, s);
             document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o, s);

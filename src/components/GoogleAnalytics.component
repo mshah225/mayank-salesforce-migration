@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component >
     <!-- Google Analytics -->
     <script>
         var $j = jQuery.noConflict();

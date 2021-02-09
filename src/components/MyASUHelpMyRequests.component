@@ -4,40 +4,17 @@
             <div class="myasu-help-region-header">My Requests</div>
 
             <div class="myasu-help-region-my-requests-content">
-                <p
-                    class="myasu-help-region-requests-text"
-                    style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}"
-                >
-                    Here are some of your recent requests to ASU. You might have made these requests by email, chat,
-                    phone, or through a webform.
-                </p>
+                <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
+                    through a webform.</p>
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Pending Requests</div>
                     <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="">
-                            <apex:column
-                                headerValue="Subject"
-                                width="60%"
-                                styleClass=""
-                                value="{!case.Subject}"
-                                style="background-color: white"
-                                onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'"
-                            />
-                            <apex:column
-                                headerValue="Status"
-                                width="30%"
-                                value="{!case.Status}"
-                                style="background-color: white"
-                                onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'"
-                            />
-                            <apex:column
-                                onmousemove="this.style.backgroundColor='white'"
-                                width="10%"
-                                style="background-color: white"
-                                onmouseout="this.style.backgroundColor ='white'"
-                            >
+                            <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
+                                onmouseout="this.style.backgroundColor ='white'" />
+                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
+                                onmouseout="this.style.backgroundColor ='white'" />
+                            <apex:column onmousemove="this.style.backgroundColor='white'" width="10%" style="background-color: white" onmouseout="this.style.backgroundColor ='white'">
                                 <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
@@ -53,35 +30,12 @@
                 <apex:form>
                     <div class="myasu-help-region-my-requests-sub-header">Completed Requests</div>
                     <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable
-                            rendered="{!closedCases.size > 0}"
-                            value="{!closedCases}"
-                            var="case"
-                            styleClass=""
-                        >
-                            <apex:column
-                                headerValue="Subject"
-                                width="60%"
-                                styleClass=""
-                                value="{!case.Subject}"
-                                style="background-color: white"
-                                onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'"
-                            />
-                            <apex:column
-                                headerValue="Status"
-                                width="30%"
-                                value="{!case.Status}"
-                                style="background-color: white"
-                                onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'"
-                            />
-                            <apex:column
-                                width="10%"
-                                style="background-color: white"
-                                onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'"
-                            >
+                        <apex:pageBlockTable rendered="{!closedCases.size > 0}" value="{!closedCases}" var="case" styleClass="">
+                            <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
+                                onmouseout="this.style.backgroundColor ='white'" />
+                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
+                                onmouseout="this.style.backgroundColor ='white'" />
+                            <apex:column width="10%" style="background-color: white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
                                 <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
@@ -94,22 +48,22 @@
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
-                <p
-                    class="myasu-help-region-requests-text"
-                    style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}"
-                >
+                <<<<<<< HEAD <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">
                     Click the View All button to see a history of your request(s), including chat and email history.
-                </p>
-                <div
-                    style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}"
-                >
-                    <apex:form>
-                        <apex:pageBlock mode="maindetail">
-                            <a href="/viewAllCases?source=studentSC" class="btn btn-secondary"> View All </a>
-                        </apex:pageBlock>
-                    </apex:form>
-                </div>
+                    </p>
+                    <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
+                        <apex:form>
+                            =======
+                            <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Click the View All button to see a history of your request(s), including chat and email history.</p>
+                            <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
+                                <apex:form>
+                                    >>>>>>> c41acca99d3a79c756df6fe5f2e86c1ed0b71e29
+                                    <apex:pageBlock mode="maindetail">
+                                        <a href="/viewAllCases?source=studentSC" class="btn btn-secondary"> View All </a>
+                                    </apex:pageBlock>
+                                </apex:form>
+                            </div>
+                    </div>
             </div>
-        </div>
     </apex:outputPanel>
 </apex:component>

@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component >
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif !important;

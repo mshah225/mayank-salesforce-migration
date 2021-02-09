@@ -1,8 +1,9 @@
 <apex:page controller="SearchUsers" docType="html-5.0" sideBar="false">
+
     <head>
         <style>
-            .even > td,
-            .odds > td {
+            .even>td,
+            .odds>td {
                 padding: 10px !important;
                 font-size: 10pt;
             }
@@ -45,22 +46,10 @@
                 <br />
                 <br />
 
-                <apex:inputText
-                    id="searchBox"
-                    value="{!searchString}"
-                    style="border-radius: 2px; width: 100%; max-width: 400px; height: 20px"
-                    html-placeholder="Enter search here"
-                    styleClass="form-control"
-                />
-                <apex:commandButton
-                    action="{!search}"
-                    reRender="userTable,pageErrors"
-                    status="actStatusId"
-                    oncomplete="tableSort()"
-                    value="Search"
-                    id="submitButton"
-                    styleClass="myBtn"
-                />
+                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius: 2px; width: 100%; max-width: 400px; height: 20px"
+                    html-placeholder="Enter search here" styleClass="form-control" />
+                <apex:commandButton action="{!search}" reRender="userTable,pageErrors" status="actStatusId" oncomplete="tableSort()" value="Search"
+                    id="submitButton" styleClass="myBtn" />
 
                 <apex:actionStatus id="actStatusId" onstop="tableSort()">
                     <apex:facet name="start">
@@ -79,28 +68,16 @@
 
                 <apex:outputPanel id="userTable">
                     <apex:pageBlockSection id="userPageBlock" collapsible="false" columns="1">
-                        <apex:outputPanel
-                            rendered="{!IF(uList.size > 0
-                            && searchString != '',true,false)}"
-                        >
+                        <apex:outputPanel rendered="{!IF(uList.size > 0
+                            && searchString != '',true,false)}">
                             <br />
                             <br />
-                            <h3 style="font-size: 12pt; font-weight: 400">Results Found for <b>{!searchString}</b>.</h3>
+                            <h3 style="font-size: 12pt; font-weight: 400">Results Found for
+                                <b>{!searchString}</b>.</h3>
 
-                            <apex:dataTable
-                                value="{!uList}"
-                                var="u"
-                                id="list"
-                                width="100%"
-                                cellPadding="5"
-                                rowClasses="even,odds"
-                            >
+                            <apex:dataTable value="{!uList}" var="u" id="list" width="100%" cellPadding="5" rowClasses="even,odds">
                                 <apex:column headerValue="User">
-                                    <apex:outputLink
-                                        styleClass="nameLink"
-                                        value="/{!u.Id}?noredirect=1"
-                                        target="_blank"
-                                    >
+                                    <apex:outputLink styleClass="nameLink" value="/{!u.Id}?noredirect=1" target="_blank">
                                         {!u.FirstName} {!u.LastName}
                                     </apex:outputLink>
                                 </apex:column>
@@ -144,10 +121,7 @@
                                 <apex:column headerValue="User Id" value="{!u.Id}" />
 
                                 <apex:column headerValue="Federation Id">
-                                    <apex:outputText
-                                        rendered="{!NOT(ISNULL(u.FederationIdentifier))}"
-                                        value="{!u.FederationIdentifier}"
-                                    />
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.FederationIdentifier))}" value="{!u.FederationIdentifier}" />
 
                                     <apex:outputText rendered="{!ISNULL(u.FederationIdentifier)}"> -- </apex:outputText>
                                 </apex:column>
@@ -158,14 +132,11 @@
                             </apex:dataTable>
                         </apex:outputPanel>
 
-                        <apex:outputPanel
-                            rendered="{!IF(uList.size == 0
-                            && searchString != '',true,false)}"
-                        >
+                        <apex:outputPanel rendered="{!IF(uList.size == 0
+                            && searchString != '',true,false)}">
                             <br />
-                            <br />
-
-                            No results found for <b>{!searchString}</b>.
+                            <br /> No results found for
+                            <b>{!searchString}</b>.
                         </apex:outputPanel>
                     </apex:pageBlockSection>
                 </apex:outputPanel>
@@ -182,7 +153,7 @@
             $j(document).ready(tableSort());
 
             function tableSort() {
-                $j("[id$='list']").tablesorter({theme: 'blue', dateFormat: 'dd/mm/yyyy'});
+                $j("[id$='list']").tablesorter({ theme: 'blue', dateFormat: 'dd/mm/yyyy' });
             }
         </script>
     </body>

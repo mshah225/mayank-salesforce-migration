@@ -1,11 +1,6 @@
-<apex:page
-    controller="UnifiedProspectPageController"
-    tabStyle="New_Undergrad_Prospect__tab"
-    docType="html-5.0"
-    sidebar="false"
-    showHeader="true"
-    standardStylesheets="false"
->
+<apex:page controller="UnifiedProspectPageController" tabStyle="New_Undergrad_Prospect__tab" docType="html-5.0" sidebar="false"
+    showHeader="true" standardStylesheets="false">
+
     <head>
         <style>
             body {
@@ -92,10 +87,7 @@
     <body id="contentBody" class="content">
         <apex:form id="unifiedForm">
             <apex:pageBlock title="ASU New Prospect Entry Form (Graduate and Undergraduate)" id="undergradBlock">
-                <apex:pageMessage
-                    rendered="{!$CurrentPage.parameters.saved == 'true' && error == false}"
-                    severity="confirm"
-                >
+                <apex:pageMessage rendered="{!$CurrentPage.parameters.saved == 'true' && error == false}" severity="confirm">
                     Successfully saved new prospect.
                 </apex:pageMessage>
 
@@ -103,21 +95,15 @@
 
                 <apex:pageBlockSection id="contactInfo" title="Contact Information" collapsible="false" columns="2">
                     <i>
-                        You must fill out these required fields in order to save the prospect: First Name, Last Name,
-                        Email, and one of these two fields: Phone or Zip Code
+                        You must fill out these required fields in order to save the prospect: First Name, Last Name, Email, and one of these two
+                        fields: Phone or Zip Code
                     </i>
                     <br />
                     <apex:outputText value="" />
 
                     <apex:inputField value="{!contact.FirstName}" required="true" id="firstname" tabOrderHint="1" />
 
-                    <apex:inputField
-                        value="{!contact.Lead_Email__c}"
-                        required="true"
-                        id="email"
-                        label="Email"
-                        type="email"
-                        taborderhint="10"
+                    <apex:inputField value="{!contact.Lead_Email__c}" required="true" id="email" label="Email" type="email" taborderhint="10"
                     />
 
                     <apex:inputField value="{!contact.LastName}" required="true" id="lastname" tabOrderHint="2" />
@@ -126,21 +112,9 @@
 
                     <apex:inputField value="{!contact.Gender__c}" id="gender" tabOrderHint="3" />
 
-                    <apex:inputField
-                        value="{!contact.MobilePhone}"
-                        id="mobilephone"
-                        label="Mobile Phone"
-                        type="tel"
-                        taborderhint="12"
-                    />
+                    <apex:inputField value="{!contact.MobilePhone}" id="mobilephone" label="Mobile Phone" type="tel" taborderhint="12" />
 
-                    <apex:inputField
-                        value="{!contact.Birthdate}"
-                        id="birthdate"
-                        type="date"
-                        style="width: 130px"
-                        tabOrderHint="4"
-                    />
+                    <apex:inputField value="{!contact.Birthdate}" id="birthdate" type="date" style="width: 130px" tabOrderHint="4" />
 
                     <apex:pageBlockSectionItem>
                         <apex:outputLabel for="smsTextCheck">SMS Permission</apex:outputLabel>
@@ -148,20 +122,11 @@
                         <apex:inputCheckbox id="smsTextCheck" value="{!smsText}" />
                     </apex:pageBlockSectionItem>
 
-                    <apex:inputField
-                        value="{!contact.MailingCountryCode}"
-                        id="country"
-                        label="Mailing Country"
-                        tabOrderHint="5"
-                    />
+                    <apex:inputField value="{!contact.MailingCountryCode}" id="country" label="Mailing Country" tabOrderHint="5" />
 
                     <apex:inputField value="{!contact.Country_of_Citizenship__c}" id="citizenship" taborderhint="13" />
 
-                    <apex:inputField
-                        value="{!contact.MailingStreet}"
-                        id="streetaddress"
-                        style="width: 144px; height: 30px"
-                        tabOrderHint="6"
+                    <apex:inputField value="{!contact.MailingStreet}" id="streetaddress" style="width: 144px; height: 30px" tabOrderHint="6"
                     />
 
                     <div></div>
@@ -170,12 +135,7 @@
 
                     <div></div>
 
-                    <apex:inputField
-                        label="Mailing State / Province"
-                        value="{!contact.MailingStateCode}"
-                        id="state"
-                        tabOrderHint="8"
-                    />
+                    <apex:inputField label="Mailing State / Province" value="{!contact.MailingStateCode}" id="state" tabOrderHint="8" />
 
                     <div></div>
 
@@ -191,11 +151,7 @@
                         <apex:actionRegion>
                             <apex:selectList id="careerList" value="{!career}" size="1" multiselect="false">
                                 <apex:selectOptions value="{!careers}" id="career" />
-                                <apex:actionSupport
-                                    event="onchange"
-                                    rerender="opportunity_info, msgs"
-                                    status="careerEvent"
-                                />
+                                <apex:actionSupport event="onchange" rerender="opportunity_info, msgs" status="careerEvent" />
                             </apex:selectList>
                         </apex:actionRegion>
                     </apex:pageBlockSectionItem>
@@ -207,32 +163,19 @@
                     </apex:actionStatus>
                 </apex:pageBlockSection>
 
-                <apex:pageBlockSection
-                    id="undergrad_opportunity_info"
-                    rendered="{!career == 'undergraduate'}"
-                    title="Undergraduate Opportunity Information"
-                    collapsible="false"
-                    columns="2"
-                >
+                <apex:pageBlockSection id="undergrad_opportunity_info" rendered="{!career == 'undergraduate'}" title="Undergraduate Opportunity Information"
+                    collapsible="false" columns="2">
                     <apex:inputField value="{!opportunity.Term__c}" id="term" required="true" tabOrderHint="100" />
 
                     <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree" tabOrderHint="103" />
 
                     <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true" tabOrderHint="101" />
 
-                    <apex:inputField
-                        value="{!opportunity.International_Student__c}"
-                        id="international"
-                        tabOrderHint="104"
-                    />
+                    <apex:inputField value="{!opportunity.International_Student__c}" id="international" tabOrderHint="104" />
 
                     <apex:inputField value="{!opportunity.Military_Status__c}" id="military" tabOrderHint="102" />
 
-                    <apex:inputField
-                        label="Previous Institution"
-                        value="{!previousEducation.Account__c}"
-                        id="previous_education_account"
-                        tabOrderHint="105"
+                    <apex:inputField label="Previous Institution" value="{!previousEducation.Account__c}" id="previous_education_account" tabOrderHint="105"
                     />
 
                     <apex:pageBlockSectionItem>
@@ -243,11 +186,7 @@
                                 <apex:selectOption itemValue="ASU Location" />
                                 <apex:selectOption itemValue="ASU Colleges" />
                                 <apex:selectOption itemValue="Academic" />
-                                <apex:actionSupport
-                                    event="onchange"
-                                    reRender="undergrad_opportunity_info,msgs"
-                                    status="intEvent"
-                                />
+                                <apex:actionSupport event="onchange" reRender="undergrad_opportunity_info,msgs" status="intEvent" />
                             </apex:selectList>
                         </apex:actionRegion>
                     </apex:pageBlockSectionItem>
@@ -269,12 +208,7 @@
                     <apex:pageBlockSectionItem rendered="{!IF(pickSelection == 'ASU Colleges',true,false)}">
                         <apex:outputLabel value="College Interest: " for="asuCollegesIntList" />
 
-                        <apex:selectList
-                            id="asuCollegesIntList"
-                            value="{!selectedInterestId}"
-                            size="1"
-                            multiselect="false"
-                        >
+                        <apex:selectList id="asuCollegesIntList" value="{!selectedInterestId}" size="1" multiselect="false">
                             <apex:selectOptions value="{!asuCollegesIntList}" />
                         </apex:selectList>
                     </apex:pageBlockSectionItem>
@@ -282,34 +216,19 @@
                     <apex:pageBlockSectionItem rendered="{!IF(pickSelection == 'Academic',true,false)}">
                         <apex:outputLabel value="Academic Interest: " for="academicIntList" />
 
-                        <apex:selectList
-                            id="academicIntList"
-                            value="{!selectedInterestId}"
-                            size="1"
-                            multiselect="false"
-                        >
+                        <apex:selectList id="academicIntList" value="{!selectedInterestId}" size="1" multiselect="false">
                             <apex:selectOptions value="{!academicIntList}" />
                         </apex:selectList>
                     </apex:pageBlockSectionItem>
                 </apex:pageBlockSection>
 
-                <apex:pageBlockSection
-                    id="grad_opportunity_info"
-                    rendered="{!career == 'graduate' || career == 'law'}"
-                    title="Graduate Opportunity Information"
-                    collapsible="false"
-                    columns="1"
-                >
+                <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information"
+                    collapsible="false" columns="1">
                     <apex:pageBlockSection columns="2">
                         <apex:pageBlockSectionItem>
                             <apex:outputLabel for="degreetype">Type</apex:outputLabel>
 
-                            <apex:inputField
-                                value="{!opportunity.Type}"
-                                id="degreetype"
-                                required="true"
-                                taborderhint="200"
-                            />
+                            <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true" taborderhint="200" />
                         </apex:pageBlockSectionItem>
                     </apex:pageBlockSection>
 
@@ -318,25 +237,12 @@
                             <apex:outputLabel for="collegeList">College</apex:outputLabel>
 
                             <apex:actionRegion>
-                                <div
-                                    class="requiredBlock"
-                                    style="background-color: #c00; height: 18px; width: 3px; float: left"
-                                ></div>
+                                <div class="requiredBlock" style="background-color: #c00; height: 18px; width: 3px; float: left"></div>
 
-                                <apex:selectList
-                                    id="collegeList"
-                                    value="{!collegeSelected}"
-                                    size="1"
-                                    required="true"
-                                    tabindex="201"
-                                >
+                                <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true" tabindex="201">
                                     <apex:selectOptions value="{!programList}" />
 
-                                    <apex:actionSupport
-                                        event="onchange"
-                                        reRender="college_section, msgs"
-                                        status="collegeEvent"
-                                    />
+                                    <apex:actionSupport event="onchange" reRender="college_section, msgs" status="collegeEvent" />
 
                                     <apex:actionStatus id="collegeEvent">
                                         <apex:facet name="start">
@@ -357,19 +263,11 @@
                     </apex:pageBlockSection>
 
                     <apex:pageBlockSection columns="2">
-                        <apex:inputField
-                            value="{!opportunity.Online_Degree__c}"
-                            id="online_degree"
-                            taborderhint="205"
-                        />
+                        <apex:inputField value="{!opportunity.Online_Degree__c}" id="online_degree" taborderhint="205" />
 
                         <apex:inputField value="{!opportunity.Term__c}" id="term" required="true" taborderhint="208" />
 
-                        <apex:inputField
-                            value="{!opportunity.International_Student__c}"
-                            id="international"
-                            taborderhint="206"
-                        />
+                        <apex:inputField value="{!opportunity.International_Student__c}" id="international" taborderhint="206" />
 
                         <apex:inputField value="{!opportunity.Military_Status__c}" id="military" taborderhint="209" />
                     </apex:pageBlockSection>
@@ -377,20 +275,9 @@
             </apex:pageBlock>
 
             <apex:pageBlock id="sourceEventBlock">
-                <apex:pageBlockSection
-                    id="sourceEventSection"
-                    title="Create EITHER a Case or Event"
-                    collapsible="false"
-                    columns="1"
-                >
-                    <apex:tabPanel
-                        switchType="client"
-                        selectedTab="source"
-                        id="theTabPanel"
-                        tabClass="activeTab"
-                        inactiveTabClass="inactiveTab"
-                        width="100%"
-                    >
+                <apex:pageBlockSection id="sourceEventSection" title="Create EITHER a Case or Event" collapsible="false" columns="1">
+                    <apex:tabPanel switchType="client" selectedTab="source" id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab"
+                        width="100%">
                         <apex:tab label="Case" name="source" id="sourceTab">
                             <apex:outputPanel layout="block" style="overflow: auto; height: 260px">
                                 <table style="width: 100%">
@@ -398,12 +285,7 @@
                                         <td style="padding-right: 20px; width: 20%">
                                             <apex:outputLabel for="cOrigin"> Origin: </apex:outputLabel>
                                             <br />
-                                            <apex:selectList
-                                                id="originPickList"
-                                                value="{!originSelection}"
-                                                size="1"
-                                                multiselect="false"
-                                            >
+                                            <apex:selectList id="originPickList" value="{!originSelection}" size="1" multiselect="false">
                                                 <apex:selectOption itemValue="--Select--" />
 
                                                 <apex:selectOption itemValue="Email" />
@@ -416,25 +298,12 @@
                                             <br />
 
                                             <apex:outputPanel id="wrapper">
-                                                <apex:outputLabel
-                                                    value="Case Functional Group"
-                                                    for="functionalGroupOptions"
-                                                />
+                                                <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
                                                 <apex:actionRegion>
-                                                    <apex:selectList
-                                                        id="functionalGroupOptions"
-                                                        label="Case Functional Group"
-                                                        value="{!ccPicklist.selectedFunctionalGroup}"
-                                                        size="1"
-                                                    >
-                                                        <apex:actionSupport
-                                                            event="onchange"
-                                                            action="{!ccPicklist.updateCategoryAndSubCategory}"
-                                                            rerender="wrapper"
-                                                        />
-                                                        <apex:selectOptions
-                                                            value="{!ccPicklist.functionalGroupOptions}"
-                                                        />
+                                                    <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
+                                                        size="1">
+                                                        <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper" />
+                                                        <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}" />
                                                     </apex:selectList>
                                                 </apex:actionRegion>
                                                 <br />
@@ -442,16 +311,8 @@
 
                                                 <apex:outputLabel value="Case Category" for="categoryOptions" />
                                                 <apex:actionRegion>
-                                                    <apex:selectList
-                                                        id="categoryOptions"
-                                                        value="{!ccPicklist.selectedCategory}"
-                                                        size="1"
-                                                    >
-                                                        <apex:actionSupport
-                                                            event="onchange"
-                                                            action="{!ccPicklist.updateSubCategories}"
-                                                            rerender="wrapper"
-                                                        />
+                                                    <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
+                                                        <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper" />
                                                         <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
                                                     </apex:selectList>
                                                 </apex:actionRegion>
@@ -459,15 +320,8 @@
                                                 <br />
                                                 <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
                                                 <apex:actionRegion>
-                                                    <apex:selectList
-                                                        label="Case Sub Category"
-                                                        value="{!ccPicklist.selectedSubCategory}"
-                                                        size="1"
-                                                    >
-                                                        <apex:selectOptions
-                                                            id="subCategoryOptions"
-                                                            value="{!ccPicklist.subCategoryOptions}"
-                                                        />
+                                                    <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
+                                                        <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}" />
                                                     </apex:selectList>
                                                 </apex:actionRegion>
                                                 <br />
@@ -483,20 +337,12 @@
                                             <br />
                                             <apex:outputLabel for="cSub"> Subject: </apex:outputLabel>
                                             <br />
-                                            <apex:inputField
-                                                id="cSub"
-                                                value="{!caseC.Subject}"
-                                                style="width: 250px; padding: 5px"
-                                            />
+                                            <apex:inputField id="cSub" value="{!caseC.Subject}" style="width: 250px; padding: 5px" />
                                             <br />
                                             <br />
                                             <apex:outputLabel for="cDesc"> Description: </apex:outputLabel>
                                             <br />
-                                            <apex:inputField
-                                                id="cDesc"
-                                                value="{!caseC.Description}"
-                                                style="width: 250px; height: 150px; padding: 5px"
-                                            />
+                                            <apex:inputField id="cDesc" value="{!caseC.Description}" style="width: 250px; height: 150px; padding: 5px" />
                                         </td>
                                     </tr>
                                 </table>
@@ -504,11 +350,7 @@
                         </apex:tab>
 
                         <apex:tab label="Event" name="event" id="eventTab">
-                            <apex:outputPanel
-                                id="eventSearchPanel"
-                                layout="block"
-                                style="overflow: hidden; height: 260px"
-                            >
+                            <apex:outputPanel id="eventSearchPanel" layout="block" style="overflow: hidden; height: 260px">
                                 <apex:actionRegion>
                                     <table style="width: 100%">
                                         <tr>
@@ -518,13 +360,8 @@
                                                 </apex:outputLabel>
                                                 <br />
                                                 <br />
-                                                <apex:inputText
-                                                    id="elIdInput"
-                                                    value="{!eventName}"
-                                                    html-placeholder="Selected event will appear here"
-                                                    style="width: 250px; padding: 6px; color: #990033"
-                                                    disabled="true"
-                                                />
+                                                <apex:inputText id="elIdInput" value="{!eventName}" html-placeholder="Selected event will appear here" style="width: 250px; padding: 6px; color: #990033"
+                                                    disabled="true" />
                                                 <br />
                                                 <br />
                                                 <apex:outputText id="eventSelectedHelpText">
@@ -533,18 +370,9 @@
                                                 <br />
                                                 <br />
                                                 <apex:outputPanel id="statusSelect">
-                                                    <apex:outputLabel
-                                                        for="camStatus"
-                                                        value="Status:"
-                                                        rendered="{!IF(elId != null,true,false)}"
-                                                    />
+                                                    <apex:outputLabel for="camStatus" value="Status:" rendered="{!IF(elId != null,true,false)}" />
                                                     <br />
-                                                    <apex:selectList
-                                                        id="camStatus"
-                                                        rendered="{!IF(elId != null,true,false)}"
-                                                        value="{!camMemEvent.Status}"
-                                                        size="1"
-                                                    >
+                                                    <apex:selectList id="camStatus" rendered="{!IF(elId != null,true,false)}" value="{!camMemEvent.Status}" size="1">
                                                         <apex:selectOptions value="{!selectedEventCamMemStatuses}" />
                                                     </apex:selectList>
                                                 </apex:outputPanel>
@@ -557,34 +385,19 @@
                                                     </apex:outputLabel>
                                                     <br />
                                                     <br />
-                                                    <apex:inputText
-                                                        id="eventSearchInput"
-                                                        value="{!eventSearchString}"
-                                                        html-placeholder="Enter search terms"
-                                                        style="width: 250px; padding: 6px"
-                                                        onkeypress="return noenter(event,'{!$Component.searchSubmit}');"
-                                                    />
+                                                    <apex:inputText id="eventSearchInput" value="{!eventSearchString}" html-placeholder="Enter search terms" style="width: 250px; padding: 6px"
+                                                        onkeypress="return noenter(event,'{!$Component.searchSubmit}');" />
 
-                                                    <apex:commandLink
-                                                        id="searchSubmit"
-                                                        value="Search"
-                                                        style="text-decoration: none; margin-left: 5px"
-                                                        styleClass="button"
-                                                        action="{!eventSearch}"
-                                                        status="actStatusEvent"
-                                                        reRender="eventList,eventPanel,msgs"
-                                                    />
+                                                    <apex:commandLink id="searchSubmit" value="Search" style="text-decoration: none; margin-left: 5px" styleClass="button" action="{!eventSearch}"
+                                                        status="actStatusEvent" reRender="eventList,eventPanel,msgs" />
 
                                                     <apex:actionStatus id="actStatusEvent">
                                                         <apex:facet name="start">
-                                                            <img
-                                                                src="/img/loading.gif"
-                                                                style="
+                                                            <img src="/img/loading.gif" style="
                                                                     margin-top: 7px;
                                                                     margin-left: -90px;
                                                                     position: absolute;
-                                                                "
-                                                            />
+                                                                " />
                                                         </apex:facet>
                                                     </apex:actionStatus>
 
@@ -592,37 +405,20 @@
                                                     <br />
 
                                                     <span>
-                                                        <apex:outputLabel
-                                                            for="deptCollList"
-                                                            value="Department/College:"
-                                                        />
-                                                        <apex:selectList
-                                                            id="deptCollList"
-                                                            size="1"
-                                                            value="{!deptColl}"
-                                                            style="margin-left: 5px"
-                                                        >
+                                                        <apex:outputLabel for="deptCollList" value="Department/College:" />
+                                                        <apex:selectList id="deptCollList" size="1" value="{!deptColl}" style="margin-left: 5px">
                                                             <apex:selectOptions value="{!departmentsColleges}" />
                                                         </apex:selectList>
                                                     </span>
 
                                                     <span style="margin-left: 10px">
                                                         <apex:outputLabel for="camLocation" value="Location:" />
-                                                        <apex:inputField
-                                                            id="camLocation"
-                                                            value="{!tempCampaign.Campus_Location__c}"
-                                                            style="margin-left: 5px"
-                                                        />
+                                                        <apex:inputField id="camLocation" value="{!tempCampaign.Campus_Location__c}" style="margin-left: 5px" />
                                                     </span>
 
                                                     <span style="margin-left: 10px">
                                                         <apex:outputLabel for="camStart" value="Event Start Date:" />
-                                                        <apex:input
-                                                            id="camStart"
-                                                            value="{!camStartDate}"
-                                                            type="date"
-                                                            style="margin-left: 5px"
-                                                        />
+                                                        <apex:input id="camStart" value="{!camStartDate}" type="date" style="margin-left: 5px" />
                                                     </span>
                                                     <br />
                                                     <br />
@@ -632,70 +428,32 @@
                                                     <br />
                                                     <br />
                                                     <apex:outputPanel id="eventPanel">
-                                                        <apex:dataTable
-                                                            id="eventList"
-                                                            value="{!eventList}"
-                                                            var="el"
-                                                            width="100%"
-                                                            cellpadding="8"
-                                                            rowClasses="even,odds"
-                                                            rendered="{!IF(eventList.size
-                                                                            > 0, true, false)}"
-                                                        >
+                                                        <apex:dataTable id="eventList" value="{!eventList}" var="el" width="100%" cellpadding="8" rowClasses="even,odds" rendered="{!IF(eventList.size
+                                                                            > 0, true, false)}">
                                                             <apex:column>
-                                                                <apex:commandLink
-                                                                    value="Select"
-                                                                    reRender="elIdInput,msgs,statusSelect"
-                                                                    status="actStatusEvent"
-                                                                >
-                                                                    <apex:param
-                                                                        name="elId"
-                                                                        value="{!el.Id}"
-                                                                        assignTo="{!elId}"
-                                                                    />
-                                                                    <apex:param
-                                                                        name="eventName"
-                                                                        value="{!el.Name}"
-                                                                        assignTo="{!eventName}"
-                                                                    />
+                                                                <apex:commandLink value="Select" reRender="elIdInput,msgs,statusSelect" status="actStatusEvent">
+                                                                    <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}" />
+                                                                    <apex:param name="eventName" value="{!el.Name}" assignTo="{!eventName}" />
                                                                 </apex:commandLink>
                                                             </apex:column>
 
                                                             <apex:column headerValue="Name" value="{!el.Name}" />
 
-                                                            <apex:column
-                                                                headerValue="Start Date"
-                                                                value="{!el.Event_Start_Date__c}"
-                                                            />
+                                                            <apex:column headerValue="Start Date" value="{!el.Event_Start_Date__c}" />
 
-                                                            <apex:column
-                                                                headerValue="Start Time"
-                                                                value="{!el.Event_Start_Time__c}"
-                                                            />
+                                                            <apex:column headerValue="Start Time" value="{!el.Event_Start_Time__c}" />
 
-                                                            <apex:column
-                                                                headerValue="Campus"
-                                                                value="{!el.Campus_Location__c}"
-                                                            />
+                                                            <apex:column headerValue="Campus" value="{!el.Campus_Location__c}" />
 
-                                                            <apex:column
-                                                                headerValue="Location"
-                                                                value="{!el.Event_Location__c}"
-                                                            />
+                                                            <apex:column headerValue="Location" value="{!el.Event_Location__c}" />
 
-                                                            <apex:column
-                                                                headerValue="Department/College"
-                                                                value="{!el.Requested__c}"
-                                                            />
+                                                            <apex:column headerValue="Department/College" value="{!el.Requested__c}" />
                                                         </apex:dataTable>
 
-                                                        <apex:outputText
-                                                            rendered="{!IF((eventList.size = 0
-                                                            && eventSearchString != null),true, false)}"
-                                                        >
+                                                        <apex:outputText rendered="{!IF((eventList.size = 0
+                                                            && eventSearchString != null),true, false)}">
                                                             <br />
-                                                            <br />
-                                                            No results found for
+                                                            <br /> No results found for
                                                             <b>{!eventSearchString}</b>.
                                                         </apex:outputText>
                                                     </apex:outputPanel>
@@ -713,12 +471,7 @@
             <apex:pageBlock>
                 <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus" />
 
-                <apex:commandButton
-                    styleClass="button"
-                    action="{!saveAndNew}"
-                    value="Save and New"
-                    status="saveStatus"
-                />
+                <apex:commandButton styleClass="button" action="{!saveAndNew}" value="Save and New" status="saveStatus" />
                 <apex:actionStatus id="saveStatus">
                     <apex:facet name="start">
                         <img src="/img/loading.gif" style="margin-bottom: -4px" />

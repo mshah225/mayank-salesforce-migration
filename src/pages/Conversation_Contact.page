@@ -14,7 +14,7 @@
                     embedContext: 'detail',
                 },
                 'lightning',
-                function (cmp) {}
+                function (cmp) { }
             );
         });
     </script>

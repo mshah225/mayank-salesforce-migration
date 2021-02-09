@@ -1,9 +1,4 @@
-<apex:page
-    id="portalUserProfilePage"
-    controller="MyProfilePageController"
-    showHeader="false"
-    title="{!$Label.site.my_profile_page}"
->
+<apex:page id="portalUserProfilePage" controller="MyProfilePageController" showHeader="false" title="{!$Label.site.my_profile_page}">
     <apex:composition template="{!$Site.Template}">
         <apex:define name="body">
             <apex:form id="theForm">
@@ -11,19 +6,8 @@
                     <apex:pageBlock title="{!$Label.site.my_profile}" id="editUserDetail" rendered="{!isEdit}">
                         <apex:pageMessages />
                         <apex:pageBlockButtons id="editButtons" location="top">
-                            <apex:commandButton
-                                id="save"
-                                value="{!$Label.site.save}"
-                                action="{!save}"
-                                rerender="userDetail"
-                            />
-                            <apex:commandButton
-                                id="cancel"
-                                value="{!$Label.site.cancel}"
-                                action="{!cancel}"
-                                rerender="userDetail"
-                                immediate="true"
-                            />
+                            <apex:commandButton id="save" value="{!$Label.site.save}" action="{!save}" rerender="userDetail" />
+                            <apex:commandButton id="cancel" value="{!$Label.site.cancel}" action="{!cancel}" rerender="userDetail" immediate="true" />
                         </apex:pageBlockButtons>
                         <apex:pageBlockSection id="editUserSection" columns="1" title="{!$Label.site.user_information}">
                             <apex:inputField id="editusername" value="{!user.username}" />
@@ -32,11 +16,7 @@
                             <apex:inputField id="editlanguage" value="{!user.languagelocalekey}" />
                             <apex:inputField id="editcommunityNickname" value="{!user.communityNickname}" />
                         </apex:pageBlockSection>
-                        <apex:pageBlockSection
-                            id="editContactSection"
-                            columns="2"
-                            title="{!$Label.site.contact_information}"
-                        >
+                        <apex:pageBlockSection id="editContactSection" columns="2" title="{!$Label.site.contact_information}">
                             <apex:inputField id="editfirstName" value="{!user.firstName}" />
                             <apex:inputField id="editemail" value="{!user.email}" />
                             <apex:inputField id="editlastName" value="{!user.lastName}" />
@@ -48,11 +28,7 @@
                             <apex:pageBlockSectionItem />
                             <apex:inputField id="editmobile" value="{!user.mobilephone}" />
                         </apex:pageBlockSection>
-                        <apex:pageBlockSection
-                            id="editAddressInformation"
-                            columns="1"
-                            title="{!$Label.site.address_information}"
-                        >
+                        <apex:pageBlockSection id="editAddressInformation" columns="1" title="{!$Label.site.address_information}">
                             <apex:inputField id="editstreet" value="{!user.street}" />
                             <apex:inputField id="editcity" value="{!user.city}" />
                             <apex:inputField id="editstate" value="{!user.state}" />
@@ -63,17 +39,8 @@
 
                     <apex:pageBlock title="{!$Label.site.my_profile}" id="viewUserDetail" rendered="{!!isEdit}">
                         <apex:pageBlockButtons id="detailButtons" location="top">
-                            <apex:commandButton
-                                id="edit"
-                                value="{!$Label.site.edit}"
-                                action="{!edit}"
-                                rerender="userDetail"
-                            />
-                            <apex:commandButton
-                                id="changePassword"
-                                value="{!$Label.site.change_password}"
-                                action="{!changePassword}"
-                            />
+                            <apex:commandButton id="edit" value="{!$Label.site.edit}" action="{!edit}" rerender="userDetail" />
+                            <apex:commandButton id="changePassword" value="{!$Label.site.change_password}" action="{!changePassword}" />
                         </apex:pageBlockButtons>
                         <apex:pageBlockSection id="viewUserSection" columns="2" title="{!$Label.site.user_information}">
                             <apex:outputField id="detailusername" value="{!user.username}" />
@@ -82,11 +49,7 @@
                             <apex:outputField id="detaillanguage" value="{!user.languagelocalekey}" />
                             <apex:outputField id="detailcommunityNickname" value="{!user.communityNickname}" />
                         </apex:pageBlockSection>
-                        <apex:pageBlockSection
-                            id="viewContactSection"
-                            columns="2"
-                            title="{!$Label.site.contact_information}"
-                        >
+                        <apex:pageBlockSection id="viewContactSection" columns="2" title="{!$Label.site.contact_information}">
                             <apex:outputField id="detailemail" value="{!user.email}" />
                             <apex:outputField id="detailfirstName" value="{!user.firstName}" />
                             <apex:outputField id="detaillastName" value="{!user.lastName}" />

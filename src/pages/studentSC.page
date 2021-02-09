@@ -1,13 +1,5 @@
-<apex:page
-    docType="html-5.0"
-    showHeader="false"
-    standardStylesheets="false"
-    sidebar="false"
-    controller="MyASUHelpController"
-    action="{!init}"
-    cache="true"
-    extensions="ASUBrandController,MyASUHelpPaginationController"
->
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
+    action="{!init}" cache="true" extensions="ASUBrandController,MyASUHelpPaginationController">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -17,33 +9,17 @@
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
         <c:MyASUHelpStyles />
-        <c:MyASUHelpBomgarService
-            asurite="{!asurite}"
-            firstName="{!firstName}"
-            lastName="{!lastName}"
-            emplId="{!emplId}"
-            viewingAs="{!viewingAs}"
+        <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
     </head>
 
     <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
-    <c:ASUBrandMenu
-        firstName="{!firstName}"
-        lastName="{!lastName}"
-        viewingAs="{!viewingAs}"
-        emplId="{!emplId}"
-        stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}"
-        menuLinks="{!menuLinks}"
-    />
+    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
-        <c:MyASUHelpPageNotifications
-            viewingAs="{!viewingAs}"
-            firstName="{!firstName}"
-            lastName="{!lastName}"
-            maintenanceString="{!mMessage}"
+        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
         />
         <div class="container">
             <div class="row">
@@ -51,11 +27,7 @@
                     <c:MyASUHelpFAQ />
                 </div>
                 <div class="col-md-5 myasu-help-region">
-                    <c:MyASUHelpContactUs
-                        HelpBox="{!HelpBox}"
-                        NormalPhone="{!NormalPhone}"
-                        RoverPhone="{!RoverPhone}"
-                    />
+                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
                     <div style="margin-bottom: 2em"></div>
                     <c:MyASUHelpMyRequests />
                 </div>

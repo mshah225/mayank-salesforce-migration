@@ -5,7 +5,7 @@
 
     <script>
         $Lightning.use('c:OmniChannelStatusApp', function () {
-            $Lightning.createComponent('c:omniChannelStatus', {label: 'Press Me!'}, 'lightning', function (cmp) {});
+            $Lightning.createComponent('c:omniChannelStatus', { label: 'Press Me!' }, 'lightning', function (cmp) { });
         });
     </script>
 </apex:page>

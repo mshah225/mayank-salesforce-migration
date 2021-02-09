@@ -32,7 +32,9 @@
                     <div class="myasu-help-region-view-all-requests-pending">
                         <div class="myasu-help-region-header">Pending Requests</div>
                         <div class="myasu-help-region-my-requests-content">
-                            <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0, 'display:block;', 'display:none;')}">Click the View button to see a history of your request, including chat and email history.</p>
+                            <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0, 'display:block;', 'display:none;')}">
+                                Click the View button to see a history of your request, including chat and email history.
+                            </p>
                             <apex:form>
                                 <apex:pageBlock mode="maindetail">
                                     <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="myCasesTable">
@@ -64,7 +66,9 @@
                     <div class="myasu-help-region-view-all-requests-completed">
                         <div class="myasu-help-region-header">Completed Requests</div>
                         <div class="myasu-help-region-my-requests-content">
-                            <p class="myasu-help-region-requests-text" style="{!IF(allClosedCases.size > 0, 'display:block;', 'display:none;')}">Click the View button to see a history of your request, including chat and email history.</p>
+                            <p class="myasu-help-region-requests-text" style="{!IF(allClosedCases.size > 0, 'display:block;', 'display:none;')}">
+                                Click the View button to see a history of your request, including chat and email history.
+                            </p>
                             <apex:form>
                                 <apex:pageBlock mode="maindetail">
                                     <apex:pageBlockTable rendered="{!allClosedCases.size > 0}" value="{!allClosedCases}" var="case" styleClass="myCasesTable">

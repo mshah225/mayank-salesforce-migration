@@ -1,8 +1,6 @@
 <apex:component>
     <apex:stylesheet value="{! URLFOR($Resource.ASUAjaxStatusCSS, 'ASUAjaxStatus.css') }" />
-    <apex:stylesheet
-        value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
-    />
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
     <apex:includeScript value="{! $Resource.jQuery_3_1_1}" />
 
     <apex:attribute name="suppressStop" type="boolean" description="" default="false" />

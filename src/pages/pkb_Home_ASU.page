@@ -1,13 +1,6 @@
-<apex:page
-    cache="false"
-    standardStylesheets="false"
-    showHeader="false"
-    sidebar="false"
-    controller="pkb_Controller"
-    language="{!$CurrentPage.parameters.l}"
-    applyBodyTag="false"
-    applyHtmlTag="false"
->
+<apex:page cache="false" standardStylesheets="false" showHeader="false" sidebar="false" controller="pkb_Controller" language="{!$CurrentPage.parameters.l}"
+    applyBodyTag="false" applyHtmlTag="false">
+
     <head>
         <meta name="google-site-verification" content="jon2u6Y1VRHzLJt8_IeWiiahg3ZeTZ9l0fPoxRiwfkc" />
     </head>

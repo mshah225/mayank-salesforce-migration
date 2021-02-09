@@ -24,7 +24,7 @@
                     unrelatedObjects: unrelatedObjects,
                 },
                 'lightning',
-                function (cmp) {}
+                function (cmp) { }
             );
         });
     </script>

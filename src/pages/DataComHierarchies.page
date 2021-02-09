@@ -1,6 +1,5 @@
 <apex:page standardController="Account" extensions="DataComHierarchiesControllerExtension">
-    <div
-        style="
+    <div style="
             margin-top: 10px;
             background-color: #f8f8f8;
             border-top: 3px solid #236fbd;
@@ -9,13 +8,10 @@
             border-right: 1px solid #eaeaea;
             border-radius: 4px;
             padding: 5px;
-        "
-    >
+        ">
         <h3 style="font-size: 1.2em; margin-bottom: 10px; display: inline-block">Corporate Hierarchy</h3>
         <apex:repeat value="{!Hierarchy}" var="map">
-            <div
-                style="color: #000000; border: 1px solid #eaeaea; padding: 5px; background-color: #FFFFFF; margin-left: {!20 * map['weight']}px"
-            >
+            <div style="color: #000000; border: 1px solid #eaeaea; padding: 5px; background-color: #FFFFFF; margin-left: {!20 * map['weight']}px">
                 <span class="company_name" style="width: 40%; display: inline-block">
                     <apex:outputLink target="_top" value="/{!map['AccountId']}">{!map['Name']}</apex:outputLink>
                 </span>

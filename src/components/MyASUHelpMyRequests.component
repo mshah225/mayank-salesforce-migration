@@ -48,22 +48,15 @@
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
-                <<<<<<< HEAD <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">
-                    Click the View All button to see a history of your request(s), including chat and email history.
-                    </p>
-                    <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
-                        <apex:form>
-                            =======
-                            <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Click the View All button to see a history of your request(s), including chat and email history.</p>
-                            <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
-                                <apex:form>
-                                    >>>>>>> c41acca99d3a79c756df6fe5f2e86c1ed0b71e29
-                                    <apex:pageBlock mode="maindetail">
-                                        <a href="/viewAllCases?source=studentSC" class="btn btn-secondary"> View All </a>
-                                    </apex:pageBlock>
-                                </apex:form>
-                            </div>
-                    </div>
+                <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Click the View All button to see a history of your request(s), including chat and email history.</p>
+                <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
+                    <apex:form>
+                        <apex:pageBlock mode="maindetail">
+                            <a href="/viewAllCases?source=studentSC" class="btn btn-secondary"> View All </a>
+                        </apex:pageBlock>
+                    </apex:form>
+                </div>
             </div>
+        </div>
     </apex:outputPanel>
 </apex:component>

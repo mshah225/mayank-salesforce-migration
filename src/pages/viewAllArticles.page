@@ -1,13 +1,5 @@
-<apex:page
-    docType="html-5.0"
-    showHeader="false"
-    standardStylesheets="false"
-    sidebar="false"
-    controller="MyASUHelpController"
-    action="{!init}"
-    cache="true"
-    extensions="MyASUHelpPaginationController,ASUBrandController"
->
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
+    action="{!init}" cache="true" extensions="MyASUHelpPaginationController,ASUBrandController">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -22,15 +14,8 @@
     <c:GoogleTagManagerBody />
 
     <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
-    <c:ASUBrandMenu
-        firstName="{!firstName}"
-        lastName="{!lastName}"
-        viewingAs="{!viewingAs}"
-        emplId="{!emplId}"
-        stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}"
-        menuLinks="{!menuLinks}"
-    />
+    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
     <div id="asu-content-container" class="myasu-help-region myasu-help-region-full-width">
         <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />

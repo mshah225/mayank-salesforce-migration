@@ -1,13 +1,5 @@
-<apex:page
-    docType="html-5.0"
-    showHeader="false"
-    sidebar="false"
-    cache="false"
-    Controller="UnsubscribeController"
-    extensions="ASUBrandController"
-    action="{!optOutOfEmails}"
-    standardStylesheets="false"
->
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandController"
+    action="{!optOutOfEmails}" standardStylesheets="false">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -35,14 +27,12 @@
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!failState}">
                                 <p>
-                                    ASU was unable to process your unsubscribe request. We apologize for the
-                                    inconvenience. Our support team has been notified of this error. Please visit the
-                                    subscription center to manage your subscriptions.
+                                    ASU was unable to process your unsubscribe request. We apologize for the inconvenience. Our support team has been notified
+                                    of this error. Please visit the subscription center to manage your subscriptions.
                                 </p>
                                 <p>
-                                    Please click on the button below to visit ASU's Subscription Center and manage your
-                                    subscriptions. If you're unable to access the Subscription Center or need immediate
-                                    assistance, please call 1-855-ASU-5080.
+                                    Please click on the button below to visit ASU's Subscription Center and manage your subscriptions. If you're unable to access
+                                    the Subscription Center or need immediate assistance, please call 1-855-ASU-5080.
                                 </p>
                             </apex:outputPanel>
                         </div>
@@ -56,9 +46,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <!-- Update URL to subscription center once it is created -->
-                            <a href="./SubscriptionCenter?subId={!subscriberId}" class="btn btn-primary btn-lg"
-                                >Visit Subscription Center</a
-                            >
+                            <a href="./SubscriptionCenter?subId={!subscriberId}" class="btn btn-primary btn-lg">Visit Subscription Center</a>
                         </div>
                     </div>
                     <div class="row">

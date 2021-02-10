@@ -6,7 +6,7 @@
             <apex:variable var="searchURL" value="{!$Site.CurrentSiteUrl+ '?' +SUBSTITUTE(pkbCon.allSearchParams, '&', '&amp;')}" />
             <channel>
                 <title>{!HTMLENCODE(SUBSTITUTE($Site.Name, '_', ' '))}</title>
-                <link {!searchURL} />
+                <link>{!searchURL}</link>
                 <lastBuildDate>{!NOW()}</lastBuildDate>
                 <pubDate>{!NOW()}</pubDate>
                 <apex:repeat var="k" value="{!pkbCon.rssKads}">
@@ -16,7 +16,7 @@
                     <item>
                         <title>{!HTMLENCODE(k.title)}</title>
                         <description>{!HTMLENCODE(k.summary)}</description>
-                        <link {!articleURL} />
+                        <link>{!articleURL}</link>
                         <guid>{!HTMLENCODE(k.urlName)}</guid>
                         <pubDate>{!k.lastPublishedDate}</pubDate>
                     </item>
@@ -32,13 +32,13 @@
 
             <channel>
                 <title>{!HTMLENCODE(pkbCon.theKad.title)}</title>
-                <link {!articleURL} />
+                <link>{!articleURL}</link>
                 <lastBuildDate>{!NOW()}</lastBuildDate>
                 <pubDate>{!NOW()}</pubDate>
                 <item>
                     <title>{!HTMLENCODE(pkbCon.theKad.title)}</title>
                     <description>{!HTMLENCODE(pkbCon.theKad.summary)}</description>
-                    <link {!articleURL} />
+                    <link>{!articleURL}</link>
                     <guid>{!pkbCon.theKad.urlName}</guid>
                     <pubDate>{!pkbCon.theKad.LastPublishedDate}</pubDate>
                 </item>

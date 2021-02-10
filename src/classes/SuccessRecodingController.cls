@@ -1,9 +1,9 @@
 /*****************************************
-* File: SuccessRecodingController
-* Author: Mathew Ruff, Sierra-Cedar
-* Description: Custom controller for successRecoding.page
-* Last Modified By: Kaleb Anderson - lines 133 and 156
-******************************************/
+ * File: SuccessRecodingController
+ * Author: Mathew Ruff, Sierra-Cedar
+ * Description: Custom controller for successRecoding.page
+ * Last Modified By: Kaleb Anderson - lines 133 and 156
+ ******************************************/
 
 public class SuccessRecodingController {
     public Boolean coachPath { get; set; }
@@ -42,36 +42,41 @@ public class SuccessRecodingController {
     }
 
     public void populateResourceResults() {
-        resourceResults = new List<User>([
-            SELECT Name, ASURITE_Id__c, Alias, EmplId__c, Email
-            FROM User
-            WHERE Profile.Name = 'ASU Service - Success Coach'
-            AND IsActive = true
-            ORDER BY Name ASC
-            LIMIT 50
-        ]);
+        resourceResults = new List<User>(
+            [
+                SELECT Name, ASURITE_Id__c, Alias, EmplId__c, Email
+                FROM User
+                WHERE Profile.Name = 'ASU Service - Success Coach' AND IsActive = TRUE
+                ORDER BY Name ASC
+                LIMIT 50
+            ]
+        );
     }
 
     public void searchForCoaches() {
         if (coachSearchString.length() < 3) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,
-                'Search terms must be at least 3 characters long.'));
+            ApexPages.addMessage(
+                new ApexPages.Message(ApexPages.Severity.ERROR, 'Search terms must be at least 3 characters long.')
+            );
             return;
         }
         resourceResults = searchUsersByCoachSearchString();
     }
-    
+
     private List<User> searchUsersByCoachSearchString() {
         List<List<SObject>> results = [
             FIND :String.escapeSingleQuotes(coachSearchString)
             IN ALL FIELDS
-            RETURNING User(
-                Name, Alias, ASURITE_Id__c, EMPLID__c, Email  
-                WHERE Profile.Name = 'ASU Service - Success Coach'
-                AND IsActive = true
-                AND Id != :selectedCoachId
-                LIMIT 50
-        )];
+            RETURNING
+                User(
+                    Name,
+                    Alias,
+                    ASURITE_Id__c,
+                    EMPLID__c,
+                    Email
+                    WHERE Profile.Name = 'ASU Service - Success Coach' AND IsActive = TRUE AND Id != :selectedCoachId
+                    LIMIT 50)
+        ];
         if (!results[0].isEmpty()) {
             return (List<User>) results[0];
         } else {
@@ -81,28 +86,36 @@ public class SuccessRecodingController {
 
     public void searchForStudents() {
         if (studentSearchString.length() < 3) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,
-                'Search terms must be at least 3 characters long.'));
+            ApexPages.addMessage(
+                new ApexPages.Message(ApexPages.Severity.ERROR, 'Search terms must be at least 3 characters long.')
+            );
             return;
         }
         contactResults = searchContactsByStudentSearchString();
     }
-    
+
     private List<Contact> searchContactsByStudentSearchString() {
         List<List<SObject>> results = new List<List<SObject>>();
         results = [
             FIND :String.escapeSingleQuotes(studentSearchString)
-            IN ALL FIELDS 
-            RETURNING Contact(
-                Name, FirstName, LastName, ASURite_ID__c, EMPLID__c, Email
-                WHERE Id IN (
-                    SELECT Student__c
-                    FROM Success_Student__c
-                    WHERE Is_Active__c = true
-                    AND Coaching_Student__c = true)
-                ORDER BY Name ASC 
-                LIMIT 50
-        )];
+            IN ALL FIELDS
+            RETURNING
+                Contact(
+                    Name,
+                    FirstName,
+                    LastName,
+                    ASURite_ID__c,
+                    EMPLID__c,
+                    Email
+                    WHERE
+                        Id IN (
+                            SELECT Student__c
+                            FROM Success_Student__c
+                            WHERE Is_Active__c = TRUE AND Coaching_Student__c = TRUE
+                        )
+                    ORDER BY Name ASC
+                    LIMIT 50)
+        ];
         if (!results[0].isEmpty()) {
             return (List<Contact>) results[0];
         } else {
@@ -113,14 +126,14 @@ public class SuccessRecodingController {
     public void selectContactAndFindSuccessStudent() {
         studentsResults = new List<StudentWrapper>();
 
-        List<Success_Student__c> tempStudents = new List<Success_Student__c>([
-            SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
-            FROM Success_Student__c
-            WHERE Student__r.Id = :selectedContactId
-            AND Is_Active__c = true
-            AND Coaching_Student__c = true
-            LIMIT 1000
-        ]);
+        List<Success_Student__c> tempStudents = new List<Success_Student__c>(
+            [
+                SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
+                FROM Success_Student__c
+                WHERE Student__r.Id = :selectedContactId AND Is_Active__c = TRUE AND Coaching_Student__c = TRUE
+                LIMIT 1000
+            ]
+        );
 
         studentsResults.add(new StudentWrapper(tempStudents[0]));
 
@@ -139,9 +152,10 @@ public class SuccessRecodingController {
         List<Success_Student__c> tempStudents = ([
             SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
             FROM Success_Student__c
-            WHERE Success_Resource__r.Resource__r.Id = :selectedCoachId
-            AND Is_Active__c = true
-            AND Coaching_Student__c = true
+            WHERE
+                Success_Resource__r.Resource__r.Id = :selectedCoachId
+                AND Is_Active__c = TRUE
+                AND Coaching_Student__c = TRUE
             LIMIT 1000
         ]);
 
@@ -164,8 +178,9 @@ public class SuccessRecodingController {
         }
 
         if (numSelected == 0) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,
-                'Please select at least one student to transfer.'));
+            ApexPages.addMessage(
+                new ApexPages.Message(ApexPages.Severity.ERROR, 'Please select at least one student to transfer.')
+            );
             return;
         }
 
@@ -192,12 +207,9 @@ public class SuccessRecodingController {
         List<Success_Student__c> studentsToUpdate = new List<Success_Student__c>();
         List<Case> casesToUpdate = new List<Case>();
 
-        List<Success_Resource__c> newResource = new List<Success_Resource__c>([
-            SELECT Id
-            FROM Success_Resource__c
-            WHERE Resource__c = :transferToCoachId
-            LIMIT 1
-        ]);
+        List<Success_Resource__c> newResource = new List<Success_Resource__c>(
+            [SELECT Id FROM Success_Resource__c WHERE Resource__c = :transferToCoachId LIMIT 1]
+        );
 
         if (newResource.size() > 0) {
             for (StudentWrapper s : selectedStudents) {
@@ -207,14 +219,17 @@ public class SuccessRecodingController {
             }
 
             // Find current Open Cases owned by the previous coach to transfer.
-            List<Case> openCases = new List<Case>([
-                SELECT Subject, Description
-                FROM Case
-                WHERE IsClosed = false
-                AND ContactId IN :studentContactIds
-                AND Functional_Group__c = 'ASU Coach Outreach'
-                LIMIT 50000
-            ]);
+            List<Case> openCases = new List<Case>(
+                [
+                    SELECT Subject, Description
+                    FROM Case
+                    WHERE
+                        IsClosed = FALSE
+                        AND ContactId IN :studentContactIds
+                        AND Functional_Group__c = 'ASU Coach Outreach'
+                    LIMIT 50000
+                ]
+            );
 
             for (Case c : openCases) {
                 c.OwnerId = transferToCoachId;
@@ -229,13 +244,18 @@ public class SuccessRecodingController {
                 }
 
                 page5();
-            }
-            catch (DmlException e) {
+            } catch (DmlException e) {
                 System.debug('ERROR: problem updating students: ' + e.getMessage());
             }
         } else {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,
-                'ERROR: Cannot find Success Resource for: ' + transferToCoachId + ' please try again or select another Coach.'));
+            ApexPages.addMessage(
+                new ApexPages.Message(
+                    ApexPages.Severity.ERROR,
+                    'ERROR: Cannot find Success Resource for: ' +
+                    transferToCoachId +
+                    ' please try again or select another Coach.'
+                )
+            );
             return;
         }
     }

@@ -1,9 +1,9 @@
 /**
-* @author Mathew Ruff, Sierra-Cedar
-* @date 2019-02-14
-*
-* Controller Logic for AdvisorPortalMassUpdate.cmp
-*/
+ * @author Mathew Ruff, Sierra-Cedar
+ * @date 2019-02-14
+ *
+ * Controller Logic for AdvisorPortalMassUpdate.cmp
+ */
 public class AdvisorPortalMassUpdateController {
     @AuraEnabled
     public static List<String> populateClosedCaseStatusOptions() {
@@ -34,18 +34,17 @@ public class AdvisorPortalMassUpdateController {
 
     @AuraEnabled
     public static List<String> populateStudentIntentionOptions() {
-        return new List<String>{
-            'Not returning ever',
-            'Not returning temporarily',
-            'Enrolled'
-        };
+        return new List<String>{ 'Not returning ever', 'Not returning temporarily', 'Enrolled' };
     }
 
     @AuraEnabled
     public static Map<String, String> populateReturnTermOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
-        for (Schema.PicklistEntry actionEntry : Case.What_term_is_the_student_planning_to_ret__c.getDescribe().getPicklistValues()) {
+        for (
+            Schema.PicklistEntry actionEntry : Case.What_term_is_the_student_planning_to_ret__c.getDescribe()
+                .getPicklistValues()
+        ) {
             optionsMap.put(actionEntry.getLabel(), actionEntry.getValue());
         }
 

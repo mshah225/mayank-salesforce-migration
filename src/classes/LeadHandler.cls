@@ -1,5 +1,4 @@
-public without sharing class LeadHandler implements ITrigger
-{
+public without sharing class LeadHandler implements ITrigger {
     private static LeadStatus convertedStatus;
     private List<Lead> leadsToConvert = new List<Lead>();
     private Set<Id> leadIdsCleanUpLeadInterests = new Set<Id>();
@@ -12,7 +11,8 @@ public without sharing class LeadHandler implements ITrigger
      * This method is called prior to execution of a BEFORE trigger. Use this to cache
      * any data required into maps prior execution of the trigger.
      */
-    public void bulkBefore() { }
+    public void bulkBefore() {
+    }
 
     /**
      * bulkAfter
@@ -21,13 +21,9 @@ public without sharing class LeadHandler implements ITrigger
      * any data required into maps prior execution of the trigger.
      */
     public void bulkAfter() {
-        if(convertedStatus == null) {
+        if (convertedStatus == null) {
             // Grab the status for converted Leads
-            List<LeadStatus> statusList = [
-                SELECT Id, MasterLabel
-                FROM LeadStatus
-                WHERE IsConverted=true LIMIT 1
-            ];
+            List<LeadStatus> statusList = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted = TRUE LIMIT 1];
 
             if (statusList.size() > 0) {
                 convertedStatus = statusList[0];
@@ -35,7 +31,7 @@ public without sharing class LeadHandler implements ITrigger
         }
         if (Trigger.IsInsert) {
             List<Id> leadIdList = new List<Id>();
-            for(sObject s : Trigger.New) {
+            for (sObject s : Trigger.New) {
                 Lead l = (Lead) s;
                 leadIdList.add(l.Id);
             }
@@ -53,7 +49,6 @@ public without sharing class LeadHandler implements ITrigger
     public void beforeInsert(SObject so) {
         Lead newLead = (Lead) so;
         newLead.Lead_Assignment_Number__c = OpportunityService.generateOpportunityAssignmentNumber();
-        
     }
 
     /**
@@ -62,7 +57,8 @@ public without sharing class LeadHandler implements ITrigger
      * This method is called iteratively for each record to be updated during a BEFORE
      * trigger.
      */
-    public void beforeUpdate(SObject oldSo, SObject so){}
+    public void beforeUpdate(SObject oldSo, SObject so) {
+    }
 
     /**
      * beforeDelete
@@ -70,7 +66,8 @@ public without sharing class LeadHandler implements ITrigger
      * This method is called iteratively for each record to be deleted during a BEFORE
      * trigger.
      */
-    public void beforeDelete(SObject so){}
+    public void beforeDelete(SObject so) {
+    }
 
     /**
      * beforeFinally
@@ -78,7 +75,8 @@ public without sharing class LeadHandler implements ITrigger
      * This method is called at the end of the execution of a BEFORE trigger. Use this to finalize
      * any bulk operations for a BEFORE trigger.
      */
-    public void beforeFinally(){}
+    public void beforeFinally() {
+    }
 
     /**
      * afterInsert
@@ -88,7 +86,7 @@ public without sharing class LeadHandler implements ITrigger
      * has modified any values. The record is 'read only' by this point.
      */
     public void afterInsert(SObject so) {
-        Lead l = (Lead)so;
+        Lead l = (Lead) so;
 
         if (l.Convert_Perform_Conversion__c) {
             leadsToConvert.add(l);
@@ -102,8 +100,8 @@ public without sharing class LeadHandler implements ITrigger
      * trigger.
      */
     public void afterUpdate(SObject oldSo, SObject so) {
-        Lead l = (Lead)so;
-        Lead oldL = (Lead)oldSo;
+        Lead l = (Lead) so;
+        Lead oldL = (Lead) oldSo;
 
         if (l.Convert_Perform_Conversion__c && oldL.Convert_Perform_Conversion__c == false) {
             leadsToConvert.add(l);
@@ -116,7 +114,8 @@ public without sharing class LeadHandler implements ITrigger
      * This method is called iteratively for each record deleted during an AFTER
      * trigger.
      */
-    public void afterDelete(SObject so){}
+    public void afterDelete(SObject so) {
+    }
 
     /**
      * andFinally
@@ -125,7 +124,7 @@ public without sharing class LeadHandler implements ITrigger
      * method to accomplish any final operations such as creation or updates of other records.
      */
     public void andFinally() {
-        if(Trigger.isAfter && !ranLeadConversion) {
+        if (Trigger.isAfter && !ranLeadConversion) {
             ranLeadConversion = true;
             convertLeads();
             ranLeadConversion = false;
@@ -145,7 +144,10 @@ public without sharing class LeadHandler implements ITrigger
         Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
         Integer count = 0;
 
-        Map<Integer, List<Database.LeadConvert>> leadConvertBatchMap = LeadService.generateLeadConvertBatches(leadsToConvert, convertedStatus.MasterLabel);
+        Map<Integer, List<Database.LeadConvert>> leadConvertBatchMap = LeadService.generateLeadConvertBatches(
+            leadsToConvert,
+            convertedStatus.MasterLabel
+        );
 
         for (List<Database.LeadConvert> lcBatch : leadConvertBatchMap.values()) {
             List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcBatch, false);
@@ -153,24 +155,24 @@ public without sharing class LeadHandler implements ITrigger
         }
 
         Set<Id> convertedLeadIds = new Set<Id>();
-        List<String> vars=new List<String>();
+        List<String> vars = new List<String>();
         for (Database.LeadConvertResult lcr : leadConversionResults) {
             try {
-                if (lcr.isSuccess()){
+                if (lcr.isSuccess()) {
                     convertedLeadIds.add(lcr.getLeadId());
-                }
-                else throw new LeadConversionException('Failed Lead Conversion');
+                } else
+                    throw new LeadConversionException('Failed Lead Conversion');
             } catch (Exception e) {
-                vars.add(ErrorLogger.convertIdToJSON('Lead Id',lcr.getLeadId()));
+                vars.add(ErrorLogger.convertIdToJSON('Lead Id', lcr.getLeadId()));
             }
         }
-        if(vars!=NULL && vars.size()>0){
-            Exception e=new LeadConversionException('Failed Lead Conversion');
+        if (vars != null && vars.size() > 0) {
+            Exception e = new LeadConversionException('Failed Lead Conversion');
             ErrorLogger.log(e, vars, false);
         }
 
         // Map convert lead data to associated opportunities, if any
-        if(convertedLeadIds.size() > 0) {
+        if (convertedLeadIds.size() > 0) {
             List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
             update oppsToUpdate;
 
@@ -188,33 +190,37 @@ public without sharing class LeadHandler implements ITrigger
                 // Deactivate related Lead Interests if we are creating an Opportunity
                 if (!l.Convert_Create_Opportunity__c) {
                     LeadsRequiringLIReparenting.add(l.Id);
-                }
-                else {
+                } else {
                     leadIdsCleanUpLeadInterests.add(l.Id);
                 }
             }
 
             if (LeadsRequiringLIReparenting.size() > 0) {
-                List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(LeadsRequiringLIReparenting);
+                List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(
+                    LeadsRequiringLIReparenting
+                );
                 update leadInterestList;
             }
 
             if (leadsNeedingPreviousEducation.size() > 0) {
-                List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(leadsNeedingPreviousEducation);
+                List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(
+                    leadsNeedingPreviousEducation
+                );
                 insert previousEducationList;
             }
         }
     }
-    
+
     @future
     static void setHashId(List<Id> LeadIdList) {
         List<Lead> leadList = new List<Lead>();
-        for(Id i : leadIdList) {
+        for (Id i : leadIdList) {
             Lead c = new Lead(Id = i, HashLeadID__c = Hasher.hashId(i));
             leadList.add(c);
         }
         update leadList;
     }
 
-    class LeadConversionException extends Exception {}
+    class LeadConversionException extends Exception {
+    }
 }

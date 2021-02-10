@@ -2,12 +2,14 @@
     <apex:form id="caseDetailsForm">
         <div class="bPageBlock brandSecondaryBrd bEditBlock bLayoutBlock secondaryPalette" id="ep">
             <div class="pbHeader">
-                <table border="0" cellPadding="0" cellSpacing="0" style="margin: 0px auto;">
+                <table border="0" cellpadding="0" cellspacing="0" style="margin: 0px auto">
                     <tbody>
-                        <tr style="display:none" id="caseDetailInlineButtons">
+                        <tr style="display: none" id="caseDetailInlineButtons">
                             <td class="pbButton">
-                                <apex:commandButton action="{!saveCase}" value="Save" oncomplete="reloadPage();" style="background:yellow; font-size:12px"/>
-                                <apex:commandButton action="{!resetDetails}" value="Clear" reRender="wrapper" oncomplete="clearCaseClassificationDetails();"/>
+                                <apex:commandButton action="{!saveCase}" value="Save" oncomplete="reloadPage();" style="background: yellow; font-size: 12px"
+                                />
+                                <apex:commandButton action="{!resetDetails}" value="Clear" reRender="wrapper" oncomplete="clearCaseClassificationDetails();"
+                                />
                             </td>
                         </tr>
                     </tbody>
@@ -16,27 +18,30 @@
             <br />
             <apex:outputPanel id="wrapper">
                 <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />
-                <apex:actionRegion >
-                    <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}" size="1" style="max-width:80%" disabled="true">
-                        <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"/>
-                        <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}"/>
+                <apex:actionRegion>
+                    <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
+                        size="1" style="max-width: 80%" disabled="true">
+                        <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"
+                        />
+                        <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}" />
                     </apex:selectList>
                 </apex:actionRegion>
                 <br />
                 <br />
                 <apex:outputLabel value="Case Category: " for="categoryOptions" />
-                <apex:actionRegion >
-                    <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1" style="max-width:80%">
-                        <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"/>
-                        <apex:selectOptions value="{!ccPicklist.categoryOptions}"/>
+                <apex:actionRegion>
+                    <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1" style="max-width: 80%">
+                        <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"
+                        />
+                        <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
                     </apex:selectList>
                 </apex:actionRegion>
                 <br />
                 <br />
                 <apex:outputLabel value="Case Sub Category: " for="subCategoryOptions" />
-                <apex:actionRegion >
-                    <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1" onchange="showButtons();" style="max-width:80%">
-                        <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}"/>
+                <apex:actionRegion>
+                    <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1" onchange="showButtons();" style="max-width: 80%">
+                        <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}" />
                     </apex:selectList>
                 </apex:actionRegion>
                 <br />
@@ -44,38 +49,40 @@
             </apex:outputPanel>
         </div>
     </apex:form>
-    <apex:includeScript value="../../soap/ajax/36.0/connection.js"/>
+    <apex:includeScript value="../../soap/ajax/36.0/connection.js" />
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
-    <apex:includeScript value="{! $Resource.jQuery_3_1_1}"/>
-    <apex:includeScript value="/support/console/43.0/integration.js"/>
-    
-    <script>
-    function clearCaseClassificationDetails() {
-        hideButtons();
-    }
-    
-    function showButtons() {
-        document.getElementById("caseDetailInlineButtons").style.display = "block"
-    }
-    
-    function hideButtons() {
-        document.getElementById("caseDetailInlineButtons").style.display = "none"
-    }
+    <apex:includeScript value="{! $Resource.jQuery_3_1_1}" />
+    <apex:includeScript value="/support/console/43.0/integration.js" />
 
-    function isLightningExperienceOrSalesforce1() {
-        return((typeof sforce != 'undefined') && sforce && (!!sforce.one));
-    }
-    
-    function reloadPage() {
-        if (isLightningExperienceOrSalesforce1()) {
-            window.parent.location.replace('/{!caseRecordId}' + '?saveURL=%2F{!caseRecordId}&retURL=%2F{!caseRecordId}');
-        } else {
-            if (sforce.console.isInConsole()) {
-               window.top.location.href = '/console';  
-            } else {
-                window.top.location.href = '/{!caseRecordId}'; 
-            }  
+    <script>
+        function clearCaseClassificationDetails() {
+            hideButtons();
         }
-    } 
+
+        function showButtons() {
+            document.getElementById('caseDetailInlineButtons').style.display = 'block';
+        }
+
+        function hideButtons() {
+            document.getElementById('caseDetailInlineButtons').style.display = 'none';
+        }
+
+        function isLightningExperienceOrSalesforce1() {
+            return typeof sforce != 'undefined' && sforce && !!sforce.one;
+        }
+
+        function reloadPage() {
+            if (isLightningExperienceOrSalesforce1()) {
+                window.parent.location.replace(
+                    '/{!caseRecordId}' + '?saveURL=%2F{!caseRecordId}&retURL=%2F{!caseRecordId}'
+                );
+            } else {
+                if (sforce.console.isInConsole()) {
+                    window.top.location.href = '/console';
+                } else {
+                    window.top.location.href = '/{!caseRecordId}';
+                }
+            }
+        }
     </script>
 </apex:page>

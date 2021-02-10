@@ -1,15 +1,15 @@
 /**
  * @File Name          : advisorPortalTopLevelFilterOption.js
- * @Description        : 
+ * @Description        :
  * @Author             : thom.clark@sierra-cedar.com
- * @Group              : 
+ * @Group              :
  * @Last Modified By   : thom.clark@sierra-cedar.com
  * @Last Modified On   : 10/18/2019, 12:56:31 PM
- * @Modification Log   : 
+ * @Modification Log   :
  * Ver       Date            Author      		    Modification
  * 1.0    10/9/2019   thom.clark@sierra-cedar.com     Initial Version
-**/
-import { LightningElement, api, track } from "lwc";
+ **/
+import {LightningElement, api, track} from 'lwc';
 
 export default class AdvisorPortalTopLevelFilterOption extends LightningElement {
     @track isSelected;
@@ -21,7 +21,8 @@ export default class AdvisorPortalTopLevelFilterOption extends LightningElement 
 
     set option(option) {
         this._option = option;
-        if (option) { // protect against option=null which sometimes occurs on the advisor portal phase two page
+        if (option) {
+            // protect against option=null which sometimes occurs on the advisor portal phase two page
             this.isSelected = option.isSelected;
         }
     }
@@ -31,18 +32,16 @@ export default class AdvisorPortalTopLevelFilterOption extends LightningElement 
     }
 
     get ariaSelected() {
-        return (this.isSelected) ? "true" : "false";
+        return this.isSelected ? 'true' : 'false';
     }
 
     toggleOption(event) {
         event.preventDefault();
         this.isSelected = !this.isSelected;
-        
+
         this.dispatchEvent(
-            new CustomEvent("toggleoption", 
-            { detail: 
-                { key: this.option.label + ";" + this.option.value, 
-                  isSelected: this.isSelected }
+            new CustomEvent('toggleoption', {
+                detail: {key: this.option.label + ';' + this.option.value, isSelected: this.isSelected},
             })
         );
     }

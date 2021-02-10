@@ -14,11 +14,11 @@ public class CarScrambler implements ObjectScramble {
     public String toCsvString() {
         String formattedString = carToScramble.Id;
         formattedString += ',';
-        if (!String.isEmpty(carToScramble.Email_Address__c) ) {
+        if (!String.isEmpty(carToScramble.Email_Address__c)) {
             formattedString += carToScramble.Email_Address__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(carToScramble.Reply_To_Email_Address__c) ) {
+        if (!String.isEmpty(carToScramble.Reply_To_Email_Address__c)) {
             formattedString += carToScramble.Reply_To_Email_Address__c;
         }
         formattedString += '\n';
@@ -28,6 +28,8 @@ public class CarScrambler implements ObjectScramble {
 
     private void scrambleEmails() {
         carToScramble.Email_Address__c = Scrambler.scrambleEmailOrUsername(carToScramble.Email_Address__c);
-        carToScramble.Reply_To_Email_Address__c = Scrambler.scrambleEmailOrUsername(carToScramble.Reply_To_Email_Address__c);
+        carToScramble.Reply_To_Email_Address__c = Scrambler.scrambleEmailOrUsername(
+            carToScramble.Reply_To_Email_Address__c
+        );
     }
 }

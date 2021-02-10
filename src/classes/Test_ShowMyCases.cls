@@ -13,13 +13,18 @@ public class Test_ShowMyCases {
         numberOfcases = 5;
         numberOfStudents = 5;
 
-        pod = new List<Success_Pod__c>([SELECT OwnerId FROM Success_Pod__c Limit 1]);
+        pod = new List<Success_Pod__c>([SELECT OwnerId FROM Success_Pod__c LIMIT 1]);
 
         if (pod.size() > 0) {
-            Query = 'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+            Query =
+                'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                 'FROM Case ' +
-                'WHERE OwnerId = \'' + pod[0].ownerId + '\' ' +
-                'AND recordTypeId = \'' + IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') + '\' ' +
+                'WHERE OwnerId = \'' +
+                pod[0].ownerId +
+                '\' ' +
+                'AND recordTypeId = \'' +
+                IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') +
+                '\' ' +
                 'AND isClosed = false ' +
                 'ORDER BY Contact.LastName ASC';
 
@@ -41,8 +46,8 @@ public class Test_ShowMyCases {
         // This is because the standard set controller will only get the number of records
         // set in setCon.setPageSize().
 
-        if (numberOfCases*2 < smsc.pageSize) {
-            system.assertEquals(numberOfCases*2, smsc.caseList.size());
+        if (numberOfCases * 2 < smsc.pageSize) {
+            system.assertEquals(numberOfCases * 2, smsc.caseList.size());
         } else {
             system.assertEquals(smsc.pageSize, smsc.caseList.size());
         }
@@ -123,7 +128,7 @@ public class Test_ShowMyCases {
     /*
      * Tests the controllers ability to handle null values in sortDir
      */
-    public static testmethod void Test_getSort() {
+    public static testMethod void Test_getSort() {
         smsc.sortDir = null; // Set to null
         system.assertEquals('ASC', smsc.sortDir); // Make sure the sortDir is set to default ASC
     }
@@ -131,7 +136,7 @@ public class Test_ShowMyCases {
     /*
      * Tests the controllers ability to toggle the sort dir
      */
-    public static testmethod void Test_setSortField() {
+    public static testMethod void Test_setSortField() {
         // Set sortfield to contact.name
         // verify the query contains "ORDER BY" and "Contact.Name"
         smsc.sortField = 'Contact.Name';
@@ -143,7 +148,7 @@ public class Test_ShowMyCases {
     /*
      * Tests the controllers ability to insert mass emails
      */
-    public static testmethod void Test_MassEmail() {
+    public static testMethod void Test_MassEmail() {
         // Select students
         for (ShowMyCasesController.caseWrapper cw : smsc.caseList) {
             cw.selected = true; // Select all the cases
@@ -166,8 +171,8 @@ public class Test_ShowMyCases {
     /**
      * Test Filter Methods
      */
-     @isTest
-     private static void checkQueryForFilterAddition() {
+    @isTest
+    private static void checkQueryForFilterAddition() {
         smsc.queryAttr = smsc.query;
         smsc.searchString = 'Tester Mctesterson';
         smsc.caseSubject = 'Testing Subject';
@@ -287,12 +292,24 @@ public class Test_ShowMyCases {
         List<SelectOption> outlookScoreOptions = smsc.outlookScoreOptions;
         Test.stopTest();
 
-        System.assert(outlookScoreOptions.get(0).getValue() == '--' && outlookScoreOptions.get(0).getLabel().equals('--'));
-        System.assert(outlookScoreOptions.get(1).getValue() == '1' && outlookScoreOptions.get(1).getLabel().equals('Very Low'));
-        System.assert(outlookScoreOptions.get(2).getValue() == '2' && outlookScoreOptions.get(2).getLabel().equals('Low'));
-        System.assert(outlookScoreOptions.get(3).getValue() == '3' && outlookScoreOptions.get(3).getLabel().equals('Moderate'));
-        System.assert(outlookScoreOptions.get(4).getValue() == '4' && outlookScoreOptions.get(4).getLabel().equals('High'));
-        System.assert(outlookScoreOptions.get(5).getValue() == '5' && outlookScoreOptions.get(5).getLabel().equals('Very High'));
+        System.assert(
+            outlookScoreOptions.get(0).getValue() == '--' && outlookScoreOptions.get(0).getLabel().equals('--')
+        );
+        System.assert(
+            outlookScoreOptions.get(1).getValue() == '1' && outlookScoreOptions.get(1).getLabel().equals('Very Low')
+        );
+        System.assert(
+            outlookScoreOptions.get(2).getValue() == '2' && outlookScoreOptions.get(2).getLabel().equals('Low')
+        );
+        System.assert(
+            outlookScoreOptions.get(3).getValue() == '3' && outlookScoreOptions.get(3).getLabel().equals('Moderate')
+        );
+        System.assert(
+            outlookScoreOptions.get(4).getValue() == '4' && outlookScoreOptions.get(4).getLabel().equals('High')
+        );
+        System.assert(
+            outlookScoreOptions.get(5).getValue() == '5' && outlookScoreOptions.get(5).getLabel().equals('Very High')
+        );
     }
 
     @isTest
@@ -301,9 +318,15 @@ public class Test_ShowMyCases {
         List<SelectOption> outlookChangeOptions = smsc.outlookChangeOptions;
         Test.stopTest();
 
-        System.assert(outlookChangeOptions.get(0).getValue() == '--' && outlookChangeOptions.get(0).getLabel().equals('--'));
-        System.assert(outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up'));
-        System.assert(outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down'));
+        System.assert(
+            outlookChangeOptions.get(0).getValue() == '--' && outlookChangeOptions.get(0).getLabel().equals('--')
+        );
+        System.assert(
+            outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up')
+        );
+        System.assert(
+            outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down')
+        );
     }
 
     @isTest
@@ -317,7 +340,6 @@ public class Test_ShowMyCases {
         List<SelectOption> caseCategoryOptions = showMyCasesController.caseCategoryOptions;
         Test.stopTest();
 
-        System.assertEquals(1,caseCategoryOptions.size());
-
+        System.assertEquals(1, caseCategoryOptions.size());
     }
 }

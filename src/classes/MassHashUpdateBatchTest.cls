@@ -1,14 +1,13 @@
 @isTest
 private class MassHashUpdateBatchTest {
-    
     @isTest
     private static void runAllBatchesWithoutErrors() {
         Test.startTest();
-        new MassHashUpdateBatch ();
+        new MassHashUpdateBatch();
         Test.stopTest();
     }
-    
-    @isTest 
+
+    @isTest
     private static void runExecuteWithoutErrors() {
         Test.startTest();
         new SubscriberHashUpdateBatch().execute(null, new List<Subscriber__c>());

@@ -1,84 +1,96 @@
 <apex:component allowDML="true">
-<apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
-<apex:attribute name="showFeedbackYesNo" type="Boolean" required="true" description="flag to indicate if Yes/No buttons should be shown" />
-<apex:attribute name="showBackLinks" type="Boolean" required="true" description="flag to indicate if 'back to...' buttons should be shown" />
+    <apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
+    <apex:attribute name="showFeedbackYesNo" type="Boolean" required="true" description="flag to indicate if Yes/No buttons should be shown"
+    />
+    <apex:attribute name="showBackLinks" type="Boolean" required="true" description="flag to indicate if 'back to...' buttons should be shown"
+    />
 
-<apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
-  <noscript>
-      Note: This page requires JavaScript to run correctly.
-  </noscript>
+    <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
+    <noscript> Note: This page requires JavaScript to run correctly. </noscript>
 
-  <!-- Mat's .css edits for SFE-1202 -->
-  <style>
-    .pbHeader {
-      display: none !important;
-    }
+    <!-- Mat's .css edits for SFE-1202 -->
+    <style>
+        .pbHeader {
+            display: none !important;
+        }
 
-    .categoryLine:first-child {
-      border-bottom: solid 1px #e0e0e0 !important;
-      margin-bottom: 15px !important;
-      padding-bottom: 10px !important;
-      padding-top: 10px !important;
-    }
+        .categoryLine:first-child {
+            border-bottom: solid 1px #e0e0e0 !important;
+            margin-bottom: 15px !important;
+            padding-bottom: 10px !important;
+            padding-top: 10px !important;
+        }
 
-    body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock {
-      border-top: solid 1px #eaeaea !important;
-      border-radius: 0px !important;
-    }
+        body .bPageBlock,
+        body #bodyCell .bResource .secondaryPalette,
+        body .secondaryPalette.bPageBlock,
+        body .individualPalette .secondaryPalette.bPageBlock,
+        body .bodyDiv .genericTable,
+        body .genericPageBlockTable,
+        body .bodyDiv .bSubBlock,
+        body .bComponentBlock .bPageBlock,
+        body .bMyDashboard .bPageBlock,
+        body.rlHoverFrame .bPageBlock,
+        body.subjectSelectionPopup div.choicesBox,
+        body.lookupTab .secondaryPalette.bPageBlock,
+        body.popupTab .secondaryPalette.bPageBlock,
+        body.UserTagStatsPage .secondaryPalette.bPageBlock {
+            border-top: solid 1px #eaeaea !important;
+            border-radius: 0px !important;
+        }
 
-    body .bPageTitle .pageTitleIcon {
-      display: none !important;
-    }
+        body .bPageTitle .pageTitleIcon {
+            display: none !important;
+        }
 
-    body .bPageTitle .ptBody .pageType, body .bPageTitle .ptBody .pageDescription {
-      margin-left: 0px !important;
-    }
+        body .bPageTitle .ptBody .pageType,
+        body .bPageTitle .ptBody .pageDescription {
+            margin-left: 0px !important;
+        }
 
-    .bPageTitle .ptBody .content {
-      width: 100% !important;
-    }
-  </style>
-  
-  <div style="margin-bottom: 5px;">
-    <h2 class="section">&nbsp;</h2>
+        .bPageTitle .ptBody .content {
+            width: 100% !important;
+        }
+    </style>
+
+    <div style="margin-bottom: 5px">
+        <h2 class="section">&nbsp;</h2>
     </div>
 
     <div class="articleViewIcons">
-      <c:pkb_articleicons pkbCon="{!pkbCon}" />
+        <c:pkb_articleicons pkbCon="{!pkbCon}" />
     </div>
-    
-      <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" id="backbutton" style="margin-bottom: 5px;">
-          <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
+
+    <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" id="backbutton" style="margin-bottom: 5px">
+        <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
             <a class="relatedLink" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}">&lt; {!$Label.PKB2_Back_To_Results}</a>
-          </apex:outputText>
-          <apex:outputText rendered="{!NOT(pkbCon.displaySearchResultsLink)}">
+        </apex:outputText>
+        <apex:outputText rendered="{!NOT(pkbCon.displaySearchResultsLink)}">
             <a class="relatedLink" href="{!$Site.CurrentSiteUrl}">&lt; {!$Label.PKB2_Back_To_Search_Page}</a>
-          </apex:outputText>
-      </apex:outputPanel>
+        </apex:outputText>
+    </apex:outputPanel>
 
-    <div style="width: 100%;" id="articleContainer">
-      <apex:insert name="body" />
-      <apex:outputPanel layout="block" style="margin-top: 20px; margin-bottom: 20px;" rendered="{!NOT(pkbCon.isSite)}">
-      <i>Viewing the PKB from a normal salesforce url (instead of through a Sites url) is for testing purposes only. No article content will render on this page, 
-      but all other PKB functionality can be tested.</i>
-      </apex:outputPanel>
+    <div style="width: 100%" id="articleContainer">
+        <apex:insert name="body" />
+        <apex:outputPanel layout="block" style="margin-top: 20px; margin-bottom: 20px" rendered="{!NOT(pkbCon.isSite)}">
+            <i>Viewing the PKB from a normal salesforce url (instead of through a Sites url) is for testing purposes only. No
+                article content will render on this page, but all other PKB functionality can be tested.</i>
+        </apex:outputPanel>
 
-      <script>
-        var x = document.getElementsByClassName("labelCol");
-        x[0].innerHTML = "Category";
-      </script>
+        <script>
+            var x = document.getElementsByClassName('labelCol');
+            x[0].innerHTML = 'Category';
+        </script>
 
-      <script>
-        var x = document.getElementsByClassName("detailList");
-        x[0].classList.add("categoryLine");
-      </script>
-
+        <script>
+            var x = document.getElementsByClassName('detailList');
+            x[0].classList.add('categoryLine');
+        </script>
     </div>
-   <apex:outputText rendered="{!pkbCon.facebook}">
-      <c:pkb_related pkbCon="{!pkbCon}" />
-   </apex:outputText>
-  <apex:outputPanel layout="block" styleClass="feedbackContainer" rendered="{!showFeedbackYesNo}">
-    <c:pkb_feedbackyesno pkbCon="{!pkbCon}" />
-  </apex:outputPanel>
-
+    <apex:outputText rendered="{!pkbCon.facebook}">
+        <c:pkb_related pkbCon="{!pkbCon}" />
+    </apex:outputText>
+    <apex:outputPanel layout="block" styleClass="feedbackContainer" rendered="{!showFeedbackYesNo}">
+        <c:pkb_feedbackyesno pkbCon="{!pkbCon}" />
+    </apex:outputPanel>
 </apex:component>

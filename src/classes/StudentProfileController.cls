@@ -245,9 +245,10 @@ global with sharing class StudentProfileController {
         List<TERM__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c
             FROM TERM__c
-            WHERE PeopleSoft_Code__c = :currentTerm 
-            OR PeopleSoft_Code__c = :nextTermPeoplesoftCode 
-            OR PeopleSoft_Code__c = :futureTermPeoplesoftCode 
+            WHERE
+                PeopleSoft_Code__c = :currentTerm
+                OR PeopleSoft_Code__c = :nextTermPeoplesoftCode
+                OR PeopleSoft_Code__c = :futureTermPeoplesoftCode
         ];
 
         for (TERM__c term : termList) {
@@ -276,9 +277,9 @@ global with sharing class StudentProfileController {
             FROM Service_Indicator__c
             WHERE
                 SI_Contact__c = :theContact.Id
-                AND SI_Positive_Service_Indicator__c = false
+                AND SI_Positive_Service_Indicator__c = FALSE
                 AND (SI_Start_Date__c < :Date.today()
-                OR SI_Start_Date__c = null)
+                OR SI_Start_Date__c = NULL)
             ORDER BY SI_Start_Date__c ASC, SI_Code__c ASC
         ];
         serviceIndicators = (!serviceIndicatorList.isEmpty() ? serviceIndicatorList : new List<Service_Indicator__c>());
@@ -736,7 +737,7 @@ global with sharing class StudentProfileController {
                         Position__c,
                         Updated_Date__c
                     FROM Me3_Careers__r
-                    WHERE Active__c = true
+                    WHERE Active__c = TRUE
                     ORDER BY Updated_Date__c DESC, Position__c ASC
                     LIMIT 10
                 )
@@ -778,7 +779,7 @@ global with sharing class StudentProfileController {
                         Position__c,
                         Updated_Date__c
                     FROM Me3_Careers__r
-                    WHERE Active__c = true
+                    WHERE Active__c = TRUE
                     ORDER BY Updated_Date__c DESC, Position__c ASC, Plan_Code__c
                     LIMIT 10
                 )

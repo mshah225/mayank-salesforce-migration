@@ -72,10 +72,10 @@
             function KaView(m, parentView) {
                 this.el = $$(
                     '<li>' +
-                        '<span class="elmTitle"></span>' +
-                        '<img src="/img/func_icons/util/pencil12.gif" class="kaItemPencil" title=" Edit ">' +
-                        '<img src="/img/func_icons/remove12_on.gif" class="kaItemDelete" title=" Delete ">' +
-                        '</li>'
+                    '<span class="elmTitle"></span>' +
+                    '<img src="/img/func_icons/util/pencil12.gif" class="kaItemPencil" title=" Edit ">' +
+                    '<img src="/img/func_icons/remove12_on.gif" class="kaItemDelete" title=" Delete ">' +
+                    '</li>'
                 );
                 this.model = m;
                 this.parentView = parentView;
@@ -108,7 +108,7 @@
             function KAModalView(objToEdit, parentView) {
                 this.el = $$('<div class="modalViewContainer"></div>');
                 $$('body').find('overlayModal').remove();
-                $$('<div class="overlayModal"></div>').css({opacity: 0.3}).appendTo('body');
+                $$('<div class="overlayModal"></div>').css({ opacity: 0.3 }).appendTo('body');
                 this.objToEdit = objToEdit;
                 this.parentView = parentView;
 

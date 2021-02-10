@@ -29,16 +29,16 @@
 
         /* navbar style */
 
-        .navbar-nav > li > .dropdown-menu {
+        .navbar-nav>li>.dropdown-menu {
             border-top-left-radius: 4px;
             border-top-right-radius: 4px;
         }
 
-        .navbar-nav > .open > a .caret:before {
+        .navbar-nav>.open>a .caret:before {
             bottom: -23px;
         }
 
-        .navbar-nav > .open > a .caret:after {
+        .navbar-nav>.open>a .caret:after {
             bottom: -24px;
         }
 

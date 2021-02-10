@@ -6,7 +6,7 @@
                     {
                         textChecked: 'Yes',
                         textNotChecked: 'No',
-                        functionOnChange: function ($element) {},
+                        functionOnChange: function ($element) { },
                     },
                     options
                 );

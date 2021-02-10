@@ -1,16 +1,8 @@
 <apex:component allowDML="true">
     <apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
-    <apex:attribute
-        name="showFeedbackYesNo"
-        type="Boolean"
-        required="true"
-        description="flag to indicate if Yes/No buttons should be shown"
+    <apex:attribute name="showFeedbackYesNo" type="Boolean" required="true" description="flag to indicate if Yes/No buttons should be shown"
     />
-    <apex:attribute
-        name="showBackLinks"
-        type="Boolean"
-        required="true"
-        description="flag to indicate if 'back to...' buttons should be shown"
+    <apex:attribute name="showBackLinks" type="Boolean" required="true" description="flag to indicate if 'back to...' buttons should be shown"
     />
 
     <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
@@ -69,16 +61,9 @@
         <c:pkb_articleicons pkbCon="{!pkbCon}" />
     </div>
 
-    <apex:outputPanel
-        layout="block"
-        rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}"
-        id="backbutton"
-        style="margin-bottom: 5px"
-    >
+    <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" id="backbutton" style="margin-bottom: 5px">
         <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
-            <a class="relatedLink" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}"
-                >&lt; {!$Label.PKB2_Back_To_Results}</a
-            >
+            <a class="relatedLink" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}">&lt; {!$Label.PKB2_Back_To_Results}</a>
         </apex:outputText>
         <apex:outputText rendered="{!NOT(pkbCon.displaySearchResultsLink)}">
             <a class="relatedLink" href="{!$Site.CurrentSiteUrl}">&lt; {!$Label.PKB2_Back_To_Search_Page}</a>
@@ -88,10 +73,8 @@
     <div style="width: 100%" id="articleContainer">
         <apex:insert name="body" />
         <apex:outputPanel layout="block" style="margin-top: 20px; margin-bottom: 20px" rendered="{!NOT(pkbCon.isSite)}">
-            <i
-                >Viewing the PKB from a normal salesforce url (instead of through a Sites url) is for testing purposes
-                only. No article content will render on this page, but all other PKB functionality can be tested.</i
-            >
+            <i>Viewing the PKB from a normal salesforce url (instead of through a Sites url) is for testing purposes only. No
+                article content will render on this page, but all other PKB functionality can be tested.</i>
         </apex:outputPanel>
 
         <script>

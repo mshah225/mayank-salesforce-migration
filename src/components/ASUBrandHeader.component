@@ -1,9 +1,5 @@
 <apex:component controller="ASUBrandController">
-    <apex:attribute
-        name="siteTitleName"
-        description="The name of the site to display in the ASU header"
-        type="String"
-    />
+    <apex:attribute name="siteTitleName" description="The name of the site to display in the ASU header" type="String" />
     <apex:attribute name="siteTitleUrl" description="The URL for the site title name link" type="String" />
     <c:ASUBrandHeaderStyles />
 
@@ -19,14 +15,7 @@
                 <input name="ie" type="hidden" value="UTF-8" />
                 <input name="oe" type="hidden" value="UTF-8" />
                 <input name="client" type="hidden" value="asu_frontend" />
-                <input
-                    name="q"
-                    class="asu_search_box"
-                    id="asu_search_box"
-                    placeholder="Search"
-                    autocomplete="off"
-                    type="text"
-                />
+                <input name="q" class="asu_search_box" id="asu_search_box" placeholder="Search" autocomplete="off" type="text" />
                 <input class="asu_search_button" type="submit" value="Search" />
             </form>
         </div>
@@ -40,24 +29,13 @@
             <div id="asu_mobile_hdr">
                 <div id="asu_logo">
                     <a id="asu-hdr-full-logo" href="https://www.asu.edu/" target="_top">
-                        <img
-                            alt="Arizona State University"
-                            src="https://www.asu.edu/asuthemes/4.9/assets/arizona-state-university-logo.png"
-                        />
+                        <img alt="Arizona State University" src="https://www.asu.edu/asuthemes/4.9/assets/arizona-state-university-logo.png" />
                     </a>
                     <a id="asu-hdr-mobile-logo" href="https://www.asu.edu/" target="_top">
-                        <img
-                            alt="Arizona State University"
-                            src="https://www.asu.edu/asuthemes/4.9/assets/asu-logo.png"
-                        />
+                        <img alt="Arizona State University" src="https://www.asu.edu/asuthemes/4.9/assets/asu-logo.png" />
                     </a>
                 </div>
-                <div
-                    class="asuhide f-navicon"
-                    id="asu_mobile_button"
-                    onclick="javascript:ASUHeader.toggleASU();"
-                    role="button"
-                >
+                <div class="asuhide f-navicon" id="asu_mobile_button" onclick="javascript:ASUHeader.toggleASU();" role="button">
                     <a href="javascript:ASUHeader.toggleASU();">Menu</a>
                 </div>
                 <div class="f-search" id="search_new" onclick="javascript:ASUHeader.toggleASU('main-search');"></div>
@@ -88,43 +66,25 @@
                                     <a href="//www.asu.edu/" target="_top">ASU Home</a>
                                     <ul>
                                         <li>
-                                            <a
-                                                class="first"
-                                                href="//www.asu.edu/?feature=newsevents"
-                                                target="_top"
-                                                title="News and Events"
-                                                >News/Events</a
-                                            >
+                                            <a class="first" href="//www.asu.edu/?feature=newsevents" target="_top" title="News and Events">News/Events</a>
                                         </li>
                                         <li>
-                                            <a href="//www.asu.edu/?feature=academics" target="_top" title="Academics"
-                                                >Academics</a
-                                            >
+                                            <a href="//www.asu.edu/?feature=academics" target="_top" title="Academics">Academics</a>
                                         </li>
                                         <li>
-                                            <a href="//www.asu.edu/?feature=research" target="_top" title="Research"
-                                                >Research</a
-                                            >
+                                            <a href="//www.asu.edu/?feature=research" target="_top" title="Research">Research</a>
                                         </li>
                                         <li>
-                                            <a href="//www.asu.edu/?feature=athletics" target="_top" title="Athletics"
-                                                >Athletics</a
-                                            >
+                                            <a href="//www.asu.edu/?feature=athletics" target="_top" title="Athletics">Athletics</a>
                                         </li>
                                         <li>
-                                            <a href="//www.asu.edu/?feature=alumni" target="_top" title="Alumni"
-                                                >Alumni</a
-                                            >
+                                            <a href="//www.asu.edu/?feature=alumni" target="_top" title="Alumni">Alumni</a>
                                         </li>
                                         <li>
-                                            <a href="//www.asu.edu/?feature=giving" target="_top" title="Giving"
-                                                >Giving</a
-                                            >
+                                            <a href="//www.asu.edu/?feature=giving" target="_top" title="Giving">Giving</a>
                                         </li>
                                         <li>
-                                            <a href="//www.asu.edu/?feature=president" target="_top" title="President"
-                                                >President</a
-                                            >
+                                            <a href="//www.asu.edu/?feature=president" target="_top" title="President">President</a>
                                         </li>
                                         <li>
                                             <a href="//www.asu.edu/about" target="_top" title="About ASU">About ASU</a>
@@ -138,121 +98,52 @@
                                     <a href="//www.asu.edu/colleges/" target="_top">Colleges and Schools</a>
                                     <ul>
                                         <li>
-                                            <a
-                                                class="first"
-                                                href="//artsandsciences.asu.edu/"
-                                                target="_top"
-                                                title="Arts and Sciences website"
-                                                >Arts and Sciences</a
-                                            >
+                                            <a class="first" href="//artsandsciences.asu.edu/" target="_top" title="Arts and Sciences website">Arts and Sciences</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//wpcarey.asu.edu/"
-                                                target="_top"
-                                                title="W. P. Carey School of Business Web and Morrison School of Agribusiness website"
-                                                >Business</a
-                                            >
+                                            <a href="//wpcarey.asu.edu/" target="_top" title="W. P. Carey School of Business Web and Morrison School of Agribusiness website">Business</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//herbergerinstitute.asu.edu"
-                                                target="_top"
-                                                title="Herberger Institute for Design and the Arts website"
-                                                >Design and the Arts</a
-                                            >
+                                            <a href="//herbergerinstitute.asu.edu" target="_top" title="Herberger Institute for Design and the Arts website">Design and the Arts</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//education.asu.edu/"
-                                                target="_top"
-                                                title="Mary Lou Fulton Teachers College website"
-                                                >Education</a
-                                            >
+                                            <a href="//education.asu.edu/" target="_top" title="Mary Lou Fulton Teachers College website">Education</a>
                                         </li>
                                         <li>
-                                            <a href="//engineering.asu.edu/" target="_top" title="Engineering website"
-                                                >Engineering</a
-                                            >
+                                            <a href="//engineering.asu.edu/" target="_top" title="Engineering website">Engineering</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//sfis.asu.edu/"
-                                                target="_top"
-                                                title="Future of Innovation in Society website"
-                                                >Future of Innovation in Society</a
-                                            >
+                                            <a href="//sfis.asu.edu/" target="_top" title="Future of Innovation in Society website">Future of Innovation in Society</a>
                                         </li>
                                         <li>
-                                            <a href="//graduate.asu.edu" target="_top" title="Graduate College website"
-                                                >Graduate</a
-                                            >
+                                            <a href="//graduate.asu.edu" target="_top" title="Graduate College website">Graduate</a>
                                         </li>
                                         <li>
-                                            <a href="//chs.asu.edu/" target="_top" title="Health Solutions website"
-                                                >Health Solutions</a
-                                            >
+                                            <a href="//chs.asu.edu/" target="_top" title="Health Solutions website">Health Solutions</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//honors.asu.edu/"
-                                                target="_top"
-                                                title="Barrett, The Honors College website"
-                                                >Honors</a
-                                            >
+                                            <a href="//honors.asu.edu/" target="_top" title="Barrett, The Honors College website">Honors</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//cronkite.asu.edu"
-                                                target="_top"
-                                                title="Walter Cronkite School of Journalism and Mass Communication website"
-                                                >Journalism</a
-                                            >
+                                            <a href="//cronkite.asu.edu" target="_top" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//www.law.asu.edu/"
-                                                target="_top"
-                                                title="Sandra Day O' Connor College of Law website"
-                                                >Law</a
-                                            >
+                                            <a href="//www.law.asu.edu/" target="_top" title="Sandra Day O' Connor College of Law website">Law</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//nursingandhealth.asu.edu/"
-                                                target="_top"
-                                                title="College of Nursing and Health Innovation website"
-                                                >Nursing and Health Innovation</a
-                                            >
+                                            <a href="//nursingandhealth.asu.edu/" target="_top" title="College of Nursing and Health Innovation website">Nursing and Health Innovation</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//copp.asu.edu"
-                                                target="_top"
-                                                title="College of Public Programs website"
-                                                >Public Service and Community Solutions</a
-                                            >
+                                            <a href="//copp.asu.edu" target="_top" title="College of Public Programs website">Public Service and Community Solutions</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//schoolofsustainability.asu.edu"
-                                                target="_top"
-                                                title="School of Sustainability website"
-                                                >Sustainability</a
-                                            >
+                                            <a href="//schoolofsustainability.asu.edu" target="_top" title="School of Sustainability website">Sustainability</a>
                                         </li>
                                         <li>
-                                            <a href="//uc.asu.edu/" target="_top" title="University College website"
-                                                >University College</a
-                                            >
+                                            <a href="//uc.asu.edu/" target="_top" title="University College website">University College</a>
                                         </li>
                                         <li>
-                                            <a
-                                                target="_top"
-                                                href="https://thunderbird.asu.edu/"
-                                                title="Thunderbird School of Global Management website"
-                                                >Thunderbird School of Global Management</a
-                                            >
+                                            <a target="_top" href="https://thunderbird.asu.edu/" title="Thunderbird School of Global Management website">Thunderbird School of Global Management</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -263,44 +154,27 @@
                                             <a class="border first" href="//www.asu.edu/map/" target="_top">Map</a>
                                         </li>
                                         <li>
-                                            <a href="//campus.asu.edu/tempe/" target="_top" title="Tempe campus"
-                                                >Tempe</a
-                                            >
+                                            <a href="//campus.asu.edu/tempe/" target="_top" title="Tempe campus">Tempe</a>
                                         </li>
                                         <li>
                                             <a href="//campus.asu.edu/west/" target="_top" title="West campus">West</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//campus.asu.edu/polytechnic/"
-                                                target="_top"
-                                                title="Polytechnic campus"
-                                                >Polytechnic</a
-                                            >
+                                            <a href="//campus.asu.edu/polytechnic/" target="_top" title="Polytechnic campus">Polytechnic</a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//campus.asu.edu/downtown/"
-                                                target="_top"
-                                                title="Downtown Phoenix campus"
-                                                >Downtown Phoenix
+                                            <a href="//campus.asu.edu/downtown/" target="_top" title="Downtown Phoenix campus">Downtown Phoenix
                                             </a>
                                         </li>
                                         <li>
-                                            <a
-                                                href="//asuonline.asu.edu/"
-                                                target="_top"
-                                                title="Online and Extended campus"
-                                                >Online and Extended
+                                            <a href="//asuonline.asu.edu/" target="_top" title="Online and Extended campus">Online and Extended
                                             </a>
                                         </li>
                                         <li>
                                             <a class="border" href="//havasu.asu.edu/" target="_top">Lake Havasu</a>
                                         </li>
                                         <li>
-                                            <a href="https://corporate.asu.edu/" target="_top"
-                                                >Corporate Engagement and Strategic Partnerships</a
-                                            >
+                                            <a href="https://corporate.asu.edu/" target="_top">Corporate Engagement and Strategic Partnerships</a>
                                         </li>
                                         <li>
                                             <a href="//asuresearchpark.com/" target="_top">Research Park</a>
@@ -309,16 +183,12 @@
                                             <a href="//washingtoncenter.asu.edu/" target="_top">Washington D.C.</a>
                                         </li>
                                         <li>
-                                            <a href="//wpcarey.asu.edu/mba/china-program/english/" target="_top"
-                                                >China</a
-                                            >
+                                            <a href="//wpcarey.asu.edu/mba/china-program/english/" target="_top">China</a>
                                         </li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="//isearch.asu.edu/" target="_top" title="Directory, Index and other info"
-                                        >Directory</a
-                                    >
+                                    <a href="//isearch.asu.edu/" target="_top" title="Directory, Index and other info">Directory</a>
                                 </li>
                             </ul>
                         </div>
@@ -335,14 +205,7 @@
                             <input name="ie" type="hidden" value="UTF-8" />
                             <input name="oe" type="hidden" value="UTF-8" />
                             <input name="client" type="hidden" value="asu_frontend" />
-                            <input
-                                name="q"
-                                class="asu_search_box"
-                                id="masu_search_box"
-                                placeholder="Search"
-                                autocomplete="off"
-                                type="text"
-                            />
+                            <input name="q" class="asu_search_box" id="masu_search_box" placeholder="Search" autocomplete="off" type="text" />
                             <input class="asu_search_button" type="submit" value="Search" />
                         </form>
                     </div>

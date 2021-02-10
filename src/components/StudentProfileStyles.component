@@ -26,19 +26,22 @@
             margin: 0px;
         }
 
-        a, a:hover {
+        a,
+        a:hover {
             color: #9f2b50;
         }
 
         img.img-responsive.intro {
             border-radius: 4px;
             border: solid 2px #fff;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         }
 
         .mainTabHeader {
             /* Adjust for tabbable view in coach portal */
-            display: {!IF($CurrentPage.parameters.tabbable == 'true','none;','initial;')}
+            display: {
+                !IF($CurrentPage.parameters.tabbable=='true', 'none;', 'initial;')
+            }
         }
 
         .headerBackground {
@@ -52,7 +55,8 @@
             max-width: 1200px;
             margin: auto;
             /* Adjust for tabbable view in coach portal */
-            padding: {!IF($CurrentPage.parameters.tabbable == 'true',
+            padding: {
+                !IF($CurrentPage.parameters.tabbable=='true',
                 '0px 20px 20px 20px;;',
                 '24px 20px 20px 20px;')
             }
@@ -116,7 +120,7 @@
             background: none;
             font-size: 16px;
             background-color: #fff;
-            max-width:  150px;
+            max-width: 150px;
             cursor: pointer;
             border-top-right-radius: 0px;
             border-top-left-radius: 0px;
@@ -133,7 +137,7 @@
             background: none;
             font-size: 16px;
             background-color: #fafafa;
-            max-width:  150px;
+            max-width: 150px;
             cursor: pointer;
             border-top-right-radius: 0px;
             border-top-left-radius: 0px;
@@ -141,22 +145,22 @@
 
         a.accordion-toggle {
             display: block;
-            padding: 10px  15px;
+            padding: 10px 15px;
             font-size: 14pt;
             border-radius: 0px;
             color: #303038;
             font-weight: 400;
         }
 
-            a.accordion-toggle:focus,
-            a.accordion-toggle:hover {
-                text-decoration: none;
-            }
+        a.accordion-toggle:focus,
+        a.accordion-toggle:hover {
+            text-decoration: none;
+        }
 
-            a.accordion-toggle.collapsed {
-                background-color: #fff;
-                border-top: none;
-            }
+        a.accordion-toggle.collapsed {
+            background-color: #fff;
+            border-top: none;
+        }
 
         div.panel-heading {
             padding: 0;
@@ -182,9 +186,9 @@
             padding: 1px 2px 2px 2px;
         }
 
-            td.tabAdjusted .apexp {
-                padding: 10px;
-            }
+        td.tabAdjusted .apexp {
+            padding: 10px;
+        }
 
         .sideBox {
             background-color: #fff;
@@ -196,54 +200,54 @@
             margin-bottom: 15px;
         }
 
-            .sideBox>.row.sideHeader {
-                margin-bottom: 10px;
-            }
+        .sideBox>.row.sideHeader {
+            margin-bottom: 10px;
+        }
 
-            .sideBox h3 {
-                margin-top: 0px;
-                color: #9f2b50;
-            }
+        .sideBox h3 {
+            margin-top: 0px;
+            color: #9f2b50;
+        }
 
-            .sideBoxMoreLink {
-                font-weight: normal;
-                font-size: 14pt;
-                margin-top: 5px;
-            }
+        .sideBoxMoreLink {
+            font-weight: normal;
+            font-size: 14pt;
+            margin-top: 5px;
+        }
 
-            .sideBox a {
-                color: #9f2b50;
-                font-size: 11pt;
-            }
+        .sideBox a {
+            color: #9f2b50;
+            font-size: 11pt;
+        }
 
-                .sideBox a:hover,
-                .sideBox a:focus {
-                    text-decoration: underline;
-                    color: #9f2b50;
-                    font-size: 11pt;
-                }
+        .sideBox a:hover,
+        .sideBox a:focus {
+            text-decoration: underline;
+            color: #9f2b50;
+            font-size: 11pt;
+        }
 
-            .sideBoxTable {
-                border-bottom: solid 2px #fff;
-                width: 100%;
-            }
+        .sideBoxTable {
+            border-bottom: solid 2px #fff;
+            width: 100%;
+        }
 
-                .sideBoxTableHeader {
-                    font-size: 11pt;
-                    color: #6c7c82;
-                    background-color: #fff;
-                    border-top: none !important;
-                    border-bottom: solid 2px #6c7c82;
-                }
+        .sideBoxTableHeader {
+            font-size: 11pt;
+            color: #6c7c82;
+            background-color: #fff;
+            border-top: none !important;
+            border-bottom: solid 2px #6c7c82;
+        }
 
-                .sideBoxTableRow {
-                    font-size: 11pt;
-                    border-bottom: 1px solid #e9eaec;
-                }​
+        .sideBoxTableRow {
+            font-size: 11pt;
+            border-bottom: 1px solid #e9eaec;
+        }
 
-                .sideBoxTableRow td {
-                    font-size: 11pt;
-                }
+        ​ .sideBoxTableRow td {
+            font-size: 11pt;
+        }
 
         .table-borderless tbody tr td,
         .table-borderless tbody tr th,
@@ -267,30 +271,46 @@
         }
 
         /*.tableAdjust {*/
-            /*width: 100%;*/
+
+        /*width: 100%;*/
+
         /*}*/
 
-            /*.tableAdjust td {*/
-                /*vertical-align: top;*/
-                /*font-size: 11pt;*/
-                /*padding: 6px;*/
-            /*}*/
+        /*.tableAdjust td {*/
 
-            /*.tableAdjust th {*/
-                /*font-size: 11pt;*/
-                /*border-bottom: solid 3px #777;*/
-                /*padding: 5px;*/
-            /*}*/
+        /*vertical-align: top;*/
 
-            /*.tableAdjust tr:nth-child(even) {*/
-                /*background-color: #f5f6f8;*/
-                /*border-top: solid 1px #eedeee;*/
-                /*border-bottom: solid 1px #eedeee;*/
-            /*}*/
+        /*font-size: 11pt;*/
 
-            /*.tableAdjust tr td:nth-child(1) {*/
-                /*font-weight: 400;*/
-            /*}*/
+        /*padding: 6px;*/
+
+        /*}*/
+
+        /*.tableAdjust th {*/
+
+        /*font-size: 11pt;*/
+
+        /*border-bottom: solid 3px #777;*/
+
+        /*padding: 5px;*/
+
+        /*}*/
+
+        /*.tableAdjust tr:nth-child(even) {*/
+
+        /*background-color: #f5f6f8;*/
+
+        /*border-top: solid 1px #eedeee;*/
+
+        /*border-bottom: solid 1px #eedeee;*/
+
+        /*}*/
+
+        /*.tableAdjust tr td:nth-child(1) {*/
+
+        /*font-weight: 400;*/
+
+        /*}*/
 
         .table {
             /* SFE-6494 */
@@ -313,48 +333,48 @@
             font-size: 10pt;
         }
 
-            .comments-panel>hr {
-                border-top: 1px solid #ddd !important;
-            }
+        .comments-panel>hr {
+            border-top: 1px solid #ddd !important;
+        }
 
-            .comments-header {
-                width: 100%;
-                padding: 0px 10px 0px 0px;
-            }
+        .comments-header {
+            width: 100%;
+            padding: 0px 10px 0px 0px;
+        }
 
-                .comments-header .fa {
-                    margin: 1px;
-                }
+        .comments-header .fa {
+            margin: 1px;
+        }
 
-                .comments-header h4,
-                .comments-header {
-                    display: inline-block;
-                    color: #9f2b50;
-                    margin-top: 0px;
-                    margin-bottom: 0px;
-                    /* SFE-6494 */
-                    font-size: 10pt !important;
-                }
+        .comments-header h4,
+        .comments-header {
+            display: inline-block;
+            color: #9f2b50;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            /* SFE-6494 */
+            font-size: 10pt !important;
+        }
 
-            .comments-header-date {
-                color: #353535 !important;
-                /* SFE-6494 */
-                font-size: 10pt;
-            }
+        .comments-header-date {
+            color: #353535 !important;
+            /* SFE-6494 */
+            font-size: 10pt;
+        }
 
-            .comments-main-comment {
-                padding: 2px 0px 2px 0px;
-            }
+        .comments-main-comment {
+            padding: 2px 0px 2px 0px;
+        }
 
-            .comments-nested {
-                padding: 25px 0px 5px 50px;
-                border-top: solid 1px #c7c7c7;
-            }
+        .comments-nested {
+            padding: 25px 0px 5px 50px;
+            border-top: solid 1px #c7c7c7;
+        }
 
-            .comments-hr {
-                margin-top: 5px;
-                margin-bottom: 5px;
-            }
+        .comments-hr {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
 
         #ps_advising_notes_section,
         #ps_comments_section {
@@ -370,7 +390,8 @@
             background: #00A3E0;
         }
 
-        .program-indicator-count, .accelerated-indicator {
+        .program-indicator-count,
+        .accelerated-indicator {
             padding: 1px 5px;
             color: #fff;
             font-size: 14px;
@@ -414,7 +435,7 @@
             }
 
             .panel-body {
-            /* SFE-6494 */
+                /* SFE-6494 */
                 font-size: 10pt !important;
             }
 
@@ -423,7 +444,7 @@
             }
 
             .mainCont {
-                padding: 76px 10px 20px 10px  !important;
+                padding: 76px 10px 20px 10px !important;
             }
 
             td.rich-tab-bottom-line.mainTabHeader {
@@ -458,10 +479,15 @@
         }
 
         /* Styling for tables in between devices */
+
         /*@media screen and (max-width: 605px) {*/
-            /*.table-responsive {*/
-                /*max-width: 450px;*/
-            /*}*/
+
+        /*.table-responsive {*/
+
+        /*max-width: 450px;*/
+
+        /*}*/
+
         /*}*/
 
         @media screen and (max-width: 540px) {
@@ -474,15 +500,20 @@
             }
 
             /*.table-responsive {*/
-                /*max-width: 320px;*/
+            /*max-width: 320px;*/
             /*}*/
         }
 
         /* Styling for tables in between devices */
+
         /*@media screen and (max-width: 392px) {*/
-            /*.table-responsive {*/
-                /*max-width: 280px;*/
-            /*}*/
+
+        /*.table-responsive {*/
+
+        /*max-width: 280px;*/
+
+        /*}*/
+
         /*}*/
 
         @media screen and (max-width: 320px) {
@@ -514,7 +545,7 @@
             }
 
             /*.table-responsive {*/
-                /*max-width: 256px;*/
+            /*max-width: 256px;*/
             /*}*/
         }
     </style>

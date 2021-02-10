@@ -1,11 +1,6 @@
 <apex:component controller="MyASUHelpAttachmentsController" allowDML="true">
-    <apex:attribute
-        name="parentId"
-        description="Parent Id of the attachment to be uploaded"
-        assignTo="{!attParentId}"
-        type="Id"
-        required="true"
-    />
+    <apex:attribute name="parentId" description="Parent Id of the attachment to be uploaded" assignTo="{!attParentId}" type="Id"
+        required="true" />
     <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" />
     <script>
         function validateFile() {
@@ -30,12 +25,12 @@
                 if (validFileTypes.indexOf(fileExtension.toLowerCase()) == -1 || fileSize > 25) {
                     alert(
                         'This attachment is not an acceptable file type or exceeds 25MB.\n' +
-                            'The following attachment types are allowed:\n' +
-                            'Microsoft Word (.doc or .docx)\n' +
-                            'Microsoft Excel (.xls or .xlsx)\n' +
-                            'Image (.jpg, .jpeg, .gif, .png)\n' +
-                            'Adobe PDF (.pdf)\n' +
-                            'Text (.txt)'
+                        'The following attachment types are allowed:\n' +
+                        'Microsoft Word (.doc or .docx)\n' +
+                        'Microsoft Excel (.xls or .xlsx)\n' +
+                        'Image (.jpg, .jpeg, .gif, .png)\n' +
+                        'Adobe PDF (.pdf)\n' +
+                        'Text (.txt)'
                     );
 
                     isValid = false;
@@ -55,12 +50,7 @@
 
             <br />
             <apex:inputFile fileName="{!objAtt.name}" value="{!objAtt.Body}" style="float: left" />
-            <apex:commandButton
-                onclick="return validateFile();"
-                action="{!uploadAtt}"
-                value="Upload"
-                styleClass="btn kbbtn"
-                style="color: #fff; background: #990033; padding: 5px; width: 55px; float: right"
+            <apex:commandButton onclick="return validateFile();" action="{!uploadAtt}" value="Upload" styleClass="btn kbbtn" style="color: #fff; background: #990033; padding: 5px; width: 55px; float: right"
             />
         </div>
         <!-- Attachment Upload Section Ends -->
@@ -75,12 +65,7 @@
                 </div>
                 <apex:pageBlockTable value="{!listAtt}" rendered="{!isAtt}" var="eachAtt" columns="2">
                     <apex:column headerValue="Name">
-                        <apex:outputLink
-                            value="{!URLFOR($Action.Attachment.Download, eachAtt.id)}"
-                            style="color: #990033"
-                            target="_blank"
-                            >{!eachAtt.Name}</apex:outputLink
-                        >
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAtt.id)}" style="color: #990033" target="_blank">{!eachAtt.Name}</apex:outputLink>
                     </apex:column>
                     <apex:column headerValue="Created Date">
                         <apex:outputText value="{0, date, MMMM d','  yyyy, hh:MM a z}" label="Date Opened">

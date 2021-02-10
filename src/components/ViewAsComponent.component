@@ -32,7 +32,7 @@
         j$ = $.noConflict();
         var selectOptionValues = [];
         j$(document).ready(function () {
-            j$('.viewAsList').chosen({search_contains: true});
+            j$('.viewAsList').chosen({ search_contains: true });
             j$('.viewAsList option').each(function () {
                 if (j$(this).is(':enabled')) {
                     selectOptionValues.push(j$(this).val());

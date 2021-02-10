@@ -1,10 +1,6 @@
 <apex:component allowDML="true">
     <apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
-    <apex:attribute
-        name="showBackLinks"
-        type="Boolean"
-        required="false"
-        description="flag to indicate if 'back to...' buttons should be shown"
+    <apex:attribute name="showBackLinks" type="Boolean" required="false" description="flag to indicate if 'back to...' buttons should be shown"
     />
 
     <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
@@ -13,25 +9,15 @@
         <apex:outputPanel layout="block" style="width: 100%; margin-top: 5px">
             <div style="font-weight: bold; font-size: 125%; float: left">
                 <apex:outputText rendered="{!pkbCon.displayContactUs}">
-                    <apex:outputLink value="{!pkbCon.currentSiteUrl}" rendered="{!NOT(pkbCon.facebook)}"
-                        >Home</apex:outputLink
-                    >
-                    <apex:outputLink value="{!pkbCon.currentSiteUrl}" rendered="{!pkbCon.facebook}"
-                        >Knowledge Base</apex:outputLink
-                    >
+                    <apex:outputLink value="{!pkbCon.currentSiteUrl}" rendered="{!NOT(pkbCon.facebook)}">Home</apex:outputLink>
+                    <apex:outputLink value="{!pkbCon.currentSiteUrl}" rendered="{!pkbCon.facebook}">Knowledge Base</apex:outputLink>
                     <apex:outputText rendered="{!NOT(pkbCon.facebook)}">&nbsp;&gt;&nbsp;</apex:outputText>
                     <apex:outputText rendered="{!pkbCon.facebook}">&nbsp;&#124;&nbsp;</apex:outputText>
                     {!$Label.PKB2_Contact_Us}
                 </apex:outputText>
             </div>
             <apex:outputPanel layout="block" style="float: right" rendered="{!pkbCon.multiLanguage}">
-                <apex:selectList
-                    styleClass="languages"
-                    value="{!pkbCon.selectedLanguage}"
-                    multiSelect="false"
-                    size="1"
-                    onchange="setLanguage(this);"
-                >
+                <apex:selectList styleClass="languages" value="{!pkbCon.selectedLanguage}" multiSelect="false" size="1" onchange="setLanguage(this);">
                     <apex:selectOptions value="{!pkbCon.languageOptions}" />
                 </apex:selectList>
             </apex:outputPanel>
@@ -43,18 +29,9 @@
     <form class="form" id="searchAskForm">
         <div style="float: left">
             <div id="searchAskInputContainer">
-                <textarea
-                    onfocus="clearPrompt(this);"
-                    onblur="restorePrompt(this); buildSearchHref();"
-                    onkeypress="checkForEnter(event, this);"
-                    title="{!pkbCon.searchPrompt}"
-                    tabindex="1"
-                    type="text"
-                    name="inputboxform"
-                    class="{!IF(pkbCon.enteredSearchQuery == pkbCon.searchPrompt, 'default', '')}"
-                    id="searchAskInput"
-                    style="height: 36px"
-                >
+                <textarea onfocus="clearPrompt(this);" onblur="restorePrompt(this); buildSearchHref();" onkeypress="checkForEnter(event, this);"
+                    title="{!pkbCon.searchPrompt}" tabindex="1" type="text" name="inputboxform" class="{!IF(pkbCon.enteredSearchQuery == pkbCon.searchPrompt, 'default', '')}"
+                    id="searchAskInput" style="height: 36px">
 {!pkbCon.enteredSearchQuery}</textarea
                 >
                 <a

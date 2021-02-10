@@ -1,6 +1,6 @@
 <design:component>
-    <design:attribute name="type" label = "Type of Issue" datasource="Report A Bug, New Development Request" />
-    <design:attribute name="questionOne" label="Question One"/>
-    <design:attribute name="questionTwo" label="Question Two"/>
-    <design:attribute name="questionThree" label="Question Three"/>
+    <design:attribute name="type" label="Type of Issue" datasource="Report A Bug, New Development Request" />
+    <design:attribute name="questionOne" label="Question One" />
+    <design:attribute name="questionTwo" label="Question Two" />
+    <design:attribute name="questionThree" label="Question Three" />
 </design:component>

@@ -12,26 +12,11 @@ CATEGORY USED: {!category}<br/>
 -->
     <div id="popular">
         <h2 class="section">{!$Label.PKB2_Popular_Articles}</h2>
-        <knowledge:articleList
-            articleVar="a"
-            language="{!pkbCon.selectedLanguage}"
-            sortBy="mostViewed"
-            pageSize="{!pkbCon.popularArticles}"
-            categories="{!category}"
-            pageNumber="1"
-        >
-            <c:pkb_article
-                pkbCon="{!pkbCon}"
-                aid="{!a.id}"
-                title="{!a.title}"
-                summary="{!a.summary}"
-                urlName="{!a.urlName}"
-                articleTypeName="{!a.articleTypeName}"
-                articleTypeLabel="{!a.articleTypeLabel}"
-                lastModifiedDate="{!a.lastModifiedDate}"
-                firstPublishedDate="{!a.firstPublishedDate}"
-                lastPublishedDate="{!a.lastPublishedDate}"
-            />
+        <knowledge:articleList articleVar="a" language="{!pkbCon.selectedLanguage}" sortBy="mostViewed" pageSize="{!pkbCon.popularArticles}"
+            categories="{!category}" pageNumber="1">
+            <c:pkb_article pkbCon="{!pkbCon}" aid="{!a.id}" title="{!a.title}" summary="{!a.summary}" urlName="{!a.urlName}" articleTypeName="{!a.articleTypeName}"
+                articleTypeLabel="{!a.articleTypeLabel}" lastModifiedDate="{!a.lastModifiedDate}" firstPublishedDate="{!a.firstPublishedDate}"
+                lastPublishedDate="{!a.lastPublishedDate}" />
         </knowledge:articleList>
     </div>
 </apex:component>

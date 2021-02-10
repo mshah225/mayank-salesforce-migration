@@ -39,7 +39,7 @@
             return createNode(parentNode, nodeData);
         }
 
-        nodeData = {catName: 'ROOT', subCatName: 'ROOT', label: 'ROOT', depth: -1};
+        nodeData = { catName: 'ROOT', subCatName: 'ROOT', label: 'ROOT', depth: -1 };
         root = new Object();
         root.childs = new Array();
         root.label = 'ROOT';
@@ -91,36 +91,35 @@
             prevD = -1;
             currentD = 0;
 
-            categoryIndex ++;
-            nodeData={	catName:	"{!JSENCODE(c['catName'])}",
-            			subCatName:	"All",
-            			label:		"{!JSENCODE(c['catName'])}",
-            			rootName : 	"{!JSENCODE(c['catName'])}",
-            			depth:		0,
-            			dcIndex:categoryIndex};
-            lastNode = createTree(root,nodeData);
+            categoryIndex++;
+            nodeData = {
+                catName: "{!JSENCODE(c['catName'])}",
+                subCatName: "All",
+                label: "{!JSENCODE(c['catName'])}",
+                rootName: "{!JSENCODE(c['catName'])}",
+                depth: 0,
+                dcIndex: categoryIndex
+            };
+            lastNode = createTree(root, nodeData);
             prevD = currentD;
-            dataCList[categoryIndex]="{!JSENCODE(c['catName'])}";
+            dataCList[categoryIndex] = "{!JSENCODE(c['catName'])}";
 
             rootRelations['{!JSENCODE(c['catName'])}'] = '{!HTMLENCODE(c['catLabel'])}';
         </script>
 
-        <knowledge:categoryList
-            categoryVar="category"
-            categoryGroup="{!c['catName']}"
-            rootCategory="{!c['rootName']}"
-            level="-1"
-        >
+        <knowledge:categoryList categoryVar="category" categoryGroup="{!c['catName']}" rootCategory="{!c['rootName']}" level="-1">
             <script>
                 currentD = parseInt("{!category.depth}");
-                nodeData={	catName:	"{!JSENCODE(c['catName'])}",
-                			subCatName:	"{!JSENCODE(category.Name)}",
-                			label:		"{!JSENCODE(category.Label)}",
-                			rootName : 	"{!JSENCODE(c['catName'])}",
-                			depth:		{!category.depth},
-                			dcIndex:categoryIndex};
+                nodeData = {
+                    catName: "{!JSENCODE(c['catName'])}",
+                    subCatName: "{!JSENCODE(category.Name)}",
+                    label: "{!JSENCODE(category.Label)}",
+                    rootName: "{!JSENCODE(c['catName'])}",
+                    depth: {!category.depth
+                },
+                    dcIndex: categoryIndex};
 
-                lastNode = createTree(lastNode,nodeData);
+                lastNode = createTree(lastNode, nodeData);
                 prevD = currentD;
                 rootRelations['{!JSENCODE(category.Name)}'] = '{!JSENCODE(category.Label)}';
             </script>

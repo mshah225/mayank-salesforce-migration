@@ -6,24 +6,15 @@
 
         <div style="height: 30px; margin-top: 15px; text-align: center">
             <apex:outputText rendered="{!pkbCon.searchExecuted && NOT(pkbCon.caseCreated)}">
-                <span style="color: #ee6426; font-weight: bold; font-size: 110%"
-                    >{!$Label.PKB2_Still_Have_Question}</span
-                >&nbsp;
-                <apex:commandButton
-                    id="contactUsYesButton"
-                    value="{!$Label.PKB2_Yes_Submit_Question}"
-                    onclick="showFeedbackDialog(); return false;"
+                <span style="color: #ee6426; font-weight: bold; font-size: 110%">{!$Label.PKB2_Still_Have_Question}</span>&nbsp;
+                <apex:commandButton id="contactUsYesButton" value="{!$Label.PKB2_Yes_Submit_Question}" onclick="showFeedbackDialog(); return false;"
                 />&nbsp;
-                <apex:commandButton
-                    id="contactUsNoButton"
-                    value="{!$Label.PKB2_No_Found_Answer}"
-                    action="{!pkbCon.contactUsDeferral}"
-                />
-                &nbsp;
+                <apex:commandButton id="contactUsNoButton" value="{!$Label.PKB2_No_Found_Answer}" action="{!pkbCon.contactUsDeferral}" /> &nbsp;
             </apex:outputText>
 
             <apex:actionStatus id="contactUsYesNoStatus">
-                <apex:facet name="start"><apex:image value="{!$Resource.pkb_loadingdots}" /></apex:facet>
+                <apex:facet name="start">
+                    <apex:image value="{!$Resource.pkb_loadingdots}" /></apex:facet>
                 <apex:facet name="stop"></apex:facet>
             </apex:actionStatus>
 
@@ -44,12 +35,7 @@
 
                         <div style="width: 85%; margin-left: auto; margin-right: auto">
                             <div style="height: 3em">
-                                <apex:outputPanel
-                                    id="createCaseErrorMsg"
-                                    layout="block"
-                                    style="color: red; font-weight: bold"
-                                    rendered="{!pkbCon.caseCreateError}"
-                                >
+                                <apex:outputPanel id="createCaseErrorMsg" layout="block" style="color: red; font-weight: bold" rendered="{!pkbCon.caseCreateError}">
                                     {!pkbCon.createCaseErrorMsg}
                                 </apex:outputPanel>
                             </div>
@@ -75,7 +61,9 @@
                                     <td class="label">
                                         <apex:outputLabel value="{!$Label.PKB2_Email}:" for="email" />
                                     </td>
-                                    <td class="field"><apex:inputText value="{!pkbCon.theCud.email}" id="email" /></td>
+                                    <td class="field">
+                                        <apex:inputText value="{!pkbCon.theCud.email}" id="email" />
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="label">
@@ -90,21 +78,14 @@
                             </table>
 
                             <div style="height: 30px; margin-top: 15px; text-align: center">
-                                <apex:commandButton
-                                    value="{!$Label.PKB2_Submit}"
-                                    rerender="contactUsContainer"
-                                    action="{!pkbCon.createCase}"
-                                    status="contactUsStatus"
-                                    onclick="clearCaseErrorMsg();"
-                                />&nbsp;
-                                <apex:commandButton
-                                    value="{!$Label.PKB2_Cancel}"
-                                    onclick="closeModal(); return false;"
-                                /><br /><br />
+                                <apex:commandButton value="{!$Label.PKB2_Submit}" rerender="contactUsContainer" action="{!pkbCon.createCase}" status="contactUsStatus"
+                                    onclick="clearCaseErrorMsg();" />&nbsp;
+                                <apex:commandButton value="{!$Label.PKB2_Cancel}" onclick="closeModal(); return false;" />
+                                <br />
+                                <br />
                                 <apex:actionStatus id="contactUsStatus">
-                                    <apex:facet name="start"
-                                        ><apex:image value="{!$Resource.pkb_loadingdots}"
-                                    /></apex:facet>
+                                    <apex:facet name="start">
+                                        <apex:image value="{!$Resource.pkb_loadingdots}" /></apex:facet>
                                     <apex:facet name="stop"></apex:facet>
                                 </apex:actionStatus>
                             </div>
@@ -115,11 +96,7 @@
                         <div style="text-align: center; margin-top: 100px">
                             <p>{!$Label.PKB2_Request_Submitted}</p>
                             <p>
-                                <a
-                                    href="#"
-                                    onclick="toggleContactYesNoButtons(false); refreshContactUs(); closeModal(); return false;"
-                                    >{!$Label.PKB2_Close_Window}</a
-                                >
+                                <a href="#" onclick="toggleContactYesNoButtons(false); refreshContactUs(); closeModal(); return false;">{!$Label.PKB2_Close_Window}</a>
                             </p>
                         </div>
                     </apex:outputText>

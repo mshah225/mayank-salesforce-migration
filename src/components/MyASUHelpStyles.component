@@ -459,23 +459,17 @@
 
         /* My ASU Help - View Article */
 
-        .myasu-help-region
-            .myasu-help-region-view-article-helpful-articles
-            .myasu-help-region-faq-search-results-view-all {
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-view-all {
             font-size: 0.9em;
         }
 
-        .myasu-help-region
-            .myasu-help-region-view-article-helpful-articles
-            .myasu-help-region-faq-search-results-article {
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article {
             color: #191919;
             font-size: 0.9em;
             margin-bottom: 1em;
         }
 
-        .myasu-help-region
-            .myasu-help-region-view-article-helpful-articles
-            .myasu-help-region-faq-search-results-article-container:first-of-type {
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article-container:first-of-type {
             display: none;
         }
 
@@ -484,12 +478,7 @@
         }
 
         .myasu-help-region .myasu-help-region-view-article .bPageBlock,
-        .myasu-help-region
-            .myasu-help-region-view-article-helpful-articles
-            .bPageBlock
-            > .pbBody
-            > .apexp
-            > .bPageBlock {
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .bPageBlock>.pbBody>.apexp>.bPageBlock {
             margin-bottom: 0.75em;
         }
 
@@ -499,9 +488,7 @@
         }
 
         .myasu-help-region .myasu-help-region-view-article .myasu-help-region-sub-header,
-        .myasu-help-region
-            .myasu-help-region-view-article-helpful-articles
-            .myasu-help-region-faq-search-results-article-container:nth-of-type(2) {
+        .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article-container:nth-of-type(2) {
             padding-top: 1em;
         }
 
@@ -544,22 +531,11 @@
             margin-bottom: 0;
         }
 
-        .myasu-help-region
-            .myasu-help-region-view-article
-            .myasu-help-region-view-article-content
-            table
-            > tbody
-            > tr:nth-child(2n + 1) {
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr:nth-child(2n + 1) {
             background-color: #ffffff;
         }
 
-        .myasu-help-region
-            .myasu-help-region-view-article
-            .myasu-help-region-view-article-content
-            table
-            > tbody
-            > tr
-            > td {
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr>td {
             border-top: none;
         }
 

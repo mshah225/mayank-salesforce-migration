@@ -47,24 +47,24 @@
             border-radius: 2px !important;
         }
 
-        .pagination > li > a {
+        .pagination>li>a {
             border-bottom: solid 1px #ddd !important;
         }
 
-        .pagination > li:last-child > a,
-        .pagination > li:last-child > span {
+        .pagination>li:last-child>a,
+        .pagination>li:last-child>span {
             border-top-right-radius: 2px !important;
             border-bottom-right-radius: 2px !important;
         }
 
-        .pagination > li:first-child > a,
-        .pagination > li:first-child > span {
+        .pagination>li:first-child>a,
+        .pagination>li:first-child>span {
             border-top-left-radius: 2px !important;
             border-bottom-left-radius: 2px !important;
         }
 
-        .pagination > li > a,
-        .pagination > li > span {
+        .pagination>li>a,
+        .pagination>li>span {
             margin-left: 0 !important;
         }
 
@@ -86,13 +86,13 @@
             border: none !important;
         }
 
-        .navbar-nav > li > a {
+        .navbar-nav>li>a {
             padding-top: 10px !important;
             padding-bottom: 10px !important;
             vertical-align: bottom !important;
         }
 
-        .navbar-nav > li {
+        .navbar-nav>li {
             margin: 0 !important;
             padding-left: -10px !important;
             padding-right: -10px !important;
@@ -553,11 +553,11 @@
             display: inline-block !important;
         }
 
-        .dropdown-menu > li > a.chat-link {
+        .dropdown-menu>li>a.chat-link {
             font-size: 11pt !important;
         }
 
-        .dropdown-menu > li > a.chat-link:hover {
+        .dropdown-menu>li>a.chat-link:hover {
             color: #000 !important;
             background: #e6e6e6 !important;
         }

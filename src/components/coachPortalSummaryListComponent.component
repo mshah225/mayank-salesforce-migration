@@ -6,22 +6,12 @@
     <apex:attribute name="transferOptions" type="SelectOption[]" description="" />
     <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}" />
     <apex:attribute name="caseEmailRTID" type="Id" description="" />
-    <apex:attribute
-        name="isCoaching"
-        type="boolean"
-        description="Is this for the coaching side?"
-        assignTo="{!coaching}"
-    />
+    <apex:attribute name="isCoaching" type="boolean" description="Is this for the coaching side?" assignTo="{!coaching}" />
 
     <!-- Suppress columns -->
     <apex:attribute name="showSummarySubject" type="boolean" description="" default="false" />
     <apex:attribute name="showSummaryCount" type="boolean" description="" default="false" />
-    <apex:attribute
-        name="showSummaryFollowupDate"
-        type="boolean"
-        description=""
-        default="false"
-        assignTo="{!excludeFollowUpDate}"
+    <apex:attribute name="showSummaryFollowupDate" type="boolean" description="" default="false" assignTo="{!excludeFollowUpDate}"
     />
 
     <!-- Suppress caseList columns -->
@@ -83,48 +73,22 @@
                     <apex:facet name="header">
                         <apex:outputText value="Subject" />
                     </apex:facet>
-                    <apex:commandLink
-                        value="{!result['Subject']}"
-                        reRender="rerenderModal"
-                        styleClass="standardLink"
-                        status="ASUAjaxStatus"
-                        oncomplete="toggleSummaryModal(this);"
-                        rendered="{! showSummaryFollowupDate}"
-                    >
+                    <apex:commandLink value="{!result['Subject']}" reRender="rerenderModal" styleClass="standardLink" status="ASUAjaxStatus"
+                        oncomplete="toggleSummaryModal(this);" rendered="{! showSummaryFollowupDate}">
                         <apex:param value="{!result['Subject']}" assignTo="{!subject}" name="subject" />
-                        <apex:param
-                            value="{!TEXT(result['Followup_Date__c'])}"
-                            assignTo="{!followupDate}"
-                            name="followupDate"
-                        />
+                        <apex:param value="{!TEXT(result['Followup_Date__c'])}" assignTo="{!followupDate}" name="followupDate" />
                     </apex:commandLink>
-                    <apex:commandLink
-                        value="{!result['Subject']}"
-                        reRender="rerenderModal"
-                        styleClass="standardLink"
-                        status="ASUAjaxStatus"
-                        oncomplete="toggleSummaryModal(this);"
-                        rendered="{! NOT(showSummaryFollowupDate)}"
-                    >
+                    <apex:commandLink value="{!result['Subject']}" reRender="rerenderModal" styleClass="standardLink" status="ASUAjaxStatus"
+                        oncomplete="toggleSummaryModal(this);" rendered="{! NOT(showSummaryFollowupDate)}">
                         <apex:param value="{!result['Subject']}" assignTo="{!subject}" name="subject" />
                     </apex:commandLink>
                 </apex:column>
-                <apex:column
-                    value="{!result['Total']}"
-                    headerClass="ASUColumnHead"
-                    styleClass="ASUColumn"
-                    rendered="{! showSummaryCount}"
-                >
+                <apex:column value="{!result['Total']}" headerClass="ASUColumnHead" styleClass="ASUColumn" rendered="{! showSummaryCount}">
                     <apex:facet name="header">
                         <apex:outputText value="Total" />
                     </apex:facet>
                 </apex:column>
-                <apex:column
-                    headerValue="Followup Date"
-                    headerClass="ASUColumnHead"
-                    styleClass="ASUColumn"
-                    rendered="{! showSummaryFollowupDate}"
-                >
+                <apex:column headerValue="Followup Date" headerClass="ASUColumnHead" styleClass="ASUColumn" rendered="{! showSummaryFollowupDate}">
                     <apex:outputText value="{0, date, MMMM d','  yyyy}">
                         <apex:param value="{!result['Followup_Date__c']}" />
                     </apex:outputText>
@@ -144,25 +108,12 @@
                         </div>
 
                         <div class="modal-body">
-                            <c:coachPortalShowMyCases
-                                queryString="{!dynamicQuery}"
-                                transferOptions="{!transferOptions}"
-                                rerenderList="{!$Component.SummaryListComponent.summaryResults},{!rerenderList}"
-                                showSelection="{!showCaseListSelection}"
-                                showName="{!showCaseListName}"
-                                showEMPLID="{!showCaseListEMPLID}"
-                                showSubject="{!showCaseListSubject}"
-                                showStatus="{!showCaseListStatus}"
-                                showFollowupDate="{!showCaseListFollowupDate}"
-                                showTermSession="{!showCaseListTermSession}"
-                                showTimeZone="{!showCaseListTimeZone}"
-                                showTransfer="{!showCaseListTransfer}"
-                                proactiveRTID="{!proactiveRTID}"
-                                emailRTID="{!caseEmailRTID}"
-                                showProactive="{!showProactiveCaseCount}"
-                                showReactive="{!showReactiveCaseCount}"
-                                showMassEmail="{!showCaseMassEmail}"
-                                showSearch="{!showSearch}"
+                            <c:coachPortalShowMyCases queryString="{!dynamicQuery}" transferOptions="{!transferOptions}" rerenderList="{!$Component.SummaryListComponent.summaryResults},{!rerenderList}"
+                                showSelection="{!showCaseListSelection}" showName="{!showCaseListName}" showEMPLID="{!showCaseListEMPLID}"
+                                showSubject="{!showCaseListSubject}" showStatus="{!showCaseListStatus}" showFollowupDate="{!showCaseListFollowupDate}"
+                                showTermSession="{!showCaseListTermSession}" showTimeZone="{!showCaseListTimeZone}" showTransfer="{!showCaseListTransfer}"
+                                proactiveRTID="{!proactiveRTID}" emailRTID="{!caseEmailRTID}" showProactive="{!showProactiveCaseCount}"
+                                showReactive="{!showReactiveCaseCount}" showMassEmail="{!showCaseMassEmail}" showSearch="{!showSearch}"
                             />
                         </div>
 

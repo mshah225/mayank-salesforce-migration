@@ -1,11 +1,13 @@
 <apex:component allowDML="true">
     <style>
         /* reset.css */
+
         html {
             margin: 0;
             padding: 0;
             border: 0;
         }
+
         body,
         div,
         span,
@@ -65,6 +67,7 @@
             vertical-align: baseline;
             color: #333;
         }
+
         article,
         aside,
         details,
@@ -79,14 +82,17 @@
         section {
             display: block;
         }
+
         body {
             line-height: 1.5;
             background: white;
         }
+
         table {
             border-collapse: separate;
             border-spacing: 0;
         }
+
         caption,
         th,
         td {
@@ -94,32 +100,39 @@
             font-weight: normal;
             float: none !important;
         }
+
         table,
         th,
         td {
             vertical-align: middle;
         }
+
         blockquote:before,
         blockquote:after,
         q:before,
         q:after {
             content: '';
         }
+
         blockquote,
         q {
             quotes: '' '';
         }
+
         a img {
             border: none;
         }
+
         :focus {
             outline: 0;
         }
 
         /* hiding some SFDC-inserted tags */
+
         div.ptBreadcrumb {
             display: none;
         }
+
         span.configLinks {
             display: none;
         }
@@ -275,8 +288,7 @@
             padding-right: 5px;
         }
 
-        div#popular {
-        }
+        div#popular {}
 
         div#articleView {
             margin-bottom: 20px;
@@ -292,8 +304,7 @@
             margin-right: 5px;
         }
 
-        div#articleContainer {
-        }
+        div#articleContainer {}
 
         div.article {
             margin-top: 10px;
@@ -417,6 +428,7 @@
         /**** search box and button styling *****/
 
         /* START Search/Ask Form */
+
         #searchAskForm {
             width: 793px;
             position: relative;
@@ -425,10 +437,12 @@
             margin-left: -8px;
             padding: 4px 8px 8px;
         }
+
         #searchAskForm.focus {
             border: 1px solid #d4dadc;
             background: #f6fcfe;
         }
+
         #searchAskInputContainer {
             display: inline-block;
             position: relative;
@@ -437,14 +451,17 @@
             margin-left: 125px;
             background: #fff;
         }
+
         #searchAskForm.focus #searchAskInputContainer {
             background: #fff;
         }
+
         #searchAskInput {
             font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
             width: 475px;
             height: 16px;
         }
+
         #searchAskInput,
         #searchAskInputShadow {
             width: 480px;
@@ -461,6 +478,7 @@
             overflow: hidden;
             resize: none;
         }
+
         #searchAskInputShadow,
         .answer_input .blank_answer_div {
             display: none;
@@ -468,6 +486,7 @@
             height: auto;
             padding: 0;
         }
+
         #searchAskInputShadow {
             display: block;
             width: 600px;
@@ -475,6 +494,7 @@
             top: -9999px;
             left: -9999px;
         }
+
         #searchAskButton,
         #searchAgainButton {
             position: absolute;
@@ -483,31 +503,38 @@
             padding: 0;
             font-size: 11px;
         }
+
         #searchAskButton:focus span,
         #searchAgainButton:focus span {
             outline: 1px dotted #000;
         }
+
         #searchAskForm .searchActions {
             display: inline-block;
             width: 790px;
         }
+
         #searchAskForm .searchActions h3 {
             float: left;
             margin: 5px 0 0;
         }
+
         .searchActions .button,
         #askLoader {
             float: right;
             margin-left: 10px;
             font-weight: 700;
         }
+
         #askLoader {
             margin-top: 5px;
         }
+
         #postQuestionButton.big,
         #askGhostButton.big {
             width: 40px;
         }
+
         #searchAskButton span,
         #searchAgainButton span {
             display: block;
@@ -530,20 +557,24 @@
         .focus #searchAskContainer {
             min-height: 30px;
         }
+
         #searchAskContainer {
             display: none;
             width: 790px;
             height: 0;
             padding: 14px 10px 0;
         }
+
         #searchAskContainer h3 {
             margin: 0 0 8px;
             display: block;
             font-size: 1em;
         }
+
         #searchAskContainer h3 span {
             font-weight: normal;
         }
+
         #searchAskContainer .type {
             width: 790px;
             position: relative;
@@ -555,6 +586,7 @@
             background: #fff;
             overflow: auto;
         }
+
         #searchAskContainer .type li {
             margin-left: -5px;
             width: 770px;
@@ -562,14 +594,17 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         #searchAskContainer .current {
             background-color: #cfeef8;
         }
+
         .scroll-pane {
             overflow: hidden;
         }
 
         /* START Search Notification */
+
         .close,
         .reset,
         .qn_dismiss,
@@ -584,6 +619,7 @@
             background: url({!$Resource.pkb_close_icon}) no-repeat;
             text-indent: -9999px;
         }
+
         .reset {
             display: none;
             top: 6px;
@@ -592,19 +628,25 @@
         }
 
         /* END Search Notification */
+
         /* --------------------------------------------------------------------------------- */
+
         /* End Search Ask                                                                    */
+
         /* --------------------------------------------------------------------------------- */
 
         /* START Basic Action */
+
         a,
         a:hover {
             color: #3b5998;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
         }
+
         .sub_action {
             display: block;
             padding: 5px 10px;
@@ -613,12 +655,14 @@
             text-align: left;
             color: #fff;
         }
+
         .blur,
         input.blur,
         .answer_input input.blur,
         #searchAskInput.blur {
             color: #8e8e8e;
         }
+
         .action,
         a.action:hover {
             border: 2px solid #fff;
@@ -629,10 +673,12 @@
             font-weight: 700;
             color: #fff;
         }
+
         a.action:hover {
             background: #5b74a8;
             text-decoration: none;
         }
+
         .button,
         .btn,
         .togglePill a,
@@ -648,6 +694,7 @@
             text-align: center;
             cursor: pointer;
         }
+
         a.button:hover,
         a.btn:hover,
         .togglePill a:hover,
@@ -656,28 +703,34 @@
             text-decoration: none;
             color: #222;
         }
+
         .button.disabled {
             border-color: #dadada #dadada #b5b5b5;
             background: #fefefe;
             color: #9c9c9c;
             cursor: default;
         }
+
         /* font:...; in here too to override common.css */
+
         .button,
         .btn {
             padding: 5px 9px;
             font: 1em Arial, Helvetica, Verdana, sans-serif;
         }
+
         input.button,
         input.btn,
         button.button,
         button.btn {
             padding: 5px 7px;
         }
+
         input.button::-moz-focus-inner,
         input.btn::-moz-focus-inner {
             border: 0;
         }
+
         input.button:focus,
         input.btn:focus {
             border-color: #7f7f7f;
@@ -686,6 +739,7 @@
         /* END Basic Action */
 
         /* START Fancy Corners */
+
         .action,
         a.action:hover,
         #searchAskContainer,
@@ -727,6 +781,7 @@
             -moz-border-radius: 3px;
             border-radius: 3px;
         }
+
         /* END Fancy Corners */
 
         #backbuttoncontainer {

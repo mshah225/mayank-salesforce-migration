@@ -21,25 +21,11 @@
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink
-                            styleClass="btn btn-default asu-primary"
-                            value="javascript:;"
-                            style="margin-right: 10px"
-                            onclick="toggleEmailModal(this)"
-                            rendered="{! showMassEmail}"
-                            >Mass Email</apex:outputLink
-                        >
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
+                            rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel
-                        styleClass="input-group"
-                        style="width: 100%; max-width: 250px; margin-top: 5px"
-                        rendered="{! showSearch}"
-                    >
-                        <apex:inputText
-                            id="myStudentsInput"
-                            value="{!searchString}"
-                            html-placeholder="Filter Students"
-                            onkeypress="return noenter(event);"
+                    <apex:outputPanel styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
+                        <apex:inputText id="myStudentsInput" value="{!searchString}" html-placeholder="Filter Students" onkeypress="return noenter(event);"
                             style="
                                 padding: 6px 12px;
                                 vertical-align: middle;
@@ -51,17 +37,10 @@
                                 border-top-right-radius: 0;
                                 border-bottom-right-radius: 0;
                                 border-right: none;
-                            "
-                        />
+                            " />
                         <span class="input-group-addon">
-                            <apex:commandLink
-                                id="searchStudentsBtn"
-                                action="{!myStudentsSearch}"
-                                status="ASUAjaxStatus"
-                                reRender="rerenderMe"
-                                style="color: #555"
-                                oncomplete="focusSearch()"
-                            >
+                            <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
+                                oncomplete="focusSearch()">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
@@ -100,12 +79,7 @@
                         </script>
 
                         <span class="input-group-addon">
-                            <apex:commandLink
-                                action="{!resetMyStudentsSearch}"
-                                status="ASUAjaxStatus"
-                                reRender="rerenderMe"
-                                style="color: #555"
-                            >
+                            <apex:commandLink action="{!resetMyStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555">
                                 <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
@@ -113,41 +87,20 @@
                 </div>
 
                 <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
-                    <apex:commandLink
-                        action="{!setConPrev}"
-                        value="<< Prev"
-                        rendered="{!setCon.HasPrevious}"
-                        style="float: left"
-                        styleClass="standardLink"
-                        reRender="rerenderMe"
-                        status="ASUAjaxStatus"
-                    />
+                    <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
+                        reRender="rerenderMe" status="ASUAjaxStatus" />
                     <apex:outputText value="Page Size " />
                     <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                        <apex:actionSupport
-                            event="onchange"
-                            reRender="rerenderMe"
-                            onsubmit="handlePageSizeField(this)"
-                            status="ASUAjaxStatus"
-                        />
+                        <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)" status="ASUAjaxStatus" />
                         <apex:selectOption itemValue="25" itemLabel="25" />
                         <apex:selectOption itemValue="50" itemLabel="50" />
                         <apex:selectOption itemValue="100" itemLabel="100" />
                     </apex:selectList>
                     <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                    <apex:outputText
-                        value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
-                    />
+                    <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
                     <apex:outputText value="{!setCon.ResultSize} Records" />
-                    <apex:commandLink
-                        action="{!setConNext}"
-                        value="Next >>"
-                        rendered="{!setCon.HasNext}"
-                        style="float: right"
-                        styleClass="standardLink"
-                        reRender="rerenderMe"
-                        status="ASUAjaxStatus"
-                    />
+                    <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float: right" styleClass="standardLink"
+                        reRender="rerenderMe" status="ASUAjaxStatus" />
                 </apex:outputPanel>
             </div>
         </apex:form>
@@ -164,23 +117,12 @@
                             <h5>Select Email Template:</h5>
                             <apex:inputField value="{!tempEmail.Email_Template_Name__c}" />
                             <h5>Additional Text:</h5>
-                            <apex:inputField
-                                value="{!tempEmail.Additional_Message_Text__c}"
-                                style="width: 100%; height: 200px"
-                            />
+                            <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" style="width: 100%; height: 200px" />
                         </div>
 
                         <div class="modal-footer">
-                            <apex:commandLink
-                                type="button"
-                                action="{!massEmail}"
-                                reRender="tableForm"
-                                styleClass="btn btn-default asu-primary"
-                                status="ASUAjaxStatus"
-                                value="Send"
-                                oncomplete="actionComplete()"
-                                onclick="toggleEmailModal(this)"
-                            />
+                            <apex:commandLink type="button" action="{!massEmail}" reRender="tableForm" styleClass="btn btn-default asu-primary" status="ASUAjaxStatus"
+                                value="Send" oncomplete="actionComplete()" onclick="toggleEmailModal(this)" />
                             <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
                                 Cancel
                             </button>
@@ -189,114 +131,57 @@
                 </div>
             </div>
             <apex:dataTable id="myStudentsTable" value="{!studentList}" var="c" styleClass="ASUTable">
-                <apex:column
-                    headerClass="ASUColumnHead centerText"
-                    styleClass="ASUColumn centerText"
-                    rendered="{! showSelection}"
-                >
-                    <apex:inputCheckbox
-                        value="{!c.selected}"
-                        styleClass="selectBox"
-                        onchange="handleSelectAll(this);"
-                    />
+                <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! showSelection}">
+                    <apex:inputCheckbox value="{!c.selected}" styleClass="selectBox" onchange="handleSelectAll(this);" />
                     <apex:facet name="header">
                         <input type="checkbox" class="selectAll" onchange="checkAll(this);" />
                     </apex:facet>
                 </apex:column>
 
-                <apex:column
-                    headerValue="Name"
-                    value="{!c.obj.Student_Name__c}"
-                    rendered="{! showName}"
-                    headerClass="ASUColumnHead"
-                    styleClass="ASUColumn"
-                >
+                <apex:column headerValue="Name" value="{!c.obj.Student_Name__c}" rendered="{! showName}" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param name="studentName" value="Student_Name__c" assignTo="{!sortField}" />
-                            Name&nbsp;
+                            <apex:param name="studentName" value="Student_Name__c" assignTo="{!sortField}" /> Name&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Student_Name__c'}">
-                                <span
-                                    style="font-size: 7pt"
-                                    class="glyphicon glyphicon-chevron-down"
-                                    aria-hidden="true"
-                                ></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Student_Name__c'}">
-                                <span
-                                    style="font-size: 7pt"
-                                    class="glyphicon glyphicon-chevron-up"
-                                    aria-hidden="true"
-                                ></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
 
-                <apex:column
-                    headerValue="EMPLID"
-                    rendered="{! showEMPLID}"
-                    headerClass="ASUColumnHead"
-                    styleClass="ASUColumn"
-                >
+                <apex:column headerValue="EMPLID" rendered="{! showEMPLID}" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param name="studentEmplid" value="EMPLID__c" assignTo="{!sortField}" />
-                            EMPLID&nbsp;
+                            <apex:param name="studentEmplid" value="EMPLID__c" assignTo="{!sortField}" /> EMPLID&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'EMPLID__c'}">
-                                <span
-                                    style="font-size: 7pt"
-                                    class="glyphicon glyphicon-chevron-down"
-                                    aria-hidden="true"
-                                ></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'EMPLID__c'}">
-                                <span
-                                    style="font-size: 7pt"
-                                    class="glyphicon glyphicon-chevron-up"
-                                    aria-hidden="true"
-                                ></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink
-                        value="javascript:;"
-                        onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Profile')"
-                        styleClass="standardLink"
-                    >
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Profile')"
+                        styleClass="standardLink">
                         {!c.obj.EMPLID__c}
                     </apex:outputLink>
                 </apex:column>
-                <apex:column
-                    headerValue="Proactive"
-                    rendered="{! showProactiveCases}"
-                    headerClass="ASUColumnHead"
-                    styleClass="ASUColumn"
-                >
+                <apex:column headerValue="Proactive" rendered="{! showProactiveCases}" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     {!caseCountMap[c.obj.Student__c].proactiveCount}
                 </apex:column>
-                <apex:column
-                    headerValue="Reactive"
-                    rendered="{! showReactiveCases}"
-                    headerClass="ASUColumnHead"
-                    styleClass="ASUColumn"
-                >
+                <apex:column headerValue="Reactive" rendered="{! showReactiveCases}" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     {!caseCountMap[c.obj.Student__c].reactiveCount}
                 </apex:column>
                 <apex:column headerValue="Action" headerClass="ASUColumnHead" styleClass="ASUColumn">
-                    <apex:outputLink
-                        value="javascript:;"
-                        onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')"
-                        title="New Case"
-                    >
-                        <apex:image value="{!$Resource.RedCase}" style="width: 20px; height: 20px" /> </apex:outputLink
-                    >&nbsp;&nbsp;
-                    <apex:outputLink
-                        value="javascript:;"
-                        onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'All Cases')"
-                        title="All Cases"
-                    >
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')"
+                        title="New Case">
+                        <apex:image value="{!$Resource.RedCase}" style="width: 20px; height: 20px" /> </apex:outputLink>&nbsp;&nbsp;
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'All Cases')"
+                        title="All Cases">
                         <apex:image value="{!$Resource.RedCaseMulti}" style="width: 20px; height: 20px" />
                     </apex:outputLink>
                 </apex:column>
@@ -336,41 +221,20 @@
 
         <apex:form>
             <div class="headerFooter">
-                <apex:commandLink
-                    action="{!setConPrev}"
-                    value="<< Prev"
-                    rendered="{!setCon.HasPrevious}"
-                    style="float: left"
-                    styleClass="standardLink"
-                    reRender="rerenderMe"
-                    status="ASUAjaxStatus"
-                />
+                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
+                    reRender="rerenderMe" status="ASUAjaxStatus" />
                 <apex:outputText value="Page Size " />
                 <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                    <apex:actionSupport
-                        event="onchange"
-                        reRender="rerenderMe"
-                        onsubmit="handlePageSizeField(this)"
-                        status="ASUAjaxStatus"
-                    />
+                    <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)" status="ASUAjaxStatus" />
                     <apex:selectOption itemValue="25" itemLabel="25" />
                     <apex:selectOption itemValue="50" itemLabel="50" />
                     <apex:selectOption itemValue="100" itemLabel="100" />
                 </apex:selectList>
                 <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                <apex:outputText
-                    value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
-                />
+                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
                 <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink
-                    action="{!setConNext}"
-                    value="Next >>"
-                    rendered="{!setCon.HasNext}"
-                    style="float: right"
-                    styleClass="standardLink"
-                    reRender="rerenderMe"
-                    status="ASUAjaxStatus"
-                />
+                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float: right" styleClass="standardLink"
+                    reRender="rerenderMe" status="ASUAjaxStatus" />
             </div>
         </apex:form>
     </apex:outputPanel>
@@ -392,8 +256,8 @@
                             sforce.console.openSubtab(
                                 result.id,
                                 '/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' +
-                                    contactId +
-                                    '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach',
+                                contactId +
+                                '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach',
                                 true,
                                 'New Case',
                                 null
@@ -431,8 +295,8 @@
                                                 sforce.console.openSubtab(
                                                     parentTabId,
                                                     '/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' +
-                                                        contactId +
-                                                        '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach',
+                                                    contactId +
+                                                    '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach',
                                                     true,
                                                     'New Case',
                                                     null

@@ -35,7 +35,7 @@
 
                 try {
                     jsonString = JSON.stringify(jsonObject);
-                } catch (e) {}
+                } catch (e) { }
 
                 if (jsonString == null) {
                     jsonString =
@@ -81,7 +81,7 @@
 
                 try {
                     jsonString = JSON.stringify(jsonObject);
-                } catch (e) {}
+                } catch (e) { }
 
                 if (jsonString == null) {
                     jsonString =

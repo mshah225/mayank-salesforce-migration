@@ -96,17 +96,22 @@ public without sharing class UserDeprovisioner {
     // Do the logic for each object type
     private void transferCases() {
         Integer countTransferred = 0;
-        if (cases != null && !cases.isEmpty()) {
-            for (Case userCase : cases) {
-                if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
-                    userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                    toUpdateCases.add(userCase);
+        try {
+            if (cases != null && !cases.isEmpty()) {
+                for (Case userCase : cases) {
+                    if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
+                        userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
+                        toUpdateCases.add(userCase);
 
-                    countTransferred++;
+                        countTransferred++;
+                    }
                 }
-            }
 
-            addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
+                addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
+            }
+        } catch (Exception e) {
+            addToProcessingNotes('Stopping transfer of cases.');
+            throw new DeprovisionUserException('Could not transfer cases. QueueId on case\'s functional group may be invalid.');
         }
     }
     private void updateUserFields() {
@@ -245,10 +250,12 @@ public without sharing class UserDeprovisioner {
     }
     private Boolean matchDelegatedAdmin() {
         Boolean hasPermSet = false;
-        for (PermissionSetAssignment permSet : permissionSetAssignments) {
-            if (permSet.PermissionSetId == Id.valueOf('0PSd0000000qzf4GAA')) {
-                hasPermSet = true;
-                break;
+        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
+            for (PermissionSetAssignment permSet : permissionSetAssignments) {
+                if (permSet.PermissionSetId == Id.valueOf('0PSd0000000qzf4GAA')) {
+                    hasPermSet = true;
+                    break;
+                }
             }
         }
 

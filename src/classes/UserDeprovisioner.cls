@@ -39,7 +39,6 @@ public without sharing class UserDeprovisioner {
     }
 
     // Wraps together all the logic
-    // Returns true if Deprovision_User__c needs to be updated asynchronously
     public void deprovisionUser() {
         try {
             if (userToDeprovision.Processing_Notes__c != null) {
@@ -48,9 +47,14 @@ public without sharing class UserDeprovisioner {
                 );
             }
             addToProcessingNotes(initialUserTimeStamp());
-            if (matchProfileToIgnore() || matchSFAdminOrDeveloper()) {
-                deprovisionedUser.Deprovision_User__c = false;
-                return;
+            if (matchProfileToIgnore()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched profile.');
+            }
+            if (matchSFAdminOrDeveloper()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched SF Admin/Developer.');
+            }
+            if (matchDelegatedAdmin()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched Delegated Adminstrator.');
             }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
@@ -238,6 +242,22 @@ public without sharing class UserDeprovisioner {
         }
         return false;
     }
+    private Boolean matchDelegatedAdmin() {
+        Boolean hasPermSet = false;
+        for (PermissionSetAssignment permSet : permissionSetAssignments) {
+            if (permSet.PermissionSetId == Id.valueOf('0PSd0000000qzf4GAA')) {
+                hasPermSet = true;
+                break;
+            }
+        }
+
+        if (userToDeprovision.Sandbox_Delagated_Administrator__c || hasPermSet) {
+            addToProcessingNotes('Detected Delegated Administrator. Stopping User Deprovision');
+            return true;
+        } else {
+            return false;
+        }
+    }
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
             'Change ' +
@@ -300,5 +320,8 @@ public without sharing class UserDeprovisioner {
     }
     public List<UserPackageLicense> getToDeleteUserPackageLicenses() {
         return toDeleteUserPackageLicenses;
+    }
+
+    public class DeprovisionUserException extends Exception {
     }
 }

@@ -28,6 +28,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, String> userToProcessingNotesMap;
 
     private static Boolean debug = false;
+    private static Boolean allowRepeatCases = true;
 
     public UserDeprovisionOrganizer(Map<Id, User> oldUsersMap, List<User> newUsers) {
         this.newUsers = newUsers;
@@ -290,13 +291,14 @@ public without sharing class UserDeprovisionOrganizer {
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
                 try {
-                    ErrorLogger.log(dbException, vars, debug);
+                    ErrorLogger.log(dbException, vars, debug, allowRepeatCases);
                 } catch (System.DmlException dmle) {
                     if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
                         ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
                             dbException,
                             vars,
-                            debug
+                            debug,
+                            allowRepeatCases
                         );
                         System.enqueueJob(logQueue);
                     } else {
@@ -362,13 +364,14 @@ public without sharing class UserDeprovisionOrganizer {
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
                 try {
-                    ErrorLogger.log(dbException, vars, debug);
+                    ErrorLogger.log(dbException, vars, debug, allowRepeatCases);
                 } catch (System.DmlException dmle) {
                     if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
                         ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
                             dbException,
                             vars,
-                            debug
+                            debug,
+                            allowRepeatCases
                         );
                         System.enqueueJob(logQueue);
                     } else {

@@ -20,6 +20,7 @@ public without sharing class UserDeprovisioner {
     private List<UserPackageLicense> toDeleteUserPackageLicenses;
 
     private static Boolean debug = false;
+    private static Boolean allowRepeatCases = true;
 
     public UserDeprovisioner(
         Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
@@ -87,7 +88,7 @@ public without sharing class UserDeprovisioner {
                 deprovisionedUser.Deprovision_User__c = false;
             }
 
-            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug);
+            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug, allowRepeatCases);
             System.enqueueJob(logQueue);
         }
     }

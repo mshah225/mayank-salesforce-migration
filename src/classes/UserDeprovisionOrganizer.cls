@@ -28,6 +28,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, String> userToProcessingNotesMap;
 
     private static Boolean debug = false;
+    private static Boolean allowRepeatCases = true;
 
     public UserDeprovisionOrganizer(Map<Id, User> oldUsersMap, List<User> newUsers) {
         this.newUsers = newUsers;
@@ -243,7 +244,6 @@ public without sharing class UserDeprovisionOrganizer {
         List<SObject> recordListToOperate,
         Map<Id, String> userToProcessingNotes
     ) {
-        Boolean updatingUser = recordListToOperate[0] instanceof User;
         Map<Id, String> usersWithErrors = new Map<Id, String>();
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
@@ -259,6 +259,11 @@ public without sharing class UserDeprovisionOrganizer {
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
 
+                errorNote +=
+                    'Failed Update: Error while updating the ' +
+                    String.valueOf(recordListToOperate[0]).split(':')[0] +
+                    ' objects.';
+
                 // Append to exisiting processing notes / other errors for this user
                 if (usersWithErrors.keySet().contains(userId)) {
                     processingNotes = usersWithErrors.get(userId) + '---\n';
@@ -267,15 +272,9 @@ public without sharing class UserDeprovisionOrganizer {
                 }
                 processingNotes += errorNote + '\n';
 
-                if (
-                    updatingUser &&
-                    errorNote.contains('FIELD_INTEGRITY_EXCEPTION: This user is a delegated administrator')
-                ) {
-                    processingNotes += '---\nPlease remove this user from being a delegated administrator before deprovisioning.\n';
-                }
-
                 usersWithErrors.put(userId, processingNotes);
 
+                // Error log it
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
                 if (saveResult[i] != null) {
@@ -290,13 +289,17 @@ public without sharing class UserDeprovisionOrganizer {
                     );
                 }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(dbException, vars, debug);
                 try {
-                    ErrorLogger.log(dbException, vars, debug);
+                    ErrorLogger.log(dbException, vars, debug, allowRepeatCases);
                 } catch (System.DmlException dmle) {
                     if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                        ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
+                            dbException,
+                            vars,
+                            debug,
+                            allowRepeatCases
+                        );
                         System.enqueueJob(logQueue);
                     } else {
                         throw dmle;
@@ -330,6 +333,11 @@ public without sharing class UserDeprovisionOrganizer {
 
                 Id userId = (Id) recordListToOperate[i].get(userIdField);
 
+                errorNote +=
+                    'Failed Deletion: Error while updating the ' +
+                    String.valueOf(recordListToOperate[0]).split(':')[0] +
+                    ' objects.';
+
                 // Append to exisiting processing notes / other errors for this user
                 if (usersWithErrors.keySet().contains(userId)) {
                     processingNotes = usersWithErrors.get(userId) + '---\n';
@@ -338,6 +346,7 @@ public without sharing class UserDeprovisionOrganizer {
                 }
                 processingNotes += errorNote + '\n';
 
+                // Error log it
                 usersWithErrors.put(userId, processingNotes);
                 List<String> vars = new List<String>();
                 vars.add(ErrorLogger.convertIdToJSON('userId', userId));
@@ -354,11 +363,16 @@ public without sharing class UserDeprovisionOrganizer {
                 }
                 vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
                 DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(dbException, vars, debug);
                 try {
-                    ErrorLogger.log(dbException, vars, debug);
+                    ErrorLogger.log(dbException, vars, debug, allowRepeatCases);
                 } catch (System.DmlException dmle) {
                     if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                        ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
+                            dbException,
+                            vars,
+                            debug,
+                            allowRepeatCases
+                        );
                         System.enqueueJob(logQueue);
                     } else {
                         throw dmle;

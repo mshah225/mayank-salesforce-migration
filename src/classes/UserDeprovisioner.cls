@@ -20,6 +20,7 @@ public without sharing class UserDeprovisioner {
     private List<UserPackageLicense> toDeleteUserPackageLicenses;
 
     private static Boolean debug = false;
+    private static Boolean allowRepeatCases = true;
 
     public UserDeprovisioner(
         Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
@@ -39,7 +40,6 @@ public without sharing class UserDeprovisioner {
     }
 
     // Wraps together all the logic
-    // Returns true if Deprovision_User__c needs to be updated asynchronously
     public void deprovisionUser() {
         try {
             if (userToDeprovision.Processing_Notes__c != null) {
@@ -48,9 +48,14 @@ public without sharing class UserDeprovisioner {
                 );
             }
             addToProcessingNotes(initialUserTimeStamp());
-            if (matchProfileToIgnore() || matchSFAdminOrDeveloper()) {
-                deprovisionedUser.Deprovision_User__c = false;
-                return;
+            if (matchProfileToIgnore()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched profile.');
+            }
+            if (matchSFAdminOrDeveloper()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched SF Admin/Developer.');
+            }
+            if (matchDelegatedAdmin()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched Delegated Adminstrator.');
             }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
@@ -83,7 +88,7 @@ public without sharing class UserDeprovisioner {
                 deprovisionedUser.Deprovision_User__c = false;
             }
 
-            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug);
+            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug, allowRepeatCases);
             System.enqueueJob(logQueue);
         }
     }
@@ -91,17 +96,22 @@ public without sharing class UserDeprovisioner {
     // Do the logic for each object type
     private void transferCases() {
         Integer countTransferred = 0;
-        if (cases != null && !cases.isEmpty()) {
-            for (Case userCase : cases) {
-                if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
-                    userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                    toUpdateCases.add(userCase);
+        try {
+            if (cases != null && !cases.isEmpty()) {
+                for (Case userCase : cases) {
+                    if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
+                        userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
+                        toUpdateCases.add(userCase);
 
-                    countTransferred++;
+                        countTransferred++;
+                    }
                 }
-            }
 
-            addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
+                addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
+            }
+        } catch (Exception e) {
+            addToProcessingNotes('Stopping transfer of cases.');
+            throw new DeprovisionUserException('Could not transfer cases. QueueId on case\'s functional group may be invalid.');
         }
     }
     private void updateUserFields() {
@@ -238,6 +248,24 @@ public without sharing class UserDeprovisioner {
         }
         return false;
     }
+    private Boolean matchDelegatedAdmin() {
+        Boolean hasPermSet = false;
+        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
+            for (PermissionSetAssignment permSet : permissionSetAssignments) {
+                if (permSet.PermissionSetId == Id.valueOf('0PSd0000000qzf4GAA')) {
+                    hasPermSet = true;
+                    break;
+                }
+            }
+        }
+
+        if (userToDeprovision.Sandbox_Delagated_Administrator__c || hasPermSet) {
+            addToProcessingNotes('Detected Delegated Administrator. Stopping User Deprovision');
+            return true;
+        } else {
+            return false;
+        }
+    }
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
             'Change ' +
@@ -300,5 +328,8 @@ public without sharing class UserDeprovisioner {
     }
     public List<UserPackageLicense> getToDeleteUserPackageLicenses() {
         return toDeleteUserPackageLicenses;
+    }
+
+    public class DeprovisionUserException extends Exception {
     }
 }

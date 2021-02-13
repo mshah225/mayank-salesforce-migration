@@ -57,8 +57,8 @@
                                                 <apex:param value="{!familyPortalGuardian.First_Name__c}" />
                                             </apex:outputText>
                                         </h2>
-                                        <p class="lead">An email confirmation will be sent. In the future, you can edit your interests or students
-                                            by clicking the link provided in the confirmation email.</p>
+                                        <p class="lead">An email confirmation will be sent. In the future, you can edit your interests or
+                                            students by clicking the link provided in the confirmation email.</p>
                                     </apex:outputPanel>
                                 </div>
                             </div>

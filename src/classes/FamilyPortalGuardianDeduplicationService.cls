@@ -79,7 +79,8 @@ public class FamilyPortalGuardianDeduplicationService implements Queueable {
                 List<Family_Portal_Student__c> studentsToDeactivate = [
                     SELECT Id
                     FROM Family_Portal_Student__c
-                    WHERE Id NOT IN :studentIdsToAvoid 
+                    WHERE
+                        Id NOT IN :studentIdsToAvoid
                         AND LastModifiedDate < :System.now().addMinutes(-5)
                         AND Family_Portal_Guardian__c IN :guardianIdsToCheck
                 ];

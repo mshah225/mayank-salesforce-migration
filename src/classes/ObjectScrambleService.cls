@@ -1,6 +1,14 @@
 public class ObjectScrambleService {
     private ObjectTypes objectType;
-    public enum ObjectTypes {CONTACT, EDPLUS_CASE, LEAD, CONVERTED_LEAD, USER, CAR, DELETED_SILVERPOP}
+    public enum ObjectTypes {
+        CONTACT,
+        EDPLUS_CASE,
+        LEAD,
+        CONVERTED_LEAD,
+        USER,
+        CAR,
+        DELETED_SILVERPOP
+    }
 
     public ObjectScrambleService(ObjectTypes objectType) {
         this.objectType = objectType;
@@ -10,7 +18,8 @@ public class ObjectScrambleService {
         String queryToReturn;
         switch on objectType {
             when CONTACT {
-                queryToReturn = 'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
+                queryToReturn =
+                    'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
                     'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
                     'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact';
             }
@@ -31,7 +40,10 @@ public class ObjectScrambleService {
             }
             when USER {
                 Id sysAdminId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1].Id;
-                queryToReturn = 'SELECT Id FROM User WHERE IsActive = true AND Sandbox_DEV__c = false AND (NOT Username LIKE \'%@00dn000000091oqeay.com\') AND ProfileId <> \'' + sysAdminId + '\'';
+                queryToReturn =
+                    'SELECT Id FROM User WHERE IsActive = true AND Sandbox_DEV__c = false AND (NOT Username LIKE \'%@00dn000000091oqeay.com\') AND ProfileId <> \'' +
+                    sysAdminId +
+                    '\'';
             }
         }
 
@@ -42,25 +54,25 @@ public class ObjectScrambleService {
         ObjectScramble objectScrambler;
         switch on objectType {
             when CONTACT {
-                objectScrambler = new ContactScrambler( (Contact) objectToScramble );
+                objectScrambler = new ContactScrambler((Contact) objectToScramble);
             }
             when EDPLUS_CASE {
-                objectScrambler = new CaseScrambler( (Case) objectToScramble );
+                objectScrambler = new CaseScrambler((Case) objectToScramble);
             }
             when LEAD {
-                objectScrambler = new LeadScrambler( (Lead) objectToScramble);
+                objectScrambler = new LeadScrambler((Lead) objectToScramble);
             }
             when CONVERTED_LEAD {
-                objectScrambler = new LeadDeleter( (Lead) objectToScramble);
+                objectScrambler = new LeadDeleter((Lead) objectToScramble);
             }
             when DELETED_SILVERPOP {
                 objectScrambler = new SilverpopDeleter(objectToScramble);
             }
             when CAR {
-                objectScrambler = new CarScrambler( (Case_Assignment_Rule__c) objectToScramble);
+                objectScrambler = new CarScrambler((Case_Assignment_Rule__c) objectToScramble);
             }
             when USER {
-                objectScrambler = new UserScrambler( (User) objectToScramble);
+                objectScrambler = new UserScrambler((User) objectToScramble);
             }
         }
 
@@ -72,33 +84,26 @@ public class ObjectScrambleService {
         switch on objectType {
             when CONTACT {
                 header =
-                    'Id,Birthdate,Email,Corporate_Relations_Email__c,EPO_Email__c,ASU_Email__c,Last_Case_Email_Used__c,Lead_Email__c,'
-                    +
+                    'Id,Birthdate,Email,Corporate_Relations_Email__c,EPO_Email__c,ASU_Email__c,Last_Case_Email_Used__c,Lead_Email__c,' +
                     'Lead_Secondary_Email__c,me3hs_User_ID__c,Parent_Email__c,Personal_Email__c,silverpop__Silverpop_RecipientID__c\n';
             }
             when EDPLUS_CASE {
-                header = 
-                    'Id,Ed_Plus_Org_Viewable__c\n';
+                header = 'Id,Ed_Plus_Org_Viewable__c\n';
             }
             when LEAD {
-                header = 
-                    'Id,Date_of_Birth__c,Email,Recruiting_Email__c,Secondary_Email__c,silverpop__Silverpop_RecipientID__c\n';
+                header = 'Id,Date_of_Birth__c,Email,Recruiting_Email__c,Secondary_Email__c,silverpop__Silverpop_RecipientID__c\n';
             }
             when CAR {
-                header = 
-                    'Id,Email_Address__c,Reply_To_Email_Address__c\n';
+                header = 'Id,Email_Address__c,Reply_To_Email_Address__c\n';
             }
             when CONVERTED_LEAD {
-                header = 
-                    'Id\n';
+                header = 'Id\n';
             }
             when DELETED_SILVERPOP {
-                header = 
-                    'Id\n';
+                header = 'Id\n';
             }
             when USER {
-                header = 
-                    'Id,IsActive\n';
+                header = 'Id,IsActive\n';
             }
         }
 

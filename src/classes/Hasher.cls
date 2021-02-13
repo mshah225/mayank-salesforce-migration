@@ -1,5 +1,4 @@
 public class Hasher {
-
     public static String hashId(Id idIn) {
         Blob blobId = Blob.valueOf(idIn);
         Blob digestId = Crypto.generateDigest('SHA-512', blobId);

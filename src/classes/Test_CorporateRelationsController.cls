@@ -1,6 +1,5 @@
 @isTest
-private class Test_CorporateRelationsController 
-{  
+private class Test_CorporateRelationsController {
     private static Campaign testCampaign;
     private static Campaign testChildCampaign;
     private static Account testAccount;
@@ -10,44 +9,29 @@ private class Test_CorporateRelationsController
     private static Id crId;
     private static NewCorporateRelationsContactController ncr;
 
-    private static void setupData()
-    {
+    private static void setupData() {
         // Create custom setting to store the recip values
         Relationships__c partnerRel = new Relationships__c();
         partnerRel.Name = 'Partner';
         partnerRel.Reciprocal__c = 'Partner';
-        
-        insert partnerRel;
-        
-        crId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Corporate Relations'
-            AND SobjectType = 'Campaign'
-        ].Id;
 
-        testCampaign = new Campaign(
-            Name = 'Test Campaign',
-            RecordTypeId = crId);
+        insert partnerRel;
+
+        crId = [SELECT Id FROM RecordType WHERE Name = 'Corporate Relations' AND SobjectType = 'Campaign'].Id;
+
+        testCampaign = new Campaign(Name = 'Test Campaign', RecordTypeId = crId);
 
         insert testCampaign;
 
-        testChildCampaign = new Campaign(
-            Name = 'Test Child Campaign',
-            ParentId = testCampaign.Id,
-            RecordTypeId = crId);
+        testChildCampaign = new Campaign(Name = 'Test Child Campaign', ParentId = testCampaign.Id, RecordTypeId = crId);
 
         insert testChildCampaign;
 
-        testAccount = new Account(
-            Name = 'Test Account',
-            Website = 'www.example.com');
+        testAccount = new Account(Name = 'Test Account', Website = 'www.example.com');
 
         insert testAccount;
 
-        testContact = new Contact(
-            FirstName = 'John',
-            LastName = 'Doe');
+        testContact = new Contact(FirstName = 'John', LastName = 'Doe');
 
         insert testContact;
 
@@ -57,22 +41,20 @@ private class Test_CorporateRelationsController
             Contact__c = testContact.Id,
             Title__c = 'Test Title',
             Relationship_Type__c = 'Partner',
-            Relationship_Start_Date__c = Date.today());
+            Relationship_Start_Date__c = Date.today()
+        );
 
         insert testR;
 
-        testCM = new CampaignMember(
-            CampaignId = testCampaign.Id,
-            ContactId = testContact.Id);
+        testCM = new CampaignMember(CampaignId = testCampaign.Id, ContactId = testContact.Id);
 
         insert testCM;
 
         ncr = new NewCorporateRelationsContactController();
     }
 
-
-    @isTest static void testSave()
-    {
+    @isTest
+    static void testSave() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -84,11 +66,11 @@ private class Test_CorporateRelationsController
         ncr.getCampaignOptions();
         ncr.populateChildCampaigns();
         PageReference confirmSave = new PageReference('/' + testContact.Id);
-        System.assertEquals(confirmSave.getUrl(),ncr.save().getUrl());
+        System.assertEquals(confirmSave.getUrl(), ncr.save().getUrl());
     }
 
-    @isTest static void testInsertAccount()
-    {
+    @isTest
+    static void testInsertAccount() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -104,8 +86,8 @@ private class Test_CorporateRelationsController
         System.assertNotEquals(null, accountList);
     }
 
-    @isTest static void testInsertRelationship()
-    {
+    @isTest
+    static void testInsertRelationship() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -117,8 +99,8 @@ private class Test_CorporateRelationsController
         System.assertNotEquals(null, relList);
     }
 
-    @isTest static void testInsertCampaignMember()
-    {
+    @isTest
+    static void testInsertCampaignMember() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -134,8 +116,8 @@ private class Test_CorporateRelationsController
         System.assertNotEquals(null, camMemList);
     }
 
-    @isTest static void testSaveAndNew()
-    {
+    @isTest
+    static void testSaveAndNew() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -147,11 +129,11 @@ private class Test_CorporateRelationsController
         ncr.populateChildCampaigns();
         PageReference confirmSave = ApexPages.currentPage();
 
-        System.assertEquals(confirmSave.getUrl(),ncr.saveAndNew().getUrl());
+        System.assertEquals(confirmSave.getUrl(), ncr.saveAndNew().getUrl());
     }
 
-    @isTest static void testAddPageSave()
-    {
+    @isTest
+    static void testAddPageSave() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);
@@ -168,11 +150,11 @@ private class Test_CorporateRelationsController
         ncr.selectedChildId = testChildCampaign.Id;
         PageReference confirmSave = new PageReference('/' + testContact.Id);
 
-        System.assertEquals(confirmSave.getUrl(),ncr.save().getUrl());
+        System.assertEquals(confirmSave.getUrl(), ncr.save().getUrl());
     }
 
-    @isTest static void testValidations()
-    {
+    @isTest
+    static void testValidations() {
         setupData();
         PageReference crPage = Page.NewCorporateRelationsContact;
         Test.setCurrentPage(crPage);

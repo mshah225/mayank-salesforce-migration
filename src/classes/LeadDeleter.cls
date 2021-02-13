@@ -6,7 +6,6 @@ public class LeadDeleter implements ObjectScramble {
     }
 
     public sObject scrambleFields() {
-
         return leadToDelete;
     }
 

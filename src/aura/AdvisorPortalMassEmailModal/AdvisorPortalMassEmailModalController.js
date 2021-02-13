@@ -1,8 +1,7 @@
 ({
-
-    loadUserDetail : function(component, event, helper) {
+    loadUserDetail: function (component, event, helper) {
         var action = component.get('c.fetchUser');
-        action.setCallback(this, function(response) {
+        action.setCallback(this, function (response) {
             var state = response.getState();
             if (state === 'SUCCESS') {
                 var storeResponse = response.getReturnValue();
@@ -63,7 +62,7 @@
         action.setParams({
             contactIdToCasesMap: auraMap,
             subject: component.get('v.EmailSubject'),
-            body: component.get('v.EmailBody')
+            body: component.get('v.EmailBody'),
         });
         action.setCallback(this, function (response) {
             if (response.getState() !== 'SUCCESS') {

@@ -27,7 +27,11 @@ private class SubscriptionCenterTest {
         // Rename the Parent subs so they're unique
         List<Subscription__c> parentSubList = new List<Subscription__c>();
         i = 0;
-        for (Subscription__c sub : [SELECT Id, Name FROM Subscription__c WHERE Subscription_Type__c = 'Business Unit']) {
+        for (Subscription__c sub : [
+            SELECT Id, Name
+            FROM Subscription__c
+            WHERE Subscription_Type__c = 'Business Unit'
+        ]) {
             i++;
             sub.Name = 'Parent' + i;
             parentSubList.add(sub);
@@ -39,14 +43,13 @@ private class SubscriptionCenterTest {
 
         List<Subscriber__c> subscribers = TestDataFactory.createTestSubscribers(contacts, subscriptions);
         insert subscribers;
-
     }
 
     @isTest
     private static void testMain() {
         SubscriptionCenterController controller;
         String subscriber = [SELECT HashContactId__c FROM Contact LIMIT 1].HashContactId__c;
-		String decodedHashContact = EncodingUtil.urlDecode(subscriber, 'UTF-8');
+        String decodedHashContact = EncodingUtil.urlDecode(subscriber, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('subscriberKey', decodedHashContact);
@@ -62,7 +65,7 @@ private class SubscriptionCenterTest {
         List<SubscriptionCenterController.SubscriberWrapper> availableSubList = new List<SubscriptionCenterController.SubscriberWrapper>();
         Integer availableSubCounter = 0;
 
-        for (String key: controller.availableSubsByParentSubIdMap.keySet()) {
+        for (String key : controller.availableSubsByParentSubIdMap.keySet()) {
             availableSubCounter += controller.availableSubsByParentSubIdMap.get(key).size();
             availableSubList = controller.availableSubsByParentSubIdMap.get(key);
         }
@@ -74,12 +77,12 @@ private class SubscriptionCenterTest {
         controller.updateSubscriptions();
 
         subCounter = 0;
-        for (String key: controller.subsByParentSubIdMap.keySet()) {
+        for (String key : controller.subsByParentSubIdMap.keySet()) {
             subCounter += controller.subsByParentSubIdMap.get(key).size();
         }
 
         availableSubCounter = 0;
-        for (String key: controller.availableSubsByParentSubIdMap.keySet()) {
+        for (String key : controller.availableSubsByParentSubIdMap.keySet()) {
             availableSubCounter += controller.availableSubsByParentSubIdMap.get(key).size();
             availableSubList = controller.availableSubsByParentSubIdMap.get(key);
         }
@@ -102,7 +105,7 @@ private class SubscriptionCenterTest {
         }
         System.assertEquals(SUBSCRIBED_COUNT, subCounter);
     }
-    
+
     @isTest
     private static void testUnsubParent() {
         SubscriptionCenterController controller;
@@ -122,11 +125,9 @@ private class SubscriptionCenterTest {
         controller.updateSubscriptions();
 
         // Confirm that all Child subs have been unsubscribed
-        List<Subscriber__c> subList = new List<Subscriber__c>([
-            SELECT Id 
-            FROM Subscriber__c 
-            WHERE Subscriber_Status__c = 'Subscribed'
-        ]);
+        List<Subscriber__c> subList = new List<Subscriber__c>(
+            [SELECT Id FROM Subscriber__c WHERE Subscriber_Status__c = 'Subscribed']
+        );
         System.assertEquals(0, subList.size());
     }
 
@@ -157,12 +158,13 @@ private class SubscriptionCenterTest {
         controller.updateSubscriptions();
 
         // Confirm that Parent subs have been subscribed
-        List<Subscriber__c> subList = new List<Subscriber__c>([
-            SELECT Id 
-            FROM Subscriber__c 
-            WHERE Subscription__c IN :unsubbedParentSubIds 
-                AND Subscriber_Status__c = 'Subscribed'
-        ]);
+        List<Subscriber__c> subList = new List<Subscriber__c>(
+            [
+                SELECT Id
+                FROM Subscriber__c
+                WHERE Subscription__c IN :unsubbedParentSubIds AND Subscriber_Status__c = 'Subscribed'
+            ]
+        );
         System.assert(subList.size() > 0);
     }
 
@@ -183,7 +185,7 @@ private class SubscriptionCenterTest {
         }
         update subList;
         Test.stopTest();
-        String leadHash = [Select HashLeadId__c From Lead LIMIT 1].HashLeadId__c;
+        String leadHash = [SELECT HashLeadId__c FROM Lead LIMIT 1].HashLeadId__c;
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         leadHash = EncodingUtil.urlDecode(leadHash, 'UTF-8');
@@ -228,7 +230,12 @@ private class SubscriptionCenterTest {
     @isTest
     private static void testDirectUnsubscribe() {
         SubscriptionCenterController controller;
-        Subscriber__c subscriberIn = [SELECT HashSubscriberId__c FROM Subscriber__c WHERE Subscriber_Status__c = 'Subscribed' LIMIT 1];
+        Subscriber__c subscriberIn = [
+            SELECT HashSubscriberId__c
+            FROM Subscriber__c
+            WHERE Subscriber_Status__c = 'Subscribed'
+            LIMIT 1
+        ];
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
@@ -239,63 +246,61 @@ private class SubscriptionCenterTest {
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
 
-        List<Subscriber__c> subCheck = new List<Subscriber__c>([
-            SELECT Id, Subscriber_Status__c 
-            FROM Subscriber__c 
-            WHERE Id = :subscriberIn.Id
-        ]);
+        List<Subscriber__c> subCheck = new List<Subscriber__c>(
+            [SELECT Id, Subscriber_Status__c FROM Subscriber__c WHERE Id = :subscriberIn.Id]
+        );
         System.assertEquals('Unsubscribed', subCheck[0].Subscriber_Status__c);
     }
 
     @isTest
     private static void testDirectUnsubscribeCampaign() {
         Subscriber__c subscriber = [
-            SELECT Id, Subscription__c, Contact__c 
-            FROM Subscriber__c 
-            WHERE Subscriber_Status__c = 'Subscribed' 
+            SELECT Id, Subscription__c, Contact__c
+            FROM Subscriber__c
+            WHERE Subscriber_Status__c = 'Subscribed'
             LIMIT 1
         ];
         Test.startTest();
         Campaign testCampaign = TestDataFactory.createCampaign(
-            'sub', Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Communication').getRecordTypeId());
+            'sub',
+            Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Communication').getRecordTypeId()
+        );
         testCampaign.Subscription__c = subscriber.Subscription__c;
         insert testCampaign;
         Test.stopTest();
-        
+
         SubscriptionCenterController controller;
-        
+
         testCampaign = [SELECT HashCampaignId__c FROM Campaign LIMIT 1];
         String decodedHashedContactId = EncodingUtil.urlDecode(Hasher.hashId(subscriber.Contact__c), 'UTF-8');
         String decodedHashedCampaignId = EncodingUtil.urlDecode(testCampaign.HashCampaignId__c, 'UTF-8');
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
         Test.setCurrentPage(subscriptionCenterPage);
         ApexPages.CurrentPage().getParameters().put('action', 'unsubscribe');
-        ApexPages.CurrentPage().getParameters().put('campaignId', decodedHashedCampaignId);  
+        ApexPages.CurrentPage().getParameters().put('campaignId', decodedHashedCampaignId);
         ApexPages.CurrentPage().getParameters().put('subscriberKey', subscriber.Contact__c);
 
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
 
-        List<Subscriber__c> subCheck = new List<Subscriber__c>([
-            SELECT Id, Subscriber_Status__c 
-            FROM Subscriber__c 
-            WHERE Id = :subscriber.Id
-        ]);
+        List<Subscriber__c> subCheck = new List<Subscriber__c>(
+            [SELECT Id, Subscriber_Status__c FROM Subscriber__c WHERE Id = :subscriber.Id]
+        );
         System.assertEquals('Unsubscribed', subCheck[0].Subscriber_Status__c);
     }
 
     @isTest
     private static void testDirectUnsubscribeSubIds() {
         Subscriber__c subscriber = [
-            SELECT Id, Subscription__c, Contact__c 
-            FROM Subscriber__c 
-            WHERE Subscriber_Status__c = 'Subscribed' 
+            SELECT Id, Subscription__c, Contact__c
+            FROM Subscriber__c
+            WHERE Subscriber_Status__c = 'Subscribed'
             LIMIT 1
         ];
-        
+
         String decodedContactHash = EncodingUtil.urlDecode(Hasher.hashId(subscriber.Contact__c), 'UTF-8');
         String decodedSubscriptionHash = EncodingUtil.urlDecode(Hasher.hashId(subscriber.Subscription__c), 'UTF-8');
-        
+
         SubscriptionCenterController controller;
 
         PageReference subscriptionCenterPage = Page.SubscriptionCenter;
@@ -307,10 +312,9 @@ private class SubscriptionCenterTest {
         controller = new SubscriptionCenterController();
         controller.doUnsubscribe();
 
-        List<Subscriber__c> subCheck = new List<Subscriber__c>([
-            SELECT Id, Subscriber_Status__c 
-            FROM Subscriber__c 
-            WHERE Id = :subscriber.Id]);
+        List<Subscriber__c> subCheck = new List<Subscriber__c>(
+            [SELECT Id, Subscriber_Status__c FROM Subscriber__c WHERE Id = :subscriber.Id]
+        );
         System.assertEquals('Unsubscribed', subCheck[0].Subscriber_Status__c);
     }
 
@@ -326,16 +330,15 @@ private class SubscriptionCenterTest {
         controller = new SubscriptionCenterController();
         controller.toggleOptOut();
 
-        List<Subscriber__c> subCheck = new List<Subscriber__c>([
-            SELECT Id 
-            FROM Subscriber__c 
-            WHERE Subscriber_Status__c = 'Subscribed'
-        ]);
+        List<Subscriber__c> subCheck = new List<Subscriber__c>(
+            [SELECT Id FROM Subscriber__c WHERE Subscriber_Status__c = 'Subscribed']
+        );
         Boolean contactHasOptedOutOfEmail = [
-            SELECT Id, HasOptedOutOfEmail 
-            FROM Contact 
+            SELECT Id, HasOptedOutOfEmail
+            FROM Contact
             WHERE HashContactId__c = :subscriberId
-        ].HasOptedOutOfEmail;
+        ]
+        .HasOptedOutOfEmail;
         System.assertEquals(0, subCheck.size());
         System.assertEquals(true, contactHasOptedOutOfEmail);
     }
@@ -351,8 +354,7 @@ private class SubscriptionCenterTest {
 
         controller = new SubscriptionCenterController();
 
-        List<SubscriptionCenterController.SubscriberWrapper> availableSubList = 
-            new List<SubscriptionCenterController.SubscriberWrapper>();
+        List<SubscriptionCenterController.SubscriberWrapper> availableSubList = new List<SubscriptionCenterController.SubscriberWrapper>();
         Integer availableSubCounter = 0;
         for (String key : controller.availableSubsByParentSubIdMap.keySet()) {
             availableSubCounter += controller.availableSubsByParentSubIdMap.get(key).size();
@@ -374,9 +376,16 @@ private class SubscriptionCenterTest {
     private static void testSubscriberWrapperConstructors() {
         SubscriptionCenterController controller;
         Subscriber__c subscriber = [
-            SELECT Id, Subscription__c, Contact__c, Contact__r.HashContactId__c, Lead__c, Subscriber_Status__c, 
-                Subscription__r.Subscription_Center_Description__c, Subscription__r.Name
-            FROM Subscriber__c 
+            SELECT
+                Id,
+                Subscription__c,
+                Contact__c,
+                Contact__r.HashContactId__c,
+                Lead__c,
+                Subscriber_Status__c,
+                Subscription__r.Subscription_Center_Description__c,
+                Subscription__r.Name
+            FROM Subscriber__c
             LIMIT 1
         ];
         String decodedContactHash = EncodingUtil.urlDecode(subscriber.Contact__r.HashContactId__c, 'UTF-8');
@@ -385,8 +394,9 @@ private class SubscriptionCenterTest {
         ApexPages.CurrentPage().getParameters().put('subscriberKey', decodedContactHash);
 
         controller = new SubscriptionCenterController();
-        SubscriptionCenterController.SubscriberWrapper sw = 
-            new SubscriptionCenterController.SubscriberWrapper(subscriber);
+        SubscriptionCenterController.SubscriberWrapper sw = new SubscriptionCenterController.SubscriberWrapper(
+            subscriber
+        );
         System.assertEquals(subscriber.Subscriber_Status__c, sw.subscriberStatus);
     }
 }

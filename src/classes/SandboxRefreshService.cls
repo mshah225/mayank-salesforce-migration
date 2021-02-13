@@ -1,6 +1,6 @@
 public class SandboxRefreshService {
     public static String orgType;
-    
+
     public static String setOrgTypeFromUrl(String url) {
         if (!String.isEmpty(orgType)) {
             return orgType;
@@ -14,7 +14,7 @@ public class SandboxRefreshService {
         }
         return orgType;
     }
-    
+
     public static Sobject scrambleEmailField(Sobject objectToModify, List<String> fieldList) {
         for (String field : fieldList) {
             String originalEmail = (String) objectToModify.get(field);
@@ -23,7 +23,7 @@ public class SandboxRefreshService {
         }
         return objectToModify;
     }
-    
+
     private static String getScrambledEmailFrom(String originalEmail) {
         String scrambledEmail;
         if (!String.isEmpty(originalEmail) && originalEmail.right(4) != orgType) {
@@ -34,13 +34,13 @@ public class SandboxRefreshService {
         }
         return scrambledEmail;
     }
-    
+
     public static Date scrambleBirthday(Date originalBirthday) {
-        Integer intRandom = Math.round(Math.random()*1000);
+        Integer intRandom = Math.round(Math.random() * 1000);
         intRandom = Math.mod(intRandom, 60) - 30;
         return originalBirthday.addDays(intRandom);
     }
-    
+
     public static Sobject removeSilverPopId(Sobject objectToRemoveField) {
         objectToRemoveField.put('silverpop__Silverpop_RecipientID__c', '');
         return objectToRemoveField;

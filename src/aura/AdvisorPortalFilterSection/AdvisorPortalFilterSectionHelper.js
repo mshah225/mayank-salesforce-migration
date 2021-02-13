@@ -68,7 +68,7 @@
                     .setParams({caseContactWrapperList: response.getReturnValue()})
                     .fire();
             }
-            
+
             component.getEvent('decrementProcessingCounterEvent').fire();
         });
         $A.enqueueAction(filterAction);

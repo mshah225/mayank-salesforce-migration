@@ -1,40 +1,39 @@
 public class showMyCasesController extends ListViewController {
-
     private boolean debug = false;
 
     // Properties with standard getters/setters
-    public Id proactiveCaseRTID {get; set;} // The record type Id of the proactive cases
-    public Map<Id, relatedCases> caseCounts {get; set;} // Stores the contact Id to summarized case counts
-    public List<caseWrapper> caseList {get; set;} // List of Case Wrappers (cases) to display on the page
-    public Id ownerId {get; set;} // Stores the Id of the new owner of the selected cases
-    public Id portalEmailRTID {get; set;} // The record type of the portal email object
-    private string originalQuery {get; set;} // Justin is this still required?
-    public Boolean emailPreviewMode {get; set;} // Used to determine which set of buttons to show in the email modal
-    public List<Database.SaveResult> emailInsertResults {get; set;} // Used to display the results of the email send to the user
-    public String caseSubject {get; set;}
-    public String studentGroup {get; set;}
-    public String campusFilter {get; set;}
-    public String majorFilter {get; set;}
-    public Date createdByStartDate {get; set;}
-    public Date createdByEndDate {get; set;}
-    public Date followupStartDate {get; set;}
-    public Date followupEndDate {get; set;}
-    public Date persistenceStartDate {get; set;}
-    public Date persistenceEndDate {get; set;}
-    public String searchString {get; set;}
-    public String caseReasonAdministrativelyClosed {get; set;}
-    public String caseStatus {get; set;}
-    public String caseRecommendedActions {get; set;}
-    public String caseRecommendedActionsOther {get; set;}
+    public Id proactiveCaseRTID { get; set; } // The record type Id of the proactive cases
+    public Map<Id, relatedCases> caseCounts { get; set; } // Stores the contact Id to summarized case counts
+    public List<caseWrapper> caseList { get; set; } // List of Case Wrappers (cases) to display on the page
+    public Id ownerId { get; set; } // Stores the Id of the new owner of the selected cases
+    public Id portalEmailRTID { get; set; } // The record type of the portal email object
+    private string originalQuery { get; set; } // Justin is this still required?
+    public Boolean emailPreviewMode { get; set; } // Used to determine which set of buttons to show in the email modal
+    public List<Database.SaveResult> emailInsertResults { get; set; } // Used to display the results of the email send to the user
+    public String caseSubject { get; set; }
+    public String studentGroup { get; set; }
+    public String campusFilter { get; set; }
+    public String majorFilter { get; set; }
+    public Date createdByStartDate { get; set; }
+    public Date createdByEndDate { get; set; }
+    public Date followupStartDate { get; set; }
+    public Date followupEndDate { get; set; }
+    public Date persistenceStartDate { get; set; }
+    public Date persistenceEndDate { get; set; }
+    public String searchString { get; set; }
+    public String caseReasonAdministrativelyClosed { get; set; }
+    public String caseStatus { get; set; }
+    public String caseRecommendedActions { get; set; }
+    public String caseRecommendedActionsOther { get; set; }
 
-    public String caseStudentIntention {get; set;}
-    public String caseStudentReturnTerm {get; set;}
-    public String caseStudentRisk {get; set;}
-    public String caseStudentRiskOther {get; set;}
-    public List<String> caseReasonNotReturning {get; set;}
-    public String caseReasonNotReturningOther {get; set;}
+    public String caseStudentIntention { get; set; }
+    public String caseStudentReturnTerm { get; set; }
+    public String caseStudentRisk { get; set; }
+    public String caseStudentRiskOther { get; set; }
+    public List<String> caseReasonNotReturning { get; set; }
+    public String caseReasonNotReturningOther { get; set; }
 
-    public String categoryFilter {get; set;}
+    public String categoryFilter { get; set; }
 
     public String caseStatusFilter {
         get {
@@ -85,7 +84,6 @@ public class showMyCasesController extends ListViewController {
             }
             return outlookScoreOptions;
         }
-
         set;
     }
 
@@ -111,7 +109,6 @@ public class showMyCasesController extends ListViewController {
             }
             return outlookChangeOptions;
         }
-
         set;
     }
 
@@ -130,7 +127,6 @@ public class showMyCasesController extends ListViewController {
 
             return selectedCases;
         }
-
         set {
             selectedCases = value;
 
@@ -159,12 +155,10 @@ public class showMyCasesController extends ListViewController {
     }
 
     /*
-    * set the tempemail to null when user closes panel
-    */
+     * set the tempemail to null when user closes panel
+     */
     public void clearTempEmail() {
-
-            tempEmail = null;
-
+        tempEmail = null;
     }
 
     // Methods
@@ -191,12 +185,11 @@ public class showMyCasesController extends ListViewController {
         }
 
         resetCaseCounts();
-
     }
 
     /*
-    * Resets the caseCounts map
-    */
+     * Resets the caseCounts map
+     */
     public void resetCaseCounts() {
         caseCounts = new Map<Id, relatedCases>();
         Set<Id> contactIds = new Set<Id>();
@@ -206,30 +199,27 @@ public class showMyCasesController extends ListViewController {
                 contactIds.add(cw.obj.contactid);
             }
 
-            for (Contact c : [SELECT id,
-                              (SELECT RecordTypeId
-                               FROM Cases
-                               WHERE isClosed = false)
-                              FROM Contact
-                              WHERE Id IN :ContactIds]) {
-                                  caseCounts.put(c.id, new relatedCases());
-                                  for (Case cc : c.cases) {
-                                      if (cc.recordTypeId == proactiveCaseRTID) {
-                                          caseCounts.get(c.Id).proactiveCount++;
-                                      } else {
-                                          caseCounts.get(c.Id).reactiveCount++;
-                                      }
-                                  }
-                              }
+            for (Contact c : [
+                SELECT id, (SELECT RecordTypeId FROM Cases WHERE isClosed = FALSE)
+                FROM Contact
+                WHERE Id IN :ContactIds
+            ]) {
+                caseCounts.put(c.id, new relatedCases());
+                for (Case cc : c.cases) {
+                    if (cc.recordTypeId == proactiveCaseRTID) {
+                        caseCounts.get(c.Id).proactiveCount++;
+                    } else {
+                        caseCounts.get(c.Id).reactiveCount++;
+                    }
+                }
+            }
         }
-
     }
 
     /*
      * Transfer Cases
      */
     public void transferCases() {
-
         for (case c : selectedCases) {
             c.ownerId = ownerId;
         }
@@ -246,14 +236,16 @@ public class showMyCasesController extends ListViewController {
         List<Portal_Email__c> emails = new List<Portal_Email__c>();
 
         for (case c : selectedCases) {
-            emails.add(new Portal_Email__c(
-                Case__c = c.Id,
-                Contact__c = c.contactId,
-                Subject__c = tempEmail.Subject__c,
-                Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
-                RecordTypeId = portalEmailRTID,
-                Email_Template_Name__c = tempEmail.Email_Template_Name__c
-            ));
+            emails.add(
+                new Portal_Email__c(
+                    Case__c = c.Id,
+                    Contact__c = c.contactId,
+                    Subject__c = tempEmail.Subject__c,
+                    Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
+                    RecordTypeId = portalEmailRTID,
+                    Email_Template_Name__c = tempEmail.Email_Template_Name__c
+                )
+            );
         }
         if (emails.size() > 0) {
             emailInsertResults = Database.insert(emails);
@@ -281,10 +273,10 @@ public class showMyCasesController extends ListViewController {
      * Used to track the number of proactive and reactive cases at the contact level
      */
     public class relatedCases {
-        public Integer reactiveCount {get; set;}
-        public Integer proactiveCount {get; set;}
+        public Integer reactiveCount { get; set; }
+        public Integer proactiveCount { get; set; }
 
-        public relatedCases () {
+        public relatedCases() {
             reactiveCount = 0;
             proactiveCount = 0;
         }
@@ -294,12 +286,12 @@ public class showMyCasesController extends ListViewController {
      * Used to create a trackable way to select cases via a check box
      */
     public class caseWrapper {
-        public Boolean selected {get; set;}
-        public Case obj {get; set;}
-        public String changeDir {get; set;}
-        public String imageName {get; set;}
+        public Boolean selected { get; set; }
+        public Case obj { get; set; }
+        public String changeDir { get; set; }
+        public String imageName { get; set; }
 
-        public caseWrapper (Case wrappedCase) {
+        public caseWrapper(Case wrappedCase) {
             selected = false;
             obj = wrappedCase;
 
@@ -307,14 +299,14 @@ public class showMyCasesController extends ListViewController {
                 changeDir = 'Up';
             } else if (obj.Most_Recent_Outlook_Change_Direction__c == -1) {
                 changeDir = 'Down';
-            } else if(obj.Most_Recent_Outlook_Change_Direction__c == 0){
+            } else if (obj.Most_Recent_Outlook_Change_Direction__c == 0) {
                 changeDir = ' ';
             } else {
                 changeDir = ' ';
             }
 
             if (obj.Curr_Cont_Prediction_Level__c < 4) {
-               imageName = 'icon-1.png';
+                imageName = 'icon-1.png';
             } else if (obj.Curr_Cont_Prediction_Level__c < 6) {
                 imageName = 'icon-2.png';
             } else if (obj.Curr_Cont_Prediction_Level__c == 6) {
@@ -324,27 +316,26 @@ public class showMyCasesController extends ListViewController {
             } else {
                 imageName = 'icon-5.png';
             }
-
         }
     }
 
     /*
      * Used to refresh the list to it's orignal state
      */
-    public void resetSearch(){
-        searchString = NULL;
-        caseSubject = NULL;
-        campusFilter = NULL;
-        followupStartDate = NULL;
-        followupEndDate = NULL;
-        createdByStartDate = NULL;
-        createdByEndDate = NULL;
-        persistenceStartDate = NULL;
-        persistenceEndDate = NULL;
-        caseSubject = NULL;
-        studentGroup = NULL;
-        majorFilter = NULL;
-        categoryFilter = NULL;
+    public void resetSearch() {
+        searchString = null;
+        caseSubject = null;
+        campusFilter = null;
+        followupStartDate = null;
+        followupEndDate = null;
+        createdByStartDate = null;
+        createdByEndDate = null;
+        persistenceStartDate = null;
+        persistenceEndDate = null;
+        caseSubject = null;
+        studentGroup = null;
+        majorFilter = null;
+        categoryFilter = null;
 
         caseStatusFilter = '--';
         outlookChangeFilter = '--';
@@ -354,10 +345,10 @@ public class showMyCasesController extends ListViewController {
     }
 
     private List<String> getPicklistValues() {
-        List<String> pickListValuesForCaseStatus= new List<String>();
+        List<String> pickListValuesForCaseStatus = new List<String>();
 
         picklistValuesForCaseStatus.add('Busy Signal');
-		    picklistValuesForCaseStatus.add('Email Sent');
+        picklistValuesForCaseStatus.add('Email Sent');
         picklistValuesForCaseStatus.add('In Progress');
         picklistValuesForCaseStatus.add('Left Message with Third Party');
         picklistValuesForCaseStatus.add('Left voicemail');
@@ -408,8 +399,9 @@ public class showMyCasesController extends ListViewController {
     private String createFilterStringForStudentGroup() {
         if (!String.isEmpty(studentGroup)) {
             return ' (ContactId IN (SELECT SG_Contact__c FROM Student_Group__c ' +
-                    'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
-                    studentGroup + '%\')) AND ';
+                'WHERE SG_PeopleSoft_Code__c LIKE \'%' +
+                studentGroup +
+                '%\')) AND ';
         }
         return ' ';
     }
@@ -424,12 +416,14 @@ public class showMyCasesController extends ListViewController {
     private String createFilterStringForCreatedDate() {
         String createdQuery = ' ';
         if (createdByStartDate != null) {
-            String startDateSection = DateTime.newInstance(createdByStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            String startDateSection = DateTime.newInstance(createdByStartDate, Time.newInstance(0, 0, 0, 0))
+                .format('yyyy-MM-dd');
             startDateSection += 'T00:00:00+0000';
             createdQuery += ' CreatedDate >= ' + startDateSection + ' AND ';
         }
         if (createdByEndDate != null) {
-            String endDateSection = DateTime.newInstance(createdByEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            String endDateSection = DateTime.newInstance(createdByEndDate, Time.newInstance(0, 0, 0, 0))
+                .format('yyyy-MM-dd');
             endDateSection += 'T23:59:59+0000';
             createdQuery += ' CreatedDate <= ' + endDateSection + ' AND ';
         }
@@ -439,11 +433,13 @@ public class showMyCasesController extends ListViewController {
     private String createFilterStringForFollowupDate() {
         String createdQuery = ' ';
         if (followupStartDate != null) {
-            String followupSearchStartDate = DateTime.newInstance(followupStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            String followupSearchStartDate = DateTime.newInstance(followupStartDate, Time.newInstance(0, 0, 0, 0))
+                .format('yyyy-MM-dd');
             createdQuery += ' FollowUp_Date__c >= ' + followupSearchStartDate + ' AND ';
         }
         if (followupEndDate != null) {
-            String followupSearchEndDate = DateTime.newInstance(followupEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            String followupSearchEndDate = DateTime.newInstance(followupEndDate, Time.newInstance(0, 0, 0, 0))
+                .format('yyyy-MM-dd');
             createdQuery += ' FollowUp_Date__c <= ' + followupSearchEndDate + ' AND ';
         }
         return createdQuery;
@@ -451,13 +447,20 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterStringForStudentIdSearch() {
         String createdQuery = ' ';
-        if(!String.isEmpty(searchString)) {
+        if (!String.isEmpty(searchString)) {
             String searchCon = searchString.trim();
             if (!String.isEmpty(searchCon)) {
-                createdQuery = ' (' +
-                    'Contact.Name LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\' ' +
-                    'OR Contact.EMPLID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
-                    'OR Contact.ASURite_ID__c LIKE \'%' + String.escapeSingleQuotes(searchCon) + '%\'' +
+                createdQuery =
+                    ' (' +
+                    'Contact.Name LIKE \'%' +
+                    String.escapeSingleQuotes(searchCon) +
+                    '%\' ' +
+                    'OR Contact.EMPLID__c LIKE \'%' +
+                    String.escapeSingleQuotes(searchCon) +
+                    '%\'' +
+                    'OR Contact.ASURite_ID__c LIKE \'%' +
+                    String.escapeSingleQuotes(searchCon) +
+                    '%\'' +
                     ') AND ';
             }
         }
@@ -467,16 +470,21 @@ public class showMyCasesController extends ListViewController {
 
     private String createFilterStringForCollegeDegreeAndCampus() {
         if (campusFilter != '--' || !String.isEmpty(majorFilter)) {
-            String collegeDegreeAndCampusFilter = ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
-                   'WHERE Status__c = \'Active in Program\' ';
+            String collegeDegreeAndCampusFilter =
+                ' (ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c ' +
+                'WHERE Status__c = \'Active in Program\' ';
 
             if (!String.isEmpty(campusFilter) && campusFilter != '--') {
-                collegeDegreeAndCampusFilter += ' AND Campus__c = \'' +
-                campusFilter + '\' ';
+                collegeDegreeAndCampusFilter += ' AND Campus__c = \'' + campusFilter + '\' ';
             }
             if (!String.isEmpty(majorFilter)) {
-                collegeDegreeAndCampusFilter += ' AND (Plan_Description__c LIKE \'%' +
-                majorFilter + '%\' ' + 'OR Plan_Code__c LIKE \'%' + majorFilter + '%\' )';
+                collegeDegreeAndCampusFilter +=
+                    ' AND (Plan_Description__c LIKE \'%' +
+                    majorFilter +
+                    '%\' ' +
+                    'OR Plan_Code__c LIKE \'%' +
+                    majorFilter +
+                    '%\' )';
             }
             collegeDegreeAndCampusFilter += ')) AND ';
             return collegeDegreeAndCampusFilter;
@@ -519,11 +527,13 @@ public class showMyCasesController extends ListViewController {
     private String createFilterStringForOutlookDate() {
         String createdQuery = ' ';
         if (persistenceStartDate != null) {
-            String persistenceSearchStartDate = DateTime.newInstance(persistenceStartDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            String persistenceSearchStartDate = DateTime.newInstance(persistenceStartDate, Time.newInstance(0, 0, 0, 0))
+                .format('yyyy-MM-dd');
             createdQuery += ' Change_Date__c >= ' + persistenceSearchStartDate + ' AND ';
         }
         if (persistenceEndDate != null) {
-            String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0)).format('yyyy-MM-dd');
+            String persistenceSearchEndDate = DateTime.newInstance(persistenceEndDate, Time.newInstance(0, 0, 0, 0))
+                .format('yyyy-MM-dd');
             createdQuery += ' Change_Date__c <= ' + persistenceSearchEndDate + ' AND ';
         }
         return createdQuery;
@@ -532,20 +542,28 @@ public class showMyCasesController extends ListViewController {
     public List<SelectOption> caseMassUpdateStatusOptions {
         get {
             if (caseMassUpdateStatusOptions == null) {
-
                 caseMassUpdateStatusOptions = new List<SelectOption>();
                 caseMassUpdateStatusOptions.add(new SelectOption('', '--', false));
-                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Administratively Resolved (No Outreach)', 'Closed: Administratively Resolved (No Outreach)', false));
-                caseMassUpdateStatusOptions.add(new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false));
-                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false));
-                caseMassUpdateStatusOptions.add(new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false));
+                caseMassUpdateStatusOptions.add(
+                    new SelectOption(
+                        'Closed: Administratively Resolved (No Outreach)',
+                        'Closed: Administratively Resolved (No Outreach)',
+                        false
+                    )
+                );
+                caseMassUpdateStatusOptions.add(
+                    new SelectOption('Closed: Customer Self-Resolved', 'Closed: Customer Self-Resolved', false)
+                );
+                caseMassUpdateStatusOptions.add(
+                    new SelectOption('Conferred with Student by Email', 'Conferred with Student by Email', false)
+                );
+                caseMassUpdateStatusOptions.add(
+                    new SelectOption('Conferred with Student by Phone', 'Conferred with Student by Phone', false)
+                );
                 caseMassUpdateStatusOptions.add(new SelectOption('In Person Meeting', 'In Person Meeting', false));
-
             }
             return caseMassUpdateStatusOptions;
-
         }
-
         set;
     }
 
@@ -556,13 +574,14 @@ public class showMyCasesController extends ListViewController {
                 Schema.DescribeFieldResult caseRecommendedActionDescribe = Case.Recommended_Actions__c.getDescribe();
                 List<Schema.PicklistEntry> caseRecommendedActionList = caseRecommendedActionDescribe.getPicklistValues();
 
-                for(Schema.PicklistEntry caseRecommendedAction : caseRecommendedActionList) {
-                    caseRecommendedActionOptions.add(new SelectOption(caseRecommendedAction.getValue(), caseRecommendedAction.getLabel(), false));
+                for (Schema.PicklistEntry caseRecommendedAction : caseRecommendedActionList) {
+                    caseRecommendedActionOptions.add(
+                        new SelectOption(caseRecommendedAction.getValue(), caseRecommendedAction.getLabel(), false)
+                    );
                 }
             }
             return caseRecommendedActionOptions;
         }
-
         set;
     }
 
@@ -577,7 +596,6 @@ public class showMyCasesController extends ListViewController {
             }
             return studentIntentionOptions;
         }
-
         set;
     }
 
@@ -588,13 +606,18 @@ public class showMyCasesController extends ListViewController {
                 Schema.DescribeFieldResult caseStudentReturnTermDescribe = Case.What_term_is_the_student_planning_to_ret__c.getDescribe();
                 List<Schema.PicklistEntry> caseStudentReturnTermList = caseStudentReturnTermDescribe.getPicklistValues();
                 caseStudentReturnTermOptions.add(new SelectOption('', '--', false));
-                for(Schema.PicklistEntry caseStudentReturnTermEntry : caseStudentReturnTermList) {
-                    caseStudentReturnTermOptions.add(new SelectOption(caseStudentReturnTermEntry.getValue(), caseStudentReturnTermEntry.getLabel(), false));
+                for (Schema.PicklistEntry caseStudentReturnTermEntry : caseStudentReturnTermList) {
+                    caseStudentReturnTermOptions.add(
+                        new SelectOption(
+                            caseStudentReturnTermEntry.getValue(),
+                            caseStudentReturnTermEntry.getLabel(),
+                            false
+                        )
+                    );
                 }
             }
             return caseStudentReturnTermOptions;
         }
-
         set;
     }
 
@@ -605,13 +628,14 @@ public class showMyCasesController extends ListViewController {
                 Schema.DescribeFieldResult caseStudentRiskDescribe = Case.Student_Presented_Risk_for__c.getDescribe();
                 List<Schema.PicklistEntry> caseStudentRiskList = caseStudentRiskDescribe.getPicklistValues();
                 caseStudentRiskOptions.add(new SelectOption('', '--', false));
-                for(Schema.PicklistEntry caseStudentRiskEntry : caseStudentRiskList) {
-                    caseStudentRiskOptions.add(new SelectOption(caseStudentRiskEntry.getValue(), caseStudentRiskEntry.getLabel(), false));
+                for (Schema.PicklistEntry caseStudentRiskEntry : caseStudentRiskList) {
+                    caseStudentRiskOptions.add(
+                        new SelectOption(caseStudentRiskEntry.getValue(), caseStudentRiskEntry.getLabel(), false)
+                    );
                 }
             }
             return caseStudentRiskOptions;
         }
-
         set;
     }
 
@@ -621,25 +645,29 @@ public class showMyCasesController extends ListViewController {
                 caseReasonNotReturningOptions = new List<SelectOption>();
                 Schema.DescribeFieldResult caseReasonNotReturningDescribe = Case.Reasons_Not_Returning__c.getDescribe();
                 List<Schema.PicklistEntry> caseReasonNotReturningList = caseReasonNotReturningDescribe.getPicklistValues();
-                for(Schema.PicklistEntry caseReasonNotReturningEntry : caseReasonNotReturningList) {
-                    caseReasonNotReturningOptions.add(new SelectOption(caseReasonNotReturningEntry.getValue(), caseReasonNotReturningEntry.getLabel(), false));
+                for (Schema.PicklistEntry caseReasonNotReturningEntry : caseReasonNotReturningList) {
+                    caseReasonNotReturningOptions.add(
+                        new SelectOption(
+                            caseReasonNotReturningEntry.getValue(),
+                            caseReasonNotReturningEntry.getLabel(),
+                            false
+                        )
+                    );
                 }
             }
             return caseReasonNotReturningOptions;
         }
-
         set;
     }
 
-
-    public Boolean validateMassCloseFields () {
+    public Boolean validateMassCloseFields() {
         if (String.isEmpty(caseStatus) || String.isEmpty(caseRecommendedActions)) {
             return false;
         } else {
             return true;
         }
     }
-    public void updateCaseListFieldsToClose () {
+    public void updateCaseListFieldsToClose() {
         for (case selectedCase : selectedCases) {
             selectedCase.Status = caseStatus;
             selectedCase.Reason_Administratively_Closed__c = caseReasonAdministrativelyClosed;
@@ -653,7 +681,7 @@ public class showMyCasesController extends ListViewController {
             selectedCase.Reasons_Not_Returning_Other__c = caseReasonNotReturningOther.left(50);
         }
     }
-    public void massClose () {
+    public void massClose() {
         if (selectedCases.isEmpty()) {
             return;
         }
@@ -661,18 +689,23 @@ public class showMyCasesController extends ListViewController {
             try {
                 updateCaseListFieldsToClose();
                 Database.update(selectedCases);
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ApexPages.addMessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
-                        'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' + ex)
+                        'There was an error closing these cases. If the problem persists, contact your system admin with this message: ' +
+                        ex
+                    )
                 );
             }
             refreshList = true;
             clearMassUpdateFields();
         } else {
             ApexPages.addMessage(
-                new ApexPages.message(ApexPages.severity.ERROR,'You must select an option for the Case Status AND Recommended Action(s)')
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must select an option for the Case Status AND Recommended Action(s)'
+                )
             );
         }
     }
@@ -752,7 +785,7 @@ public class showMyCasesController extends ListViewController {
             }
 
             for (String subjectOption : caseSubjectSet) {
-                    caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
+                caseSubjectOptions.add(new SelectOption(subjectOption, subjectOption));
             }
             caseSubjectOptions.sort();
             return caseSubjectOptions;
@@ -766,7 +799,11 @@ public class showMyCasesController extends ListViewController {
                 campusFilterOptions = new List<SelectOption>();
                 campusFilterOptions.add(new SelectOption('--', '--'));
 
-                List<Location__c> campusLocationOptions = [SELECT Name FROM Location__c WHERE Location_Status__c = true];
+                List<Location__c> campusLocationOptions = [
+                    SELECT Name
+                    FROM Location__c
+                    WHERE Location_Status__c = TRUE
+                ];
 
                 for (Location__c campusOption : campusLocationOptions) {
                     campusFilterOptions.add(new SelectOption(campusOption.Id, campusOption.Name));

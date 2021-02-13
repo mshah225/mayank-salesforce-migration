@@ -43,7 +43,8 @@
 
             function replaceIframe() {
                 var url = '/SCLaunch';
-                var urlString = url + '?asuriteId=' + asuriteId + '&navbar=' + navbar + '&signature=' + signature + '&time=' + time;
+                var urlString =
+                    url + '?asuriteId=' + asuriteId + '&navbar=' + navbar + '&signature=' + signature + '&time=' + time;
                 document.getElementById('theIframe').src = urlString;
             }
         </script>
@@ -55,7 +56,7 @@
                 <div id="asu_logo">
                     <a target="_top" href="http://www.asu.edu/" title="Arizona State University">
                         <img src="//www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo.png" alt="Arizona State University" height="36" width="200"
-                            style="margin-top:14px" title="Arizona State University" />
+                            style="margin-top: 14px" title="Arizona State University" />
                     </a>
                 </div>
                 <!-- /#asu_logo  -->
@@ -69,8 +70,8 @@
             <!-- /#asu_mobile_header  -->
 
             <script>
-                $(".asuhide").click(function () {
-                    $("#asu_mobile_menu").slideToggle("2000");
+                $('.asuhide').click(function () {
+                    $('#asu_mobile_menu').slideToggle('2000');
                 });
             </script>
 
@@ -109,7 +110,8 @@
                                             <a target="_top" href="http://herbergerinstitute.asu.edu" title="Herberger Institute for Design and the Arts website">Design and the Arts</a>
                                         </li>
                                         <li>
-                                            <a target="_top" href="http://education.asu.edu/" title="Mary Lou Fulton Teachers College website">Education </a>
+                                            <a target="_top" href="http://education.asu.edu/" title="Mary Lou Fulton Teachers College website">Education
+                                            </a>
                                         </li>
                                         <li>
                                             <a target="_top" href="http://engineer.asu.edu/" title="Engineering website">Engineering</a>
@@ -187,7 +189,6 @@
                                 <li>
                                     <a target="_top" href="http://www.asu.edu/contactasu/" title="Directory, Index and other info">Directory</a>
                                 </li>
-
                             </ul>
                             <img class="asu_touch" src="//www.asu.edu/asuthemes/4.0-rsp.1/images/ipad_close.gif" alt="" />
                         </div>
@@ -223,7 +224,7 @@
         <!-- /#asu_hdr -->
 
         <script type="text/javascript">
-        < !--//--><![CDATA[//><!--
+            < !--//--><![CDATA[//><!--
                 ASUHeader.default_search_text = "Search ASU";
             ASUHeader.default_search_alttext = "Search ASU";
             if (typeof ASUHeader.signin_callback_url == "undefined") {
@@ -244,12 +245,12 @@
             } if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
                 document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className + " chrome";
             }
-        //--><!]]>
+            //--><!]]>
         </script>
 
         <center>
             <div class="mainBody">
-                <img src="https://webapp4.asu.edu/myasu/images/loader_all_yellow.gif" style="margin-top:50px;" />
+                <img src="https://webapp4.asu.edu/myasu/images/loader_all_yellow.gif" style="margin-top: 50px" />
                 <br />
                 <br />
                 <br />
@@ -259,6 +260,6 @@
             </div>
         </center>
 
-        <iframe src="" scrolling="true" id="theIframe" style="display:none;" frameborder="true" width="700px" />
+        <iframe src="" scrolling="true" id="theIframe" style="display: none" frameborder="true" width="700px" />
     </body>
 </apex:page>

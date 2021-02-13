@@ -1,17 +1,30 @@
-trigger EmailMessageTrigger on EmailMessage (after delete, after insert, after undelete, after update,
-    before delete, before insert, before update) {
+trigger EmailMessageTrigger on EmailMessage(
+    after delete,
+    after insert,
+    after undelete,
+    after update,
+    before delete,
+    before insert,
+    before update
+) {
+    EmailMessageDispatcher d = new EmailMessageDispatcher(Trigger.newMap, Trigger.oldMap);
 
-    EmailMessageDispatcher d = new EmailMessageDispatcher(trigger.newMap, trigger.oldMap);
-    
-    if (trigger.isBefore) {
-        if (trigger.isUpdate) d.beforeUpdate();
-        if (trigger.isInsert) d.beforeInsert();
-        if (trigger.isDelete) d.beforeDelete();
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate)
+            d.beforeUpdate();
+        if (Trigger.isInsert)
+            d.beforeInsert();
+        if (Trigger.isDelete)
+            d.beforeDelete();
     }
-    if (trigger.isAfter) {
-        if (trigger.isUpdate) d.afterUpdate();
-        if (trigger.isInsert) d.afterInsert();
-        if (trigger.isDelete) d.afterDelete();
-        if (trigger.isUnDelete) d.afterUnDelete();
+    if (Trigger.isAfter) {
+        if (Trigger.isUpdate)
+            d.afterUpdate();
+        if (Trigger.isInsert)
+            d.afterInsert();
+        if (Trigger.isDelete)
+            d.afterDelete();
+        if (Trigger.isUnDelete)
+            d.afterUnDelete();
     }
 }

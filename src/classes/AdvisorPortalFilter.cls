@@ -1,9 +1,9 @@
 /**
-* @author Mathew Ruff, Sierra-Cedar
-* @date 2019-08-02
-*
-* Used to help facilitate Advisor Portal Contact/Case filtering.
-*/
+ * @author Mathew Ruff, Sierra-Cedar
+ * @date 2019-08-02
+ *
+ * Used to help facilitate Advisor Portal Contact/Case filtering.
+ */
 public class AdvisorPortalFilter {
     /**
      * Represents a Contacts's Name, EMPLID__c, or ASURite_Id__c value.

@@ -1,56 +1,55 @@
 public class LeadService {
-	/**
-    * Creates a Lead with all required fields, usually for unit testing
-    * @return testLead A lead with all required fields
-    */
+    /**
+     * Creates a Lead with all required fields, usually for unit testing
+     * @return testLead A lead with all required fields
+     */
     public static Lead createTestLead() {
-    Lead testLead = new Lead();
-            testLead.FirstName = 'Jonny';
-            testLead.LastName = 'Test';
-            testLead.Email = 'test@nomail.com';
-            testLead.Company = 'Test Company';
+        Lead testLead = new Lead();
+        testLead.FirstName = 'Jonny';
+        testLead.LastName = 'Test';
+        testLead.Email = 'test@nomail.com';
+        testLead.Company = 'Test Company';
 
-    return testLead;
+        return testLead;
     }
 
+    /**
+     * Generates a set of test leads to convert
+     * @param contactsToConvertOn a set of Contacts to convert to
+     * @return leads a list of test lead data
+     */
+    public static List<Lead> createTestLeadsToConvert(List<Contact> contactsToConvertOn) {
+        List<Lead> leads = new List<Lead>();
+
+        for (Contact con : contactsToConvertOn) {
+            Lead testLead = new Lead();
+            testLead.FirstName = con.FirstName;
+            testLead.LastName = con.LastName;
+            testLead.Email = con.Email;
+            testLead.LeadSource = 'Email';
+            testLead.Company = 'TestCompany';
+            testLead.Career__c = 'Undergraduate';
+            testLead.Online__c = true;
+            testLead.International_Student__c = true;
+            testLead.First_Generation__c = true;
+            testLead.Potential_National_Scholar__c = true;
+            testLead.Potential_WUE__c = true;
+            testLead.Search_Segment__c = 'Scholar';
+            testLead.Self_Reported_SES__c = 'Moderate';
+            testLead.Veteran_Status__c = 'Veteran';
+            testLead.Convert_Contact__c = con.Id;
+
+            leads.add(testLead);
+        }
+
+        return leads;
+    }
 
     /**
-    * Generates a set of test leads to convert
-    * @param contactsToConvertOn a set of Contacts to convert to
-    * @return leads a list of test lead data
-    */
-	public static List<Lead> createTestLeadsToConvert(List<Contact> contactsToConvertOn) {
-		List<Lead> leads = new List<Lead>();
-
-		for (Contact con : contactsToConvertOn) {
-			Lead testLead = new Lead();
-			testLead.FirstName = con.FirstName;
-			testLead.LastName = con.LastName;
-			testLead.Email = con.Email;
-			testLead.LeadSource = 'Email';
-			testLead.Company = 'TestCompany';
-			testLead.Career__c = 'Undergraduate';
-			testLead.Online__c = true;
-			testLead.International_Student__c = true;
-			testLead.First_Generation__c = true;
-			testLead.Potential_National_Scholar__c = true;
-			testLead.Potential_WUE__c = true;
-			testLead.Search_Segment__c = 'Scholar';
-			testLead.Self_Reported_SES__c = 'Moderate';
-			testLead.Veteran_Status__c = 'Veteran';
-			testLead.Convert_Contact__c = con.Id;
-
-			leads.add(testLead);
-		}
-
-		return leads;
-	}
-
-    /**
-	 * Generates a list of lead interests that should be updated as a result of conversion
-	 * @param  leadIds A set of Lead Ids
-	 * @return leadInterestList A list of lead interests
-	 */
+     * Generates a list of lead interests that should be updated as a result of conversion
+     * @param  leadIds A set of Lead Ids
+     * @return leadInterestList A list of lead interests
+     */
     public static List<Lead_Interest__c> reparentRelatedLeadInterests(Set<Id> leadIds) {
         List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>();
 
@@ -59,9 +58,38 @@ public class LeadService {
         }
 
         leadInterestList = [
-                SELECT Id, OwnerId, IsDeleted, Name, RecordType.Name, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, SystemModstamp, LastActivityDate, LastViewedDate, LastReferencedDate, Leads__c, Eligibility__c, Plan__c, Contact__c, Status__c, Term__c, Primary_Source__c, Secondary_Source__c, Type__c, College__c, Academic_Interest__c, Test_Record__c, Qualifying__c, Send_Email__c, External_Application_Number__c, Send_Email_ID__c
-                FROM Lead_Interest__c
-                WHERE Leads__c IN :leadIds
+            SELECT
+                Id,
+                OwnerId,
+                IsDeleted,
+                Name,
+                RecordType.Name,
+                CreatedDate,
+                CreatedById,
+                LastModifiedDate,
+                LastModifiedById,
+                SystemModstamp,
+                LastActivityDate,
+                LastViewedDate,
+                LastReferencedDate,
+                Leads__c,
+                Eligibility__c,
+                Plan__c,
+                Contact__c,
+                Status__c,
+                Term__c,
+                Primary_Source__c,
+                Secondary_Source__c,
+                Type__c,
+                College__c,
+                Academic_Interest__c,
+                Test_Record__c,
+                Qualifying__c,
+                Send_Email__c,
+                External_Application_Number__c,
+                Send_Email_ID__c
+            FROM Lead_Interest__c
+            WHERE Leads__c IN :leadIds
         ];
 
         if (leadInterestList.size() == 0) {
@@ -69,13 +97,11 @@ public class LeadService {
         }
 
         // Need to requery to get the Converted Contact Ids
-        Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>([
-                SELECT Id, ConvertedContactId
-                FROM Lead
-                WHERE Id IN :leadIds
-        ]);
+        Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>(
+            [SELECT Id, ConvertedContactId FROM Lead WHERE Id IN :leadIds]
+        );
 
-        for (Lead_Interest__c li: leadInterestList) {
+        for (Lead_Interest__c li : leadInterestList) {
             li.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
         }
 
@@ -83,10 +109,10 @@ public class LeadService {
     }
 
     /**
-	 * Generates a list of previous education records that should be inserted as a result of conversion
-	 * @param  leadIds A set of Lead Ids
-	 * @return peList A list of previous education records
-	 */
+     * Generates a list of previous education records that should be inserted as a result of conversion
+     * @param  leadIds A set of Lead Ids
+     * @return peList A list of previous education records
+     */
     public static List<Previous_Education__c> createConvertedPreviousEducation(Set<Id> leadIds) {
         List<Previous_Education__c> peList = new List<Previous_Education__c>();
 
@@ -94,15 +120,29 @@ public class LeadService {
             return peList;
         }
 
-        List<Lead> leadList = new List<Lead>([
-                SELECT Id, ConvertedContactId, Last_Institution_Attended__c, Last_Institution_Attended__r.Institution_Type__c, Last_Institution_GPA__c, Last_Institution_GPA_Scale__c, College_Transfer_Hours__c, High_School_Class_Percent__c, High_School_Class_Rank__c, High_School_Class_Size__c
+        List<Lead> leadList = new List<Lead>(
+            [
+                SELECT
+                    Id,
+                    ConvertedContactId,
+                    Last_Institution_Attended__c,
+                    Last_Institution_Attended__r.Institution_Type__c,
+                    Last_Institution_GPA__c,
+                    Last_Institution_GPA_Scale__c,
+                    College_Transfer_Hours__c,
+                    High_School_Class_Percent__c,
+                    High_School_Class_Rank__c,
+                    High_School_Class_Size__c
                 FROM Lead
-                WHERE Id in :leadIds
-        ]);
+                WHERE Id IN :leadIds
+            ]
+        );
 
         for (Lead l : leadList) {
-            Previous_Education__c pe = new Previous_Education__c(Contact__c = l.ConvertedContactId,
-                    Account__c = l.Last_Institution_Attended__c);
+            Previous_Education__c pe = new Previous_Education__c(
+                Contact__c = l.ConvertedContactId,
+                Account__c = l.Last_Institution_Attended__c
+            );
 
             if (l.Last_Institution_Attended__r.Institution_Type__c == 'HS') {
                 pe.Class_Rank__c = l.High_School_Class_Rank__c;
@@ -116,29 +156,34 @@ public class LeadService {
         return peList;
     }
     /**
-    * Creates a new contact
-    * @param strFirstName First Name of the lead.
-    * @param strLastName Last Name of the lead.
-    * @return objContact An instance of the contact returned.
-    */
-    public static Contact createContact(String strFirstName, String strLastName, String strPhone, String strMobPhone, String strEmail) {
-        Contact objContact=new Contact();
-        if(strFirstName!=NULL) {
-            objContact.FirstName=strFirstName;
+     * Creates a new contact
+     * @param strFirstName First Name of the lead.
+     * @param strLastName Last Name of the lead.
+     * @return objContact An instance of the contact returned.
+     */
+    public static Contact createContact(
+        String strFirstName,
+        String strLastName,
+        String strPhone,
+        String strMobPhone,
+        String strEmail
+    ) {
+        Contact objContact = new Contact();
+        if (strFirstName != null) {
+            objContact.FirstName = strFirstName;
         }
-        if(strPhone!=NULL){
-            objContact.Phone=strPhone;
+        if (strPhone != null) {
+            objContact.Phone = strPhone;
         }
-        if(strEmail!=NULL){
-            objContact.Email=strEmail;
+        if (strEmail != null) {
+            objContact.Email = strEmail;
         }
-        if(strMobPhone!=NULL){
-            objContact.MobilePhone=strMobPhone;
+        if (strMobPhone != null) {
+            objContact.MobilePhone = strMobPhone;
         }
-        objContact.LastName=strLastName;
+        objContact.LastName = strLastName;
         return objContact;
     }
-
 
     /**
      * Generates a map of integers to a List of LeadConvert objects
@@ -146,13 +191,18 @@ public class LeadService {
      * @param conversionStatus The MasterLabel from a LeadStatus that these leads should be converted to
      * @return leadConvertBatches A map of all the leadConvert objects in batches
      */
-    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(List<Lead> leadList, String conversionStatus) {
-        Map<Id,Lead> leadMap=new Map<Id,Lead>([
-            SELECT id,FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c
-            FROM Lead
-            WHERE Id IN: leadList
-        ]);
-        Map<Id,Contact> leadIdtoContactMap=new Map<Id,Contact>();
+    public static Map<Integer, List<Database.LeadConvert>> generateLeadConvertBatches(
+        List<Lead> leadList,
+        String conversionStatus
+    ) {
+        Map<Id, Lead> leadMap = new Map<Id, Lead>(
+            [
+                SELECT id, FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c
+                FROM Lead
+                WHERE Id IN :leadList
+            ]
+        );
+        Map<Id, Contact> leadIdtoContactMap = new Map<Id, Contact>();
         Map<Id, List<Lead>> accountToLeadMap = new Map<Id, List<Lead>>();
         Map<Integer, List<Database.LeadConvert>> leadConvertBatches = new Map<Integer, List<Database.LeadConvert>>();
         Id thisLeadsAccount;
@@ -160,36 +210,53 @@ public class LeadService {
         Integer numberOfBatches = 1;
         Integer additionalBatches = 0;
 
-        for(Lead eachlead: leadMap.values()) {
-            if(eachLead.Convert_Contact__c==null) {
-                leadIdToContactMap.put(eachLead.Id, createContact(eachLead.FirstName, eachLead.LastName, eachLead.Phone, eachLead.MobilePhone, eachLead.Email));
+        for (Lead eachlead : leadMap.values()) {
+            if (eachLead.Convert_Contact__c == null) {
+                leadIdToContactMap.put(
+                    eachLead.Id,
+                    createContact(
+                        eachLead.FirstName,
+                        eachLead.LastName,
+                        eachLead.Phone,
+                        eachLead.MobilePhone,
+                        eachLead.Email
+                    )
+                );
             }
         }
 
         try {
-            if (leadIdToContactMap!=null && leadIdToContactMap.size()>0) {
+            if (leadIdToContactMap != null && leadIdToContactMap.size() > 0) {
                 insert leadIdToContactMap.values();
 
                 for (Id leadId : leadIdToContactMap.keySet()) {
                     if (leadMap.containsKey(leadId) && leadIdToContactMap.containsKey(leadId)) {
-                        leadMap.get(leadId).Convert_Contact__c=leadIdToContactMap.get(leadId).Id;
+                        leadMap.get(leadId).Convert_Contact__c = leadIdToContactMap.get(leadId).Id;
                     }
                 }
                 update leadMap.values();
             }
         } catch (Exception e) {
             List<String> vars = new List<String>();
-            for(Contact objContact: leadIdToContactMap.values()) {
-                vars.add(ErrorLogger.convertStringToJSON('Contact Name',objContact.FirstName + ' ' + objContact.LastName));
+            for (Contact objContact : leadIdToContactMap.values()) {
+                vars.add(
+                    ErrorLogger.convertStringToJSON('Contact Name', objContact.FirstName + ' ' + objContact.LastName)
+                );
             }
-            ErrorLogger.log(e,vars,false);
-         }
+            ErrorLogger.log(e, vars, false);
+        }
 
         // Map leads to a single account and track the number of LeadConvert batches we need
         for (Lead thisLead : [
-            SELECT Id,FirstName, LastName, Convert_Contact__c,Convert_Contact_Account_ID__c,Convert_Create_Opportunity__c
+            SELECT
+                Id,
+                FirstName,
+                LastName,
+                Convert_Contact__c,
+                Convert_Contact_Account_ID__c,
+                Convert_Create_Opportunity__c
             FROM Lead
-            WHERE Id IN: leadList
+            WHERE Id IN :leadList
         ]) {
             thisLeadsAccount = thisLead.Convert_Contact_Account_ID__c;
 
@@ -204,13 +271,12 @@ public class LeadService {
                 if (thisList.size() > numberOfBatches) {
                     numberOfBatches = thisList.size();
                 }
-            }
-            else {
-                List<Lead> newListOfLeads = new List<Lead> { thisLead };
+            } else {
+                List<Lead> newListOfLeads = new List<Lead>{ thisLead };
                 accountToLeadMap.put(thisLeadsAccount, newListOfLeads);
             }
         }
-        
+
         reparentAndUpdateIndividualEmailResults(leadList, leadMap);
         reparentAndUpdateSubscribers(leadList, leadMap);
         reparentAndUpdateMe3s(leadList, leadMap);
@@ -252,32 +318,32 @@ public class LeadService {
 
         return leadConvertBatches;
     }
-    
-    private static void reparentAndUpdateIndividualEmailResults(List<Lead> leadList, Map<Id,Lead> leadMap) {
+
+    private static void reparentAndUpdateIndividualEmailResults(List<Lead> leadList, Map<Id, Lead> leadMap) {
         List<et4ae5__IndividualEmailResult__c> emailsToAddContact = new List<et4ae5__IndividualEmailResult__c>();
         for (et4ae5__IndividualEmailResult__c leadEmailResult : [
-                SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c 
-                FROM et4ae5__IndividualEmailResult__c 
-                WHERE et4ae5__Lead__c IN :leadList
-            ]) {  
+            SELECT Id, et4ae5__Contact__c, et4ae5__Lead__c
+            FROM et4ae5__IndividualEmailResult__c
+            WHERE et4ae5__Lead__c IN :leadList
+        ]) {
             if (leadMap.containsKey(leadEmailResult.et4ae5__Lead__c)) {
                 leadEmailResult.et4ae5__Contact__c = leadMap.get(leadEmailResult.et4ae5__Lead__c).Convert_Contact__c;
                 emailsToAddContact.add(leadEmailResult);
             }
         }
-        
+
         if (!emailsToAddContact.isEmpty()) {
             update emailsToAddContact;
         }
     }
-    
-    private static void reparentAndUpdateSubscribers(List<Lead> leadList, Map<Id,Lead> leadMap) {
+
+    private static void reparentAndUpdateSubscribers(List<Lead> leadList, Map<Id, Lead> leadMap) {
         List<Subscriber__c> subscribersToReparent = new List<Subscriber__c>();
         for (Subscriber__c leadSubscriber : [
             SELECT Lead__c, Contact__c
             FROM Subscriber__c
             WHERE Lead__c IN :leadList
-        ]){  
+        ]) {
             if (leadMap.containsKey(leadSubscriber.Lead__c)) {
                 leadSubscriber.Contact__c = leadMap.get(leadSubscriber.Lead__c).Convert_Contact__c;
                 subscribersToReparent.add(leadSubscriber);
@@ -287,14 +353,10 @@ public class LeadService {
             Database.update(subscribersToReparent, false);
         }
     }
-    
-    private static void reparentAndUpdateMe3s(List<Lead> leadList, Map<Id,Lead> leadMap) {
+
+    private static void reparentAndUpdateMe3s(List<Lead> leadList, Map<Id, Lead> leadMap) {
         List<Me3__c> me3ToAddContact = new List<Me3__c>();
-        for (Me3__c leadMe3 : [
-            SELECT Id, Contact__c, Lead__c
-            FROM Me3__c
-            WHERE Lead__c IN: leadList
-        ]) {
+        for (Me3__c leadMe3 : [SELECT Id, Contact__c, Lead__c FROM Me3__c WHERE Lead__c IN :leadList]) {
             if (leadMap.containsKey(leadMe3.Lead__c)) {
                 leadMe3.Contact__c = leadMap.get(leadMe3.Lead__c).Convert_Contact__c;
                 me3ToAddContact.add(leadMe3);

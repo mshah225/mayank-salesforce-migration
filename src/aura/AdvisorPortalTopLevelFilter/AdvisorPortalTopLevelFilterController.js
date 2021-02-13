@@ -162,7 +162,7 @@
     toggleDropdown: function (component, event, helper) {
         if (!component.get('v.OnClickOutListenerSet')) {
             component.set('v.OnClickOutListenerSet', true);
-            
+
             // close modal and cleanup page-wide listener
             helper.handleClickOutsideDropdownSection = function (e) {
                 $A.util.removeClass(component.find('combobox-drop').getElement(), 'slds-is-open');
@@ -171,7 +171,7 @@
             };
             document.body.addEventListener('click', helper.handleClickOutsideDropdownSection);
         }
-        
+
         $A.util.toggleClass(component.find('combobox-drop').getElement(), 'slds-is-open');
 
         if (!$A.util.hasClass(component.find('combobox-drop').getElement(), 'slds-is-open')) {

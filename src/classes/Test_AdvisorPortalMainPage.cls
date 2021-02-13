@@ -119,7 +119,13 @@ public class Test_AdvisorPortalMainPage {
     }
 
     private static void validateManagerOptionsSize(List<SelectOption> listToTest) {
-        System.assertEquals(numberOfTabsForManager + numberOfBlankOptionsForManager + numbeOfAdvisorsForManager + numberOfPods, listToTest.size());
+        System.assertEquals(
+            numberOfTabsForManager +
+            numberOfBlankOptionsForManager +
+            numbeOfAdvisorsForManager +
+            numberOfPods,
+            listToTest.size()
+        );
     }
 
     private static void validateCurrentUserOption(List<SelectOption> listToTest) {

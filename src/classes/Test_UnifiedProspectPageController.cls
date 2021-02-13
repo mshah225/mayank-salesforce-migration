@@ -1,27 +1,25 @@
 @isTest
-private class Test_UnifiedProspectPageController
-{
+private class Test_UnifiedProspectPageController {
     private static UnifiedProspectPageController uppc;
     private static Contact contact;
     private static Opportunity opportunity;
     private static Case c;
     private static Case_Classification__c fgroup;
 
-    @testSetup static void setUpTest()
-    {
+    @testSetup
+    static void setUpTest() {
         CaseClassificationFactory ccMaker = new CaseClassificationFactory();
         ccMaker.createAndInsertSetOfCaseClassification();
 
-        Account testAccount = new Account(
-            Name = 'Test School'
-        );
+        Account testAccount = new Account(Name = 'Test School');
         insert testAccount;
 
         Campaign testASUCollege = new Campaign(
             Name = 'ASU Test College',
             IsActive = true,
             Type = 'ASU Colleges',
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest']
+            .Id
         );
         insert testASUCollege;
 
@@ -29,7 +27,8 @@ private class Test_UnifiedProspectPageController
             Name = 'ASU Test Location',
             IsActive = true,
             Type = 'ASU Location',
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest']
+            .Id
         );
         insert testASULocation;
 
@@ -37,42 +36,48 @@ private class Test_UnifiedProspectPageController
             Name = 'ASU Test Academic',
             IsActive = true,
             Type = 'Academic',
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest']
+            .Id
         );
         insert testAcademic;
 
         Campaign testEventCam = new Campaign(
             Name = 'ASU Test Event',
             IsActive = true,
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event']
+            .Id
         );
         insert testEventCam;
 
         Campaign testPhoneCallCampaign = new Campaign(
             Name = 'Phone Call',
             IsActive = true,
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event']
+            .Id
         );
         insert testPhoneCallCampaign;
 
         Campaign testEmailCam = new Campaign(
             Name = 'Email',
             IsActive = true,
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event']
+            .Id
         );
         insert testEmailCam;
 
         Campaign testWalkInCam = new Campaign(
             Name = 'Walk In',
             IsActive = true,
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event']
+            .Id
         );
         insert testWalkInCam;
 
         Campaign testIntCam = new Campaign(
             Name = 'ASU Test Interest',
             IsActive = true,
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest']
+            .Id
         );
         insert testIntCam;
 
@@ -104,10 +109,7 @@ private class Test_UnifiedProspectPageController
             Program_Status__c = true
         );
 
-        List<Program__c> progList = new List<Program__c>
-        {
-            prog, prog2, prog3
-        };
+        List<Program__c> progList = new List<Program__c>{ prog, prog2, prog3 };
         insert progList;
 
         Plan__c plan = new Plan__c(
@@ -137,16 +139,11 @@ private class Test_UnifiedProspectPageController
             Degree_Search_Name__c = 'Test Law Plan'
         );
 
-        List<Plan__c> planList = new List<Plan__c>
-        {
-            plan, plan2, plan3
-        };
+        List<Plan__c> planList = new List<Plan__c>{ plan, plan2, plan3 };
         insert planList;
-
     }
 
-    private static void setUpController()
-    {
+    private static void setUpController() {
         uppc = new UnifiedProspectPageController();
         contact = uppc.getContact();
         opportunity = uppc.getOpportunity();
@@ -156,12 +153,11 @@ private class Test_UnifiedProspectPageController
         contact.Lead_Email__c = 'test@asu.edu';
         contact.Phone = '4803805555';
         contact.MobilePhone = '4803806666';
-        uppc.smsText = TRUE;
+        uppc.smsText = true;
         fGroup = [SELECT Id, Name FROM Case_Classification__c WHERE Name = 'Test Functional Group0' LIMIT 1];
     }
 
-    private static testmethod void testUndergradCaseCreationCaseNoInterest()
-    {
+    private static testMethod void testUndergradCaseCreationCaseNoInterest() {
         Test.startTest();
         setUpController();
 
@@ -190,30 +186,21 @@ private class Test_UnifiedProspectPageController
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         System.assert(result == true);
 
-        contact = [
-            SELECT Id, SF_First_Name__c, SMS_Phone__c
-            FROM Contact
-            WHERE FirstName = 'Test'
-            LIMIT 1
-        ];
+        contact = [SELECT Id, SF_First_Name__c, SMS_Phone__c FROM Contact WHERE FirstName = 'Test' LIMIT 1];
 
         System.assert(contact.SF_First_Name__c == 'TEST');
         System.assert(contact.SMS_Phone__c == '4803806666');
 
         opportunity = [
-            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c,
-                International_Student__c, Term__c
+            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c, International_Student__c, Term__c
             FROM Opportunity
             WHERE Term__c = :testTerm.Id
             LIMIT 1
         ];
 
-        System.assert(opportunity.RecordTypeID == [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Undergraduate Prospect'
-            LIMIT 1
-        ].Id);
+        System.assert(
+            opportunity.RecordTypeID == [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id
+        );
 
         System.assert(opportunity.Contact__c == contact.Id);
         System.assert(opportunity.International_Student__c == false);
@@ -230,18 +217,13 @@ private class Test_UnifiedProspectPageController
         System.assert(c.Case_Source__c == emailCamp.Id);
         System.assert(c.Origin__c == 'Email');
 
-        String termName = [
-            SELECT Term__r.Name
-            FROM Opportunity
-            WHERE Term__c = :opportunity.Term__c
-            LIMIT 1
-        ].Term__r.Name;
+        String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1]
+        .Term__r.Name;
 
         System.assert(c.Subject == 'Test');
     }
 
-    private static testmethod void testUndergradCaseCreationEventInterest()
-    {
+    private static testMethod void testUndergradCaseCreationEventInterest() {
         Test.startTest();
         setUpController();
 
@@ -263,12 +245,7 @@ private class Test_UnifiedProspectPageController
         uppc.camMemEvent.Status = 'Sent';
 
         uppc.pickSelection = 'Not Null';
-        Campaign interestTestCam = [
-            SELECT Id
-            FROM Campaign
-            WHERE Name = 'ASU Test Interest'
-            LIMIT 1
-        ];
+        Campaign interestTestCam = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Interest' LIMIT 1];
 
         uppc.selectedInterestId = interestTestCam.Id;
         uppc.instSearch();
@@ -322,30 +299,21 @@ private class Test_UnifiedProspectPageController
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         System.assertEquals(referenceToCheck.getURL(), control.getURL());
 
-        contact = [
-            SELECT Id, SF_First_Name__c, SMS_Phone__c
-            FROM Contact
-            WHERE FirstName = 'Test'
-            LIMIT 1
-        ];
+        contact = [SELECT Id, SF_First_Name__c, SMS_Phone__c FROM Contact WHERE FirstName = 'Test' LIMIT 1];
 
         System.assert(contact.SF_First_Name__c == 'TEST');
         System.assert(contact.SMS_Phone__c == '4803806666');
 
         opportunity = [
-            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c,
-                International_Student__c, Term__c
+            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c, International_Student__c, Term__c
             FROM Opportunity
             WHERE Term__c = :testTerm.Id
             LIMIT 1
         ];
 
-        System.assert(opportunity.RecordTypeID == [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Undergraduate Prospect'
-            LIMIT 1
-        ].Id);
+        System.assert(
+            opportunity.RecordTypeID == [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id
+        );
 
         System.assert(opportunity.Contact__c == contact.Id);
         System.assert(opportunity.International_Student__c == false);
@@ -377,8 +345,7 @@ private class Test_UnifiedProspectPageController
         System.assert(uppc.camMemInterest.Id == camMemInterest.Id);
     }
 
-    private static testmethod void testGradCaseCreation()
-    {
+    private static testMethod void testGradCaseCreation() {
         Test.startTest();
         setUpController();
 
@@ -426,30 +393,21 @@ private class Test_UnifiedProspectPageController
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         System.assertEquals(referenceToCheck.getURL(), control.getURL());
 
-        contact = [
-            SELECT Id, SF_First_Name__c, SMS_Phone__c
-            FROM Contact
-            WHERE FirstName = 'Test'
-            LIMIT 1
-        ];
+        contact = [SELECT Id, SF_First_Name__c, SMS_Phone__c FROM Contact WHERE FirstName = 'Test' LIMIT 1];
 
         System.assert(contact.SF_First_Name__c == 'TEST');
         System.assert(contact.SMS_Phone__c == '4803806666');
 
         opportunity = [
-            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c,
-                International_Student__c, Term__c
+            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c, International_Student__c, Term__c
             FROM Opportunity
             WHERE Term__c = :testTerm.Id
             LIMIT 1
         ];
 
-        System.assert(opportunity.RecordTypeID == [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Graduate Prospect'
-            LIMIT 1
-        ].Id);
+        System.assert(
+            opportunity.RecordTypeID == [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id
+        );
 
         System.assert(opportunity.Contact__c == contact.Id);
         System.assert(opportunity.International_Student__c == false);
@@ -467,18 +425,13 @@ private class Test_UnifiedProspectPageController
         System.assert(c.Status == 'Closed: Resolved');
         System.assert(c.Case_Source__c == phoneCamp.Id);
         System.assert(c.Origin__c == 'Incoming Call');
-        String termName = [
-            SELECT Term__r.Name
-            FROM Opportunity
-            WHERE Term__c = :opportunity.Term__c
-            LIMIT 1
-        ].Term__r.Name;
+        String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1]
+        .Term__r.Name;
 
         System.assert(c.Subject == 'Test');
     }
 
-    private static testmethod void testLawCaseCreation()
-    {
+    private static testMethod void testLawCaseCreation() {
         Test.startTest();
         setUpController();
 
@@ -514,30 +467,21 @@ private class Test_UnifiedProspectPageController
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         System.assert(result == true);
 
-        contact = [
-            SELECT Id, SF_First_Name__c, SMS_Phone__c
-            FROM Contact
-            WHERE FirstName = 'Test'
-            LIMIT 1
-        ];
+        contact = [SELECT Id, SF_First_Name__c, SMS_Phone__c FROM Contact WHERE FirstName = 'Test' LIMIT 1];
 
         System.assert(contact.SF_First_Name__c == 'TEST');
         System.assert(contact.SMS_Phone__c == '4803806666');
 
         opportunity = [
-            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c,
-                International_Student__c, Term__c
+            SELECT College__c, Academic_Plan__c, RecordTypeId, Contact__c, International_Student__c, Term__c
             FROM Opportunity
             WHERE Term__c = :testTerm.Id
             LIMIT 1
         ];
 
-        System.assert(opportunity.RecordTypeID == [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Graduate Prospect'
-            LIMIT 1
-        ].Id);
+        System.assert(
+            opportunity.RecordTypeID == [SELECT Id FROM RecordType WHERE Name = 'Graduate Prospect' LIMIT 1].Id
+        );
 
         System.assert(opportunity.Contact__c == contact.Id);
         System.assert(opportunity.International_Student__c == false);
@@ -556,18 +500,13 @@ private class Test_UnifiedProspectPageController
         System.assert(c.Case_Source__c == phoneCamp.Id);
         System.assert(c.Origin__c == 'Walk In');
 
-        String termName = [
-            SELECT Term__r.Name
-            FROM Opportunity
-            WHERE Term__c = :opportunity.Term__c
-            LIMIT 1
-        ].Term__r.Name;
+        String termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1]
+        .Term__r.Name;
 
         System.assert(c.Subject == 'Test');
     }
-    
-    private static testmethod void testGetContact()
-    {
+
+    private static testMethod void testGetContact() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
         Contact con = uppc.getContact();
@@ -575,39 +514,26 @@ private class Test_UnifiedProspectPageController
         System.assert(con.Id == null);
     }
 
-    private static testmethod void testGetOpportunity()
-    {
+    private static testMethod void testGetOpportunity() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
         Opportunity op = uppc.getOpportunity();
-        Id oppRecType = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Undergraduate Prospect'
-            LIMIT 1
-        ].Id;
+        Id oppRecType = [SELECT Id FROM RecordType WHERE Name = 'Undergraduate Prospect' LIMIT 1].Id;
 
         Test.stopTest();
         System.assert(op.RecordTypeId == oppRecType);
     }
 
-    private static testmethod void testGetCase()
-    {
+    private static testMethod void testGetCase() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
         c = uppc.getCaseC();
-        Id asuAdmissionRecId = [
-            SELECT Id, Name
-            FROM RecordType
-            WHERE Name = 'ASU Admission Services'
-            LIMIT 1
-        ].Id;
+        Id asuAdmissionRecId = [SELECT Id, Name FROM RecordType WHERE Name = 'ASU Admission Services' LIMIT 1].Id;
 
         System.assert(c.RecordTypeId == asuAdmissionRecId);
     }
 
-    private static testmethod void testGetPreviousEducation()
-    {
+    private static testMethod void testGetPreviousEducation() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
         Previous_Education__c pe = uppc.getPreviousEducation();
@@ -615,8 +541,7 @@ private class Test_UnifiedProspectPageController
         System.assert(pe.Id == null);
     }
 
-    private static testmethod void testGetCampaignMemberInterest()
-    {
+    private static testMethod void testGetCampaignMemberInterest() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
         CampaignMember cmi = uppc.getCamMemInterest();
@@ -624,8 +549,7 @@ private class Test_UnifiedProspectPageController
         System.assert(cmi.Id == null);
     }
 
-    private static testmethod void testGetCampaignMemberEvent()
-    {
+    private static testMethod void testGetCampaignMemberEvent() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
         CampaignMember cme = uppc.getCamMemEvent();
@@ -633,8 +557,7 @@ private class Test_UnifiedProspectPageController
         System.assert(cme.Id == null);
     }
 
-    private static testmethod void testGetProgramList()
-    {
+    private static testMethod void testGetProgramList() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
 
@@ -658,8 +581,7 @@ private class Test_UnifiedProspectPageController
         System.assert(selProg.get(1).getValue() == prog3.Id);
     }
 
-    private static testmethod void testGetplanList()
-    {
+    private static testMethod void testGetplanList() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();
 
@@ -687,14 +609,11 @@ private class Test_UnifiedProspectPageController
         System.assert(selPlan.get(1).getValue() == plan3.Id);
     }
 
-    private static testmethod void testSetPrevEducation()
-    {
+    private static testMethod void testSetPrevEducation() {
         setUpController();
         insert contact;
 
-        Previous_Education__c prevEd = new Previous_Education__c(
-            Contact__c = contact.Id
-        );
+        Previous_Education__c prevEd = new Previous_Education__c(Contact__c = contact.Id);
         insert prevEd;
 
         uppc = new UnifiedProspectPageController();
@@ -702,15 +621,10 @@ private class Test_UnifiedProspectPageController
         System.assert(uppc.previousEducation.Id == prevEd.Id);
     }
 
-    private static testmethod void testEventList()
-    {
-        Campaign tempEvent = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE Name = 'ASU Test Event'
-        ];
+    private static testMethod void testEventList() {
+        Campaign tempEvent = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Event'];
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = tempEvent.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -723,49 +637,31 @@ private class Test_UnifiedProspectPageController
         System.assert(uppc.getEventList().get(0).Id == testEvent.Id);
     }
 
-    private static testmethod void testASUCollegesIntList()
-    {
+    private static testMethod void testASUCollegesIntList() {
         uppc = new UnifiedProspectPageController();
         List<SelectOption> asuCollegesIntList = uppc.getASUCollegesIntList();
 
-        Campaign testASUCollege = [
-            SELECT Id
-            FROM Campaign
-            WHERE Name = 'ASU Test College'
-            LIMIT 1
-        ];
+        Campaign testASUCollege = [SELECT Id FROM Campaign WHERE Name = 'ASU Test College' LIMIT 1];
 
         System.assert(asuCollegesIntList.size() == 2);
         System.assert(asuCollegesIntList.get(1).getValue() == testASUCollege.Id);
     }
 
-    private static testmethod void testASULocationIntList()
-    {
+    private static testMethod void testASULocationIntList() {
         uppc = new UnifiedProspectPageController();
         List<SelectOption> asuLocationIntList = uppc.getASULocationIntList();
 
-        Campaign testASULocation = [
-            SELECT Id
-            FROM Campaign
-            WHERE Name = 'ASU Test Location'
-            LIMIT 1
-        ];
+        Campaign testASULocation = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Location' LIMIT 1];
 
         System.assert(asuLocationIntList.size() == 2);
         System.assert(asuLocationIntList.get(1).getValue() == testASULocation.Id);
     }
 
-    private static testmethod void testASUAcademicIntList()
-    {
+    private static testMethod void testASUAcademicIntList() {
         uppc = new UnifiedProspectPageController();
         List<SelectOption> asuAcademicIntList = uppc.getAcademicIntList();
 
-        Campaign testASUAcademic = [
-            SELECT Id
-            FROM Campaign
-            WHERE Name = 'ASU Test Academic'
-            LIMIT 1
-        ];
+        Campaign testASUAcademic = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Academic' LIMIT 1];
 
         System.assert(asuAcademicIntList.size() == 2);
         System.assert(asuAcademicIntList.get(1).getValue() == testASUAcademic.Id);

@@ -1,6 +1,5 @@
 @isTest
 private class SubscriberTriggerTest {
-
     @isTest
     private static void nonPrivateSubscriptionInsert() {
         List<Subscription__c> subscriptions = TestDataFactory.createTestSubscriptions(1);
@@ -17,15 +16,20 @@ private class SubscriberTriggerTest {
         insert subscribers;
         Test.stopTest();
 
-        for (Subscriber__c subscriber: [SELECT Id, OwnerId, Apex_Owner_Should_Be__c FROM Subscriber__c]) {
+        for (Subscriber__c subscriber : [SELECT Id, OwnerId, Apex_Owner_Should_Be__c FROM Subscriber__c]) {
             System.assertEquals(
-                subscriber.Apex_Owner_Should_Be__c, subscriber.OwnerId, 'OwnerId was not set as expected');
-        } 
+                subscriber.Apex_Owner_Should_Be__c,
+                subscriber.OwnerId,
+                'OwnerId was not set as expected'
+            );
+        }
     }
 
     @isTest
     private static void privateSubscriptionInsert() {
-        Group testGroup = TestDataFactory.createTestGroupAndQueue(new List<String>{'Subscription__c','Subscriber__c'});
+        Group testGroup = TestDataFactory.createTestGroupAndQueue(
+            new List<String>{ 'Subscription__c', 'Subscriber__c' }
+        );
         List<Subscription__c> subscriptions = TestDataFactory.createTestSubscriptions(1);
         for (Subscription__c subscription : subscriptions) {
             subscription.OwnerId = testGroup.Id;
@@ -43,7 +47,10 @@ private class SubscriberTriggerTest {
 
         for (Subscriber__c subscriber : [SELECT Id, OwnerId, Apex_Owner_Should_Be__c FROM Subscriber__c]) {
             System.assertEquals(
-                subscriber.Apex_Owner_Should_Be__c, subscriber.OwnerId, 'OwnerId was not set as expected');
+                subscriber.Apex_Owner_Should_Be__c,
+                subscriber.OwnerId,
+                'OwnerId was not set as expected'
+            );
         }
     }
 }

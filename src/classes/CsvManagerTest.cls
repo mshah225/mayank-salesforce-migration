@@ -2,7 +2,7 @@
 private class CsvManagerTest {
     @isTest
     private static void addRowSuccess() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpBulkAPI() );
+        Test.setMock(HttpCalloutMock.class, new MockHttpBulkAPI());
         CsvManager manager = new CsvManager('Id\n', 10, ObjectScrambleService.objectTypes.CONTACT);
         System.assertEquals('Id\n', manager.getCsvFile());
 
@@ -11,12 +11,15 @@ private class CsvManagerTest {
         Test.stopTest();
 
         System.assertEquals(1, manager.getCurrentBatchSize());
-        System.assert(manager.getCsvFile().contains('003M0000012A8X5'), 'Row data was not successfully added. Does not contain Contact Id. ' + manager.getCsvFile());
+        System.assert(
+            manager.getCsvFile().contains('003M0000012A8X5'),
+            'Row data was not successfully added. Does not contain Contact Id. ' + manager.getCsvFile()
+        );
     }
 
     @isTest
     private static void addRowAtMaxSizeSuccess() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpBulkAPI() );
+        Test.setMock(HttpCalloutMock.class, new MockHttpBulkAPI());
         CsvManager manager = new CsvManager('Id\n', 1, ObjectScrambleService.objectTypes.CONTACT);
         System.assertEquals('Id\n', manager.getCsvFile());
 

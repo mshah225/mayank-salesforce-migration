@@ -1,10 +1,8 @@
-public class UnifiedProspectPageController
-{
-
+public class UnifiedProspectPageController {
     private Id eventRecId;
     private Id eossRecId;
 
-    public CaseClassificationPicklistService ccPicklist {get; set;}
+    public CaseClassificationPicklistService ccPicklist { get; set; }
     public Boolean smsText { get; set; }
     public Boolean error { get; set; }
     public Contact contact;
@@ -39,7 +37,7 @@ public class UnifiedProspectPageController
     public UnifiedProspectPageController() {
         ccPicklist = new CaseClassificationPicklistService();
         eventRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('Event').getRecordTypeId();
-        eossRecId =  Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('EOSS Event').getRecordTypeId();
+        eossRecId = Schema.SObjectType.Campaign.getRecordTypeInfosByName().get('EOSS Event').getRecordTypeId();
         eventList = new List<Campaign>();
         tempCampaign = new Campaign();
     }
@@ -70,21 +68,25 @@ public class UnifiedProspectPageController
 
     public Contact getContact() {
         if (contact == null) {
-            contact= new Contact();
+            contact = new Contact();
         }
 
         return contact;
     }
 
-    public Opportunity getOpportunity()  {
-        if (opportunity == null)  {
+    public Opportunity getOpportunity() {
+        if (opportunity == null) {
             opportunity = new Opportunity();
         }
 
-        if(career == 'graduate' || career == 'law') {
-            oppRecType = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Graduate Prospect').getRecordTypeId();
+        if (career == 'graduate' || career == 'law') {
+            oppRecType = Schema.SObjectType.Opportunity.getRecordTypeInfosByName()
+                .get('Graduate Prospect')
+                .getRecordTypeId();
         } else {
-            oppRecType = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Undergraduate Prospect').getRecordTypeId();
+            oppRecType = Schema.SObjectType.Opportunity.getRecordTypeInfosByName()
+                .get('Undergraduate Prospect')
+                .getRecordTypeId();
         }
         opportunity.RecordTypeId = oppRecType;
 
@@ -108,7 +110,7 @@ public class UnifiedProspectPageController
     }
 
     public CampaignMember getCamMemEvent() {
-        if(camMemEvent == null) {
+        if (camMemEvent == null) {
             camMemEvent = new CampaignMember();
         }
 
@@ -120,8 +122,7 @@ public class UnifiedProspectPageController
             List<Program__c> ProgramTemp = [
                 SELECT p.Name, p.Id
                 FROM Program__c p
-                WHERE Career__c = :career
-                AND Program_Status__c = true
+                WHERE Career__c = :career AND Program_Status__c = TRUE
             ];
 
             programList = new List<SelectOption>();
@@ -133,7 +134,6 @@ public class UnifiedProspectPageController
 
             return programList;
         }
-
         set;
     }
 
@@ -145,27 +145,27 @@ public class UnifiedProspectPageController
                 List<Plan__c> PlanTemp = [
                     SELECT p.Degree_Search_Name__c, p.Name, p.Id
                     FROM Plan__c p
-                    WHERE p.Program__c = :collegeSelected
-                    AND p.Available_in_Degree_Search__c = true
+                    WHERE p.Program__c = :collegeSelected AND p.Available_in_Degree_Search__c = TRUE
                 ];
 
                 planList.add(new SelectOption('0', '-- None --'));
 
-                for(Plan__c temp : PlanTemp) {
+                for (Plan__c temp : PlanTemp) {
                     planList.add(new SelectOption(temp.Id, temp.Degree_Search_Name__c));
                 }
             }
 
             return planList;
         }
-
         set;
     }
 
     public Case getCaseC() {
         if (caseC == null) {
             caseC = new Case();
-            caseC.RecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Admission Services').getRecordTypeId();
+            caseC.RecordTypeId = Schema.SObjectType.Case.getRecordTypeInfosByName()
+                .get('ASU Admission Services')
+                .getRecordTypeId();
         }
 
         return caseC;
@@ -192,23 +192,23 @@ public class UnifiedProspectPageController
     public void eventSearch() {
         if (eventSearchString.length() < 2) {
             ApexPages.addmessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You must enter at least 2 characters.'
-                )
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must enter at least 2 characters.')
             );
 
             return;
         }
 
-        String sosl = '' +
-            'FIND \'*' + String.escapeSingleQuotes(eventSearchString.trim()) + '*\' ' +
+        String sosl =
+            '' +
+            'FIND \'*' +
+            String.escapeSingleQuotes(eventSearchString.trim()) +
+            '*\' ' +
             'IN ALL FIELDS ' +
             'RETURNING Campaign(Id, Name, Type, Category__c, Event_Start_Date__c, ' +
-                'Event_Start_Time__c, Campus_Location__c, Event_Location__c, ' +
-                'RecordTypeId, Requested__c ' +
-                'WHERE (RecordTypeId = :eventRecId OR RecordTypeId = :eossRecId) ' +
-                'AND IsActive = true ';
+            'Event_Start_Time__c, Campus_Location__c, Event_Location__c, ' +
+            'RecordTypeId, Requested__c ' +
+            'WHERE (RecordTypeId = :eventRecId OR RecordTypeId = :eossRecId) ' +
+            'AND IsActive = true ';
 
         if (deptColl != null) {
             sosl += 'AND Requested__c INCLUDES (:deptColl) ';
@@ -236,10 +236,12 @@ public class UnifiedProspectPageController
     }
 
     public void instSearch() {
-        String instSearchTerm = '' +
+        String instSearchTerm =
+            '' +
             'SELECT Id, Name, BillingCity, BillingState, Institution_Type__c ' +
             'FROM Account ' +
-            'WHERE Id = ' + instId;
+            'WHERE Id = ' +
+            instId;
 
         instList = Database.query(instSearchTerm);
     }
@@ -253,10 +255,10 @@ public class UnifiedProspectPageController
         ];
 
         List<SelectOption> camOptions = new List<SelectOption>();
-        camOptions.add(new SelectOption('' ,'--Select--'));
+        camOptions.add(new SelectOption('', '--Select--'));
 
         for (CampaignMemberStatus cs : camStatuses) {
-            camOptions.add(new SelectOption(cs.Label , cs.Label));
+            camOptions.add(new SelectOption(cs.Label, cs.Label));
         }
 
         return camOptions;
@@ -266,11 +268,10 @@ public class UnifiedProspectPageController
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('', '--Select--'));
 
-        Schema.DescribeFieldResult fieldResult =
-            Campaign.Requested__c.getDescribe();
+        Schema.DescribeFieldResult fieldResult = Campaign.Requested__c.getDescribe();
         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
 
-        for( Schema.PicklistEntry f : ple) {
+        for (Schema.PicklistEntry f : ple) {
             options.add(new SelectOption(f.getLabel(), f.getValue()));
         }
 
@@ -283,17 +284,15 @@ public class UnifiedProspectPageController
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest')
-            AND Type = 'ASU Location'
-            AND IsActive = true
+            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest') AND Type = 'ASU Location' AND IsActive = TRUE
             ORDER BY Name ASC
         ];
 
         List<SelectOption> asuLocationIntList = new List<SelectOption>();
-        asuLocationIntList.add(new SelectOption('' ,'--Select--'));
+        asuLocationIntList.add(new SelectOption('', '--Select--'));
 
         for (Campaign i : interests) {
-            asuLocationIntList.add(new SelectOption(i.Id , i.Name));
+            asuLocationIntList.add(new SelectOption(i.Id, i.Name));
         }
 
         return asuLocationIntList;
@@ -305,17 +304,15 @@ public class UnifiedProspectPageController
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest')
-            AND Type = 'Academic'
-            AND IsActive = true
+            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest') AND Type = 'Academic' AND IsActive = TRUE
             ORDER BY Name ASC
         ];
 
         List<SelectOption> academicIntList = new List<SelectOption>();
-        academicIntList.add(new SelectOption('' ,'--Select--'));
+        academicIntList.add(new SelectOption('', '--Select--'));
 
         for (Campaign i : interests) {
-            academicIntList.add(new SelectOption(i.Id , i.Name));
+            academicIntList.add(new SelectOption(i.Id, i.Name));
         }
 
         return academicIntList;
@@ -327,17 +324,15 @@ public class UnifiedProspectPageController
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest')
-            AND Type = 'ASU Colleges'
-            AND IsActive = true
+            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest') AND Type = 'ASU Colleges' AND IsActive = TRUE
             ORDER BY Name ASC
         ];
 
         List<SelectOption> asuCollegesIntList = new List<SelectOption>();
-        asuCollegesIntList.add(new SelectOption( '' ,'--Select--'));
+        asuCollegesIntList.add(new SelectOption('', '--Select--'));
 
-        for (Campaign i : interests ) {
-            asuCollegesIntList.add(new SelectOption(i.Id , i.Name));
+        for (Campaign i : interests) {
+            asuCollegesIntList.add(new SelectOption(i.Id, i.Name));
         }
 
         return asuCollegesIntList;
@@ -350,7 +345,7 @@ public class UnifiedProspectPageController
         Savepoint spException = Database.setSavepoint();
         try {
             error = false;
-            
+
             if (contact.Phone == null && contact.MailingPostalCode == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
@@ -363,44 +358,26 @@ public class UnifiedProspectPageController
             }
 
             if (career == '--Select--') {
-                ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must select a career.'
-                    )
-                );
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'You must select a career.'));
 
                 error = true;
             }
 
             if (career == 'graduate' && collegeSelected == '0') {
-                ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must select a college.'
-                    )
-                );
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'You must select a college.'));
 
                 error = true;
             }
 
             if (career == 'graduate' && opportunity.Term__c == null) {
-                ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must select a Term.'
-                    )
-                );
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Term.'));
 
                 error = true;
             }
 
             if (originSelection != '--Select--' && elId != null) {
                 ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must select either ONE case OR ONE event.'
-                    )
+                    new ApexPages.message(ApexPages.severity.ERROR, 'You must select either ONE case OR ONE event.')
                 );
 
                 error = true;
@@ -408,30 +385,23 @@ public class UnifiedProspectPageController
 
             if (originSelection == '--Select--' && elId == null) {
                 ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'You must select either ONE case OR ONE event.'
-                    )
+                    new ApexPages.message(ApexPages.severity.ERROR, 'You must select either ONE case OR ONE event.')
                 );
 
                 error = true;
             }
 
-            if (originSelection != '--Select--'
-                && (String.isBlank(caseC.Subject) || String.isBlank(caseC.Description))) {
+            if (
+                originSelection != '--Select--' && (String.isBlank(caseC.Subject) || String.isBlank(caseC.Description))
+            ) {
                 ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'A case must have a Subject and a Description.'
-                    )
+                    new ApexPages.message(ApexPages.severity.ERROR, 'A case must have a Subject and a Description.')
                 );
 
                 error = true;
             }
 
-            if (originSelection != '--Select--'
-                && elId == null
-                && caseC.CC_Functional_Group__c == null) {
+            if (originSelection != '--Select--' && elId == null && caseC.CC_Functional_Group__c == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -442,9 +412,7 @@ public class UnifiedProspectPageController
                 error = true;
             }
 
-            if (pickSelection != null
-                && pickSelection != '--Select--'
-                && selectedInterestId == null) {
+            if (pickSelection != null && pickSelection != '--Select--' && selectedInterestId == null) {
                 ApexPages.addmessage(
                     new ApexPages.message(
                         ApexPages.severity.ERROR,
@@ -460,7 +428,7 @@ public class UnifiedProspectPageController
                 for (ApexPages.Message apm : ApexPages.getMessages()) {
                     system.debug(string.valueOf(apm));
                 }
-               return false;
+                return false;
             }
 
             //Create Contact
@@ -498,9 +466,13 @@ public class UnifiedProspectPageController
             opportunity.Id = null;
 
             if (career == 'undergraduate') {
-                opportunity.RecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Undergraduate Prospect').getRecordTypeId();
+                opportunity.RecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName()
+                    .get('Undergraduate Prospect')
+                    .getRecordTypeId();
             } else {
-                opportunity.RecordTypeId =  Schema.SObjectType.Opportunity.getRecordTypeInfosByName().get('Graduate Prospect').getRecordTypeId();
+                opportunity.RecordTypeId = Schema.SObjectType.Opportunity.getRecordTypeInfosByName()
+                    .get('Graduate Prospect')
+                    .getRecordTypeId();
             }
 
             Term__c tempTerm = [
@@ -522,11 +494,11 @@ public class UnifiedProspectPageController
             opportunity.StageName = 'Prospect';
 
             if (collegeSelected != null && collegeSelected != '0') {
-               opportunity.College__c = collegeSelected;
+                opportunity.College__c = collegeSelected;
             }
 
             if (planSelected != null && planSelected != '0') {
-               opportunity.Academic_Plan__c = planSelected;
+                opportunity.Academic_Plan__c = planSelected;
             }
 
             insert opportunity;
@@ -547,10 +519,7 @@ public class UnifiedProspectPageController
             if (elId != null && originSelection == '--Select--') {
                 if (camMemEvent.Status == null) {
                     ApexPages.addmessage(
-                        new ApexPages.message(
-                            ApexPages.severity.ERROR,
-                            'Please select an event status.'
-                        )
+                        new ApexPages.message(ApexPages.severity.ERROR, 'Please select an event status.')
                     );
 
                     return false;
@@ -563,9 +532,8 @@ public class UnifiedProspectPageController
                 camMemEvent.Opportunity__c = opportunity.Id;
                 camMemEvent.Inbound_Interaction__c = true;
                 cams.add(camMemEvent);
-            }
-            //Create Case
-            else if (originSelection != '--Select--' && elId == null) {
+            } else if (originSelection != '--Select--' && elId == null) {
+                //Create Case
                 caseC.Id = null;
                 caseC.Status = 'Closed: Resolved';
                 caseC.ContactId = contact.Id;
@@ -573,25 +541,15 @@ public class UnifiedProspectPageController
 
                 if (originSelection == 'Incoming Call') {
                     if (phoneOrig == null) {
-                        Campaign phoneCamp = [
-                            SELECT Id
-                            FROM Campaign
-                            WHERE Name = 'Phone Call'
-                            LIMIT 1
-                        ];
+                        Campaign phoneCamp = [SELECT Id FROM Campaign WHERE Name = 'Phone Call' LIMIT 1];
 
-                        if(phoneCamp != null) {
+                        if (phoneCamp != null) {
                             caseC.Case_Source__c = phoneCamp.Id;
                         }
                     }
                 } else if (originSelection == 'Email') {
                     if (emailOrig == null) {
-                        Campaign emailCamp = [
-                            SELECT Id
-                            FROM Campaign
-                            WHERE Name = 'Email'
-                            LIMIT 1
-                        ];
+                        Campaign emailCamp = [SELECT Id FROM Campaign WHERE Name = 'Email' LIMIT 1];
 
                         if (emailCamp != null) {
                             caseC.Case_Source__c = emailCamp.Id;
@@ -599,12 +557,7 @@ public class UnifiedProspectPageController
                     }
                 } else {
                     if (walkInOrig == null) {
-                        Campaign walkCamp = [
-                            SELECT Id
-                            FROM Campaign
-                            WHERE Name = 'Walk In'
-                            LIMIT 1
-                        ];
+                        Campaign walkCamp = [SELECT Id FROM Campaign WHERE Name = 'Walk In' LIMIT 1];
 
                         if (walkCamp != null) {
                             caseC.Case_Source__c = walkCamp.Id;
@@ -617,12 +570,8 @@ public class UnifiedProspectPageController
                 caseC.Priority = 'Normal';
                 String termName = opportunity.Term__c;
 
-                termName = [
-                    SELECT Term__r.Name
-                    FROM Opportunity
-                    WHERE Term__c = :opportunity.Term__c
-                    LIMIT 1
-                ].Term__r.Name;
+                termName = [SELECT Term__r.Name FROM Opportunity WHERE Term__c = :opportunity.Term__c LIMIT 1]
+                .Term__r.Name;
 
                 if (caseC.Subject == null && caseC.Description == null) {
                     caseC.Subject = caseC.Origin__c + ' Submission - ' + termName;
@@ -634,7 +583,7 @@ public class UnifiedProspectPageController
                 opportunity.Prospect_Case__c = caseC.Id;
 
                 update opportunity;
-            } else if (originSelection != '--Select--' && elId != null){
+            } else if (originSelection != '--Select--' && elId != null) {
                 system.debug('626');
                 return false;
             } else if (originSelection == '--Select--' && elId == null) {
@@ -669,7 +618,7 @@ public class UnifiedProspectPageController
                 }
             }
 
-            if(cams.size() > 0) {
+            if (cams.size() > 0) {
                 insert cams;
             }
 

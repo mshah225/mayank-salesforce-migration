@@ -1,5 +1,4 @@
 public with sharing class AutoSubscriberHelper {
-
     String typeOfObject;
     public Map<Auto_Subscriber_Setting__mdt, List<String>> settingToSubscription;
     Map<Id, List<Subscriber__c>> contactToSubscriber;
@@ -7,22 +6,19 @@ public with sharing class AutoSubscriberHelper {
     public static Map<Id, String> contactToCareer;
     public static Map<Id, String> subscriptionToParent;
 
-
     public AutoSubscriberHelper(String typeOfObject) {
         settingToSubscription = new Map<Auto_Subscriber_Setting__mdt, List<String>>();
         contactToSubscriber = new Map<Id, List<Subscriber__c>>();
         this.typeOfObject = typeOfObject;
 
         createSubscriptionMap();
-
     }
 
     private void createSubscriptionMap() {
         List<Auto_Subscriber_Setting__mdt> subscriberSettings = [
             SELECT Subscriptions_To_Add__c, DeveloperName
             FROM Auto_Subscriber_Setting__mdt
-            WHERE Active__c = true AND
-            Related_Object__r.DeveloperName =: typeOfObject
+            WHERE Active__c = TRUE AND Related_Object__r.DeveloperName = :typeOfObject
         ];
 
         for (Auto_Subscriber_Setting__mdt subSetting : subscriberSettings) {
@@ -41,14 +37,13 @@ public with sharing class AutoSubscriberHelper {
         List<Subscription__c> subscriptionsForSubs = [
             SELECT Id, Parent_Subscription__c
             FROM Subscription__c
-            WHERE Id IN: subscriptionIds
+            WHERE Id IN :subscriptionIds
         ];
 
         for (Subscription__c sub : subscriptionsForSubs) {
             if (sub.Parent_Subscription__c != null) {
                 subscriptionToParent.put(sub.Id, sub.Parent_Subscription__c);
             }
-            
         }
     }
 
@@ -65,7 +60,7 @@ public with sharing class AutoSubscriberHelper {
                 subsToCreate.add(subFromProgramPlan);
             }
         }
-        
+
         return subsToCreate;
     }
 
@@ -78,13 +73,19 @@ public with sharing class AutoSubscriberHelper {
         }
 
         List<Subscriber__c> subsForContacts = [
-            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c, Subscription__r.Id,
-            Subscription__r.Parent_Subscription__c, Subscription__r.Subscription_Type__c
+            SELECT
+                Id,
+                Contact__c,
+                Subscription__c,
+                Subscriber_Status__c,
+                Subscription__r.Id,
+                Subscription__r.Parent_Subscription__c,
+                Subscription__r.Subscription_Type__c
             FROM Subscriber__c
-            WHERE Contact__c IN: contactsFromPlans
+            WHERE Contact__c IN :contactsFromPlans
             ORDER BY Contact__c
         ];
-        
+
         if (!subsForContacts.isEmpty()) {
             Id currentContact = subsForContacts[0].Contact__c;
             List<Subscriber__c> subsForSpecificContact = new List<Subscriber__c>();
@@ -110,13 +111,19 @@ public with sharing class AutoSubscriberHelper {
         }
 
         List<Subscriber__c> subsForContacts = [
-            SELECT Id, Contact__c, Subscription__c, Subscriber_Status__c, Subscription__r.Id,
-            Subscription__r.Parent_Subscription__c, Subscription__r.Subscription_Type__c
+            SELECT
+                Id,
+                Contact__c,
+                Subscription__c,
+                Subscriber_Status__c,
+                Subscription__r.Id,
+                Subscription__r.Parent_Subscription__c,
+                Subscription__r.Subscription_Type__c
             FROM Subscriber__c
-            WHERE Contact__c IN: contactsFromCampaignMembers
+            WHERE Contact__c IN :contactsFromCampaignMembers
             ORDER BY Contact__c
         ];
-        
+
         if (!subsForContacts.isEmpty()) {
             Id currentContact = subsForContacts[0].Contact__c;
             List<Subscriber__c> subsForSpecificContact = new List<Subscriber__c>();
@@ -143,19 +150,17 @@ public with sharing class AutoSubscriberHelper {
             if (member.CampaignId != null) {
                 campaignFromCampaignMembers.add(member.CampaignId);
             }
-            
         }
 
         setCareerFromOpportunity(contactsFromCampaignMembers);
         setCampaignRecordTypeName(campaignFromCampaignMembers);
-        
     }
 
     private void setCareerFromOpportunity(Set<Id> contactIds) {
         List<Opportunity> opportunityForContacts = [
             SELECT Career__c, Contact__r.Id
-            FROM Opportunity 
-            WHERE Contact__c IN: contactIds
+            FROM Opportunity
+            WHERE Contact__c IN :contactIds
             ORDER BY LastModifiedDate ASC
         ];
 
@@ -167,7 +172,11 @@ public with sharing class AutoSubscriberHelper {
     }
 
     private void setCampaignRecordTypeName(Set<Id> campaignFromCampaignMembers) {
-        List<Campaign> campaignsFromMembers= [SELECT RecordType.Name FROM Campaign WHERE Id IN: campaignFromCampaignMembers];
+        List<Campaign> campaignsFromMembers = [
+            SELECT RecordType.Name
+            FROM Campaign
+            WHERE Id IN :campaignFromCampaignMembers
+        ];
 
         campaignToRecordTypeName = new Map<Id, String>();
         for (Campaign campaignWithName : campaignsFromMembers) {
@@ -185,7 +194,10 @@ public with sharing class AutoSubscriberHelper {
         }
 
         for (Subscriber__c sub : currentSubsForContact) {
-            if (sub.Subscription__r.Subscription_Type__c == 'Business Unit' && sub.Subscriber_Status__c == 'Unsubscribed') {
+            if (
+                sub.Subscription__r.Subscription_Type__c == 'Business Unit' &&
+                sub.Subscriber_Status__c == 'Unsubscribed'
+            ) {
                 unsubscribedParentIds.add(sub.Subscription__r.Id);
             }
         }
@@ -193,9 +205,8 @@ public with sharing class AutoSubscriberHelper {
         if (unsubscribedParentIds.contains(subscriptionToParent.get(newSub.Subscription__c))) {
             return false;
         }
-        
+
         for (Subscriber__c sub : currentSubsForContact) {
-            
             if (newSub.Subscription__c == sub.Subscription__c) {
                 if (sub.Subscriber_Status__c == 'No Preference') {
                     newSub.Id = sub.Id;

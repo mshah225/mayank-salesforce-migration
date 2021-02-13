@@ -1,29 +1,36 @@
-trigger SubscriptionTrigger on Subscription__c (after delete, after insert, after undelete, after update,
-    before delete, before insert, before update) {
-    SubscriptionDispatcher d = new SubscriptionDispatcher(trigger.new, trigger.newMap, trigger.old, trigger.oldMap);
-    
-    if (trigger.isBefore) {
-        if (trigger.isUpdate) {
+trigger SubscriptionTrigger on Subscription__c(
+    after delete,
+    after insert,
+    after undelete,
+    after update,
+    before delete,
+    before insert,
+    before update
+) {
+    SubscriptionDispatcher d = new SubscriptionDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate) {
             d.beforeUpdate();
         }
-        if (trigger.isInsert) {
+        if (Trigger.isInsert) {
             d.beforeInsert();
         }
-        if (trigger.isDelete) {
+        if (Trigger.isDelete) {
             d.beforeDelete();
         }
     }
-    if (trigger.isAfter) {
-        if (trigger.isUpdate) {
+    if (Trigger.isAfter) {
+        if (Trigger.isUpdate) {
             d.afterUpdate();
         }
-        if (trigger.isInsert) {
+        if (Trigger.isInsert) {
             d.afterInsert();
         }
-        if (trigger.isDelete) {
+        if (Trigger.isDelete) {
             d.afterDelete();
         }
-        if (trigger.isUnDelete) {
+        if (Trigger.isUnDelete) {
             d.afterUnDelete();
         }
     }

@@ -1,7 +1,7 @@
 public class AdvisorPortalTopLevelFilterController {
     @AuraEnabled
     public static void setOwnerIdListFromUserSelection(List<String> ownerIdList) {
-		Cache.Session.put('advisorPortalOwnerIdList', ownerIdList);
+        Cache.Session.put('advisorPortalOwnerIdList', ownerIdList);
     }
 
     @AuraEnabled
@@ -33,7 +33,10 @@ public class AdvisorPortalTopLevelFilterController {
             List<SelectOption> sortableSubordinateCommittee = sortedSelectOptionList(mySubordinateCommittees);
 
             for (Integer i = 0; i < sortableSubordinateCommittee.size(); i++) {
-                viewAsOptions.put(sortableSubordinateCommittee[i].getLabel(), sortableSubordinateCommittee[i].getValue());
+                viewAsOptions.put(
+                    sortableSubordinateCommittee[i].getLabel(),
+                    sortableSubordinateCommittee[i].getValue()
+                );
             }
         }
 
@@ -69,7 +72,6 @@ public class AdvisorPortalTopLevelFilterController {
 
             return myCommittees;
         }
-
         set;
     }
 
@@ -83,7 +85,6 @@ public class AdvisorPortalTopLevelFilterController {
 
             return mySubordinateCommittees;
         }
-
         set;
     }
 
@@ -103,7 +104,6 @@ public class AdvisorPortalTopLevelFilterController {
 
             return mySubordinatePods;
         }
-
         set;
     }
 
@@ -118,8 +118,14 @@ public class AdvisorPortalTopLevelFilterController {
                 for (Success_Resource_Pod_Association__c srpa : subordinatesAssociationList) {
                     subordinateDisplayName = srpa.Success_Resource__r.Resource__r.Name;
 
-                    if (srpa.Success_Resource__r.Resource__r.Alias != null && srpa.Success_Resource__r.Resource__r.Alias != '') {
-                        subordinateDisplayName = subordinateDisplayName + ' - ' + srpa.Success_Resource__r.Resource__r.Alias;
+                    if (
+                        srpa.Success_Resource__r.Resource__r.Alias != null &&
+                        srpa.Success_Resource__r.Resource__r.Alias != ''
+                    ) {
+                        subordinateDisplayName =
+                            subordinateDisplayName +
+                            ' - ' +
+                            srpa.Success_Resource__r.Resource__r.Alias;
                     }
 
                     mySubordinates.put(srpa.Success_Resource__r.Resource__c, subordinateDisplayName);
@@ -128,7 +134,6 @@ public class AdvisorPortalTopLevelFilterController {
 
             return mySubordinates;
         }
-
         set;
     }
 
@@ -136,21 +141,27 @@ public class AdvisorPortalTopLevelFilterController {
         get {
             if (myResources == null) {
                 myResources = [
-                    SELECT Role__c, (
-                        SELECT Success_Pod__c, Success_Pod__r.OwnerId, Success_Pod__r.Name, Success_Pod__r.Committee__c
-                        FROM Success_Resource_Pod_Associations__r
-                        ORDER BY Success_Pod__r.Name
-                    )
+                    SELECT
+                        Role__c,
+                        (
+                            SELECT
+                                Success_Pod__c,
+                                Success_Pod__r.OwnerId,
+                                Success_Pod__r.Name,
+                                Success_Pod__r.Committee__c
+                            FROM Success_Resource_Pod_Associations__r
+                            ORDER BY Success_Pod__r.Name
+                        )
                     FROM Success_Resource__c
-                    WHERE Resource__c = :UserInfo.getUserId()
-                    AND IsActive__c = TRUE
-                    AND RecordTypeId = :AdvisorResourceRTID
+                    WHERE
+                        Resource__c = :UserInfo.getUserId()
+                        AND IsActive__c = TRUE
+                        AND RecordTypeId = :AdvisorResourceRTID
                 ];
             }
 
             return myResources;
         }
-
         set;
     }
 
@@ -171,7 +182,6 @@ public class AdvisorPortalTopLevelFilterController {
 
             return myRole;
         }
-
         set;
     }
 
@@ -181,15 +191,14 @@ public class AdvisorPortalTopLevelFilterController {
                 AdvisorResourceRTID = [
                     SELECT Id
                     FROM RecordType
-                    WHERE SobjectType = 'Success_Resource__c'
-                    AND Name = 'Advisor'
+                    WHERE SobjectType = 'Success_Resource__c' AND Name = 'Advisor'
                     LIMIT 1
-                ].Id;
+                ]
+                .Id;
             }
 
             return AdvisorResourceRTID;
         }
-
         set;
     }
 
@@ -208,20 +217,25 @@ public class AdvisorPortalTopLevelFilterController {
 
         //Remove Capital Prefix
         for (Integer i = 0; i < sortableSelectOptionList.size(); i++) {
-            sortableSelectOptionList[i] = sortableSelectOptionList[i].substring(sortableSelectOptionList[i].length() / 2);
+            sortableSelectOptionList[i] = sortableSelectOptionList[i]
+                .substring(sortableSelectOptionList[i].length() / 2);
         }
 
         List<SelectOption> selectOptionList = new List<SelectOption>();
 
         // split the value/name components and re create the list
         for (String s : sortableSelectOptionList) {
-            selectOptionList.add(new SelectOption(s.split('@!@')[1].replace('_!', ''), s.split('@!@')[0].replace('_!', '')));
+            selectOptionList.add(
+                new SelectOption(s.split('@!@')[1].replace('_!', ''), s.split('@!@')[0].replace('_!', ''))
+            );
         }
 
         return selectOptionList;
     }
 
-    public static Map<Id, String> viewAsOptionsHelper(List<Success_Resource_Pod_Association__c> successResourcePodAssociationList) {
+    public static Map<Id, String> viewAsOptionsHelper(
+        List<Success_Resource_Pod_Association__c> successResourcePodAssociationList
+    ) {
         String displayName;
         Map<Id, String> viewAsOptionsHelperMap = new Map<Id, String>();
 
@@ -246,11 +260,13 @@ public class AdvisorPortalTopLevelFilterController {
         }
 
         List<Success_Resource_Pod_Association__c> subordinatesPodAssociationList = [
-            SELECT Success_Resource__r.Resource__c, Success_Resource__r.Resource__r.Name,
-                Success_Resource__r.Resource__r.Alias, Success_Resource__r.IsActive__c
+            SELECT
+                Success_Resource__r.Resource__c,
+                Success_Resource__r.Resource__r.Name,
+                Success_Resource__r.Resource__r.Alias,
+                Success_Resource__r.IsActive__c
             FROM Success_Resource_Pod_Association__c
-            WHERE (Success_Resource__r.IsActive__c = TRUE)
-            AND Success_Pod__c IN :podIds
+            WHERE Success_Resource__r.IsActive__c = TRUE AND Success_Pod__c IN :podIds
             ORDER BY Success_Resource__r.Resource__r.Name ASC
         ];
 

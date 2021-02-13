@@ -1,4 +1,4 @@
-# ASU Salesforce Metadata
+# ASU Salesforce Enterprise
 
 Enterprise Git repository for Arizona State University's Salesforce instance
 
@@ -32,8 +32,9 @@ The following metadata types are contained in this repository:
 * SamlSsoConfig
 * Settings
 
-### Code Formatting
-Prettier, a code formatter, is required for development on asu-salesforce-metadata. It's maintained [within the repository](vscode/prettier/.prettierrc).
+### Development Protocols
+* Prettier, a code formatter, is required for development on crm-salesforce-enterprise
+* Environment setup instructions are available [here](https://asudev.jira.com/l/c/VrE21oBJ)
 
 ### Updating Feature Branches
-See https://asudev.jira.com/l/c/15zCXpB6 for details on how to update all feature branches after commits are pushed to master.
+Details on how to update all feature branches after commits are pushed to master are available [here](https://asudev.jira.com/l/c/15zCXpB6)

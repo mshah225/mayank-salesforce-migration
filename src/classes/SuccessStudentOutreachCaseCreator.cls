@@ -3,26 +3,29 @@ public class SuccessStudentOutreachCaseCreator {
     private static final Id COACH_CASE_RECORD_TYPE = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
     private static Id asuCoachOutreachGroup;
     private static Id adHocCategory;
-    
+
     private Map<Id, Success_Student__c> successStudents;
     private Map<Id, Success_Student__c> previousValues;
     private List<Success_Student__c> studentsRequiringOutreach;
     private Set<Id> outreachStudentIds;
     private List<Case> outreachCases;
-    
-    public SuccessStudentOutreachCaseCreator(Map<Id, Success_Student__c> successStudents, Map<Id, Success_Student__c> previousValues) {
+
+    public SuccessStudentOutreachCaseCreator(
+        Map<Id, Success_Student__c> successStudents,
+        Map<Id, Success_Student__c> previousValues
+    ) {
         this.successStudents = successStudents;
         this.previousValues = previousValues;
         studentsRequiringOutreach = new List<Success_Student__c>();
         outreachStudentIds = new Set<Id>();
         outreachCases = new List<Case>();
-        
+
         findStudentsRequiringOutreach();
         setOutreachClassification();
         reQueryStudentsRequiringOutreach();
         createOutreachCases();
     }
-    
+
     private void findStudentsRequiringOutreach() {
         for (Success_Student__c successStudent : successStudents.values()) {
             if (studentRequiresOutreach(successStudent)) {
@@ -31,24 +34,19 @@ public class SuccessStudentOutreachCaseCreator {
             }
         }
     }
-    
+
     private static void setOutreachClassification() {
         Case_Classification__c classification = [
-            SELECT Id, (
-                SELECT Id
-                FROM Case_Classifications__r
-                WHERE Name = 'Ad Hoc'
-                LIMIT 1
-            )
+            SELECT Id, (SELECT Id FROM Case_Classifications__r WHERE Name = 'Ad Hoc' LIMIT 1)
             FROM Case_Classification__c
             WHERE Name = 'ASU Coach Outreach'
             LIMIT 1
         ];
-        
+
         asuCoachOutreachGroup = classification.Id;
         adHocCategory = classification.Case_Classifications__r[0].Id;
     }
-    
+
     private void reQueryStudentsRequiringOutreach() {
         studentsRequiringOutreach = [
             SELECT Student__c, Success_Resource__r.Resource__c, Coaching_Student__c
@@ -56,12 +54,12 @@ public class SuccessStudentOutreachCaseCreator {
             WHERE Id IN :outreachStudentIds
         ];
     }
-    
+
     private Boolean studentRequiresOutreach(Success_Student__c successStudent) {
         return successStudent.Success_Resource__c != previousValues.get(successStudent.Id).Success_Resource__c &&
             successStudent.Coaching_Student__c;
     }
-    
+
     private void createOutreachCases() {
         for (Success_Student__c successStudent : studentsRequiringOutreach) {
             Case newCase = new Case(
@@ -82,7 +80,7 @@ public class SuccessStudentOutreachCaseCreator {
             outreachCases.add(newCase);
         }
     }
-    
+
     public List<Case> getOutreachCases() {
         return outreachCases;
     }

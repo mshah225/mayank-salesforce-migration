@@ -6,7 +6,6 @@ public class SilverpopDeleter implements ObjectScramble {
     }
 
     public sObject scrambleFields() {
-
         return silverpopToDelete;
     }
 

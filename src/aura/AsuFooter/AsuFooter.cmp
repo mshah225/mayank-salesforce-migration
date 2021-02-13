@@ -1,17 +1,77 @@
-<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
-	<head>
-        <link href="https://www.asu.edu/asuthemes/4.6/css/asu_header_media.min.css?v0.3" rel="stylesheet" type="text/css" media="all"/>  
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/themes/innovation/css/nav.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://www.asu.edu/asuthemes/4.6/css/asu_header.min.css?v0.3" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/contrib/tb_megamenu/css/default.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>  
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/contrib/tb_megamenu/css/compatibility.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/webspark_featurescustom/webspark_megamenu/css/webspark_megamenu.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/libraries/innovation_bootstrap/css/bootstrap.min.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/themes/innovation/css/nav.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://www.asu.edu/asuthemes/4.6/css/asu_header.min.css?v0.3" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/themes/innovation/css/innovation-main.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/contrib/tb_megamenu/css/bootstrap.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>
-        <link href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/webspark_featurescustom/mega_footer/css/megafoot.css?p7tesr" rel="stylesheet" type="text/css" media="all"/>  
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <head>
+        <link
+            href="https://www.asu.edu/asuthemes/4.6/css/asu_header_media.min.css?v0.3"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/themes/innovation/css/nav.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://www.asu.edu/asuthemes/4.6/css/asu_header.min.css?v0.3"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/contrib/tb_megamenu/css/default.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/contrib/tb_megamenu/css/compatibility.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/webspark_featurescustom/webspark_megamenu/css/webspark_megamenu.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/libraries/innovation_bootstrap/css/bootstrap.min.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/themes/innovation/css/nav.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://www.asu.edu/asuthemes/4.6/css/asu_header.min.css?v0.3"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/themes/innovation/css/innovation-main.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/contrib/tb_megamenu/css/bootstrap.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
+        <link
+            href="https://live-jira-drupal.ws.asu.edu/profiles/openasu/modules/webspark_featurescustom/mega_footer/css/megafoot.css?p7tesr"
+            rel="stylesheet"
+            type="text/css"
+            media="all"
+        />
     </head>
     <footer>
         <div id="block-mega-footer-mega-footer" class="block block-mega-footer">
@@ -20,31 +80,35 @@
                     <div class="row">
                         <div class="col-md-2 col-sm-3 space-bot-md">
                             <h2 data-target="#mega_accord0" class="big-foot-head">Academics<span class=""></span></h2>
-                            <ul class="big-foot-nav  collapse in" id="mega_accord0" style=""></ul>
+                            <ul class="big-foot-nav collapse in" id="mega_accord0" style=""></ul>
                         </div>
                         <div class="col-md-2 col-sm-3 space-bot-md">
                             <h2 data-target="#mega_accord1" class="big-foot-head">Connect<span class=""></span></h2>
-                            <ul class="big-foot-nav  collapse in" id="mega_accord1" style="">
+                            <ul class="big-foot-nav collapse in" id="mega_accord1" style="">
                                 <li><a href="https://www.asu.edu/tou/">Terms of Use</a></li>
                                 <li><a href="https://www.asu.edu/asujobs">Jobs</a></li>
                                 <li><a href="https://www.asu.edu/emergency/">Emergency</a></li>
-								<li class="no-border"><a href="https://www.asu.edu/contactasu/">Contact ASU</a></li>
+                                <li class="no-border"><a href="https://www.asu.edu/contactasu/">Contact ASU</a></li>
                             </ul>
                         </div>
                         <div class="col-md-2 col-sm-3 space-bot-md">
                             <h2 data-target="#mega_accord2" class="big-foot-head">Impact<span class="caret"></span></h2>
-                            <ul class="big-foot-nav  collapse in" id="mega_accord2" style=""><li><a href="http://asu.edu">Testlink1</a></li></ul>
+                            <ul class="big-foot-nav collapse in" id="mega_accord2" style="">
+                                <li><a href="http://asu.edu">Testlink1</a></li>
+                            </ul>
                         </div>
                         <div class="col-md-2 col-sm-3 space-bot-md">
-                            <h2 data-target="#mega_accord3" class="big-foot-head">Terms of Use<span class="caret"></span></h2>
-                            <ul class="big-foot-nav  collapse in" id="mega_accord3" style="">
+                            <h2 data-target="#mega_accord3" class="big-foot-head">
+                                Terms of Use<span class="caret"></span>
+                            </h2>
+                            <ul class="big-foot-nav collapse in" id="mega_accord3" style="">
                                 <li><a href="https://www.asu.edu/copyright/">Copyright and Trademark</a></li>
                                 <li><a href="https://www.asu.edu/accessibility/">Accessibility</a></li>
                                 <li><a href="https://www.asu.edu/privacy/">Privacy</a></li>
                             </ul>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
         </div>
         <div id="innovation-bar">
@@ -53,7 +117,11 @@
                     <a href="https://www.asu.edu/rankings"><span>ASU is #1 in the U.S. for Innovation</span></a>
                 </div>
                 <div class="innovation-hidden">
-                    <a href="https://www.asu.edu/rankings"><img src="//www.asu.edu/asuthemes/4.6/assets/best-colleges-most-innovative.png" alt="Best Colleges U.S. News Most Innovative 2019"/></a>
+                    <a href="https://www.asu.edu/rankings"
+                        ><img
+                            src="//www.asu.edu/asuthemes/4.6/assets/best-colleges-most-innovative.png"
+                            alt="Best Colleges U.S. News Most Innovative 2019"
+                    /></a>
                 </div>
             </div>
         </div>

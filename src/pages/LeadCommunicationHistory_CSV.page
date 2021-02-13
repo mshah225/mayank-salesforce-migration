@@ -1,6 +1,5 @@
-<apex:page standardcontroller="Lead" contentType="text/csv#Communication History.csv"
-           language="en-US" extensions="LeadCommunicationHistoryController">Email Name, Subject, Sent By, Delivery Status, Sent Date/Time, Open Date/Time, Unique Clicks
-   <apex:repeat value="{!filteredMessages}" var="message">
-{!message.name},{!message.subject},{!message.sender},{!message.deliveryStatus},{!message.timeSent},{!message.timeOpened},{!message.uniqueClicks}
-   </apex:repeat>
+<apex:page standardcontroller="Lead" contentType="text/csv#Communication History.csv" language="en-US" extensions="LeadCommunicationHistoryController">Email Name, Subject, Sent By, Delivery Status, Sent Date/Time, Open Date/Time, Unique Clicks
+    <apex:repeat value="{!filteredMessages}" var="message">
+        {!message.name},{!message.subject},{!message.sender},{!message.deliveryStatus},{!message.timeSent},{!message.timeOpened},{!message.uniqueClicks}
+    </apex:repeat>
 </apex:page>

@@ -1,6 +1,5 @@
 @isTest
 private class AutoSubscriberTest {
-
     @isTest
     private static void newStudentProgramPlanForGradCollege() {
         Contact newStudent = new Contact();
@@ -16,7 +15,5 @@ private class AutoSubscriberTest {
         programPlan.Plan_Description__c = 'test';
 
         insert programPlan;
-
     }
-
 }

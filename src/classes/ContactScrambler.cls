@@ -20,43 +20,43 @@ public class ContactScrambler implements ObjectScramble {
             formattedString += contactToScramble.Birthdate;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.email) ) {
+        if (!String.isEmpty(contactToScramble.email)) {
             formattedString += contactToScramble.email;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.Corporate_Relations_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.Corporate_Relations_Email__c)) {
             formattedString += contactToScramble.Corporate_Relations_Email__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.EPO_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.EPO_Email__c)) {
             formattedString += contactToScramble.EPO_Email__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.ASU_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.ASU_Email__c)) {
             formattedString += contactToScramble.ASU_Email__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.Last_Case_Email_Used__c) ) {
+        if (!String.isEmpty(contactToScramble.Last_Case_Email_Used__c)) {
             formattedString += contactToScramble.Last_Case_Email_Used__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.Lead_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.Lead_Email__c)) {
             formattedString += contactToScramble.Lead_Email__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.Lead_Secondary_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.Lead_Secondary_Email__c)) {
             formattedString += contactToScramble.Lead_Secondary_Email__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.me3hs_User_ID__c) ) {
+        if (!String.isEmpty(contactToScramble.me3hs_User_ID__c)) {
             formattedString += contactToScramble.me3hs_User_ID__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.Parent_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.Parent_Email__c)) {
             formattedString += contactToScramble.Parent_Email__c;
         }
         formattedString += ',';
-        if (!String.isEmpty(contactToScramble.Personal_Email__c) ) {
+        if (!String.isEmpty(contactToScramble.Personal_Email__c)) {
             formattedString += contactToScramble.Personal_Email__c;
         }
 
@@ -70,12 +70,17 @@ public class ContactScrambler implements ObjectScramble {
     private void scrambleEmails() {
         contactToScramble.email = Scrambler.scrambleEmailOrUsername(contactToScramble.email);
         contactToScramble.Corporate_Relations_Email__c = Scrambler.scrambleEmailOrUsername(
-            contactToScramble.Corporate_Relations_Email__c);
+            contactToScramble.Corporate_Relations_Email__c
+        );
         contactToScramble.EPO_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.EPO_Email__c);
         contactToScramble.ASU_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.ASU_Email__c);
-        contactToScramble.Last_Case_Email_Used__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Last_Case_Email_Used__c);
+        contactToScramble.Last_Case_Email_Used__c = Scrambler.scrambleEmailOrUsername(
+            contactToScramble.Last_Case_Email_Used__c
+        );
         contactToScramble.Lead_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Lead_Email__c);
-        contactToScramble.Lead_Secondary_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Lead_Secondary_Email__c);
+        contactToScramble.Lead_Secondary_Email__c = Scrambler.scrambleEmailOrUsername(
+            contactToScramble.Lead_Secondary_Email__c
+        );
         contactToScramble.me3hs_User_ID__c = Scrambler.scrambleEmailOrUsername(contactToScramble.me3hs_User_ID__c);
         contactToScramble.Parent_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Parent_Email__c);
         contactToScramble.Personal_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Personal_Email__c);

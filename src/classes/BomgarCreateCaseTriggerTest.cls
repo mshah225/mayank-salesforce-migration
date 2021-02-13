@@ -1,8 +1,7 @@
 @isTest
-private class BomgarCreateCaseTriggerTest
-{
-    @testSetup static void setUpTest()
-    {
+private class BomgarCreateCaseTriggerTest {
+    @testSetup
+    static void setUpTest() {
         Contact testContact = ContactService.createTestContact();
         testContact.EMPLID__c = '1231231231';
         testContact.ASURite_Id__c = 'testuser';
@@ -10,12 +9,13 @@ private class BomgarCreateCaseTriggerTest
         insert testContact;
     }
 
-    @isTest static void createCaseTriggerTest()
-    {
+    @isTest
+    static void createCaseTriggerTest() {
         Test.startTest();
 
         bomgar__BomgarWebEvent__c webEvent = new bomgar__BomgarWebEvent__c();
-        webEvent.bomgar__ExternalKey__c = 'SFDC:{' +
+        webEvent.bomgar__ExternalKey__c =
+            'SFDC:{' +
             '"employeeNumber":"1231231231", ' +
             '"description":"Bacon ipsum dolor amet bresaola drumstick leberkas", ' +
             '"asuriteId":"testuser", ' +

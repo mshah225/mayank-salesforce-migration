@@ -69,10 +69,10 @@ hub sync &>/dev/null
 message=" Synced  "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
-# Switch to master and update from origin
-message="Updating master from remote origin............"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
-git checkout master &>/dev/null
-git pull origin master &>/dev/null
+# Switch to main and update from origin
+message="Updating main from remote origin............"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+git checkout main &>/dev/null
+git pull origin main &>/dev/null
 message=" Updated "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
@@ -84,7 +84,7 @@ done
 message=" Tracked "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
-# Iterate over all branches and attempt to apply any new changes in master to the selected branch
+# Iterate over all branches and attempt to apply any new changes in main to the selected branch
 message="Attempting changes............................"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
 successCount=0
 failureCount=0
@@ -94,7 +94,7 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
     git checkout $branch &>/dev/null
     printf "\n\t"
     message="> PULLING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;33m${message:$i:1}\033[0m"; done; echo -ne;
-    git pull --no-edit origin master &>/dev/null
+    git pull --no-edit origin main &>/dev/null
     if [ $? -eq 0 ]; then
         # Clean merge, proceed with pushing
         printf "\n\t"
@@ -123,6 +123,6 @@ message="$failureCount"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tc
 message="==========================="; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;
 printf "\n"
 
-# Switch back to master because it looks cleaner at the end
-git checkout master &>/dev/null
+# Switch back to main because it looks cleaner at the end
+git checkout main &>/dev/null
 message='Feature branch update complete!'; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo;

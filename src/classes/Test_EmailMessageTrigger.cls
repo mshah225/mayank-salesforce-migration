@@ -31,14 +31,16 @@ public class Test_EmailMessageTrigger {
         List<EmailMessage> messages = new List<EmailMessage>();
 
         for (Case c : cases) {
-            messages.add(new EmailMessage(
-                FromAddress = 'salesforce.support@asu.edu',
-                ToAddress = c.contact.email,
-                Subject = 'test email',
-                textBody = 'test email',
-                HTMLBody = 'test email',
-                parentId = c.Id
-            ));
+            messages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = c.contact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    parentId = c.Id
+                )
+            );
         }
 
         insert messages;

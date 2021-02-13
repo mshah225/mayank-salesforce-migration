@@ -1,26 +1,31 @@
 <apex:component id="LiveAgentNotices" controller="LiveAgentNoticesController">
     <apex:slds />
     <apex:repeat value="{!noticeList}" var="notice">
-        <div style="padding: 2px;">
+        <div style="padding: 2px">
             <div class="slds-notify_container slds-is-relative">
-                <div class="slds-notify slds-notify_toast slds-theme_info mobile-toast" style="float: left; background-color: #8C1D40 !important; width: 75% !important; min-width:50px !important;" role="status">
+                <div class="slds-notify slds-notify_toast slds-theme_info mobile-toast" style="
+                        float: left;
+                        background-color: #8c1d40 !important;
+                        width: 75% !important;
+                        min-width: 50px !important;
+                    " role="status">
                     <span class="slds-assistive-text">info</span>
                     <div class="slds-notify__content">
                         <apex:repeat value="{!notice}" var="n">
-                            <ul style="list-style-type:none;">
-                                <li style="padding: 5px 0px; margin-left: 0;">{!n}</li>
+                            <ul style="list-style-type: none">
+                                <li style="padding: 5px 0px; margin-left: 0">{!n}</li>
                             </ul>
                         </apex:repeat>
                     </div>
                 </div>
             </div>
         </div>
-        <div style="clear:both"/>
+        <div style="clear: both" />
     </apex:repeat>
     <style>
         @media screen and (min-width: 600px) {
             .mobile-toast {
-            	font-size: 3vw;
+                font-size: 3vw;
             }
         }
     </style>

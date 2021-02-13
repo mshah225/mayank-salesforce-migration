@@ -1,13 +1,15 @@
 @isTest
 public with sharing class Test_JITStudentHandler {
-    @testSetup static void setUpData() {
+    @testSetup
+    static void setUpData() {
         Contact testContact = ContactService.createTestContact();
         testContact.ASURite_ID__c = 'testJIT';
 
         insert testContact;
     }
 
-    @isTest static void testServiceCenterUserCreation() {
+    @isTest
+    static void testServiceCenterUserCreation() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
         attributes.put('User.FirstName', 'Crazy');
@@ -21,7 +23,8 @@ public with sharing class Test_JITStudentHandler {
         System.assertNotEquals(null, testUser);
     }
 
-    @isTest static void testServiceCenterUserCreationNoName() {
+    @isTest
+    static void testServiceCenterUserCreationNoName() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
 
@@ -33,7 +36,8 @@ public with sharing class Test_JITStudentHandler {
         System.assertNotEquals(null, testUser);
     }
 
-    @isTest static void testServiceCenterDuplicateUser() {
+    @isTest
+    static void testServiceCenterDuplicateUser() {
         Map<String, String> attributes = new Map<String, String>();
         attributes.put('User.FederationIdentifier', 'testJIT@asu.edu');
         attributes.put('User.FirstName', 'Testing');
@@ -41,7 +45,6 @@ public with sharing class Test_JITStudentHandler {
         Map<String, String> attributesForDuplicate = new Map<String, String>();
         attributesForDuplicate.put('User.FederationIdentifier', 'testJIT@asu.edu');
         JITStudentHandler jit = new JITStudentHandler();
-
 
         User runTestUser = jit.createUser(null, null, null, null, attributes, null);
         Database.upsert(runTestUser);
@@ -55,7 +58,8 @@ public with sharing class Test_JITStudentHandler {
         System.debug(runTestUserDuplicate);
     }
 
-    @isTest static void testServiceCenterUserCreationNoFedID() {
+    @isTest
+    static void testServiceCenterUserCreationNoFedID() {
         Map<String, String> attributes = new Map<String, String>();
 
         JITStudentHandler jit = new JITStudentHandler();
@@ -63,6 +67,6 @@ public with sharing class Test_JITStudentHandler {
         User runTestUser = jit.createUser(null, null, null, null, attributes, null);
 
         System.debug(runTestUser);
-        System.assertEquals(null, runTestUser);        
+        System.assertEquals(null, runTestUser);
     }
 }

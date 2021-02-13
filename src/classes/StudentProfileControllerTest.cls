@@ -1,5 +1,5 @@
 @isTest
-private class StudentProfileControllerTest {    
+private class StudentProfileControllerTest {
     @TestSetup
     private static void createTestData() {
         ContactFactory.DefaultContact contactBuilder = new ContactFactory.DefaultContact();
@@ -8,15 +8,25 @@ private class StudentProfileControllerTest {
         studentProfileContact.ASURite_ID__c = getStudentProfileContactAsurite();
         insert studentProfileContact;
 
-        insert new StudentTerm__c(CurrTerm__c = '2000', PrevTerm__c = '1000', NextTerm__c = '3000'); 
-        
+        insert new StudentTerm__c(CurrTerm__c = '2000', PrevTerm__c = '1000', NextTerm__c = '3000');
+
         insert new Term__c(Name = 'Test 2000', PeopleSoft_Code__c = '2000', Year__c = '2019', Aid_Year__c = '2000');
 
-        insert new Financial_Aid_Package__c(Aid_Year__c = '2000', Contact__c = studentProfileContact.Id, EFC_Range__c = 'Moderate');
+        insert new Financial_Aid_Package__c(
+            Aid_Year__c = '2000',
+            Contact__c = studentProfileContact.Id,
+            EFC_Range__c = 'Moderate'
+        );
 
         insert new Student_Program_Plan__c(Contact__c = studentProfileContact.Id, Career__c = 'Undergraduate');
         insert new Student_Program_Plan__c(Contact__c = studentProfileContact.Id, Career__c = 'Graduate');
-        insert new Student_Program_Plan__c(Contact__c = studentProfileContact.Id, Career__c = 'Graduate', Status__c = 'Active in Program', Primary_Flag__c=true, Requirement_Term__c='2000');
+        insert new Student_Program_Plan__c(
+            Contact__c = studentProfileContact.Id,
+            Career__c = 'Graduate',
+            Status__c = 'Active in Program',
+            Primary_Flag__c = true,
+            Requirement_Term__c = '2000'
+        );
 
         UserFactory.DefaultUser userBuilder = new UserFactory.DefaultUser();
         User testUser1 = (User) userBuilder.create()[0];
@@ -53,11 +63,11 @@ private class StudentProfileControllerTest {
     }
 
     @isTest
-    private static void financialNeedLevelDisplaySuccess() {       
+    private static void financialNeedLevelDisplaySuccess() {
         PageReference studentProfile = Page.StudentProfile;
         studentProfile.getParameters().put('contactId', getStudentProfileContactId());
         Test.setCurrentPage(studentProfile);
-        
+
         StudentProfileController controller = new StudentProfileController();
         controller.init();
 
@@ -67,25 +77,19 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void getWICHE() {
-        Contact testContact = new Contact(
-                FirstName = 'Super',
-                LastName = 'Gary',
-                EMPLID__c = '1234567890'
-        );
+        Contact testContact = new Contact(FirstName = 'Super', LastName = 'Gary', EMPLID__c = '1234567890');
         Database.insert(testContact);
 
         Student_Group__c testGroup = new Student_Group__c(
-                SG_Contact__c = testContact.Id,
-                SG_PeopleSoft_Code__c = 'WRGP',
-                SG_Status__c = true
+            SG_Contact__c = testContact.Id,
+            SG_PeopleSoft_Code__c = 'WRGP',
+            SG_Status__c = true
         );
         Database.insert(testGroup);
 
         Test.startTest();
         Test.setCurrentPage(Page.studentProfile);
-        ApexPages.currentPage().getParameters().put(
-                'contactId', testContact.Id
-        );
+        ApexPages.currentPage().getParameters().put('contactId', testContact.Id);
         StudentProfileController profile = new StudentProfileController();
         profile.init();
         Boolean result = profile.getWICHE();
@@ -96,25 +100,19 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void getAccelerated() {
-        Contact testContact = new Contact(
-                FirstName = 'Super',
-                LastName = 'Gary',
-                EMPLID__c = '1234567890'
-        );
+        Contact testContact = new Contact(FirstName = 'Super', LastName = 'Gary', EMPLID__c = '1234567890');
         Database.insert(testContact);
 
         Student_Group__c testGroup = new Student_Group__c(
-                SG_Contact__c = testContact.Id,
-                SG_PeopleSoft_Code__c = 'GRAI',
-                SG_Status__c = true
+            SG_Contact__c = testContact.Id,
+            SG_PeopleSoft_Code__c = 'GRAI',
+            SG_Status__c = true
         );
         Database.insert(testGroup);
 
         Test.startTest();
         Test.setCurrentPage(Page.studentProfile);
-        ApexPages.currentPage().getParameters().put(
-                'contactId', testContact.Id
-        );
+        ApexPages.currentPage().getParameters().put('contactId', testContact.Id);
         StudentProfileController profile = new StudentProfileController();
         profile.init();
         Boolean result = profile.getAccelerated();
@@ -123,29 +121,31 @@ private class StudentProfileControllerTest {
         System.assert(result, 'Accelerated  was not detected correctly');
     }
 
-
-
     @IsTest
     private static void testGetPSAdvisorNotes() {
-        String jsonAdvisorNotes = '[' + 
+        String jsonAdvisorNotes =
+            '[' +
             '{' +
-                '"CREATEOPRID__c":"te_FedId1", ' +
-                '"DisplayUrl":"www.exampleurl1.example", ' +
-                '"NAME__c":"example1 name"' +
+            '"CREATEOPRID__c":"te_FedId1", ' +
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"NAME__c":"example1 name"' +
             '}, ' +
             '{' +
-                '"CREATEOPRID__c":"te_FedId2", ' +
-                '"DisplayUrl":"www.exampleurl2.example", ' +
-                '"NAME__c":"example2 name"' +
+            '"CREATEOPRID__c":"te_FedId2", ' +
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"NAME__c":"example2 name"' +
             '}, ' +
             '{' +
-                '"CREATEOPRID__c":"te_FedId1", ' +
-                '"DisplayUrl":"www.exampleurl3.example", ' +
-                '"NAME__c":"example3 name"' +
+            '"CREATEOPRID__c":"te_FedId1", ' +
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"NAME__c":"example3 name"' +
             '}' +
-        ']';
+            ']';
 
-        List<StudentProfileController.AdvisingNoteWrapper> allNotes = StudentProfileController.getPSAdvisorNotes('testEmplId', jsonAdvisorNotes);
+        List<StudentProfileController.AdvisingNoteWrapper> allNotes = StudentProfileController.getPSAdvisorNotes(
+            'testEmplId',
+            jsonAdvisorNotes
+        );
 
         System.assertEquals(3, allNotes.size());
         System.assertEquals('www.exampleurl1.example', allNotes[0].note.DisplayUrl);
@@ -155,29 +155,33 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void testGetComments() {
-        String jsonComments = '[' + 
+        String jsonComments =
+            '[' +
             '{' +
-                '"COMNT_ID__c":"te_9900990099_1", ' +
-                '"DisplayUrl":"www.exampleurl1.example", ' +
-                '"NAME__c":"example1 name", ' +
-                '"COMMENTS__c":"example1 comments"' +
+            '"COMNT_ID__c":"te_9900990099_1", ' +
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"NAME__c":"example1 name", ' +
+            '"COMMENTS__c":"example1 comments"' +
             '}, ' +
             '{' +
-                '"COMNT_ID__c":"te_9900990099_2", ' +
-                '"DisplayUrl":"www.exampleurl2.example", ' +
-                '"NAME__c":"example2 name", ' +
-                '"COMMENTS__c":"example2 comments"' +
+            '"COMNT_ID__c":"te_9900990099_2", ' +
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"NAME__c":"example2 name", ' +
+            '"COMMENTS__c":"example2 comments"' +
             '}, ' +
             '{' +
-                '"COMNT_ID__c":"te_9900990099_1", ' +
-                '"DisplayUrl":"www.exampleurl3.example", ' +
-                '"NAME__c":"example3 name", ' +
-                '"COMMENTS__c":"example3 comments"' +
+            '"COMNT_ID__c":"te_9900990099_1", ' +
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"NAME__c":"example3 name", ' +
+            '"COMMENTS__c":"example3 comments"' +
             '}' +
-        ']';
+            ']';
 
-        List<StudentProfileController.CommentWrapper> allComments = StudentProfileController.getComments('testEmplId', jsonComments);
-    
+        List<StudentProfileController.CommentWrapper> allComments = StudentProfileController.getComments(
+            'testEmplId',
+            jsonComments
+        );
+
         System.assertEquals(3, allComments.size());
         System.assertEquals('example1 comments', allComments[0].comment.COMMENTS__c);
         System.assertEquals('example2 comments', allComments[1].comment.COMMENTS__c);
@@ -187,26 +191,27 @@ private class StudentProfileControllerTest {
     @IsTest
     private static void testSortClasses() {
         List<SortableClass> sortedClasses;
-        String listOfClassesJSON = '[' + 
+        String listOfClassesJSON =
+            '[' +
             '{' +
-                '"DisplayUrl":"www.exampleurl1.example", ' + 
-                '"CLASS_DESCR__c":"aaa Title 1", ' + 
-                '"CLASS_NBR__c":"bbb Class 2", ' + 
-                '"SSR_MTG_LOC_LONG__c":"ccc Location 3"' + 
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"CLASS_DESCR__c":"aaa Title 1", ' +
+            '"CLASS_NBR__c":"bbb Class 2", ' +
+            '"SSR_MTG_LOC_LONG__c":"ccc Location 3"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl2.example", ' + 
-                '"CLASS_DESCR__c":"bbb Title 2", ' + 
-                '"CLASS_NBR__c":"ccc Class 3", ' + 
-                '"SSR_MTG_LOC_LONG__c":"aaa Location 1"' + 
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"CLASS_DESCR__c":"bbb Title 2", ' +
+            '"CLASS_NBR__c":"ccc Class 3", ' +
+            '"SSR_MTG_LOC_LONG__c":"aaa Location 1"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl3.example", ' + 
-                '"CLASS_DESCR__c":"ccc Title 3", ' + 
-                '"CLASS_NBR__c":"aaa Class 1", ' + 
-                '"SSR_MTG_LOC_LONG__c":"bbb Location 2"' + 
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"CLASS_DESCR__c":"ccc Title 3", ' +
+            '"CLASS_NBR__c":"aaa Class 1", ' +
+            '"SSR_MTG_LOC_LONG__c":"bbb Location 2"' +
             '}' +
-        ']';
+            ']';
 
         // Sort properly by Title
         sortedClasses = StudentProfileController.sortClasses('Title', listOfClassesJSON, true);
@@ -240,28 +245,32 @@ private class StudentProfileControllerTest {
     @IsTest
     private static void testSortExams() {
         List<SortableCreditByExam> sortedExams;
-        String listOfExamsJSON = '[' + 
+        String listOfExamsJSON =
+            '[' +
             '{' +
-                '"DisplayUrl":"www.exampleurl1.example", ' + 
-                '"TITLE__c":"aaa Title 1", ' + 
-                '"SCORE__c":"222.22", ' + 
-                '"COURSE_TITLE__c":"ccc Course Title 3"' + 
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"TITLE__c":"aaa Title 1", ' +
+            '"SCORE__c":"222.22", ' +
+            '"COURSE_TITLE__c":"ccc Course Title 3"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl2.example", ' + 
-                '"TITLE__c":"bbb Title 2", ' + 
-                '"SCORE__c":"111.11", ' + 
-                '"COURSE_TITLE__c":"aaa Course Title 1"' + 
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"TITLE__c":"bbb Title 2", ' +
+            '"SCORE__c":"111.11", ' +
+            '"COURSE_TITLE__c":"aaa Course Title 1"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl3.example", ' + 
-                '"TITLE__c":"ccc Title 3", ' + 
-                '"SCORE__c":"333.33", ' + 
-                '"COURSE_TITLE__c":"bbb Course Title 2"' + 
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"TITLE__c":"ccc Title 3", ' +
+            '"SCORE__c":"333.33", ' +
+            '"COURSE_TITLE__c":"bbb Course Title 2"' +
             '}' +
-        ']';
+            ']';
 
-        List<PS_ASU_SP_TRNSFR_V__x> listOfExams = (List<PS_ASU_SP_TRNSFR_V__x>)JSON.deserialize(listOfExamsJSON, List<PS_ASU_SP_TRNSFR_V__x>.class);
+        List<PS_ASU_SP_TRNSFR_V__x> listOfExams = (List<PS_ASU_SP_TRNSFR_V__x>) JSON.deserialize(
+            listOfExamsJSON,
+            List<PS_ASU_SP_TRNSFR_V__x>.class
+        );
 
         // Sort properly by Title
         sortedExams = StudentProfileController.sortExams('Title', listOfExams, true);
@@ -295,28 +304,32 @@ private class StudentProfileControllerTest {
     @IsTest
     private static void testSortTransfers() {
         List<SortableTransferWork> sortedTransfers;
-        String transferListJSON = '[' + 
+        String transferListJSON =
+            '[' +
             '{' +
-                '"DisplayUrl":"www.exampleurl1.example", ' + 
-                '"TITLE__c":"aaa Title 1", ' + 
-                '"COURSE__c":"bbb Course 2", ' + 
-                '"INSTITUTION__c":"ccc Institution 3"' + 
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"TITLE__c":"aaa Title 1", ' +
+            '"COURSE__c":"bbb Course 2", ' +
+            '"INSTITUTION__c":"ccc Institution 3"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl2.example", ' + 
-                '"TITLE__c":"bbb Title 2", ' + 
-                '"COURSE__c":"ccc Course 3", ' + 
-                '"INSTITUTION__c":"aaa Institution 1"' + 
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"TITLE__c":"bbb Title 2", ' +
+            '"COURSE__c":"ccc Course 3", ' +
+            '"INSTITUTION__c":"aaa Institution 1"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl3.example", ' + 
-                '"TITLE__c":"ccc Title 3", ' + 
-                '"COURSE__c":"aaa Course 1", ' + 
-                '"INSTITUTION__c":"bbb Institution 2"' + 
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"TITLE__c":"ccc Title 3", ' +
+            '"COURSE__c":"aaa Course 1", ' +
+            '"INSTITUTION__c":"bbb Institution 2"' +
             '}' +
-        ']';
+            ']';
 
-        List<JBT_RET_CLASS_XFER__x> transferList = (List<JBT_RET_CLASS_XFER__x>)JSON.deserialize(transferListJSON, List<JBT_RET_CLASS_XFER__x>.class);
+        List<JBT_RET_CLASS_XFER__x> transferList = (List<JBT_RET_CLASS_XFER__x>) JSON.deserialize(
+            transferListJSON,
+            List<JBT_RET_CLASS_XFER__x>.class
+        );
 
         // Sort properly by Title
         sortedTransfers = StudentProfileController.sortTransfers('Title', transferList, true);
@@ -349,62 +362,67 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void testGetClassesData() {
-        String classListJson = '[' + 
+        String classListJson =
+            '[' +
             '{' +
-                '"DisplayUrl":"www.exampleurl1.example", ' +
-                '"STDNT_ENRL_STATUS__c":"E", ' +
-                '"ENRL_STATUS_REASON__c":"ENRL",' +
-                '"STRM__c":"example1 STRM__c",' +
-                '"SESSION_CODE__c":"example1 SESSION_CODE__c",' +
-                '"TERM_DESCR30__c":"example1 TERM_DESCR30__c"' +
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"STDNT_ENRL_STATUS__c":"E", ' +
+            '"ENRL_STATUS_REASON__c":"ENRL",' +
+            '"STRM__c":"example1 STRM__c",' +
+            '"SESSION_CODE__c":"example1 SESSION_CODE__c",' +
+            '"TERM_DESCR30__c":"example1 TERM_DESCR30__c"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl2.example", ' +
-                '"STDNT_ENRL_STATUS__c":"X", ' +
-                '"ENRL_STATUS_REASON__c":"ENRL",' +
-                '"STRM__c":"example2 STRM__c",' +
-                '"SESSION_CODE__c":"example2 SESSION_CODE__c",' +
-                '"TERM_DESCR30__c":"example2 TERM_DESCR30__c"' +
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"STDNT_ENRL_STATUS__c":"X", ' +
+            '"ENRL_STATUS_REASON__c":"ENRL",' +
+            '"STRM__c":"example2 STRM__c",' +
+            '"SESSION_CODE__c":"example2 SESSION_CODE__c",' +
+            '"TERM_DESCR30__c":"example2 TERM_DESCR30__c"' +
             '},' +
             '{' +
-                '"DisplayUrl":"www.exampleurl3.example", ' +
-                '"STDNT_ENRL_STATUS__c":"E", ' +
-                '"ENRL_STATUS_REASON__c":"XXXX",' +
-                '"STRM__c":"example3 STRM__c",' +
-                '"SESSION_CODE__c":"example3 SESSION_CODE__c",' +
-                '"TERM_DESCR30__c":"example3 TERM_DESCR30__c"' +
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"STDNT_ENRL_STATUS__c":"E", ' +
+            '"ENRL_STATUS_REASON__c":"XXXX",' +
+            '"STRM__c":"example3 STRM__c",' +
+            '"SESSION_CODE__c":"example3 SESSION_CODE__c",' +
+            '"TERM_DESCR30__c":"example3 TERM_DESCR30__c"' +
             '},' +
             '{' +
-                '"DisplayUrl":"www.exampleurl4.example", ' +
-                '"STDNT_ENRL_STATUS__c":"X", ' +
-                '"ENRL_STATUS_REASON__c":"XXXX",' +
-                '"STRM__c":"example4 STRM__c",' +
-                '"SESSION_CODE__c":"example4 SESSION_CODE__c",' +
-                '"TERM_DESCR30__c":"example4 TERM_DESCR30__c"' +
+            '"DisplayUrl":"www.exampleurl4.example", ' +
+            '"STDNT_ENRL_STATUS__c":"X", ' +
+            '"ENRL_STATUS_REASON__c":"XXXX",' +
+            '"STRM__c":"example4 STRM__c",' +
+            '"SESSION_CODE__c":"example4 SESSION_CODE__c",' +
+            '"TERM_DESCR30__c":"example4 TERM_DESCR30__c"' +
             '}' +
-        ']';
-        String asrListJson = '[' + 
+            ']';
+        String asrListJson =
+            '[' +
             '{' +
-                '"DisplayUrl":"www.exampleurl1.example", ' +
-                '"STRM__c":"example1 STRM__c", ' +
-                '"SESSION_CODE__c":"example1 SESSION_CODE__c", ' +
-                '"CLASS_NBR__c":"example1 CLASS_NBR__c"' +
+            '"DisplayUrl":"www.exampleurl1.example", ' +
+            '"STRM__c":"example1 STRM__c", ' +
+            '"SESSION_CODE__c":"example1 SESSION_CODE__c", ' +
+            '"CLASS_NBR__c":"example1 CLASS_NBR__c"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl2.example", ' +
-                '"STRM__c":"example2 STRM__c", ' +
-                '"SESSION_CODE__c":"example2 SESSION_CODE__c", ' +
-                '"CLASS_NBR__c":"example2 CLASS_NBR__c"' +
+            '"DisplayUrl":"www.exampleurl2.example", ' +
+            '"STRM__c":"example2 STRM__c", ' +
+            '"SESSION_CODE__c":"example2 SESSION_CODE__c", ' +
+            '"CLASS_NBR__c":"example2 CLASS_NBR__c"' +
             '}, ' +
             '{' +
-                '"DisplayUrl":"www.exampleurl3.example", ' +
-                '"STRM__c":"example3 STRM__c", ' +
-                '"SESSION_CODE__c":"example3 SESSION_CODE__c", ' +
-                '"CLASS_NBR__c":"example3 CLASS_NBR__c"' +
+            '"DisplayUrl":"www.exampleurl3.example", ' +
+            '"STRM__c":"example3 STRM__c", ' +
+            '"SESSION_CODE__c":"example3 SESSION_CODE__c", ' +
+            '"CLASS_NBR__c":"example3 CLASS_NBR__c"' +
             '}' +
-        ']';
+            ']';
 
-        StudentProfileController.ClassesWrapper classData = StudentProfileController.getClassesData(classListJson, asrListJson);
+        StudentProfileController.ClassesWrapper classData = StudentProfileController.getClassesData(
+            classListJson,
+            asrListJson
+        );
 
         // Check asrListJson related
         System.assertEquals(3, classData.asrClasses.size());
@@ -415,7 +433,7 @@ private class StudentProfileControllerTest {
         // Check classListJson enrolled
         System.assertEquals(1, classData.enrolledClasses.size());
         System.assertEquals('www.exampleurl1.example', classData.enrolledClasses[0].DisplayUrl);
-        
+
         // Check classListJson dropped
         System.assertEquals(3, classData.droppedClasses.size());
         System.assertEquals('www.exampleurl2.example', classData.droppedClasses[0].DisplayUrl);
@@ -443,7 +461,7 @@ private class StudentProfileControllerTest {
         return '1203436008';
     }
     private static String getStudentProfileContactId() {
-        return [SELECT Id FROM Contact WHERE EmplId__c=:getStudentProfileContactEmplId() LIMIT 1].Id;
+        return [SELECT Id FROM Contact WHERE EmplId__c = :getStudentProfileContactEmplId() LIMIT 1].Id;
     }
     private static String getStudentProfileContactAsurite() {
         return 'test20test';

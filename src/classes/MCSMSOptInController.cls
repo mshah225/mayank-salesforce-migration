@@ -1,11 +1,25 @@
 @RestResource(urlMapping='/MCSMSOptIn')
-global with sharing class MCSMSOptInController  {
+global with sharing class MCSMSOptInController {
     static String errorMessage = '';
 
     @HttpPost
-    global static OptInResult optIn(String subscriberKey, String mobileNumber, String shortCode, String messageText, 
-        String asurite, String emplid, String firstname, String lastName, String middlename, String email, 
-        String birthdate, String street, String city, String statecode, String postalcode, String countrycode
+    global static OptInResult optIn(
+        String subscriberKey,
+        String mobileNumber,
+        String shortCode,
+        String messageText,
+        String asurite,
+        String emplid,
+        String firstname,
+        String lastName,
+        String middlename,
+        String email,
+        String birthdate,
+        String street,
+        String city,
+        String statecode,
+        String postalcode,
+        String countrycode
     ) {
         OptInResult oir = new OptInResult();
         Boolean errorEncountered = false;
@@ -64,7 +78,7 @@ global with sharing class MCSMSOptInController  {
         }
 
         if (!errorEncountered) {
-            oir.success= true;
+            oir.success = true;
             oir.message = 'Opted in with Subscriber Key ' + subscriberKey;
         } else {
             oir.success = false;
@@ -89,9 +103,9 @@ global with sharing class MCSMSOptInController  {
             if (!String.isBlank(response)) {
                 // Id is a reserved word, so let's change it
                 response = response.replace('"id":', '"contactId":');
-                response = response.replace('"contact"','"contactDetails"');
+                response = response.replace('"contact"', '"contactDetails"');
                 try {
-                    conResponse = (ContactResponse)JSON.deserialize(response, ContactResponse.class);
+                    conResponse = (ContactResponse) JSON.deserialize(response, ContactResponse.class);
                 } catch (Exception e) {
                     errorMessage = 'Error parsing Contact service response: ' + e.getMessage();
                     return null;
@@ -116,12 +130,16 @@ global with sharing class MCSMSOptInController  {
                     if (!String.isBlank(response)) {
                         response = response.replace('"id":', '"contactId":');
                         try {
-                            conPostResponse = (ContactPostResponse)JSON.deserialize(response, ContactPostResponse.class);
+                            conPostResponse = (ContactPostResponse) JSON.deserialize(
+                                response,
+                                ContactPostResponse.class
+                            );
                         } catch (Exception e) {
                             errorMessage = 'Error parsing Contact POST service response: ' + e.getMessage();
                             return null;
                         }
-                        if (conPostResponse.upsertResults != null && 
+                        if (
+                            conPostResponse.upsertResults != null &&
                             !String.isBlank(conPostResponse.upsertResults[0].contactId)
                         ) {
                             return conPostResponse.upsertResults[0].contactId;
@@ -133,7 +151,6 @@ global with sharing class MCSMSOptInController  {
                         errorMessage = 'Error calling Contact Creation service';
                         return null;
                     }
-
                 }
             }
         } else {
@@ -144,28 +161,28 @@ global with sharing class MCSMSOptInController  {
     }
 
     global class OptInRequest {
-        public String subscriberKey {get; set;}
-        public String mobileNumber {get; set;}
-        public String shortCode {get; set;}
-        public String messageText {get; set;}
-        public String asurite {get; set;}
-        public String emplid {get; set;}
-        public String firstname {get; set;}
-        public String lastName {get; set;}
-        public String middlename {get; set;}
-        public String email {get; set;}
-        public String phone {get; set;}
-        public String birthdate {get; set;}
-        public String street {get; set;}
-        public String city {get; set;}
-        public String statecode {get; set;}
-        public String postalcode {get; set;}
-        public String countrycode {get; set;}
+        public String subscriberKey { get; set; }
+        public String mobileNumber { get; set; }
+        public String shortCode { get; set; }
+        public String messageText { get; set; }
+        public String asurite { get; set; }
+        public String emplid { get; set; }
+        public String firstname { get; set; }
+        public String lastName { get; set; }
+        public String middlename { get; set; }
+        public String email { get; set; }
+        public String phone { get; set; }
+        public String birthdate { get; set; }
+        public String street { get; set; }
+        public String city { get; set; }
+        public String statecode { get; set; }
+        public String postalcode { get; set; }
+        public String countrycode { get; set; }
     }
 
     global class OptInResult {
-        public Boolean success {get; set;}
-        public String message {get; set;}
+        public Boolean success { get; set; }
+        public String message { get; set; }
     }
 
     global class ContactResponse {

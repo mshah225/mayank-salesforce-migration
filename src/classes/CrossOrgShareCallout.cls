@@ -15,8 +15,8 @@ public class CrossOrgShareCallout {
     public HttpResponse makeGetCallout(Map<String, String> paramMap) {
         String queryString = '';
         Boolean firstParam = true;
-        for (String key : paramMap.keySet() ) {
-            if (!String.isBlank(paramMap.get(key) ) ) {
+        for (String key : paramMap.keySet()) {
+            if (!String.isBlank(paramMap.get(key))) {
                 queryString += (firstParam ? '' : '&') + key + '=' + EncodingUtil.urlEncode(paramMap.get(key), 'UTF-8');
             }
             firstParam = false;
@@ -43,9 +43,7 @@ public class CrossOrgShareCallout {
         try {
             response = http.send(request);
         } catch (System.CalloutException calloutException) {
-            throw new CrossOrgShareCalloutException(
-                calloutException.getMessage()
-            );
+            throw new CrossOrgShareCalloutException(calloutException.getMessage());
         }
 
         return response;
@@ -69,9 +67,7 @@ public class CrossOrgShareCallout {
         try {
             response = http.send(request);
         } catch (System.CalloutException calloutException) {
-            throw new CrossOrgShareCalloutException(
-                calloutException.getMessage()
-            );
+            throw new CrossOrgShareCalloutException(calloutException.getMessage());
         }
 
         return response;
@@ -85,7 +81,6 @@ public class CrossOrgShareCallout {
      * @return HttpResponse containing the API response
      */
     public HttpResponse makePostCallout(String jsonRecords) {
-   
         HttpRequest request = new HttpRequest();
         HttpResponse response;
 
@@ -94,13 +89,11 @@ public class CrossOrgShareCallout {
         request.setHeader('Accept', 'application/json');
         request.setMethod('POST');
         request.setBody(jsonRecords);
-        
+
         try {
             response = new http().send(request);
         } catch (System.CalloutException calloutException) {
-            throw new CrossOrgShareCalloutException(
-                calloutException.getMessage()
-            );
+            throw new CrossOrgShareCalloutException(calloutException.getMessage());
         }
 
         return response;
@@ -114,7 +107,6 @@ public class CrossOrgShareCallout {
      * @return HttpResponse containing the API response
      */
     public HttpResponse makePutCallout(String jsonRecords) {
-       
         HttpRequest request = new HttpRequest();
         HttpResponse response;
 
@@ -127,9 +119,7 @@ public class CrossOrgShareCallout {
         try {
             response = new http().send(request);
         } catch (System.CalloutException calloutException) {
-            throw new CrossOrgShareCalloutException(
-                calloutException.getMessage()
-            );
+            throw new CrossOrgShareCalloutException(calloutException.getMessage());
         }
 
         return response;
@@ -143,7 +133,6 @@ public class CrossOrgShareCallout {
      * @return HttpResponse containing the API response
      */
     public HttpResponse makeDeleteCallout(String jsonRecords) {
-
         HttpRequest request = new HttpRequest();
         HttpResponse response;
 
@@ -156,13 +145,12 @@ public class CrossOrgShareCallout {
         try {
             response = new http().send(request);
         } catch (System.CalloutException calloutException) {
-            throw new CrossOrgShareCalloutException(
-                calloutException.getMessage()
-            );
+            throw new CrossOrgShareCalloutException(calloutException.getMessage());
         }
 
         return response;
     }
 
-    public class CrossOrgShareCalloutException extends Exception {}
+    public class CrossOrgShareCalloutException extends Exception {
+    }
 }

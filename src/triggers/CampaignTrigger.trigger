@@ -1,25 +1,31 @@
-trigger CampaignTrigger on Campaign (after delete, after insert, after undelete, after update, 
-    before delete, before insert, before update
+trigger CampaignTrigger on Campaign(
+    after delete,
+    after insert,
+    after undelete,
+    after update,
+    before delete,
+    before insert,
+    before update
 ) {
-    CampaignDispatcher dispatcher = new CampaignDispatcher(trigger.new, trigger.newMap, trigger.old, trigger.oldMap);
-      
-     if (trigger.isBefore) {
-         if (trigger.isUpdate) {
-             dispatcher.beforeUpdate();
-         } else if (trigger.isInsert) {
-             dispatcher.beforeInsert();
-         }else if (trigger.isDelete) {
-             dispatcher.beforeDelete();
-         }
-     } else if (trigger.isAfter) {
-         if (trigger.isUpdate) {
-             dispatcher.afterUpdate();
-         } else if (trigger.isInsert) {
-             dispatcher.afterInsert();
-         } else if (trigger.isDelete) {
-             dispatcher.afterDelete();
-         } else if (trigger.isUnDelete) {
-             dispatcher.afterUnDelete();
-         }
-     }
- }
+    CampaignDispatcher dispatcher = new CampaignDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate) {
+            dispatcher.beforeUpdate();
+        } else if (Trigger.isInsert) {
+            dispatcher.beforeInsert();
+        } else if (Trigger.isDelete) {
+            dispatcher.beforeDelete();
+        }
+    } else if (Trigger.isAfter) {
+        if (Trigger.isUpdate) {
+            dispatcher.afterUpdate();
+        } else if (Trigger.isInsert) {
+            dispatcher.afterInsert();
+        } else if (Trigger.isDelete) {
+            dispatcher.afterDelete();
+        } else if (Trigger.isUnDelete) {
+            dispatcher.afterUnDelete();
+        }
+    }
+}

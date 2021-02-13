@@ -1,35 +1,24 @@
 @isTest
-private class Test_SearchUsers
-{
-    @testSetup static void setUp()
-    {
-        Profile p = [
-            SELECT Id
-            FROM Profile
-            WHERE Name = 'System Administrator'
-            LIMIT 1
-        ];
+private class Test_SearchUsers {
+    @testSetup
+    static void setUp() {
+        Profile p = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User)userCreator.create(1)[0];
+        User testUser = (User) userCreator.create(1)[0];
         testUser.FederationIdentifier = 'testSU@admin.asu.edu';
         testUser.ProfileId = p.Id;
         insert testUser;
     }
 
-    @isTest static void testUListResults()
-    {
-        User testUser = [
-            SELECT Id
-            FROM User
-            WHERE FederationIdentifier = 'testSU@admin.asu.edu'
-            LIMIT 1
-        ];
+    @isTest
+    static void testUListResults() {
+        User testUser = [SELECT Id FROM User WHERE FederationIdentifier = 'testSU@admin.asu.edu' LIMIT 1];
 
         PageReference searchUsers = Page.searchUsers;
         Test.setCurrentPage(searchUsers);
 
-        Id[] fixedSearchResults = new Id[]{testUser.Id};
+        Id[] fixedSearchResults = new List<Id>{ testUser.Id };
         Test.setFixedSearchResults(fixedSearchResults);
 
         Test.startTest();
@@ -43,8 +32,8 @@ private class Test_SearchUsers
         System.assert(su.uList.size() == 1);
     }
 
-    @isTest static void testPageSearchError()
-    {
+    @isTest
+    static void testPageSearchError() {
         Test.startTest();
 
         SearchUsers su = new SearchUsers();
@@ -56,10 +45,8 @@ private class Test_SearchUsers
         List<Apexpages.Message> msgs = ApexPages.getMessages();
         Boolean errorPresent = false;
 
-        for (Apexpages.Message msg : msgs)
-        {
-            if (msg.getDetail().contains('You must enter at least 2 search characters'))
-            {
+        for (Apexpages.Message msg : msgs) {
+            if (msg.getDetail().contains('You must enter at least 2 search characters')) {
                 errorPresent = true;
             }
         }
@@ -67,8 +54,8 @@ private class Test_SearchUsers
         System.assert(errorPresent);
     }
 
-    @isTest static void testNoSOSLResults()
-    {
+    @isTest
+    static void testNoSOSLResults() {
         Test.startTest();
 
         SearchUsers su = new SearchUsers();

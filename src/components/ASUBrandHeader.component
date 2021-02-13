@@ -59,9 +59,7 @@
 						</ul>
 					</apex:outputPanel> -->
                     <div id="asu_nav_menu" role="navigation" aria-labelledby="asuNavLabel">
-                        <span class="sr-only" id="asuNavLabel">
-                            Navigation for Entire University
-                        </span>
+                        <span class="sr-only" id="asuNavLabel"> Navigation for Entire University </span>
                         <div id="asu_universal_nav">
                             <ul>
                                 <li class="parent">
@@ -231,14 +229,14 @@
             window.ASUHeader = window.ASUHeader || {};
             ASUHeader.site_menu = ASUHeader.site_menu || {};
 
-            if ("{!menuLinks.size}" > 0) {
+            if ('{!menuLinks.size}' > 0) {
                 var pos = jsonHeaderString.lastIndexOf(',');
                 jsonHeaderString = jsonHeaderString.substring(0, pos);
                 jsonHeaderString += ']';
                 ASUHeader.site_menu.json = jsonHeaderString;
-            }
-            else {
-                ASUHeader.site_menu.json = '[' +
+            } else {
+                ASUHeader.site_menu.json =
+                    '[' +
                     '{"title":"Student Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student"},' +
                     '{"title":"Finances","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/finances"},' +
                     '{"title":"Campus Services","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/campusservices"},' +
@@ -246,17 +244,33 @@
                     '{"title":"Help","path":"{!$Label.MyASU_Help_Base_URL}/myasu/student/servicecenter"}]';
             }
 
-            ASUHeader.site_menu.site_name = "My ASU";
+            ASUHeader.site_menu.site_name = 'My ASU';
             ASUHeader.user_signedin = true;
             ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
         </script>
 
-        <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
+        <!--[if IE 5
+            ]><script>
+                ASUHeader.browser = true;
+            </script><!
+        [endif]-->
+        <!--[if IE 6
+            ]><script>
+                ASUHeader.browser = true;
+            </script><!
+        [endif]-->
+        <!--[if IE 7
+            ]><script>
+                ASUHeader.browser = true;
+            </script><!
+        [endif]-->
+        <!--[if IE 8
+            ]><script>
+                ASUHeader.browser = true;
+            </script><!
+        [endif]-->
 
-        <div style="clear:both;"></div>
+        <div style="clear: both"></div>
     </div>
     <!-- END /asuthemes/4.9/headers/default.shtml -->
 

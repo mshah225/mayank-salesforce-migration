@@ -1,42 +1,33 @@
-public class OpportunityService
-{
+public class OpportunityService {
     /**
-    * Creates an undergraduate prospect opportunity
-    * @param contactToAssociate A contact that will be associated
-    * @return undergradProspect An undergraduate prospect opportunity
-    */
+     * Creates an undergraduate prospect opportunity
+     * @param contactToAssociate A contact that will be associated
+     * @return undergradProspect An undergraduate prospect opportunity
+     */
 
     static Id undergradProspectId;
     static Id gradProspectId;
 
-    private static void loadIds()
-    {
+    private static void loadIds() {
         List<RecordType> prospectIds = [
             SELECT Id, Name
             FROM RecordType
-            WHERE (Name = 'Undergraduate Prospect'
-            OR Name = 'Graduate Prospect')
-            AND SobjectType = 'Opportunity'
+            WHERE (Name = 'Undergraduate Prospect' OR Name = 'Graduate Prospect') AND SobjectType = 'Opportunity'
         ];
 
-        for(RecordType id : prospectIds)
-        {
-            if(id.Name == 'Undergraduate Prospect')
-            {
+        for (RecordType id : prospectIds) {
+            if (id.Name == 'Undergraduate Prospect') {
                 undergradProspectId = id.Id;
             }
-            if(id.Name == 'Graduate Prospect')
-            {
+            if (id.Name == 'Graduate Prospect') {
                 gradProspectId = id.Id;
             }
         }
     }
 
-    public static Opportunity createTestUndergraduateProspect(Contact contactToAssociate)
-    {
+    public static Opportunity createTestUndergraduateProspect(Contact contactToAssociate) {
         Date closeDate = Date.today();
-        if(undergradProspectId == null)
-        {
+        if (undergradProspectId == null) {
             loadIds();
         }
 
@@ -52,23 +43,20 @@ public class OpportunityService
     }
 
     /**
-    * Creates one Undergraduate Prospect opportunity for each contact provided.
-    * @param contactsToAssociate A list of contacts
-    * @return oppList A list of undergraduate prospect opportunities
-    */
-    public static List<Opportunity> createTestUndergraduateProspects(List<Contact> contactsToAssociate)
-    {
+     * Creates one Undergraduate Prospect opportunity for each contact provided.
+     * @param contactsToAssociate A list of contacts
+     * @return oppList A list of undergraduate prospect opportunities
+     */
+    public static List<Opportunity> createTestUndergraduateProspects(List<Contact> contactsToAssociate) {
         List<Opportunity> undergradProspects = new List<Opportunity>();
 
         Date closeDate = Date.today();
 
-        if(undergradProspectId == null)
-        {
+        if (undergradProspectId == null) {
             loadIds();
         }
 
-        for (Contact con : contactsToAssociate)
-        {
+        for (Contact con : contactsToAssociate) {
             Opportunity o = new Opportunity();
             o.Contact__c = con.Id;
             o.RecordTypeId = undergradProspectId;
@@ -83,23 +71,20 @@ public class OpportunityService
     }
 
     /**
-    * Creates one Graduate Prospect opportunity for each contact provided.
-    * @param contactsToAssociate A list of contacts
-    * @return oppList A list of undergraduate prospect opportunities
-    */
-    public static List<Opportunity> createTestGraduateProspects(List<Contact> contactsToAssociate)
-    {
+     * Creates one Graduate Prospect opportunity for each contact provided.
+     * @param contactsToAssociate A list of contacts
+     * @return oppList A list of undergraduate prospect opportunities
+     */
+    public static List<Opportunity> createTestGraduateProspects(List<Contact> contactsToAssociate) {
         List<Opportunity> gradProspects = new List<Opportunity>();
 
         Date closeDate = Date.today();
 
-        if(gradProspectId == null)
-        {
+        if (gradProspectId == null) {
             loadIds();
         }
 
-        for (Contact con : contactsToAssociate)
-        {
+        for (Contact con : contactsToAssociate) {
             Opportunity o = new Opportunity();
             o.Contact__c = con.Id;
             o.RecordTypeId = gradProspectId;
@@ -114,26 +99,24 @@ public class OpportunityService
     }
 
     /**
-    * Generates a random number for Territory Assignment
-    * @return randNumber A random Integer between 0 and 100
-    */
-    public static Integer generateOpportunityAssignmentNumber()
-    {
-        Double randNumber = Math.random()*100;
+     * Generates a random number for Territory Assignment
+     * @return randNumber A random Integer between 0 and 100
+     */
+    public static Integer generateOpportunityAssignmentNumber() {
+        Double randNumber = Math.random() * 100;
 
         return randNumber.intValue();
     }
 
     /**
-    * Finds all Opportunities that are tied to a Leads Convert_Contact__c and
-    * updates information from a Lead on the Opportunites.
-    * @param Set<Id> A set of lead ids to map to opportunities
-    * @return List<Opportunity> A list of opportunities with the mapped lead data
-    */
-    public static List<Opportunity> mapLeadDataToOpportunity(Set<Id> leadIds)
-    {
+     * Finds all Opportunities that are tied to a Leads Convert_Contact__c and
+     * updates information from a Lead on the Opportunites.
+     * @param Set<Id> A set of lead ids to map to opportunities
+     * @return List<Opportunity> A list of opportunities with the mapped lead data
+     */
+    public static List<Opportunity> mapLeadDataToOpportunity(Set<Id> leadIds) {
         List<Lead> leadsFromConversion = new List<Lead>();
-        Map<Id, Lead> contactIdToLeadMap= new Map<Id, Lead>();
+        Map<Id, Lead> contactIdToLeadMap = new Map<Id, Lead>();
         List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
 
         Map<String, String> opportunityToLeadFields = new Map<String, String>{
@@ -153,8 +136,7 @@ public class OpportunityService
         String oppQueryFields = '';
 
         // Build a string for querying all the lead fields
-        for(String s : opportunityToLeadFields.values())
-        {
+        for (String s : opportunityToLeadFields.values()) {
             leadQueryFields += s + ', ';
         }
 
@@ -165,16 +147,14 @@ public class OpportunityService
         leadsFromConversion = Database.query(leadQuery);
 
         // Map the Contact Ids to the Lead Data
-        for (Lead newLead : leadsFromConversion)
-        {
+        for (Lead newLead : leadsFromConversion) {
             contactIdToLeadMap.put(newLead.ConvertedContactId, newLead);
         }
 
         Set<Id> contactIds = contactIdToLeadMap.keySet();
 
         // Bulid a string for querying all the opportunity fields
-        for(String s : opportunityToLeadFields.keySet())
-        {
+        for (String s : opportunityToLeadFields.keySet()) {
             oppQueryFields += s + ', ';
         }
 
@@ -185,14 +165,11 @@ public class OpportunityService
         opportunitiesToUpdate = Database.query(oppQuery);
 
         // Update all the opportunity information
-        for (Opportunity opp : opportunitiesToUpdate)
-        {
+        for (Opportunity opp : opportunitiesToUpdate) {
             Lead leadData = contactIdToLeadMap.get(opp.Contact__c);
 
-            for (String oppField : opportunityToLeadFields.keySet())
-            {
-                if (opp.get(oppField) == null)
-                {
+            for (String oppField : opportunityToLeadFields.keySet()) {
+                if (opp.get(oppField) == null) {
                     String leadField = opportunityToLeadFields.get(oppField);
                     opp.put(oppField, leadData.get(leadField));
                 }

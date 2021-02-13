@@ -8,75 +8,77 @@ public abstract class TestFactory {
     private List<String> fieldNamesToIncrement;
     private Sobject newObject;
     protected Sobject template;
-    
+
     public TestFactory(Sobject template) {
         incrementingCounter = 0;
         this.template = template;
         fieldNameToRelatedObjects = new Map<String, List<Object>>();
         fieldNamesToIncrement = new List<String>();
     }
-    
+
     public void setRelatedObject(String fieldName, Sobject relatedTo) {
-        setRelatedObject(fieldName, new List<Sobject> {relatedTo});
+        setRelatedObject(fieldName, new List<Sobject>{ relatedTo });
     }
-    
+
     public void setRelatedObject(String fieldName, List<Sobject> relatedTo) {
         fieldNameToRelatedObjects.put(fieldName, relatedTo);
     }
-    
+
     public void setRelatedField(String fieldName, Object relatedTo) {
-        setRelatedField(fieldName, new List<Object> {relatedTo});
+        setRelatedField(fieldName, new List<Object>{ relatedTo });
     }
-    
+
     public void setRelatedField(String fieldName, List<Object> relatedTo) {
         fieldNameToRelatedObjects.put(fieldName, relatedTo);
     }
-    
+
     public void addToFieldsToIncrement(String fieldName) {
-        addToFieldsToIncrement(new List<String>{fieldName});
+        addToFieldsToIncrement(new List<String>{ fieldName });
     }
-    
+
     public void addToFieldsToIncrement(List<String> fieldNames) {
         fieldNamesToIncrement.addAll(fieldNames);
     }
-    
+
     public List<Sobject> create() {
-        return create(1); 
+        return create(1);
     }
-    
+
     public List<Sobject> create(Integer numberToCreate) {
         List<Sobject> createdTestObjects = new List<Sobject>();
-        for (Integer index = 0; index < numberToCreate; index ++) {
+        for (Integer index = 0; index < numberToCreate; index++) {
             createNewObject(index);
             createdTestObjects.add(newObject);
         }
         return createdTestObjects;
     }
-    
+
     private void createNewObject(Integer currentIndex) {
         createObjectFromTemplate();
         setNewObjectRelatedObjectFields(currentIndex);
         incrementNewObjectFieldsAndCounter();
     }
-    
+
     private void createObjectFromTemplate() {
         newObject = template.clone(USE_NEW_RECORD_ID, IS_DEEP_CLONE, RESET_TIMESTAMPS, USE_NEW_AUTONUMBERS);
     }
-    
+
     private void setNewObjectRelatedObjectFields(Integer currentIndex) {
         for (String fieldName : fieldNameToRelatedObjects.keySet()) {
             List<Object> relatedObjects = fieldNameToRelatedObjects.get(fieldName);
             Object interleavedRelatedObject = relatedObjects.get(Math.mod(currentIndex, relatedObjects.size()));
-            interleavedRelatedObject = interleavedRelatedObject instanceOf Sobject ? ((Sobject) interleavedRelatedObject).Id : interleavedRelatedObject;
+            interleavedRelatedObject = interleavedRelatedObject instanceof Sobject
+                ? ((Sobject) interleavedRelatedObject).Id
+                : interleavedRelatedObject;
             newObject.put(fieldName, interleavedRelatedObject);
         }
     }
-    
+
     private void incrementNewObjectFieldsAndCounter() {
         for (String fieldName : fieldNamesToIncrement) {
             String incrementedField = newObject.get(fieldName) + '' + incrementingCounter;
             newObject.put(fieldName, incrementedField);
         }
-        incrementingCounter ++;
+        incrementingCounter++;
     }
 }

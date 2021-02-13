@@ -1,5 +1,4 @@
 public with sharing class CaseCreationFormController {
-
     @AuraEnabled
     public static String createFeedbackCase(String carName, String subject, String description) {
         Case caseToCreate = new Case();
@@ -19,10 +18,15 @@ public with sharing class CaseCreationFormController {
     private static void setCarDefaults(String carName, Case caseToModify) {
         try {
             Case_Assignment_Rule__c carToAssignTo = [
-                SELECT CC_Category__c, CC_Functional_Group__c, CC_Sub_Category__c,
-                Case_Record_Type_Id__c, Origin__c, Queue_ID__c
+                SELECT
+                    CC_Category__c,
+                    CC_Functional_Group__c,
+                    CC_Sub_Category__c,
+                    Case_Record_Type_Id__c,
+                    Origin__c,
+                    Queue_ID__c
                 FROM Case_Assignment_Rule__c
-                WHERE Name =: CarName
+                WHERE Name = :CarName
             ];
 
             caseToModify.Origin__c = carToAssignTo.Origin__c;
@@ -31,23 +35,23 @@ public with sharing class CaseCreationFormController {
             caseToModify.CC_Sub_Category__c = carToAssignTo.CC_Sub_Category__c;
             caseToModify.RecordTypeId = carToAssignTo.Case_Record_Type_Id__c;
             caseToModify.OwnerId = carToAssignTo.Queue_ID__c;
-
         } catch (Exception e) {
-
         }
-        
     }
 
     private static void setContact(Case caseToModify) {
         String userId = UserInfo.getUserId();
 
-        User userWithAsurite = [SELECT ASURITE_for_External_ID__c FROM User Where Id =: userId LIMIT 1];
+        User userWithAsurite = [SELECT ASURITE_for_External_ID__c FROM User WHERE Id = :userId LIMIT 1];
 
-        List<Contact> contactFromUser = [SELECT Id FROM Contact WHERE ASURITE_ID__c =: userWithAsurite.ASURITE_for_External_ID__c];
+        List<Contact> contactFromUser = [
+            SELECT Id
+            FROM Contact
+            WHERE ASURITE_ID__c = :userWithAsurite.ASURITE_for_External_ID__c
+        ];
 
         if (!contactFromUser.isEmpty()) {
             caseToModify.ContactId = contactFromUser[0].Id;
         }
-
     }
 }

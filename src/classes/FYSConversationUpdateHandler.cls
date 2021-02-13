@@ -1,13 +1,12 @@
 public class FYSConversationUpdateHandler {
-    
     public void checkForErrors(Database.SaveResult[] lsr) {
         List<smagicinteract__Error_Log__c> errorLogs = new List<smagicinteract__Error_Log__c>();
-        for(Database.SaveResult sr : lsr){
-            if(!sr.isSuccess()){
+        for (Database.SaveResult sr : lsr) {
+            if (!sr.isSuccess()) {
                 Database.Error err = sr.getErrors()[0];
                 smagicinteract__Error_Log__c errorLogObj = new smagicinteract__Error_Log__c();
                 errorLogObj.smagicinteract__Class_Name__c = 'FYSConversationUpdateHandler';
-                errorLogObj.smagicinteract__Error_Message__c = err.getMessage();                  
+                errorLogObj.smagicinteract__Error_Message__c = err.getMessage();
                 errorLogObj.smagicinteract__Error_Status_Code__c = String.valueOf(err.getStatusCode());
                 errorLogObj.smagicinteract__Error_Type__c = 'Fatal';
                 errorLogObj.smagicinteract__Object__c = 'smagicinteract__Conversation__c';
@@ -21,6 +20,4 @@ public class FYSConversationUpdateHandler {
             Database.insert(errorLogs, false);
         }
     }
-    
-    
 }

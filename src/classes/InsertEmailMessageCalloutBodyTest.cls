@@ -8,7 +8,7 @@ private class InsertEmailMessageCalloutBodyTest {
     private static String testFromAddress;
     private static String testToAddress;
     private static String testStatus;
-    
+
     private static void initTestData() {
         testEmailBody = 'Test Email Body';
         testParentId = 'Mock Id';
@@ -17,15 +17,20 @@ private class InsertEmailMessageCalloutBodyTest {
         testFromAddress = 'testfrom@test.com';
         testToAddress = 'testto@test.com';
     }
-    
+
     @isTest
     private static void testEmailMessageCalloutBody() {
         initTestData();
-        
+
         Test.startTest();
-        InsertEmailMessageCalloutBody testCalloutBody = new InsertEmailMessageCalloutBody(testEmailBody, testParentId,
-                                                                testEmailSubject, testFromName,
-                                                                testFromAddress, testToAddress);
+        InsertEmailMessageCalloutBody testCalloutBody = new InsertEmailMessageCalloutBody(
+            testEmailBody,
+            testParentId,
+            testEmailSubject,
+            testFromName,
+            testFromAddress,
+            testToAddress
+        );
         Test.stopTest();
         System.assertEquals(testCalloutBody.getEmailTextBody(), 'Test Email Body');
         System.assertEquals(testCalloutBody.getParentId(), 'Mock Id');

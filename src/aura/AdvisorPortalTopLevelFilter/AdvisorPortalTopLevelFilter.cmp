@@ -10,7 +10,7 @@
     <aura:attribute name="SelectedOptionsCount" type="Integer" />
     <aura:attribute name="DefaultPillsDisplayed" type="Integer" default="5" />
     <aura:attribute name="PillsDisplayedCount" type="Integer" />
-    <aura:attribute name="OnClickOutListenerSet" type="Boolean" default="false"/>
+    <aura:attribute name="OnClickOutListenerSet" type="Boolean" default="false" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.CurrentSelectedOptions}" action="{!c.collapsePillGroup}" />
 
@@ -173,7 +173,7 @@
         </div>
         <lightning:button label="Select All" title="Select All" onclick="{!c.selectAll}" />
         <lightning:button label="My Queue" title="My Queue" onclick="{!c.myQueue}" />
-        <lightning:button label="Clear Selection" title="Clear Selection" onclick="{!c.clearAll}" />        
+        <lightning:button label="Clear Selection" title="Clear Selection" onclick="{!c.clearAll}" />
         <lightning:button label="Apply Selected Users" variant="brand" title="Apply" onclick="{!c.applyChanges}" />
     </div>
 </aura:component>

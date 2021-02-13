@@ -1,5 +1,4 @@
-public without sharing class TerritoryAssignmentHelper 
-{
+public without sharing class TerritoryAssignmentHelper {
     public static Boolean accountTADone = false;
     public static Boolean contactTADone = false;
     public static Boolean opportunityTADone = false;
@@ -13,64 +12,57 @@ public without sharing class TerritoryAssignmentHelper
     private static Boolean debug = false;
 
     /**
-    * Account
-    */
-    public void AccountTA()
-    {
-        if (accountTADone)
-        {
+     * Account
+     */
+    public void AccountTA() {
+        if (accountTADone) {
             return;
         }
 
         Map<String, String> KVMap = new Map<String, String>();
         Set<String> ZipsInTrigger = new Set<String>();
         List<Key_Value__c> KVList = new List<Key_Value__c>();
-        
-        for (Account InsZip :(List<Account>)Trigger.New)
-        {
+
+        for (Account InsZip : (List<Account>) Trigger.New) {
             //Ensures Zipcode is five digits or less
             string shortZip = shortenZipCode(InsZip.ShippingPostalCode);
             ZipsInTrigger.add(shortZip);
         }
 
-        if(ZipsInTrigger.size() > 0)
-        {
+        if (ZipsInTrigger.size() > 0) {
             KVList = [
-                SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c 
-                FROM Key_Value__c 
-                WHERE RecordType.DeveloperName = 'Geomarket_Code_Map' 
-                AND Geomarket_ZIP__c IN :ZipsInTrigger
+                SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c
+                FROM Key_Value__c
+                WHERE RecordType.DeveloperName = 'Geomarket_Code_Map' AND Geomarket_ZIP__c IN :ZipsInTrigger
             ];
 
-            for (Key_Value__c K :KVList)
-            {
-                KVMap.put(K.Geomarket_ZIP__c,K.Geomarket_Code__c);
+            for (Key_Value__c K : KVList) {
+                KVMap.put(K.Geomarket_ZIP__c, K.Geomarket_Code__c);
             }
 
-            for (Account AccGeo :(List<Account>) Trigger.New)
-            {
+            for (Account AccGeo : (List<Account>) Trigger.New) {
                 //Ensures Zipcode is five digits or less
                 string shortZip = shortenZipCode(AccGeo.ShippingPostalCode);
                 AccGeo.Geomarket_Code__c = KVMap.get(shortZip);
             }
         }
 
-        if (Trigger.isUpdate)
-        {
-            Map<ID, Account> AcountOldMap = (Map<ID, Account>)Trigger.oldMap;
+        if (Trigger.isUpdate) {
+            Map<ID, Account> AcountOldMap = (Map<ID, Account>) Trigger.oldMap;
 
-            for (Account A: (List<Account>)Trigger.New)
-            {
-                if (A.Defer_Territory_Assignment__c == false 
-                    && AcountOldMap.get(A.Id).Defer_Territory_Assignment__c == true)
-                {
+            for (Account A : (List<Account>) Trigger.New) {
+                if (
+                    A.Defer_Territory_Assignment__c == false &&
+                    AcountOldMap.get(A.Id).Defer_Territory_Assignment__c == true
+                ) {
                     continue;
                 }
 
-                if(A.Territory_Manager__c != null 
-                    && AcountOldMap.get(A.Id).Territory_Manager__c != A.Territory_Manager__c 
-                    && AcountOldMap.get(A.Id).Territory_Manager__c != null)
-                {
+                if (
+                    A.Territory_Manager__c != null &&
+                    AcountOldMap.get(A.Id).Territory_Manager__c != A.Territory_Manager__c &&
+                    AcountOldMap.get(A.Id).Territory_Manager__c != null
+                ) {
                     A.Defer_Territory_Assignment__c = true;
                     A.Previous_Territory_Manager_ID__c = AcountOldMap.get(A.Id).Territory_Manager__c;
                 }
@@ -78,303 +70,252 @@ public without sharing class TerritoryAssignmentHelper
         }
 
         accountTADone = true;
-        
     }
 
     /**
-    * Contact
-    */
-    public void ContactTA()
-    {
-        if (contactTADone)
-        {
+     * Contact
+     */
+    public void ContactTA() {
+        if (contactTADone) {
             return;
         }
 
-        if (Trigger.isAfter && Trigger.isUpdate)
-        {
+        if (Trigger.isAfter && Trigger.isUpdate) {
             Set<Id> contactIdsWithTAChanges = new Set<Id>();
-            Map<Id, Contact> oldContactMap = (Map<Id, Contact>)Trigger.oldMap;
+            Map<Id, Contact> oldContactMap = (Map<Id, Contact>) Trigger.oldMap;
             List<Opportunity> oppList;
-		
-            for (Contact c: (List<Contact>)Trigger.new)
-            {
-                if (c.MailingState != oldContactMap.get(c.Id).MailingState)
-                {
+
+            for (Contact c : (List<Contact>) Trigger.new) {
+                if (c.MailingState != oldContactMap.get(c.Id).MailingState) {
                     contactIdsWithTAChanges.add(c.Id);
                 }
             }
-            
-            oppList = new List<Opportunity>([
-                SELECT Id, Territory_Assignment_Required__c
-                FROM Opportunity
-                WHERE Contact__c IN :contactIdsWithTAChanges
-            ]);
-            
-            if (oppList.size() > 0)
-            {
-                for (Opportunity o: oppList)
-                {
+
+            oppList = new List<Opportunity>(
+                [
+                    SELECT Id, Territory_Assignment_Required__c
+                    FROM Opportunity
+                    WHERE Contact__c IN :contactIdsWithTAChanges
+                ]
+            );
+
+            if (oppList.size() > 0) {
+                for (Opportunity o : oppList) {
                     o.Territory_Assignment_Required__c = true;
                 }
-                
+
                 updateOpportunityList(oppList);
-                
+
                 contactTADone = true;
             }
         }
     }
 
-
     /**
-    * Opportunity
-    */
-    public void OpportunityTA()
-    {
+     * Opportunity
+     */
+    public void OpportunityTA() {
         Set<Id> contactIdSet = new Set<Id>();
         List<Contact> contactList = new List<Contact>();
         Set<Id> locationSet = new Set<Id>();
         Set<Id> ContactIsFTF = new Set<Id>();
 
         //Get all Contact IDs and First Time Freshman Contact Ids linked to the Opportunities
-        for (Opportunity o : (List<Opportunity>)trigger.new)
-        {
+        for (Opportunity o : (List<Opportunity>) Trigger.new) {
             contactIdSet.Add(o.Contact__c);
-            locationSet.add(o.Admitted_Location__c==null ? o.Location__c : o.Admitted_Location__c);
+            locationSet.add(o.Admitted_Location__c == null ? o.Location__c : o.Admitted_Location__c);
 
-            if(o.Type =='First Time Freshman')
-            {
+            if (o.Type == 'First Time Freshman') {
                 ContactIsFTF.add(o.Contact__c);
             }
         }
 
-        if(contactIdSet.size() > 0)
-        {        
+        if (contactIdSet.size() > 0) {
             //Load all contacts attached to the Opportunities
             contactList = [
-                SELECT Id, 
-                    Geomarket_Code__c, 
+                SELECT
+                    Id,
+                    Geomarket_Code__c,
                     MailingPostalCode,
-                    MailingState, 
-                    MailingCountry, 
-                    Last_HS_Attended__c, 
+                    MailingState,
+                    MailingCountry,
+                    Last_HS_Attended__c,
                     Last_College_Attended__c,
-                    Last_HS_Attended__r.Territory_Manager__c, 
-                    Last_HS_Attended__r.Territory_Manager__r.IsActive, 
-                    Last_HS_Attended__r.Territory_Manager__r.Name, 
+                    Last_HS_Attended__r.Territory_Manager__c,
+                    Last_HS_Attended__r.Territory_Manager__r.IsActive,
+                    Last_HS_Attended__r.Territory_Manager__r.Name,
                     Last_College_Attended__r.Territory_Manager__c,
-                    Last_College_Attended__r.Territory_Manager__r.Name, 
+                    Last_College_Attended__r.Territory_Manager__r.Name,
                     Last_College_Attended__r.Territory_Manager__r.IsActive
                 FROM Contact
-                WHERE Id
-                IN :contactIdSet
+                WHERE Id IN :contactIdSet
             ];
         }
 
         /**
-        * Start Contact Geomarket Code Evaluation
-        */
-        if (Trigger.isBefore && contactList.size() > 0)
-        {
+         * Start Contact Geomarket Code Evaluation
+         */
+        if (Trigger.isBefore && contactList.size() > 0) {
             Set<String> ContactZips = new Set<String>();
             Map<String, String> KVMap = new Map<String, String>();
             Set<Id> InstitutionIdSet = new Set<Id>();
-            
+
             //Load up the last HS and last College attended for all contacts
             //Also load up the Zip codes for all contacts
-            for (Contact c : contactList )
-            {
-                if(!InstitutionIdSet.contains(c.Last_HS_Attended__c))
-                {
+            for (Contact c : contactList) {
+                if (!InstitutionIdSet.contains(c.Last_HS_Attended__c)) {
                     InstitutionIdSet.add(c.Last_HS_Attended__c);
                 }
-                
-                if(!InstitutionIdSet.contains(c.Last_College_Attended__c))
-                {
+
+                if (!InstitutionIdSet.contains(c.Last_College_Attended__c)) {
                     InstitutionIdSet.add(c.Last_College_Attended__c);
                 }
                 //Ensures Zipcode is five digits or less
                 string shortZip = shortenZipCode(c.MailingPostalCode);
                 ContactZips.add(shortZip);
             }
-            
-            if(ContactZips.size() > 0 && InstitutionIdSet.size() > 0)
-            {
+
+            if (ContactZips.size() > 0 && InstitutionIdSet.size() > 0) {
                 //Load all Accounts representing HSs or Colleges attended by Contacts on Opps
-                Map<Id, Account> InstMap = new Map<Id, Account>([
-                    SELECT Id, Geomarket_Code__c
-                    FROM Account
-                    WHERE Id
-                    IN :InstitutionIdSet
-                ]);
-                
+                Map<Id, Account> InstMap = new Map<Id, Account>(
+                    [SELECT Id, Geomarket_Code__c FROM Account WHERE Id IN :InstitutionIdSet]
+                );
+
                 List<Key_Value__c> KVList = [
                     SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c
                     FROM Key_Value__c
-                    WHERE RecordType.DeveloperName = 'Geomarket_Code_Map'
-                    AND Geomarket_ZIP__c
-                    IN :ContactZips
+                    WHERE RecordType.DeveloperName = 'Geomarket_Code_Map' AND Geomarket_ZIP__c IN :ContactZips
                 ];
-                
-                for (Key_Value__c K :KVList)
-                {
+
+                for (Key_Value__c K : KVList) {
                     KVMap.put(K.Geomarket_ZIP__c, K.Geomarket_Code__c);
                 }
-                
+
                 List<Contact> geoMarketChanged = new List<Contact>();
                 //For each contact
-                for (Contact Cons : contactList)
-                {
+                for (Contact Cons : contactList) {
                     //Ensures Zipcode is five digits or less
                     string shortZip = shortenZipCode(Cons.MailingPostalCode);
-                    
+
                     //If the contact is a FTF and has a last HS attended
                     //Update the contact's geomarket code to reflect this
-                    if(Cons.Last_HS_Attended__c != null && ContactIsFTF.contains(Cons.Id))
-                    {
+                    if (Cons.Last_HS_Attended__c != null && ContactIsFTF.contains(Cons.Id)) {
                         Account thisInstitution = InstMap.get(Cons.Last_HS_Attended__c);
-                        if(thisInstitution.Geomarket_Code__c != null 
-                           && Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c)
-                        {
+                        if (
+                            thisInstitution.Geomarket_Code__c != null &&
+                            Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c
+                        ) {
                             Cons.Geomarket_Code__c = thisInstitution.Geomarket_Code__c;
                             geoMarketChanged.add(Cons);
-                        }
-                        else if(Cons.Geomarket_Code__c != KVMap.get(shortZip))
-                        {
+                        } else if (Cons.Geomarket_Code__c != KVMap.get(shortZip)) {
                             Cons.Geomarket_Code__c = KVMap.get(shortZip);
                             geoMarketChanged.add(Cons);
                         }
-                    }
-                    //Else if the contact is not an FTF and has a last college attended
-                    //Update the contact's geomarket code to reflect this
-                    else if(Cons.Last_College_Attended__c != null && !ContactIsFTF.contains(Cons.Id))
-                    {
+                    } else if (Cons.Last_College_Attended__c != null && !ContactIsFTF.contains(Cons.Id)) {
+                        //Else if the contact is not an FTF and has a last college attended
+                        //Update the contact's geomarket code to reflect this
                         Account thisInstitution = InstMap.get(Cons.Last_College_Attended__c);
-                        if(thisInstitution.Geomarket_Code__c != null 
-                           && Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c)
-                        {
+                        if (
+                            thisInstitution.Geomarket_Code__c != null &&
+                            Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c
+                        ) {
                             Cons.Geomarket_Code__c = thisInstitution.Geomarket_Code__c;
                             geoMarketChanged.add(Cons);
-                        }
-                        else if(Cons.Geomarket_Code__c != KVMap.get(shortZip))
-                        {
+                        } else if (Cons.Geomarket_Code__c != KVMap.get(shortZip)) {
                             Cons.Geomarket_Code__c = KVMap.get(shortZip);
                             geoMarketChanged.add(Cons);
                         }
-                    }
-                    //Else simply update the contact's geomarket code to reflect their postal code
-                    else if(Cons.Geomarket_Code__c != KVMap.get(shortZip))
-                    {
+                    } else if (Cons.Geomarket_Code__c != KVMap.get(shortZip)) {
+                        //Else simply update the contact's geomarket code to reflect their postal code
                         Cons.Geomarket_Code__c = KVMap.get(shortZip);
                         geoMarketChanged.add(Cons);
                     }
                 }
-                
-                if(geoMarketChanged.size() > 0)
-                {
+
+                if (geoMarketChanged.size() > 0) {
                     updateContactList(geoMarketChanged);
                 }
             }
         }
 
         /**
-        * Start Territory Assignment Evaluation
-        */
+         * Start Territory Assignment Evaluation
+         */
         Boolean anyTerritoryAssignmentRequired = false;
 
-        for(Opportunity o : (List<Opportunity>) Trigger.new)
-        {
-           // Force all new undergraduate opportunities to be evaluated for territory assignment
-           if(Trigger.isInsert)
-           {
-                if (o.Career__c != 'Undergraduate')
-                {
+        for (Opportunity o : (List<Opportunity>) Trigger.new) {
+            // Force all new undergraduate opportunities to be evaluated for territory assignment
+            if (Trigger.isInsert) {
+                if (o.Career__c != 'Undergraduate') {
                     o.Territory_Assignment_Required__c = false;
-                }
-                else
-                {
+                } else {
                     anyTerritoryAssignmentRequired = true;
                     o.Territory_Assignment_Required__c = true;
                 }
-            } 
-            // Only evaluate territory assignment for opportunities where a field changes that could impact an assignment
-            else if(Trigger.isUpdate)
-            {
-                Map<ID, Opportunity> OpportunityOldMap = (Map<ID, Opportunity>)Trigger.oldMap;
+            } else if (Trigger.isUpdate) {
+                // Only evaluate territory assignment for opportunities where a field changes that could impact an assignment
+                Map<ID, Opportunity> OpportunityOldMap = (Map<ID, Opportunity>) Trigger.oldMap;
 
-                if (o.Career__c != 'Undergraduate')
-                {
+                if (o.Career__c != 'Undergraduate') {
                     o.Territory_Assignment_Required__c = false;
-                }
-                else if(o.Territory_Assignment_Required__c == true
-                    || OpportunityOldMap.get(o.Id).Type != o.Type
-                    || OpportunityOldMap.get(o.Id).International_Student__c != o.International_Student__c
-                    || OpportunityOldMap.get(o.Id).Location__c != o.Location__c
-                    || OpportunityOldMap.get(o.Id).StageName != o.StageName
-                    || OpportunityOldMap.get(o.Id).Potential_National_Scholar__c != o.Potential_National_Scholar__c)
-                {
+                } else if (
+                    o.Territory_Assignment_Required__c == true ||
+                    OpportunityOldMap.get(o.Id).Type != o.Type ||
+                    OpportunityOldMap.get(o.Id).International_Student__c != o.International_Student__c ||
+                    OpportunityOldMap.get(o.Id).Location__c != o.Location__c ||
+                    OpportunityOldMap.get(o.Id).StageName != o.StageName ||
+                    OpportunityOldMap.get(o.Id).Potential_National_Scholar__c != o.Potential_National_Scholar__c
+                ) {
                     anyTerritoryAssignmentRequired = true;
                     o.Territory_Assignment_Required__c = true;
                 }
             }
         }
 
-        if(anyTerritoryAssignmentRequired)
-        {
+        if (anyTerritoryAssignmentRequired) {
             Map<Id, Contact> contactMap = new Map<Id, Contact>(contactList);
-            Map<Id, Location__c> locationMap = new Map<Id, Location__c>([
-                SELECT Id, Name, Location_Code__c
-                FROM Location__c
-                WHERE Id
-                IN :locationSet
-            ]);
+            Map<Id, Location__c> locationMap = new Map<Id, Location__c>(
+                [SELECT Id, Name, Location_Code__c FROM Location__c WHERE Id IN :locationSet]
+            );
 
             // Build map with Territory_Assignment_Rule__c Rule_Key__c values
-            List<Territory_Assignment_Rule__c> TerritoryAssignmentRuleList = new List<Territory_Assignment_Rule__c>([
-                SELECT Id, Rule_Key__c, User__c, User__r.IsActive
-                FROM Territory_Assignment_Rule__c
-            ]);
+            List<Territory_Assignment_Rule__c> TerritoryAssignmentRuleList = new List<Territory_Assignment_Rule__c>(
+                [SELECT Id, Rule_Key__c, User__c, User__r.IsActive FROM Territory_Assignment_Rule__c]
+            );
 
-            Map<String,Territory_Assignment_Rule__c> TerritoryAssignmentRuleMap = new Map<String,Territory_Assignment_Rule__c>();
-            for (Territory_Assignment_Rule__c TARM : TerritoryAssignmentRuleList)
-            {
+            Map<String, Territory_Assignment_Rule__c> TerritoryAssignmentRuleMap = new Map<String, Territory_Assignment_Rule__c>();
+            for (Territory_Assignment_Rule__c TARM : TerritoryAssignmentRuleList) {
                 TerritoryAssignmentRuleMap.put(TARM.Rule_Key__c, TARM);
             }
 
             // Get all of the tars keyed by rule key. Used for international assignment now.
             Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentRuleService.mapTerritoryAssignmentRulesToRuleKey();
 
-            for(Opportunity Opp: (List<Opportunity>)Trigger.New)
-            {
+            for (Opportunity Opp : (List<Opportunity>) Trigger.New) {
                 Boolean inactiveUserFound = false;
                 Contact thisContact = contactMap.get(Opp.Contact__c);
-                Location__c thisLocation = locationMap.get(Opp.Admitted_Location__c==null?Opp.Location__c:Opp.Admitted_Location__c);
+                Location__c thisLocation = locationMap.get(
+                    Opp.Admitted_Location__c == null ? Opp.Location__c : Opp.Admitted_Location__c
+                );
 
-                if (thisLocation == null)
-                {
+                if (thisLocation == null) {
                     thisLocation = new Location__c();
                 }
 
                 // Start Territory Assignment Rules Evaluation
-                if (Opp.Territory_Assignment_Required__c && thisContact != null)
-                {
+                if (Opp.Territory_Assignment_Required__c && thisContact != null) {
                     Opp.Territory_Assignment_Required__c = false;
                     Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
 
                     // Freshman Scholar
-                    if (Opp.Type == 'First Time Freshman' && Opp.Potential_National_Scholar__c)
-                    {
+                    if (Opp.Type == 'First Time Freshman' && Opp.Potential_National_Scholar__c) {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Freshman Scholar');
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Freshman Scholar';
 
@@ -384,21 +325,22 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // Location
-                    if (thisLocation != null 
-                        && thisLocation.Location_Code__c != null 
-                        && thisLocation.Location_Code__c.equalsIgnoreCase('CALHC'))
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Location' + '|' + 'Lake Havasu');
+                    if (
+                        thisLocation != null &&
+                        thisLocation.Location_Code__c != null &&
+                        thisLocation.Location_Code__c.equalsIgnoreCase('CALHC')
+                    ) {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Location' +
+                            '|' +
+                            'Lake Havasu'
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Location - Lake Havasu';
@@ -409,66 +351,55 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // International
-                    if (Opp.International_Student__c)
-                    {
+                    if (Opp.International_Student__c) {
                         List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
                         Territory_Assignment_Rule__c tar = null;
                         Decimal oppAssignNumber = Opp.Opportunity_Assignment_Number_Rand__c;
                         String oppCountry = thisContact.MailingCountry;
 
-                        if (String.isNotEmpty(oppCountry))
-                        {
+                        if (String.isNotEmpty(oppCountry)) {
                             oppCountry = getSFCountry(oppCountry);
                         }
 
                         // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
-                        if (oppAssignNumber == null)
-                        {
+                        if (oppAssignNumber == null) {
                             oppAssignNumber = Opp.Opportunity_Assignment_Number__c;
                         }
 
                         // Begin filter hierarchy
-                        if (Opp.StageName == 'Admitted - Conditional')
-                        {
+                        if (Opp.StageName == 'Admitted - Conditional') {
                             possibleTars = mapOfTarsByRuleKey.get('International Admitted - Conditional');
-                        }
-                        else if (Opp.Type == 'Transfer')
-                        {
+                        } else if (Opp.Type == 'Transfer') {
                             possibleTars = mapOfTarsByRuleKey.get('International|Transfer|' + oppCountry);
 
                             /**
-                            * The oppCountry may be defined, but we don't have a Transfer TAR for it.
-                            * Use the default TAR for International Transfer
-                            */
-                            if (possibleTars == null || possibleTars.isEmpty())
-                            {
+                             * The oppCountry may be defined, but we don't have a Transfer TAR for it.
+                             * Use the default TAR for International Transfer
+                             */
+                            if (possibleTars == null || possibleTars.isEmpty()) {
                                 possibleTars = mapOfTarsByRuleKey.get('International|Transfer|');
                             }
-                        }
-                        else if (String.isNotEmpty(oppCountry))
-                        {
+                        } else if (String.isNotEmpty(oppCountry)) {
                             possibleTars = mapOfTarsByRuleKey.get('International|' + Opp.Type + '|' + oppCountry);
                         }
 
                         // Hit the default International manager
-                        if (possibleTars == null || possibleTars.isEmpty())
-                        {
+                        if (possibleTars == null || possibleTars.isEmpty()) {
                             possibleTars = mapOfTarsByRuleKey.get('International||');
                         }
 
                         tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
-                        
+
                         // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
-                                Opp.OwnerId = tar != null && Opp.Territory_Assignment_Last_Rule_Type__c != 'International'? tar.User__c : Opp.OwnerId;
+                            } else {
+                                Opp.OwnerId = tar != null &&
+                                    Opp.Territory_Assignment_Last_Rule_Type__c != 'International'
+                                    ? tar.User__c
+                                    : Opp.OwnerId;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = tar.Rule_Key__c;
 
@@ -478,17 +409,15 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // Last High School Attended
-                    if(thisContact.Last_HS_Attended__c != null 
-                        && thisContact.Last_HS_Attended__r.Territory_Manager__c != null 
-                        && Opp.Type == 'First Time Freshman')
-                    {
-                        if (thisContact.Last_HS_Attended__r.Territory_Manager__r.IsActive == false)
-                        {
+                    if (
+                        thisContact.Last_HS_Attended__c != null &&
+                        thisContact.Last_HS_Attended__r.Territory_Manager__c != null &&
+                        Opp.Type == 'First Time Freshman'
+                    ) {
+                        if (thisContact.Last_HS_Attended__r.Territory_Manager__r.IsActive == false) {
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                             inactiveUserFound = true;
-                        }
-                        else
-                        {
+                        } else {
                             Opp.OwnerId = thisContact.Last_HS_Attended__r.Territory_Manager__c;
                             Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended High School';
@@ -498,17 +427,15 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // Last College Attended
-                    if (thisContact.Last_College_Attended__c != null 
-                        && thisContact.Last_College_Attended__r.Territory_Manager__c != null 
-                        && Opp.Type == 'First Time Freshman')
-                    {
-                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false)
-                        {
+                    if (
+                        thisContact.Last_College_Attended__c != null &&
+                        thisContact.Last_College_Attended__r.Territory_Manager__c != null &&
+                        Opp.Type == 'First Time Freshman'
+                    ) {
+                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false) {
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                             inactiveUserFound = true;
-                        }
-                        else
-                        {
+                        } else {
                             Opp.OwnerId = thisContact.Last_College_Attended__r.Territory_Manager__c;
                             Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended College, Type First Time Freshman';
@@ -517,37 +444,32 @@ public without sharing class TerritoryAssignmentHelper
                         }
                     }
 
-                    if (thisContact.Last_College_Attended__c != null 
-                        && thisContact.Last_College_Attended__r.Territory_Manager__c != null 
-                        && Opp.Type == 'Readmission')
-                    {
-                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false)
-                        {
+                    if (
+                        thisContact.Last_College_Attended__c != null &&
+                        thisContact.Last_College_Attended__r.Territory_Manager__c != null &&
+                        Opp.Type == 'Readmission'
+                    ) {
+                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false) {
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                             inactiveUserFound = true;
-                        }
-                        else
-                        {
+                        } else {
                             Opp.OwnerId = thisContact.Last_College_Attended__r.Territory_Manager__c;
                             Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended College, Type Readmission';
 
                             continue;
                         }
-
                     }
 
-                    if (thisContact.Last_College_Attended__c != null 
-                        && thisContact.Last_College_Attended__r.Territory_Manager__c != null 
-                        && Opp.Type == 'Transfer')
-                    {
-                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false)
-                        {
+                    if (
+                        thisContact.Last_College_Attended__c != null &&
+                        thisContact.Last_College_Attended__r.Territory_Manager__c != null &&
+                        Opp.Type == 'Transfer'
+                    ) {
+                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false) {
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                             inactiveUserFound = true;
-                        }
-                        else
-                        {
+                        } else {
                             Opp.OwnerId = thisContact.Last_College_Attended__r.Territory_Manager__c;
                             Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                             Opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended College, Type Transfer';
@@ -557,19 +479,20 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // Geomarket Code
-                    if (thisContact.Geomarket_Code__c != null && Opp.Type == 'First Time Freshman')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Geomarket' + '|' + Opp.Type + '|' + thisContact.Geomarket_Code__c);
+                    if (thisContact.Geomarket_Code__c != null && Opp.Type == 'First Time Freshman') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Geomarket' +
+                            '|' +
+                            Opp.Type +
+                            '|' +
+                            thisContact.Geomarket_Code__c
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type First Time Freshman';
@@ -579,19 +502,20 @@ public without sharing class TerritoryAssignmentHelper
                         }
                     }
 
-                    if (thisContact.Geomarket_Code__c != null  && Opp.Type == 'Readmission')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Geomarket' + '|' + Opp.Type + '|' + thisContact.Geomarket_Code__c);
+                    if (thisContact.Geomarket_Code__c != null && Opp.Type == 'Readmission') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Geomarket' +
+                            '|' +
+                            Opp.Type +
+                            '|' +
+                            thisContact.Geomarket_Code__c
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type Readmission';
@@ -601,19 +525,20 @@ public without sharing class TerritoryAssignmentHelper
                         }
                     }
 
-                    if (thisContact.Geomarket_Code__c != null  && Opp.Type == 'Transfer')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Geomarket' + '|' + Opp.Type + '|' + thisContact.Geomarket_Code__c);
+                    if (thisContact.Geomarket_Code__c != null && Opp.Type == 'Transfer') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Geomarket' +
+                            '|' +
+                            Opp.Type +
+                            '|' +
+                            thisContact.Geomarket_Code__c
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type Transfer';
@@ -624,20 +549,21 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // State
-                    if (thisContact.MailingState != null)
-                    {
+                    if (thisContact.MailingState != null) {
                         String USState = thisContact.MailingState;
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('State' + '|' + Opp.Type + '|' +  USState);
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'State' +
+                            '|' +
+                            Opp.Type +
+                            '|' +
+                            USState
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'State, ' + USState + ', Type ' + Opp.Type;
@@ -648,19 +574,18 @@ public without sharing class TerritoryAssignmentHelper
                     }
 
                     // Default User
-                    if (Opp.Type == 'Graduate')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + Opp.Type);
+                    if (Opp.Type == 'Graduate') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Default User' +
+                            '|' +
+                            Opp.Type
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
@@ -668,20 +593,18 @@ public without sharing class TerritoryAssignmentHelper
                                 continue;
                             }
                         }
-                    }
-                    else if (Opp.Type == 'Law')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + Opp.Type);
+                    } else if (Opp.Type == 'Law') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Default User' +
+                            '|' +
+                            Opp.Type
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
@@ -689,23 +612,20 @@ public without sharing class TerritoryAssignmentHelper
                                 continue;
                             }
                         }
-                    }
-                    else if (Opp.Type == 'First Time Freshman')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + Opp.Type);
+                    } else if (Opp.Type == 'First Time Freshman') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Default User' +
+                            '|' +
+                            Opp.Type
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
-                                if (!inactiveUserFound) 
-                                {
+                                if (!inactiveUserFound) {
                                     Opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
                                 }
 
@@ -714,20 +634,18 @@ public without sharing class TerritoryAssignmentHelper
                                 continue;
                             }
                         }
-                    }
-                    else if (Opp.Type == 'Transfer')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + Opp.Type);
+                    } else if (Opp.Type == 'Transfer') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Default User' +
+                            '|' +
+                            Opp.Type
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
@@ -735,20 +653,18 @@ public without sharing class TerritoryAssignmentHelper
                                 continue;
                             }
                         }
-                    }
-                    else if (Opp.Type == 'Non-Degree')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + Opp.Type);
+                    } else if (Opp.Type == 'Non-Degree') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Default User' +
+                            '|' +
+                            Opp.Type
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
@@ -756,20 +672,18 @@ public without sharing class TerritoryAssignmentHelper
                                 continue;
                             }
                         }
-                    }
-                    else if (Opp.Type == 'Readmission')
-                    {
-                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + Opp.Type);
+                    } else if (Opp.Type == 'Readmission') {
+                        Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                            'Default User' +
+                            '|' +
+                            Opp.Type
+                        );
 
-                        if (tar != null)
-                        {
-                            if (tar.User__r.IsActive == false)
-                            {
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
                                 inactiveUserFound = true;
-                            }
-                            else
-                            {
+                            } else {
                                 Opp.OwnerId = tar.User__c;
                                 Opp.Territory_Assignment_Last_Run__c = Datetime.Now();
                                 Opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
@@ -786,205 +700,192 @@ public without sharing class TerritoryAssignmentHelper
     }
 
     /**
-    * Previous Education
-    */
-    public void PreviousEducationTA()
-    {
-        if (previousEducationTADone)
-        {
+     * Previous Education
+     */
+    public void PreviousEducationTA() {
+        if (previousEducationTADone) {
             return;
         }
         previousEducationTADone = true;
 
         List<Previous_Education__c> peTriggerList = new List<Previous_Education__c>();
-		Set<Id> contactIdSet = new Set<Id>();
-               
-        if (Trigger.IsDelete)
-        {
-            peTriggerList = (List<Previous_Education__c>)Trigger.old;
+        Set<Id> contactIdSet = new Set<Id>();
+
+        if (Trigger.IsDelete) {
+            peTriggerList = (List<Previous_Education__c>) Trigger.old;
+        } else {
+            peTriggerList = (List<Previous_Education__c>) Trigger.new;
         }
-        else
-        {
-            peTriggerList = (List<Previous_Education__c>)Trigger.new;
-        }
-        
-        for (Previous_Education__c PE: peTriggerList)
-        {
+
+        for (Previous_Education__c PE : peTriggerList) {
             contactIdSet.add(PE.Contact__c);
         }
-        
-        if (contactIdSet.size() > 0 
-            && (Trigger.IsInsert || Trigger.isUpdate || Trigger.isDelete))
-        {
-            List<Opportunity> opp = new List<Opportunity>([
-                SELECT Id, Contact__c, Account.Name, Account.Institution_Type__c, Account.Territory_Manager__c, Type, OwnerId
-                FROM Opportunity
-                WHERE Contact__c IN :contactIdSet
-            ]);
-            
+
+        if (contactIdSet.size() > 0 && (Trigger.IsInsert || Trigger.isUpdate || Trigger.isDelete)) {
+            List<Opportunity> opp = new List<Opportunity>(
+                [
+                    SELECT
+                        Id,
+                        Contact__c,
+                        Account.Name,
+                        Account.Institution_Type__c,
+                        Account.Territory_Manager__c,
+                        Type,
+                        OwnerId
+                    FROM Opportunity
+                    WHERE Contact__c IN :contactIdSet
+                ]
+            );
+
             List<Opportunity> oppToUpdate = new List<Opportunity>();
-            
-            for (Opportunity o : opp)
-            {
+
+            for (Opportunity o : opp) {
                 o.Territory_Assignment_Required__c = true;
                 oppToUpdate.add(o);
             }
-            
-            if (oppToUpdate.size() > 0)
-            {
+
+            if (oppToUpdate.size() > 0) {
                 updateOpportunityList(oppToUpdate);
             }
         }
     }
 
     /**
-    * Lead
-    */
-    public void LeadTA()
-    {
-        if (leadTADone)
-        {
+     * Lead
+     */
+    public void LeadTA() {
+        if (leadTADone) {
             return;
         }
 
         leadTADone = true;
 
         /**
-        * Start lead geomarket code evaluation
-        */
+         * Start lead geomarket code evaluation
+         */
         Set<Id> LeadInstitutionSet = new Set<Id>();
         Set<String> ZipsInTrigger = new Set<String>();
         Map<String, String> KVMap = new Map<String, String>();
         Map<Id, Account> institutionMap;
 
-        for (Lead l: (List<Lead>)Trigger.new)
-        {
+        for (Lead l : (List<Lead>) Trigger.new) {
             //Ensures Zipcode is five digits or less
             string shortZip = shortenZipCode(l.postalCode);
             ZipsInTrigger.add(shortZip);
-            if (l.Last_Institution_Attended__c != null)
-            {
+            if (l.Last_Institution_Attended__c != null) {
                 leadInstitutionSet.add(l.Last_Institution_Attended__c);
             }
         }
 
-        if(leadInstitutionSet.size() > 0)
-        {
-            institutionMap = new Map<Id, Account>([
-                SELECT Id, Geomarket_Code__c, Institution_Type__c, Territory_Manager__c, Territory_Manager__r.IsActive
-                FROM Account
-                WHERE Id IN :leadInstitutionSet
-            ]);
+        if (leadInstitutionSet.size() > 0) {
+            institutionMap = new Map<Id, Account>(
+                [
+                    SELECT
+                        Id,
+                        Geomarket_Code__c,
+                        Institution_Type__c,
+                        Territory_Manager__c,
+                        Territory_Manager__r.IsActive
+                    FROM Account
+                    WHERE Id IN :leadInstitutionSet
+                ]
+            );
         }
 
         LIST<Key_Value__c> KVList = [
             SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c
             FROM Key_Value__c
-            WHERE RecordType.DeveloperName = 'Geomarket_Code_Map'
-            AND Geomarket_ZIP__c
-            IN :ZipsInTrigger
+            WHERE RecordType.DeveloperName = 'Geomarket_Code_Map' AND Geomarket_ZIP__c IN :ZipsInTrigger
         ];
 
-        for (Key_Value__c K :KVList)
-        {
-            KVMap.put(K.Geomarket_ZIP__c,K.Geomarket_Code__c);
+        for (Key_Value__c K : KVList) {
+            KVMap.put(K.Geomarket_ZIP__c, K.Geomarket_Code__c);
         }
 
-        for (Lead leadGeo :(List<Lead>)Trigger.New)
-        {
+        for (Lead leadGeo : (List<Lead>) Trigger.New) {
             //Ensure zip code is five characters or less
             String shortZip = shortenZipCode(leadGeo.PostalCode);
             // TODO: Also, is institution type relevant for the Lead type?  Need clarification on this condition
-            if (leadGeo.Last_Institution_Attended__c != null 
-                && institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c != null)
-            {
+            if (
+                leadGeo.Last_Institution_Attended__c != null &&
+                institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c != null
+            ) {
                 LeadGeo.Geomarket_Code__c = institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c;
-            }
-            else if (shortZip != null && KVMap.containsKey(shortZip))
-            {
+            } else if (shortZip != null && KVMap.containsKey(shortZip)) {
                 leadGeo.Geomarket_Code__c = KVMap.get(shortZip);
             }
         }
 
         /**
-        * Start territory assignment evaluation
-        */
+         * Start territory assignment evaluation
+         */
 
         // Build map with Territory_Assignment_Rule__c Rule_Key__c values
-        Map<String,Territory_Assignment_Rule__c> TerritoryAssignmentRuleMap = new Map<String,Territory_Assignment_Rule__c>();
+        Map<String, Territory_Assignment_Rule__c> TerritoryAssignmentRuleMap = new Map<String, Territory_Assignment_Rule__c>();
 
-        List<Territory_Assignment_Rule__c> TerritoryAssignmentRuleList =[
-            SELECT Id,Rule_Key__c,User__c,User__r.IsActive
+        List<Territory_Assignment_Rule__c> TerritoryAssignmentRuleList = [
+            SELECT Id, Rule_Key__c, User__c, User__r.IsActive
             FROM Territory_Assignment_Rule__c
         ];
 
-        for (Territory_Assignment_Rule__c TARM : TerritoryAssignmentRuleList)
-        {
-            TerritoryAssignmentRuleMap.put(TARM.Rule_Key__c,TARM);
+        for (Territory_Assignment_Rule__c TARM : TerritoryAssignmentRuleList) {
+            TerritoryAssignmentRuleMap.put(TARM.Rule_Key__c, TARM);
         }
 
         // Force all new leads to be evaluated for territory assignment
-        if (Trigger.isInsert)
-        {
-            for (Lead l: (List<Lead>)Trigger.New)
-            {
+        if (Trigger.isInsert) {
+            for (Lead l : (List<Lead>) Trigger.New) {
                 l.Territory_Assignment_Required__c = true;
             }
         }
 
         // Only evaluate territory assignment for leads where a field changes that could impact an assignment
-        if (Trigger.isUpdate)
-        {
-            Map<ID, Lead> LeadOldMap = (Map<ID, Lead>)Trigger.oldMap;
+        if (Trigger.isUpdate) {
+            Map<ID, Lead> LeadOldMap = (Map<ID, Lead>) Trigger.oldMap;
 
-            for (Lead l: (List<Lead>)Trigger.New)
-            {
+            for (Lead l : (List<Lead>) Trigger.New) {
                 // Fields to check
                 Boolean taRequired = l.Territory_Assignment_Required__c = true;
                 Boolean typeChanged = LeadOldMap.get(l.Id).Type__c != l.Type__c;
                 Boolean geoMarketChanged = LeadOldMap.get(l.Id).Geomarket_Code__c != l.Geomarket_Code__c;
                 Boolean stateChanged = LeadOldMap.get(l.Id).State != l.State;
-                Boolean lastInstitutionChanged = LeadOldMap.get(l.Id).Last_Institution_Attended__c != l.Last_Institution_Attended__c;
-                Boolean interStatusChanged = LeadOldMap.get(l.Id).International_Student__c != l.International_Student__c;
-                Boolean natScholarPotentialChanged = LeadOldMap.get(l.Id).Potential_National_Scholar__c != l.Potential_National_Scholar__c;
+                Boolean lastInstitutionChanged =
+                    LeadOldMap.get(l.Id).Last_Institution_Attended__c != l.Last_Institution_Attended__c;
+                Boolean interStatusChanged =
+                    LeadOldMap.get(l.Id).International_Student__c != l.International_Student__c;
+                Boolean natScholarPotentialChanged =
+                    LeadOldMap.get(l.Id).Potential_National_Scholar__c != l.Potential_National_Scholar__c;
 
-                if(taRequired 
-                    || typeChanged 
-                    || geoMarketChanged 
-                    || stateChanged 
-                    || lastInstitutionChanged 
-                    || interStatusChanged 
-                    || natScholarPotentialChanged)
-                {
+                if (
+                    taRequired ||
+                    typeChanged ||
+                    geoMarketChanged ||
+                    stateChanged ||
+                    lastInstitutionChanged ||
+                    interStatusChanged ||
+                    natScholarPotentialChanged
+                ) {
                     l.Territory_Assignment_Required__c = true;
                 }
             }
         }
 
-
         // Get all of the TARs keyed by Rule Key. Used for international assignments.
         Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentRuleService.mapTerritoryAssignmentRulesToRuleKey();
 
-        for (Lead l: (List<Lead>)Trigger.new)
-        {
-            if (l.Territory_Assignment_Required__c)
-            {
+        for (Lead l : (List<Lead>) Trigger.new) {
+            if (l.Territory_Assignment_Required__c) {
                 l.Territory_Assignment_Required__c = false;
                 l.Territory_Assignment_Last_Run__c = Datetime.Now();
 
                 // Freshman National Scholar
-                if (l.Type__c == 'First Time Freshman' && l.Potential_National_Scholar__c)
-                {
+                if (l.Type__c == 'First Time Freshman' && l.Potential_National_Scholar__c) {
                     Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Freshman Scholar');
 
-                    if (tar != null)
-                    {
-                        if (tar.User__r.IsActive == false)
-                        {
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
                             l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
-                        }
-                        else
-                        {
+                        } else {
                             l.OwnerId = tar.User__c;
                             l.Territory_Assignment_Last_Rule_Type__c = 'Freshman Scholar';
 
@@ -994,8 +895,7 @@ public without sharing class TerritoryAssignmentHelper
                 }
 
                 // International
-                if (l.International_Student__c)
-                {
+                if (l.International_Student__c) {
                     List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
                     Territory_Assignment_Rule__c tar = null;
                     Decimal leadAssignNumber = l.Lead_Assignment_Number__c;
@@ -1003,72 +903,58 @@ public without sharing class TerritoryAssignmentHelper
                     String leadType = l.Type__c;
 
                     // Use the PSCountry mapping to get the correct integration value.
-                    if (String.isNotEmpty(leadCountry))
-                    {
+                    if (String.isNotEmpty(leadCountry)) {
                         leadCountry = getSFCountry(leadCountry);
                     }
 
                     // Being filter hierarchy
-                    if (leadType == 'First Time Freshman' 
-                        || leadType == 'Transfer' 
-                        || leadType == 'Readmission')
-                    {
+                    if (leadType == 'First Time Freshman' || leadType == 'Transfer' || leadType == 'Readmission') {
                         possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|' + leadCountry);
 
                         /**
-                        * The lead's mailing country may be defined, but we don't have a TAR for 
-                        * it. Use the default TAR for this lead type instead.
-                        */
-                        if (possibleTars == null || possibleTars.isEmpty())
-                        {
+                         * The lead's mailing country may be defined, but we don't have a TAR for
+                         * it. Use the default TAR for this lead type instead.
+                         */
+                        if (possibleTars == null || possibleTars.isEmpty()) {
                             possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|');
                         }
                     }
 
                     // Use the default International manager
-                    if (possibleTars == null || possibleTars.isEmpty())
-                    {
+                    if (possibleTars == null || possibleTars.isEmpty()) {
                         possibleTars = mapOfTarsByRuleKey.get('International||');
                     }
 
                     tar = TerritoryAssignmentRuleService.getTerritoryAssignmentRule(possibleTars, leadAssignNumber);
 
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
-                    if (tar != null)
-                    {
-                        if (tar.User__r.IsActive)
-                        {
+                    if (tar != null) {
+                        if (tar.User__r.IsActive) {
                             l.OwnerId = tar.User__c;
                             l.Territory_Assignment_Last_Rule_Type__c = tar.Rule_Key__c;
 
                             continue;
-                        }
-                        else
-                        {
+                        } else {
                             l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
-
                         }
                     }
                 }
 
                 // Last Institution Attended
-                if (l.Last_Institution_Attended__c != null)
-                {
-                    if ((l.Type__c == 'First Time Freshman'
-                        && institutionMap.containsKey(l.Last_Institution_Attended__c)
-                        && institutionMap.get(l.Last_Institution_Attended__c).Institution_Type__c == 'HS'
-                        && institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__c != null)
-                        ||
-                       ((l.Type__c == 'Transfer' || l.Type__c == 'Readmission')
-                        && institutionMap.get(l.Last_Institution_Attended__c).Institution_Type__c != 'HS'
-                        && institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__c != null))
-                    {
-                        if (institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__r.IsActive == false)
-                        {
+                if (l.Last_Institution_Attended__c != null) {
+                    if (
+                        (l.Type__c == 'First Time Freshman' &&
+                        institutionMap.containsKey(l.Last_Institution_Attended__c) &&
+                        institutionMap.get(l.Last_Institution_Attended__c).Institution_Type__c == 'HS' &&
+                        institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__c != null) ||
+                        ((l.Type__c == 'Transfer' ||
+                        l.Type__c == 'Readmission') &&
+                        institutionMap.get(l.Last_Institution_Attended__c).Institution_Type__c != 'HS' &&
+                        institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__c != null)
+                    ) {
+                        if (institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__r.IsActive == false) {
                             l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
-                        }
-                        else
-                        {
+                        } else {
                             l.OwnerId = institutionMap.get(l.Last_Institution_Attended__c).Territory_Manager__c;
                             l.Territory_Assignment_Last_Rule_Type__c = 'Last Institution Attended';
 
@@ -1078,19 +964,22 @@ public without sharing class TerritoryAssignmentHelper
                 }
 
                 // GeoMarket
-                if (l.Geomarket_Code__c != null 
-                    && TerritoryAssignmentRuleMap.containsKey('Geomarket' + '|' + l.Type__c + '|' + l.Geomarket_Code__c ))
-                {
-                    Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Geomarket' + '|' + l.Type__c + '|' + l.Geomarket_Code__c);
+                if (
+                    l.Geomarket_Code__c != null &&
+                    TerritoryAssignmentRuleMap.containsKey('Geomarket' + '|' + l.Type__c + '|' + l.Geomarket_Code__c)
+                ) {
+                    Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                        'Geomarket' +
+                        '|' +
+                        l.Type__c +
+                        '|' +
+                        l.Geomarket_Code__c
+                    );
 
-                    if (tar != null)
-                    {
-                        if (tar.User__r.IsActive == false)
-                        {
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
                             l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
-                        }
-                        else
-                        {
+                        } else {
                             l.OwnerId = tar.User__c;
                             l.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type ' + l.Type__c;
 
@@ -1100,19 +989,21 @@ public without sharing class TerritoryAssignmentHelper
                 }
 
                 // Mailing State
-                if (l.State != null 
-                    && TerritoryAssignmentRuleMap.containsKey('State' + '|' + l.Type__c + '|' + l.State))
-                {
-                    Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('State' + '|' + l.Type__c + '|' + l.State );
+                if (
+                    l.State != null && TerritoryAssignmentRuleMap.containsKey('State' + '|' + l.Type__c + '|' + l.State)
+                ) {
+                    Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
+                        'State' +
+                        '|' +
+                        l.Type__c +
+                        '|' +
+                        l.State
+                    );
 
-                    if (tar != null)
-                    {
-                        if (tar.User__r.IsActive == false)
-                        {
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
                             l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
-                        }
-                        else
-                        {
+                        } else {
                             l.OwnerId = tar.User__c;
                             l.Territory_Assignment_Last_Rule_Type__c = 'State, Type ' + l.Type__c;
 
@@ -1122,17 +1013,12 @@ public without sharing class TerritoryAssignmentHelper
                 }
 
                 // Default User
-                if (TerritoryAssignmentRuleMap.containsKey('Default User' + '|' + l.Type__c))
-                {
+                if (TerritoryAssignmentRuleMap.containsKey('Default User' + '|' + l.Type__c)) {
                     Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get('Default User' + '|' + l.Type__c);
-                    if (tar != null)
-                    {
-                        if (tar.User__r.IsActive == false)
-                        {
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
                             l.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
-                        }
-                        else
-                        {
+                        } else {
                             l.OwnerId = tar.User__c;
                             l.Territory_Assignment_Last_Rule_Type__c = 'Default User';
 
@@ -1145,23 +1031,18 @@ public without sharing class TerritoryAssignmentHelper
     }
 
     /**
-    * Territory Assignment Rule
-    */
-    public void TerritoryAssignmentRuleTA()
-    {
-        if (territoryAssignmentRuleTADone)
-        {
+     * Territory Assignment Rule
+     */
+    public void TerritoryAssignmentRuleTA() {
+        if (territoryAssignmentRuleTADone) {
             return;
         }
 
-        if (Trigger.isBefore && Trigger.isUpdate)
-        {
-            Map<ID, Territory_Assignment_Rule__c> tarOldMap = (Map<ID, Territory_Assignment_Rule__c>)Trigger.oldMap;
+        if (Trigger.isBefore && Trigger.isUpdate) {
+            Map<ID, Territory_Assignment_Rule__c> tarOldMap = (Map<ID, Territory_Assignment_Rule__c>) Trigger.oldMap;
 
-            for (Territory_Assignment_Rule__c tar: (List<Territory_Assignment_Rule__c>)Trigger.New)
-            {
-                if (tar.User__c != null && tarOldMap.get(tar.Id).User__c != tar.User__c)
-                {
+            for (Territory_Assignment_Rule__c tar : (List<Territory_Assignment_Rule__c>) Trigger.New) {
+                if (tar.User__c != null && tarOldMap.get(tar.Id).User__c != tar.User__c) {
                     tar.Defer_Territory_Assignment__c = true;
                     tar.Previous_User_ID__c = tarOldMap.get(tar.Id).User__c;
                 }
@@ -1170,61 +1051,54 @@ public without sharing class TerritoryAssignmentHelper
 
         territoryAssignmentRuleTADone = true;
     }
-    
-    public static void updateOpportunityList(List<Opportunity> oppList){
+
+    public static void updateOpportunityList(List<Opportunity> oppList) {
         List<String> vars = new List<String>();
-        try{
+        try {
             update oppList;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertListToJSON('oppList', oppList));
             ErrorLogger.log(e, vars, debug);
         }
     }
 
-    public static void updateContactList(List<Contact> conList){
+    public static void updateContactList(List<Contact> conList) {
         List<String> vars = new List<String>();
-        try{
+        try {
             update conList;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertListToJSON('conList', conList));
             ErrorLogger.log(e, vars, debug);
         }
     }
-    
+
     /**
-    * Helper method to get the correct Country text
-    */
-    private String getSFCountry(String country)
-    {
-        if(psCountryMap == null)
-        {
-            psCountryMap = PSCountryMapService.mapPSCountryToIntegrationValue(); 
+     * Helper method to get the correct Country text
+     */
+    private String getSFCountry(String country) {
+        if (psCountryMap == null) {
+            psCountryMap = PSCountryMapService.mapPSCountryToIntegrationValue();
         }
         List<PS_Country_Map__c> possibleCountries = psCountryMap.get(country);
 
-        if(possibleCountries != null && possibleCountries.size() > 0)
-        {
+        if (possibleCountries != null && possibleCountries.size() > 0) {
             PS_Country_Map__c psCountry = possibleCountries.get(0);
             String sfCountry = psCountry.Country_Name__c;
             return sfCountry;
-        }
-        else
-        {
+        } else {
             return '';
         }
     }
-    
+
     /*
      * Ensures zip code is five characters or less
      * @param Zip code
      * @return formatted Zip code
      * */
-    private String shortenZipCode(String zip){
-        if(zip != null){
+    private String shortenZipCode(String zip) {
+        if (zip != null) {
             zip = zip.left(5);
         }
         return zip;
-    } 
+    }
 }

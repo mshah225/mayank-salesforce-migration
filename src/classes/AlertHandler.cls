@@ -1,13 +1,13 @@
 public class AlertHandler {
-    public List<customAlert> alerts {get; set;}
-     
+    public List<customAlert> alerts { get; set; }
+
     /**
      * Create a new alert handler and instantiate the alerts list
      */
     public alertHandler() {
         clear(); // Use clear to save on character count limits
     }
-     
+
     /**
      * Add a new alert to the alerts list
      *
@@ -22,7 +22,7 @@ public class AlertHandler {
             this.alerts.add(a);
         }
     }
-     
+
     /**
      * Add a new alert to the alerts list
      *
@@ -34,12 +34,9 @@ public class AlertHandler {
      * @param String The message to be displayed
      */
     public void newAlert(String severity, String message) {
-        newAlert(new customAlert(
-            severity,
-            message
-        ));
+        newAlert(new customAlert(severity, message));
     }
-     
+
     /**
      * Empty the list of any existing alerts.
      *
@@ -50,7 +47,7 @@ public class AlertHandler {
     public void clear() {
         this.alerts = new List<customAlert>();
     }
-     
+
     /**
      * Get a list of only fatal alerts.
      *
@@ -58,16 +55,16 @@ public class AlertHandler {
      */
     public List<customAlert> getFatal() {
         List<customAlert> result = new List<customAlert>();
-         
+
         for (customAlert ca : alerts) {
             if (ca.severity == customAlert.FATAL) {
                 result.add(ca);
             }
         }
-         
+
         return result;
     }
-     
+
     /**
      * Get a list of only info alerts.
      *
@@ -75,16 +72,16 @@ public class AlertHandler {
      */
     public List<customAlert> getInfo() {
         List<customAlert> result = new List<customAlert>();
-         
+
         for (customAlert ca : alerts) {
             if (ca.severity == customAlert.INFO) {
                 result.add(ca);
             }
         }
-         
+
         return result;
     }
-     
+
     /**
      * Get a list of only Warning alerts.
      *
@@ -92,16 +89,16 @@ public class AlertHandler {
      */
     public List<customAlert> getWarning() {
         List<customAlert> result = new List<customAlert>();
-         
+
         for (customAlert ca : alerts) {
             if (ca.severity == customAlert.WARNING) {
                 result.add(ca);
             }
         }
-         
+
         return result;
     }
-     
+
     /**
      * Get a list of only Confirm alerts.
      *
@@ -109,16 +106,16 @@ public class AlertHandler {
      */
     public List<customAlert> getConfirm() {
         List<customAlert> result = new List<customAlert>();
-         
+
         for (customAlert ca : alerts) {
             if (ca.severity == customAlert.CONFIRM) {
                 result.add(ca);
             }
         }
-         
+
         return result;
     }
-     
+
     /**
      * Check if the alert is a duplicate of an existing alert
      *
@@ -135,7 +132,7 @@ public class AlertHandler {
                 return true;
             }
         }
-         
+
         return false;
     }
 }

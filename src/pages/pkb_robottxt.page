@@ -1,5 +1,3 @@
 <apex:page contentType="text/pain">
-User-agent: *
-Disallow:
-Sitemap: {!$Site.CurrentSiteUrl}pkb_siteMapIndex
+    User-agent: * Disallow: Sitemap: {!$Site.CurrentSiteUrl}pkb_siteMapIndex
 </apex:page>

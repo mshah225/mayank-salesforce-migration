@@ -160,9 +160,7 @@
                     theCase.Status = component.get('v.CaseStatus');
 
                     if (component.get('v.CaseStatus') === 'Closed: Administratively Resolved (No Outreach)') {
-                        theCase.Reason_Administratively_Closed__c = component.get(
-                            'v.ReasonsAdministrativelyClosed'
-                        );
+                        theCase.Reason_Administratively_Closed__c = component.get('v.ReasonsAdministrativelyClosed');
                     }
 
                     if (component.find('recommendedActions').get('v.value')) {

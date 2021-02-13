@@ -1,9 +1,7 @@
 public abstract class AbstractTriggerHandler {
-    
     public AbstractTriggerHandler() {
         System.TriggerOperation triggerEvent = Trigger.operationType;
         switch on triggerEvent {
-        
             when BEFORE_INSERT {
                 beforeInsert();
             }
@@ -23,16 +21,23 @@ public abstract class AbstractTriggerHandler {
                 afterDelete();
             }
             when AFTER_UNDELETE {
-                afterUndelete();   
+                afterUndelete();
             }
         }
     }
-    
-    public virtual void beforeInsert() {}
-    public virtual void afterInsert() {}
-    public virtual void beforeUpdate() {}
-    public virtual void afterUpdate() {}
-    public virtual void beforeDelete() {}
-    public virtual void afterDelete() {}
-    public virtual void afterUndelete() {}
+
+    public virtual void beforeInsert() {
+    }
+    public virtual void afterInsert() {
+    }
+    public virtual void beforeUpdate() {
+    }
+    public virtual void afterUpdate() {
+    }
+    public virtual void beforeDelete() {
+    }
+    public virtual void afterDelete() {
+    }
+    public virtual void afterUndelete() {
+    }
 }

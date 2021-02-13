@@ -1,6 +1,5 @@
 @isTest
 private class JiraWebserviceCalloutTest {
-    
     @isTest
     private static void createNewIssue() {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
@@ -9,7 +8,7 @@ private class JiraWebserviceCalloutTest {
         Test.stopTest();
         System.assertEquals('TEST', key);
     }
-    
+
     @isTest
     private static void addWatchers() {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
@@ -19,7 +18,7 @@ private class JiraWebserviceCalloutTest {
         List<Case> allCases = [SELECT Id FROM Case];
         System.assert(allCases.isEmpty());
     }
-    
+
     @isTest
     private static void addComment() {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
@@ -29,7 +28,7 @@ private class JiraWebserviceCalloutTest {
         List<Case> allCases = [SELECT Id FROM Case];
         System.assert(allCases.isEmpty());
     }
-    
+
     @isTest
     private static void updateStatus() {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
@@ -39,15 +38,15 @@ private class JiraWebserviceCalloutTest {
         List<Case> allCases = [SELECT Id FROM Case];
         System.assert(allCases.isEmpty());
     }
-    
+
     @isTest
     private static void getIssues() {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
         Test.startTest();
         String issues = JIRAWebserviceCallout.getIssues('asurite');
         Test.stopTest();
-        Map<String, Object> mapOfIssues = (Map<String, Object>)JSON.deserializeUntyped(issues);
-        Integer numberOfIssues = (Integer)mapOfIssues.get('total');
+        Map<String, Object> mapOfIssues = (Map<String, Object>) JSON.deserializeUntyped(issues);
+        Integer numberOfIssues = (Integer) mapOfIssues.get('total');
         System.assertEquals(5, numberOfIssues);
     }
 
@@ -57,8 +56,8 @@ private class JiraWebserviceCalloutTest {
         Test.startTest();
         String issues = JIRAWebserviceCallout.getWatchedIssues('asurite');
         Test.stopTest();
-        Map<String, Object> mapOfIssues = (Map<String, Object>)JSON.deserializeUntyped(issues);
-        Integer numberOfIssues = (Integer)mapOfIssues.get('total');
+        Map<String, Object> mapOfIssues = (Map<String, Object>) JSON.deserializeUntyped(issues);
+        Integer numberOfIssues = (Integer) mapOfIssues.get('total');
         System.assertEquals(5, numberOfIssues);
     }
 }

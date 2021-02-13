@@ -17,10 +17,17 @@
             }
         </style>
         <!--[if IE 9]>
-        <style type="text/css">
-            #asu_universal_nav ul ul{filter:none;box-shadow:0 6px 6px 0 #999}#asu_universal_nav>ul>li.parent:hover>a{filter:none;box-shadow:6px 0 6px -6px #999,-6px 0 6px -6px #999}
-        </style>
-        <![endif]-->
+                <style type="text/css">
+                    #asu_universal_nav ul ul {
+                        filter: none;
+                        box-shadow: 0 6px 6px 0 #999;
+                    }
+                    #asu_universal_nav > ul > li.parent:hover > a {
+                        filter: none;
+                        box-shadow: 6px 0 6px -6px #999, -6px 0 6px -6px #999;
+                    }
+                </style>
+            <![endif]-->
         <script>
             var ASUHeader = ASUHeader || {};
             ASUHeader.browser = false;
@@ -28,14 +35,30 @@
             ASUHeader.site_menu = ASUHeader.site_menu || {};
             ASUHeader.site_menu.json = '[{"title":"Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu"}]';
 
-            ASUHeader.site_menu.site_name = "Student Service Center";
+            ASUHeader.site_menu.site_name = 'Student Service Center';
             ASUHeader.user_signedin = true;
             ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
         </script>
-        <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
+        <!--[if IE 5
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
+        <!--[if IE 6
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
+        <!--[if IE 7
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
+        <!--[if IE 8
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
 
         <style>
             .panel {
@@ -64,9 +87,7 @@
             </div>
             <div class="closed" id="asu_mobile_menu">
                 <div id="asu_nav_wrapper">
-                    <h2 class="hidden">
-                        Sign In / Sign Out
-                    </h2>
+                    <h2 class="hidden">Sign In / Sign Out</h2>
                     <ul id="asu_login_module">
                         <li>{!$User.FirstName}</li>
                         <li>
@@ -74,9 +95,7 @@
                         </li>
                     </ul>
                     <div id="asu_nav_menu">
-                        <h2 class="hidden">
-                            Menu
-                        </h2>
+                        <h2 class="hidden">Menu</h2>
                         <div id="asu_universal_nav">
                             <ul>
                                 <li>
@@ -184,16 +203,14 @@
                     </div>
                 </div>
                 <div id="asu_search">
-                    <h2 class="hidden">
-                        Search
-                    </h2>
+                    <h2 class="hidden">Search</h2>
                     <div id="asu_search_module"></div>
                 </div>
             </div>
         </div>
 
         <script type="text/javascript">
-        < !--//--><![CDATA[//><!--
+                < !--//--><![CDATA[//><!--
                 ASUHeader.default_search_text = "Search ASU";
             ASUHeader.default_search_alttext = "Search ASU";
             if (typeof ASUHeader.signin_callback_url == "undefined") {
@@ -214,9 +231,9 @@
             if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
                 document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className + " chrome";
             }
-        //--><!]]>
+                //--><!]]>
         </script>
-        <div style="clear:both;"></div>
+        <div style="clear: both"></div>
         <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
 
         <div id="myasu-header-seo" class="myasu-cont">
@@ -227,7 +244,7 @@
         <header class="navbar navbar-default" role="banner">
             <div id="myasu-tabs" class="myasu-cont">
                 <div class="navbar-links">
-                    <span class='tab'>
+                    <span class="tab">
                         <a href="{!$Label.MyASU_Help_Base_URL}/myasu" class="tracking">
                             <span class="fa fa-home" title="Home"></span>
                         </a>
@@ -236,7 +253,7 @@
                     <apex:outputPanel rendered="{!viewingAs}">
                         <p class="username pull-right">
                             {!firstName} {!lastName}
-                            <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+                            <apex:outputPanel rendered="{!viewingAs}" style="font-size: 9pt">
                                 &nbsp;&nbsp;({!emplId})
                                 <br />
                                 <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
@@ -259,28 +276,30 @@
                     <li>
                         <a href="/studentSC">Back</a>
                     </li>
-                    <li class="active" style="font-size:10pt;">Feedback</li>
+                    <li class="active" style="font-size: 10pt">Feedback</li>
                 </ol>
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <apex:form id="feedbackForm" style="max-width:600px;">
+                        <apex:form id="feedbackForm" style="max-width: 600px">
                             <h3>
-                                <b style="font-weight:400">My ASU Service Center Feedback</b>
+                                <b style="font-weight: 400">My ASU Service Center Feedback</b>
                             </h3>
                             <br />
                             <br />
 
-                            <p>ASU values your experience and wants to ensure that you receive quality service. The My ASU Service
-                                Center is your personalized online resource for reporting issues and getting help. How can
-                                ASU improve the way we provide support through the Service Center?</p>
+                            <p>
+                                ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized
+                                online resource for reporting issues and getting help. How can ASU improve the way we provide
+                                support through the Service Center?
+                            </p>
                             <br />
 
                             <apex:outputText value="Feedback Comments:" />
                             <br />
-                            <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width:100%;border:solid 1px #999;border-radius:2px;"
+                            <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width: 100%; border: solid 1px #999; border-radius: 2px"
                                 rows="5" cols="120" required="true" />
                             <br />
-                            <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top:15px;width:45px;"
+                            <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top: 15px; width: 45px"
                             />
                         </apex:form>
                     </div>
@@ -320,19 +339,18 @@
             viewAsLinks();
 
             function viewAsLinks() {
-                var masqCookie = "{!masqScopeIdCookie}";
-                var viewingAs = "{!viewingAs}";
-                if (masqCookie != "" && viewingAs == "true") {
-                    $("a").each(function () {
+                var masqCookie = '{!masqScopeIdCookie}';
+                var viewingAs = '{!viewingAs}';
+                if (masqCookie != '' && viewingAs == 'true') {
+                    $('a').each(function () {
                         var href = this.href;
-                        if (href.indexOf("force") > -1) {
-                            if (href.indexOf("?") != -1) {
-                                href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                        if (href.indexOf('force') > -1) {
+                            if (href.indexOf('?') != -1) {
+                                href = href + '&masqScopeIdCookie={!masqScopeIdCookie}';
+                            } else {
+                                href = href + '?masqScopeIdCookie={!masqScopeIdCookie}';
                             }
-                            else {
-                                href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
-                            }
-                            $(this).attr("href", href);
+                            $(this).attr('href', href);
                         }
                     });
                 }

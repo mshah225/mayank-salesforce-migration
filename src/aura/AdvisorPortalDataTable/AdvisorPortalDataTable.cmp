@@ -19,7 +19,7 @@
     <aura:attribute name="RecordOffsetRangeTo" type="Integer" description="Last record offset in range" />
     <aura:attribute name="Total" type="Integer" description="Total number of records" />
     <aura:handler name="change" value="{!v.Contacts}" action="{!c.resetViews}" />
-    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
 
     <aura:registerEvent name="refreshAdvisorPortalContacts" type="c:RefreshAdvisorPortalContacts" />
 
@@ -104,8 +104,16 @@
             </div>
         </div>
 
-        <div style="padding:20px; background-color: rgb(250, 250, 249); padding-top:4px; padding-bottom:4px; margin-bottom:10px">
-            <nav role="navigation" style="position:relative" aria-label="Contact-Cases Navigation">
+        <div
+            style="
+                padding: 20px;
+                background-color: rgb(250, 250, 249);
+                padding-top: 4px;
+                padding-bottom: 4px;
+                margin-bottom: 10px;
+            "
+        >
+            <nav role="navigation" style="position: relative" aria-label="Contact-Cases Navigation">
                 <div class="navigationSide navigationLeft">
                     <lightning:button
                         disabled="{!v.Page == 1}"
@@ -123,7 +131,8 @@
                     />
                 </div>
                 <div class="navigationCenter">
-                    <span>Showing {!v.RecordOffsetRangeFrom} - {!v.RecordOffsetRangeTo} of {!v.Total} Contacts</span><br />
+                    <span>Showing {!v.RecordOffsetRangeFrom} - {!v.RecordOffsetRangeTo} of {!v.Total} Contacts</span
+                    ><br />
                 </div>
                 <div class="navigationSide navigationRight">
                     <lightning:button

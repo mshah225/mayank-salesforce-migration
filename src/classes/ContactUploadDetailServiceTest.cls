@@ -7,7 +7,7 @@ private class ContactUploadDetailServiceTest {
 
     private static void setup() {
         ContactUploadFactory.DefaultContactUpload contactUploadCreator = new ContactUploadFactory.DefaultContactUpload();
-        Contact_Upload__c contactUpload = (Contact_Upload__c)contactUploadCreator.create(1)[0];
+        Contact_Upload__c contactUpload = (Contact_Upload__c) contactUploadCreator.create(1)[0];
         insert contactUpload;
 
         columnPosToHeaderMap = new Map<Integer, String>();
@@ -18,15 +18,14 @@ private class ContactUploadDetailServiceTest {
         columnPosToHeaderMap.put(4, 'EMPLID');
 
         SubscriptionFactory.ParentSubscription subscriptionCreator = new SubscriptionFactory.ParentSubscription();
-        subForDetails = (Subscription__c)subscriptionCreator.create(1)[0];
+        subForDetails = (Subscription__c) subscriptionCreator.create(1)[0];
         insert subForDetails;
-        
+
         detailService = new ContactUploadDetailService(contactUpload.Id, columnPosToHeaderMap);
         detailService.setSubscriptionId(subForDetails.Id);
         detailService.setSubscriberStatus('Subscribed');
-        
 
-        contactValues = new List<String>{'tester', 'Test', 'Person', 'test@test.com', '1234567890'};
+        contactValues = new List<String>{ 'tester', 'Test', 'Person', 'test@test.com', '1234567890' };
     }
 
     @isTest
@@ -62,7 +61,9 @@ private class ContactUploadDetailServiceTest {
 
         Test.startTest();
         Contact_Upload_Detail__c cudBeingCreated = detailService.createAndValidateRow(contactValues);
-        ContactUploadSearcher searcher = new ContactUploadSearcher(new List<Contact_Upload_Detail__c>{cudBeingCreated});
+        ContactUploadSearcher searcher = new ContactUploadSearcher(
+            new List<Contact_Upload_Detail__c>{ cudBeingCreated }
+        );
         searcher.searchAndCreateContacts();
         Test.stopTest();
 
@@ -82,7 +83,6 @@ private class ContactUploadDetailServiceTest {
         detailService.createSubscriberStatusMap(cudList);
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         System.assertEquals(subCreated.Subscriber_Status__c, 'Subscribed');
-
     }
 
     @isTest
@@ -115,7 +115,7 @@ private class ContactUploadDetailServiceTest {
         Subscriber__c subCreated = detailService.createSubscriberForUploadDetail(cudBeingCreated);
         insert subCreated;
         System.assertEquals(subCreated.Subscriber_Status__c, 'Unsubscribed');
-        
+
         Contact_Upload_Detail__c cudBeingUpdated = detailService.createAndValidateRow(contactValues);
         cudBeingUpdated.Contact__c = createdContact.Id;
         cudBeingUpdated.Subscriber_Status__c = 'Subscribed';
@@ -125,12 +125,15 @@ private class ContactUploadDetailServiceTest {
         detailService.createSubscriberStatusMap(cudListUpdated);
         Subscriber__c subUpdated = detailService.createSubscriberForUploadDetail(cudBeingUpdated);
         System.assertEquals(subUpdated.Subscriber_Status__c, 'Unsubscribed');
-        System.assert(cudListUpdated[0].Processing_Notes__c.contains('Subscriber Status cannot be updated from Unsubscribed To Subscribed'));
+        System.assert(
+            cudListUpdated[0]
+                .Processing_Notes__c.contains('Subscriber Status cannot be updated from Unsubscribed To Subscribed')
+        );
     }
-    
+
     private static Contact createAndInsertNewTestContact() {
         ContactFactory.DefaultContact contactCreator = new ContactFactory.DefaultContact();
-        Contact createdContact = (Contact)contactCreator.create(1)[0];
+        Contact createdContact = (Contact) contactCreator.create(1)[0];
         createdContact.EMPLID__c = '1234567890';
         insert createdcontact;
         return createdContact;

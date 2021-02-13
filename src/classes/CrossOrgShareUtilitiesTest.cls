@@ -5,14 +5,17 @@
  ******************************************/
 @IsTest
 private class CrossOrgShareUtilitiesTest {
-
-    /** 
-     * Create test contacts 
+    /**
+     * Create test contacts
      */
     static List<Contact> createContacts(Integer qty) {
         List<Contact> testContacts = new List<Contact>();
-        for (integer i=0; i < qty; i++) {
-            Contact c = new Contact(LastName = 'LName'+i, FirstName = 'FName'+i, SSB_CRMSYSTEM_Contact_ID__c='9C7E57CF-2DC7-4C89-B476-11166DED34D'+i);
+        for (integer i = 0; i < qty; i++) {
+            Contact c = new Contact(
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                SSB_CRMSYSTEM_Contact_ID__c = '9C7E57CF-2DC7-4C89-B476-11166DED34D' + i
+            );
             testContacts.add(c);
         }
         return testContacts;
@@ -23,8 +26,8 @@ private class CrossOrgShareUtilitiesTest {
      */
     @isTest
     private static void testgetCrosswalkRecords() {
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
-       
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
+
         // Set up the Contacts
         List<Contact> contacts = createContacts(1);
         insert contacts;
@@ -33,7 +36,12 @@ private class CrossOrgShareUtilitiesTest {
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
 
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        Contact testContact = [
+            SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate
+            FROM Contact
+            WHERE LastName = 'LName0'
+            LIMIT 1
+        ];
 
         record.contactId = testContact.Id;
         record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
@@ -56,7 +64,7 @@ private class CrossOrgShareUtilitiesTest {
      */
     @isTest
     private static void testgetCrosswalkRecordsById() {
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
 
         // Set up the Contacts
         List<Contact> contacts = createContacts(1);
@@ -65,7 +73,12 @@ private class CrossOrgShareUtilitiesTest {
         CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
 
-        Contact testContact = [SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate FROM Contact WHERE LastName = 'LName0' LIMIT 1];
+        Contact testContact = [
+            SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate
+            FROM Contact
+            WHERE LastName = 'LName0'
+            LIMIT 1
+        ];
 
         record.contactId = testContact.Id;
         record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
@@ -111,7 +124,7 @@ private class CrossOrgShareUtilitiesTest {
      */
     @isTest
     private static void testCrosswalkIDToList() {
-        Test.setMock( HttpCalloutMock.class, new CrossOrgShareCalloutMock() );
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
 
         List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockRecords = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
         List<Contact> Contacts = new List<Contact>();
@@ -124,7 +137,7 @@ private class CrossOrgShareUtilitiesTest {
         insert Contacts;
 
         // Create list of crosswalk records
-        for (Contact c: [SELECT Id FROM Contact WHERE LastName LIKE 'ASU_%']) {
+        for (Contact c : [SELECT Id FROM Contact WHERE LastName LIKE 'ASU_%']) {
             CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
             record.contactId = c.Id;
             record.guid = '9C7E57CF-2DC7-4C89-B476-11166DED34D0';
@@ -135,11 +148,11 @@ private class CrossOrgShareUtilitiesTest {
 
         Test.startTest();
         Set<Id> result = new Set<Id>();
-        result.addAll(CrossOrgShareUtilities.crosswalkToIDList(mockRecords) );
+        result.addAll(CrossOrgShareUtilities.crosswalkToIDList(mockRecords));
         Id testContact = [SELECT Id FROM Contact WHERE LastName = 'ASU_2' LIMIT 1].Id;
         Test.stopTest();
 
-        System.assertEquals( 5, result.size() );
-        System.assert ( result.contains(testContact) );
+        System.assertEquals(5, result.size());
+        System.assert(result.contains(testContact));
     }
 }

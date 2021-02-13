@@ -29,8 +29,6 @@
     <apex:attribute name="showReactiveCaseCount" type="boolean" description="" default="false" />
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
 
-
-
     <apex:attribute name="rerenderList" type="String" description="" />
 
     <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
@@ -69,9 +67,7 @@
 
     <!-- We use facets for headers because adding a "headerValue" attribute seems to cause VF errors -->
     <div class="summaryContainer">
-        <h1 class="summaryTitle">
-            Outreach Summary
-        </h1>
+        <h1 class="summaryTitle">Outreach Summary</h1>
         <apex:form id="summaryResults">
             <apex:dataTable value="{!summaryResult}" var="result" styleClass="summaryTable ASUTable">
                 <apex:column headerClass="ASUColumnHead" rendered="{! showSummarySubject}" styleClass="ASUColumn">
@@ -109,9 +105,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <!-- Modal Title should be set by JS -->
-                            <h4 class="summary-modal-title">
-                                {!Subject}
-                            </h4>
+                            <h4 class="summary-modal-title">{!Subject}</h4>
                         </div>
 
                         <div class="modal-body">
@@ -125,7 +119,9 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
+                                Close
+                            </button>
                         </div>
                     </div>
                 </apex:outputPanel>

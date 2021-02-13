@@ -8,7 +8,10 @@ public class CsvManager {
     public CsvManager(String header, Integer jobSize, ObjectScrambleService.objectTypes objectType) {
         this.header = header;
         this.jobSize = jobSize;
-        if (objectType == ObjectScrambleService.objectTypes.CONVERTED_LEAD || objectType == ObjectScrambleService.objectTypes.DELETED_SILVERPOP) {
+        if (
+            objectType == ObjectScrambleService.objectTypes.CONVERTED_LEAD ||
+            objectType == ObjectScrambleService.objectTypes.DELETED_SILVERPOP
+        ) {
             bulkManager = new BulkApiManager(objectType.name(), 'delete');
         } else {
             bulkManager = new BulkApiManager(objectType.name(), 'update');

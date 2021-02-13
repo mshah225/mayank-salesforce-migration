@@ -65,28 +65,30 @@
                     );
                 } else {
                     sforce.console.getFocusedPrimaryTabId(function (primaryFocusResponse) {
-                        sforce.console.focusSubtabByNameAndPrimaryTabId(subTabId, primaryFocusResponse.id, function (
-                            focusSubTabResponse
-                        ) {
-                            if (!focusSubTabResponse.success) {
-                                sforce.console.openSubtab(
-                                    primaryFocusResponse.id,
-                                    subTabURL,
-                                    true,
-                                    subTabName,
-                                    null,
-                                    function (openSubTabResponse) {
-                                        if (!openSubTabResponse.success) {
-                                            sforce.console.focusSubTabByNameAndPrimaryTabId(
-                                                subTabId,
-                                                openSubTabResponse.id
-                                            );
-                                        }
-                                    },
-                                    subTabId
-                                );
+                        sforce.console.focusSubtabByNameAndPrimaryTabId(
+                            subTabId,
+                            primaryFocusResponse.id,
+                            function (focusSubTabResponse) {
+                                if (!focusSubTabResponse.success) {
+                                    sforce.console.openSubtab(
+                                        primaryFocusResponse.id,
+                                        subTabURL,
+                                        true,
+                                        subTabName,
+                                        null,
+                                        function (openSubTabResponse) {
+                                            if (!openSubTabResponse.success) {
+                                                sforce.console.focusSubTabByNameAndPrimaryTabId(
+                                                    subTabId,
+                                                    openSubTabResponse.id
+                                                );
+                                            }
+                                        },
+                                        subTabId
+                                    );
+                                }
                             }
-                        });
+                        );
                     });
                 }
             });

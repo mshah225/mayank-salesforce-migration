@@ -13,13 +13,13 @@
 
     <div id="myasu-tabs-wrapper">
         <apex:outputPanel rendered="{!showNavBar}">
-            <header class="navbar navbar-default" role="banner" style="max-height:57px;">
+            <header class="navbar navbar-default" role="banner" style="max-height: 57px">
                 <div id="myasu-tabs" class="myasu-cont">
                     <div class="navbar-links">
                         <apex:outputPanel rendered="{!IF(ISNULL(menuLinks) || ISBLANK(menuLinks), false, true)}" layout="none">
                             <apex:repeat value="{!menuLinks}" var="link" id="linkRepeater">
                                 <apex:outputPanel rendered="{!IF(link.name != 'Service Center' && link.name != 'Help', true, false)}">
-                                    <span class='tab'>
+                                    <span class="tab">
                                         <apex:outputLink styleClass="tracking" value="{!link.url}" rendered="{!IF(link.name == 'Home', true, false) || IF(link.name == 'Student Home', true, false)}">
                                             <span class="fa fa-home" title="Home"></span>
                                         </apex:outputLink>
@@ -29,7 +29,7 @@
                                     </span>
                                 </apex:outputPanel>
                                 <apex:outputPanel rendered="{!IF(link.name == 'Service Center' || link.name == 'Help', true, false)}">
-                                    <span class='selected tab'>
+                                    <span class="selected tab">
                                         <apex:outputLink styleClass="tracking" value="{!link.url}" rendered="{!IF(link.name != 'Home' && link.name != 'Student Home', true, false)}">
                                             Help
                                         </apex:outputLink>
@@ -38,12 +38,12 @@
                             </apex:repeat>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(firstName != null, lastName != null)}">
-                            <div class="asu-brand-menu-user pull-right" style="max-height:57px;line-height: 1.44;margin-top: .4em;">
-                                <span style="display:block;">
+                            <div class="asu-brand-menu-user pull-right" style="max-height: 57px; line-height: 1.44; margin-top: 0.4em">
+                                <span style="display: block">
                                     {!firstName} {!lastName}
                                     <apex:outputPanel rendered="{!viewingAs}"> ({!emplId})</apex:outputPanel>
                                 </span>
-                                <span style="display:block;">
+                                <span style="display: block">
                                     <apex:outputPanel rendered="{!viewingAs}">
                                         <div class="dropdown asu-brand-menu-view-as-dropdown pull-right">
                                             <button class="btn btn-blue asu-brand-menu-view-as-button dropdown-toggle" type="button" id="asu-brand-menu-view-as" data-toggle="dropdown"

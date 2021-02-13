@@ -5,11 +5,21 @@ public without sharing class CaseHandler implements ITrigger {
     private List<RecordType> recruitmentCaseRT;
     private Savepoint sp;
     public Map<Id, String> mapCCIdToName;
-    public final String RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('(Admin Only) ASU Advisor Outreach').getRecordTypeId();
-    public final String RT_ASU_COACH_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Coach Outreach').getRecordTypeId();
-    public final String RT_ASU_ADMISSION_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Admission Services').getRecordTypeId();
-    public final String RT_ASU_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Service').getRecordTypeId();
-    public final String RT_ASU_STUDENT_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName().get('ASU Student Outreach').getRecordTypeId();
+    public final String RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName()
+        .get('(Admin Only) ASU Advisor Outreach')
+        .getRecordTypeId();
+    public final String RT_ASU_COACH_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName()
+        .get('ASU Coach Outreach')
+        .getRecordTypeId();
+    public final String RT_ASU_ADMISSION_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName()
+        .get('ASU Admission Services')
+        .getRecordTypeId();
+    public final String RT_ASU_SERVICE = Schema.SObjectType.Case.getRecordTypeInfosByName()
+        .get('ASU Service')
+        .getRecordTypeId();
+    public final String RT_ASU_STUDENT_OUTREACH = Schema.SObjectType.Case.getRecordTypeInfosByName()
+        .get('ASU Student Outreach')
+        .getRecordTypeId();
 
     /**
      * bulkBefore
@@ -25,7 +35,9 @@ public without sharing class CaseHandler implements ITrigger {
 
         if (Trigger.isInsert) {
             LogSuite.log('query', 'Calling recruitment case RT query');
-            recruitmentCaseRT = new List<RecordType>([SELECT Id FROM RecordType WHERE SobjectType = 'Case' AND DeveloperName = 'ASU_Admission_Services']);
+            recruitmentCaseRT = new List<RecordType>(
+                [SELECT Id FROM RecordType WHERE SobjectType = 'Case' AND DeveloperName = 'ASU_Admission_Services']
+            );
             if (recruitmentCaseRT.size() < 1) {
                 return;
             }
@@ -33,7 +45,7 @@ public without sharing class CaseHandler implements ITrigger {
             Set<Id> caseContactIdSet = new Set<ID>();
             Set<Id> campaignIdSet = new Set<Id>();
 
-            for (Case newCase: (List<Case>) Trigger.new) {
+            for (Case newCase : (List<Case>) Trigger.new) {
                 if (newCase.RecordTypeId == recruitmentCaseRT[0].Id) {
                     campaignIdSet.add(newCase.Case_Source__c);
                     caseContactIdSet.add(newCase.ContactId);
@@ -52,19 +64,56 @@ public without sharing class CaseHandler implements ITrigger {
             }
 
             LogSuite.log('query', 'Calling related contact map query');
-            relatedContactMap = new Map<Id, Contact>([SELECT Id, (Select Id, StageName, Territory_Assignment_Last_Rule_Type__c, OwnerId, Owner.IsActive, Enrollment_Coach__c, Enrollment_Coach__r.IsActive, CreatedDate, IsClosed FROM Opportunities__r ORDER BY IsClosed ASC, CreatedDate DESC) FROM Contact WHERE Id in: caseContactIdSet]);
+            relatedContactMap = new Map<Id, Contact>(
+                [
+                    SELECT
+                        Id,
+                        (
+                            SELECT
+                                Id,
+                                StageName,
+                                Territory_Assignment_Last_Rule_Type__c,
+                                OwnerId,
+                                Owner.IsActive,
+                                Enrollment_Coach__c,
+                                Enrollment_Coach__r.IsActive,
+                                CreatedDate,
+                                IsClosed
+                            FROM Opportunities__r
+                            ORDER BY IsClosed ASC, CreatedDate DESC
+                        )
+                    FROM Contact
+                    WHERE Id IN :caseContactIdSet
+                ]
+            );
 
             if (campaignIdSet.size() > 0) {
                 LogSuite.log('query', 'Calling source map query');
-                sourceMap = new Map<Id, Campaign>([SELECT Id, Case_Assignment_Rule__r.Id, Case_Assignment_Rule__r.Queue_ID__c, Case_Assignment_Rule__r.CC_Category__c, Case_Assignment_Rule__r.CC_Category__r.Name, Case_Assignment_Rule__r.CC_Sub_Category__c, Case_Assignment_Rule__r.CC_Sub_Category__r.Name, Case_Assignment_Rule__r.Origin__c, Case_Assignment_Rule__r.CC_Functional_Group__c, Case_Assignment_Rule__r.CC_Functional_Group__r.Name, Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c FROM Campaign WHERE Id IN: campaignIdSet]);
+                sourceMap = new Map<Id, Campaign>(
+                    [
+                        SELECT
+                            Id,
+                            Case_Assignment_Rule__r.Id,
+                            Case_Assignment_Rule__r.Queue_ID__c,
+                            Case_Assignment_Rule__r.CC_Category__c,
+                            Case_Assignment_Rule__r.CC_Category__r.Name,
+                            Case_Assignment_Rule__r.CC_Sub_Category__c,
+                            Case_Assignment_Rule__r.CC_Sub_Category__r.Name,
+                            Case_Assignment_Rule__r.Origin__c,
+                            Case_Assignment_Rule__r.CC_Functional_Group__c,
+                            Case_Assignment_Rule__r.CC_Functional_Group__r.Name,
+                            Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c
+                        FROM Campaign
+                        WHERE Id IN :campaignIdSet
+                    ]
+                );
             }
 
             // SFE-11309 - Refactor, needs this query to be run atleast once
             List<Case_Classification__c> classifications = [
                 SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
                 FROM Case_Classification__c
-                WHERE(Name IN :caseClassificationsToQuery AND Active__c = TRUE)
-                OR(ID IN: setOfCaseClassficationId)
+                WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE) OR ID IN :setOfCaseClassficationId
             ];
             Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
             mapCCIdToName = new Map<Id, String>();
@@ -74,8 +123,12 @@ public without sharing class CaseHandler implements ITrigger {
                     String classificationName = CaseClassifier.getClassificationUniqueName(
                         classification.Name,
                         classification.Parent__c == null ? '' : classification.Parent__r.Name,
-                        (classification.Parent__c == null || classification.Parent__r.Parent__c == null) ? '' :  classification.Parent__r.Parent__r.Name,
-                        classification.RecordType.Name);
+                        (classification.Parent__c == null ||
+                            classification.Parent__r.Parent__c == null)
+                            ? ''
+                            : classification.Parent__r.Parent__r.Name,
+                        classification.RecordType.Name
+                    );
                     nameToClassification.put(classificationName, classification);
                 }
                 mapCCIdToName.put(classification.Id, classification.Name);
@@ -122,19 +175,22 @@ public without sharing class CaseHandler implements ITrigger {
             List<Case_Classification__c> classifications = [
                 SELECT Name, Parent__r.Name, Parent__r.Parent__r.Name, RecordType.Name, Record_Types__c
                 FROM Case_Classification__c
-                WHERE(Name IN :caseClassificationsToQuery AND Active__c = TRUE)
-                OR(ID IN: setOfCaseClassficationId)
+                WHERE (Name IN :caseClassificationsToQuery AND Active__c = TRUE) OR ID IN :setOfCaseClassficationId
             ];
             Map<String, Case_Classification__c> nameToClassification = new Map<String, Case_Classification__c>();
-            mapCCIdToName = new map<Id, String>();
+            mapCCIdToName = new Map<Id, String>();
 
             for (Case_Classification__c classification : classifications) {
                 if (!setOfCaseClassficationId.contains(classification.Id)) {
                     String classificationName = CaseClassifier.getClassificationUniqueName(
                         classification.Name,
                         classification.Parent__c == null ? '' : classification.Parent__r.Name,
-                        (classification.Parent__c == null || classification.Parent__r.Parent__c == null) ? '' :  classification.Parent__r.Parent__r.Name,
-                        classification.RecordType.Name);
+                        (classification.Parent__c == null ||
+                            classification.Parent__r.Parent__c == null)
+                            ? ''
+                            : classification.Parent__r.Parent__r.Name,
+                        classification.RecordType.Name
+                    );
                     nameToClassification.put(classificationName, classification);
                 }
                 mapCCIdToName.put(classification.Id, classification.Name);
@@ -167,7 +223,8 @@ public without sharing class CaseHandler implements ITrigger {
      * This method is called prior to execution of an AFTER trigger. Use this to cache
      * any data required into maps prior execution of the trigger.
      */
-    public void bulkAfter() {}
+    public void bulkAfter() {
+    }
 
     /**
      * beforeInsert
@@ -215,7 +272,7 @@ public without sharing class CaseHandler implements ITrigger {
                     List<Contact> contactUsers = [SELECT Id FROM Contact WHERE EMPLID__c = :emplid LIMIT 1];
                     if (contactUsers != null && contactUsers.size() > 0) {
                         newCase.ContactId = contactUsers[0].Id;
-                    } else  {
+                    } else {
                         conToCreate.EMPLID__c = emplid;
                     }
                 }
@@ -249,36 +306,62 @@ public without sharing class CaseHandler implements ITrigger {
                 // SFR-1109; added opList check here to correct bug on webform submissions
                 if (opList != null && opList.size() > 0) {
                     // Case "b"
-                    if (newCase.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' && newCase.Associate_Case_to_Active_Opportunity__c == true) {
-                        if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
+                    if (
+                        newCase.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' &&
+                        newCase.Associate_Case_to_Active_Opportunity__c == true
+                    ) {
+                        if (
+                            opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                            opList[0].Owner.IsActive == true &&
+                            opList[0].IsClosed == false
+                        ) {
                             newCase.OwnerId = opList[0].OwnerId;
                             ownerSet = true;
                         }
-                    }
-                    // Case "newCase"
-                    else if (newCase.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' && newCase.Associate_Case_to_Active_Opportunity__c == true) {
-                        if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
+                    } else if (
+                        newCase.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' &&
+                        newCase.Associate_Case_to_Active_Opportunity__c == true
+                    ) {
+                        // Case "newCase"
+                        if (
+                            opList[0].Enrollment_Coach__c != null &&
+                            opList[0].Enrollment_Coach__r.IsActive == true &&
+                            opList[0].IsClosed == false
+                        ) {
                             newCase.OwnerId = opList[0].Enrollment_Coach__c;
                             ownerSet = true;
                         }
                     }
                 }
-            } else { 
+            } else {
                 if (sourceMap.containsKey(newCase.Case_Source__c)) {
                     Campaign source = sourceMap.get(newCase.Case_Source__c);
                     // Did we find a related Case Assignment Rule?
                     if (source.Case_Assignment_Rule__c != null) {
                         if (opList != null && opList.size() > 0) {
                             // Case "b"
-                            if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
-                                if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
+                            if (
+                                source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c ==
+                                'Territory Manager'
+                            ) {
+                                if (
+                                    opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                                    opList[0].Owner.IsActive == true &&
+                                    opList[0].IsClosed == false
+                                ) {
                                     newCase.OwnerId = opList[0].OwnerId;
                                     newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
                                     ownerSet = true;
                                 }
-                            }
-                            else if (source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
-                                if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
+                            } else if (
+                                source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c ==
+                                'Enrollment Coach'
+                            ) {
+                                if (
+                                    opList[0].Enrollment_Coach__c != null &&
+                                    opList[0].Enrollment_Coach__r.IsActive == true &&
+                                    opList[0].IsClosed == false
+                                ) {
                                     newCase.OwnerId = opList[0].Enrollment_Coach__c;
                                     newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
                                     ownerSet = true;
@@ -303,23 +386,49 @@ public without sharing class CaseHandler implements ITrigger {
                         }
                     } else {
                         // No related Case Assignment Rule found; use the Territory Manager if found
-                        if (opList != null && opList.size() > 0 && opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true) {
+                        if (
+                            opList != null &&
+                            opList.size() > 0 &&
+                            opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                            opList[0].Owner.IsActive == true
+                        ) {
                             newCase.OwnerId = opList[0].OwnerId;
                         } else {
                             // No valid Territory Manager found; use default Case Assignment Rule
                             if (defaultCAR == null) {
                                 LogSuite.log('query', 'Calling default CAR query');
-                                defaultCar = [SELECT Id, Queue_ID__c, Origin__c, CC_Category__c, CC_Sub_Category__c, CC_Functional_Group__c, Type_of_Additional_Assignment_Needed__c FROM Case_Assignment_Rule__c WHERE Email_Address__c = 'admissions@asu.edu'];
+                                defaultCar = [
+                                    SELECT
+                                        Id,
+                                        Queue_ID__c,
+                                        Origin__c,
+                                        CC_Category__c,
+                                        CC_Sub_Category__c,
+                                        CC_Functional_Group__c,
+                                        Type_of_Additional_Assignment_Needed__c
+                                    FROM Case_Assignment_Rule__c
+                                    WHERE Email_Address__c = 'admissions@asu.edu'
+                                ];
                                 if (!(defaultCAR == null)) {
                                     if (opList != null && opList.size() > 0) {
                                         if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
-                                            if (opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' && opList[0].Owner.IsActive == true && opList[0].IsClosed == false) {
+                                            if (
+                                                opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                                                opList[0].Owner.IsActive == true &&
+                                                opList[0].IsClosed == false
+                                            ) {
                                                 newCase.OwnerId = opList[0].OwnerId;
                                                 newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
                                                 ownerSet = true;
                                             }
-                                        } else if (defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
-                                            if (opList[0].Enrollment_Coach__c != null && opList[0].Enrollment_Coach__r.IsActive == true && opList[0].IsClosed == false) {
+                                        } else if (
+                                            defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach'
+                                        ) {
+                                            if (
+                                                opList[0].Enrollment_Coach__c != null &&
+                                                opList[0].Enrollment_Coach__r.IsActive == true &&
+                                                opList[0].IsClosed == false
+                                            ) {
                                                 newCase.OwnerId = opList[0].Enrollment_Coach__c;
                                                 newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
                                                 ownerSet = true;
@@ -362,7 +471,10 @@ public without sharing class CaseHandler implements ITrigger {
         Case oldCase = (Case) oldSo;
 
         // Update the Most Recent Functional Group if the Functional Group has changed
-        if (newCase.Functional_Group__c != oldCase.Functional_Group__c && newCase.Functional_Group__c != 'External Unit') {
+        if (
+            newCase.Functional_Group__c != oldCase.Functional_Group__c &&
+            newCase.Functional_Group__c != 'External Unit'
+        ) {
             newCase.Most_Recent_Functional_Group__c = newCase.Functional_Group__c;
         }
 
@@ -405,7 +517,11 @@ public without sharing class CaseHandler implements ITrigger {
             //Prevent recursive update and sending of mail
             if (!CaseUtilities.emailForwarded) {
                 CaseUtilities.emailForwarded = true;
-                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
+                CaseUtilities.forwardCaseAttachments(
+                    newCase.Id,
+                    newCase.Forward_To_Email__c,
+                    newCase.Forward_To_Email_Calculation__c
+                );
             }
         }
     }
@@ -425,7 +541,11 @@ public without sharing class CaseHandler implements ITrigger {
             //Prevent recursive update and sending of mail
             if (!CaseUtilities.emailForwarded) {
                 CaseUtilities.emailForwarded = true;
-                CaseUtilities.forwardCaseAttachments(newCase.Id, newCase.Forward_To_Email__c, newCase.Forward_To_Email_Calculation__c);
+                CaseUtilities.forwardCaseAttachments(
+                    newCase.Id,
+                    newCase.Forward_To_Email__c,
+                    newCase.Forward_To_Email_Calculation__c
+                );
             }
         }
     }
@@ -460,23 +580,34 @@ public without sharing class CaseHandler implements ITrigger {
                 caseRecord.RecordTypeId = RT_ADMIN_ONLY_ASU_ADVISOR_OUTREACH;
             } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Coach Outreach')) {
                 caseRecord.RecordTypeId = RT_ASU_COACH_OUTREACH;
-            } else if ((caseRecord.RecordTypeId == RT_ASU_SERVICE && !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
-                       (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
-                        (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment')) ||
-                        (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
-                       ) {
+            } else if (
+                (caseRecord.RecordTypeId == RT_ASU_SERVICE &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
+                (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
+                mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment')) ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
+                mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
+            ) {
                 caseRecord.RecordTypeId = RT_ASU_ADMISSION_SERVICE;
-            } else if (caseRecord.RecordTypeId == RT_ASU_ADMISSION_SERVICE &&
-                       !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
-                       !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
-                       !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center') &&
-                       (caseRecord.CC_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Category__c) && !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&
-                       (caseRecord.CC_Sub_Category__c == null || (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) && !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
-                       ) {
+            } else if (
+                caseRecord.RecordTypeId == RT_ASU_ADMISSION_SERVICE &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center') &&
+                (caseRecord.CC_Category__c == null ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
+                !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&
+                (caseRecord.CC_Sub_Category__c == null ||
+                (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
+                !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
+            ) {
                 caseRecord.RecordTypeId = RT_ASU_SERVICE;
-            } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Financial Aid') &&
-                       mapCCIdToName.containsKey(caseRecord.CC_Category__c) && mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
-                       ) {
+            } else if (
+                mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Financial Aid') &&
+                mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
+                mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
+            ) {
                 caseRecord.RecordTypeId = RT_ASU_STUDENT_OUTREACH;
             }
         }

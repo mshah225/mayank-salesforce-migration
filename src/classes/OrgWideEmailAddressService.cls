@@ -1,44 +1,47 @@
-public class OrgWideEmailAddressService 
-{
-	/**
-	 * Returns all the fields on OrgWideEmailAddress in a String
-	 * @return A string containing all the OrgWideEmailAddress fields
-	 */
-	public static String oweaFieldsToString()
-	{
-		String oweaFields = null;
+public class OrgWideEmailAddressService {
+    /**
+     * Returns all the fields on OrgWideEmailAddress in a String
+     * @return A string containing all the OrgWideEmailAddress fields
+     */
+    public static String oweaFieldsToString() {
+        String oweaFields = null;
 
-		Map<String, SObjectField> oweaFieldMap = ObjectService.getObjectFieldMap('OrgWideEmailAddress');
+        Map<String, SObjectField> oweaFieldMap = ObjectService.getObjectFieldMap('OrgWideEmailAddress');
 
-		oweaFields = ObjectService.objectFieldsToString(oweaFieldMap);
+        oweaFields = ObjectService.objectFieldsToString(oweaFieldMap);
 
-		return oweaFields;
-	}
+        return oweaFields;
+    }
 
-	/**
-	 * Returns a matching OrgWideEmailAddress for a given email address
-	 * @param  emailAddress An email address
-	 * @return oweaToReturn The matching OrgWideEmailAddress
-	 */
-	public static OrgWideEmailAddress getOrgWideEmailAddress(String emailAddress)
-	{
-		OrgWideEmailAddress oweaToReturn = new OrgWideEmailAddress();
+    /**
+     * Returns a matching OrgWideEmailAddress for a given email address
+     * @param  emailAddress An email address
+     * @return oweaToReturn The matching OrgWideEmailAddress
+     */
+    public static OrgWideEmailAddress getOrgWideEmailAddress(String emailAddress) {
+        OrgWideEmailAddress oweaToReturn = new OrgWideEmailAddress();
 
-		try
-		{
-			String oweaQuery = 'SELECT ' + oweaFieldsToString() + ' FROM OrgWideEmailAddress WHERE Address = :emailAddress';
+        try {
+            String oweaQuery =
+                'SELECT ' +
+                oweaFieldsToString() +
+                ' FROM OrgWideEmailAddress WHERE Address = :emailAddress';
 
-			System.debug(oweaQuery);
+            System.debug(oweaQuery);
 
-			oweaToReturn = Database.query(oweaQuery);
-		}
-		catch (Exception e)
-		{
-			throw new OrgWideEmailAddressServiceException('!!!ERROR!!!: An error occurred trying to get the OrgWideEmailAddress for this address: ' + emailAddress + '\n' + e.getMessage());
-		}
+            oweaToReturn = Database.query(oweaQuery);
+        } catch (Exception e) {
+            throw new OrgWideEmailAddressServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the OrgWideEmailAddress for this address: ' +
+                emailAddress +
+                '\n' +
+                e.getMessage()
+            );
+        }
 
-		return oweaToReturn;
-	}
+        return oweaToReturn;
+    }
 
-	public class OrgWideEmailAddressServiceException extends Exception {}
+    public class OrgWideEmailAddressServiceException extends Exception {
+    }
 }

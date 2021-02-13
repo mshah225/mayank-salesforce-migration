@@ -1,44 +1,56 @@
 @isTest
 private class apiSSC_MyASUCoaches_Test {
-
     public static Success_POD__c successPOD;
     public static User userCoach;
     public static Contact userStudent;
     public static Success_Resource__c successCoach;
     public static Success_Student__c successStudent;
     public static String contactRecordTypeId;
-    
-    static void init()
-    {
+
+    static void init() {
         createCoachTestData();
     }
-    
-     static private void createCoachTestData()
-    {
+
+    static private void createCoachTestData() {
         //Coach POD RT
         String podCoachRecordTypeId = '';
-        List<RecordType> rectype1 = [SELECT Id FROM RecordType WHERE DeveloperName =: 'Coach' AND SobjectType = 'Success_POD__c'];
-        if(rectype1.size()>0)podCoachRecordTypeId=rectype1[0].Id;
+        List<RecordType> rectype1 = [
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = :'Coach' AND SobjectType = 'Success_POD__c'
+        ];
+        if (rectype1.size() > 0)
+            podCoachRecordTypeId = rectype1[0].Id;
 
         //Contact RT
         contactRecordTypeId = '';
-        List<RecordType> rectype3 = [SELECT Id FROM RecordType WHERE DeveloperName =: 'External_Mastered' AND SobjectType = 'Contact'];
-        if(rectype3.size()>0)contactRecordTypeId=rectype3[0].Id;
-        
+        List<RecordType> rectype3 = [
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = :'External_Mastered' AND SobjectType = 'Contact'
+        ];
+        if (rectype3.size() > 0)
+            contactRecordTypeId = rectype3[0].Id;
+
         //Profile RT
-        Id profileId = [SELECT Id FROM Profile WHERE Name ='System Administrator'].Id;
-        
+        Id profileId = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+
         //Coach RT
         String coachRecordTypeId = '';
-        List<RecordType> rectype6 = [SELECT Id FROM RecordType WHERE DeveloperName =: 'Coach' AND SobjectType = 'Success_Resource__c'];
-        if(rectype6.size()>0)coachRecordTypeId=rectype6[0].Id;
-        
+        List<RecordType> rectype6 = [
+            SELECT Id
+            FROM RecordType
+            WHERE DeveloperName = :'Coach' AND SobjectType = 'Success_Resource__c'
+        ];
+        if (rectype6.size() > 0)
+            coachRecordTypeId = rectype6[0].Id;
+
         //create pod
         successPOD = new Success_POD__c();
         successPOD.RecordTypeId = podCoachRecordTypeId;
         successPOD.Name = 'Coach POD';
         insert successPOD;
-        
+
         //create coach
         userCoach = new User();
         userCoach.Lastname = 'coach';
@@ -52,7 +64,7 @@ private class apiSSC_MyASUCoaches_Test {
         userCoach.ProfileId = profileId;
         userCoach.LanguageLocaleKey = 'en_US';
         insert userCoach;
-        
+
         //create success coach
         successCoach = new Success_Resource__c();
         successCoach.Resource__c = userCoach.Id;
@@ -62,7 +74,7 @@ private class apiSSC_MyASUCoaches_Test {
         successCoach.Success_POD__c = successPOD.Id;
         successCoach.IsActive__c = true;
         insert successCoach;
-        
+
         //create student
         userStudent = new Contact();
         userStudent.RecordTypeId = contactRecordTypeId;
@@ -73,7 +85,7 @@ private class apiSSC_MyASUCoaches_Test {
         userStudent.Hidden_Selected__c = true;
         userStudent.EMPLID__c = '8888';
         insert userStudent;
-        
+
         //create success student
         successStudent = new Success_Student__c();
         successStudent.Student__c = userStudent.Id;
@@ -81,22 +93,19 @@ private class apiSSC_MyASUCoaches_Test {
         successStudent.Success_POD__c = successPOD.Id;
         successStudent.Coaching_Student__c = true;
         insert successStudent;
-
     }
-    
+
     static testMethod void testGetAllCoaches() {
-    init();
-    RestRequest req = new RestRequest(); 
-    RestResponse res = new RestResponse();
-    req.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/MyASUCoaches';  
-    req.httpMethod = 'GET';
-    RestContext.request = req;
-    RestContext.response = res;
-    
-    List<Success_Student__c> results = apiSSC_MyASUCoachesController.getAllCoaches();
-    
-    //System.assertEquals(1, results.size());
-    
-    }
+        init();
+        RestRequest req = new RestRequest();
+        RestResponse res = new RestResponse();
+        req.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/MyASUCoaches';
+        req.httpMethod = 'GET';
+        RestContext.request = req;
+        RestContext.response = res;
 
+        List<Success_Student__c> results = apiSSC_MyASUCoachesController.getAllCoaches();
+
+        //System.assertEquals(1, results.size());
+    }
 }

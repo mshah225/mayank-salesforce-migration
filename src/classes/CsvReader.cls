@@ -1,6 +1,5 @@
 public class CsvReader {
-
-    public static final String COMMA = String.fromCharArray(new List<Integer> { 44 });
+    public static final String COMMA = String.fromCharArray(new List<Integer>{ 44 });
     public static final String CARRIAGE_RETURN = '\r';
     public static final String DQUOTE = '\"';
     public static final String LINE_FEED = '\n';
@@ -11,7 +10,7 @@ public class CsvReader {
     public static List<List<String>> readCsvFile(Blob file) {
         return readCsvFile(file.toString());
     }
-        
+
     public static List<List<String>> readCsvFile(String fileString) {
         if (!fileString.endsWith(CARRIAGE_RETURN)) {
             fileString = fileString + CARRIAGE_RETURN;
@@ -23,7 +22,6 @@ public class CsvReader {
 
         Boolean endOfData = false;
         while (!endOfData) {
-
             csvValue = readValue(fileString);
 
             rowValues.add(csvValue.value);
@@ -31,7 +29,7 @@ public class CsvReader {
             if (csvValue.delimiter == CARRIAGE_RETURN) {
                 if (rowValues.size() > 1 || (rowValues.size() == 1 && !String.isBlank(rowValues[0]))) {
                     fileValues.add(rowValues);
-                    
+
                     if (fileValues.size() > 0) {
                         System.assertEquals(fileValues.get(0).size(), rowValues.size());
                     }
@@ -54,7 +52,7 @@ public class CsvReader {
         CsvValue csvValue = new CsvValue();
 
         if (data.startsWith(DQUOTE)) {
-          csvValue.enclosed = true;
+            csvValue.enclosed = true;
 
             Integer startingSearchIndex = 1;
             Integer dquoteIndex = -1;
@@ -76,9 +74,7 @@ public class CsvReader {
                 }
             }
 
-            csvValue.value = data.substring(
-                DQUOTE.length(), dquoteIndex)
-                .replaceAll(DOUBLE_DQUOTE, DQUOTE);
+            csvValue.value = data.substring(DQUOTE.length(), dquoteIndex).replaceAll(DOUBLE_DQUOTE, DQUOTE);
 
             Integer commaIndex = data.indexOf(COMMA, dquoteIndex);
             Integer crlfIndex = data.indexOf(CARRIAGE_RETURN, dquoteIndex);
@@ -102,7 +98,6 @@ public class CsvReader {
                 csvValue.delimiter = CARRIAGE_RETURN;
             }
         }
-       
 
         return csvValue;
     }
@@ -123,22 +118,19 @@ public class CsvReader {
         }
 
         public Integer biteSize() {
-            Integer biteSize = value
-                .replaceAll(DQUOTE, DOUBLE_DQUOTE).length()
-                + delimiter.length();
+            Integer biteSize = value.replaceAll(DQUOTE, DOUBLE_DQUOTE).length() + delimiter.length();
 
             if (enclosed) {
                 biteSize += DQUOTE.length() * 2;
             }
 
-
             return biteSize;
         }
 
         public Boolean equals(CsvValue compCsvValue) {
-            return this.value.equals(compCsvValue.value)
-                && this.enclosed == compCsvValue.enclosed
-                && this.delimiter == compCsvValue.delimiter;
+            return this.value.equals(compCsvValue.value) &&
+                this.enclosed == compCsvValue.enclosed &&
+                this.delimiter == compCsvValue.delimiter;
         }
 
         public void assertEquals(CsvValue compCsvValue) {

@@ -3,8 +3,8 @@
     <aura:attribute name="EmailSubject" type="String" />
     <aura:attribute name="EmailBody" type="String" />
     <aura:attribute name="FormError" type="String" />
-    <aura:attribute name="userInfo" type="user"/>  
-    <aura:handler name="init" value="this" action="{!c.loadUserDetail}"/>
+    <aura:attribute name="userInfo" type="user" />
+    <aura:handler name="init" value="this" action="{!c.loadUserDetail}" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
     <aura:if isTrue="{!not(empty(v.Contacts))}">
@@ -54,7 +54,7 @@
                             />
                         </lightning:layoutItem>
 
-                        Sincerely, <br/>
+                        Sincerely, <br />
                         {!v.userInfo.Name}
                     </lightning:layout>
                 </div>

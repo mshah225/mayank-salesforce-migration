@@ -1,6 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
     action="{!init}" cache="true" extensions="AKBController,ASUBrandController,MyASUHelpPaginationController">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -34,14 +33,10 @@
             <div class="row">
                 <div class="col-md-7 myasu-help-region-view-article-container">
                     <div class="myasu-help-region-view-article">
-                        <div class="myasu-help-region-header">
-                            Knowledge Article #{!article.ArticleNumber}
-                        </div>
+                        <div class="myasu-help-region-header">Knowledge Article #{!article.ArticleNumber}</div>
                         <div class="myasu-help-region-view-article-content myasu-help-region-content-section">
                             <div class="myasu-help-region-view-article-info-container">
-                                <div class="myasu-help-region-sub-header">
-                                    {!article.title}
-                                </div>
+                                <div class="myasu-help-region-sub-header">{!article.title}</div>
                                 <apex:outputPanel rendered="{!article.ArticleType == 'FAQ__kav'}">
                                     <apex:outputField value="{!faq.Answer__c}" label="" />
                                     <apex:outputPanel rendered="{!faq.Functional_Group__c != null}">
@@ -84,7 +79,7 @@
                                         <apex:inputField id="articleFeedback" value="{!feedbackHelpful.Comments__c}" />
                                     </apex:pageBlock>
                                     <apex:commandLink value="Submit" action="{!helpfulNo}" styleClass="btn btn-primary" />
-                                    <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-secondary" style="margin-left:1em!important;"
+                                    <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-secondary" style="margin-left: 1em !important"
                                         reRender="feedbackButtons" />
                                 </apex:outputPanel>
                             </apex:form>
@@ -94,9 +89,7 @@
 
                 <div class="col-md-5 myasu-help-region-view-article-container">
                     <div class="myasu-help-region-view-article-helpful-articles">
-                        <div class="myasu-help-region-header">
-                            Articles You May Find Helpful
-                        </div>
+                        <div class="myasu-help-region-header">Articles You May Find Helpful</div>
                         <div class="myasu-help-region-view-article-content myasu-help-region-content-section">
                             <knowledge:articleList articleVar="relatedart" keyword="{!titleKeyword}" hasMoreVar="true" pageSize="5">
                                 <div class="myasu-help-region-faq-search-results-article-container">
@@ -126,7 +119,9 @@
                                             <div class="panel-body">
                                                 <apex:form id="suggestAnArticle">
                                                     <apex:pageBlock mode="maindetail">
-                                                        <p>Have an idea for an article you'd like to see? Please tell us below!</p>
+                                                        <p>
+                                                            Have an idea for an article you'd like to see? Please tell us below!
+                                                        </p>
                                                         <apex:pageBlock mode="maindetail">
                                                             <apex:inputTextarea id="articleDetails" required="true" value="{!suggestedArticleDescription}" />
                                                         </apex:pageBlock>
@@ -158,26 +153,30 @@
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 
     <script>
-        if (!(navigator.userAgent.match(/Android/i)
-            || navigator.userAgent.match(/webOS/i)
-            || navigator.userAgent.match(/iPhone/i)
-            || navigator.userAgent.match(/iPad/i)
-            || navigator.userAgent.match(/iPod/i)
-            || navigator.userAgent.match(/BlackBerry/i)
-            || navigator.userAgent.match(/Windows Phone/i))) {
-            document.getElementById("normalPhone").addEventListener("click", function (event) {
+        if (
+            !(
+                navigator.userAgent.match(/Android/i) ||
+                navigator.userAgent.match(/webOS/i) ||
+                navigator.userAgent.match(/iPhone/i) ||
+                navigator.userAgent.match(/iPad/i) ||
+                navigator.userAgent.match(/iPod/i) ||
+                navigator.userAgent.match(/BlackBerry/i) ||
+                navigator.userAgent.match(/Windows Phone/i)
+            )
+        ) {
+            document.getElementById('normalPhone').addEventListener('click', function (event) {
                 event.preventDefault();
             });
 
-            document.getElementById("normalPhone").addEventListener("contextmenu", function (event) {
+            document.getElementById('normalPhone').addEventListener('contextmenu', function (event) {
                 event.preventDefault();
             });
 
-            document.getElementById("roverPhone").addEventListener("click", function (event) {
+            document.getElementById('roverPhone').addEventListener('click', function (event) {
                 event.preventDefault();
             });
 
-            document.getElementById("roverPhone").addEventListener("contextmenu", function (event) {
+            document.getElementById('roverPhone').addEventListener('contextmenu', function (event) {
                 event.preventDefault();
             });
         }
@@ -187,19 +186,21 @@
         getLinks();
 
         function getLinks() {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
+            var links = document.getElementById('{!$Component.articleContentForm}').getElementsByTagName('a');
             var addLink;
             var linkArray = [];
-            var articleLinks = []
+            var articleLinks = [];
 
             for (i = 0; i < links.length; i++) {
-                if (links[i].href.startsWith(window.location.protocol + '//' + window.location.hostname + '/articles')) {
+                if (
+                    links[i].href.startsWith(window.location.protocol + '//' + window.location.hostname + '/articles')
+                ) {
                     articleLinks.push(links[i]);
                 }
             }
 
             for (i = 0; i < articleLinks.length; i++) {
-                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf("/") + 1);
+                addlink = articleLinks[i].href.substring(articleLinks[i].href.lastIndexOf('/') + 1);
                 linkArray.push(addlink);
             }
 
@@ -208,13 +209,15 @@
         }
 
         function changeLinkOnPage(newLinks) {
-            var links = document.getElementById("{!$Component.articleContentForm}").getElementsByTagName("a");
-            var articleLinks = []
+            var links = document.getElementById('{!$Component.articleContentForm}').getElementsByTagName('a');
+            var articleLinks = [];
             var parsed = JSON.parse(newLinks);
             var arr = [];
 
             for (i = 0; i < links.length; i++) {
-                if (links[i].href.startsWith(window.location.protocol + '//' + window.location.hostname + '/articles')) {
+                if (
+                    links[i].href.startsWith(window.location.protocol + '//' + window.location.hostname + '/articles')
+                ) {
                     articleLinks.push(links[i]);
                 }
             }
@@ -225,7 +228,7 @@
 
             for (i = 0; i < articleLinks.length; i++) {
                 articleLinks[i].href = arr[i];
-                articleLinks[i].target = "_self";
+                articleLinks[i].target = '_self';
             }
 
             viewAsLinks();
@@ -235,19 +238,18 @@
 
     <script>
         function viewAsLinks() {
-            var masqCookie = "{!masqScopeIdCookie}";
-            var viewingAs = "{!viewingAs}";
-            if (masqCookie != "" && viewingAs == "true") {
-                $("a").each(function () {
+            var masqCookie = '{!masqScopeIdCookie}';
+            var viewingAs = '{!viewingAs}';
+            if (masqCookie != '' && viewingAs == 'true') {
+                $('a').each(function () {
                     var href = this.href;
-                    if (href.indexOf("force") > -1) {
-                        if (href.indexOf("?") != -1) {
-                            href = href + "&masqScopeIdCookie={!masqScopeIdCookie}";
+                    if (href.indexOf('force') > -1) {
+                        if (href.indexOf('?') != -1) {
+                            href = href + '&masqScopeIdCookie={!masqScopeIdCookie}';
+                        } else {
+                            href = href + '?masqScopeIdCookie={!masqScopeIdCookie}';
                         }
-                        else {
-                            href = href + "?masqScopeIdCookie={!masqScopeIdCookie}";
-                        }
-                        $(this).attr("href", href);
+                        $(this).attr('href', href);
                     }
                 });
             }

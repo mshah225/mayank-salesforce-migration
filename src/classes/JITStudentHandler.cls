@@ -1,9 +1,14 @@
 global class JITStudentHandler implements Auth.SamlJitHandler {
     private static final boolean DEBUG = false; // Toggle debug error reporting
 
-    global User createUser(Id samlSsoProviderId, Id communityId, Id portalId,
-            String federationIdentifier, Map<String, String> attributes, String assertion) {
-
+    global User createUser(
+        Id samlSsoProviderId,
+        Id communityId,
+        Id portalId,
+        String federationIdentifier,
+        Map<String, String> attributes,
+        String assertion
+    ) {
         List<String> errorLogVars = new List<String>();
 
         try {
@@ -17,8 +22,19 @@ global class JITStudentHandler implements Auth.SamlJitHandler {
 
             List<User> dupeCheck = new List<User>();
             dupeCheck = [
-                SELECT Id, FirstName, LastName, Username, ProfileId, Alias, TimeZoneSidKey, Email,
-                    EmailEncodingKey, LocaleSidKey, LanguageLocaleKey, FederationIdentifier,
+                SELECT
+                    Id,
+                    FirstName,
+                    LastName,
+                    Username,
+                    ProfileId,
+                    Alias,
+                    TimeZoneSidKey,
+                    Email,
+                    EmailEncodingKey,
+                    LocaleSidKey,
+                    LanguageLocaleKey,
+                    FederationIdentifier,
                     CommunityNickname
                 FROM User
                 WHERE FederationIdentifier = :fedId
@@ -26,8 +42,16 @@ global class JITStudentHandler implements Auth.SamlJitHandler {
 
             if (dupeCheck.size() < 1) {
                 User u = new User();
-                handleJit(true, u, samlSsoProviderId, communityId, portalId,
-                        federationIdentifier, attributes, assertion);
+                handleJit(
+                    true,
+                    u,
+                    samlSsoProviderId,
+                    communityId,
+                    portalId,
+                    federationIdentifier,
+                    attributes,
+                    assertion
+                );
                 return u;
             } else {
                 return dupeCheck[0];
@@ -45,11 +69,27 @@ global class JITStudentHandler implements Auth.SamlJitHandler {
         }
     }
 
-    global void updateUser(Id userId, Id samlSsoProviderId, Id communityId, Id portalId,
-            String federationIdentifier, Map<String, String> attributes, String assertion) { }
+    global void updateUser(
+        Id userId,
+        Id samlSsoProviderId,
+        Id communityId,
+        Id portalId,
+        String federationIdentifier,
+        Map<String, String> attributes,
+        String assertion
+    ) {
+    }
 
-    private void handleJit(boolean create, User u, Id samlSsoProviderId, Id communityId, Id portalId,
-            String federationIdentifier, Map<String, String> attributes, String assertion) {
+    private void handleJit(
+        boolean create,
+        User u,
+        Id samlSsoProviderId,
+        Id communityId,
+        Id portalId,
+        String federationIdentifier,
+        Map<String, String> attributes,
+        String assertion
+    ) {
         if (communityId != null || portalId != null) {
             handleUser(create, u, attributes, federationIdentifier, false);
         } else {
@@ -57,8 +97,13 @@ global class JITStudentHandler implements Auth.SamlJitHandler {
         }
     }
 
-    private void handleUser(boolean create, User u, Map<String, String> attributes,
-            String federationIdentifier, boolean isStandard) {
+    private void handleUser(
+        boolean create,
+        User u,
+        Map<String, String> attributes,
+        String federationIdentifier,
+        boolean isStandard
+    ) {
         if (create) {
             if (attributes.containsKey('User.FederationIdentifier')) {
                 String fedId = attributes.get('User.FederationIdentifier');
@@ -67,13 +112,12 @@ global class JITStudentHandler implements Auth.SamlJitHandler {
                 u.FederationIdentifier = asurite + '@asu.edu';
 
                 List<Contact> contactLookup = [
-                        SELECT Id, FirstName, LastName, CAP__c
-                        FROM Contact
-                        WHERE ASURite_ID__c = :asurite
+                    SELECT Id, FirstName, LastName, CAP__c
+                    FROM Contact
+                    WHERE ASURite_ID__c = :asurite
                 ];
 
-                if (attributes.containsKey('User.FirstName')
-                        && attributes.containsKey('User.LastName')) {
+                if (attributes.containsKey('User.FirstName') && attributes.containsKey('User.LastName')) {
                     u.FirstName = attributes.get('User.FirstName');
                     u.LastName = attributes.get('User.LastName');
                 } else {
@@ -105,5 +149,6 @@ global class JITStudentHandler implements Auth.SamlJitHandler {
         }
     }
 
-    private class JitException extends Exception { }
+    private class JitException extends Exception {
+    }
 }

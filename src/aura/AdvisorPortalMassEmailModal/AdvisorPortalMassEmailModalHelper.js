@@ -7,7 +7,7 @@
             if (hasSomethingSelected) {
                 break;
             }
-            
+
             hasSomethingSelected = contacts[i].isSelected;
 
             for (let j = 0; j < contacts[i].cases.length; j++) {

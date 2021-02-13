@@ -111,7 +111,9 @@ public without sharing class UserDeprovisioner {
             }
         } catch (Exception e) {
             addToProcessingNotes('Stopping transfer of cases.');
-            throw new DeprovisionUserException('Could not transfer cases. QueueId on case\'s functional group may be invalid.');
+            throw new DeprovisionUserException(
+                'Could not transfer cases. QueueId on case\'s functional group may be invalid.'
+            );
         }
     }
     private void updateUserFields() {

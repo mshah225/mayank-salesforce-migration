@@ -20,8 +20,7 @@ private class DuoAuthCheckTest {
         DuoResponse response = new DuoAPI().send(checkApi);
         Test.stopTest();
 
-        DuoAuthCheck.Success result = (DuoAuthCheck.Success)
-                response.getResult();
+        DuoAuthCheck.Success result = (DuoAuthCheck.Success) response.getResult();
         System.assertEquals(100, result.timex);
     }
 

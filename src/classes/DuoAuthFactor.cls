@@ -7,9 +7,9 @@ public interface DuoAuthFactor {
     Type getType();
 
     /**
-    * Serializes the current class' state
-    *
-    * @return a JSON serialization of the current class' state
-    */
+     * Serializes the current class' state
+     *
+     * @return a JSON serialization of the current class' state
+     */
     String serialize();
 }

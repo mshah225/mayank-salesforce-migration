@@ -6,10 +6,7 @@ public with sharing class DuoUtil {
      *
      * @return a String representation of the provided Datetime in RFC2822
      */
-    public static String formatAsRFC2822(
-            Datetime dateToFormat,
-            String timezone
-    ) {
+    public static String formatAsRFC2822(Datetime dateToFormat, String timezone) {
         String RFC2822_FORMAT = 'E, dd MMM YYYY hh:mm:ss Z';
 
         return dateToFormat.format(RFC2822_FORMAT, timezone);
@@ -46,7 +43,7 @@ public with sharing class DuoUtil {
     public static Object parseResponse(String body, Type success) {
         JSONParser parser = JSON.createParser(body);
 
-        while(parser.nextToken() != null) {
+        while (parser.nextToken() != null) {
             if (parser.getCurrentName() == 'response') {
                 break;
             } else {

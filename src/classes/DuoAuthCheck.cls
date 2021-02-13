@@ -9,10 +9,10 @@ public with sharing class DuoAuthCheck implements DuoRequest {
     }
 
     /**
-    * Returns the path of the endpoint for this API
-    *
-    * @return a String representation of the path (e.g. "/auth/v2/check")
-    */
+     * Returns the path of the endpoint for this API
+     *
+     * @return a String representation of the path (e.g. "/auth/v2/check")
+     */
     public String getPath() {
         return '/auth/v2/check';
     }
@@ -35,10 +35,7 @@ public with sharing class DuoAuthCheck implements DuoRequest {
      * @return an Object with response data from Duo
      */
     public Object handleSuccess(String body) {
-        return DuoUtil.parseResponse(
-                body.replace('"time"', '"timex"'),
-                Success.class
-        );
+        return DuoUtil.parseResponse(body.replace('"time"', '"timex"'), Success.class);
     }
 
     /**

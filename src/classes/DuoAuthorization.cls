@@ -58,9 +58,7 @@ public with sharing class DuoAuthorization {
      * @return
      */
     public DuoAuthorization setParams(Map<String, Object> params) {
-        this.params = params != null && params.size() > 0
-                    ? DuoUtil.urlEncodeParams(params)
-                    : '';
+        this.params = params != null && params.size() > 0 ? DuoUtil.urlEncodeParams(params) : '';
         return this;
     }
 
@@ -74,21 +72,15 @@ public with sharing class DuoAuthorization {
     }
 
     /*
-    * Returns the formatted and encrypted password required for Duo
-    * Authentication
-    */
+     * Returns the formatted and encrypted password required for Duo
+     * Authentication
+     */
     public String getAuthorization() {
-        Blob hmacData = Crypto.generateMac(
-                'hmacSHA1',
-                Blob.valueOf(generatePassword()),
-                Blob.valueOf(secret)
-        );
+        Blob hmacData = Crypto.generateMac('hmacSHA1', Blob.valueOf(generatePassword()), Blob.valueOf(secret));
 
         String password = EncodingUtil.convertToHex(hmacData);
 
-        return 'BASIC ' + EncodingUtil.base64Encode(
-                Blob.valueOf(integrationKey + ':' + password)
-        );
+        return 'BASIC ' + EncodingUtil.base64Encode(Blob.valueOf(integrationKey + ':' + password));
     }
 
     private String generatePassword() {
@@ -102,4 +94,4 @@ public with sharing class DuoAuthorization {
 
         return password;
     }
- }
+}

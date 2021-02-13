@@ -6,26 +6,20 @@
     <script>
         $Lightning.use(
             "c:DuoAuthApp",
-            function() {
+            function () {
                 $Lightning.createComponent(
                     "c:duoAuthButtons",
                     {
-                        userId:"{!JSENCODE(userId)}",
-                        deviceId:"{!JSENCODE(deviceId)}",
+                        userId: "{!JSENCODE(userId)}",
+                        deviceId: "{!JSENCODE(deviceId)}",
                     },
                     "duoAuthButtons",
-                    function(cmp) {}
+                    function (cmp) { }
                 );
             }
         );
     </script>
 
-    <apex:attribute name="userId"
-                    description="The Id of the Duo User"
-                    required="true"
-                    type="String"/>
-    <apex:attribute name="deviceId"
-                    description="The Id of the Duo User's Device"
-                    required="true"
-                    type="String"/>
+    <apex:attribute name="userId" description="The Id of the Duo User" required="true" type="String" />
+    <apex:attribute name="deviceId" description="The Id of the Duo User's Device" required="true" type="String" />
 </apex:component>

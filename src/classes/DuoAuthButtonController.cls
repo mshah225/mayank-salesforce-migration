@@ -12,20 +12,14 @@ public with sharing class DuoAuthButtonController {
     public static Boolean authenticate(String user, String device) {
         Boolean authenticated = false;
 
-        DuoAuthUserId authUserId = new DuoAuthUserId(
-                user,
-                new DuoPushFactor(device)
-        );
+        DuoAuthUserId authUserId = new DuoAuthUserId(user, new DuoPushFactor(device));
 
         DuoResponse response = new DuoAPI().send(authUserId);
 
         if (response.getResult() instanceof DuoAPI.Error) {
-            throw new AuraHandledException(
-                    JSON.serialize(response.getResult())
-            );
+            throw new AuraHandledException(JSON.serialize(response.getResult()));
         } else {
-            DuoAuth.Success success =
-                    (DuoAuth.Success) response.getResult();
+            DuoAuth.Success success = (DuoAuth.Success) response.getResult();
 
             authenticated = success.result.equals('allow');
         }

@@ -8,15 +8,12 @@ public with sharing class DuoAPI {
      *
      */
     public DuoAPI() {
-        duoConfig  = [
-                SELECT Hostname__c,
-                        Timezone__c,
-                        Key__c,
-                        Secret__c
-                FROM DuoConfig__mdt
-                WHERE IsActive__c = TRUE
-                ORDER BY Priority__c ASC
-                LIMIT 1
+        duoConfig = [
+            SELECT Hostname__c, Timezone__c, Key__c, Secret__c
+            FROM DuoConfig__mdt
+            WHERE IsActive__c = TRUE
+            ORDER BY Priority__c ASC
+            LIMIT 1
         ];
 
         url = 'https://' + duoConfig.Hostname__c;
@@ -31,29 +28,23 @@ public with sharing class DuoAPI {
      */
     public DuoResponse send(DuoRequest request) {
         DuoAuthorization auth = new DuoAuthorization(duoConfig)
-                .setDateOfRequest(System.now())
-                .setMethod(
-                        methodToString(request.getMethod())
-                ).setPath(request.getPath());
+            .setDateOfRequest(System.now())
+            .setMethod(methodToString(request.getMethod()))
+            .setPath(request.getPath());
 
         HttpRequest api = new HttpRequest();
-        api.setMethod(
-                methodToString(request.getMethod())
-        );
+        api.setMethod(methodToString(request.getMethod()));
         switch on request.getMethod() {
             when POSTX {
                 api.setEndpoint(url + request.getPath());
-                api.setHeader(
-                        'Content-Type',
-                        'application/x-www-form-urlencoded'
-                );
-                api.setBody(
-                        JSON.serialize(request.getParams())
-                );
-            } when GETX, DELETEX {
+                api.setHeader('Content-Type', 'application/x-www-form-urlencoded');
+                api.setBody(JSON.serialize(request.getParams()));
+            }
+            when GETX, DELETEX {
                 api.setEndpoint(url + request.getPath() + request.getParams());
                 auth.setParams(request.getParams());
-            } when else {
+            }
+            when else {
                 //TODO: consider throwing some custom exception instead
                 throw new NullPointerException();
             }
@@ -62,9 +53,7 @@ public with sharing class DuoAPI {
         api.setHeader('Authorization', auth.getAuthorization());
         api.setHeader('Date', auth.getDateOfRequest());
 
-        return new DuoResponse(
-                new Http().send(api), request
-        );
+        return new DuoResponse(new Http().send(api), request);
     }
 
     private static String methodToString(Method requestMethod) {
@@ -73,9 +62,11 @@ public with sharing class DuoAPI {
         switch on requestMethod {
             when GETX {
                 methodToString = 'GET';
-            } when POSTX {
+            }
+            when POSTX {
                 methodToString = 'POST';
-            } when DELETEX {
+            }
+            when DELETEX {
                 methodToString = 'DELETE';
             }
         }
@@ -87,7 +78,9 @@ public with sharing class DuoAPI {
      * Enumerates various RESTful API methods that are supported by DUO's API
      */
     public enum Method {
-        GETX, POSTX, DELETEX
+        GETX,
+        POSTX,
+        DELETEX
     }
 
     /**

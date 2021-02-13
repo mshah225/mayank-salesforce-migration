@@ -21,7 +21,6 @@ public class DuoResponse {
      * @return an Object defining the result from the Duo API
      */
     public Object getResult() {
-
         /*
          * Successful responses from Duo will always result in a 200 HTTP
          * status code.
@@ -30,17 +29,13 @@ public class DuoResponse {
          * information on Duo responses
          */
         if (response.getStatusCode() == 200) {
-            return request.handleSuccess(
-                    response.getBody()
-            );
+            return request.handleSuccess(response.getBody());
         } else {
             return handleError();
         }
     }
 
     private DuoAPI.Error handleError() {
-        return (DuoAPI.Error) JSON.deserialize(
-                response.getBody(), DuoAPI.Error.class
-        );
+        return (DuoAPI.Error) JSON.deserialize(response.getBody(), DuoAPI.Error.class);
     }
 }

@@ -11,14 +11,11 @@ private class DuoAuthUserTest {
         authMock.setHeader('Content-Type', 'application/json');
 
         DuoRequest authApi = new DuoAuthUserId(
-                'USERID1111',
-                new DuoPushFactor('MOCKDEVICE1111')
+            'USERID1111',
+            new DuoPushFactor('MOCKDEVICE1111')
                 .setType('Login')
                 .setDisplayUsername('Super Gary')
-                .setPushInfo(new Map<String, String>{
-                        'mock_info' => 'Mock Info',
-                        'more_info' => '1234'
-                })
+                .setPushInfo(new Map<String, String>{ 'mock_info' => 'Mock Info', 'more_info' => '1234' })
         );
         Test.setMock(HttpCalloutMock.class, authMock);
         Test.startTest();
@@ -43,10 +40,8 @@ private class DuoAuthUserTest {
         authMock.setStatusCode(401);
         authMock.setHeader('Content-Type', 'application/json');
 
-        DuoRequest authApi = new DuoAuthUsername(
-                'super.gary@example.com',
-                new DuoPushFactor('MOCKDEVICE1111')
-        ).setIPAddress('127.0.0.1');
+        DuoRequest authApi = new DuoAuthUsername('super.gary@example.com', new DuoPushFactor('MOCKDEVICE1111'))
+            .setIPAddress('127.0.0.1');
         Test.setMock(HttpCalloutMock.class, authMock);
         Test.startTest();
         DuoResponse response = new DuoAPI().send(authApi);

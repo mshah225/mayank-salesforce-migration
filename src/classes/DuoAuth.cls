@@ -26,10 +26,10 @@ public with sharing abstract class DuoAuth implements DuoRequest {
     }
 
     /**
-    * Returns the path for the Auth API
-    *
-    * @return a String representation of the path (e.g. "/auth/v2/auth")
-    */
+     * Returns the path for the Auth API
+     *
+     * @return a String representation of the path (e.g. "/auth/v2/auth")
+     */
     public String getPath() {
         return '/auth/v2/auth';
     }
@@ -40,8 +40,7 @@ public with sharing abstract class DuoAuth implements DuoRequest {
      * @return a Map of Auth API parameters
      */
     public Map<String, Object> getParams() {
-        Map<String, Object> params = (Map<String, Object>)
-                JSON.deserializeUntyped(factor.serialize());
+        Map<String, Object> params = (Map<String, Object>) JSON.deserializeUntyped(factor.serialize());
 
         if (ipaddr != null) {
             params.put('ipaddr', ipaddr);

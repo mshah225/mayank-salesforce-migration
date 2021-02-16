@@ -3,6 +3,7 @@ public without sharing class UserDeprovisioner {
     private User deprovisionedUser;
     private User userToDeprovision;
     private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
+    private Map<Id, String> fieldIdToNameMap;
 
     // original data
     private List<Case> cases;
@@ -30,6 +31,7 @@ public without sharing class UserDeprovisioner {
         this.userToDeprovision = userToDeprovision;
         this.deprovisionedUser = new User(Id = userToDeprovision.Id);
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
+        this.fieldIdToNameMap = new Map<Id, String>();
 
         toUpdateCases = new List<Case>();
         toUpdateUserLogin = null;
@@ -274,14 +276,16 @@ public without sharing class UserDeprovisioner {
             fieldName +
             ' To'
         );
-        addToProcessingNotes(
-            'Changed ' +
-            fieldName +
-            ' from: ' +
-            userToDeprovision.get(fieldName) +
-            ' to ' +
-            changeFieldTo.Name__c
-        );
+
+        String fieldValue = (String) (userToDeprovision.get(fieldName));
+
+        // Get name of field (instead of id) if possible
+        if (fieldIdToNameMap.containsKey(Id.valueOf(fieldValue))) {
+            fieldValue = fieldIdToNameMap.get(Id.valueOf(fieldValue));
+        }
+
+        addToProcessingNotes('Changed ' + fieldName + ' from: ' + fieldValue + ' to ' + changeFieldTo.Name__c);
+
         deprovisionedUser.put(fieldName, Id.valueOf(changeFieldTo.Id__c));
     }
 
@@ -303,6 +307,9 @@ public without sharing class UserDeprovisioner {
     }
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
+    }
+    public void setFieldIdToNameMap(Map<Id, String> fieldIdToNameMap) {
+        this.fieldIdToNameMap = fieldIdToNameMap;
     }
 
     // Access values that are ready for alteration/deletion

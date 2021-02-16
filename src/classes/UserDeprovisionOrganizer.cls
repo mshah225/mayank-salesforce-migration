@@ -26,6 +26,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, List<PermissionSetAssignment>> userToPermissionSetMap;
     private Map<Id, List<UserPackageLicense>> userToPackageLicenseMap;
     private Map<Id, String> userToProcessingNotesMap;
+    private Map<Id, String> fieldIdToNameMap;
 
     private static Boolean debug = false;
     private static Boolean allowRepeatCases = true;
@@ -45,6 +46,7 @@ public without sharing class UserDeprovisionOrganizer {
         this.userToPermissionSetMap = new Map<Id, List<PermissionSetAssignment>>();
         this.userToPackageLicenseMap = new Map<Id, List<UserPackageLicense>>();
         this.userToProcessingNotesMap = new Map<Id, String>();
+        this.fieldIdToNameMap = new Map<Id, String>();
 
         // Make list of user's that need deprovisioning
         for (User userToDeprovision : newUsers) {
@@ -61,6 +63,7 @@ public without sharing class UserDeprovisionOrganizer {
             populateUserToDeprovisionPermissionSetMap();
             populateUserToDeprovisionPackageLicenseMap();
             populateUserToUserLoginMap();
+            populateFieldIdToNameMap();
         }
     }
 
@@ -83,6 +86,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setPermissionSetAssignments(userToPermissionSetMap.get(userId));
                 userDeprovisioner.setUserPackageLicenses(userToPackageLicenseMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
+                userDeprovisioner.setFieldIdToNameMap(fieldIdToNameMap);
                 // Deprovision
                 userDeprovisioner.deprovisionUser();
                 // Get all updated and deleted data
@@ -226,6 +230,24 @@ public without sharing class UserDeprovisionOrganizer {
         userToUserLoginMap = new Map<Id, UserLogin>();
         for (UserLogin ul : allUserLogins) {
             userToUserLoginMap.put(ul.UserId, ul);
+        }
+    }
+
+    private void populateFieldIdToNameMap() {
+        Set<Id> profileIds = new Set<Id>();
+        Set<Id> userRoleIds = new Set<Id>();
+        for (UserDeprovisioner toDepro : userDeprovisionersList) {
+            User toDeproUser = toDepro.getUserToDeprovision();
+            profileIds.add(Id.valueOf((String) (toDeproUser.get('ProfileId'))));
+            userRoleIds.add(Id.valueOf((String) (toDeproUser.get('UserRoleId'))));
+        }
+
+        for (UserRole ur : [SELECT Id, Name FROM UserRole WHERE Id IN :userRoleIds]) {
+            fieldIdToNameMap.put(ur.Id, ur.Name);
+        }
+
+        for (Profile pro : [SELECT Id, Name FROM Profile WHERE Id IN :profileIds]) {
+            fieldIdToNameMap.put(pro.Id, pro.Name);
         }
     }
 

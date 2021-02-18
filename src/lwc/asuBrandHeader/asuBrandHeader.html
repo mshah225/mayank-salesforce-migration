@@ -1,18 +1,4 @@
 <template>
-    <div style="margin: 0px; padding: 0px; overflow: hidden">
-        <lightning-card title="LWC with VF in iFrame" icon-name="custom:custom9">
-            <lightning-layout multiple-rows>
-                <lightning-layout-item size="12" padding="around-small">
-                    <p>VF page below in an iFrame</p>
-                    <iframe
-                        src="/apex/ASUDesignSystem"
-                        frameborder="0"
-                        style="overflow: hidden; height: 100%; width: 100%"
-                        height="100%"
-                        width="100%"
-                    ></iframe>
-                </lightning-layout-item>
-            </lightning-layout>
-        </lightning-card>
-    </div>
+    <div class="headerSpacer"></div>
+    <div id="headerContainer" class="headerContainer" lwc:dom="manual"></div>
 </template>

@@ -1,9 +1,66 @@
-import {LightningElement} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import {loadScript} from 'lightning/platformResourceLoader';
 import jquery from '@salesforce/resourceUrl/jQuery_3_1_1';
 
 export default class AsuBrandHeader extends LightningElement {
-    connectedCallback() {}
+    @api title;
+    @api baseUrl;
+    @api navTreeStr;
+    connectedCallback() {
+        let params = this.getQueryParameters();
+
+        // Precedence: @api defined > URL param > default value
+
+        // Title
+        if (this.title === undefined) {
+            this.title = params['title'];
+
+            if (this.title === undefined) {
+                this.title = 'Arizona State University';
+            }
+        }
+
+        // Base URL
+        if (this.baseUrl === undefined) {
+            this.baseUrl = params['baseUrl'];
+
+            if (this.baseUrl === undefined) {
+                this.baseUrl = 'https://www.asu.edu/';
+            }
+        }
+        // append / if needed
+        if (this.baseUrl[this.baseUrl.length - 1] != '/') {
+            this.baseUrl = this.baseUrl + '/';
+        }
+
+        // Nav Tree
+        if (this.navTreeStr === undefined) {
+            this.navTreeStr = params['navTree'];
+
+            if (this.navTreeStr === undefined) {
+                this.navTreeStr =
+                    '{ "navbarLinks" : [ { "href": "' +
+                    this.baseUrl +
+                    '", "text": "Home", "type": "icon", "class": "home" }, { "text": "News/Events", "href": "' +
+                    this.baseUrl +
+                    '?feature=newsevents" }, { "text": "Academics", "href": "' +
+                    this.baseUrl +
+                    '?feature=academics" }, { "text": "Admission", "href": "https://admission.asu.edu/" }, { "text": "Research", "href": "' +
+                    this.baseUrl +
+                    '?feature=research" }, { "text": "Athletics", "href": "' +
+                    this.baseUrl +
+                    '?feature=athletics" }, { "text": "Alumni", "href": "' +
+                    this.baseUrl +
+                    '?feature=alumni" }, { "text": "Giving", "href": "' +
+                    this.baseUrl +
+                    '?feature=giving" }, { "text": "President", "href": "' +
+                    this.baseUrl +
+                    '?feature=president" }, { "text": "About ASU", "href": "' +
+                    this.baseUrl +
+                    'about" } ] }';
+            }
+        }
+    }
     renderedCallback() {
         loadScript(this, jquery).then(() => {
             $.getScript('https://cdn.jsdelivr.net/gh/rnordmanASU/scripts/vendor.js', () => {
@@ -14,113 +71,64 @@ export default class AsuBrandHeader extends LightningElement {
         });
     }
     generateHeader() {
-        const BasicNavTree = [
-            {
-                href: '/',
-                text: 'Home',
-                type: 'icon',
-                class: 'home',
-            },
-            {
-                text: 'Degree programs',
-                href: '#',
-                items: [
-                    [
-                        {
-                            href: 'https://www.asu.edu/?feature=newsevents',
-                            text: 'Mauris viverra, sem nec',
-                        },
-                        {
-                            href: 'https://www.asu.edu/?feature=academics',
-                            text: 'Academics',
-                        },
-                        {
-                            href: 'https://www.asu.edu/?feature=research',
-                            text: 'Research',
-                        },
-                        {
-                            href: 'https://www.asu.edu/?feature=athletics',
-                            text: 'Athletics',
-                        },
-                        {
-                            href: 'https://www.asu.edu/?feature=alumni',
-                            text: 'Alumni',
-                        },
-                        {
-                            href: 'https://www.asu.edu/?feature=giving',
-                            text: 'Giving',
-                        },
-                        {
-                            href: 'https://www.asu.edu/?feature=president',
-                            text: 'President',
-                        },
-                        {
-                            href: 'https://www.asu.edu/about',
-                            text: 'About ASU',
-                        },
-                    ],
-                ],
-            },
-
-            {
-                text: 'People',
-                href: '#',
-                items: [
-                    [
-                        {
-                            classes: 'border first',
-                            href: 'https://www.asu.edu/map/',
-                            text: 'Map',
-                        },
-                        {
-                            href: 'https://campus.asu.edu/tempe/',
-                            text: 'Tempe',
-                        },
-                        {
-                            href: 'https://campus.asu.edu/west/',
-                            text: 'West',
-                        },
-                        {
-                            href: 'https://campus.asu.edu/polytechnic/',
-                            text: 'Polytechnic',
-                        },
-                        {
-                            href: 'https://asuonline.asu.edu/',
-                            text: 'Online and Extended',
-                        },
-                        {
-                            href: 'https://havasu.asu.edu/',
-                            text: 'Mauris viverra, sem nec',
-                        },
-                    ],
-                ],
-            },
-            {
-                text: 'My ASU',
-                href: '#',
-            },
-            {
-                text: 'Research',
-                href: '#',
-            },
-            {
-                text: 'About us',
-                href: '#',
-            },
-            {
-                text: 'Contact us',
-                href: '#',
-            },
-        ];
+        const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
         let props = {
-            navTree: BasicNavTree,
-            title: 'Example title',
-            baseUrl: 'asu.edu',
+            navTree: navTree,
+            title: this.title,
+            baseUrl: this.baseUrl,
         };
 
         var idSelector = this.template.querySelector('.headerContainer').id;
 
-        //var idSelector = 'headerContainer-1';
         componentsLibrary.initHeader(props, idSelector, false, this.template);
+    }
+    getQueryParameters() {
+        var params = {};
+        var search = location.search.substring(1);
+
+        if (search) {
+            params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
+                return key === '' ? value : decodeURIComponent(value);
+            });
+        }
+
+        return params;
+    }
+    convertStrToNavTreeObj(navTreeStr) {
+        const json = JSON.parse(navTreeStr);
+        const entries = json['navbarLinks'];
+        let newStyle = true;
+        let listOfLinks = [];
+
+        if (entries) {
+            // Determine if using old link format
+            for (let i = 0; i < entries.length; i++) {
+                let entry = entries[i];
+                if (entry['text'] === undefined) {
+                    newStyle = false;
+                    break;
+                }
+            }
+
+            if (newStyle) {
+                listOfLinks = entries;
+            } else {
+                for (let i = 0; i < entries.length; i++) {
+                    let entry = entries[i];
+                    for (let j in entry) {
+                        let name = j;
+                        let url = entry[j];
+
+                        name = name.replace('+', ' ');
+                        if (name === 'Student Home') {
+                            listOfLinks.push({href: url, text: name, type: 'icon', class: 'home'});
+                        } else {
+                            listOfLinks.push({href: url, text: name});
+                        }
+                    }
+                }
+            }
+        }
+        return listOfLinks;
     }
 }

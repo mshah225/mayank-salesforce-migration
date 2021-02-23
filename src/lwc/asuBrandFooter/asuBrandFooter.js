@@ -1,4 +1,6 @@
 import {LightningElement} from 'lwc';
+import {loadStyle} from 'lightning/platformResourceLoader';
+import bootstrap from '@salesforce/resourceUrl/bootstrap_4';
 
 export default class AsuBrandFooter extends LightningElement {
     renderedCallback() {
@@ -7,11 +9,6 @@ export default class AsuBrandFooter extends LightningElement {
         this.template.querySelector('.wrapper-footer-colophon').id = 'wrapper-footer-colophon';
         this.template.querySelector('.footer-colophon').id = 'footer-colophon';
 
-        let styleSheet = document.createElement('link');
-        styleSheet.rel = 'stylesheet';
-        styleSheet.type = 'text/css';
-        styleSheet.href =
-            'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/bootstrap4-theme/dist/css/bootstrap-asu.min.css';
-        document.head.appendChild(styleSheet);
+        loadStyle(this, bootstrap);
     }
 }

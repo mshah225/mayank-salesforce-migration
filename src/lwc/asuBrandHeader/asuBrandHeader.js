@@ -36,6 +36,9 @@ export default class AsuBrandHeader extends LightningElement {
         // Nav Tree
         if (this.navTreeStr === undefined) {
             this.navTreeStr = params['navTree'];
+            if (this.navTreeStr == undefined) {
+                this.navTreeStr = params['navbar'];
+            }
 
             if (this.navTreeStr === undefined) {
                 this.navTreeStr =

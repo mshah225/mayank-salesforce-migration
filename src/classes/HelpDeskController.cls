@@ -61,10 +61,16 @@ public with sharing class HelpDeskController {
 
     public List<SelectOption> getOriginOptions() {
         List<SelectOption> origins = new List<SelectOption>();
-        origins.add(new SelectOption('Incoming Call', 'Incoming Call'));
-        origins.add(new SelectOption('Outbound Call', 'Outbound Call'));
-        origins.add(new SelectOption('My ASU', 'My ASU'));
-        origins.add(new SelectOption('Chat', 'Chat'));
+    
+        for (Help_Desk_Case_Origin__mdt statusSetting : [
+            SELECT Label, Value__c
+            FROM Help_Desk_Case_Origin__mdt
+            WHERE Active__c = TRUE
+            ORDER BY Label ASC
+        ]) {
+            origins.add(new SelectOption(statusSetting.Label, statusSetting.Value__c));
+        }
+    
         return origins;
     }
 

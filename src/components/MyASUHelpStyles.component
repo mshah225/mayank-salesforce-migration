@@ -1,7 +1,6 @@
-<apex:component >
+<apex:component>
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4)}" />
     <style>
         /* My ASU Help - General */
 

@@ -12,9 +12,17 @@
         <c:MyASUHelpStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
+        <style>
+            #LWCHeaderSpacer {
+                height: 145px;
+            }
+        </style>
     </head>
 
-    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
+    <apex:includeLightning />
+    <div id="LWCHeaderSpacer"></div>
+    <div id='LWCHeaderWrapper'></div>
+
     <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
         viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
 
@@ -43,6 +51,8 @@
         </div>
     </div>
 
+    <div id='LWCFooterWrapper'></div>
+
     <script>
         var widthToPush;
         var viewAsLinkWidth = realWidth($('.asu-brand-menu-view-as-change'));
@@ -66,8 +76,24 @@
             clone.remove();
             return width;
         }
-    </script>
 
-    <c:ASUBrandFooter />
+        // Load LWCs
+        $Lightning.use(
+            "c:ASUBrandedApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {},
+                    "LWCHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "LWCFooterWrapper"
+                );
+            }
+        );
+
+    </script>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

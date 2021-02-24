@@ -1,6 +1,7 @@
 import {LightningElement, api} from 'lwc';
 import {loadScript} from 'lightning/platformResourceLoader';
 import jquery from '@salesforce/resourceUrl/jQuery_3_1_1';
+import getFirstName from '@salesforce/apex/ASUBrandFunctions.getFirstName';
 
 export default class AsuBrandHeader extends LightningElement {
     @api title;
@@ -55,16 +56,30 @@ export default class AsuBrandHeader extends LightningElement {
         });
     }
     generateHeader() {
+        const idSelector = this.template.querySelector('.headerContainer').id;
         const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
-        let props = {
-            navTree: navTree,
-            title: this.title,
-            baseUrl: this.baseUrl,
-        };
 
-        var idSelector = this.template.querySelector('.headerContainer').id;
+        getFirstName()
+            .then((name) => {
+                const props = {
+                    loggedIn: true,
+                    userName: name,
+                    navTree: navTree,
+                    title: this.title,
+                    baseUrl: this.baseUrl,
+                };
 
-        componentsLibrary.initHeader(props, idSelector, false, this.template);
+                componentsLibrary.initHeader(props, idSelector, false, this.template);
+            })
+            .catch(() => {
+                const props = {
+                    navTree: navTree,
+                    title: this.title,
+                    baseUrl: this.baseUrl,
+                };
+
+                componentsLibrary.initHeader(props, idSelector, false, this.template);
+            });
     }
     getQueryParameters() {
         var params = {};

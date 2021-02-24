@@ -41,26 +41,7 @@ export default class AsuBrandHeader extends LightningElement {
             }
 
             if (this.navTreeStr === undefined) {
-                this.navTreeStr =
-                    '{ "navbarLinks" : [ { "href": "' +
-                    this.baseUrl +
-                    '", "text": "Home", "type": "icon", "class": "home" }, { "text": "News/Events", "href": "' +
-                    this.baseUrl +
-                    '?feature=newsevents" }, { "text": "Academics", "href": "' +
-                    this.baseUrl +
-                    '?feature=academics" }, { "text": "Admission", "href": "https://admission.asu.edu/" }, { "text": "Research", "href": "' +
-                    this.baseUrl +
-                    '?feature=research" }, { "text": "Athletics", "href": "' +
-                    this.baseUrl +
-                    '?feature=athletics" }, { "text": "Alumni", "href": "' +
-                    this.baseUrl +
-                    '?feature=alumni" }, { "text": "Giving", "href": "' +
-                    this.baseUrl +
-                    '?feature=giving" }, { "text": "President", "href": "' +
-                    this.baseUrl +
-                    '?feature=president" }, { "text": "About ASU", "href": "' +
-                    this.baseUrl +
-                    'about" } ] }';
+                this.navTreeStr = '{ "navbarLinks" : [ { } ] }';
             }
         }
     }

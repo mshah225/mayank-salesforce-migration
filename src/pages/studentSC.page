@@ -78,7 +78,7 @@
 
         // Load LWCs
         $Lightning.use(
-            "c:ASUBrandedApp",
+            "c:ASUBrandApp",
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",

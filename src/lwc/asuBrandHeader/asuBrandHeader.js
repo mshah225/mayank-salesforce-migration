@@ -1,7 +1,7 @@
 import {LightningElement, api} from 'lwc';
 import {loadScript} from 'lightning/platformResourceLoader';
 import jquery from '@salesforce/resourceUrl/jQuery_3_1_1';
-import getFirstName from '@salesforce/apex/ASUBrandFunctions.getFirstName';
+import getFirstName from '@salesforce/apex/ASUBrandUtilities.getFirstName';
 
 export default class AsuBrandHeader extends LightningElement {
     @api title;

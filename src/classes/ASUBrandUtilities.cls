@@ -1,12 +1,13 @@
-public inherited sharing class ASUBrandFunctions {
+public inherited sharing class ASUBrandUtilities {
     @AuraEnabled(cacheable=true)
     public static String getFirstName() {
         if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
             return UserInfo.getFirstName();
         } else {
-            throw new ASUBrandFunctionsException('Not Logged In');
+            throw new ASUBrandUtilitiesException('Not Logged In');
         }
     }
 
-    public class ASUBrandFunctionsException extends Exception {}
+    public class ASUBrandUtilitiesException extends Exception {
+    }
 }

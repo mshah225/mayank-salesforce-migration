@@ -63,10 +63,10 @@ public with sharing class HelpDeskController {
         List<SelectOption> origins = new List<SelectOption>();
     
         for (Help_Desk_Case_Origin__mdt statusSetting : [
-            SELECT Label, Value__c
+            SELECT Label, Value__c, Display_Order__c
             FROM Help_Desk_Case_Origin__mdt
             WHERE Active__c = TRUE
-            ORDER BY Label ASC
+            ORDER BY Display_Order__c ASC
         ]) {
             origins.add(new SelectOption(statusSetting.Label, statusSetting.Value__c));
         }

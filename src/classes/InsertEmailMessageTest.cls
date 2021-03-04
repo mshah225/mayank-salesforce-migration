@@ -14,6 +14,9 @@ private class InsertEmailMessageTest {
         testEmailToCaseConfig.Name = 'Reopen Closed Case Threshold';
         testEmailToCaseConfig.Value__c = '14';
         insert testEmailToCaseConfig;
+        
+        Email_Logging__c emailLoggerSettings = new Email_Logging__c(Name = 'Current_Settings', Attachment_Logging__c = false, Spam_Logging__c = false, Header_Logging__c = false);
+        insert emailLoggerSettings;
     }
 
     @isTest

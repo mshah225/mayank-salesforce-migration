@@ -571,6 +571,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         Attachment attachment = new Attachment();
                         attachment.Name = bAttachment.fileName;
                         attachment.Body = bAttachment.body;
+                        attachment.ContentType = bAttachment.mimeTypeSubType;
                         attachment.ParentId = parentObject.Id;
                         if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
@@ -606,7 +607,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
             // change any cid links to new url
             for (String headerValue : cidToAttachmentMap.keySet()) {
-                String refLink = '/servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
+                String refLink =
+                    '/servlet/../servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
                 email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
             }
         }

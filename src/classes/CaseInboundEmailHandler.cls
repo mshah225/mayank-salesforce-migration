@@ -461,8 +461,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
             if (
                 success &&
-                (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) &&
-                String.isBlank(email.plainTextBody)
+                htmlBodyIsEmpty(email.HtmlBody) &&
+                String.isBlank(removeAllWhitespaces(email.plainTextBody))
             ) {
                 if (this.theCase.Description == null) {
                     this.theCase.Description = '';
@@ -1328,5 +1328,30 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         update lostEmail;
 
         return lostEmail;
+    }
+
+    private String removeAllWhitespaces(String removeFrom) {
+        // \s handles most whitespace characters.  Misses non-breaking space types and a couple others
+        // Using https://en.wikipedia.org/wiki/Whitespace_character as defining list of whitespace
+
+        if (removeFrom == null) {
+            removeFrom = '';
+        }
+        return removeFrom.replaceAll(
+                '[\\s|\\u00A0|\\u0085|\\u2007|\\u202F|\\u180E|\\u200B|\\u200C|\\u200D|\\u2060|\\uFEFF]',
+                ''
+            )
+            .replaceAll('&nbsp;', '');
+    }
+    private Boolean htmlBodyIsEmpty(String htmlBody) {
+        if (htmlBody == null) {
+            htmlBody = '';
+        }
+
+        htmlBody = htmlBody.replaceAll('<head>[\\s\\S]*</head>', '');
+        htmlBody = htmlBody.replaceAll('<[^>]+>', '');
+        htmlBody = removeAllWhitespaces(htmlBody);
+
+        return String.isBlank(htmlBody);
     }
 }

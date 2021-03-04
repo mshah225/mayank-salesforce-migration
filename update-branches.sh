@@ -95,28 +95,30 @@ message="Attempting changes............................"; for ((i=0; i<${#messag
 successCount=0
 failureCount=0
 for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
-    message=">> Checking out "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
-    message="$branch"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;34m${message:$i:1}\033[0m"; done; echo -ne;
-    git checkout $branch &>/dev/null
-    printf "\n\t"
-    message="> PULLING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;33m${message:$i:1}\033[0m"; done; echo -ne;
-    git pull --no-edit origin main &>/dev/null
-    if [ $? -eq 0 ]; then
-        # Clean merge, proceed with pushing
+    if [[ "$branch" != *\/* ]]; then
+        message=">> Checking out "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+        message="$branch"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;34m${message:$i:1}\033[0m"; done; echo -ne;
+        git checkout $branch &>/dev/null
         printf "\n\t"
-        message="> CLEAN MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
-        printf "\n\t"
-        message="> PUSHING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
-        git push origin $branch &>/dev/null
-        successCount=$((successCount+1))
-    else
-        # Conflicted merge, abort and handle manually
-        printf "\n\t"
-        message="> CONFLICTED MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
-        printf "\n\t"
-        message="> ABORTING MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
-        git merge --abort &>/dev/null
-        failureCount=$((failureCount+1))
+        message="> PULLING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;33m${message:$i:1}\033[0m"; done; echo -ne;
+        git pull --no-edit origin main &>/dev/null
+        if [ $? -eq 0 ]; then
+            # Clean merge, proceed with pushing
+            printf "\n\t"
+            message="> CLEAN MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+            printf "\n\t"
+            message="> PUSHING UPDATES"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+            git push origin $branch &>/dev/null
+            successCount=$((successCount+1))
+        else
+            # Conflicted merge, abort and handle manually
+            printf "\n\t"
+            message="> CONFLICTED MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
+            printf "\n\t"
+            message="> ABORTING MERGE"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;31m${message:$i:1}\033[0m"; done; echo -ne;
+            git merge --abort &>/dev/null
+            failureCount=$((failureCount+1))
+        fi
     fi
     printf "\n"
 done

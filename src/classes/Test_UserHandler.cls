@@ -305,53 +305,6 @@ public class Test_UserHandler {
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
-    //insert a marketing cloud user and check whether the user is added to the corresponding collaboration group.
-
-    @isTest
-    static void insertASUMarketingUser() {
-        Decimal dbRandom = Math.random();
-        dbRandom = dbRandom.SetScale(2); // Round off to two decimal points(More decimal points may cause name character limit to exceed)
-
-        //Create record in Chatter Auto Add User custom setting
-        Chatter_Auto_Add_Users__c objAsuMarketing = new Chatter_Auto_Add_Users__c();
-        objAsuMarketing.Name = 'Marketing1';
-        //Assign Connected Marketing Cloud Adm People Soft Role.
-        objAsuMarketing.PeopleSoft_Role__c = 'Connected Marketing Cloud Adm';
-        objAsuMarketing.NotificationFrequency__c = 'P';
-        // Assign a chatter group name that is unique throughout the org(reason for appending random number)
-        objAsuMarketing.Chatter_Group_Name__c = 'ASU Connected Marketing Cloud' + String.valueOf(dbRandom);
-        insert objAsuMarketing;
-
-        //Insert corresponding collaboration group record(name must be unique throughout org)
-        List<CollaborationGroup> testCGList = new List<CollaborationGroup>();
-        String strGrpName = 'ASU Connected Marketing Cloud' + String.valueOf(dbRandom);
-        CollaborationGroup objCG = new CollaborationGroup(name = strGrpName, CollaborationType = 'Public');
-        testCGList.add(objCG);
-        insert (testCGList);
-
-        Test.startTest();
-
-        //Insert a user with Marketing Cloud Admin People Soft Role
-        User testUser = UserService.createTestUser();
-        testUser.Role_Connected_MC_Adm__c = true;
-        Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
-        testUser.ProfileId = asuRecruitProfile;
-        testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
-        insert testUser;
-
-        Test.stopTest();
-
-        //Query the CollabortationGroupId(Chatter Group) for the inserted user
-        List<CollaborationGroupMember> lstCGM = [
-            SELECT MemberId, CollaborationGroupId
-            FROM CollaborationGroupMember
-            WHERE MemberId = :testUser.Id
-        ];
-
-        System.assertEquals(lstCGM.size(), 1);
-        //Check whether the user is added to the correct chatter group.
-        System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
-    }
 
     @isTest
     public static void checkDeprovisionedUserWithProcessingNotes() {
@@ -359,7 +312,10 @@ public class Test_UserHandler {
         User updateUser = (User) userCreator.create(1)[0];
         Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
         updateUser.ProfileId = standardProfile;
-        insert updateUser;
+        updateUser.UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert updateUser;
+        }
 
         List<Deprovision_User_Configuration__c> deproivisionConfigurations = new List<Deprovision_User_Configuration__c>();
         deproivisionConfigurations.add(
@@ -376,7 +332,9 @@ public class Test_UserHandler {
                 Name__c = 'ASU Chatter User'
             )
         );
-        insert deproivisionConfigurations;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert deproivisionConfigurations;
+        }
 
         updateUser.Deprovision_User__c = true;
         System.runAs(new User(Id = UserInfo.getUserId())) {
@@ -396,11 +354,15 @@ public class Test_UserHandler {
         List<User> usersToDeprovision = (List<User>) userCreator.create(201);
         List<Id> deprovisionedUserIds = new List<Id>();
         Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
+        Id successCoachRole = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
 
         for (User user : usersToDeprovision) {
             user.ProfileId = standardProfile;
+            user.UserRoleId = successCoachRole;
         }
-        insert usersToDeprovision;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert usersToDeprovision;
+        }
 
         for (User user : usersToDeprovision) {
             deprovisionedUserIds.add(user.Id);
@@ -428,7 +390,9 @@ public class Test_UserHandler {
         deproivisionConfigurations.add(
             new Deprovision_User_Configuration__c(Name = 'SwitchToFalse_Sandbox_DEV', Name__c = 'Sandbox_DEV__c')
         );
-        insert deproivisionConfigurations;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert deproivisionConfigurations;
+        }
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Test.startTest();
@@ -450,8 +414,12 @@ public class Test_UserHandler {
     private static void assertUserDeprovisioned(User deprovisionedUser) {
         Map<String, Deprovision_User_Configuration__c> deproivisionConfigurations = Deprovision_User_Configuration__c.getAll();
 
+        System.debug('-=-=-=-=-=- userConfiguration -=-=-=-=-=-');
+
         for (String configurationName : deproivisionConfigurations.keySet()) {
             Deprovision_User_Configuration__c userConfiguration = deproivisionConfigurations.get(configurationName);
+            System.debug(userConfiguration);
+
             if (configurationName.contains('UserRoleId')) {
                 System.assertEquals(userConfiguration.Id__c, deprovisionedUser.UserRoleId);
             } else if (configurationName.contains('ProfileId')) {
@@ -463,6 +431,7 @@ public class Test_UserHandler {
             }
         }
 
+        System.debug('-=-=-=-=-=- userConfiguration -=-=-=-=-=-');
         System.assert(!deprovisionedUser.Processing_Notes__c.contains('Exception Thrown'));
         System.assert(!deprovisionedUser.IsActive);
         System.assert(!deprovisionedUser.Deprovision_User__c);

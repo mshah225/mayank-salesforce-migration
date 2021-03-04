@@ -655,6 +655,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         theEmail.CcAddress = limitLength(value, EmailMessage.CcAddress.getDescribe().getLength());
 
+        if (loggingSettings.Header_Logging__c) {
+            if (email.headers != null) {
+                theEmail.Headers = parseHeaders(email);
+            }
+        }
+
         insert theEmail;
     }
 
@@ -1241,6 +1247,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
     }
 
+    private String parseHeaders(Messaging.InboundEmail email) {
+        String header = '';
+        for (Messaging.InboundEmail.Header h : email.headers) {
+            header += h.name + ' : ' + h.value + '\n';
+        }
+        return header;
+    }
+
     // Make this public for unit test access
     public LostEmail__C generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
         loadConfigurationSettings();
@@ -1301,6 +1315,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
             }
             lostEmail.PlainTextBody__c += attachmentInfo;
+        }
+
+        if (loggingSettings.Header_Logging__c) {
+            if (email.headers != null) {
+                lostEmail.Headers__c = parseHeaders(email);
+            }
         }
 
         update lostEmail;

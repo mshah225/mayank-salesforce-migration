@@ -59,6 +59,12 @@ else
     return
 fi
 
+# Prune local branches based on remote branches
+message="Pruning deleted remote origin branches........"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+git remote prune origin &>/dev/null
+message=" Pruned  "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
+
 # Fetch and apply all branch updates
 message="Fetching all branch updates..................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 git fetch --all &>/dev/null
@@ -70,7 +76,7 @@ message=" Synced  "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
 
 # Switch to main and update from origin
-message="Updating main from remote origin............"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+message="Updating main from remote origin.............."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 git checkout main &>/dev/null
 git pull origin main &>/dev/null
 message=" Updated "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;

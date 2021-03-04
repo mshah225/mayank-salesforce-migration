@@ -30,7 +30,7 @@
     margin-top: 2px;
 }
 
-.THIS lightning-icon.outreach-icn > lightning-primitive-icon > svg > use {
+.THIS lightning-icon.outreach-icn > lightning-primitive-icon > svg {
     fill: green;
 }
 

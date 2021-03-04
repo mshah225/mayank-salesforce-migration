@@ -39,6 +39,20 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Inbound emails that were not attached to cases via the CaseInboundEmailHandler</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
     <fields>
         <fullName>CarbonCopies__c</fullName>
         <description>The addresses that were CC'd</description>
@@ -59,6 +73,20 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Headers__c</fullName>
+        <businessOwnerGroup>UTO_Administration</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>[Email] This stores the inbound email message header.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>[Email] This stores the inbound email message header.</inlineHelpText>
+        <label>Headers</label>
+        <length>32000</length>
+        <securityClassification>Internal</securityClassification>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>HtmlTextBody__c</fullName>
@@ -131,61 +159,7 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <deploymentStatus>Deployed</deploymentStatus>
-    <description>Inbound emails that were not attached to cases via the CaseInboundEmailHandler</description>
-    <enableActivities>false</enableActivities>
-    <enableBulkApi>true</enableBulkApi>
-    <enableFeeds>false</enableFeeds>
-    <enableHistory>false</enableHistory>
-    <enableLicensing>false</enableLicensing>
-    <enableReports>true</enableReports>
-    <enableSearch>true</enableSearch>
-    <enableSharing>true</enableSharing>
-    <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>ReadWrite</externalSharingModel>
     <label>LostEmail</label>
-    <nameField>
-        <displayFormat>LE#{0000000000}</displayFormat>
-        <label>LostEmail Name</label>
-        <type>AutoNumber</type>
-    </nameField>
-    <pluralLabel>LostEmails</pluralLabel>
-    <searchLayouts>
-        <customTabListAdditionalFields>Recipient__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Sender__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Subject__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Cause__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
-        <listViewButtons>Mass_Delete</listViewButtons>
-        <lookupDialogsAdditionalFields>Recipient__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Sender__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Subject__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Cause__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Recipient__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Sender__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Subject__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Cause__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CREATED_DATE</lookupPhoneDialogsAdditionalFields>
-        <searchFilterFields>NAME</searchFilterFields>
-        <searchFilterFields>Recipient__c</searchFilterFields>
-        <searchFilterFields>Sender__c</searchFilterFields>
-        <searchFilterFields>Subject__c</searchFilterFields>
-        <searchFilterFields>Cause__c</searchFilterFields>
-        <searchFilterFields>CREATED_DATE</searchFilterFields>
-        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Recipient__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Sender__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Subject__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>HtmlTextBody__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>PlainTextBody__c</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
-    <visibility>Public</visibility>
     <listViews>
         <fullName>All</fullName>
         <columns>OBJECT_ID</columns>
@@ -360,6 +334,46 @@
             <group>UTO_Administration</group>
         </sharedTo>
     </listViews>
+    <nameField>
+        <displayFormat>LE#{0000000000}</displayFormat>
+        <label>LostEmail Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>LostEmails</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Recipient__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Sender__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Subject__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Cause__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <listViewButtons>Mass_Delete</listViewButtons>
+        <lookupDialogsAdditionalFields>Recipient__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Sender__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Subject__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Cause__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Recipient__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Sender__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Subject__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Cause__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CREATED_DATE</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Recipient__c</searchFilterFields>
+        <searchFilterFields>Sender__c</searchFilterFields>
+        <searchFilterFields>Subject__c</searchFilterFields>
+        <searchFilterFields>Cause__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Recipient__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Sender__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Subject__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>HtmlTextBody__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PlainTextBody__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
     <webLinks>
         <fullName>Mass_Delete</fullName>
         <availability>online</availability>

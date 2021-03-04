@@ -1,7 +1,6 @@
 @isTest(SeeAllData=true)
-public with sharing class Test_ChatterAutoAddUsers
-{
-	/*
+public with sharing class Test_ChatterAutoAddUsers {
+    /*
     @isTest static void testRecruitmentAutoAdd()
     {
         Test.startTest();

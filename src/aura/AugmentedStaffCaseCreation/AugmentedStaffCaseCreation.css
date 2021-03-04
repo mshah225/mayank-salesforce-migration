@@ -1,6 +1,5 @@
 .THIS .RED {
     background-color: rgb(131, 9, 9);
-
 }
 
 .THIS .li {
@@ -9,7 +8,7 @@
 }
 
 .THIS .fieldDescription {
-    color:grey;
+    color: grey;
 }
 
 .THIS .slds-form-element__label {

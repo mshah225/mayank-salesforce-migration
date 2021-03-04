@@ -28,28 +28,37 @@
     <apex:attribute name="showCivitas" type="boolean" description="" default="false" />
     <apex:attribute name="showTimeZone" type="boolean" description="" default="false" />
 
-
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
         <apex:form>
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:10px; margin-top: 5px;"
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right: 10px; margin-top: 5px"
                             onclick="toggleTransferModal(this)" rendered="{! showTransfer}">Mass Transfer</apex:outputLink>
-                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right:7px; margin-top: 5px;"
+                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right: 7px; margin-top: 5px"
                             onclick="toggleEmailModal(this, adjustTextHeight)" rendered="{! showMassEmail}">Mass Email</apex:outputLink>
-                        <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px;" rendered="{! showRefresh}" reRender="rerenderMe"
+                        <apex:commandLink styleClass="btn btn-default asu-primary" style="margin-top: 5px" rendered="{! showRefresh}" reRender="rerenderMe"
                             status="ASUAjaxStatus">
                             <apex:param name="refreshList" value="true" assignTo="{!refreshList}" />
-                            <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg "></i>
+                            <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg"></i>
                         </apex:commandLink>
                     </apex:outputPanel>
-                    <apex:outputPanel layout="block" styleClass="input-group" style="max-width:250px; margin-top: 5px;" rendered="{! showSearch}">
+                    <apex:outputPanel layout="block" styleClass="input-group" style="max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
                         <apex:inputText id="myStudentsInput" value="{!searchString}" html-placeholder="Filter Students" onkeypress="return noenter(event);"
-                            styleClass="searchBox" style="padding:6px 12px;vertical-align:middle;border-radius:4px;border:solid 1px #ccc;max-width:300px;width:100%;font-size:11pt;border-top-right-radius:0;border-bottom-right-radius:0;border-right:none;"
-                        />
+                            styleClass="searchBox" style="
+                                padding: 6px 12px;
+                                vertical-align: middle;
+                                border-radius: 4px;
+                                border: solid 1px #ccc;
+                                max-width: 300px;
+                                width: 100%;
+                                font-size: 11pt;
+                                border-top-right-radius: 0;
+                                border-bottom-right-radius: 0;
+                                border-right: none;
+                            " />
                         <span class="input-group-addon">
-                            <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;" oncomplete="focusSearch()">
+                            <apex:commandLink id="searchStudentsBtn" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555" oncomplete="focusSearch()">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
@@ -77,19 +86,16 @@
                         </script>
 
                         <span class="input-group-addon">
-                            <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color:#555;">
+                            <apex:commandLink action="{!resetSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555">
                                 <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </apex:commandLink>
                         </span>
                     </apex:outputPanel>
                 </div>
-                <div style="height: 1px; width = 100%">
-
-                </div>
+                <div style="height: 1px; width = 100%"></div>
                 <div>
-
                     <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
-                        <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float:left;" styleClass="standardLink"
+                        <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
                             reRender="rerenderMe" status="ASUAjaxStatus" />
                         <apex:outputText value="Page Size " />
                         <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
@@ -101,10 +107,9 @@
                         <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
                         <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
                         <apex:outputText value="{!setCon.ResultSize} Records" />
-                        <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float:right;" styleClass="standardLink"
+                        <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float: right" styleClass="standardLink"
                             reRender="rerenderMe" status="ASUAjaxStatus" />
                     </apex:outputPanel>
-
                 </div>
             </div>
         </apex:form>
@@ -124,10 +129,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="contactName" value="Contact.LastName" assignTo="{!sortField}" /> Name&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.LastName'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.LastName'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -138,10 +143,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="contactEmplId" value="Contact.EMPLID__c" assignTo="{!sortField}" /> EMPLID&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.EMPLID__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.EMPLID__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -154,10 +159,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="subject" value="Subject" assignTo="{!sortField}" /> Case (Details)&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Subject'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Subject'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -170,10 +175,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="status" value="Status" assignTo="{!sortField}" /> Status&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Status'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Status'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -185,10 +190,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="followUpDate" value="Followup_Date__c" assignTo="{!sortField}" /> Followup Date&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Followup_Date__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Followup_Date__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -199,10 +204,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="TimeZone" value="Contact.EdPlus_Student_Reported_Timezone__c" assignTo="{!sortField}" /> Time Zone&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.EdPlus_Student_Reported_Timezone__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.EdPlus_Student_Reported_Timezone__c'}">
-                            <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -213,10 +218,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="termSession" value="STRM__c, Session__c" assignTo="{!sortField}" /> Term/Session&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'STRM__c, Session__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'STRM__c, Session__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -230,10 +235,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="persistenceLevel" value="Curr_Cont_Prediction_Level__c" assignTo="{!sortField}" /> Persistence Outlook&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'} ">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Curr_Cont_Prediction_Level__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -245,10 +250,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="change" value="Most_Recent_Outlook_Change_Direction__c" assignTo="{!sortField}" /> Change&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -259,10 +264,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="changeDate" value="Change_Date__c" assignTo="{!sortField}" /> Change Date&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Change_Date__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Change_Date__c'}">
-                                <span style="font-size:7pt;" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -273,15 +278,11 @@
                     <div class="modal-content" style="width: 95%">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">
-                                Transfer Cases
-                            </h4>
+                            <h4 class="modal-title">Transfer Cases</h4>
                         </div>
 
                         <div class="modal-body">
-                            <h5>
-                                Transfer Cases To:
-                            </h5>
+                            <h5>Transfer Cases To:</h5>
                             <apex:selectList value="{!ownerId}" size="1" styleClass="transferList">
                                 <apex:selectOptions value="{!transferOptions}" />
                             </apex:selectList>
@@ -291,56 +292,49 @@
                             <apex:commandLink type="button" styleClass="btn btn-default asu-primary" action="{!transferCases}" status="ASUAjaxStatus"
                                 reRender="rerenderMe,{!rerenderList}" value="Transfer" oncomplete="actionComplete()" onclick="toggleTransferModal(this)"
                             />
-                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="caseModal" class="modal fade emailModal" role="dialog">
-                <div class="modal-dialog" role="document" style="padding-left: 5%;">
+                <div class="modal-dialog" role="document" style="padding-left: 5%">
                     <apex:outputPanel id="EmailModalContent">
-                        <div class="modal-content" style="width: 95%;">
+                        <div class="modal-content" style="width: 95%">
                             <div class="modal-header">
                                 <button onclick="clearCaseErrorBox('{!$Component.caseErrorBox}'); clearEmailContentBodyouterXButton();" type="button" class="close"
-                                    data-dismiss="modal">&times;
+                                    data-dismiss="modal">
+                                    &times;
                                     <apex:actionFunction reRender="EmailModalContent" name="clearEmailContentBodyouterXButton" action="{!clearTempEmail}">
                                         <apex:param assignTo="{!emailPreviewMode}" value="false" name="previewMode" />
                                     </apex:actionFunction>
                                 </button>
-                                <h4 class="modal-title">
-                                    Mass Email
-                                </h4>
+                                <h4 class="modal-title">Mass Email</h4>
                             </div>
 
                             <div class="modal-body">
                                 <apex:outputPanel layout="none" rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}">
-                                    <h5 style="margin-bottom:0px;">
-                                        Subject:
-                                    </h5>
-                                    <p style="font-size:.75em;" id="subjectCharLimit">
-                                        100 Character Limit
-                                    </p>
-                                    <apex:inputField id="subjectField" value="{!tempEmail.Subject__c}" style="width:100%;" />
-                                    <p style="margin-top:10px;">
-                                        Dear StudentFirstName,
-                                    </p>
-                                    <apex:outputPanel layout="block" id="caseErrorBox" style="display: none;">
+                                    <h5 style="margin-bottom: 0px">Subject:</h5>
+                                    <p style="font-size: 0.75em" id="subjectCharLimit">100 Character Limit</p>
+                                    <apex:inputField id="subjectField" value="{!tempEmail.Subject__c}" style="width: 100%" />
+                                    <p style="margin-top: 10px">Dear StudentFirstName,</p>
+                                    <apex:outputPanel layout="block" id="caseErrorBox" style="display: none">
                                         <p style="color: red">Email Body cannot be empty.</p>
                                     </apex:outputPanel>
-                                    <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" styleClass="emailTextBox" id="caseEmailBody" style="width:100%; height: 200px; resize: none;"
+                                    <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" styleClass="emailTextBox" id="caseEmailBody" style="width: 100%; height: 200px; resize: none"
                                     />
-                                    <p style="margin-top:10px;">
+                                    <p style="margin-top: 10px">
                                         Sincerely,
                                         <br /> {!$User.FirstName} {!$User.LastName}
                                     </p>
                                 </apex:outputPanel>
                                 <apex:outputPanel layout="none" rendered="{!AND(emailPreviewMode, ISBLANK(emailInsertResults))}">
                                     <apex:outputField value="{!tempEmail.Subject__c}" />
-                                    <p style="margin-top:10px;">
-                                        Dear StudentFirstName,
-                                    </p>
+                                    <p style="margin-top: 10px">Dear StudentFirstName,</p>
                                     <apex:outputField value="{!tempEmail.Additional_Message_Text__c}" />
-                                    <p style="margin-top:10px;">
+                                    <p style="margin-top: 10px">
                                         Sincerely,
                                         <br /> {!$User.FirstName} {!$User.LastName}
                                     </p>
@@ -358,7 +352,8 @@
                                     <apex:commandLink type="button" styleClass="btn btn-default asu-primary" onclick="checkEmailBodyCase('{!$Component.renderMyTab}', '{!$Component.caseEmailBody}', '{!$Component.caseErrorBox}'); return false;"
                                         value="Preview">
                                     </apex:commandLink>
-                                    <button type="button" onclick="clearCaseErrorBox('{!$Component.caseErrorBox}');" class="btn btn-default asu-secondary" data-dismiss="modal">Cancel
+                                    <button type="button" onclick="clearCaseErrorBox('{!$Component.caseErrorBox}');" class="btn btn-default asu-secondary" data-dismiss="modal">
+                                        Cancel
                                         <apex:param assignTo="{!emailPreviewMode}" value="false" name="previewMode" />
                                         <apex:param assignTo="{!emailInsertResults}" value="false" name="previewMode" />
                                         <apex:actionFunction reRender="EmailModalContent" name="clearEmailContentBody" action="{!clearTempEmail}">
@@ -386,7 +381,7 @@
         </apex:form>
         <apex:form>
             <div class="headerFooter">
-                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float:left;" styleClass="standardLink"
+                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
                     reRender="rerenderMe" status="ASUAjaxStatus" />
                 <apex:outputText value="Page Size " />
                 <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
@@ -398,7 +393,7 @@
                 <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
                 <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
                 <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float:right;" styleClass="standardLink"
+                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float: right" styleClass="standardLink"
                     reRender="rerenderMe" status="ASUAjaxStatus" />
             </div>
         </apex:form>

@@ -19,11 +19,8 @@ public with sharing class SearchUsers {
             return true;
         } else {
             ApexPages.addMessage(
-                new ApexPages.Message(
-                    ApexPages.Severity.ERROR,
-                    'You must enter at least 2 search characters'
-                    )
-                );
+                new ApexPages.Message(ApexPages.Severity.ERROR, 'You must enter at least 2 search characters')
+            );
             return false;
         }
     }
@@ -32,12 +29,24 @@ public with sharing class SearchUsers {
         List<List<SObject>> sobjectList = [
             FIND :'*' + searchString + '*'
             IN ALL FIELDS
-            RETURNING User(
-                Id, FirstName, LastName, Profile.Name, Contact.Name,
-                Username, ContactId, Contact.ASURite_Id__c,
-                EmplId__c, Contact.EMPLID__c, Alias,
-                FederationIdentifier, ASU_User_Type__c, IsActive LIMIT 50
-            )];
+            RETURNING
+                User(
+                    Id,
+                    FirstName,
+                    LastName,
+                    Profile.Name,
+                    Contact.Name,
+                    Username,
+                    ContactId,
+                    Contact.ASURite_Id__c,
+                    EmplId__c,
+                    Contact.EMPLID__c,
+                    Alias,
+                    FederationIdentifier,
+                    ASU_User_Type__c,
+                    IsActive
+                    LIMIT 50)
+        ];
 
         if (sobjectList[0].size() > 0) {
             uList = sobjectList[0];

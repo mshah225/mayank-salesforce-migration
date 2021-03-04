@@ -159,7 +159,7 @@ public with sharing class MyASUHelpController {
         allFinancialArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Financial Aid'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -190,7 +190,7 @@ public with sharing class MyASUHelpController {
         allTechnicalArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c LIKE '%Technical Resources%'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -221,7 +221,7 @@ public with sharing class MyASUHelpController {
         allHousingArticles = [
             SELECT Id, Functional_Group__c, KnowledgeArticleId, Title, UrlName
             FROM FAQ__kav
-            WHERE IsDeleted = false AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
+            WHERE IsDeleted = FALSE AND PublishStatus = 'Online' AND Functional_Group__c = 'Housing'
             ORDER BY ArticleTotalViewCount DESC
             LIMIT 200
         ];
@@ -289,7 +289,7 @@ public with sharing class MyASUHelpController {
         funcGroupList = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = true AND Name = 'Student Success Innovations'
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Student Success Innovations'
             LIMIT 1
         ];
         if (!funcGroupList.isEmpty() && funcGroupList[0].Id != null) {
@@ -302,7 +302,7 @@ public with sharing class MyASUHelpController {
             FROM Case_Classification__c
             WHERE
                 RecordType.Name = 'Category'
-                AND Active__c = true
+                AND Active__c = TRUE
                 AND Name = 'Knowledge'
                 AND Parent__c = :suggestAnArticle.CC_Functional_Group__c
             LIMIT 1
@@ -379,7 +379,7 @@ public with sharing class MyASUHelpController {
         List<Service_Center_Maintenance__c> scmList = [
             SELECT Message__c, Start_Time__c, End_Time__c
             FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = true
+            WHERE Displayed__c = TRUE
         ];
 
         if (scmList.size() > 0) {

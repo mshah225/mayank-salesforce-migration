@@ -326,8 +326,12 @@ public class TestDataFactory {
      * @param Boolean Tru if the associated record is a contact, false if it is a lead
      * @return List<CampaignMember> List of records ready for insertion to the database
      */
-    public static List<CampaignMember> createCampaignMembers(Integer numberOfCampaignMembers,
-        Id associatedRecord, id campaignId, Boolean isContact) {
+    public static List<CampaignMember> createCampaignMembers(
+        Integer numberOfCampaignMembers,
+        Id associatedRecord,
+        id campaignId,
+        Boolean isContact
+    ) {
         List<CampaignMember> result = new List<CampaignMember>();
 
         for (Integer x = 0; x < numberOfCampaignMembers; x++) {
@@ -346,7 +350,12 @@ public class TestDataFactory {
      * @param Boolean Tru if the associated record is a contact, false if it is a lead
      * @return CampaignMember Record ready for insertion to the database
      */
-    public static CampaignMember createCampaignMember(String suffix, Id associatedRecord, id campaignId, Boolean isContact) {
+    public static CampaignMember createCampaignMember(
+        String suffix,
+        Id associatedRecord,
+        id campaignId,
+        Boolean isContact
+    ) {
         CampaignMember result = new CampaignMember();
 
         if (isContact) {
@@ -375,24 +384,15 @@ public class TestDataFactory {
 
         // Create list of groups
         for (Integer x = 0; x < numberOfPods; x++) {
-            groups.add(new Group(
-                Name = 'TestGroupName' + x,
-                Type = 'Queue'
-            ));
+            groups.add(new Group(Name = 'TestGroupName' + x, Type = 'Queue'));
         }
 
         insert groups;
 
         for (group g : groups) {
-            queues.add(new QueueSobject(
-            	QueueId = g.Id,
-                SobjectType = 'Success_Pod__c'
-            ));
+            queues.add(new QueueSobject(QueueId = g.Id, SobjectType = 'Success_Pod__c'));
 
-            queues.add(new QueueSobject(
-            	QueueId = g.Id,
-                SobjectType = 'Case'
-            ));
+            queues.add(new QueueSobject(QueueId = g.Id, SobjectType = 'Case'));
         }
 
         System.runAs(new User(Id = UserInfo.getUserId())) {
@@ -402,13 +402,15 @@ public class TestDataFactory {
 
         for (group g : groups) {
             x++;
-            result.add(new Success_Pod__c(
-                OwnerId = g.Id,
-            	RecordTypeId = advisorPodRTID,
-                Primary_Email__c = g.name + '@test.asu.edu',
-                Name = 'Test Pod ' + x,
-                Committee__c = 'tp' + x
-            ));
+            result.add(
+                new Success_Pod__c(
+                    OwnerId = g.Id,
+                    RecordTypeId = advisorPodRTID,
+                    Primary_Email__c = g.name + '@test.asu.edu',
+                    Name = 'Test Pod ' + x,
+                    Committee__c = 'tp' + x
+                )
+            );
         }
 
         insert result;
@@ -419,23 +421,28 @@ public class TestDataFactory {
         Id advisorResourceRTId = IDHelper.getRTID('Success_Resource__c', 'Advisor');
 
         Success_Resource__c result = new Success_Resource__c(
-        	IsActive__c = true,
+            IsActive__c = true,
             Role__c = 'User',
             Resource__c = UserInfo.getUserId(),
-            RecordTypeId =advisorResourceRTId
+            RecordTypeId = advisorResourceRTId
         );
         insert result;
         return result;
     }
 
-    public static List<Success_Resource_Pod_Association__c> createAdvisorSRPAS(Success_Resource__c advisorUserResource, List<Success_Pod__c> pods) {
+    public static List<Success_Resource_Pod_Association__c> createAdvisorSRPAS(
+        Success_Resource__c advisorUserResource,
+        List<Success_Pod__c> pods
+    ) {
         List<Success_Resource_Pod_Association__c> result = new List<Success_Resource_Pod_Association__c>();
 
         for (Success_Pod__c sp : pods) {
-            result.add(new Success_Resource_Pod_Association__c(
-            	Success_Resource__c = advisorUserResource.Id,
-                Success_Pod__c = sp.Id
-            ));
+            result.add(
+                new Success_Resource_Pod_Association__c(
+                    Success_Resource__c = advisorUserResource.Id,
+                    Success_Pod__c = sp.Id
+                )
+            );
         }
         insert result;
         return result;
@@ -451,10 +458,7 @@ public class TestDataFactory {
             contacts.put(sp.Id, new List<Contact>());
 
             for (Integer x = 0; x < numberOfStudents; x++) {
-                contacts.get(sp.Id).add(new contact(
-                	FirstName = 'TestContact' + x,
-                    LastName = sp.Name
-                ));
+                contacts.get(sp.Id).add(new contact(FirstName = 'TestContact' + x, LastName = sp.Name));
             }
         }
 
@@ -468,12 +472,14 @@ public class TestDataFactory {
         // Now that we have contact id's, create junction objects
         for (Success_Pod__c sp : pods) {
             for (Contact c : contacts.get(sp.Id)) {
-                result.add(new Success_Student__c(
-                    Is_Active__c = true,
-                    Success_Pod__c = sp.Id,
-                    Student__c = c.Id,
-                    Coaching_Student__c = false
-                ));
+                result.add(
+                    new Success_Student__c(
+                        Is_Active__c = true,
+                        Success_Pod__c = sp.Id,
+                        Student__c = c.Id,
+                        Coaching_Student__c = false
+                    )
+                );
             }
         }
         insert result;
@@ -488,7 +494,10 @@ public class TestDataFactory {
         Success_Resource__c myAdvisorUserResource = createMyAdvisorUserResource();
         List<Success_Pod__c> myAdvisorPods = createAdvisorPods(numberOfPods);
         List<Success_Student__c> myAdvisorStudents = createAdvisorStudents(myAdvisorPods, numberOfStudents);
-		List<Success_Resource_Pod_Association__c> myAdvisorSRPAS = createAdvisorSRPAS(myAdvisorUserResource, myAdvisorPods);
+        List<Success_Resource_Pod_Association__c> myAdvisorSRPAS = createAdvisorSRPAS(
+            myAdvisorUserResource,
+            myAdvisorPods
+        );
 
         // Create watchlist and proactive cases for the pods/students
         List<Id> podIds = new List<Id>();
@@ -498,9 +507,7 @@ public class TestDataFactory {
         }
 
         Map<Id, Success_Pod__c> podMap = new Map<Id, Success_Pod__c>(
-        	[
-                SELECT Owner.Name FROM Success_Pod__c WHERE Id IN :podIds
-            ]
+            [SELECT Owner.Name FROM Success_Pod__c WHERE Id IN :podIds]
         );
 
         // Create cases
@@ -511,36 +518,46 @@ public class TestDataFactory {
         createFunctionalGroup('ASU Advisor Outreach');
         createCategory('ASU Advisor Outreach', 'Outreach');
         createCategory('ASU Advisor Outreach', 'Watchlist');
-        Id functionalGroup = [Select Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
-        Id categoryOutreach = [Select Id FROM case_classification__c WHERE name = 'Outreach' LIMIT 1].Id;
-        Id categoryWatchlist = [Select Id FROM case_classification__c WHERE name = 'Watchlist' LIMIT 1].Id;
+        Id functionalGroup = [SELECT Id FROM case_classification__c WHERE name = 'ASU Advisor Outreach' LIMIT 1].Id;
+        Id categoryOutreach = [SELECT Id FROM case_classification__c WHERE name = 'Outreach' LIMIT 1].Id;
+        Id categoryWatchlist = [SELECT Id FROM case_classification__c WHERE name = 'Watchlist' LIMIT 1].Id;
         // Cases for pods
         for (Success_Pod__c sp : myAdvisorPods) {
             for (Integer x = 0; x < numberOfCases; x++) {
                 // proactive case
-                cases.add(new Case(
-                	OwnerId = sp.OwnerId,
-                    RecordTypeId = advisorOutReachId,
-                    Status = 'Outreach Required',
-                    CC_Functional_Group__c = functionalGroup,
-                    CC_Category__c = categoryOutreach,
-                    Origin__c = 'Outreach',
-                    Subject = 'Case Bloat ' + math.mod(x, 2),
-                    Description = 'Case Bloat',
-                    contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c
-                ));
+                cases.add(
+                    new Case(
+                        OwnerId = sp.OwnerId,
+                        RecordTypeId = advisorOutReachId,
+                        Status = 'Outreach Required',
+                        CC_Functional_Group__c = functionalGroup,
+                        CC_Category__c = categoryOutreach,
+                        Origin__c = 'Outreach',
+                        Subject = 'Case Bloat ' + math.mod(x, 2),
+                        Description = 'Case Bloat',
+                        contactId = myAdvisorStudents[
+                                (Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))
+                            ]
+                            .student__c
+                    )
+                );
                 // Watchlist Cases
-                cases.add(new Case(
-                    OwnerId = sp.OwnerId,
-                    RecordTypeId = advisorOutReachId,
-                    Status = 'New',
-                    CC_Functional_Group__c = functionalGroup,
-                    CC_Category__c = categoryWatchlist,
-                    Origin__c = 'Outreach',
-                    Subject = 'Case Bloat ' + math.mod(x, 2),
-                    Description = 'Case Bloat',
-                    contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c
-                ));
+                cases.add(
+                    new Case(
+                        OwnerId = sp.OwnerId,
+                        RecordTypeId = advisorOutReachId,
+                        Status = 'New',
+                        CC_Functional_Group__c = functionalGroup,
+                        CC_Category__c = categoryWatchlist,
+                        Origin__c = 'Outreach',
+                        Subject = 'Case Bloat ' + math.mod(x, 2),
+                        Description = 'Case Bloat',
+                        contactId = myAdvisorStudents[
+                                (Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))
+                            ]
+                            .student__c
+                    )
+                );
             }
         }
         // Cases for advisor
@@ -548,18 +565,21 @@ public class TestDataFactory {
             Success_Pod__c sp = myAdvisorPods[(Integer) math.rint(math.random() * (myAdvisorPods.size() - 1))];
             string mrq = podMap.get(sp.Id).Owner.Name;
 
-            cases.add(new Case(
-                OwnerId = UserInfo.getUserId(),
-                RecordTypeId = advisorOutReachId,
-                Status = 'Outreach Required',
-                CC_Functional_Group__c = functionalGroup,
-                CC_Category__c = categoryWatchlist,
-                Origin__c = 'Outreach',
-                Subject = 'Case Bloat ' + math.mod(x, 2),
-                Description = 'Case Bloat',
-                contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))].student__c,
-                Most_Recent_Queue__c = mrq
-            ));
+            cases.add(
+                new Case(
+                    OwnerId = UserInfo.getUserId(),
+                    RecordTypeId = advisorOutReachId,
+                    Status = 'Outreach Required',
+                    CC_Functional_Group__c = functionalGroup,
+                    CC_Category__c = categoryWatchlist,
+                    Origin__c = 'Outreach',
+                    Subject = 'Case Bloat ' + math.mod(x, 2),
+                    Description = 'Case Bloat',
+                    contactId = myAdvisorStudents[(Integer) math.rint(math.random() * (myAdvisorStudents.size() - 1))]
+                        .student__c,
+                    Most_Recent_Queue__c = mrq
+                )
+            );
         }
         insert cases;
     }
@@ -567,47 +587,51 @@ public class TestDataFactory {
     /**
      * Creates a functional group
      */
-    public static Case_Classification__c createFunctionalGroup(string RT){
+    public static Case_Classification__c createFunctionalGroup(string RT) {
         Case_Classification__c tmp = new Case_Classification__c();
-        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name ='Functional Group'].Id;
-		tmp.Name = RT;
+        tmp.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Functional Group'].Id;
+        tmp.Name = RT;
         tmp.Record_Types__c = 'ASU Service';
-		tmp.Active__c = true;
-		tmp.Visible__c = true;
-		insert tmp;
-		return tmp;
+        tmp.Active__c = true;
+        tmp.Visible__c = true;
+        insert tmp;
+        return tmp;
     }
 
-    public static Case_Classification__c createCategory(string parent, string name){
+    public static Case_Classification__c createCategory(string parent, string name) {
         Case_Classification__c tmp = new Case_Classification__c();
-		tmp.Name = name;
-        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name = 'Category'].Id;
-        tmp.Parent__c = [Select Id FROM Case_Classification__c WHERE Name =: parent].Id;
-		tmp.Active__c = true;
-		tmp.Visible__c = true;
-		insert tmp;
-		return tmp;
+        tmp.Name = name;
+        tmp.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Category'].Id;
+        tmp.Parent__c = [SELECT Id FROM Case_Classification__c WHERE Name = :parent].Id;
+        tmp.Active__c = true;
+        tmp.Visible__c = true;
+        insert tmp;
+        return tmp;
     }
 
-    public static Case_Classification__c createSubCategory(String parent, string name){
+    public static Case_Classification__c createSubCategory(String parent, string name) {
         Case_Classification__c tmp = new Case_Classification__c();
-		tmp.Name = name;
-        tmp.RecordTypeId = [Select Id FROM RecordType WHERE Name ='Sub Category'].Id;
-        tmp.Parent__c = [Select Id FROM Case_Classification__c WHERE Name =: parent].Id;
-		tmp.Active__c = true;
-		tmp.Visible__c = true;
-		insert tmp;
-		return tmp;
+        tmp.Name = name;
+        tmp.RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Sub Category'].Id;
+        tmp.Parent__c = [SELECT Id FROM Case_Classification__c WHERE Name = :parent].Id;
+        tmp.Active__c = true;
+        tmp.Visible__c = true;
+        insert tmp;
+        return tmp;
     }
 
-    public static void createFunctionalGroupWithCategory(string functionalGroupName, string categoryName, string subcategoryName){
+    public static void createFunctionalGroupWithCategory(
+        string functionalGroupName,
+        string categoryName,
+        string subcategoryName
+    ) {
         createFunctionalGroup(functionalGroupName);
         createCategory(functionalGroupName, categoryName);
         createSubCategory(categoryName, subcategoryName);
     }
 
     // Create Test Marketing Cloud Business Units (et4ae5__Business_Unit__c)
-    public static List<et4ae5__Business_Unit__c> createBusinessUnits (Integer qty) {
+    public static List<et4ae5__Business_Unit__c> createBusinessUnits(Integer qty) {
         List<et4ae5__Business_Unit__c> buList = new List<et4ae5__Business_Unit__c>();
         for (Integer i = 0; i < qty; i++) {
             et4ae5__Business_Unit__c bu = new et4ae5__Business_Unit__c(
@@ -621,13 +645,16 @@ public class TestDataFactory {
     }
 
     // Create Test Marketing Cloud Email Send Definitions (et4ae5__SendDefinition__c)
-    public static List<et4ae5__SendDefinition__c> createEmailSends (Integer qty, String recTypeName) {
+    public static List<et4ae5__SendDefinition__c> createEmailSends(Integer qty, String recTypeName) {
         List<et4ae5__SendDefinition__c> sdList = new List<et4ae5__SendDefinition__c>();
-        Id recTypeId = [SELECT Id FROM RecordType WHERE SObjectType = 'et4ae5__SendDefinition__c' AND Name = :recTypeName][0].Id;
+        Id recTypeId = [
+            SELECT Id
+            FROM RecordType
+            WHERE SObjectType = 'et4ae5__SendDefinition__c' AND Name = :recTypeName
+        ][0]
+        .Id;
         for (Integer i = 0; i < qty; i++) {
-            et4ae5__SendDefinition__c sd = new et4ae5__SendDefinition__c(
-                RecordTypeId = recTypeid
-            );
+            et4ae5__SendDefinition__c sd = new et4ae5__SendDefinition__c(RecordTypeId = recTypeid);
             sdList.add(sd);
         }
         return sdList;
@@ -644,7 +671,8 @@ public class TestDataFactory {
             Name = 'ParentSub',
             Subscription_Description__c = 'Parent Sub Description',
             Available_for_Opt_In__c = true,
-            Subscriber_Private_in_Salesforce__c = false);
+            Subscriber_Private_in_Salesforce__c = false
+        );
         insert parentSubscription;
 
         List<Subscription__c> subscriptionList = new List<Subscription__c>();
@@ -678,11 +706,11 @@ public class TestDataFactory {
     }
 
     /**
-    * Create a test list of IERs for the provided Contact Ids and Send Definitions
-    * @param A list of Contacts to create IERs for
-    * @param A list of Email Send Definitions to create IERs for
-    * @return A list of IERs for the provided Contact Id to insert
-    */
+     * Create a test list of IERs for the provided Contact Ids and Send Definitions
+     * @param A list of Contacts to create IERs for
+     * @param A list of Email Send Definitions to create IERs for
+     * @return A list of IERs for the provided Contact Id to insert
+     */
 
     public static List<et4ae5__IndividualEmailResult__c> createTestIERs(
         List<Contact> contactList,
@@ -705,11 +733,11 @@ public class TestDataFactory {
     }
 
     /**
-    * Create a test list of Subscribers for the provided Contact ID
-    * @param A list of Contact IDs to create Subscribers for
-    * @param A list of Subscriptions to add the Contact to
-    * @return A list of Subscribers for the provided Contact IDs to insert
-    */
+     * Create a test list of Subscribers for the provided Contact ID
+     * @param A list of Contact IDs to create Subscribers for
+     * @param A list of Subscriptions to add the Contact to
+     * @return A list of Subscribers for the provided Contact IDs to insert
+     */
     public static List<Subscriber__c> createTestSubscribers(
         List<Contact> contactList,
         List<Subscription__c> subscriptionList
@@ -717,7 +745,7 @@ public class TestDataFactory {
         List<Subscriber__c> subscribers = new List<Subscriber__c>();
 
         for (Subscription__c subscription : subscriptionList) {
-            for (Contact contact: contactList) {
+            for (Contact contact : contactList) {
                 Subscriber__c subscriber = new Subscriber__c(
                     Subscription__c = subscription.Id,
                     Contact__c = contact.Id,
@@ -738,5 +766,6 @@ public class TestDataFactory {
         return (Exception) new TestException('Test Exception');
     }
 
-    public class TestException extends Exception { }
+    public class TestException extends Exception {
+    }
 }

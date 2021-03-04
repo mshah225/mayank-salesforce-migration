@@ -1,6 +1,5 @@
 <apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="FeedbackButtonController" cache="true"
     action="{!init}">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -44,8 +43,10 @@
                         </ol>
                     </apex:outputPanel>
                     <apex:form id="feedbackForm">
-                        <p class="lead">ASU values your experience and wants to ensure that you receive quality service. Tell us how we can
-                            improve your experience below.</p>
+                        <p class="lead">
+                            ASU values your experience and wants to ensure that you receive quality service. Tell us how we can improve your experience
+                            below.
+                        </p>
                         <div class="form-item webform-component webform-component-textarea webform-component--text-area">
                             <apex:outputLabel value="Feedback Comments" for="caseFeedbackComments" />
                             <apex:inputTextarea id="caseFeedbackComments" value="{!caseDescription}" styleClass="form-textarea form-control" cols="60"

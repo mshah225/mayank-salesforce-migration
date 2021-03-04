@@ -1,7 +1,6 @@
 @isTest
 private class IndividualEmailResultTriggerTest {
-
-    @isTest 
+    @isTest
     private static void NoCampaignNotPrivateInsert() {
         List<et4ae5__Business_Unit__c> buList = TestDataFactory.createBusinessUnits(1);
         for (et4ae5__Business_Unit__c bu : buList) {
@@ -10,7 +9,7 @@ private class IndividualEmailResultTriggerTest {
         insert buList;
 
         List<et4ae5__SendDefinition__c> sdList = TestDataFactory.createEmailSends(1, 'Send Definition');
-        for (et4ae5__SendDefinition__c sd: sdList) {
+        for (et4ae5__SendDefinition__c sd : sdList) {
             sd.et4ae5__Business_Unit__c = buList[0].Id;
         }
         insert sdList;
@@ -24,17 +23,18 @@ private class IndividualEmailResultTriggerTest {
         Test.stopTest();
 
         for (et4ae5__IndividualEmailResult__c ier : [
-            SELECT Id, OwnerId, Apex_Owner_Should_Be__c 
+            SELECT Id, OwnerId, Apex_Owner_Should_Be__c
             FROM et4ae5__IndividualEmailResult__c
         ]) {
             System.assertEquals(ier.Apex_Owner_Should_Be__c, ier.OwnerId, 'OwnerId was not set as expected');
         }
     }
 
-    @isTest 
+    @isTest
     private static void CampaignSubscriptionPrivateInsert() {
         Group testGroup = TestDataFactory.createTestGroupAndQueue(
-            new List<String>{'Subscription__c', 'et4ae5__IndividualEmailResult__c'});
+            new List<String>{ 'Subscription__c', 'et4ae5__IndividualEmailResult__c' }
+        );
         List<Subscription__c> subscriptions = TestDataFactory.createTestSubscriptions(1);
         for (Subscription__c subscription : subscriptions) {
             subscription.OwnerId = testGroup.Id;
@@ -71,7 +71,7 @@ private class IndividualEmailResultTriggerTest {
         Test.stopTest();
 
         for (et4ae5__IndividualEmailResult__c ier : [
-            SELECT Id, OwnerId, Apex_Owner_Should_Be__c 
+            SELECT Id, OwnerId, Apex_Owner_Should_Be__c
             FROM et4ae5__IndividualEmailResult__c
         ]) {
             System.assertEquals(ier.Apex_Owner_Should_Be__c, ier.OwnerId, 'OwnerId was not set as expected');

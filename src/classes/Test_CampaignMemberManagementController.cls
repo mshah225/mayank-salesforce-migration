@@ -1,21 +1,15 @@
 @isTest
 private class Test_CampaignMemberManagementController {
-
     private static ApexPages.standardController std;
     private static CampaignMemberManagementController cm;
 
-    @testSetup static void setUp()
-    {
+    @testSetup
+    static void setUp() {
         List<Campaign> campaignList = new List<Campaign>();
         List<CampaignMember> campaignMemberList = new List<CampaignMember>();
         List<CampaignMemberStatus> campaignMemberStatusList = new List<CampaignMemberStatus>();
 
-        Id crRecId = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Corporate Relations'
-            AND SobjectType = 'Campaign'
-        ].Id;
+        Id crRecId = [SELECT Id FROM RecordType WHERE Name = 'Corporate Relations' AND SobjectType = 'Campaign'].Id;
 
         Contact testContact = ContactService.createTestContact();
         insert testContact;
@@ -32,22 +26,20 @@ private class Test_CampaignMemberManagementController {
         ];
 
         // Create test Location__c
-        Location__c tempe = new Location__c(
-            Name = 'Tempe Campus',
-            Location_Code__c = 'TEMPE'
-        );
+        Location__c tempe = new Location__c(Name = 'Tempe Campus', Location_Code__c = 'TEMPE');
         insert tempe;
 
         // Add the Contact to the Campaigns
-        List<CampaignMember> camMemList =
-            CampaignMemberService.createTestCampaignMembers(testContact.Id, camListWithIds);
+        List<CampaignMember> camMemList = CampaignMemberService.createTestCampaignMembers(
+            testContact.Id,
+            camListWithIds
+        );
         insert camMemList;
 
         // Create some test Campaigns the contact is not currently a part of for searching
         List<Campaign> events = CampaignService.createTestCampaignOfType(5, 'Event');
 
-        for (Campaign eCam : events)
-        {
+        for (Campaign eCam : events) {
             eCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
             eCam.Requested__c = 'Barret The Honors College';
             eCam.Campus_Location__c = tempe.Id;
@@ -57,8 +49,7 @@ private class Test_CampaignMemberManagementController {
 
         List<Campaign> interests = CampaignService.createTestCampaignOfType(5, 'Interest');
 
-        for (Campaign iCam : events)
-        {
+        for (Campaign iCam : events) {
             iCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
             iCam.Requested__c = 'Barret The Honors College';
             iCam.Campus_Location__c = tempe.Id;
@@ -72,8 +63,7 @@ private class Test_CampaignMemberManagementController {
 
         List<Campaign> crs = CampaignService.createTestCampaignOfType(5, 'Corporate Relations');
 
-        for (Campaign cCam : crs)
-        {
+        for (Campaign cCam : crs) {
             cCam.Name = cCam.Name + ' Parent CR';
             cCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
             cCam.Type = 'Corporate Relations';
@@ -83,22 +73,15 @@ private class Test_CampaignMemberManagementController {
         insert crs;
 
         // Query back for the CR Campaigns so we can create children
-        List<Campaign> parents = [
-            SELECT Id, Name, RecordType.Name
-            FROM Campaign
-            WHERE Name LIKE '%Parent CR'
-        ];
+        List<Campaign> parents = [SELECT Id, Name, RecordType.Name FROM Campaign WHERE Name LIKE '%Parent CR'];
 
         tempCrCamList.addAll(parents);
 
         // Create multiple child campaigns for each parent
-        for (Campaign parent : parents)
-        {
-            List<Campaign> tempChildren =
-                CampaignService.createTestCampaignOfType(2, 'Corporate Relations');
+        for (Campaign parent : parents) {
+            List<Campaign> tempChildren = CampaignService.createTestCampaignOfType(2, 'Corporate Relations');
 
-            for (Campaign child : tempChildren)
-            {
+            for (Campaign child : tempChildren) {
                 child.Name = child.Name = ' Child CR';
                 child.Event_Start_Date__c = date.newinstance(2016, 3, 28);
                 child.Type = 'Corporate Relations';
@@ -115,14 +98,12 @@ private class Test_CampaignMemberManagementController {
         List<Campaign> camsToAddStatuses = [
             SELECT Id, Name, RecordType.Name
             FROM Campaign
-            WHERE RecordType.Name = 'Corporate Relations'
-            AND Id NOT IN :camListWithIds
+            WHERE RecordType.Name = 'Corporate Relations' AND Id NOT IN :camListWithIds
         ];
 
         List<CampaignMemberStatus> cmStatuses = new List<CampaignMemberStatus>();
 
-        for (Campaign camToAddStatusToAdd : camsToAddStatuses)
-        {
+        for (Campaign camToAddStatusToAdd : camsToAddStatuses) {
             CampaignMemberStatus cmActive1 = new CampaignMemberStatus(
                 CampaignId = camToAddStatusToAdd.Id,
                 IsDefault = true,
@@ -148,13 +129,11 @@ private class Test_CampaignMemberManagementController {
         // Add the contact to only the back 5 campaigns, so we get some results during search.
         List<Campaign> camsToAddToContact = new List<Campaign>();
 
-        for (Integer i = 9; i < 15; i++)
-        {
+        for (Integer i = 9; i < 15; i++) {
             camsToAddToContact.add(camsToAddStatuses[i]);
         }
 
-        crCamMemsToInsert =
-            CampaignMemberService.createTestCampaignMembers(testContact.Id, camsToAddToContact);
+        crCamMemsToInsert = CampaignMemberService.createTestCampaignMembers(testContact.Id, camsToAddToContact);
         insert crCamMemsToInsert;
 
         // Add test Subscription records
@@ -165,7 +144,10 @@ private class Test_CampaignMemberManagementController {
         insert subscriptions;
 
         // Add test Subscriber records
-        List<Subscriber__c> subscribers = TestDataFactory.createTestSubscribers(new List<Contact>{testContact}, subscriptions);
+        List<Subscriber__c> subscribers = TestDataFactory.createTestSubscribers(
+            new List<Contact>{ testContact },
+            subscriptions
+        );
         insert subscribers;
 
         // Add test Business Units (Marketing Cloud)
@@ -183,43 +165,38 @@ private class Test_CampaignMemberManagementController {
         insert sdList;
 
         // Add test Individual Email Results (Marketing Cloud)
-        List<et4ae5__IndividualEmailResult__c> ierList = 
-            TestDataFactory.createTestIERs(new List<Contact>{testContact}, sdList);
+        List<et4ae5__IndividualEmailResult__c> ierList = TestDataFactory.createTestIERs(
+            new List<Contact>{ testContact },
+            sdList
+        );
         insert ierList;
-
     }
 
-    @isTest static void testEventsAndInterest()
-    {
+    @isTest
+    static void testEventsAndInterest() {
         Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
 
         Campaign eventCam = [
             SELECT Id, Name
             FROM Campaign
-            WHERE RecordType.Name = 'Event'
-            AND Name LIKE '%Test Campaign%'
+            WHERE RecordType.Name = 'Event' AND Name LIKE '%Test Campaign%'
             LIMIT 1
         ];
 
         Campaign intCam = [
             SELECT Id, Name
             FROM Campaign
-            WHERE RecordType.Name = 'Interest'
-            AND Name LIKE '%Test Campaign%'
+            WHERE RecordType.Name = 'Interest' AND Name LIKE '%Test Campaign%'
             LIMIT 1
         ];
 
-        Location__c tempe = [
-            SELECT Id, Name
-            FROM Location__c
-            WHERE Name = 'Tempe Campus'
-        ];
+        Location__c tempe = [SELECT Id, Name FROM Location__c WHERE Name = 'Tempe Campus'];
 
         eventCam.Requested__c = 'Barret The Honors College';
         eventCam.Campus_Location__c = tempe.Id;
         eventCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
 
-        Id[] fixedSearchResults = new Id[2];
+        Id[] fixedSearchResults = new List<Id>(2);
         fixedSearchResults[0] = eventCam.Id;
         fixedSearchResults[1] = intCam.Id;
         Test.setFixedSearchResults(fixedSearchResults);
@@ -282,22 +259,13 @@ private class Test_CampaignMemberManagementController {
         System.AssertEquals(checkIntTestContact.ContactId, tempContact.Id);
     }
 
-    @isTest public static void testCorporateRelations()
-    {
+    @isTest
+    public static void testCorporateRelations() {
         Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
 
-        List<Campaign> crCamParents = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE Name LIKE '%Parent CR'
-            AND ParentId = null
-        ];
+        List<Campaign> crCamParents = [SELECT Id, Name FROM Campaign WHERE Name LIKE '%Parent CR' AND ParentId = NULL];
 
-        List<Campaign> crChilds = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE ParentId IN :crCamParents
-        ];
+        List<Campaign> crChilds = [SELECT Id, Name FROM Campaign WHERE ParentId IN :crCamParents];
 
         List<Campaign> allCRCams = new List<Campaign>();
         allCRCams.addAll(crCamParents);
@@ -305,10 +273,9 @@ private class Test_CampaignMemberManagementController {
 
         Integer listSize = crCamParents.size() + crChilds.size();
 
-        Id[] fixedSearchResults = new Id[listSize];
+        Id[] fixedSearchResults = new List<Id>(listSize);
 
-        for (Integer i = 0; i < listSize; i++)
-        {
+        for (Integer i = 0; i < listSize; i++) {
             fixedSearchResults[i] = allCRCams[i].Id;
         }
 
@@ -346,31 +313,18 @@ private class Test_CampaignMemberManagementController {
 
         Test.stopTest();
 
-        Id tempParentId = [
-            SELECT Id
-            FROM CampaignMember
-            WHERE Id = :cm.activeCrCamMems[0].Id
-        ].Id;
+        Id tempParentId = [SELECT Id FROM CampaignMember WHERE Id = :cm.activeCrCamMems[0].Id].Id;
 
         System.assertNotEquals(null, tempParentId);
     }
 
-    @isTest public static void testSubscriptions()
-    {
+    @isTest
+    public static void testSubscriptions() {
         Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
 
-        List<Campaign> crCamParents = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE Name LIKE '%Parent CR'
-            AND ParentId = null
-        ];
+        List<Campaign> crCamParents = [SELECT Id, Name FROM Campaign WHERE Name LIKE '%Parent CR' AND ParentId = NULL];
 
-        List<Campaign> crChilds = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE ParentId IN :crCamParents
-        ];
+        List<Campaign> crChilds = [SELECT Id, Name FROM Campaign WHERE ParentId IN :crCamParents];
 
         List<Campaign> allCRCams = new List<Campaign>();
         allCRCams.addAll(crCamParents);
@@ -378,10 +332,9 @@ private class Test_CampaignMemberManagementController {
 
         Integer listSize = crCamParents.size() + crChilds.size();
 
-        Id[] fixedSearchResults = new Id[listSize];
+        Id[] fixedSearchResults = new List<Id>(listSize);
 
-        for (Integer i = 0; i < listSize; i++)
-        {
+        for (Integer i = 0; i < listSize; i++) {
             fixedSearchResults[i] = allCRCams[i].Id;
         }
 
@@ -399,23 +352,13 @@ private class Test_CampaignMemberManagementController {
         System.assertEquals(cm.getSubscriberList().size(), 6);
     }
 
-
-    @isTest public static void testMarketingCommunications()
-    {
+    @isTest
+    public static void testMarketingCommunications() {
         Contact tempContact = [SELECT Id, Name FROM Contact LIMIT 1];
 
-        List<Campaign> crCamParents = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE Name LIKE '%Parent CR'
-            AND ParentId = null
-        ];
+        List<Campaign> crCamParents = [SELECT Id, Name FROM Campaign WHERE Name LIKE '%Parent CR' AND ParentId = NULL];
 
-        List<Campaign> crChilds = [
-            SELECT Id, Name
-            FROM Campaign
-            WHERE ParentId IN :crCamParents
-        ];
+        List<Campaign> crChilds = [SELECT Id, Name FROM Campaign WHERE ParentId IN :crCamParents];
 
         List<Campaign> allCRCams = new List<Campaign>();
         allCRCams.addAll(crCamParents);
@@ -423,10 +366,9 @@ private class Test_CampaignMemberManagementController {
 
         Integer listSize = crCamParents.size() + crChilds.size();
 
-        Id[] fixedSearchResults = new Id[listSize];
+        Id[] fixedSearchResults = new List<Id>(listSize);
 
-        for (Integer i = 0; i < listSize; i++)
-        {
+        for (Integer i = 0; i < listSize; i++) {
             fixedSearchResults[i] = allCRCams[i].Id;
         }
 
@@ -462,8 +404,5 @@ private class Test_CampaignMemberManagementController {
         cm.clearCommFilter();
         System.assert(cm.commFilterStartDate == null);
         System.assertEquals(cm.getFilteredMessageList().size(), 5);
-
-
     }
-
 }

@@ -26,6 +26,13 @@ public with sharing class MyASUHelpPaginationController {
         setLastPageNumber();
         setFirstAndLastPageStatuses();
     }
+    public String getForceRecalculatePaginationValues() {
+        // When you attempt to {!forceRecalculatePaginationValues} - this will force the pagination values to all be recalculated.
+        setNumberOfResults();
+        setLastPageNumber();
+        setFirstAndLastPageStatuses();
+        return System.now().format('HH:mm:ss');
+    }
 
     private void checkSearchParams() {
         String searchParams = ApexPages.currentPage().getParameters().get('q');

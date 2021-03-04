@@ -2,9 +2,7 @@
 public with sharing class SuccessStudentFactory {
     public class DefaultAdvisingStudent extends TestFactory {
         public DefaultAdvisingStudent() {
-            super(new Success_Student__c(
-            	Coaching_Student__c = false
-            ));
+            super(new Success_Student__c(Coaching_Student__c = false));
         }
 
         public void setRelatedSuccessResource(List<Success_Resource__c> successResources) {
@@ -18,9 +16,7 @@ public with sharing class SuccessStudentFactory {
 
     public class DefaultCoachingStudent extends TestFactory {
         public DefaultCoachingStudent() {
-            super(new Success_Student__c(
-                Coaching_Student__c = true
-            ));
+            super(new Success_Student__c(Coaching_Student__c = true));
         }
 
         public void setRelatedSuccessResource(List<Success_Resource__c> successResources) {
@@ -34,12 +30,14 @@ public with sharing class SuccessStudentFactory {
 
     public class DefaultSuccessPodStudent extends TestFactory {
         public DefaultSuccessPodStudent(Id successPodId, Id contactId) {
-            super(new Success_Student__c(
-                Is_Active__c = true,
-                Success_Pod__c = successPodId,
-                Student__c = contactId,
-                Coaching_Student__c = false
-            ));
+            super(
+                new Success_Student__c(
+                    Is_Active__c = true,
+                    Success_Pod__c = successPodId,
+                    Student__c = contactId,
+                    Coaching_Student__c = false
+                )
+            );
         }
     }
 
@@ -50,7 +48,7 @@ public with sharing class SuccessStudentFactory {
 
         for (Success_Pod__c sp : pods) {
             successPodRelatedContacts.put(sp.Id, new List<Contact>());
-            successPodRelatedContacts.get(sp.Id).addAll((List<Contact>)contactMaker.create(numberOfStudents));
+            successPodRelatedContacts.get(sp.Id).addAll((List<Contact>) contactMaker.create(numberOfStudents));
         }
 
         for (Id i : successPodRelatedContacts.keySet()) {
@@ -60,7 +58,7 @@ public with sharing class SuccessStudentFactory {
         for (Success_Pod__c sp : pods) {
             for (Contact c : successPodRelatedContacts.get(sp.Id)) {
                 DefaultSuccessPodStudent successStudentMaker = new DefaultSuccessPodStudent(sp.Id, c.Id);
-                successStudents.add((Success_Student__c)successStudentMaker.create(1)[0]);
+                successStudents.add((Success_Student__c) successStudentMaker.create(1)[0]);
             }
         }
         insert successStudents;

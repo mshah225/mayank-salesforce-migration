@@ -5,14 +5,17 @@
 
     <apex:pageMessages />
 
-    <div style="text-align:center;padding:25px;">
+    <div style="text-align: center; padding: 25px">
         <c:FeedbackButton carName="Advisor Portal" />
     </div>
 
     <c:ViewAsComponent selectOptions="{!viewAsOptions}" hasViewAs="{!hasViewAs}" mimicId="{!$User.Id}" id="viewAsComponent">
-
-        <button id="SelectAll" type="button" class="btn btn-default" style="margin-left: 15px; margin-bottom: 30px;">Select All</button>
-        <button id="DeselectAll" type="button" class="btn btn-default" style="margin-bottom: 30px;" onclick="resetOwnerIdListFunction();">My Queue</button>
+        <button id="SelectAll" type="button" class="btn btn-default" style="margin-left: 15px; margin-bottom: 30px">
+            Select All
+        </button>
+        <button id="DeselectAll" type="button" class="btn btn-default" style="margin-bottom: 30px" onclick="resetOwnerIdListFunction();">
+            My Queue
+        </button>
         <!-- This bit is required in order to pass the mimic ID to the controller of the main page -->
         <!-- VF Components do not have a built in way to pass data up -->
         <apex:form>

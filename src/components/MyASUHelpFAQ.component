@@ -4,17 +4,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <div class="myasu-help-region-faq">
-        <div class="myasu-help-region-header">
-            Frequently Asked Questions
-        </div>
+        <div class="myasu-help-region-header">Frequently Asked Questions</div>
         <div class="myasu-help-region-faq-content" id="search_content">
             <apex:form id="searchForm" styleClass="searchKB">
                 <apex:pageBlock mode="maindetail">
                     <div class="myasu-help-region-faq-search">
                         <center>
-                            <p class="lead" style="display:inline-block;">
-                                Ask us anything.
-                            </p>
+                            <p class="lead" style="display: inline-block">Ask us anything.</p>
                             <div class="searchKB2">
                                 <div class="form-horizontal myasu-help-region-faq-search-input-container">
                                     <apex:inputText id="articleTextBoxId" value="{!textToSearch}" styleClass="myasu-help-region-faq-search-input" html-placeholder="Type your question here"
@@ -36,9 +32,8 @@
                 <apex:actionRegion>
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
-                            <div class="myasu-help-region-sub-header">
-                                Showing all results for '{!textToSearch}'
-                            </div>
+                            <div style="display: none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
+                            <div class="myasu-help-region-sub-header">Showing all results for '{!textToSearch}'</div>
                             <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPageNumber}"
                                 pageSize="{!IF(textToSearch != '', pageSize, 0)}">
                                 <div class="myasu-help-region-faq-search-results-article-container">
@@ -52,7 +47,9 @@
                                     style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}" reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-backward" aria-hidden="true" />
                                 </apex:commandLink>
-                                <div class="myasu-help-region-faq-search-results-current-page">{!currentPageNumber}</div>
+                                <div class="myasu-help-region-faq-search-results-current-page">
+                                    {!currentPageNumber}
+                                </div>
                                 <apex:commandLink action="{!next}" styleClass="btn btn-secondary myasu-help-region-faq-search-results-step-forwards" style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-forward" aria-hidden="true" />
@@ -63,9 +60,7 @@
                             </p>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation != 'viewAllArticles')}">
-                            <div class="myasu-help-region-sub-header">
-                                Showing top results for '{!textToSearch}'
-                            </div>
+                            <div class="myasu-help-region-sub-header">Showing top results for '{!textToSearch}'</div>
                             <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageSize="{!IF(textToSearch != '',pageSize,0)}">
                                 <div class="myasu-help-region-faq-search-results-article-container">
                                     <apex:outputLink styleClass="myasu-help-region-faq-search-results-article" value="/authkb?id={!article.id}">
@@ -77,14 +72,12 @@
                             />
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch == '', !isSearchingWithFunctionalGroup)}">
-                            <div class="myasu-help-region-sub-header">
-                                Browse common questions
-                            </div>
+                            <div class="myasu-help-region-sub-header">Browse common questions</div>
                             <div class="myasu-help-region-sub-header-category">
                                 <div class="myasu-help-region-common-questions-header">Finances</div>
                                 <apex:repeat value="{!topThreeFinancialArticles}" var="article" id="myasu-help-region-common-questions-finances">
                                     <apex:outputLink styleClass="myasu-help-region-common-questions-finance-article" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                    <br/>
+                                    <br />
                                 </apex:repeat>
                                 <apex:commandLink styleClass="myasu-help-region-common-questions-finances-view-all" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
                                 />
@@ -93,7 +86,7 @@
                                 <div class="myasu-help-region-common-questions-header">Technology</div>
                                 <apex:repeat value="{!topThreeTechnicalArticles}" var="article" id="myasu-help-region-common-questions-technical">
                                     <apex:outputLink styleClass="myasu-help-region-common-questions-technical-article" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                    <br/>
+                                    <br />
                                 </apex:repeat>
                                 <apex:commandLink styleClass="myasu-help-region-common-questions-technical-view-all" value="View all technology questions"
                                     action="{!getViewAllTechnicalArticlesLink}" />
@@ -102,7 +95,7 @@
                                 <div class="myasu-help-region-common-questions-header">Housing</div>
                                 <apex:repeat value="{!topThreeHousingArticles}" var="article" id="myasu-help-region-common-questions-housing">
                                     <apex:outputLink styleClass="myasu-help-region-common-questions-housing-article" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                    <br/>
+                                    <br />
                                 </apex:repeat>
                                 <apex:commandLink styleClass="myasu-help-region-common-questions-housing-view-all" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
                                 />
@@ -114,7 +107,7 @@
                                 <apex:repeat value="{!allFinancialArticles}" var="article" id="myasu-help-region-view-all-articles-finance">
                                     <div class="myasu-help-region-view-all-articles-article-container">
                                         <apex:outputLink styleClass="myasu-help-region-view-all-articles-finance" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                        <br/>
+                                        <br />
                                     </div>
                                 </apex:repeat>
                             </apex:outputPanel>
@@ -123,7 +116,7 @@
                                 <apex:repeat value="{!allTechnicalArticles}" var="article" id="myasu-help-region-view-all-articles-technical">
                                     <div class="myasu-help-region-view-all-articles-article-container">
                                         <apex:outputLink styleClass="myasu-help-region-view-all-articles-technical" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                        <br/>
+                                        <br />
                                     </div>
                                 </apex:repeat>
                             </apex:outputPanel>
@@ -132,7 +125,7 @@
                                 <apex:repeat value="{!allHousingArticles}" var="article" id="myasu-help-region-view-all-articles-housing">
                                     <div class="myasu-help-region-view-all-articles-article-container">
                                         <apex:outputLink styleClass="myasu-help-region-view-all-articles-housing" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                        <br/>
+                                        <br />
                                     </div>
                                 </apex:repeat>
                             </apex:outputPanel>
@@ -181,12 +174,14 @@
 
         function appendNoResultsText() {
             $('.myasu-help-region-sub-header').text(function () {
-                return $(this).text().replace("Showing top results", "No results found");
+                return $(this).text().replace('Showing top results', 'No results found');
             });
             $('.myasu-help-region-sub-header').text(function () {
-                return $(this).text().replace("Showing all results", "No results found");
+                return $(this).text().replace('Showing all results', 'No results found');
             });
-            $('.myasu-help-region-sub-header').append('<p class="myasu-append-no-results-text">Try rewording your search.</p><p class="myasu-append-no-results-text-back"><a href="/">Back to Frequently Asked Questions</a></p>');
+            $('.myasu-help-region-sub-header').append(
+                '<p class="myasu-append-no-results-text">Try rewording your search.</p><p class="myasu-append-no-results-text-back"><a href="/">Back to Frequently Asked Questions</a></p>'
+            );
             $('.myasu-append-no-results-text-back-main').hide();
         }
     </script>

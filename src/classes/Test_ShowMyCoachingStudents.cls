@@ -1,15 +1,15 @@
 /*****************************************
-* File: Test_ShowMyCoachingStudents
-* Author: Mathew Ruff, Sierra-Cedar
-* Description: Unit Tests for showMyCoachingStudentsController.cls
-******************************************/
+ * File: Test_ShowMyCoachingStudents
+ * Author: Mathew Ruff, Sierra-Cedar
+ * Description: Unit Tests for showMyCoachingStudentsController.cls
+ ******************************************/
 @IsTest
 private class Test_ShowMyCoachingStudents {
     private static showMyCoachingStudentsController smcsc;
     private static String query; // Used to generate standard set controller objects
     private static List<Success_Pod__c> pod; // Used to store the pod created for testing
     private static Integer numberOfstudentsToCreate = 3; // Number of students that will be created
-    
+
     /*
      * Static initilizaion code to minimize repeat code per test method
      */
@@ -19,31 +19,28 @@ private class Test_ShowMyCoachingStudents {
         pod = new List<Success_Pod__c>([SELECT Id FROM Success_Pod__c LIMIT 1]);
 
         if (pod.size() > 0) {
-            query = 'SELECT Student_Name__c, EMPLID__c, Student__c ' +
+            query =
+                'SELECT Student_Name__c, EMPLID__c, Student__c ' +
                 'FROM Success_Student__c ' +
-                'WHERE Success_Pod__c = \'' + pod[0].Id + '\' ' +
+                'WHERE Success_Pod__c = \'' +
+                pod[0].Id +
+                '\' ' +
                 'AND Is_Active__c = true';
             smcsc.queryAttr = query;
         }
     }
-    
+
     /*
      * Create test data
      */
     @testSetup
     public static void testSetup() {
         // Create queue to own pod
-        Group testGroup = new Group(
-            Name = 'Test Group Name',
-            Type = 'Queue'
-        );
+        Group testGroup = new Group(Name = 'Test Group Name', Type = 'Queue');
 
         insert testGroup;
 
-        QueueSobject testQueue = new QueueSobject(
-            QueueId = testGroup.Id,
-            SobjectType = 'Success_Pod__c'
-        );
+        QueueSobject testQueue = new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Success_Pod__c');
 
         // To avoid MIXED DML ERROR, you need to insert this non-setup object
         // as the system user. In this case, just the admin running the test.
@@ -54,10 +51,7 @@ private class Test_ShowMyCoachingStudents {
         // Create Pod
         Id successPodRTID = [SELECT Id FROM RecordType WHERE SObjectType = 'Success_Pod__c' AND Name = 'Coach'].Id;
 
-        Success_Pod__c sp = new Success_Pod__c(
-            ownerId = testGroup.Id,
-            recordTypeId = successPodRTID
-        );
+        Success_Pod__c sp = new Success_Pod__c(ownerId = testGroup.Id, recordTypeId = successPodRTID);
 
         insert sp;
 
@@ -67,33 +61,29 @@ private class Test_ShowMyCoachingStudents {
 
         insert contactsToCreate;
 
-        Profile p = [
-            SELECT Id
-            FROM Profile
-            WHERE Profile.Name = 'ASU Service - Success Coach'
-        ];
+        Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Service - Success Coach'];
 
         User u1 = TestDataFactory.createUser('Testing1', p.Id);
         insert u1;
 
-        Success_Resource__c testResource = new Success_Resource__c(
-            Resource__c = u1.Id
-        );
+        Success_Resource__c testResource = new Success_Resource__c(Resource__c = u1.Id);
         insert testResource;
 
         for (Contact c : contactsToCreate) {
-            studentsToCreate.add(new Success_Student__c(
-                Student__c = c.Id,
-                Success_Pod__c = sp.Id,
-                Success_Resource__c = testResource.Id,
-                Is_Active__c = true,
-                Coaching_Student__c = true
-            ));
+            studentsToCreate.add(
+                new Success_Student__c(
+                    Student__c = c.Id,
+                    Success_Pod__c = sp.Id,
+                    Success_Resource__c = testResource.Id,
+                    Is_Active__c = true,
+                    Coaching_Student__c = true
+                )
+            );
         }
 
         insert studentsToCreate;
     }
-    
+
     /*
      * Tests the setCon's getter.
      */
@@ -105,23 +95,23 @@ private class Test_ShowMyCoachingStudents {
     /*
      * Tests the controllers ability to handle null values in sortDir
      */
-    public static testmethod void Test_getSortField() {
+    public static testMethod void Test_getSortField() {
         smcsc.sortField = 'Student_Name__c';
         System.assert(smcsc.query.contains('ORDER BY Student_Name__c DESC'));
     }
-    
+
     /*
      * Tests the controllers ability to handle null values in sortDir
      */
-    public static testmethod void Test_getSort() {
+    public static testMethod void Test_getSort() {
         smcsc.sortDir = null; // Set to null
         System.assertEquals('DESC', smcsc.sortDir); // Make sure the sortDir is set to default DESC
     }
-    
+
     /*
      * Tests the controllers ability to retrieve the selected students
      */
-    public static testmethod void Test_getSelectedStudents() {
+    public static testMethod void Test_getSelectedStudents() {
         for (showMyCoachingStudentsController.studentWrapper sw : smcsc.studentList) {
             sw.selected = true; // Select all the cases
         }
@@ -132,7 +122,7 @@ private class Test_ShowMyCoachingStudents {
     /*
      * Tests the search functionality
      */
-    public static testmethod void Test_myStudentsSearch() {
+    public static testMethod void Test_myStudentsSearch() {
         // Arrange
         User testUser = [SELECT Id FROM User WHERE LastName = 'Testing1' LIMIT 1];
 
@@ -152,17 +142,17 @@ private class Test_ShowMyCoachingStudents {
     /*
      * Tests setCon override methods
      */
-    public static testmethod void Test_setConNavigation() {
+    public static testMethod void Test_setConNavigation() {
         smcsc.setConNext();
         smcsc.setConPrev();
         smcsc.setConPageSize(1);
         System.assert(smcsc.setCon.getRecords().size() == 1);
     }
-    
+
     /*
      * Tests the controllers ability to insert mass emails
      */
-    public static testmethod void Test_MassEmail() {
+    public static testMethod void Test_MassEmail() {
         // Select students
         for (showMyCoachingStudentsController.studentWrapper sw : smcsc.studentList) {
             sw.selected = true; // Select all the cases

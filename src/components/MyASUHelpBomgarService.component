@@ -12,106 +12,98 @@
             if (typeof context == 'undefined' || context === null) {
                 return;
             }
-            var str = this.replace(/\"/g, "\\\"").replace(/\\/g, "\\\\");
+            var str = this.replace(/\"/g, '\\"').replace(/\\/g, '\\\\');
             return str;
-        }
+        };
 
-        BG.setSite("bomgar.asu.edu");
+        BG.setSite('bomgar.asu.edu');
         // Start 'Finances' Chat
         function startFAChat() {
-            document.getElementById("faChatBtn").firstChild.data = "Starting Chat...";
-            document.getElementById("faChatBtn").setAttribute("style", "width:100px");
-            document.getElementById("faChatBtn").disabled = true;
+            document.getElementById('faChatBtn').firstChild.data = 'Starting Chat...';
+            document.getElementById('faChatBtn').setAttribute('style', 'width:100px');
+            document.getElementById('faChatBtn').disabled = true;
 
-            var viewingAs = "{!viewingAs}"
+            var viewingAs = '{!viewingAs}';
 
-            if (viewingAs != "true") {
+            if (viewingAs != 'true') {
                 var jsonString = null;
                 var jsonObject = {};
-                jsonObject.employeeNumber = "{!emplId}";
+                jsonObject.employeeNumber = '{!emplId}';
                 jsonObject.description = document.getElementById('FADesc').value.formatForJson();
-                jsonObject.asuriteId = "{!asurite}";
+                jsonObject.asuriteId = '{!asurite}';
                 jsonObject.externalKey = 'Finances';
 
                 try {
                     jsonString = JSON.stringify(jsonObject);
-                }
-                catch (e) {
-
-                }
+                } catch (e) { }
 
                 if (jsonString == null) {
-                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('FADesc').value.formatForJson() + '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
+                    jsonString =
+                        '{"employeeNumber":"{!emplId}", "description":"' +
+                        document.getElementById('FADesc').value.formatForJson() +
+                        '", "asuriteId":"{!asurite}", "externalKey":"Finances"}';
                 }
 
-                BG.start(BG.START_TYPE.CHAT,
-                    {
-                        issue:
-                        {
-                            codeName: 'studentfinances_chat',
-                            customerName: "{!firstName} {!lastName}",
-                            companyName: 'ASU',
-                            details: document.getElementById('FADesc').value.formatForJson()
-                        },
-                        attributes:
-                        {
-                            externalKey: ('SFDC:' + jsonString)
-                        },
-                        uiOptions:
-                        {
-                            fallbackToFullWindow: true
-                        }
-                    });
+                BG.start(BG.START_TYPE.CHAT, {
+                    issue: {
+                        codeName: 'studentfinances_chat',
+                        customerName: '{!firstName} {!lastName}',
+                        companyName: 'ASU',
+                        details: document.getElementById('FADesc').value.formatForJson(),
+                    },
+                    attributes: {
+                        externalKey: 'SFDC:' + jsonString,
+                    },
+                    uiOptions: {
+                        fallbackToFullWindow: true,
+                    },
+                });
             }
         }
     </script>
 
     <script>
-        BG.setSite("bomgar.asu.edu");
+        BG.setSite('bomgar.asu.edu');
         // Start 'Other' Chat
         function startSFDCChat() {
-            document.getElementById("otherChatBtn").firstChild.data = "Starting Chat...";
-            document.getElementById("otherChatBtn").setAttribute("style", "width:100px");
-            document.getElementById("otherChatBtn").disabled = true;
-            var viewingAs = "{!viewingAs}"
+            document.getElementById('otherChatBtn').firstChild.data = 'Starting Chat...';
+            document.getElementById('otherChatBtn').setAttribute('style', 'width:100px');
+            document.getElementById('otherChatBtn').disabled = true;
+            var viewingAs = '{!viewingAs}';
 
-            if (viewingAs != "true") {
+            if (viewingAs != 'true') {
                 var jsonString = null;
                 var jsonObject = {};
-                jsonObject.employeeNumber = "{!emplId}";
+                jsonObject.employeeNumber = '{!emplId}';
                 jsonObject.description = document.getElementById('SFDCDesc').value.formatForJson();
-                jsonObject.asuriteId = "{!asurite}";
+                jsonObject.asuriteId = '{!asurite}';
                 jsonObject.externalKey = 'Other';
 
                 try {
                     jsonString = JSON.stringify(jsonObject);
-                }
-                catch (e) {
-
-                }
+                } catch (e) { }
 
                 if (jsonString == null) {
-                    jsonString = '{"employeeNumber":"{!emplId}", "description":"' + document.getElementById('SFDCDesc').value.formatForJson() + '", "asuriteId":"{!asurite}", "externalKey":"Other"}';
+                    jsonString =
+                        '{"employeeNumber":"{!emplId}", "description":"' +
+                        document.getElementById('SFDCDesc').value.formatForJson() +
+                        '", "asuriteId":"{!asurite}", "externalKey":"Other"}';
                 }
 
-                BG.start(BG.START_TYPE.CHAT,
-                    {
-                        issue:
-                        {
-                            codeName: 'salesforce_chat',
-                            customerName: "{!firstName} {!lastName}",
-                            companyName: 'ASU',
-                            details: document.getElementById('SFDCDesc').value.formatForJson()
-                        },
-                        attributes:
-                        {
-                            externalKey: ('SFDC:' + jsonString)
-                        },
-                        uiOptions:
-                        {
-                            fallbackToFullWindow: true
-                        }
-                    });
+                BG.start(BG.START_TYPE.CHAT, {
+                    issue: {
+                        codeName: 'salesforce_chat',
+                        customerName: '{!firstName} {!lastName}',
+                        companyName: 'ASU',
+                        details: document.getElementById('SFDCDesc').value.formatForJson(),
+                    },
+                    attributes: {
+                        externalKey: 'SFDC:' + jsonString,
+                    },
+                    uiOptions: {
+                        fallbackToFullWindow: true,
+                    },
+                });
             }
         }
     </script>

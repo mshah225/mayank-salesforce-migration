@@ -1,0 +1,16 @@
+<aura:component description="AdvisorPortalPredictionLevel">
+    <aura:attribute name="predictionLevel" type="Decimal" required="true" />
+    <aura:attribute name="imageURL" type="String" />
+    <aura:attribute name="alt" type="String" />
+    <aura:attribute name="title" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:if isTrue="{!not(empty(v.predictionLevel))}">
+        <img
+            src="{!$Resource.PersistenceChart + v.imageURL}"
+            alt="{!v.alt}"
+            title="{!v.title}"
+            class="persistence-icon slds-m-horizontal_xx-small"
+        />
+    </aura:if>
+</aura:component>

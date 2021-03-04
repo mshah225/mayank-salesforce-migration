@@ -4,8 +4,8 @@
     <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script type='text/javascript' src='https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js' />
-    <script type='text/javascript'>
+    <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js" />
+    <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';
         var chatDeploymentId = '{!deploymentId}';
@@ -17,31 +17,47 @@
 
         $(document).ready(function () {
             $('.accordion-toggle').focus(function () {
-                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle strong').css({ "outline": "2px solid #4D90FE", "box-shadow": "0px 0px 5px #4D90FE" });
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle strong').css({
+                    'outline': '2px solid #4D90FE',
+                    'box-shadow': '0px 0px 5px #4D90FE',
+                });
             });
             $('.accordion-toggle').focusout(function () {
-                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle strong').css({ "outline": "none", "box-shadow": "none" });
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle strong').css({
+                    'outline': 'none',
+                    'box-shadow': 'none',
+                });
             });
             $('.accordion-toggle2').focus(function () {
-                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle2 strong').css({ "outline": "2px solid #4D90FE", "box-shadow": "0px 0px 5px #4D90FE" });
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle2 strong').css({
+                    'outline': '2px solid #4D90FE',
+                    'box-shadow': '0px 0px 5px #4D90FE',
+                });
             });
             $('.accordion-toggle2').focusout(function () {
-                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle2 strong').css({ "outline": "none", "box-shadow": "none" });
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle2 strong').css({
+                    'outline': 'none',
+                    'box-shadow': 'none',
+                });
             });
             $('.accordion-toggle3').focus(function () {
-                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle3 strong').css({ "outline": "2px solid #4D90FE", "box-shadow": "0px 0px 5px #4D90FE" });
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle3 strong').css({
+                    'outline': '2px solid #4D90FE',
+                    'box-shadow': '0px 0px 5px #4D90FE',
+                });
             });
             $('.accordion-toggle3').focusout(function () {
-                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle3 strong').css({ "outline": "none", "box-shadow": "none" });
+                $('.myasu-help-region-contact-us-accordion-container .accordion-toggle3 strong').css({
+                    'outline': 'none',
+                    'box-shadow': 'none',
+                });
             });
         });
     </script>
 
     <apex:outputPanel>
         <div class="myasu-help-region-contact-us">
-            <div class="myasu-help-region-header">
-                Contact Us
-            </div>
+            <div class="myasu-help-region-header">Contact Us</div>
             <div class="myasu-help-region-contact-us-content myasu-help-region-content-section">
                 <p>
                     We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
@@ -100,10 +116,18 @@
                                             {!financeDisplayName}
                                         </a>
                                         <script type="text/javascript">
-                                            if (!window._laq) { window._laq = []; }
+                                            if (!window._laq) {
+                                                window._laq = [];
+                                            }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(financesChatId, document.getElementById('liveagent_button_finances_online'));
-                                                liveagent.showWhenOffline(financesChatId, document.getElementById('liveagent_button_finances_offline'));
+                                                liveagent.showWhenOnline(
+                                                    financesChatId,
+                                                    document.getElementById('liveagent_button_finances_online')
+                                                );
+                                                liveagent.showWhenOffline(
+                                                    financesChatId,
+                                                    document.getElementById('liveagent_button_finances_offline')
+                                                );
                                             });
                                         </script>
                                     </div>
@@ -115,10 +139,20 @@
                                             {!technicalSupportDisplayName}
                                         </a>
                                         <script type="text/javascript">
-                                            if (!window._laq) { window._laq = []; }
+                                            if (!window._laq) {
+                                                window._laq = [];
+                                            }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(techSupportChatId, document.getElementById('liveagent_button_technical_support_online'));
-                                                liveagent.showWhenOffline(techSupportChatId, document.getElementById('liveagent_button_technical_support_offline'));
+                                                liveagent.showWhenOnline(
+                                                    techSupportChatId,
+                                                    document.getElementById('liveagent_button_technical_support_online')
+                                                );
+                                                liveagent.showWhenOffline(
+                                                    techSupportChatId,
+                                                    document.getElementById(
+                                                        'liveagent_button_technical_support_offline'
+                                                    )
+                                                );
                                             });
                                         </script>
                                     </div>
@@ -130,10 +164,18 @@
                                             {!studentServicesDisplayName}
                                         </a>
                                         <script type="text/javascript">
-                                            if (!window._laq) { window._laq = []; }
+                                            if (!window._laq) {
+                                                window._laq = [];
+                                            }
                                             window._laq.push(function () {
-                                                liveagent.showWhenOnline(studentServiceChatId, document.getElementById('liveagent_button_student_services_online'));
-                                                liveagent.showWhenOffline(studentServiceChatId, document.getElementById('liveagent_button_student_services_offline'));
+                                                liveagent.showWhenOnline(
+                                                    studentServiceChatId,
+                                                    document.getElementById('liveagent_button_student_services_online')
+                                                );
+                                                liveagent.showWhenOffline(
+                                                    studentServiceChatId,
+                                                    document.getElementById('liveagent_button_student_services_offline')
+                                                );
                                             });
                                         </script>
                                     </div>

@@ -1,4 +1,4 @@
-public without sharing class  ErrorLogger {
+public without sharing class ErrorLogger {
     private static final String DEFAULT_CASE_DESCRIPTION = 'Default';
     private static final String DEFAULT_CASE_SUBJECT = 'Apex Exception Date: ' + System.today();
 
@@ -7,7 +7,6 @@ public without sharing class  ErrorLogger {
     private Case caseToCreate;
     private Exception errorLoggerException;
     private String className;
-
 
     public ErrorLogger() {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
@@ -19,7 +18,7 @@ public without sharing class  ErrorLogger {
         }
     }
 
-    public void setClassName(String className){
+    public void setClassName(String className) {
         this.className = className;
     }
 
@@ -41,25 +40,25 @@ public without sharing class  ErrorLogger {
         if (exceptionToLog == null) {
             return 'No exception was set for the ErrorLogger \n';
         } else {
-            return exceptionToLog.getTypeName() + '\n' +
-                exceptionToLog.getMessage() + '\n' +
-                exceptionToLog.getStackTraceString() + '\n';
+            return exceptionToLog.getTypeName() +
+                '\n' +
+                exceptionToLog.getMessage() +
+                '\n' +
+                exceptionToLog.getStackTraceString() +
+                '\n';
         }
     }
 
     private String getDetailsSafely() {
-        String caseTimeStamp = '\n\nThis error occurred: ' +
-            '\n' + 'GMT' +
-            '\n' + getCurrentTimeStamp();
+        String caseTimeStamp = '\n\nThis error occurred: ' + '\n' + 'GMT' + '\n' + getCurrentTimeStamp();
         if (details == null) {
             return caseTimeStamp;
         }
-        return 'User Description: \n' + details +
-            caseTimeStamp;
+        return 'User Description: \n' + details + caseTimeStamp;
     }
 
     public void setContactId(Id contactId) {
-        if (Validator.validateId(contactId, Contact.Class)) {
+        if (Validator.validateId(contactId, Contact.class)) {
             caseToCreate.ContactId = contactId;
         }
     }
@@ -78,7 +77,9 @@ public without sharing class  ErrorLogger {
 
     public String getSubject() {
         String classNameClause = String.isBlank(className) ? '' : className + ' ';
-        String exceptionClause = exceptionToLog == null ? DEFAULT_CASE_SUBJECT + ' ': 'Apex Exception: ' + exceptionToLog.getTypeName() + ' ';
+        String exceptionClause = exceptionToLog == null
+            ? DEFAULT_CASE_SUBJECT + ' '
+            : 'Apex Exception: ' + exceptionToLog.getTypeName() + ' ';
         String dateClause = 'Date: ' + System.today();
         return classNameClause + exceptionClause + dateClause;
     }
@@ -111,9 +112,7 @@ public without sharing class  ErrorLogger {
         List<Case> oldCases = [
             SELECT Id, Description
             FROM Case
-            WHERE ContactId = :getContactId()
-            AND IsClosed = false
-            AND Subject = :caseToCreate.Subject
+            WHERE ContactId = :getContactId() AND IsClosed = FALSE AND Subject = :caseToCreate.Subject
             LIMIT 1
         ];
 
@@ -134,31 +133,33 @@ public without sharing class  ErrorLogger {
         for (User emailUser : [
             SELECT Id, Email
             FROM User
-            WHERE Receive_Apex_Errors__c = true
-            AND ProfileId = :getAdminProfileId()
+            WHERE Receive_Apex_Errors__c = TRUE AND ProfileId = :getAdminProfileId()
         ]) {
             messageList.add(getExceptionEmail(emailUser));
         }
         return messageList;
     }
 
-
     private Messaging.SingleEmailMessage getExceptionEmail(User emailUser) {
         Messaging.SingleEmailMessage newEmail = new Messaging.SingleEmailMessage();
         newEmail.setTargetObjectId(emailUser.Id);
         newEmail.setSaveAsActivity(false);
-        newEmail.plainTextBody = '\n\n\nLogger Failed to insert case:\n\n' +
-            getEmailDescription();
+        newEmail.plainTextBody = '\n\n\nLogger Failed to insert case:\n\n' + getEmailDescription();
         newEmail.subject = caseToCreate.Subject;
         return newEmail;
     }
 
     private String getEmailDescription() {
-        return errorLoggerException.getTypeName() + '\n' +
-            errorLoggerException.getMessage() + '\n' +
-            errorLoggerException.getStackTraceString() + '\n\n' +
+        return errorLoggerException.getTypeName() +
+            '\n' +
+            errorLoggerException.getMessage() +
+            '\n' +
+            errorLoggerException.getStackTraceString() +
+            '\n\n' +
             'Case to Create: \n' +
-            '\n' + String.valueOf(caseToCreate) + '\n';
+            '\n' +
+            String.valueOf(caseToCreate) +
+            '\n';
     }
 
     private Id getAdminProfileId() {
@@ -217,7 +218,6 @@ public without sharing class  ErrorLogger {
         }
         el.setContactId(contactId);
         return el.log();
-
     }
 
     /**
@@ -228,13 +228,13 @@ public without sharing class  ErrorLogger {
      * @return String JSON string from converted list
      */
     public static string convertListToJSON(String varName, List<SObject> sObjectList) {
-         if (sObjectList != null && sObjectList.size() > 0) {
-             return '{' + varName + ':[' + string.valueOf(sObjectList) + ']}';
-         } else if (sObjectList == null) {
-             return '{' + varName + ':null}';
-         } else {
-             return '{' + varName + ':{size:0, objects[]}}';
-         }
+        if (sObjectList != null && sObjectList.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(sObjectList) + ']}';
+        } else if (sObjectList == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
     }
 
     /**
@@ -245,13 +245,13 @@ public without sharing class  ErrorLogger {
      * @return String JSON string from converted list
      */
     public static string convertListToJSON(String varName, List<Id> idList) {
-         if (idList != null && idList.size() > 0) {
-             return '{' + varName + ':[' + string.valueOf(idList) + ']}';
-         } else if (idList == null) {
-             return '{' + varName + ':null}';
-         } else {
-             return '{' + varName + ':{size:0, objects[]}}';
-         }
+        if (idList != null && idList.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(idList) + ']}';
+        } else if (idList == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
     }
 
     /**
@@ -262,13 +262,13 @@ public without sharing class  ErrorLogger {
      * @return String JSON string from converted set
      */
     public static string convertSetToJSON(String varName, Set<Id> idSet) {
-         if (idSet != null && idSet.size() > 0) {
-             return '{' + varName + ':[' + string.valueOf(idSet) + ']}';
-         } else if (idSet == null) {
-             return '{' + varName + ':null}';
-         } else {
-             return '{' + varName + ':{size:0, objects[]}}';
-         }
+        if (idSet != null && idSet.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(idSet) + ']}';
+        } else if (idSet == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
     }
 
     /**
@@ -278,14 +278,14 @@ public without sharing class  ErrorLogger {
      * @param Map<Id,SObject> Map - Ids to sobjects - to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertMapToJSON(String varName, Map<Id,SObject> sObjectMap) {
-         if (sObjectMap != null && sObjectMap.size() > 0) {
-             return '{' + varName + ':[' + string.valueOf(sObjectMap) + ']}';
-         } else if (sObjectMap == null) {
-             return '{' + varName + ':null}';
-         } else {
-             return '{' + varName + ':{size:0, objects[]}}';
-         }
+    public static string convertMapToJSON(String varName, Map<Id, SObject> sObjectMap) {
+        if (sObjectMap != null && sObjectMap.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(sObjectMap) + ']}';
+        } else if (sObjectMap == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
     }
 
     /**
@@ -295,14 +295,31 @@ public without sharing class  ErrorLogger {
      * @param Map<Id,Integer> Map - Ids to Integers - to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertMapToJSON(String varName, Map<Id,Integer> idToIntMap) {
-         if (idToIntMap != null && idToIntMap.size() > 0) {
-             return '{' + varName + ':[' + string.valueOf(idToIntMap) + ']}';
-         } else if (idToIntMap == null) {
-             return '{' + varName + ':null}';
-         } else {
-             return '{' + varName + ':{size:0, objects[]}}';
-         }
+    public static string convertMapToJSON(String varName, Map<Id, Integer> idToIntMap) {
+        if (idToIntMap != null && idToIntMap.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(idToIntMap) + ']}';
+        } else if (idToIntMap == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
+    }
+
+    /**
+     * Convert Supplied Map - String to String - to a JSON string
+     *
+     * @param String Name of the list being passed to lable the object
+     * @param Map<String,String> Map - String to String - to be converted to JSON string
+     * @return String JSON string from converted set
+     */
+    public static string convertMapToJSON(String varName, Map<String, String> stringToStringMap) {
+        if (stringToStringMap != null && stringToStringMap.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(stringToStringMap) + ']}';
+        } else if (stringToStringMap == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
     }
 
     /**

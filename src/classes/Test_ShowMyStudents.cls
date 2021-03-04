@@ -14,9 +14,12 @@ public class Test_ShowMyStudents {
         pod = new List<Success_Pod__c>([SELECT Id FROM Success_Pod__c LIMIT 1]);
 
         if (pod.size() > 0) {
-            query = 'SELECT Student_Name__c, EMPLID__c, Student__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
+            query =
+                'SELECT Student_Name__c, EMPLID__c, Student__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
                 'FROM Success_Student__c ' +
-                'WHERE Success_Pod__c = \'' + pod[0].Id + '\' ' +
+                'WHERE Success_Pod__c = \'' +
+                pod[0].Id +
+                '\' ' +
                 'AND Is_Active__c = true';
             smsc.queryAttr = query;
         }
@@ -28,17 +31,11 @@ public class Test_ShowMyStudents {
     @testSetup
     public static void testSetup() {
         // Create queue to own pod
-        Group testGroup = new Group(
-            Name = 'Test Group Name',
-            Type = 'Queue'
-        );
+        Group testGroup = new Group(Name = 'Test Group Name', Type = 'Queue');
 
         insert testGroup;
 
-        QueueSobject testQueue = new QueueSobject(
-            QueueId = testGroup.Id,
-            SobjectType = 'Success_Pod__c'
-        );
+        QueueSobject testQueue = new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Success_Pod__c');
 
         // To avoid MIXED DML ERROR, you need to insert this non-setup object
         // as the system user. In this case, just the admin running the test.
@@ -49,10 +46,7 @@ public class Test_ShowMyStudents {
         // Create Pod
         Id successPodRTID = [SELECT Id FROM RecordType WHERE SObjectType = 'Success_Pod__c' AND Name = 'Advisor'].Id;
 
-        Success_Pod__c sp = new Success_Pod__c(
-            ownerId = testGroup.Id,
-            recordTypeId = successPodRTID
-        );
+        Success_Pod__c sp = new Success_Pod__c(ownerId = testGroup.Id, recordTypeId = successPodRTID);
 
         insert sp;
 
@@ -63,10 +57,7 @@ public class Test_ShowMyStudents {
         insert contactsToCreate;
 
         for (Contact c : contactsToCreate) {
-            studentsToCreate.add(new Success_Student__c(
-                Student__c = c.Id,
-                Success_Pod__c = sp.Id
-            ));
+            studentsToCreate.add(new Success_Student__c(Student__c = c.Id, Success_Pod__c = sp.Id));
         }
 
         insert studentsToCreate;
@@ -118,17 +109,15 @@ public class Test_ShowMyStudents {
     /*
      * Tests the controllers ability to default to ASC
      */
-    public static testmethod void Test_getSort() {
+    public static testMethod void Test_getSort() {
         smsc.sortDir = null; // Set to null
         system.assertEquals('ASC', smsc.sortDir); // Make sure the sortDir is set to default ASC
     }
 
-
-
     /*
      * Tests the controllers ability to toggle the sort dir
      */
-    public static testmethod void Test_setSortField() {
+    public static testMethod void Test_setSortField() {
         // Set sortfield to contact.name
         // verify the query contains "ORDER BY" and "Contact.Name"
         smsc.sortField = 'Student_Name__c';
@@ -140,7 +129,7 @@ public class Test_ShowMyStudents {
     /*
      * Tests the controllers ability to retrieve the selected students
      */
-    public static testmethod void Test_getSelectedStudents() {
+    public static testMethod void Test_getSelectedStudents() {
         for (showMyStudentsController.studentWrapper sw : smsc.studentList) {
             sw.selected = true; // Select all the cases
         }
@@ -151,7 +140,7 @@ public class Test_ShowMyStudents {
     /*
      * Tests the controllers ability to insert mass emails
      */
-    public static testmethod void Test_MassEmail() {
+    public static testMethod void Test_MassEmail() {
         // Select students
         for (showMyStudentsController.studentWrapper sw : smsc.studentList) {
             sw.selected = true; // Select all the cases
@@ -172,7 +161,7 @@ public class Test_ShowMyStudents {
     /**
      * Ensures ErrorHandler for UpdateQuery is handing Invalid Query Queries correctly
      */
-    public static testmethod void Test_getUpdateQueryError(){
+    public static testMethod void Test_getUpdateQueryError() {
         smsc.query = 'InvalidInput';
         smsc.updateQuery();
         List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
@@ -181,7 +170,7 @@ public class Test_ShowMyStudents {
 
     /**Test Page moving
      */
-    public static testmethod void Test_setConNextPrev(){
+    public static testMethod void Test_setConNextPrev() {
         smsc.setConPageSize(1);
         smsc.setConNext();
         System.assertEquals(smsc.setCon.getPageNumber(), 2);
@@ -192,9 +181,9 @@ public class Test_ShowMyStudents {
     /**
      * Test Clear Results
      */
-    public static testmethod void Test_clearSaveResults(){
+    public static testMethod void Test_clearSaveResults() {
         smsc.clearSaveResults();
-        System.assertEquals(smsc.emailInsertResults, NULL);
+        System.assertEquals(smsc.emailInsertResults, null);
         System.assertEquals(smsc.selectedStudents.size(), 0);
     }
 
@@ -220,8 +209,6 @@ public class Test_ShowMyStudents {
         System.assert(smsc.query.contains('SG_PeopleSoft_Code__c LIKE'));
         System.assert(smsc.query.contains('Student__r.Change_Date__c >='));
         System.assert(smsc.query.contains('Student__r.Change_Date__c <='));
-
-
     }
 
     @isTest
@@ -282,12 +269,24 @@ public class Test_ShowMyStudents {
         List<SelectOption> outlookScoreOptions = smsc.outlookScoreOptions;
         Test.stopTest();
 
-        System.assert(outlookScoreOptions.get(0).getValue() == '--' && outlookScoreOptions.get(0).getLabel().equals('--'));
-        System.assert(outlookScoreOptions.get(1).getValue() == '1' && outlookScoreOptions.get(1).getLabel().equals('Very Low'));
-        System.assert(outlookScoreOptions.get(2).getValue() == '2' && outlookScoreOptions.get(2).getLabel().equals('Low'));
-        System.assert(outlookScoreOptions.get(3).getValue() == '3' && outlookScoreOptions.get(3).getLabel().equals('Moderate'));
-        System.assert(outlookScoreOptions.get(4).getValue() == '4' && outlookScoreOptions.get(4).getLabel().equals('High'));
-        System.assert(outlookScoreOptions.get(5).getValue() == '5' && outlookScoreOptions.get(5).getLabel().equals('Very High'));
+        System.assert(
+            outlookScoreOptions.get(0).getValue() == '--' && outlookScoreOptions.get(0).getLabel().equals('--')
+        );
+        System.assert(
+            outlookScoreOptions.get(1).getValue() == '1' && outlookScoreOptions.get(1).getLabel().equals('Very Low')
+        );
+        System.assert(
+            outlookScoreOptions.get(2).getValue() == '2' && outlookScoreOptions.get(2).getLabel().equals('Low')
+        );
+        System.assert(
+            outlookScoreOptions.get(3).getValue() == '3' && outlookScoreOptions.get(3).getLabel().equals('Moderate')
+        );
+        System.assert(
+            outlookScoreOptions.get(4).getValue() == '4' && outlookScoreOptions.get(4).getLabel().equals('High')
+        );
+        System.assert(
+            outlookScoreOptions.get(5).getValue() == '5' && outlookScoreOptions.get(5).getLabel().equals('Very High')
+        );
     }
 
     @isTest
@@ -296,9 +295,14 @@ public class Test_ShowMyStudents {
         List<SelectOption> outlookChangeOptions = smsc.outlookChangeOptions;
         Test.stopTest();
 
-        System.assert(outlookChangeOptions.get(0).getValue() == '--' && outlookChangeOptions.get(0).getLabel().equals('--'));
-        System.assert(outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up'));
-        System.assert(outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down'));
+        System.assert(
+            outlookChangeOptions.get(0).getValue() == '--' && outlookChangeOptions.get(0).getLabel().equals('--')
+        );
+        System.assert(
+            outlookChangeOptions.get(1).getValue() == '1' && outlookChangeOptions.get(1).getLabel().equals('Up')
+        );
+        System.assert(
+            outlookChangeOptions.get(2).getValue() == '-1' && outlookChangeOptions.get(2).getLabel().equals('Down')
+        );
     }
-
 }

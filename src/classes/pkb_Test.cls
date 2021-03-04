@@ -1,6 +1,5 @@
 @isTest
-private class pkb_Test
-{
+private class pkb_Test {
     static String siteName = 'PKB_TEST_' + String.valueOf(Crypto.getRandomInteger());
     static String publishStatus = 'Online';
     static String lang = 'en_US';
@@ -10,31 +9,30 @@ private class pkb_Test
     static PKB_Featured__c featured;
     static PKB_Featured__c keyword;
     static List<PKB_Article_Feedback_Deflection__c> pafds;
-    class TestException extends Exception { }
+    class TestException extends Exception {
+    }
 
-    static testMethod void testController()
-    {
+    static testMethod void testController() {
         setupData();
         setupSettingsData();
-        Id kaId = (Id)kavObj.get('KnowledgeArticleId');
-        Id kavId = (Id)kavObj.get('Id');
-        String articleNumber = (String)kavObj.get('ArticleNumber');
-        System.debug('***** SITE NAME: ' +siteName+ '*****');
-        System.debug('***** PKB NAME: ' +pkb.Name+ '*****');
-        System.debug('***** KEYWORD PKB NAME: ' +keyword.PKB_Name__c+ ' *****');
+        Id kaId = (Id) kavObj.get('KnowledgeArticleId');
+        Id kavId = (Id) kavObj.get('Id');
+        String articleNumber = (String) kavObj.get('ArticleNumber');
+        System.debug('***** SITE NAME: ' + siteName + '*****');
+        System.debug('***** PKB NAME: ' + pkb.Name + '*****');
+        System.debug('***** KEYWORD PKB NAME: ' + keyword.PKB_Name__c + ' *****');
         System.debug('***** DOES KEYWORD RECORD EXIST? *****');
-        System.debug([
-            SELECT Id, Name, Article_Number__c
-            FROM PKB_Article_Feedback_Deflection__c
-            WHERE Id = :keyword.Id
-        ]);
+        System.debug(
+            [SELECT Id, Name, Article_Number__c FROM PKB_Article_Feedback_Deflection__c WHERE Id = :keyword.Id]
+        );
         String catString;
 
-		Test.startTest();
+        Test.startTest();
         // setupData will have instantiated kavObj, and if it hasn't, show the error and return
-        if (kavObj == null)
-        {
-            System.debug('***** APEX UNIT TEST ERROR: PLEASE ENSURE THAT AT LEAST ONE CUSTOM ARTICLE TYPE IS DEFINED IN THE ORG *****');
+        if (kavObj == null) {
+            System.debug(
+                '***** APEX UNIT TEST ERROR: PLEASE ENSURE THAT AT LEAST ONE CUSTOM ARTICLE TYPE IS DEFINED IN THE ORG *****'
+            );
 
             return;
         }
@@ -54,7 +52,7 @@ private class pkb_Test
 
         // test first with no params and empty KA
         p = new PageReference('/');
-        System.debug('****** TESTING WITH URL: ' +p.getUrl()+ ' *****');
+        System.debug('****** TESTING WITH URL: ' + p.getUrl() + ' *****');
         Test.setCurrentPage(p);
         pkbCon = new pkb_Controller(new ApexPages.StandardController(new KnowledgeArticle()));
         System.assertNotEquals(pkbCon.publishStatus, null);
@@ -65,14 +63,14 @@ private class pkb_Test
         p.getParameters().put(refCon.languageParam, lang);
 
         p.getParameters().put(refCon.categoryParam, catString);
-        System.debug('****** TESTING WITH URL: ' +p.getUrl()+ ' *****');
+        System.debug('****** TESTING WITH URL: ' + p.getUrl() + ' *****');
         Test.setCurrentPage(p);
         pkbCon = new pkb_Controller(new ApexPages.StandardController(new KnowledgeArticle()));
         pkbCon.prepareSearchRSS();
 
         // test with actual article id, so that viewingArticle will be true in the controller
-        p = new PageReference('/?id=' +kaId);
-        System.debug('****** TESTING WITH URL: ' +p.getUrl()+ ' *****');
+        p = new PageReference('/?id=' + kaId);
+        System.debug('****** TESTING WITH URL: ' + p.getUrl() + ' *****');
         Test.setCurrentPage(p);
         pkbCon = new pkb_Controller(new ApexPages.StandardController(new KnowledgeArticle(Id = kaId)));
         //pkbCon.prepareSearchRSS(); // to execute negative branch of first line of method
@@ -107,7 +105,12 @@ private class pkb_Test
             WHERE Session_ID__c = :pkbCon.sessionId
         ];
         System.assert(pafds.size() == 1);
-        system.debug('\n\n===== MY TEST PKB_Article_Feedback_Deflection__c : '+pafds+'\n sessionID '+pkbCon.sessionId);
+        system.debug(
+            '\n\n===== MY TEST PKB_Article_Feedback_Deflection__c : ' +
+            pafds +
+            '\n sessionID ' +
+            pkbCon.sessionId
+        );
 
         // test with contact us, while viewing article, and already entered question
         p = new PageReference('/');
@@ -115,25 +118,19 @@ private class pkb_Test
         p.getParameters().put(refCon.contactUsParam, refCon.contactUsValue);
 
         // p.getParameters().put(refCon.queryParam, 'help me');
-        System.debug('****** TESTING WITH URL: ' +p.getUrl()+ ' *****');
+        System.debug('****** TESTING WITH URL: ' + p.getUrl() + ' *****');
         Test.setCurrentPage(p);
         pkbCon = new pkb_Controller(new ApexPages.StandardController(new KnowledgeArticle(Id = kaId)));
 
         // should add another defferal record
         pkbCon.feedbackComments = 'some comments';
         pkbCon.recordArticleFeedback();
-        pafds = [SELECT Id
-                 FROM PKB_Article_Feedback_Deflection__c
-                 WHERE Article_Number__c = :articleNumber];
+        pafds = [SELECT Id FROM PKB_Article_Feedback_Deflection__c WHERE Article_Number__c = :articleNumber];
         System.assert(pafds.size() == 2);
 
         // should add another defferal record
         pkbCon.contactUsDeferral();
-        pafds = [
-            SELECT Id
-            FROM PKB_Article_Feedback_Deflection__c
-            WHERE Article_Number__c = :articleNumber
-        ];
+        pafds = [SELECT Id FROM PKB_Article_Feedback_Deflection__c WHERE Article_Number__c = :articleNumber];
         System.assert(pafds.size() == 3);
 
         // set up for case creation
@@ -146,11 +143,10 @@ private class pkb_Test
         System.debug(refCon.caseTypeOptions);
 
         String validType = 'foo';
-        if (!refCon.caseTypeOptions.isEmpty())
-        {
-            for (SelectOption so : refCon.caseTypeOptions)
-            {
-                if (!isBlank(so.getValue())) validType = so.getValue();
+        if (!refCon.caseTypeOptions.isEmpty()) {
+            for (SelectOption so : refCon.caseTypeOptions) {
+                if (!isBlank(so.getValue()))
+                    validType = so.getValue();
                 break;
             }
         }
@@ -166,13 +162,13 @@ private class pkb_Test
         System.debug(pkbCon.theCud.email);
         System.debug(pkbCon.theCud.reqType);
         System.assert(pkbCon.caseCreateError);
-        System.debug('***** ERROR MSG: ' +pkbCon.createCaseErrorMsg+ ' *****');
+        System.debug('***** ERROR MSG: ' + pkbCon.createCaseErrorMsg + ' *****');
 
         // make email pass
-        pkbCon.theCud.email = siteName+ '@bar.com';
+        pkbCon.theCud.email = siteName + '@bar.com';
         System.debug(pkbCon.theCud.email);
         pkbCon.createCase();
-        System.debug('***** ERROR MSG: ' +pkbCon.createCaseErrorMsg+ ' *****');
+        System.debug('***** ERROR MSG: ' + pkbCon.createCaseErrorMsg + ' *****');
         System.assert(!pkbCon.caseCreateError);
 
         // flip the pkb setting to create account and contact
@@ -180,7 +176,11 @@ private class pkb_Test
         update pkb;
         pkbCon.createCase();
 
-        System.debug('***** FROM TEST, CURRENT CON/ACCT CREATION SETTING VALUE: ' +pkb.Create_Contact_and_Account__c+ ' *****');
+        System.debug(
+            '***** FROM TEST, CURRENT CON/ACCT CREATION SETTING VALUE: ' +
+            pkb.Create_Contact_and_Account__c +
+            ' *****'
+        );
 
         // set site admin to a fake user when testing
         pkbCon.siteAdmin = new User(FirstName = 'Test', LastName = 'Admin', Email = 'TestAdmin@foo.com');
@@ -195,9 +195,9 @@ private class pkb_Test
         System.assert(pkbCon.caseCreateError);
 
         // requery the custom setting and assert that the value was flipped
-        System.debug('***** CREATE SETTING BEFORE REQUERY: ' +pkb.Create_Contact_and_Account__c+ ' *****');
+        System.debug('***** CREATE SETTING BEFORE REQUERY: ' + pkb.Create_Contact_and_Account__c + ' *****');
         pkb = PKB__c.getInstance(siteName);
-        System.debug('***** CREATE SETTING AFTER REQUERY: ' +pkb.Create_Contact_and_Account__c+ ' *****');
+        System.debug('***** CREATE SETTING AFTER REQUERY: ' + pkb.Create_Contact_and_Account__c + ' *****');
         //System.assert(!pkb.Create_Contact_and_Account__c);
         System.assert(pkb.Create_Contact_and_Account__c);
 
@@ -205,7 +205,7 @@ private class pkb_Test
         pkbCon.theCase = pkbCon.theCase.clone(false);
         pkbCon.theCud.firstName = 'Foo';
         pkbCon.theCud.lastName = 'Bar';
-        pkbCon.theCud.email = siteName+ '@bar.com';
+        pkbCon.theCud.email = siteName + '@bar.com';
         pkbCon.theCud.reqType = validType;
         pkbCon.createCase();
         pkbCon.theCase.AccountId = '0013010101jQrdW'; // fake account number, on purpose, have to call this after createCase since createCase instantiates theCase
@@ -226,17 +226,16 @@ private class pkb_Test
 
         pkb_Controller.initFromListOfArticleIds(null, lang);
         pkb_Controller.initFromListOfArticleIds(new List<String>(), lang);
-        pkb_Controller.initFromListOfArticleIds(new List<String>{kaId}, lang);
+        pkb_Controller.initFromListOfArticleIds(new List<String>{ kaId }, lang);
 
         pkb_Controller.initFromListOfKAVIds(null, lang);
         pkb_Controller.initFromListOfKAVIds(new List<String>(), lang);
-        pkb_Controller.initFromListOfKAVIds(new List<String>{kavId}, lang);
+        pkb_Controller.initFromListOfKAVIds(new List<String>{ kavId }, lang);
 
         User u = pkb_Controller.getSiteAdmin();
     }
 
-    static testMethod void testSettingsController()
-    {
+    static testMethod void testSettingsController() {
         Test.startTest();
         setupSettingsData();
         Test.stopTest();
@@ -245,13 +244,13 @@ private class pkb_Test
         PageReference p;
 
         // test with new record
-        p = new PageReference('/?' +refCon.createSettingsParam+ '=' +refCon.createSettingsValue);
+        p = new PageReference('/?' + refCon.createSettingsParam + '=' + refCon.createSettingsValue);
         Test.setCurrentPage(p);
         pkbsc = new pkb_SettingsController(new ApexPages.StandardController(new PKB__c()));
         System.assert(pkbsc.creatingSettings);
 
         // test with existing record
-        p = new PageReference('/?id=' +pkb.Id);
+        p = new PageReference('/?id=' + pkb.Id);
         Test.setCurrentPage(p);
         pkbsc = new pkb_SettingsController(new ApexPages.StandardController(pkb));
         System.assert(!pkbsc.creatingSettings);
@@ -270,9 +269,7 @@ private class pkb_Test
         System.assert(p.getUrl().contains(pkb.Id));
     }
 
-
-    static testMethod void testSettings_CTI_keywords()
-    {
+    static testMethod void testSettings_CTI_keywords() {
         Test.startTest();
         setupSettingsData();
         Test.stopTest();
@@ -282,7 +279,7 @@ private class pkb_Test
         PageReference p;
 
         // test with existing record
-        p = new PageReference('/?id=' +pkb.Id);
+        p = new PageReference('/?id=' + pkb.Id);
         Test.setCurrentPage(p);
         pkbsc = new pkb_SettingsController(new ApexPages.StandardController(pkb));
 
@@ -293,11 +290,11 @@ private class pkb_Test
         System.assertEquals(p, null);
 
         PKB__c updatedElm = null;
-        Map<String,PKB__c> settingsMap = PKB__c.getAll();
-        if (settingsMap.containsKey(pkb.Name)){
+        Map<String, PKB__c> settingsMap = PKB__c.getAll();
+        if (settingsMap.containsKey(pkb.Name)) {
             updatedElm = settingsMap.get(pkb.Name);
         }
-        system.assertEquals(updatedElm.Add_Case_Id__c,pkb.Add_Case_Id__c);
+        system.assertEquals(updatedElm.Add_Case_Id__c, pkb.Add_Case_Id__c);
 
         //  try to save invalid keywords [[[[[p]43
         pkb.CTI_configuration__c = '[[[[[p]43';
@@ -308,10 +305,10 @@ private class pkb_Test
 
         updatedElm = null;
         settingsMap = PKB__c.getAll();
-        if (settingsMap.containsKey(pkb.Name)){
+        if (settingsMap.containsKey(pkb.Name)) {
             updatedElm = settingsMap.get(pkb.Name);
         }
-        system.assertEquals(updatedElm.Add_Case_Id__c,false);
+        system.assertEquals(updatedElm.Add_Case_Id__c, false);
 
         //  try to save invalid keywords [P]3[CN]
         pkb.CTI_configuration__c = '[P]3[CN]';
@@ -322,21 +319,20 @@ private class pkb_Test
 
         updatedElm = null;
         settingsMap = PKB__c.getAll();
-        if (settingsMap.containsKey(pkb.Name)){
+        if (settingsMap.containsKey(pkb.Name)) {
             updatedElm = settingsMap.get(pkb.Name);
         }
-        system.assertEquals(updatedElm.Add_Case_Id__c,false);
+        system.assertEquals(updatedElm.Add_Case_Id__c, false);
     }
 
-    static testMethod void test_searchString()
-    {
+    static testMethod void test_searchString() {
         Test.startTest();
         setupData();
         setupSettingsData();
         Test.stopTest();
 
-        Id kaId = (Id)kavObj.get('KnowledgeArticleId');
-        Id kavId = (Id)kavObj.get('Id');
+        Id kaId = (Id) kavObj.get('KnowledgeArticleId');
+        Id kavId = (Id) kavObj.get('Id');
         String catString;
         // refCon is an essentially empty instance of the controller that allows access to the public variables that refer
         // to the names of the various url params that will be used to set up tests
@@ -346,7 +342,7 @@ private class pkb_Test
 
         // test first with no params and empty KA
         p = new PageReference('/');
-        System.debug('****** TESTING WITH URL: ' +p.getUrl()+ ' *****');
+        System.debug('****** TESTING WITH URL: ' + p.getUrl() + ' *****');
         Test.setCurrentPage(p);
         pkbCon = new pkb_Controller(new ApexPages.StandardController(new KnowledgeArticle()));
         System.assertNotEquals(pkbCon.publishStatus, null);
@@ -357,18 +353,14 @@ private class pkb_Test
         p.getParameters().put(refCon.languageParam, lang);
 
         p.getParameters().put(refCon.categoryParam, catString);
-        System.debug('****** TESTING WITH URL: ' +p.getUrl()+ ' *****');
+        System.debug('****** TESTING WITH URL: ' + p.getUrl() + ' *****');
         Test.setCurrentPage(p);
         pkbCon = new pkb_Controller(new ApexPages.StandardController(new KnowledgeArticle()));
         //there was a search query but with less than 4 chars
         system.assertEquals(pkbCon.enteredSearchQuery, pkbCon.searchPrompt);
-
     }
 
-
-
-    static void setupSettingsData()
-    {
+    static void setupSettingsData() {
         // create custom settings collection based on siteName
         pkb = new PKB__c();
         pkb.Name = siteName;
@@ -389,12 +381,10 @@ private class pkb_Test
         insert pkb;
     }
 
-    static void setupData()
-    {
+    static void setupData() {
         // create article of first type found in the objects that end with __kav
         List<String> kavNames = new List<String>(pkb_Controller.kavNames);
-        if (kavNames.isEmpty())
-        {
+        if (kavNames.isEmpty()) {
             return;
         }
 
@@ -402,29 +392,34 @@ private class pkb_Test
         pkb_Controller.DEFAULT_PUBLISH_STATUS = publishStatus;
         pkb_Controller.DEFAULT_SITE_NAME = siteName;
 
-        for (Integer i = 0; i < 15; i++)
-		{
-			objType = kavNames.get(0);
-			kavObj = Schema.getGlobalDescribe().get(objType).newSObject();
-			kavObj.put('Title','SAMPLE foo title!!! ' + i);
-			kavObj.put('UrlName', 'url-foo-foo-' + i);
-			kavObj.put('Summary', 'This is a summary!!! for the test article ' + i);
-			//kavObj.put('PublishStatus', 'Online');
-			kavObj.put('Functional_Group__c', 'Test');
-			kavObj.put('Language', lang);
+        for (Integer i = 0; i < 15; i++) {
+            objType = kavNames.get(0);
+            kavObj = Schema.getGlobalDescribe().get(objType).newSObject();
+            kavObj.put('Title', 'SAMPLE foo title!!! ' + i);
+            kavObj.put('UrlName', 'url-foo-foo-' + i);
+            kavObj.put('Summary', 'This is a summary!!! for the test article ' + i);
+            //kavObj.put('PublishStatus', 'Online');
+            kavObj.put('Functional_Group__c', 'Test');
+            kavObj.put('Language', lang);
 
-			insert kavObj;
+            insert kavObj;
 
-			System.debug('\n\n===== created \n ');System.debug(kavObj.id);
+            System.debug('\n\n===== created \n ');
+            System.debug(kavObj.id);
 
-			// requery the kavObj to get the KnowledgeArticleId on it that is created automatically
-	        String q = 'SELECT ' + pkb_Controller.join(pkb_Controller.kavFields, ',') + ' ' +
-					   'FROM FAQ__kav ' +
-					   'WHERE Id = \'' + kavObj.get('Id') + '\'';
-	        FAQ__kav testFAQ = Database.query(q);
+            // requery the kavObj to get the KnowledgeArticleId on it that is created automatically
+            String q =
+                'SELECT ' +
+                pkb_Controller.join(pkb_Controller.kavFields, ',') +
+                ' ' +
+                'FROM FAQ__kav ' +
+                'WHERE Id = \'' +
+                kavObj.get('Id') +
+                '\'';
+            FAQ__kav testFAQ = Database.query(q);
 
-	        KbManagement.PublishingService.publishArticle(testFAQ.KnowledgeArticleId, true);
-		}
+            KbManagement.PublishingService.publishArticle(testFAQ.KnowledgeArticleId, true);
+        }
 
         // create featured record
         featured = new PKB_Featured__c(
@@ -436,7 +431,7 @@ private class pkb_Test
 
         insert featured;
 
-        System.debug('***** FEATURED RECORD JUST CREATED: ' +featured.Id+ ' *****');
+        System.debug('***** FEATURED RECORD JUST CREATED: ' + featured.Id + ' *****');
         System.debug(featured);
 
         // create keyword recommended record
@@ -450,13 +445,12 @@ private class pkb_Test
 
         insert keyword;
 
-        System.debug('***** KEYWORD RECORD JUST CREATED: ' +keyword.Id+ ' *****');
+        System.debug('***** KEYWORD RECORD JUST CREATED: ' + keyword.Id + ' *****');
         System.debug(keyword);
     }
 
     // returns true if string is null or empty
-    static Boolean isBlank(String s)
-    {
-        return ( s == null || s == '');
+    static Boolean isBlank(String s) {
+        return (s == null || s == '');
     }
 }

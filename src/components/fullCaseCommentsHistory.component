@@ -1,27 +1,24 @@
 <apex:component id="fullCaseCommentsHistory" controller="FullCaseCommentsComponentController">
-    <apex:attribute name="caseComments" type="CaseComment[]" description="The Case Comments List" assignTo="{!comments}"/>
+    <apex:attribute name="caseComments" type="CaseComment[]" description="The Case Comments List" assignTo="{!comments}" />
 
     <apex:outputPanel rendered="{!caseComments.size > 0}">
         <apex:dataTable value="{!caseComments}" var="c" cellSpacing="15">
-            <apex:column headerValue="Created Date" value="{!c.CreatedDate}" style="text-align: left;vertical-align:top;"/>
-            <apex:column headerValue="Case Subject" style="text-align: left;vertical-align:top;">
-                <apex:outputLink value="javascript:;"
-                                 onclick="openCaseSubTab('{!c.ParentId}', '{!caseNumberMap[c.ParentId]}')">
-                        {!caseSubjectMap[c.ParentId]}
+            <apex:column headerValue="Created Date" value="{!c.CreatedDate}" style="text-align: left; vertical-align: top" />
+            <apex:column headerValue="Case Subject" style="text-align: left; vertical-align: top">
+                <apex:outputLink value="javascript:;" onclick="openCaseSubTab('{!c.ParentId}', '{!caseNumberMap[c.ParentId]}')">
+                    {!caseSubjectMap[c.ParentId]}
                 </apex:outputLink>
             </apex:column>
-            <apex:column headerValue="Comment" value="{!c.CommentBody}" style="text-align: left;vertical-align:top;"/>
+            <apex:column headerValue="Comment" value="{!c.CommentBody}" style="text-align: left; vertical-align: top" />
         </apex:dataTable>
     </apex:outputPanel>
 
-    <apex:outputPanel rendered="{!caseComments.size == 0}">
-        No case comments found.
-    </apex:outputPanel>
+    <apex:outputPanel rendered="{!caseComments.size == 0}"> No case comments found. </apex:outputPanel>
 
-    <apex:includeScript value="/support/console/38.0/integration.js"/>
+    <apex:includeScript value="/support/console/38.0/integration.js" />
     <script type="text/javascript">
         function openCaseSubTab(theCaseId, caseNumber) {
-            sforce.console.getEnclosingPrimaryTabId(function(result) {
+            sforce.console.getEnclosingPrimaryTabId(function (result) {
                 sforce.console.openSubtab(result.id, '/' + theCaseId, true, caseNumber, null);
             });
         }

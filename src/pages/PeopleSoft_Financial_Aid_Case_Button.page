@@ -11,7 +11,7 @@
             text-decoration: none;
         }
     </style>-->
-    <div id='ps_fa_btn'>
-        <a target='_blank' href='https://go.oasis.asu.edu/cs/ss/?mc=ASU_FINANCIAL_AID.ASU_FA_SRVC_CENTER.GBL&qs=EMPLID={!case.Contact.EMPLID__c}'>Link to Financial Aid Information</a>
+    <div id="ps_fa_btn">
+        <a target="_blank" href="https://go.oasis.asu.edu/cs/ss/?mc=ASU_FINANCIAL_AID.ASU_FA_SRVC_CENTER.GBL&qs=EMPLID={!case.Contact.EMPLID__c}">Link to Financial Aid Information</a>
     </div>
 </apex:page>

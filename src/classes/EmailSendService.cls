@@ -1,5 +1,4 @@
 public with sharing class EmailSendService {
-
     public static void setCampaignLookup(et4ae5__SendDefinition__c send) {
         String campaignId = send.et4ae5__Campaigns__c.subStringBetween('href="/', '"');
         if (!String.isBlank(campaignId)) {

@@ -5,7 +5,7 @@
     <style>
         /* My ASU Help - General */
 
-        [class*="myasu-help-"] {
+        [class*='myasu-help-'] {
             font-weight: 500;
         }
 
@@ -45,14 +45,14 @@
 
         .myasu-help-region .btn {
             margin-top: 0;
-            font-size: .9em !important;
+            font-size: 0.9em !important;
             margin: auto 0 auto 0 !important;
         }
 
         .myasu-help-region .myasu-help-region-header {
             background-color: #f5f5f5;
             font-weight: 500;
-            font-size: .9em;
+            font-size: 0.9em;
         }
 
         .myasu-help-region .myasu-help-region-header,
@@ -69,7 +69,7 @@
         }
 
         .myasu-help-region .myasu-help-region-faq-content .myasu-help-region-sub-header {
-            padding-left: .8em;
+            padding-left: 0.8em;
         }
 
         .myasu-help-region .myasu-help-region-header {
@@ -100,7 +100,7 @@
         .myasu-help-region .myasu-help-region-request-details-view-responses-no-emails,
         .myasu-help-region .myasu-help-region-request-details-view-attachments-no-attachments,
         .myasu-help-region .myasu-help-region-request-details-view-chat-history-no-history {
-            font-size: .85em;
+            font-size: 0.85em;
             font-weight: 500;
         }
 
@@ -114,7 +114,7 @@
         .myasu-help-region .myasu-help-region-request-details-content .panel-title a,
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .panel-title a {
             border-bottom: none;
-            color: #8C1D40;
+            color: #8c1d40;
         }
 
         .myasu-help-region .myasu-help-contact-us-email,
@@ -123,7 +123,7 @@
         .myasu-help-region .myasu-help-contact-us-phone-number-normal,
         .myasu-help-region .myasu-help-region-request-details-panel-title,
         .myasu-help-region .myasu-help-region-view-article-suggest-article {
-            font-size: .9em;
+            font-size: 0.9em;
             color: #191919;
             font-weight: 500;
         }
@@ -158,10 +158,9 @@
             }
         }
 
-
         /* My ASU Help - FAQ */
 
-        .myasu-help-region [class*="myasu-help-region-common-questions-"] {
+        .myasu-help-region [class*='myasu-help-region-common-questions-'] {
             font-size: 1rem;
         }
 
@@ -182,7 +181,7 @@
         .myasu-help-region .myasu-help-region-view-all-articles-housing,
         .myasu-help-region .myasu-help-region-view-all-articles-view-common {
             font-weight: 400;
-            margin-bottom: .5em;
+            margin-bottom: 0.5em;
             display: inline-block;
         }
 
@@ -207,8 +206,8 @@
         .myasu-help-region .myasu-help-region-common-questions-housing-view-all,
         .myasu-help-region .myasu-help-region-faq-search-results-view-all,
         .myasu-help-region .myasu-help-region-view-all-articles-view-common {
-            color: #8C1D40 !important;
-            margin-top: .5em;
+            color: #8c1d40 !important;
+            margin-top: 0.5em;
         }
 
         .myasu-help-region .myasu-help-region-common-questions-finances-view-all:hover,
@@ -250,13 +249,13 @@
         }
 
         .myasu-help-region .myasu-help-region-faq-search {
-            background-color: #8C1D40;
+            background-color: #8c1d40;
             padding: 1.5em 2em 2em 2em;
         }
 
         .myasu-help-region .myasu-help-region-faq-search .lead {
             color: white;
-            padding-bottom: .5em;
+            padding-bottom: 0.5em;
         }
 
         .myasu-help-region .myasu-help-region-faq-search-input-container {
@@ -267,7 +266,7 @@
             font-weight: 400;
             min-width: 75%;
             border: none;
-            padding-left: .5em;
+            padding-left: 0.5em;
         }
 
         .myasu-help-region .myasu-help-region-faq-search-input-button {
@@ -288,12 +287,12 @@
 
         .myasu-help-region-faq-search-results-current-page {
             vertical-align: middle;
-            padding: .25em .5em .25em .5em;
+            padding: 0.25em 0.5em 0.25em 0.5em;
             background-color: #484848;
-            color: #FFF;
+            color: #fff;
             display: inline-block;
-            margin-left: -.25em;
-            margin-right: -.25em;
+            margin-left: -0.25em;
+            margin-right: -0.25em;
             min-width: 2.2em;
             text-align: center;
             height: 30px;
@@ -309,7 +308,6 @@
         .myasu-help-region .myasu-append-no-results-text-back-main {
             padding-left: 1em;
         }
-
 
         /* My ASU Help - Contact Us */
 
@@ -346,11 +344,11 @@
         }
 
         .myasu-help-region .myasu-help-region-contact-us hr {
-            margin-bottom: .25em;
+            margin-bottom: 0.25em;
         }
 
-        .myasu-help-region [class*="-icon"] {
-            margin-right: .5em;
+        .myasu-help-region [class*='-icon'] {
+            margin-right: 0.5em;
         }
 
         .myasu-help-region .myasu-help-contact-us-phone-number-rover,
@@ -370,7 +368,7 @@
         .myasu-help-region .panel,
         .myasu-help-region .panel-default,
         .myasu-help-region .panel-heading {
-            background-color: #FFF;
+            background-color: #fff;
             border: none;
         }
 
@@ -385,7 +383,7 @@
 
         .myasu-help-region .myasu-help-contact-us-chat-link-finance,
         .myasu-help-region .myasu-help-contact-us-chat-link-technical {
-            margin-bottom: .5em;
+            margin-bottom: 0.5em;
         }
 
         .myasu-help-region .btn a:hover {
@@ -395,8 +393,8 @@
         .myasu-help-region .myasu-help-contact-us-email-subject,
         .myasu-help-region .myasu-help-contact-us-email-message {
             width: 100%;
-            margin-bottom: .5em;
-            margin-top: .25em;
+            margin-bottom: 0.5em;
+            margin-top: 0.25em;
         }
 
         .myasu-help-region .myasu-help-contact-us-email-subject,
@@ -407,22 +405,21 @@
             font-weight: 400;
         }
 
-
         /* My ASU Help - My Requests */
 
         .myasu-help-region td span {
             font-weight: 400;
-            font-size: .9em;
+            font-size: 0.9em;
         }
 
         .myasu-help-region th div {
-            font-size: .9em;
+            font-size: 0.9em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests-sub-header {
             padding-top: 1em;
             font-weight: 500;
-            font-size: .9em;
+            font-size: 0.9em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests-content {
@@ -436,13 +433,12 @@
 
         .myasu-help-region .myasu-help-region-my-requests-content p {
             font-weight: 400;
-            font-size: .9em;
+            font-size: 0.9em;
         }
 
         .myasu-help-region .myasu-help-region-my-requests {
             margin-bottom: 2em;
         }
-
 
         /* My ASU Help - View Case */
 
@@ -451,7 +447,7 @@
         }
 
         .myasu-help-region .myasu-help-region-request-details hr {
-            margin-bottom: .25em;
+            margin-bottom: 0.25em;
         }
 
         .myasu-help-region .myasu-help-region-request-details-reply .btn-primary {
@@ -459,18 +455,17 @@
             margin-right: 1px;
         }
 
-
         /* My ASU Help - View All Cases */
 
         /* My ASU Help - View Article */
 
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-view-all {
-            font-size: .9em;
+            font-size: 0.9em;
         }
 
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .myasu-help-region-faq-search-results-article {
             color: #191919;
-            font-size: .9em;
+            font-size: 0.9em;
             margin-bottom: 1em;
         }
 
@@ -484,7 +479,7 @@
 
         .myasu-help-region .myasu-help-region-view-article .bPageBlock,
         .myasu-help-region .myasu-help-region-view-article-helpful-articles .bPageBlock>.pbBody>.apexp>.bPageBlock {
-            margin-bottom: .75em;
+            margin-bottom: 0.75em;
         }
 
         .myasu-help-region .myasu-help-region-view-article .requiredBlock,
@@ -503,12 +498,12 @@
         }
 
         .myasu-help-region .myasu-help-region-view-article hr {
-            margin-bottom: .25em;
+            margin-bottom: 0.25em;
         }
 
         .myasu-help-region .myasu-help-region-view-article-helpful-articles hr {
-            margin-top: .25em;
-            margin-bottom: .25em;
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
         }
 
         .myasu-help-region .myasu-help-region-view-article .sfdc_richtext {
@@ -527,17 +522,17 @@
 
         .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-feedback {
             padding-left: 1em;
-            padding-bottom: .5em;
+            padding-bottom: 0.5em;
             padding-right: 1em;
-            padding-top: .5em;
+            padding-top: 0.5em;
         }
 
         .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table {
             margin-bottom: 0;
         }
 
-        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr:nth-child(2n+1) {
-            background-color: #FFFFFF;
+        .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr:nth-child(2n + 1) {
+            background-color: #ffffff;
         }
 
         .myasu-help-region .myasu-help-region-view-article .myasu-help-region-view-article-content table>tbody>tr>td {

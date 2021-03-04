@@ -1,103 +1,84 @@
-<apex:component >
+<apex:component>
     <!-- This component renders the page notifications on the page -->
-    <apex:attribute name="maintenanceString"
-                    description="The message to be displayed on the SC during maintenance"
-                    type="String"
-                    default=""/>
-    <apex:attribute name="viewingAs"
-                    description="Whether or not the user is currently viewing as"
-                    type="Boolean"/>
-    <apex:attribute name="firstName"
-                    description="The first name of the current user"
-                    type="String"/>
-    <apex:attribute name="lastName"
-                    description="The last name of the current user"
-                    type="String"/>
+    <apex:attribute name="maintenanceString" description="The message to be displayed on the SC during maintenance" type="String"
+        default="" />
+    <apex:attribute name="viewingAs" description="Whether or not the user is currently viewing as" type="Boolean" />
+    <apex:attribute name="firstName" description="The first name of the current user" type="String" />
+    <apex:attribute name="lastName" description="The last name of the current user" type="String" />
 
     <center>
         <apex:outputPanel rendered="{!IF(maintenanceString != null, true, false)}">
             <div class="alert alert-warning">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <apex:outputText value="{!maintenanceString}"/>
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <apex:outputText value="{!maintenanceString}" />
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!viewingAs}">
             <div class="alert alert-warning">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <apex:outputText >
-                    You are currently viewing as {!firstName} {!lastName} in read only mode. You will not be able to take any actions on this page.
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <apex:outputText>
+                    You are currently viewing as {!firstName} {!lastName} in read only mode. You will not be able to take any actions on this
+                    page.
                 </apex:outputText>
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'error'}">
             <div class="alert alert-danger">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <apex:outputText >
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <apex:outputText>
                     Your PIN cannot contain your year of birth.
-                    <br />
-                    Your PIN must not use more than 4 duplicate numbers.
-                    <br />
-                    Your PIN must be different than your previous PIN.
-                    <br />
-                    Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.
-                    <br />
-                    Your PIN must be between 6 and 10 numbers.
+                    <br /> Your PIN must not use more than 4 duplicate numbers.
+                    <br /> Your PIN must be different than your previous PIN.
+                    <br /> Your PIN cannot use more than 4 sequential numbers in your PIN. Forwards or backwards.
+                    <br /> Your PIN must be between 6 and 10 numbers.
                 </apex:outputText>
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!$CurrentPage.parameters.PIN == 'success'}">
             <div class="alert alert-success">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <apex:outputText value="Your PIN has been updated."/>
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <apex:outputText value="Your PIN has been updated." />
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback == 'yes'}">
             <div class="alert alert-success feedbackConfirm">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <p><strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.</p>
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <p>
+                    <strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.
+                </p>
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'newcase'}">
             <div class="alert alert-success caseConfirm">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <p><strong>Your request has been submitted.</strong> We are working on responding to you as soon as possible.<br />
-                A member of the ASU team will contact you if additional information is needed to answer your request.<br />
-                Please check back here, in the My ASU Service Center, to track the status of your request.</p>
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <p>
+                    <strong>Your request has been submitted.</strong> We are working on responding to you as soon as possible.
+                    <br /> A member of the ASU team will contact you if additional information is needed to answer your request.
+                    <br /> Please check back here, in the My ASU Service Center, to track the status of your request.
+                </p>
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'feedback'}">
             <div class="alert alert-success caseConfirm">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <p><strong>Thank you for your feedback about the My ASU Service Center!</strong></p>
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <p>
+                    <strong>Thank you for your feedback about the My ASU Service Center!</strong>
+                </p>
             </div>
         </apex:outputPanel>
 
         <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest == 'yes'}">
             <div class="alert alert-success feedbackConfirm">
-                <button type="button"
-                        class="close"
-                        data-dismiss="alert">×</button>
-                <p><strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.</p>
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <p>
+                    <strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.
+                </p>
             </div>
         </apex:outputPanel>
     </center>

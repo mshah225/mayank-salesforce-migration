@@ -31,7 +31,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
         detailCreator.setSubscriptionId(subscriptionId);
         detailCreator.setSubscriberStatus(subscriberStatus);
-        for (List<String> lineValues: csvLines) {
+        for (List<String> lineValues : csvLines) {
             Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRow(lineValues);
             if (detailFromLine.Status__c != 'Error') {
                 detailsToProcess.add(detailFromLine);
@@ -62,9 +62,11 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
         }
 
-        for (Contact_Upload_Detail__c uploadDetail: detailsToProcess) {
+        for (Contact_Upload_Detail__c uploadDetail : detailsToProcess) {
             if (uploadDetail.Status__c != 'Error') {
-                String uniqueKey = String.valueOf(uploadDetail.Subscription__c).left(15) + '.' +
+                String uniqueKey =
+                    String.valueOf(uploadDetail.Subscription__c).left(15) +
+                    '.' +
                     String.valueOf(uploadDetail.Contact__c).left(15);
                 Id subscriberId = uniqueKeyToSubscriberId.get(uniqueKey);
                 if (subscriberId == null) {
@@ -81,7 +83,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             Database.insert(detailsToProcess, false);
         }
     }
-    
+
     private List<List<String>> recreateRowsFromIteration(List<String> csvContacts) {
         String csvFile = '';
         List<List<String>> csvColumnData = new List<List<String>>();
@@ -95,7 +97,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
         }
         return csvColumnData;
     }
-    
+
     private void createHeaderMappings(String row) {
         List<List<String>> csvLines = CsvReader.readCsvFile(row);
         columnMap = new Map<Integer, String>();
@@ -104,7 +106,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             for (String s : csvLines[0]) {
                 columnMap.put(columnIndex, s);
                 columnIndex++;
-            } 
+            }
         }
     }
 
@@ -115,35 +117,31 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             updateUploadStatus('Complete with errors');
         }
     }
-    
+
     private Boolean hasSuccessfulRecords() {
         List<Contact_Upload_Detail__c> successfulDetails = [
             SELECT Id
             FROM Contact_Upload_Detail__c
-            WHERE Contact_Upload__c =: contactUploadId
-            AND Status__c = 'Success'
+            WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Success'
             LIMIT 1
         ];
-        
+
         return !successfulDetails.isEmpty();
     }
-    
+
     private Boolean noErroredRecords() {
         List<Contact_Upload_Detail__c> erroredDetails = [
             SELECT Id
             FROM Contact_Upload_Detail__c
-            WHERE Contact_Upload__c =: contactUploadId
-            AND Status__c = 'Error'
+            WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Error'
             LIMIT 1
         ];
-        
+
         return erroredDetails.isEmpty();
     }
 
     private void updateUploadStatus(String status) {
-        Contact_Upload__c cu = new Contact_Upload__c(
-            Id = contactUploadId,
-            Status__c = status);
+        Contact_Upload__c cu = new Contact_Upload__c(Id = contactUploadId, Status__c = status);
         update cu;
     }
 }

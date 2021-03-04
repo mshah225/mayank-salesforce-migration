@@ -1,11 +1,12 @@
 /*****************************************
-* File: Test_FullCaseCommentsController
-* Author: Mathew Ruff, Sierra-Cedar Inc.
-* Description: Unit Tests for FullCaseCommentsController.cls
-******************************************/
+ * File: Test_FullCaseCommentsController
+ * Author: Mathew Ruff, Sierra-Cedar Inc.
+ * Description: Unit Tests for FullCaseCommentsController.cls
+ ******************************************/
 @IsTest
 private class Test_FullCaseCommentsController {
-    @testSetup static void setUp() {
+    @testSetup
+    static void setUp() {
         Contact testContact = TestDataFactory.createContact('test');
         insert testContact;
 
@@ -18,10 +19,7 @@ private class Test_FullCaseCommentsController {
 
         List<CaseComment> testComments = new List<CaseComment>();
         for (Case c : cases) {
-            CaseComment comment = new CaseComment(
-                ParentId = c.Id,
-                CommentBody = 'testing this ' + c.CaseNumber
-            );
+            CaseComment comment = new CaseComment(ParentId = c.Id, CommentBody = 'testing this ' + c.CaseNumber);
             testComments.add(comment);
         }
         insert testComments;

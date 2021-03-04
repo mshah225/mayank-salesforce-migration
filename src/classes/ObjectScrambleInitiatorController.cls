@@ -1,5 +1,5 @@
 public class ObjectScrambleInitiatorController {
-    public String response {get; set;}
+    public String response { get; set; }
 
     public ObjectScrambleInitiatorController() {
         if (jobIsRunning()) {
@@ -7,9 +7,9 @@ public class ObjectScrambleInitiatorController {
         }
     }
 
-    public void verifyNoProcessRunningAndStart(){
+    public void verifyNoProcessRunningAndStart() {
         if (jobIsRunning()) {
-            response =  startBulkApiProcess();
+            response = startBulkApiProcess();
         } else {
             response = 'Error: Job Currently Running Already.';
         }
@@ -17,15 +17,15 @@ public class ObjectScrambleInitiatorController {
 
     private Boolean jobIsRunning() {
         Id apexClassId = [SELECT Id FROM ApexClass WHERE Name = 'ObjectScrambleBatch' LIMIT 1].Id;
-        List<AsyncApexJob> currentJobs = [SELECT Id 
+        List<AsyncApexJob> currentJobs = [
+            SELECT Id
             FROM AsyncApexJob
-            WHERE ApexClassId =: apexClassId AND 
-            (
-                Status = 'Processing' OR
-                Status = 'Holding' OR 
-                Status = 'Preparing' OR 
-                Status = 'Queued'
-            )
+            WHERE
+                ApexClassId = :apexClassId
+                AND (Status = 'Processing'
+                OR Status = 'Holding'
+                OR Status = 'Preparing'
+                OR Status = 'Queued')
         ];
 
         return !currentJobs.isEmpty();

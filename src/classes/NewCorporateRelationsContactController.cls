@@ -1,37 +1,40 @@
-public class NewCorporateRelationsContactController 
-{  
-    public Account account { get;set; }
-    public Contact contact { get;set; }
-    public RecordType crRecordType { get;set; }
-    public Relationship__c relationship { get;set; }
-    public Boolean showCancel { get;set; }
-    public Boolean clickedAccount { get;set; }
-    public Integer page { get;set; }
-    public List<Relationship__c> relationshipList { get;set; }
-    public List<CampaignMember> campaignMemberList { get;set; }
+public class NewCorporateRelationsContactController {
+    public Account account { get; set; }
+    public Contact contact { get; set; }
+    public RecordType crRecordType { get; set; }
+    public Relationship__c relationship { get; set; }
+    public Boolean showCancel { get; set; }
+    public Boolean clickedAccount { get; set; }
+    public Integer page { get; set; }
+    public List<Relationship__c> relationshipList { get; set; }
+    public List<CampaignMember> campaignMemberList { get; set; }
     public List<SelectOption> campaignOptions;
-    public List<SelectOption> childCampaignOptions { get;set; }
+    public List<SelectOption> childCampaignOptions { get; set; }
     public List<SelectOption> relTypeOptions;
     public List<Campaign> crCampaigns;
     public List<Campaign> childCrCampaigns;
     public Set<String> currentSet;
-    public String selectedParentId { get;set; }
-    public String selectedChildId { get;set; }
+    public String selectedParentId { get; set; }
+    public String selectedChildId { get; set; }
 
     public Id contactToAccountRTId {
         get {
             if (contactToAccountRTId == null) {
-                contactToAccountRTId = [SELECT Id FROM RecordType WHERE SObjectType = 'Relationship__c' AND Name = 'Contact To Account' LIMIT 1].Id;
+                contactToAccountRTId = [
+                    SELECT Id
+                    FROM RecordType
+                    WHERE SObjectType = 'Relationship__c' AND Name = 'Contact To Account'
+                    LIMIT 1
+                ]
+                .Id;
             }
-            
+
             return contactToAccountRTId;
         }
-        
         set;
     }
-    
-    public NewCorporateRelationsContactController()
-    {
+
+    public NewCorporateRelationsContactController() {
         page = 1;
         account = new Account();
         contact = new Contact();
@@ -41,81 +44,60 @@ public class NewCorporateRelationsContactController
         relationship.recordTypeId = contactToAccountRTId;
         relationshipList = new List<Relationship__c>();
         campaignMemberList = new List<CampaignMember>();
-        crRecordType = [
-            SELECT Id
-            FROM RecordType
-            WHERE Name = 'Corporate Relations'
-            AND SobjectType = 'Campaign'
-        ];
+        crRecordType = [SELECT Id FROM RecordType WHERE Name = 'Corporate Relations' AND SobjectType = 'Campaign'];
     }
 
-    public List<SelectOption> getCampaignOptions()
-    {
+    public List<SelectOption> getCampaignOptions() {
         crCampaigns = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :crRecordType.Id
-            AND IsActive = true
-            AND ParentId = null
+            WHERE RecordTypeId = :crRecordType.Id AND IsActive = TRUE AND ParentId = NULL
             ORDER BY Name ASC
         ];
 
         campaignOptions = new List<SelectOption>();
-        campaignOptions.add(new SelectOption( '' ,'--Select--'));
-        for (Campaign c : crCampaigns )
-        {
-            campaignOptions.add(new SelectOption(c.Id , c.Name));
+        campaignOptions.add(new SelectOption('', '--Select--'));
+        for (Campaign c : crCampaigns) {
+            campaignOptions.add(new SelectOption(c.Id, c.Name));
         }
 
         return campaignOptions;
     }
 
-    public void populateChildCampaigns() 
-    {
+    public void populateChildCampaigns() {
         childCrCampaigns = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :crRecordType.Id
-            AND IsActive = true
-            AND ParentId = :selectedParentId
+            WHERE RecordTypeId = :crRecordType.Id AND IsActive = TRUE AND ParentId = :selectedParentId
             ORDER BY Name ASC
         ];
 
         childCampaignOptions = new List<SelectOption>();
-        if (childCrCampaigns == null)
-        {
-            childCampaignOptions.add(new SelectOption( '' ,'--Select--'));
-        }
-        else 
-        {
-            childCampaignOptions.add(new SelectOption( '' ,'None'));
+        if (childCrCampaigns == null) {
+            childCampaignOptions.add(new SelectOption('', '--Select--'));
+        } else {
+            childCampaignOptions.add(new SelectOption('', 'None'));
         }
 
-        for (Campaign c : childCrCampaigns )
-        {
-            childCampaignOptions.add(new SelectOption(c.Id , c.Name));
+        for (Campaign c : childCrCampaigns) {
+            childCampaignOptions.add(new SelectOption(c.Id, c.Name));
         }
     }
 
-    public List<SelectOption> getRelTypeOptions()
-    {
-        Schema.DescribeFieldResult fieldResult =
-     Relationship__c.Relationship_Type__c.getDescribe();
+    public List<SelectOption> getRelTypeOptions() {
+        Schema.DescribeFieldResult fieldResult = Relationship__c.Relationship_Type__c.getDescribe();
         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
         relTypeOptions = new List<SelectOption>();
         relTypeOptions.add(new SelectOption('', '--Select--'));
-        for (Schema.PicklistEntry f : ple)
-        {
-            if (f.getValue() == 'Employee' || f.getValue() == 'Member' || f.getValue() == 'Volunteer')
-            {
+        for (Schema.PicklistEntry f : ple) {
+            if (f.getValue() == 'Employee' || f.getValue() == 'Member' || f.getValue() == 'Volunteer') {
                 relTypeOptions.add(new SelectOption(f.getLabel(), f.getValue()));
             }
         }
         return relTypeOptions;
     }
 
-    public void addRelationship() 
-    {
+    public void addRelationship() {
         Relationship__c rNew = new Relationship__c();
         rNew.Title__c = relationship.Title__c;
         rNew.Related_Account__c = relationship.Account__c;
@@ -124,95 +106,87 @@ public class NewCorporateRelationsContactController
         relationshipList.add(rNew);
     }
 
-    public void addParentCampaignMember() 
-    {
+    public void addParentCampaignMember() {
         CampaignMember pNew = new CampaignMember();
         pNew.CampaignId = selectedParentId;
-        if (!currentSet.contains(selectedParentId))
-        {
+        if (!currentSet.contains(selectedParentId)) {
             campaignMemberList.add(pNew);
             currentSet.add(selectedParentId);
         }
     }
 
-    public void addCampaignMember() 
-    {
-        if (selectedChildId != null)
-        {
+    public void addCampaignMember() {
+        if (selectedChildId != null) {
             CampaignMember cNew = new CampaignMember();
             cNew.CampaignId = selectedChildId;
-            if (!currentSet.contains(selectedChildId))
-            {
+            if (!currentSet.contains(selectedChildId)) {
                 campaignMemberList.add(cNew);
                 currentSet.add(selectedChildId);
             }
         }
     }
 
-    public void validateContact()
-    {
+    public void validateContact() {
         Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
         Integer hasPhone = contact.Phone == null ? 0 : 1;
 
         Integer result = hasMailingCode + hasPhone;
-        if (result >= 1)
-        {
+        if (result >= 1) {
             page2();
-        }
-        else
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'));
+        } else {
+            ApexPages.addmessage(
+                new ApexPages.message(
+                    ApexPages.severity.ERROR,
+                    'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'
+                )
+            );
             return;
         }
     }
 
-    public PageReference page2()
-    {
+    public PageReference page2() {
         page = 2;
 
         return ApexPages.currentPage();
     }
 
-    public PageReference page3()
-    {
+    public PageReference page3() {
         page = 3;
 
         return ApexPages.currentPage();
     }
 
-    public PageReference page4()
-    {
+    public PageReference page4() {
         page = 4;
 
         return ApexPages.currentPage();
     }
 
-    public PageReference page5()
-    {
+    public PageReference page5() {
         page = 5;
 
         return ApexPages.currentPage();
     }
 
-    public PageReference page6()
-    {
+    public PageReference page6() {
         page = 6;
 
         return ApexPages.currentPage();
     }
 
-    public void addPage()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public void addPage() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
 
             return;
         }
 
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
 
             return;
         }
@@ -228,18 +202,19 @@ public class NewCorporateRelationsContactController
         childCampaignOptions = null;
     }
 
-    public void addRelationshipPage()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public void addRelationshipPage() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
 
             return;
         }
 
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
             return;
         }
         addRelationship();
@@ -251,18 +226,19 @@ public class NewCorporateRelationsContactController
         page = 4;
     }
 
-    public void addCampaignPage()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public void addCampaignPage() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
 
             return;
         }
 
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
 
             return;
         }
@@ -278,67 +254,51 @@ public class NewCorporateRelationsContactController
         page = 5;
     }
 
-    public Boolean validateRT()
-    {
-        if (relationship.Relationship_Type__c == null)
-        {
+    public Boolean validateRT() {
+        if (relationship.Relationship_Type__c == null) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
 
-    public Boolean validateDA()
-    {
-        if (selectedParentId == null)
-        {
+    public Boolean validateDA() {
+        if (selectedParentId == null) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
 
-    public void click()
-    {
+    public void click() {
         clickedAccount = true;
     }
 
-    public void backToRelationship()
-    {
+    public void backToRelationship() {
         page4();
     }
 
-    public void cancelAccount()
-    {
+    public void cancelAccount() {
         page2();
     }
 
-    public PageReference insertAccount()
-    {
-        try
-        {
+    public PageReference insertAccount() {
+        try {
             insert account;
             page = 2;
 
             return ApexPages.currentPage();
-        }
-        catch (Exception e)
-        {
-
+        } catch (Exception e) {
         }
 
         return null;
     }
 
-    public PageReference insertRelationship()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public PageReference insertRelationship() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
 
             return null;
         }
@@ -351,11 +311,11 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference insertCampaignMember()
-    {
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+    public PageReference insertCampaignMember() {
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
 
             return null;
         }
@@ -368,8 +328,7 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference cancelAndSaveCampaignMember()
-    {
+    public PageReference cancelAndSaveCampaignMember() {
         saveToDatabase();
         PageReference submit = new PageReference('/' + contact.Id);
         submit.setRedirect(true);
@@ -377,8 +336,7 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference cancelAndSaveRelationship()
-    {
+    public PageReference cancelAndSaveRelationship() {
         saveToDatabase();
         PageReference submit = new PageReference('/' + contact.Id);
         submit.setRedirect(true);
@@ -386,8 +344,7 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference cancelAndSave()
-    {
+    public PageReference cancelAndSave() {
         saveToDatabase();
         PageReference submit = new PageReference('/' + contact.Id);
         submit.setRedirect(true);
@@ -395,11 +352,11 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference relationshipSaveAndNew()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public PageReference relationshipSaveAndNew() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
 
             return null;
         }
@@ -411,11 +368,11 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference campaignMemberSaveAndNew()
-    {
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+    public PageReference campaignMemberSaveAndNew() {
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
             return null;
         }
         addParentCampaignMember();
@@ -427,17 +384,18 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference saveAndNew()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public PageReference saveAndNew() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
             return null;
         }
 
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
 
             return null;
         }
@@ -451,17 +409,18 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public PageReference save()
-    {
-        if(!validateRT())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Relationship Type.'));
+    public PageReference save() {
+        if (!validateRT()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Relationship Type.')
+            );
 
             return null;
         }
-        if(!validateDA())
-        {
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'You must select a Department Affiliation.'));
+        if (!validateDA()) {
+            ApexPages.addmessage(
+                new ApexPages.message(ApexPages.severity.ERROR, 'You must select a Department Affiliation.')
+            );
 
             return null;
         }
@@ -475,10 +434,8 @@ public class NewCorporateRelationsContactController
         return submit;
     }
 
-    public void saveToDatabase()
-    {
-        try
-        {
+    public void saveToDatabase() {
+        try {
             contact.Corporate_Relations_Email__c = contact.Email;
             contact.SF_First_Name__c = contact.FirstName;
             contact.SF_First_Name_Updated__c = Datetime.now();
@@ -497,8 +454,7 @@ public class NewCorporateRelationsContactController
 
             insert contact;
 
-            for (Relationship__c r: relationshipList)
-            {
+            for (Relationship__c r : relationshipList) {
                 r.Active_Relationship__c = true;
                 r.Contact__c = contact.Id;
                 r.recordTypeId = contactToAccountRTID;
@@ -506,16 +462,12 @@ public class NewCorporateRelationsContactController
 
             insert relationshipList;
 
-            for (CampaignMember c: campaignMemberList)
-            {
+            for (CampaignMember c : campaignMemberList) {
                 c.ContactId = contact.Id;
             }
 
             insert campaignMemberList;
-        }
-        catch (exception e)
-        {
-
+        } catch (exception e) {
         }
     }
 }

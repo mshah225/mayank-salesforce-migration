@@ -11,10 +11,17 @@
             }
         </style>
         <!--[if IE 9]>
-        <style type="text/css">
-            #asu_universal_nav ul ul{filter:none;box-shadow:0 6px 6px 0 #999}#asu_universal_nav>ul>li.parent:hover>a{filter:none;box-shadow:6px 0 6px -6px #999,-6px 0 6px -6px #999}
-        </style>
-        <![endif]-->
+                <style type="text/css">
+                    #asu_universal_nav ul ul {
+                        filter: none;
+                        box-shadow: 0 6px 6px 0 #999;
+                    }
+                    #asu_universal_nav > ul > li.parent:hover > a {
+                        filter: none;
+                        box-shadow: 6px 0 6px -6px #999, -6px 0 6px -6px #999;
+                    }
+                </style>
+            <![endif]-->
         <script>
             var ASUHeader = ASUHeader || {};
             ASUHeader.browser = false;
@@ -22,14 +29,30 @@
             ASUHeader.site_menu = ASUHeader.site_menu || {};
             ASUHeader.site_menu.json = '[{"title":"Home","path":"https://webapp4.asu.edu/myasu"}]';
 
-            ASUHeader.site_menu.site_name = "Student Service Center";
+            ASUHeader.site_menu.site_name = 'Student Service Center';
             ASUHeader.user_signedin = true;
             ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
         </script>
-        <!--[if IE 5]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 6]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 7]><script>ASUHeader.browser = true;</script><![endif]-->
-        <!--[if IE 8]><script>ASUHeader.browser = true;</script><![endif]-->
+        <!--[if IE 5
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
+        <!--[if IE 6
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
+        <!--[if IE 7
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
+        <!--[if IE 8
+                ]><script>
+                    ASUHeader.browser = true;
+                </script><!
+            [endif]-->
 
         <style>
             .panel {
@@ -43,8 +66,7 @@
         <div id="main-search" class="main-search closed"></div>
 
         <c:SCHeader pageHead="Persistence Outlook" showNavBar="false" />
-        <style>
-        </style>
+        <style></style>
 
         <div id="asu-content-container" role="main">
             <div class="container">
@@ -57,25 +79,26 @@
                             <li>
                                 <a href="{!retURL}">Back</a>
                             </li>
-                            <li class="active" style="font-size:10pt;">Feedback</li>
+                            <li class="active" style="font-size: 10pt">Feedback</li>
                         </ol>
                     </apex:outputPanel>
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <apex:form id="feedbackForm" style="max-width:600px;">
+                            <apex:form id="feedbackForm" style="max-width: 600px">
                                 <h3>
-                                    <b style="font-weight:400">Persistence Outlook Feedback</b>
+                                    <b style="font-weight: 400">Persistence Outlook Feedback</b>
                                 </h3>
-                                <p>Each note about persistence outlook will be responded to and feedback will be used to improve
-                                    processes and models that generate persistence outlook. Please tell us if your comments
-                                    are (a)
+                                <p>
+                                    Each note about persistence outlook will be responded to and feedback will be used to improve processes and models that generate
+                                    persistence outlook. Please tell us if your comments are (a)
                                     <b>specific to this particular student</b> (for example, you suspect some important information
                                     you know may not be taken into account given their persistence outlook), (b)
                                     <b> may apply to a group of students</b> (for example, persistence outlook seems off for
                                     students that all have something in common you know about), (c)
                                     <b>oddities about persistence outlook</b> (for example, persistence outlook level keeps
                                     moving up and down dramatically), and/or (d)
-                                    <b>general questions related to persistence outlook</b>. </p>
+                                    <b>general questions related to persistence outlook</b>.
+                                </p>
                                 <div class="form-item webform-component webform-component-textarea webform-component--text-area">
                                     <apex:outputLabel value="Feedback Comments:" for="caseFeedbackComments" />
                                     <apex:inputTextarea id="caseFeedbackComments" value="{!caseDescription}" styleClass="form-textarea form-control" cols="60"

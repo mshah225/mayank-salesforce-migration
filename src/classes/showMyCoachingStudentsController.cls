@@ -1,8 +1,8 @@
 /*****************************************
-* File: showMyCoachingStudentsController
-* Author: Mathew Ruff, Sierra-Cedar
-* Description: Custom controller logic for showMyCoachingStudents.component
-******************************************/
+ * File: showMyCoachingStudentsController
+ * Author: Mathew Ruff, Sierra-Cedar
+ * Description: Custom controller logic for showMyCoachingStudents.component
+ ******************************************/
 public class showMyCoachingStudentsController {
     private final Integer cookieExpiration = 22592000; // 30 days in seconds (30 Days * 24 hours * 60 minutes * 60 seconds)
 
@@ -29,7 +29,6 @@ public class showMyCoachingStudentsController {
      */
     public String queryAttr {
         get;
-
         set {
             queryAttr = value;
 
@@ -46,7 +45,6 @@ public class showMyCoachingStudentsController {
      */
     public String query {
         get;
-
         set {
             query = value;
             setCon = new ApexPages.StandardSetController(Database.getQueryLocator(query));
@@ -59,7 +57,6 @@ public class showMyCoachingStudentsController {
      */
     public ApexPages.StandardSetController setCon {
         get;
-
         set {
             setCon = value;
             setCon.setPageSize(pageSize);
@@ -81,7 +78,6 @@ public class showMyCoachingStudentsController {
 
             return pageSize;
         }
-
         set {
             pageSize = value;
             pageSizeCookie = new Cookie('pageSize', string.valueOf(pageSize), null, cookieExpiration, false);
@@ -131,7 +127,6 @@ public class showMyCoachingStudentsController {
      */
     public String sortDir {
         get;
-
         set {
             if (sortDir == 'DESC') {
                 sortDir = 'ASC';
@@ -147,7 +142,6 @@ public class showMyCoachingStudentsController {
      */
     public String sortField {
         get;
-
         set {
             String tempQuery;
             Integer loc;
@@ -182,9 +176,11 @@ public class showMyCoachingStudentsController {
 
         if (list1 != null && tempList != null) {
             if (list1.size() > 0 && tempList.size() > 0) {
-                if (list1[0].obj.Id == tempList[0].Id
-                    && list1[list1.size() - 1].obj.Id == tempList[tempList.size() - 1].Id
-                    && list1.size() == tempList.size()) {
+                if (
+                    list1[0].obj.Id == tempList[0].Id &&
+                    list1[list1.size() - 1].obj.Id == tempList[tempList.size() - 1].Id &&
+                    list1.size() == tempList.size()
+                ) {
                     result = false;
                 }
             }
@@ -213,7 +209,6 @@ public class showMyCoachingStudentsController {
 
             return selectedStudents;
         }
-
         set;
     }
 
@@ -223,14 +218,11 @@ public class showMyCoachingStudentsController {
     public Portal_Email__c tempEmail {
         get {
             if (tempEmail == null) {
-                tempEmail = new Portal_Email__c(
-                    RecordTypeId = portalEmailRTID
-                );
+                tempEmail = new Portal_Email__c(RecordTypeId = portalEmailRTID);
             }
 
             return tempEmail;
         }
-
         set;
     }
 
@@ -242,13 +234,15 @@ public class showMyCoachingStudentsController {
 
         for (Success_Student__c ss : selectedStudents) {
             // Most of the object is formula fields
-            emails.add(new Portal_Email__c(
-                Success_Student__c = ss.Id,
-                Contact__c = ss.Student__c,
-                Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
-                RecordTypeId = portalEmailRTID,
-                Email_Template_Name__c = tempEmail.Email_Template_Name__c
-            ));
+            emails.add(
+                new Portal_Email__c(
+                    Success_Student__c = ss.Id,
+                    Contact__c = ss.Student__c,
+                    Additional_Message_Text__c = tempEmail.Additional_Message_Text__c,
+                    RecordTypeId = portalEmailRTID,
+                    Email_Template_Name__c = tempEmail.Email_Template_Name__c
+                )
+            );
         }
 
         if (emails.size() > 0) {
@@ -286,11 +280,7 @@ public class showMyCoachingStudentsController {
 
             // Query for contacts/cases
             for (Contact c : [
-                SELECT Id, (
-                    SELECT RecordTypeId
-                    FROM Cases
-                    WHERE IsClosed = false
-                )
+                SELECT Id, (SELECT RecordTypeId FROM Cases WHERE IsClosed = FALSE)
                 FROM Contact
                 WHERE Id IN :caseCountMap.keyset()
             ]) {
@@ -305,28 +295,34 @@ public class showMyCoachingStudentsController {
         }
     }
 
-
     /*
      * Searches Students for and rerenders the showMyCoachingStudents component list.
      */
     public void myStudentsSearch() {
         String trimmed = searchString.trim();
-        String studentsQuery = '' +
+        String studentsQuery =
+            '' +
             'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ASURiteID__c ' +
             'FROM Success_Student__c ' +
-            'WHERE Success_Resource__r.Resource__c = \'' + ownerId + '\' ' +
+            'WHERE Success_Resource__r.Resource__c = \'' +
+            ownerId +
+            '\' ' +
             'AND Is_Active__c = true ' +
             'AND Coaching_Student__c = true ' +
             'AND (' +
-                'Student_Name__c LIKE \'%' + String.escapeSingleQuotes(trimmed) + '%\' ' +
-                'OR EMPLID__c LIKE \'%' + String.escapeSingleQuotes(trimmed) + '%\'' +
-            	checkFirstAndLastName(trimmed) +
+            'Student_Name__c LIKE \'%' +
+            String.escapeSingleQuotes(trimmed) +
+            '%\' ' +
+            'OR EMPLID__c LIKE \'%' +
+            String.escapeSingleQuotes(trimmed) +
+            '%\'' +
+            checkFirstAndLastName(trimmed) +
             ')';
 
         query = studentsQuery;
     }
 
-    public static String checkFirstAndLastName(String searchTerm){
+    public static String checkFirstAndLastName(String searchTerm) {
         String queryPart = '';
         List<String> dividedSearchTerm = searchTerm.split('\\s+');
         String firstName = dividedSearchTerm.remove(0);
@@ -336,8 +332,13 @@ public class showMyCoachingStudentsController {
         }
         lastName = lastName.trim();
         if (!String.isEmpty(firstName) && !String.isEmpty(lastName)) {
-            queryPart = 'OR (Student__r.FirstName LIKE \'' + String.escapeSingleQuotes(firstName) + '\' ' +
-                'AND Student__r.LastName LIKE \'' + String.escapeSingleQuotes(lastName) + '\')';
+            queryPart =
+                'OR (Student__r.FirstName LIKE \'' +
+                String.escapeSingleQuotes(firstName) +
+                '\' ' +
+                'AND Student__r.LastName LIKE \'' +
+                String.escapeSingleQuotes(lastName) +
+                '\')';
         }
         return queryPart;
     }
@@ -377,8 +378,8 @@ public class showMyCoachingStudentsController {
      * Class to facilitate selection of students for mass actions
      */
     public class studentWrapper {
-        public Boolean selected {get; set;}
-        public Success_Student__c obj {get; set;}
+        public Boolean selected { get; set; }
+        public Success_Student__c obj { get; set; }
 
         public studentWrapper(Success_Student__c student) {
             selected = false;
@@ -386,13 +387,12 @@ public class showMyCoachingStudentsController {
         }
     }
 
-
     /*
      * Class to display count of reactive and proactive cases.
      */
     public class caseWrapper {
-        public Integer reactiveCount {get; set;}
-        public Integer proactiveCount {get; set;}
+        public Integer reactiveCount { get; set; }
+        public Integer proactiveCount { get; set; }
 
         public caseWrapper() {
             reactiveCount = 0;

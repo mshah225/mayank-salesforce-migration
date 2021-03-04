@@ -21,7 +21,8 @@ public class EdPlusUtilities {
      * Given a ContactId, lookup the MDM GUID
      */
     public static String contactIdToGUID(Id ContactId) {
-        String guid = [SELECT SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE Id = :ContactId LIMIT 1].SSB_CRMSYSTEM_Contact_ID__c;
+        String guid = [SELECT SSB_CRMSYSTEM_Contact_ID__c FROM Contact WHERE Id = :ContactId LIMIT 1]
+        .SSB_CRMSYSTEM_Contact_ID__c;
 
         return guid;
     }

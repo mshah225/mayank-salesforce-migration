@@ -1,11 +1,12 @@
 /*****************************************
-* File: Test_CoachPortalMainPageController
-* Author: meruff
-* Description: Unit Tests for CoachPortalMainPageController
-******************************************/
+ * File: Test_CoachPortalMainPageController
+ * Author: meruff
+ * Description: Unit Tests for CoachPortalMainPageController
+ ******************************************/
 @IsTest
 private class Test_CoachPortalMainPageController {
-    @testSetup static void setUpTest() {
+    @testSetup
+    static void setUpTest() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Service - Success Coach'];
 
         User u1 = TestDataFactory.createUser('Testing1', p.Id);
@@ -16,13 +17,14 @@ private class Test_CoachPortalMainPageController {
 
         Id successPodId = [SELECT Id FROM RecordType WHERE Name = 'Coach' AND SObjectType = 'Success_Pod__c'].Id;
 
-        Success_Pod__c testPod = new Success_Pod__c(
-            Name = 'Test Pod',
-            RecordTypeId = successPodId
-        );
+        Success_Pod__c testPod = new Success_Pod__c(Name = 'Test Pod', RecordTypeId = successPodId);
         insert testPod;
 
-        RecordType coachResourceRT = [SELECT Name FROM RecordType WHERE Name = 'Coach' AND SObjectType = 'Success_Resource__c'];
+        RecordType coachResourceRT = [
+            SELECT Name
+            FROM RecordType
+            WHERE Name = 'Coach' AND SObjectType = 'Success_Resource__c'
+        ];
 
         Success_Resource__c r1 = new Success_Resource__c(
             Resource__c = u1.Id,

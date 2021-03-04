@@ -1,36 +1,40 @@
-<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
-                access="global" 
-                controller="BulkMessageComponentController">
-    
-    <aura:handler name="init" value="this" action="{!c.doInit}"/>
-    <aura:attribute name="studentWrapperResult" type="Object"/>
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global"
+    controller="BulkMessageComponentController"
+>
+    <aura:handler name="init" value="this" action="{!c.doInit}" />
+    <aura:attribute name="studentWrapperResult" type="Object" />
     <aura:attribute name="console" type="Object" />
-    <aura:attribute name="idList" type="String"/>
-    <aura:attribute name="showResult" type="boolean" default="false"/> 
-    <aura:attribute name="coachList" type="User[]"/>
-    <aura:attribute name="selectedCoach" type="String"/>
-    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="idList" type="String" />
+    <aura:attribute name="showResult" type="boolean" default="false" />
+    <aura:attribute name="coachList" type="User[]" />
+    <aura:attribute name="selectedCoach" type="String" />
+    <aura:attribute name="errorMessage" type="String" />
     <aura:attribute name="isBulk" type="Boolean" access="private" default="false" />
-    
+
     <aura:if isTrue="{!v.isBulk}">
-        <smagicinteract:BulkSMSComponent IdList="{!v.idList}" objectName="Contact"/>
+        <smagicinteract:BulkSMSComponent IdList="{!v.idList}" objectName="Contact" />
     </aura:if>
-    <aura:if isTrue="{!!v.isBulk}"> 
+    <aura:if isTrue="{!!v.isBulk}">
         <aura:if isTrue="{!and(v.coachList != null, v.coachList.length > 0)}">
-            <lightning:select 
-                aura:id="coachId" 
-                onchange ="{!c.onPicklistChange}" 
-                value="{!v.selectedCoach}"  
-                label = "{!'Coaches Found : (' + v.coachList.length +')'}" 
-                class="customCls">
-                    <option value="">Please select a Coach</option>
-                    <aura:iteration items="{!v.coachList}" var="coach">
-                        <option value="{!coach.Id}">{!coach.FirstName}</option>
-                    </aura:iteration> 
+            <lightning:select
+                aura:id="coachId"
+                onchange="{!c.onPicklistChange}"
+                value="{!v.selectedCoach}"
+                label="{!'Coaches Found : (' + v.coachList.length +')'}"
+                class="customCls"
+            >
+                <option value="">Please select a Coach</option>
+                <aura:iteration items="{!v.coachList}" var="coach">
+                    <option value="{!coach.Id}">{!coach.FirstName}</option>
+                </aura:iteration>
             </lightning:select>
         </aura:if>
         <aura:if isTrue="{!or(or(v.coachList == null, v.coachList.length == 0), v.selectedCoach != null)}">
-            <aura:if isTrue="{!and(and(v.studentWrapperResult != null, v.studentWrapperResult.students !=null), v.studentWrapperResult.students.length > 0)}">
+            <aura:if
+                isTrue="{!and(and(v.studentWrapperResult != null, v.studentWrapperResult.students !=null), v.studentWrapperResult.students.length > 0)}"
+            >
                 <h1>Student Count: {!v.studentWrapperResult.students.length}</h1>
                 <lightning:datatable
                     columns="{!v.studentWrapperResult.fieldDetailsResult}"
@@ -41,14 +45,17 @@
                     onrowaction="{!c.handleRowAction}"
                 />
                 <div>
-                    <lightning:button class="submit-course slds-float_right" label="Send SMS" title="Send SMS" onclick="{!c.processRecords}"/>
+                    <lightning:button
+                        class="submit-course slds-float_right"
+                        label="Send SMS"
+                        title="Send SMS"
+                        onclick="{!c.processRecords}"
+                    />
                 </div>
                 <aura:set attribute="else">
-                     <div>
-                        {!v.errorMessage}
-                    </div>
+                    <div>{!v.errorMessage}</div>
                 </aura:set>
-                </aura:if>
+            </aura:if>
         </aura:if>
     </aura:if>
 </aura:component>

@@ -7,16 +7,16 @@ public without sharing class ContactPinUtility {
             if (userContact.PIN_lockout__c == true) {
                 userContact.PIN_lockout__c = false;
             }
-            
+
             try {
                 update userContact;
                 return 'success';
-            } catch(Exception e) {
+            } catch (Exception e) {
                 List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertStringToJSON('First Name',userContact.FirstName));
-                vars.add(ErrorLogger.convertStringToJSON('Last Name',userContact.LastName));
-                vars.add(ErrorLogger.convertStringToJSON('Employee Id',userContact.EMPLId__c));
-                ErrorLogger.log(e,vars,false);
+                vars.add(ErrorLogger.convertStringToJSON('First Name', userContact.FirstName));
+                vars.add(ErrorLogger.convertStringToJSON('Last Name', userContact.LastName));
+                vars.add(ErrorLogger.convertStringToJSON('Employee Id', userContact.EMPLId__c));
+                ErrorLogger.log(e, vars, false);
                 return 'error';
             }
         }

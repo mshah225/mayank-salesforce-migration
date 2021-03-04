@@ -1,8 +1,8 @@
 /*****************************************
-* File: FullCaseCommentsController
-* Author: Mathew Ruff, Sierra-Cedar Inc.
-* Description: Custom controller logic for fullCaseComments.page
-******************************************/
+ * File: FullCaseCommentsController
+ * Author: Mathew Ruff, Sierra-Cedar Inc.
+ * Description: Custom controller logic for fullCaseComments.page
+ ******************************************/
 public with sharing class FullCaseCommentsController {
     private Case theCase;
     private Contact theContact;
@@ -14,12 +14,13 @@ public with sharing class FullCaseCommentsController {
         if (ApexPages.currentPage().getParameters().get('id').startsWith('003')) {
             this.theContact = (Contact) stdController.getRecord();
 
-            Map<Id, Case> coachCaseMap = new Map<Id, Case>([
-                SELECT Id
-                FROM Case
-                WHERE ContactId = :theContact.Id
-                AND RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
-            ]);
+            Map<Id, Case> coachCaseMap = new Map<Id, Case>(
+                [
+                    SELECT Id
+                    FROM Case
+                    WHERE ContactId = :theContact.Id AND RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+                ]
+            );
 
             if (coachCaseMap.size() > 0) {
                 comments = [

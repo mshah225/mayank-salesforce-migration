@@ -1,6 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
     action="{!init}" cache="true" extensions="MyASUHelpPaginationController,ASUBrandController">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -48,17 +47,20 @@
 
     <script>
         function checkNumbers() {
-            var pageSize = "{!pageSize}";
-            var aCount = document.getElementById("{!$Component.theSearchResults}").getElementsByTagName("a").length;
-            console.log("aCount: " + aCount);
-            console.log("pageSize: " + pageSize);
+            var pageSize = '{!pageSize}';
+            var aCount = document.getElementById('{!$Component.theSearchResults}').getElementsByTagName('a').length;
+            console.log('aCount: ' + aCount);
+            console.log('pageSize: ' + pageSize);
             if (aCount < pageSize) {
-                console.log("In if");
-                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtn}").style.display = "none";
-                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtnDisabled}").style.display = "block";
+                console.log('In if');
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtn}').style.display = 'none';
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtnDisabled}').style.display =
+                    'block';
             } else {
-                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtn}").style.display = "initial";
-                document.getElementById("{!$Component.theSearchResults.searchResults.nextBtnDisabled}").style.display = "none";
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtn}').style.display =
+                    'initial';
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtnDisabled}').style.display =
+                    'none';
             }
         }
     </script>

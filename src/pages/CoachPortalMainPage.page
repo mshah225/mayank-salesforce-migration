@@ -10,7 +10,6 @@
     <apex:pageMessages />
 
     <c:coachPortalViewAsComponent selectOptions="{!viewAsOptions}" hasViewAs="{!hasViewAs}" mimicId="{!$User.Id}" id="viewAsComponent">
-
         <!-- This bit is required in order to pass the mimic ID to the controller of the main page -->
         <!-- VF Components do not have a built in way to pass data up -->
         <apex:form>
@@ -28,9 +27,8 @@
                 proactiveRTID="{!CoachCaseRTID}" rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}" caseEmailRTID="{!CoachEmailRTID}"
                 isCoaching="true" showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false" showCaseListSelection="true"
                 showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true" showCaseListStatus="true" showCaseListFollowupDate="true"
-                showCaseListTermSession="false" showCaseListTimeZone="false"
-                showCaseListTransfer="true" showCaseMassEmail="false" showProactiveCaseCount="false" showReactiveCaseCount="false"
-                showSearch="true" />
+                showCaseListTermSession="false" showCaseListTimeZone="false" showCaseListTransfer="true" showCaseMassEmail="false"
+                showProactiveCaseCount="false" showReactiveCaseCount="false" showSearch="true" />
 
             <apex:tabPanel styleClass="buffer" id="tabPanel">
                 <apex:tab label="My Students" switchType="client" styleClass="wsTabContent" id="studentsTab">
@@ -54,7 +52,7 @@
         </apex:outputPanel>
     </c:coachPortalViewAsComponent>
 
-    <div style="text-align:center;padding:25px;">
+    <div style="text-align: center; padding: 25px">
         <c:FeedbackButton carName="Coach Portal" />
     </div>
 

@@ -1,7 +1,5 @@
-public class UserService
-{
-    public static User createTestUser()
-    {
+public class UserService {
+    public static User createTestUser() {
         User testUser = new User();
         testUser.FirstName = 'Test';
         testUser.LastName = 'User';
@@ -17,12 +15,10 @@ public class UserService
         return testUser;
     }
 
-    public static List<User> createMultipleTestUsers(Integer numUsers)
-    {
+    public static List<User> createMultipleTestUsers(Integer numUsers) {
         List<User> userList = new List<User>();
 
-        for (Integer i = 0; i < numUsers; i++)
-        {
+        for (Integer i = 0; i < numUsers; i++) {
             User tUser = createTestUser();
             tUser.FirstName = 'Test' + i;
             tUser.LastName = 'User' + i;

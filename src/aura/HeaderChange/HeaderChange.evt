@@ -1,6 +1,5 @@
-
 <aura:event type="COMPONENT">
-    <aura:attribute name="message" type="String"/>
-    <aura:attribute name="link" type="String"/>
-    <aura:attribute name="displayLink" type="boolean"/>
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="link" type="String" />
+    <aura:attribute name="displayLink" type="boolean" />
 </aura:event>

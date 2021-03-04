@@ -6,17 +6,18 @@
             <a class="save-chat-mobile btn btn-secondary" id="saveChat" onclick="getTranscript();">Save Chat</a>
         </div>
     </h1>
-    <apex:image styleClass="mobileLogo" url="{!$Resource.LiveAgentlogo}"/>
+    <apex:image styleClass="mobileLogo" url="{!$Resource.LiveAgentlogo}" />
 
-    <br/>
-    <body style="background-color:#F5F5F5; overflow-x: hidden;">
+    <br />
+
+    <body style="background-color: #f5f5f5; overflow-x: hidden">
         <apex:outputPanel styleClass="chat-body-mobile" id="successfulChatBody">
             <h2 class="header-title-mobile">
                 &nbsp;Previous Conversation
-                <br/>
+                <br />
             </h2>
-            <div id="chatTranscript" style="overflow: auto; padding: 5px 15px 5px 15px;">
-                <apex:outputText id="transcript" value="{!$CurrentPage.parameters.transcript}"/>
+            <div id="chatTranscript" style="overflow: auto; padding: 5px 15px 5px 15px">
+                <apex:outputText id="transcript" value="{!$CurrentPage.parameters.transcript}" />
             </div>
             <table class="nav" align="center">
                 <tr>
@@ -33,60 +34,61 @@
         <apex:outputPanel styleClass="chat-body-mobile" id="failedChatBody">
             <h2 class="header-title-mobile">
                 &nbsp;Unable to Connect to an Agent
-                <br/>
+                <br />
             </h2>
-            <div id="errorMessage" class="chatTranscript" style="overflow: auto; padding: 5px 15px 5px 15px;">
-                <apex:outputText value="{!agentOfflineMessage}"/>
+            <div id="errorMessage" class="chatTranscript" style="overflow: auto; padding: 5px 15px 5px 15px">
+                <apex:outputText value="{!agentOfflineMessage}" />
             </div>
         </apex:outputPanel>
     </body>
-    <script type='text/javascript'>
-    	var chatTranscript = document.getElementById('j_id0:transcript').innerHTML;
-    	if (!chatTranscript || 0 === chatTranscript.length) {
-            document.getElementById("j_id0:successfulChatBody").style.display = "none";
-            document.getElementById("saveChat").setAttribute('style', 'display:none !important');
+    <script type="text/javascript">
+        var chatTranscript = document.getElementById('j_id0:transcript').innerHTML;
+        if (!chatTranscript || 0 === chatTranscript.length) {
+            document.getElementById('j_id0:successfulChatBody').style.display = 'none';
+            document.getElementById('saveChat').setAttribute('style', 'display:none !important');
         } else {
-            document.getElementById("j_id0:failedChatBody").style.display = "none";
+            document.getElementById('j_id0:failedChatBody').style.display = 'none';
         }
         var cleanedString = '{!JSENCODE($CurrentPage.parameters.chatDetails)}';
-        cleanedString = cleanedString.replace(/[\n]/g, '').replace(/[\r]/g, '').replace(/[\\]*\'/g, '\'');
+        cleanedString = cleanedString
+            .replace(/[\n]/g, '')
+            .replace(/[\r]/g, '')
+            .replace(/[\\]*\'/g, "'");
         var chatDetails = JSON.parse(cleanedString);
         var mergeFieldObject = {
             chat_key: '{!$CurrentPage.parameters.chatKey}',
             chat_start_time: '{!$CurrentPage.parameters.startTime}',
             chat_request_time: '{!$CurrentPage.parameters.requestTime}',
-            chat_agent_id: typeof chatDetails.agent !== 'undefined'
-                ? chatDetails.agent.userId
-                : '',
-            chat_agent_name: typeof chatDetails.agent !== 'undefined'
-                ? chatDetails.agent.agentName
-                : '',
+            chat_agent_id: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.userId : '',
+            chat_agent_name: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.agentName : '',
             chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
-            chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}'
+            chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}',
         };
 
-        var customDetails = {}
+        var customDetails = {};
         if (typeof chatDetails.customDetails !== 'undefined') {
             customDetails = chatDetails.customDetails.reduce(function (memo, detail) {
                 memo['chat_custom_' + toSnakeCase(detail.label)] = detail.value;
                 return memo;
-            }, 
-            {});
+            }, {});
         }
-        Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'))
+        Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'));
         var mergeFields = [];
         for (var prop in mergeFieldObject) {
-            mergeFields.push(prop + '=' + mergeFieldObject[prop])
+            mergeFields.push(prop + '=' + mergeFieldObject[prop]);
         }
         var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML));
+        element.setAttribute(
+            'href',
+            'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML)
+        );
         document.body.appendChild(element);
         var transcript = document.getElementById('j_id0:transcript').innerHTML;
         document.getElementById('chatTranscript').innerHTML = transcript.replace(/\n/g, '<br/>');
         createTimestampAndDisconnect();
 
         function checkTime(i) {
-            return (i < 10) ? "0" + i : i;
+            return i < 10 ? '0' + i : i;
         }
 
         function createTimestampAndDisconnect() {
@@ -112,8 +114,8 @@
 
         function getTranscript() {
             var chatBody = document.getElementById('chatTranscript').innerHTML;
-            chatBody = chatBody.replace(/<br\s*[\/]?>/gi, "\n");
-            download("Transcript.txt", chatBody);
+            chatBody = chatBody.replace(/<br\s*[\/]?>/gi, '\n');
+            download('Transcript.txt', chatBody);
         }
 
         function goToSurvey() {
@@ -122,21 +124,23 @@
             window.location = '{!postChatSurveyLink}?' + parameters;
         }
         function toSnakeCase(str) {
-            return str.trim().toLowerCase().replace(/\W/g, '_').replace(/(^_|_$)/g, '')
+            return str
+                .trim()
+                .toLowerCase()
+                .replace(/\W/g, '_')
+                .replace(/(^_|_$)/g, '');
         }
     </script>
     <style>
-        
-
         @media screen and (min-width: 600px) {
             .black-header-mobile {
-                background-color: black; 
-                width: 100%; 
+                background-color: black;
+                width: 100%;
                 height: 9vh;
                 margin-left: 1% important;
             }
 
-            .save-chat-mobile { 
+            .save-chat-mobile {
                 font-size: 3vh !important;
                 margin-left: 1% !important;
             }
@@ -148,17 +152,17 @@
             #chatTranscript {
                 max-height: 400px !important;
             }
-        
+
             .mobileLogo {
                 width: 500px;
             }
-        
+
             .header-title-mobile {
                 font-size: 5vh;
             }
-        
+
             #saveChat {
-            	margin-top: 1vh !important;
+                margin-top: 1vh !important;
             }
         }
 
@@ -178,11 +182,11 @@
                 font-size: 4vw !important;
             }
             .black-header-mobile {
-                background-color: black; 
-                width: 100%; 
+                background-color: black;
+                width: 100%;
                 height: 40px;
             }
-            
+
             #chatTranscript {
                 max-height: 200px !important;
             }

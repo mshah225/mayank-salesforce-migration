@@ -123,7 +123,7 @@ public class showMyCoachCasesController extends ListViewController {
             }
 
             for (Contact c : [
-                SELECT id, (SELECT RecordTypeId FROM Cases WHERE isClosed = false)
+                SELECT id, (SELECT RecordTypeId FROM Cases WHERE isClosed = FALSE)
                 FROM Contact
                 WHERE Id IN :ContactIds
             ]) {

@@ -1,0 +1,16 @@
+# List files or directories below to ignore them when running prettier
+# More information: https://prettier.io/docs/en/ignore.html
+#
+
+**/staticresources/**
+.localdevserver
+.sfdx
+.vscode
+
+coverage/
+
+force-app/crm-salesforce-enterprise/src/pages/Bulk_SMS_FYS.page
+force-app/crm-salesforce-enterprise/src/pages/pkb_RSS.page
+force-app/crm-salesforce-enterprise/src/components/vsPageBlockTableEnhancer.component
+force-app/crm-salesforce-enterprise/src/components/vsNavbar.component
+force-app/crm-salesforce-enterprise/src/classes/StudentProfileExternalObjectjs.cls

@@ -1,21 +1,18 @@
 @isTest
-public with sharing class Test_OpportunityHandler
-{
+public with sharing class Test_OpportunityHandler {
     static Integer TRIGGERLOAD = 5;
 
     // Build Leads
-    static List<Lead> createLeads (Integer quantity)
-    {
+    static List<Lead> createLeads(Integer quantity) {
         List<Lead> leadList = new List<Lead>();
 
-        for (Integer i=0;i<quantity;i++)
-        {
+        for (Integer i = 0; i < quantity; i++) {
             Lead l = new Lead(
-                LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                Email='test'+i+'@test.test',
-                LeadSource='Email'
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                Company = 'Company',
+                Email = 'test' + i + '@test.test',
+                LeadSource = 'Email'
             );
 
             leadList.add(l);
@@ -24,21 +21,17 @@ public with sharing class Test_OpportunityHandler
     }
 
     // Build Lead Interests
-    static Id insertProgram(String programName, String programCode)
-    {
-        Program__c testProgram = new Program__c(
-            Name=programName, Program_Code__c =
-            programCode
-        );
+    static Id insertProgram(String programName, String programCode) {
+        Program__c testProgram = new Program__c(Name = programName, Program_Code__c = programCode);
 
         insert testProgram;
         return testProgram.Id;
     }
 
-    static Id insertPlan(String planName, String planCode, Id programId)
-    {
+    static Id insertPlan(String planName, String planCode, Id programId) {
         Plan__c testPlan = new Plan__c(
-            Name = planName, Plan_Code__c = planCode,
+            Name = planName,
+            Plan_Code__c = planCode,
             // Plan_Status__c = 'Active',
             Plan_Effective_Date__c = Date.today(),
             Program__c = programId
@@ -48,20 +41,14 @@ public with sharing class Test_OpportunityHandler
         return testPlan.Id;
     }
 
-    static List<Lead_Interest__c> createLeadInterests(List<Lead> associatedLeads)
-    {
+    static List<Lead_Interest__c> createLeadInterests(List<Lead> associatedLeads) {
         List<Lead_Interest__c> liList = new List<Lead_Interest__c>();
 
         Id program1 = insertProgram('Program1', 'P1');
         Id plan1 = insertPlan('Plan1', 'PL1', program1);
 
-        for (Lead l: associatedLeads)
-        {
-            Lead_Interest__c li = new Lead_Interest__c(
-                College__c=program1,
-                Plan__c=plan1,
-                Leads__c=l.Id
-            );
+        for (Lead l : associatedLeads) {
+            Lead_Interest__c li = new Lead_Interest__c(College__c = program1, Plan__c = plan1, Leads__c = l.Id);
             liList.add(li);
         }
         system.debug('Lead Interests: ' + liList);
@@ -69,8 +56,7 @@ public with sharing class Test_OpportunityHandler
     }
 
     //Convert Leads and create Opportunities
-    static testMethod void testOpportunityHandler()
-    {
+    static testMethod void testOpportunityHandler() {
         List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 
@@ -80,8 +66,7 @@ public with sharing class Test_OpportunityHandler
         Set<Id> leadIds = new Set<Id>();
 
         // Perform Conversion
-        for (Lead l: leadList)
-        {
+        for (Lead l : leadList) {
             l.Convert_Perform_Conversion__c = true;
             l.Convert_Create_Opportunity__c = true;
             leadIds.add(l.Id);
@@ -95,25 +80,21 @@ public with sharing class Test_OpportunityHandler
 
         Set<Id> contactIds = new Set<Id>();
 
-        for (Lead l: checkLeads)
-        {
+        for (Lead l : checkLeads) {
             contactIds.add(l.ConvertedContactId);
         }
 
         // Confirm that Opps were created during lead conversion
-        List<Opportunity> oppList = new List<Opportunity>([
-            SELECT Id, contact__c
-            FROM Opportunity
-            WHERE contact__c IN :contactIds
-        ]);
+        List<Opportunity> oppList = new List<Opportunity>(
+            [SELECT Id, contact__c FROM Opportunity WHERE contact__c IN :contactIds]
+        );
 
         System.assertEquals(opplist.size(), leadList.size());
     }
 
     // Validate that Contacts were updated on Opps (contact__c field)
     // Validate that Lead Interest Contacts were updated (contact__c field)
-    static testMethod void testCollegeFieldInsert()
-    {
+    static testMethod void testCollegeFieldInsert() {
         List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 
@@ -168,10 +149,8 @@ public with sharing class Test_OpportunityHandler
         o2 = [SELECT College__c FROM Opportunity WHERE Id = :o2.Id];
         System.assert(o2.College__c == program1);
     }
-    
 
-    static testMethod void testCollegeFieldUpdate()
-    {
+    static testMethod void testCollegeFieldUpdate() {
         List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 

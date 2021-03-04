@@ -1,8 +1,7 @@
 @isTest
-private class Test_SuncardPhotoController
-{
-    @isTest static void testSuncardPhotoURL()
-    {
+private class Test_SuncardPhotoController {
+    @isTest
+    static void testSuncardPhotoURL() {
         Contact testContact = ContactService.createTestContact();
         testContact.ASURite_ID__c = 'testing';
         testContact.EMPLID__c = '1234567890';
@@ -16,12 +15,7 @@ private class Test_SuncardPhotoController
 
         insert sunSetting;
 
-        SingleRequestMock fakeResponse = new SingleRequestMock(
-            200,
-            'Complete',
-            '[{"Name": "sForceTest1"}]',
-            null
-        );
+        SingleRequestMock fakeResponse = new SingleRequestMock(200, 'Complete', '[{"Name": "sForceTest1"}]', null);
 
         PageReference sunPage = Page.SuncardPhoto;
         Test.setCurrentPage(sunPage);

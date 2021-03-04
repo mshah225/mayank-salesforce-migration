@@ -1,5 +1,5 @@
 public with sharing class AutoSubscriberService {
-    List<sObject> recordsToProcess {get; set;}
+    List<sObject> recordsToProcess { get; set; }
     AutoSubscriberHelper helper;
 
     public AutoSubscriberService(List<sObject> recordsToProcess, String typeOfObject) {
@@ -22,7 +22,9 @@ public with sharing class AutoSubscriberService {
         for (Student_Program_Plan__c programPlan : convertedRecordsToProcess) {
             for (Auto_Subscriber_Setting__mdt subSetting : helper.settingToSubscription.keyset()) {
                 if (AutoSubscriberFilterHelper.filterProgramPlan(subSetting.DeveloperName, programPlan)) {
-                    subsToCreate.addAll(helper.createSubscriber(programPlan.Contact__c, helper.settingToSubscription.get(subSetting)));
+                    subsToCreate.addAll(
+                        helper.createSubscriber(programPlan.Contact__c, helper.settingToSubscription.get(subSetting))
+                    );
                 }
             }
         }
@@ -44,11 +46,13 @@ public with sharing class AutoSubscriberService {
         }
 
         helper.createSubscriptionParentMap(subscriptionIdsForSubs);
-        
+
         for (CampaignMember member : convertedRecordsToProcess) {
             for (Auto_Subscriber_Setting__mdt subSetting : helper.settingToSubscription.keyset()) {
                 if (AutoSubscriberFilterHelper.filterCampaignMember(subSetting.DeveloperName, member)) {
-                    subsToCreate.addAll(helper.createSubscriber(member.ContactId, helper.settingToSubscription.get(subSetting)));
+                    subsToCreate.addAll(
+                        helper.createSubscriber(member.ContactId, helper.settingToSubscription.get(subSetting))
+                    );
                 }
             }
         }

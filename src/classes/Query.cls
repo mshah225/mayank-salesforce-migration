@@ -4,7 +4,10 @@ public virtual inherited sharing class Query {
     }
 
     static Query instance = new Query();
-    @TestVisible static void setMock(Query mock) {instance = mock;}
+    @TestVisible
+    static void setMock(Query mock) {
+        instance = mock;
+    }
 
     protected virtual List<SObject> passThrough(List<SObject> records) {
         return records;

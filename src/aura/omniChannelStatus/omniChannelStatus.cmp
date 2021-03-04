@@ -1,11 +1,17 @@
-<aura:component implements="flexipage:availableForAllPageTypes" access="global" controller='omnichannelController'>
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" controller="omnichannelController">
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
-    <lightning:omniToolkitAPI aura:id="omniToolkit" />  
-    <aura:handler event="lightning:omniChannelLogout" action="{! c.onLogout }"/>
-    <aura:handler event="lightning:omniChannelLoginSuccess" action="{! c.onLoginSuccess }"/>
-    <aura:handler event="lightning:omniChannelWorkAccepted" action="{! c.onAccept }"/>
-    <lightning:utilityBarAPI aura:id="utilitybar"/>
-    <aura:attribute name="outOfOfficeMessage" type="string"  default="" />
-    <aura:attribute name="loginStatus" type="boolean"   default="" />
-    <ui:inputTextArea aura:id="textField" class="slds-textarea" value="{!v.outOfOfficeMessage}" rows="4" placeholder="" />
+    <lightning:omniToolkitAPI aura:id="omniToolkit" />
+    <aura:handler event="lightning:omniChannelLogout" action="{! c.onLogout }" />
+    <aura:handler event="lightning:omniChannelLoginSuccess" action="{! c.onLoginSuccess }" />
+    <aura:handler event="lightning:omniChannelWorkAccepted" action="{! c.onAccept }" />
+    <lightning:utilityBarAPI aura:id="utilitybar" />
+    <aura:attribute name="outOfOfficeMessage" type="string" default="" />
+    <aura:attribute name="loginStatus" type="boolean" default="" />
+    <ui:inputTextArea
+        aura:id="textField"
+        class="slds-textarea"
+        value="{!v.outOfOfficeMessage}"
+        rows="4"
+        placeholder=""
+    />
 </aura:component>

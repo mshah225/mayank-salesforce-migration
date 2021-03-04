@@ -20,11 +20,7 @@ private class Test_HelpDeskController {
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         List<Case> caseList = CaseService.createTestCases(2, testContact);
 
@@ -41,7 +37,7 @@ private class Test_HelpDeskController {
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -101,13 +97,9 @@ private class Test_HelpDeskController {
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -215,14 +207,9 @@ private class Test_HelpDeskController {
 
         System.assertNotEquals(closeStatuses.size(), 0);
 
-        List<Case> testCase1 = [
-            SELECT Id, Status
-            FROM Case
-            WHERE Id = :controller.mycase.Id
-        ];
+        List<Case> testCase1 = [SELECT Id, Status FROM Case WHERE Id = :controller.mycase.Id];
 
-        if (testCase1.size() > 0)
-        {
+        if (testCase1.size() > 0) {
             System.assert(testCase1[0].Status.contains('Closed'));
         }
     }
@@ -244,13 +231,9 @@ private class Test_HelpDeskController {
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -268,20 +251,13 @@ private class Test_HelpDeskController {
         insert testFAQ;
 
         // After insert, query back for the KnowlegeArticleId
-        FAQ__kav faqArticle = [
-            SELECT KnowledgeArticleId
-            FROM FAQ__kav
-            WHERE Id = :testFAQ.id
-        ];
+        FAQ__kav faqArticle = [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id = :testFAQ.id];
 
         // Publish said FAQ
         KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
 
         // Create a new CaseArticle with the FAQ and Case
-        CaseArticle art = new CaseArticle(
-            CaseId = caseList[0].Id,
-            KnowledgeArticleId = faqArticle.KnowledgeArticleId
-        );
+        CaseArticle art = new CaseArticle(CaseId = caseList[0].Id, KnowledgeArticleId = faqArticle.KnowledgeArticleId);
 
         insert art;
 
@@ -324,11 +300,7 @@ private class Test_HelpDeskController {
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         List<Case> caseList = CaseService.createTestCases(3, testContact);
 
@@ -344,11 +316,7 @@ private class Test_HelpDeskController {
         insert testFAQ;
 
         // After insert, query back for the KnowlegeArticleId
-        FAQ__kav faqArticle = [
-            SELECT KnowledgeArticleId
-            FROM FAQ__kav
-            WHERE Id = :testFAQ.id
-        ];
+        FAQ__kav faqArticle = [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id = :testFAQ.id];
 
         // Publish said FAQ
         KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
@@ -363,25 +331,18 @@ private class Test_HelpDeskController {
         insert testFAQ;
 
         // After insert, query back for the KnowlegeArticleId
-        faqArticle = [
-            SELECT KnowledgeArticleId
-            FROM FAQ__kav
-            WHERE Id = :testFAQ.id
-        ];
+        faqArticle = [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id = :testFAQ.id];
 
         // Publish said FAQ
         KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
 
         // Create a new CaseArticle with the FAQ and Case
-        CaseArticle art = new CaseArticle(
-            CaseId = caseList[0].Id,
-            KnowledgeArticleId = faqArticle.KnowledgeArticleId
-        );
+        CaseArticle art = new CaseArticle(CaseId = caseList[0].Id, KnowledgeArticleId = faqArticle.KnowledgeArticleId);
 
         insert art;
 
         // Set the results for the SOSL search to the contact and FAQ
-        Id[] fixedSearchResults = new Id[2];
+        Id[] fixedSearchResults = new List<Id>(2);
         fixedSearchResults[0] = testContact.Id;
         fixedSearchResults[1] = faqArticle.Id;
         Test.setFixedSearchResults(fixedSearchResults);
@@ -407,11 +368,7 @@ private class Test_HelpDeskController {
 
         Test.stopTest();
 
-        List<CaseArticle> caseArtList = [
-            SELECT Id
-            FROM CaseArticle
-            WHERE CaseId = :caseList[0].Id
-        ];
+        List<CaseArticle> caseArtList = [SELECT Id FROM CaseArticle WHERE CaseId = :caseList[0].Id];
 
         System.assertEquals(0, caseArtList.size());
     }
@@ -422,11 +379,7 @@ private class Test_HelpDeskController {
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         List<Case> caseList = CaseService.createTestCases(2, testContact);
         insert caseList;
@@ -434,7 +387,7 @@ private class Test_HelpDeskController {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -452,12 +405,15 @@ private class Test_HelpDeskController {
         Test.stopTest();
 
         Boolean foundError = false;
-        for (ApexPages.Message msg : ApexPages.getMessages()){
+        for (ApexPages.Message msg : ApexPages.getMessages()) {
             if (msg.getDetail().contains('Closed: Forwarded')) {
                 foundError = true;
             }
         }
-        System.assert(foundError, 'Forward to Unit is required, so the validation rule should have shown up as a Page error.');
+        System.assert(
+            foundError,
+            'Forward to Unit is required, so the validation rule should have shown up as a Page error.'
+        );
     }
 
     @isTest
@@ -466,11 +422,7 @@ private class Test_HelpDeskController {
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         List<Case> caseList = CaseService.createTestCases(2, testContact);
         insert caseList;
@@ -478,7 +430,7 @@ private class Test_HelpDeskController {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -497,12 +449,15 @@ private class Test_HelpDeskController {
         Test.stopTest();
 
         Boolean foundError = false;
-        for (ApexPages.Message msg : ApexPages.getMessages()) { 
+        for (ApexPages.Message msg : ApexPages.getMessages()) {
             if (msg.getDetail().contains('Closed: Forwarded')) {
                 foundError = true;
             }
         }
-        System.assert(foundError, 'Forward to Unit should have been required, so the validation rule should have shown up as a Page error.');
+        System.assert(
+            foundError,
+            'Forward to Unit should have been required, so the validation rule should have shown up as a Page error.'
+        );
     }
 
     @isTest
@@ -511,11 +466,7 @@ private class Test_HelpDeskController {
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         List<Case> caseList = CaseService.createTestCases(2, testContact);
         insert caseList;
@@ -523,7 +474,7 @@ private class Test_HelpDeskController {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -547,24 +498,23 @@ private class Test_HelpDeskController {
                 foundError = true;
             }
         }
-        System.assert(foundError, 'ServiceNow Ticket Number field should have been required, so the validation rule should have shown up as a Page error.');
+        System.assert(
+            foundError,
+            'ServiceNow Ticket Number field should have been required, so the validation rule should have shown up as a Page error.'
+        );
     }
-    
+
     @isTest
     private static void createNewCaseCloseSaveAndTransferErrorBug() {
         setUpTest();
         Test.setCurrentPage(Page.HelpDesk);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -582,22 +532,18 @@ private class Test_HelpDeskController {
         controller.saveAndTransferCase();
         Test.stopTest();
     }
-    
+
     @isTest
     private static void saveAndCloseCaseStatusChanged() {
         setUpTest();
         Test.setCurrentPage(Page.HelpDesk);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -607,31 +553,27 @@ private class Test_HelpDeskController {
 
         controller.myCase.Subject = 'test to close';
         controller.myCase.Description = 'test';
-        
+
         Test.startTest();
         controller.saveAndCloseCase();
         Test.stopTest();
-        
+
         Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
-        
+
         System.assertEquals('Closed: Resolved', savedCase.Status);
     }
-    
+
     @isTest
     private static void saveAndCloseCaseStatusUnchangedWhenClosed() {
         setUpTest();
         Test.setCurrentPage(Page.HelpDesk);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -644,28 +586,24 @@ private class Test_HelpDeskController {
         controller.myCase.Status = 'Closed: Forwarded';
         controller.myCase.Forward_To_Unit__c = 'ServiceNow';
         controller.myCase.ServiceNow_Ticket_Number__c = 'sn-1212';
-        
+
         Test.startTest();
         controller.saveAndCloseCase();
         Test.stopTest();
-        
+
         Case savedCase = [SELECT Status FROM Case WHERE Subject = 'test to close' LIMIT 1];
-        
+
         System.assertNotEquals('Closed: Resolved', savedCase.Status);
         System.assertEquals(controller.myCase.Status, savedCase.Status);
     }
-    
+
     @isTest
     private static void selectCaseEditCancelChangesCleared() {
         setUpTest();
         Test.setCurrentPage(Page.HelpDesk);
 
-        Contact testContact = [
-            SELECT Id, Name, Phone, EMPLID__c
-            FROM Contact
-            WHERE EMPLID__c = '1111111111'
-        ];
-        
+        Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
+
         CaseFactory.DefaultCase factory = new CaseFactory.DefaultCase();
         factory.setRelatedObject('ContactId', testContact);
         Integer numberOfCases = 2;
@@ -675,36 +613,36 @@ private class Test_HelpDeskController {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
-        
+
         HelpDeskController controller = new HelpDeskController();
         controller.selectedContactId = testContact.Id;
         controller.setAsContact();
-        
+
         controller.selectedCaseId = cases[0].Id;
         controller.setAsCase();
-        
+
         String originalSubject = controller.myCase.Subject;
         String originalStatus = controller.myCase.Status;
-        
+
         String testValue = 'TestStringValue Should Not Be Changed';
         controller.myCase.Subject = testValue;
         controller.myCase.Status = testValue;
-        
+
         Test.startTest();
         controller.cancelCase();
         Test.stopTest();
-        
+
         controller.selectedCaseId = cases[0].Id;
         controller.setAsCase();
-        
+
         System.assertNotEquals(testValue, controller.myCase.Subject);
         System.assertNotEquals(testValue, controller.myCase.Status);
         System.assertEquals(originalSubject, controller.myCase.Subject);
         System.assertEquals(originalStatus, controller.myCase.Status);
-        
+
         List<Case> totalCases = [SELECT Id FROM Case];
         System.assertEquals(numberOfCases, totalCases.size());
     }

@@ -47,7 +47,7 @@
         }
 
         .btn-primary {
-            background: #8C1D40 !important;
+            background: #8c1d40 !important;
         }
 
         .btn-primary:hover,
@@ -169,7 +169,7 @@
             position: absolute;
         }
 
-        [class*="col-md-"] {
+        [class*='col-md-'] {
             padding: 0;
         }
 
@@ -183,7 +183,7 @@
         @media only screen and (max-width: 768px) {
             .asu-header-site-title-container {
                 background: #505558;
-                padding: 12px .5em !important;
+                padding: 12px 0.5em !important;
             }
             .asu-header-site-title-container a {
                 color: #fff !important;
@@ -192,7 +192,7 @@
             }
             #asu_footer ul li {
                 display: list-item !important;
-                margin-bottom: .5em !important;
+                margin-bottom: 0.5em !important;
                 margin-left: 2em !important;
             }
             #innovation-footer .footer-menu ul li {

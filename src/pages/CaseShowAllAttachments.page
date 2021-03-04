@@ -2,49 +2,51 @@
     <script src="/support/console/42.0/integration.js" type="text/javascript"></script>
     <script>
         function isLightningExperienceOrSalesforce1() {
-            return((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+            return typeof sforce != 'undefined' && sforce && !!sforce.one;
         }
 
         function openTab(recid, recname) {
             if (isLightningExperienceOrSalesforce1()) {
-                window.parent.location.replace('/'+recid + '?saveURL=%2F{!caseId}&retURL=%2F{!caseId}');
+                window.parent.location.replace('/' + recid + '?saveURL=%2F{!caseId}&retURL=%2F{!caseId}');
             } else {
                 if (!sforce.console.isInConsole()) {
                     window.parent.location.replace('/' + recid + '?saveURL=%2F{!caseId}&retURL=%2F{!caseId}');
                 } else {
-                    sforce.console.getEnclosingPrimaryTabId(function(result) {
-                        sforce.console.openSubtab(result.id, '/'+recid , true, recname, null);
+                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                        sforce.console.openSubtab(result.id, '/' + recid, true, recname, null);
                     });
-                } 
+                }
             }
         }
     </script>
-      <apex:pageBlock title="All Attachments" >
-          <apex:pageBlockButtons location="top">
-                <apex:form >
-                    <input class="btn" type="button" value="Attach File" onClick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"/>
-                    <input value="Download Attachments" class="btn" name="download_attachment" title="Download Attachments" type="button" onclick="openIntegration('{!baseUrlForAttachmentIntegration}/apex/CaseAttachmentList?scontrolCaching=1&id={!Case.Id}', 'height=600,location=no,resizable=yes,toolbar=no,status=no,menubar=no,scrollbars=1', 1)"/>
-                </apex:form>
-          </apex:pageBlockButtons>
-                <apex:form >
-                        <apex:pageBlockTable value="{!allAttachmentsOnCaseAndCaseParent}" var="eachAttachment">
-                                <apex:column headerValue="Action" width="80px" styleClass="actionColumn">
-                                    <a href="#" onClick="openTab('{!eachAttachment.Id}/e', 'Attached File')">Edit</a>
-                                    &nbsp;|&nbsp;
-                                    <a href="/servlet/servlet.FileDownload?file={!eachAttachment.Id}" target="_blank">View</a>
-                                </apex:column>
-                                <apex:column headerValue="File Name">
-                                <a href="/servlet/servlet.FileDownload?file={!eachAttachment.Id}" target="_self" download="{!eachAttachment.Name}">{!eachAttachment.Name}</a>
-                                </apex:column>
-                                <apex:column value="{!ROUND((eachAttachment.BodyLength / 1024), 0)} {!'KB'}" headerValue="Size"/>
-                                <apex:column value="{!eachAttachment.LastModifiedDate}" headerValue="Last Modified"/>
-                                <apex:column value="{!eachAttachment.CreatedBy.Name}" headerValue="Created By"/>
-                                <apex:column headerValue="Action" width="40px" styleClass="actionColumn">
-                                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you wish to delete this attachment?');" action="{!deleteSelectedAttachmentOnCase}" >
-                                                <apex:param name="var" value="{!eachAttachment.Id}" assignTo="{!attachmentIdOnCase}" />      
-                                        </apex:commandLink>
-                                </apex:column>
-                        </apex:pageBlockTable>
-                </apex:form>
-      </apex:pageBlock>
+    <apex:pageBlock title="All Attachments">
+        <apex:pageBlockButtons location="top">
+            <apex:form>
+                <input class="btn" type="button" value="Attach File" onClick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"
+                />
+                <input value="Download Attachments" class="btn" name="download_attachment" title="Download Attachments" type="button" onclick="openIntegration('{!baseUrlForAttachmentIntegration}/apex/CaseAttachmentList?scontrolCaching=1&id={!Case.Id}', 'height=600,location=no,resizable=yes,toolbar=no,status=no,menubar=no,scrollbars=1', 1)"
+                />
+            </apex:form>
+        </apex:pageBlockButtons>
+        <apex:form>
+            <apex:pageBlockTable value="{!allAttachmentsOnCaseAndCaseParent}" var="eachAttachment">
+                <apex:column headerValue="Action" width="80px" styleClass="actionColumn">
+                    <a href="#" onClick="openTab('{!eachAttachment.Id}/e', 'Attached File')">Edit</a>
+                    &nbsp;|&nbsp;
+                    <a href="/servlet/servlet.FileDownload?file={!eachAttachment.Id}" target="_blank">View</a>
+                </apex:column>
+                <apex:column headerValue="File Name">
+                    <a href="/servlet/servlet.FileDownload?file={!eachAttachment.Id}" target="_self" download="{!eachAttachment.Name}">{!eachAttachment.Name}</a>
+                </apex:column>
+                <apex:column value="{!ROUND((eachAttachment.BodyLength / 1024), 0)} {!'KB'}" headerValue="Size" />
+                <apex:column value="{!eachAttachment.LastModifiedDate}" headerValue="Last Modified" />
+                <apex:column value="{!eachAttachment.CreatedBy.Name}" headerValue="Created By" />
+                <apex:column headerValue="Action" width="40px" styleClass="actionColumn">
+                    <apex:commandLink value="Delete" onclick="return confirm('Are you sure you wish to delete this attachment?');" action="{!deleteSelectedAttachmentOnCase}">
+                        <apex:param name="var" value="{!eachAttachment.Id}" assignTo="{!attachmentIdOnCase}" />
+                    </apex:commandLink>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:form>
+    </apex:pageBlock>
 </apex:page>

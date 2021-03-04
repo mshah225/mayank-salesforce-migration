@@ -4,7 +4,7 @@ global class HTTPRestService_RocketChat_MockImpl implements HttpCalloutMock {
         res.setHeader('Content-Type', 'application/json');
         res.setBody('{"foo":"bar"}');
         res.setStatusCode(200);
-        
+
         return res;
     }
 }

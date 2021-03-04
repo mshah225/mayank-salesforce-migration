@@ -1,55 +1,53 @@
 @isTest
 private class Test_CaseTransferMassController {
-	
-	private static User testUser;
-    static void setUpData()
-    {
-        Group testGroup = new Group(
-            Name = 'Test Group Name',
-            Type = 'Queue'
-        );
+    private static User testUser;
+    static void setUpData() {
+        Group testGroup = new Group(Name = 'Test Group Name', Type = 'Queue');
 
         insert testGroup;
 
-        QueueSobject testQueue = new QueueSobject(
-            QueueId = testGroup.Id,
-            SobjectType = 'Case'
-        );
+        QueueSobject testQueue = new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Case');
 
         // To avoid MIXED DML ERROR, you need to insert this non-setup object
         // as the system user. In this case, just the admin running the test.
-        System.runAs(new User(Id = UserInfo.getUserId()))
-        {
+        System.runAs(new User(Id = UserInfo.getUserId())) {
             insert testQueue;
         }
-        
+
         Case_Classification__c cc = new Case_Classification__c();
         cc.Name = 'Engineering';
         cc.Active__c = true;
-        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
+            .get('Functional Group')
+            .getRecordTypeId();
         insert cc;
-        
+
         Case_Classification__c ccURS = new Case_Classification__c();
         ccURS.Name = 'University Registrar Services';
         ccURS.Active__c = true;
-        ccURS.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        ccURS.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
+            .get('Functional Group')
+            .getRecordTypeId();
         insert ccURS;
-        
+
         Case_Classification__c cc1 = new Case_Classification__c();
         cc1.Name = 'Eng';
         cc1.Active__c = true;
-        cc1.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Category').getRecordTypeId();
+        cc1.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
+            .get('Category')
+            .getRecordTypeId();
         cc1.Parent__c = cc.Id;
         insert cc1;
-        
+
         Case_Classification__c cc2 = new Case_Classification__c();
         cc2.Name = 'SubEng';
         cc2.Active__c = true;
-        cc2.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Sub Category').getRecordTypeId();
+        cc2.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
+            .get('Sub Category')
+            .getRecordTypeId();
         cc2.Parent__c = cc1.Id;
         insert cc2;
 
-        
         List<Case_Assignment_Rule__c> carList = new List<Case_Assignment_Rule__c>();
 
         Case_Assignment_Rule__c one = new Case_Assignment_Rule__c(
@@ -98,23 +96,20 @@ private class Test_CaseTransferMassController {
 
         insert carList;
 
-        Case testCase = new Case(
-            Subject = 'subject',
-            Description = 'desc'
-        );
+        Case testCase = new Case(Subject = 'subject', Description = 'desc');
 
         insert testCase;
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        testUser = (User)userCreator.create(1)[0];
+        testUser = (User) userCreator.create(1)[0];
         Id pId = [SELECT Id FROM Profile WHERE Name LIKE 'ASU Service%' LIMIT 1].Id;
         testUser.ProfileId = pId;
 
         insert testUser;
     }
 
-    @isTest static void testTransferToDept()
-    {
+    @isTest
+    static void testTransferToDept() {
         setUpData();
         Case_Assignment_Rule__c testCar = [
             SELECT Id, Label__c, CTPGroup__c
@@ -125,12 +120,11 @@ private class Test_CaseTransferMassController {
         Case caseToTest = [SELECT Id FROM Case LIMIT 1];
         List<Case> casesToTest = [SELECT Id FROM Case];
         List<string> ids = new List<string>();
-        for(Case ca: casesToTest)
-        {
+        for (Case ca : casesToTest) {
             ids.add(ca.Id);
         }
         PageReference pageRef = page.CaseTransferMass;
-        pageRef.getParameters().put('ids',string.valueOf(ids));
+        pageRef.getParameters().put('ids', string.valueOf(ids));
         Test.setCurrentPage(pageRef);
 
         Test.startTest();
@@ -146,40 +140,31 @@ private class Test_CaseTransferMassController {
 
         Test.stopTest();
 
-        Case caseToAssert = [
-            SELECT Id, CC_Functional_Group__r.Name, OwnerId
-            FROM Case
-            WHERE Id = :caseToTest.Id
-        ];
+        Case caseToAssert = [SELECT Id, CC_Functional_Group__r.Name, OwnerId FROM Case WHERE Id = :caseToTest.Id];
 
-        Group groupToAssert = [
-            SELECT Id
-            FROM Group
-            WHERE Name = 'Test Group Name'
-        ];
+        Group groupToAssert = [SELECT Id FROM Group WHERE Name = 'Test Group Name'];
 
         System.assertEquals('Engineering', caseToAssert.CC_Functional_Group__r.Name);
         System.assertEquals(groupToAssert.Id, caseToAssert.OwnerId);
     }
 
-    @isTest static void testTransferToUserWithSearch()
-    {
+    @isTest
+    static void testTransferToUserWithSearch() {
         setUpData();
         Case caseToTest = [SELECT Id FROM Case LIMIT 1];
         List<Case> casesToTest = [SELECT Id FROM Case];
         List<string> ids = new List<string>();
-        for(Case ca: casesToTest)
-        {
+        for (Case ca : casesToTest) {
             ids.add(ca.Id);
         }
         PageReference pageRef = page.CaseTransferMass;
-        pageRef.getParameters().put('ids',string.valueOf(ids));
+        pageRef.getParameters().put('ids', string.valueOf(ids));
         Test.setCurrentPage(pageRef);
-        
+
         ApexPages.StandardController sc = new ApexPages.StandardController(caseToTest);
         CaseTransferMassController ctc = new CaseTransferMassController(sc);
 
-        Id [] fixedSearchResults= new Id[1];
+        Id[] fixedSearchResults = new List<Id>(1);
         fixedSearchResults[0] = testUser.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -197,11 +182,7 @@ private class Test_CaseTransferMassController {
 
         Test.stopTest();
 
-        Case caseToAssert = [
-            SELECT Id, OwnerId
-            FROM Case
-            WHERE Id = :caseToTest.Id
-        ];
+        Case caseToAssert = [SELECT Id, OwnerId FROM Case WHERE Id = :caseToTest.Id];
 
         System.assertEquals(testUser.Id, caseToAssert.OwnerId);
     }

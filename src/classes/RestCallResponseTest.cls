@@ -2,12 +2,12 @@
 public class RestCallResponseTest {
     private static String testStatus;
     private static String testMessage;
-    
+
     private static void setTestData(String status, String message) {
         testStatus = status;
         testMessage = message;
     }
-    
+
     @isTest
     private static void restCallResponseSuccess() {
         setTestData('success', 'mockId');
@@ -18,7 +18,7 @@ public class RestCallResponseTest {
         Test.stopTest();
         System.assertEquals(testSuccess, true);
     }
-    
+
     @isTest
     private static void restCallResponseFailure() {
         setTestData('failure', 'Exception Message');

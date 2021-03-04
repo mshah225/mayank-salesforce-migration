@@ -1,6 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
     action="{!init}" cache="true" extensions="ASUBrandController,MyASUHelpPaginationController">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -29,7 +28,7 @@
                 </div>
                 <div class="col-md-5 myasu-help-region">
                     <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
-                    <div style="margin-bottom:2em;"></div>
+                    <div style="margin-bottom: 2em"></div>
                     <c:MyASUHelpMyRequests />
                 </div>
             </div>
@@ -60,7 +59,7 @@
 
         function realWidth(obj) {
             var clone = obj.clone();
-            clone.css("visibility", "hidden");
+            clone.css('visibility', 'hidden');
             $('body').append(clone);
             var width = clone.outerWidth();
             clone.remove();

@@ -13,14 +13,14 @@ public class BulkApiManager {
         sessionKey = UserInfo.getSessionID();
         if (objectType == 'CONVERTED_LEAD') {
             this.objectType = 'lead';
-        } else if (objectType =='CAR') {
+        } else if (objectType == 'CAR') {
             this.objectType = 'case_assignment_rule__c';
         } else if (objectType == 'EDPLUS_CASE') {
             this.objectType = 'case';
         } else if (objectType == 'DELETED_SILVERPOP') {
             this.objectType = System.Label.SilverPopName;
         } else {
-        	this.objectType = objectType.toLowerCase().capitalize();
+            this.objectType = objectType.toLowerCase().capitalize();
         }
         this.operationType = operationType;
         createJob();
@@ -33,7 +33,11 @@ public class BulkApiManager {
         req.setHeader('X-SFDC-Session', sessionKey);
         req.setHeader('Content-Type', 'application/xml; charset=UTF-8');
         String body =
-            '<?xml version="1.0" encoding="UTF-8"?><jobInfo xmlns="http://www.force.com/2009/06/asyncapi/dataload"><operation>' + operationType + '</operation><object>' + objectType + '</object><contentType>CSV</contentType></jobInfo>';
+            '<?xml version="1.0" encoding="UTF-8"?><jobInfo xmlns="http://www.force.com/2009/06/asyncapi/dataload"><operation>' +
+            operationType +
+            '</operation><object>' +
+            objectType +
+            '</object><contentType>CSV</contentType></jobInfo>';
         req.setBody(body);
         HttpResponse res;
         try {
@@ -66,7 +70,7 @@ public class BulkApiManager {
             HttpResponse res = http.send(req);
             if (res.getStatusCode() != 200 && res.getStatusCode() != 201) {
                 throw new ResponseException('Error With Response Code: ' + res.getStatusCode());
-            } 
+            }
         } catch (Exception e) {
             ErrorLogger error = new ErrorLogger();
             error.setException(e);
@@ -75,7 +79,6 @@ public class BulkApiManager {
             error.log();
             throw e;
         }
-        
     }
 
     public void closeJob() {
@@ -93,36 +96,36 @@ public class BulkApiManager {
             ErrorLogger.log(e, vars, DEBUG);
         }
     }
-    
+
     public Boolean tryToCloseJob() {
         HttpRequest req = new HttpRequest();
         req.setEndpoint(orgUrl + ENDPOINT + jobId);
         req.setMethod('POST');
         req.setHeader('X-SFDC-Session', sessionKey);
         req.setHeader('Content-Type', 'application/xml');
-        String body =
-            '<?xml version="1.0" encoding="UTF-8"?><jobInfo xmlns="http://www.force.com/2009/06/asyncapi/dataload"><state>Closed</state></jobInfo>';
+        String body = '<?xml version="1.0" encoding="UTF-8"?><jobInfo xmlns="http://www.force.com/2009/06/asyncapi/dataload"><state>Closed</state></jobInfo>';
         req.setBody(body);
         try {
             Http http = new Http();
             HttpResponse res = http.send(req);
             if (res.getStatusCode() != 200 && res.getStatusCode() != 201) {
                 throw new ResponseException('Error With Response Code: ' + res.getStatusCode());
-            } 
+            }
         } catch (Exception e) {
             return false;
         }
-        
+
         return true;
     }
 
     private String parseJobIdFromResponse(HttpResponse response) {
         String responseBody = response.getBody();
-        responseBody = responseBody.substring(responseBody.indexOf('<id>'), responseBody.indexOf('</id>') );
+        responseBody = responseBody.substring(responseBody.indexOf('<id>'), responseBody.indexOf('</id>'));
         responseBody = responseBody.replace('<id>', '');
-        
+
         return responseBody;
     }
 
-    private class ResponseException extends Exception {}
+    private class ResponseException extends Exception {
+    }
 }

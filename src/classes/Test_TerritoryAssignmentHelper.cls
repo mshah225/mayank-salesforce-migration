@@ -1,10 +1,9 @@
 @isTest
-public without sharing class Test_TerritoryAssignmentHelper
-{
-    @testSetup static void setup()
-    {
+public without sharing class Test_TerritoryAssignmentHelper {
+    @testSetup
+    static void setup() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User)userCreator.create(1)[0];
+        User testUser = (User) userCreator.create(1)[0];
 
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
@@ -13,25 +12,22 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert testUser;
     }
 
-    @isTest public static void testAccountGeomarketCodeAssignment()
-    {
+    @isTest
+    public static void testAccountGeomarketCodeAssignment() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Account HS = new Account();
         HS.Name = 'Test High School';
         insert HS;
 
-        
         Contact con = new Contact();
         con.FirstName = 'TestFirstName';
         con.LastName = 'TestLastName';
         con.MailingPostalCode = '90210';
         con.Geomarket_Code__c = 'CA-01';
-        Insert con;
+        insert con;
 
-        con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :con.Id];
+        con = [SELECT Id, AccountId FROM Contact WHERE Id = :con.Id];
 
         Key_Value__c KV = new Key_Value__c();
         KV.Geomarket_ZIP__c = '85287';
@@ -56,16 +52,17 @@ public without sharing class Test_TerritoryAssignmentHelper
         update HS;
         Test.stopTest();
 
-        String accountGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-        FROM Account
-        WHERE Id =: HS.Id
-        LIMIT 1].Geomarket_Code__c;
+        String accountGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Account WHERE Id = :HS.Id LIMIT 1]
+        .Geomarket_Code__c;
 
-        System.Assert(accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,'Account Geomarket Code did not match by ZIP code');
+        System.Assert(
+            accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,
+            'Account Geomarket Code did not match by ZIP code'
+        );
     }
 
-    @isTest public static void testContactGeomarketCodeAssignment()
-    {
+    @isTest
+    public static void testContactGeomarketCodeAssignment() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact con = new Contact();
@@ -73,11 +70,9 @@ public without sharing class Test_TerritoryAssignmentHelper
         con.LastName = 'TestLastName';
         con.MailingPostalCode = '90210';
         con.Geomarket_Code__c = 'CA-01';
-        Insert con;
+        insert con;
 
-        con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :con.Id];
+        con = [SELECT Id, AccountId FROM Contact WHERE Id = :con.Id];
 
         Key_Value__c KVContact = new Key_Value__c();
         KVContact.Geomarket_ZIP__c = '90210';
@@ -118,12 +113,10 @@ public without sharing class Test_TerritoryAssignmentHelper
         //opp.Territory_Assignment_UserID__c = TestUser.Id;
 
         Test.startTest();
- 
+
         insert opp;
-        String contactGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                            FROM Contact
-                                            WHERE Id = :con.Id
-                                            LIMIT 1].Geomarket_Code__c;
+        String contactGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Contact WHERE Id = :con.Id LIMIT 1]
+        .Geomarket_Code__c;
 
         // Fire Account Trigger to set Account.Geomarketcode__c
         HS.ShippingPostalCode = '84108';
@@ -137,10 +130,8 @@ public without sharing class Test_TerritoryAssignmentHelper
         opp.Territory_Assignment_Required__c = true;
         update opp;
 
-        String contactHSGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                                FROM Contact
-                                                WHERE Id = :Con.Id
-                                                LIMIT 1].Geomarket_Code__c;
+        String contactHSGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Contact WHERE Id = :Con.Id LIMIT 1]
+        .Geomarket_Code__c;
 
         opp.Type = 'Transfer';
         update opp;
@@ -153,31 +144,35 @@ public without sharing class Test_TerritoryAssignmentHelper
         opp.Territory_Assignment_Required__c = true;
         update opp;
 
-        String contactCollegeGeoCodeAfterUpdate = [SELECT Id,Geomarket_Code__c
-                                                    FROM Contact
-                                                    WHERE Id = :Con.Id
-                                                    LIMIT 1].Geomarket_Code__c;
+        String contactCollegeGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Contact WHERE Id = :Con.Id LIMIT 1]
+        .Geomarket_Code__c;
 
         Test.stopTest();
 
-        System.Assert(contactGeoCodeAfterUpdate == KVContact.Geomarket_Code__c,'Contact Geomarket Code did not match by ZIP code');
-        System.Assert(contactHSGeoCodeAfterUpdate == KVHS.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended High School Geomarket Code');
-        System.Assert(contactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,'Contact Geomarket Code did not match by Last Attended College Geomarket Code');
+        System.Assert(
+            contactGeoCodeAfterUpdate == KVContact.Geomarket_Code__c,
+            'Contact Geomarket Code did not match by ZIP code'
+        );
+        System.Assert(
+            contactHSGeoCodeAfterUpdate == KVHS.Geomarket_Code__c,
+            'Contact Geomarket Code did not match by Last Attended High School Geomarket Code'
+        );
+        System.Assert(
+            contactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,
+            'Contact Geomarket Code did not match by Last Attended College Geomarket Code'
+        );
     }
 
-    @isTest public static void testFreshmanScholar()
-    {
+    @isTest
+    public static void testFreshmanScholar() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
-
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
         Con.LastName = 'TestLastName';
         insert Con;
 
-        Con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :Con.Id];
+        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Freshman Scholar';
@@ -202,24 +197,28 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String lastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-        FROM Opportunity
-        WHERE Id = :opp.Id
-        LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-        System.Assert(lastRuleType  == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType);
+        String lastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :opp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
+        System.Assert(
+            lastRuleType == 'Freshman Scholar',
+            'Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType
+        );
     }
 
-    @isTest public static void testGraduateOpportunity()
-    {
+    @isTest
+    public static void testGraduateOpportunity() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Contact> testContacts = ContactService.createTestContacts(1);
 
-        Insert testContacts;
+        insert testContacts;
 
-        Contact con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[0].Id];
+        Contact con = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[0].Id];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';
@@ -247,22 +246,28 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Opp = [SELECT OwnerId FROM Opportunity WHERE Id = :Opp.Id];
 
-        System.assertNotEquals(originalOwner, testUser.Id, 'Territory assignment occurred on insert for Graduate opportunity');
-        System.assertNotEquals(Opp.OwnerId, testUser.Id, 'Territory assignment occurred on update for Graduate opportunity');
+        System.assertNotEquals(
+            originalOwner,
+            testUser.Id,
+            'Territory assignment occurred on insert for Graduate opportunity'
+        );
+        System.assertNotEquals(
+            Opp.OwnerId,
+            testUser.Id,
+            'Territory assignment occurred on update for Graduate opportunity'
+        );
     }
 
-    @isTest public static void testInternational()
-    {
+    @isTest
+    public static void testInternational() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
         Con.LastName = 'TestLastName';
-        Insert Con;
+        insert Con;
 
-        Con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :Con.Id];
+        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International';
@@ -287,22 +292,24 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id, Territory_Assignment_Last_Rule_Type__c
-                                FROM Opportunity
-                                WHERE Id = :Opp.Id
-                                LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == tarRuleKey,'Rule did not assign correctly by rule type International');    
+        System.Assert(LastRuleType == tarRuleKey, 'Rule did not assign correctly by rule type International');
     }
 
-    @isTest public static void testInternationalChina()
-    {
+    @isTest
+    public static void testInternationalChina() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         List<User> chinaManagers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
-        for (User u : chinaManagers)
-        {
+        for (User u : chinaManagers) {
             u.ProfileId = saProfile;
             u.UserName += 'China';
             u.CommunityNickname += 'China';
@@ -340,19 +347,14 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         List<Contact> testContacts = ContactService.createTestContacts(2);
 
-        for (Contact con : testContacts)
-        {
+        for (Contact con : testContacts) {
             con.MailingCountry = 'China';
         }
 
         insert testContacts;
 
-        Contact chinaContact1 = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[0].Id];
-        Contact chinaContact2 = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[1].Id];
+        Contact chinaContact1 = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[0].Id];
+        Contact chinaContact2 = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[1].Id];
 
         Opportunity chinaOpp1 = new Opportunity();
         chinaOpp1.Name = 'China Opportunity 1';
@@ -388,30 +390,40 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         chinaOpp1 = [SELECT OwnerId FROM Opportunity WHERE Name = 'China Opportunity 1'];
 
-        System.assertEquals(chinaManagers[0].Id, chinaOpp1.OwnerId, 'Rule did not assign correct China territory manager.');
+        System.assertEquals(
+            chinaManagers[0].Id,
+            chinaOpp1.OwnerId,
+            'Rule did not assign correct China territory manager.'
+        );
 
-        chinaOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c
-        FROM Opportunity
-        WHERE Name = 'China Opportunity 2'];
+        chinaOpp2 = [
+            SELECT OwnerId, Opportunity_Assignment_Number__c
+            FROM Opportunity
+            WHERE Name = 'China Opportunity 2'
+        ];
 
-        if (chinaOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c)
-        {
-            System.assertEquals(chinaManagers[0].Id, chinaOpp2.OwnerId, 'Rule did not assign correct China territory manager.');
-        }
-        else
-        {
-            System.assertEquals(chinaManagers[1].Id, chinaOpp2.OwnerId, 'Rule did not assign correct China territory manager.');
+        if (chinaOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c) {
+            System.assertEquals(
+                chinaManagers[0].Id,
+                chinaOpp2.OwnerId,
+                'Rule did not assign correct China territory manager.'
+            );
+        } else {
+            System.assertEquals(
+                chinaManagers[1].Id,
+                chinaOpp2.OwnerId,
+                'Rule did not assign correct China territory manager.'
+            );
         }
     }
 
-    @isTest public static void testInternationalUnitedStates()
-    {
+    @isTest
+    public static void testInternationalUnitedStates() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         List<User> usManagers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
-        for (User u : usManagers)
-        {
+        for (User u : usManagers) {
             u.ProfileId = saProfile;
             u.UserName += 'US';
             u.CommunityNickname += 'US';
@@ -449,19 +461,14 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         List<Contact> testContacts = ContactService.createTestContacts(2);
 
-        for (Contact con : testContacts)
-        {
+        for (Contact con : testContacts) {
             con.MailingCountry = 'United States';
         }
 
         insert testContacts;
 
-        Contact usContact1 = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[0].Id];
-        Contact usContact2 = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[1].Id];
+        Contact usContact1 = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[0].Id];
+        Contact usContact2 = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[1].Id];
 
         Opportunity usOpp1 = new Opportunity();
         usOpp1.Name = 'US Opportunity 1';
@@ -499,28 +506,22 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         System.assertEquals(usManagers[0].Id, usOpp1.OwnerId, 'Rule did not assign correct US territory manager.');
 
-        usOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c
-        FROM Opportunity
-        WHERE Name = 'US Opportunity 2'];
+        usOpp2 = [SELECT OwnerId, Opportunity_Assignment_Number__c FROM Opportunity WHERE Name = 'US Opportunity 2'];
 
-        if (usOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c)
-        {
+        if (usOpp2.Opportunity_Assignment_Number__c <= ATar1.Range_End__c) {
             System.assertEquals(usManagers[0].Id, usOpp2.OwnerId, 'Rule did not assign correct US territory manager.');
-        }
-        else
-        {
+        } else {
             System.assertEquals(usManagers[1].Id, usOpp2.OwnerId, 'Rule did not assign correct US territory manager.');
         }
     }
 
-    @isTest public static void testInternationalTransfer()
-    {
+    @isTest
+    public static void testInternationalTransfer() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         List<User> transferManagers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
-        for (User u : transferManagers)
-        {
+        for (User u : transferManagers) {
             u.ProfileId = saProfile;
             u.UserName += 'tManagers';
             u.CommunityNickname += 'tManagers';
@@ -557,13 +558,9 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         insert testContacts;
 
-        Contact transferContact1 = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[0].Id];
+        Contact transferContact1 = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[0].Id];
 
-        Contact transferContact2 = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContacts[1].Id];
+        Contact transferContact2 = [SELECT Id, AccountId FROM Contact WHERE Id = :testContacts[1].Id];
 
         Opportunity transferOpp = new Opportunity();
         transferOpp.Name = 'Transfer Opportunity 1';
@@ -597,13 +594,25 @@ public without sharing class Test_TerritoryAssignmentHelper
         transferOpp = [SELECT OwnerId FROM Opportunity WHERE Name = 'Transfer Opportunity 1'];
         transferOpp2 = [SELECT OwnerId FROM Opportunity WHERE Name = 'Transfer Opportunity 2'];
 
-        System.assertEquals(transferManagers[0].Id, transferOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
-        System.assertEquals(transferManagers[1].Id, transferOpp2.OwnerId, 'Rule did not assign correct default transfer territory manager.');
+        System.assertEquals(
+            transferManagers[0].Id,
+            transferOpp.OwnerId,
+            'Rule did not assign correct transfer territory manager.'
+        );
+        System.assertEquals(
+            transferManagers[1].Id,
+            transferOpp2.OwnerId,
+            'Rule did not assign correct default transfer territory manager.'
+        );
     }
 
-    @isTest public static void testInternationalAdmitConditional()
-    {
-        User conditAdmitManager = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+    @isTest
+    public static void testInternationalAdmitConditional() {
+        User conditAdmitManager = [
+            SELECT Id
+            FROM User
+            WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'
+        ];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International Admitted - Conditional';
@@ -611,15 +620,11 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        Contact testContact= ContactService.createTestContact();
+        Contact testContact = ContactService.createTestContact();
 
         insert testContact;
 
-        testContact = [
-            SELECT Id, AccountId
-            FROM Contact
-            WHERE Id = :testContact.Id
-        ];
+        testContact = [SELECT Id, AccountId FROM Contact WHERE Id = :testContact.Id];
 
         Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(testContact);
         admitCondOpp.Name = 'International Admit Opportunity';
@@ -636,12 +641,20 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :testContact.Id];
 
-        System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct transfer territory manager.');
+        System.assertEquals(
+            conditAdmitManager.Id,
+            admitCondOpp.OwnerId,
+            'Rule did not assign correct transfer territory manager.'
+        );
     }
 
-    @isTest public static void testInternationalStageChange()
-    {
-        User conditAdmitManager = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+    @isTest
+    public static void testInternationalStageChange() {
+        User conditAdmitManager = [
+            SELECT Id
+            FROM User
+            WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'
+        ];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.Rule_Type__c = 'International Admitted - Conditional';
@@ -649,13 +662,11 @@ public without sharing class Test_TerritoryAssignmentHelper
         ATar1.User__c = conditAdmitManager.Id;
         insert ATar1;
 
-        Contact testContact= ContactService.createTestContact();
+        Contact testContact = ContactService.createTestContact();
 
         insert testContact;
 
-        Contact admitCondCon = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :testContact.Id];
+        Contact admitCondCon = [SELECT Id, AccountId FROM Contact WHERE Id = :testContact.Id];
 
         Opportunity admitCondOpp = OpportunityService.createTestUndergraduateProspect(admitCondCon);
         admitCondOpp.Name = 'Conditional Admit Opportunity 1';
@@ -667,7 +678,11 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
 
-        System.assertNotEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct default territory manager.');
+        System.assertNotEquals(
+            conditAdmitManager.Id,
+            admitCondOpp.OwnerId,
+            'Rule did not assign correct default territory manager.'
+        );
 
         Test.startTest();
         admitCondOpp.StageName = 'Admitted - Conditional';
@@ -678,21 +693,23 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         admitCondOpp = [SELECT OwnerId FROM Opportunity WHERE Contact__c = :admitCondCon.Id];
 
-        System.assertEquals(conditAdmitManager.Id, admitCondOpp.OwnerId, 'Rule did not assign correct conditioal admit territory manager.');
+        System.assertEquals(
+            conditAdmitManager.Id,
+            admitCondOpp.OwnerId,
+            'Rule did not assign correct conditioal admit territory manager.'
+        );
     }
 
-    @isTest public static void testLocation()
-    {
+    @isTest
+    public static void testLocation() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
         Con.LastName = 'TestLastName';
-        Insert Con;
+        insert Con;
 
-        Con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :Con.Id];
+        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Location';
@@ -700,12 +717,10 @@ public without sharing class Test_TerritoryAssignmentHelper
         aTar1.Location__c = 'Lake Havasu';
         insert aTar1;
 
-
         Location__c LakeHavasu = new Location__c();
         LakeHavasu.Name = 'Lake Havasu';
         LakeHavasu.Location_Code__c = 'CALHC';
         insert LakeHavasu;
-
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -723,37 +738,40 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                                FROM Opportunity
-                                WHERE Id = :Opp.Id
-                                LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-        System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
-
+        String LastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
+        System.Assert(
+            LastRuleType == 'Location - Lake Havasu',
+            'Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType
+        );
     }
 
-    @isTest public static void testAdmittedLocation()
-    {
+    @isTest
+    public static void testAdmittedLocation() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
         Con.LastName = 'TestLastName';
-        Insert Con;
+        insert Con;
 
         Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
-		System.assertNotEquals(con.AccountId, NULL);
+        System.assertNotEquals(con.AccountId, null);
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Location';
         aTar1.User__c = TestUser.Id;
         aTar1.Location__c = 'Lake Havasu';
         insert aTar1;
 
-
         Location__c LakeHavasu = new Location__c();
         LakeHavasu.Name = 'Lake Havasu';
         LakeHavasu.Location_Code__c = 'CALHC';
         insert LakeHavasu;
-
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -769,12 +787,21 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert Opp;
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c FROM Opportunity WHERE Id = :Opp.Id LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
-        System.Assert(LastRuleType == 'Location - Lake Havasu','Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType);
+        String LastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
+        System.Assert(
+            LastRuleType == 'Location - Lake Havasu',
+            'Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType
+        );
     }
 
-    @isTest public static void testLastHighSchoolAttended()
-    {
+    @isTest
+    public static void testLastHighSchoolAttended() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Account HS = new Account();
@@ -794,9 +821,7 @@ public without sharing class Test_TerritoryAssignmentHelper
         pe.Account__c = HS.Id;
         insert pe;
 
-        Con = [SELECT Id, AccountId
-        FROM Contact
-        WHERE Id = :Con.Id];
+        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
 
         Opportunity Opp = new Opportunity();
         Opp.Name = 'Test Opp';
@@ -814,61 +839,67 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        String LastRuleType = [SELECT Id,Territory_Assignment_Last_Rule_Type__c
-                                FROM Opportunity
-                                WHERE Id = :Opp.Id
-                                LIMIT 1].Territory_Assignment_Last_Rule_Type__c;
+        String LastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :Opp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == 'Last Attended High School','Rule did not assign correctly by rule type Last High School Attended');
+        System.Assert(
+            LastRuleType == 'Last Attended High School',
+            'Rule did not assign correctly by rule type Last High School Attended'
+        );
     }
 
-    @isTest public static void testLastCollegeAttended()
-    {
+    @isTest
+    public static void testLastCollegeAttended() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
         ATar1.User__c = TestUser.Id;
         ATar1.Rule_Type__c = 'Default User';
         ATar1.Opportunity_Type__c = 'First Time Freshman';
-        Insert ATar1;
+        insert ATar1;
 
         Territory_Assignment_Rule__c Atar2 = new Territory_Assignment_Rule__c();
         Atar2.User__c = TestUser.Id;
         Atar2.Rule_Type__c = 'Default User';
         Atar2.Opportunity_Type__c = 'Transfer';
-        Insert Atar2;
+        insert Atar2;
 
         Territory_Assignment_Rule__c Atar3 = new Territory_Assignment_Rule__c();
         Atar3.User__c = TestUser.Id;
         Atar3.Rule_Type__c = 'Default User';
         Atar3.Opportunity_Type__c = 'Non-Degree';
-        Insert Atar3;
+        insert Atar3;
 
         Territory_Assignment_Rule__c Atar4 = new Territory_Assignment_Rule__c();
         Atar4.User__c = TestUser.Id;
         Atar4.Rule_Type__c = 'Default User';
         Atar4.Opportunity_Type__c = 'Readmission';
-        Insert Atar4;
+        insert Atar4;
 
         Territory_Assignment_Rule__c Atar5 = new Territory_Assignment_Rule__c();
         Atar5.User__c = TestUser.Id;
         Atar5.Rule_Type__c = 'Default User';
         Atar5.Opportunity_Type__c = 'Law';
-        Insert Atar5;
+        insert Atar5;
 
         Territory_Assignment_Rule__c Atar6 = new Territory_Assignment_Rule__c();
         Atar6.User__c = TestUser.Id;
         Atar6.Rule_Type__c = 'Default User';
         Atar6.Opportunity_Type__c = 'Graduate';
-        Insert Atar6;
+        insert Atar6;
 
         Territory_Assignment_Rule__c Atar7 = new Territory_Assignment_Rule__c();
         Atar7.User__c = TestUser.Id;
         Atar7.Rule_Type__c = 'Default User';
         Atar7.Opportunity_Type__c = 'Non-Degree';
-        Insert Atar7;
+        insert Atar7;
 
-        Account College= new Account();
+        Account College = new Account();
         College.Name = 'Test College';
         College.Institution_Type__c = '4YR';
         College.Territory_Manager__c = TestUser.Id;
@@ -884,7 +915,6 @@ public without sharing class Test_TerritoryAssignmentHelper
         pe.Contact__c = Con.Id;
         pe.Account__c = College.Id;
         insert pe;
-
 
         Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
@@ -907,17 +937,21 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [
-            SELECT Id,Territory_Assignment_Last_Rule_Type__c
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
             FROM Opportunity
             WHERE Id = :Opp.Id
             LIMIT 1
-        ].Territory_Assignment_Last_Rule_Type__c;
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == 'Last Attended College, Type ' + Opp.Type,'Rule did not assign correctly by rule type Last College Attended');
+        System.Assert(
+            LastRuleType == 'Last Attended College, Type ' + Opp.Type,
+            'Rule did not assign correctly by rule type Last College Attended'
+        );
     }
 
-    @isTest public static void testGeomarketCode()
-    {
+    @isTest
+    public static void testGeomarketCode() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c ATar1 = new Territory_Assignment_Rule__c();
@@ -957,17 +991,21 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [
-            SELECT Id,Territory_Assignment_Last_Rule_Type__c
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
             FROM Opportunity
             WHERE Id = :Opp.Id
             LIMIT 1
-        ].Territory_Assignment_Last_Rule_Type__c;
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == 'Geomarket, Type ' + Opp.Type, 'Rule did not assign correctly by rule type Geomarket');
+        System.Assert(
+            LastRuleType == 'Geomarket, Type ' + Opp.Type,
+            'Rule did not assign correctly by rule type Geomarket'
+        );
     }
 
-    @isTest public static void testState()
-    {
+    @isTest
+    public static void testState() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
@@ -1003,23 +1041,27 @@ public without sharing class Test_TerritoryAssignmentHelper
         Test.stopTest();
 
         String LastRuleType = [
-            SELECT Id,Territory_Assignment_Last_Rule_Type__c
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
             FROM Opportunity
             WHERE Id = :Opp.Id
             LIMIT 1
-        ].Territory_Assignment_Last_Rule_Type__c;
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == 'State, ' + Con.MailingState + ', Type ' + Opp.Type,'Rule did not assign correctly by rule type State: ' + LastRuleType);
+        System.Assert(
+            LastRuleType == 'State, ' + Con.MailingState + ', Type ' + Opp.Type,
+            'Rule did not assign correctly by rule type State: ' + LastRuleType
+        );
     }
 
-    @isTest public static void testDefaultUser()
-    {
+    @isTest
+    public static void testDefaultUser() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Contact Con = new Contact();
         Con.FirstName = 'TestFirstName';
         Con.LastName = 'TestLastName';
-        Insert Con;
+        insert Con;
 
         Con = [SELECT AccountId FROM Contact WHERE Id = :Con.Id];
 
@@ -1048,19 +1090,23 @@ public without sharing class Test_TerritoryAssignmentHelper
             FROM Opportunity
             WHERE Id = :Opp.Id
             LIMIT 1
-        ].Territory_Assignment_Last_Rule_Type__c;
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == 'Default User','Rule did not assign correctly by rule type Default User: ' + LastRuleType);
+        System.Assert(
+            LastRuleType == 'Default User',
+            'Rule did not assign correctly by rule type Default User: ' + LastRuleType
+        );
     }
 
-    @isTest public static void testInactiveUser()
-    {
+    @isTest
+    public static void testInactiveUser() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Profile saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
 
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User InactiveUser = (User)userCreator.create(1)[0];
+        User InactiveUser = (User) userCreator.create(1)[0];
         InactiveUser.FirstName = 'Test';
         InactiveUser.LastName = 'Name';
         InactiveUser.CompanyName = 'Test Company';
@@ -1112,41 +1158,43 @@ public without sharing class Test_TerritoryAssignmentHelper
         Opp.Type = 'First Time Freshman';
         Opp.CloseDate = Date.today() + 365;
 
-
         Test.startTest();
         insert Opp;
 
         Test.stopTest();
 
         Opportunity OppAfterInsert = [
-            SELECT Territory_Assignment_Last_Rule_Type__c,OwnerId
+            SELECT Territory_Assignment_Last_Rule_Type__c, OwnerId
             FROM Opportunity
             WHERE Id = :Opp.Id
             LIMIT 1
         ];
 
-        System.Assert(OppAfterInsert.OwnerId ==TestUser.Id);
-        System.Assert(OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager','Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(OppAfterInsert.OwnerId == TestUser.Id);
+        System.Assert(
+            OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager',
+            'Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c
+        );
     }
 
-    @isTest public static void testLeadFreshmanScholar()
-    {
+    @isTest
+    public static void testLeadFreshmanScholar() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
-        for (Integer i=0;i<1;i++)
-        {
-            Lead l = new Lead(LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                Email='test'+i+'@test.test',
-                LeadSource='Email',
-                Potential_National_Scholar__c=true,
-                Type__c='First Time Freshman');
+        for (Integer i = 0; i < 1; i++) {
+            Lead l = new Lead(
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                Company = 'Company',
+                Email = 'test' + i + '@test.test',
+                LeadSource = 'Email',
+                Potential_National_Scholar__c = true,
+                Type__c = 'First Time Freshman'
+            );
             leadList.add(l);
         }
-
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Freshman Scholar';
@@ -1154,37 +1202,35 @@ public without sharing class Test_TerritoryAssignmentHelper
         aTar1.Opportunity_Type__c = 'Freshman Scholar';
         insert aTar1;
 
-
         Test.startTest();
         insert leadList;
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([
-            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-            FROM Lead
-            WHERE Id = :leadList[0].Id
-            LIMIT 1
-        ]);
+        List<Lead> newLeadList = new List<Lead>(
+            [SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]
+        );
 
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Freshman Scholar','Rule did not assign correctly by rule type Freshman Scholar');
+        System.Assert(
+            newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Freshman Scholar',
+            'Rule did not assign correctly by rule type Freshman Scholar'
+        );
     }
 
-    @isTest public static void testLeadInternational()
-    {
+    @isTest
+    public static void testLeadInternational() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
-        for (Integer i=0;i<1;i++)
-        {
+        for (Integer i = 0; i < 1; i++) {
             Lead l = new Lead(
-                LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                Email='test'+i+'@test.test',
-                LeadSource='Email',
-                Type__c='First Time Freshman',
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                Company = 'Company',
+                Email = 'test' + i + '@test.test',
+                LeadSource = 'Email',
+                Type__c = 'First Time Freshman',
                 International_Student__c = true
             );
             leadList.add(l);
@@ -1200,18 +1246,19 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([
-            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-            FROM Lead
-            WHERE Id = :leadList[0].Id
-            LIMIT 1
-        ]);
+        List<Lead> newLeadList = new List<Lead>(
+            [SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]
+        );
 
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International||','Rule did not assign correctly by rule type Default User: ' + newLeadList[0].Territory_Assignment_Last_Rule_Type__c);
+        System.Assert(
+            newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International||',
+            'Rule did not assign correctly by rule type Default User: ' +
+            newLeadList[0].Territory_Assignment_Last_Rule_Type__c
+        );
     }
 
-    @isTest public static void testLeadLastInstitution()
-    {
+    @isTest
+    public static void testLeadLastInstitution() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Key_Value__c KVHS = new Key_Value__c();
@@ -1229,15 +1276,14 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         List<Lead> leadList = new List<Lead>();
 
-        for (Integer i=0;i<1;i++)
-        {
+        for (Integer i = 0; i < 1; i++) {
             Lead l = new Lead(
-                LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                Email='test'+i+'@test.test',
-                LeadSource='Email',
-                Type__c='First Time Freshman',
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                Company = 'Company',
+                Email = 'test' + i + '@test.test',
+                LeadSource = 'Email',
+                Type__c = 'First Time Freshman',
                 Last_Institution_Attended__c = HS.id
             );
             leadList.add(l);
@@ -1248,19 +1294,27 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([
-            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId
-            FROM Lead
-            WHERE Id = :leadList[0].Id
-            LIMIT 1
-        ]);
+        List<Lead> newLeadList = new List<Lead>(
+            [
+                SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c, OwnerId
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+            ]
+        );
 
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Last Institution Attended','Rule did not assign correctly by rule type Last Institution Attended');
-        System.Assert(newLeadList[0].OwnerId == testUser.Id, 'Territory Assignment did not assign Owner correctly for Lead/Last Institution');
+        System.Assert(
+            newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Last Institution Attended',
+            'Rule did not assign correctly by rule type Last Institution Attended'
+        );
+        System.Assert(
+            newLeadList[0].OwnerId == testUser.Id,
+            'Territory Assignment did not assign Owner correctly for Lead/Last Institution'
+        );
     }
 
-    @isTest public static void testLeadState()
-    {
+    @isTest
+    public static void testLeadState() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
@@ -1272,56 +1326,57 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         List<Lead> leadList = new List<Lead>();
 
-        for (Integer i=0;i<1;i++)
-        {
+        for (Integer i = 0; i < 1; i++) {
             Lead l = new Lead(
-                LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                State='Texas',
-                Country='United States',
-                Email='test'+i+'@test.test',
-                LeadSource='Email',
-                Type__c='First Time Freshman'
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                Company = 'Company',
+                State = 'Texas',
+                Country = 'United States',
+                Email = 'test' + i + '@test.test',
+                LeadSource = 'Email',
+                Type__c = 'First Time Freshman'
             );
             leadList.add(l);
         }
-
 
         Test.startTest();
         insert leadList;
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([
-            SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c
-            FROM Lead
-            WHERE Id = :leadList[0].Id
-            LIMIT 1
-        ]);
+        List<Lead> newLeadList = new List<Lead>(
+            [
+                SELECT Id, Type__c, OwnerId, Territory_Assignment_Last_Rule_Type__c
+                FROM Lead
+                WHERE Id = :leadList[0].Id
+                LIMIT 1
+            ]
+        );
 
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'State, Type ' + leadList[0].Type__c,'Rule did not assign correctly by rule type Lead/State');
+        System.Assert(
+            newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'State, Type ' + leadList[0].Type__c,
+            'Rule did not assign correctly by rule type Lead/State'
+        );
     }
 
-    @isTest public static void testLeadDefaultUser()
-    {
+    @isTest
+    public static void testLeadDefaultUser() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
-        for (Integer i=0;i<1;i++)
-        {
+        for (Integer i = 0; i < 1; i++) {
             Lead l = new Lead(
-                LastName='LName'+i,
-                FirstName='FName'+i,
-                Company='Company',
-                Email='test'+i+'@test.test',
-                LeadSource='Email',
-                Type__c='First Time Freshman'
+                LastName = 'LName' + i,
+                FirstName = 'FName' + i,
+                Company = 'Company',
+                Email = 'test' + i + '@test.test',
+                LeadSource = 'Email',
+                Type__c = 'First Time Freshman'
             );
             leadList.add(l);
         }
-
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'Default User';
@@ -1329,30 +1384,28 @@ public without sharing class Test_TerritoryAssignmentHelper
         aTar1.Opportunity_Type__c = 'First Time Freshman';
         insert aTar1;
 
-
         Test.startTest();
         insert leadList;
 
         Test.stopTest();
 
-        List<Lead> newLeadList = new List<Lead>([
-            SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c
-            FROM Lead
-            WHERE Id = :leadList[0].Id
-            LIMIT 1
-        ]);
+        List<Lead> newLeadList = new List<Lead>(
+            [SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]
+        );
 
-        System.Assert(newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Default User','Rule did not assign correctly by rule type Default User');
+        System.Assert(
+            newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Default User',
+            'Rule did not assign correctly by rule type Default User'
+        );
     }
 
-    @isTest public static void testLeadUpdate()
-    {
+    @isTest
+    public static void testLeadUpdate() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         List<User> testUsers = userCreator.create(2);
         Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
 
-        for (User u : testUsers)
-        {
+        for (User u : testUsers) {
             u.ProfileId = saProfile;
             u.UserName += 'leadUpdate';
             u.CommunityNickname += 'leadUpdate';
@@ -1372,12 +1425,12 @@ public without sharing class Test_TerritoryAssignmentHelper
         insert aTar2;
 
         Lead l = new Lead(
-            LastName='LName',
-            FirstName='FName',
-            Company='Company',
-            Email='test@test.test',
-            LeadSource='Email',
-            Type__c='First Time Freshman'
+            LastName = 'LName',
+            FirstName = 'FName',
+            Company = 'Company',
+            Email = 'test@test.test',
+            LeadSource = 'Email',
+            Type__c = 'First Time Freshman'
         );
         insert l;
 
@@ -1394,30 +1447,33 @@ public without sharing class Test_TerritoryAssignmentHelper
 
         updatedLead = [SELECT OwnerId FROM Lead WHERE Id = :updatedLead.Id];
 
-        System.assertEquals(testUsers[1].Id, updatedLead.OwnerId,'Rule did not assign correctly when changing relevant fields');
+        System.assertEquals(
+            testUsers[1].Id,
+            updatedLead.OwnerId,
+            'Rule did not assign correctly when changing relevant fields'
+        );
     }
-    
-    public testmethod static void testErrorLogger(){
+
+    public testMethod static void testErrorLogger() {
         Test.startTest();
-        TerritoryAssignmentHelper.updateContactList(NULL);
-        TerritoryAssignmentHelper.updateOpportunityList(NULL);
+        TerritoryAssignmentHelper.updateContactList(null);
+        TerritoryAssignmentHelper.updateOpportunityList(null);
         Test.stopTest();
-        
-        List<Case> errorList = [Select Id FROM Case];
-        
+
+        List<Case> errorList = [SELECT Id FROM Case];
+
         System.assertEquals(2, errorList.size());
     }
-    
-    public testmethod static void testTerritoryAssignmentRule(){
+
+    public testMethod static void testTerritoryAssignmentRule() {
         Territory_Assignment_Rule__c testRule = new Territory_Assignment_Rule__c();
-        List<User> userList = [Select Id FROM User LIMIT 2];
+        List<User> userList = [SELECT Id FROM User LIMIT 2];
         testRule.User__c = userList[0].Id;
         insert testRule;
-        
+
         testRule.User__c = userList[1].Id;
         update testRule;
-        List<Territory_Assignment_Rule__c> ruleList = [Select User__c FROM Territory_Assignment_Rule__c];
+        List<Territory_Assignment_Rule__c> ruleList = [SELECT User__c FROM Territory_Assignment_Rule__c];
         System.assertEquals(userList[1].Id, ruleList[0].User__c);
-        
     }
 }

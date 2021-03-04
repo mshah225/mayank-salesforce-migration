@@ -1,9 +1,4 @@
-<apex:page id="EmailMessageViewer" 
-            docType="html-5.0" 
-            showHeader="false" 
-            sidebar="false" 
-            standardStylesheets="false" 
-            controller="EmailMessageViewerController" 
-            title="Email Message">
-    <apex:outputText value="{!emailBody}" escape="false"/>
+<apex:page id="EmailMessageViewer" docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" controller="EmailMessageViewerController"
+    title="Email Message">
+    <apex:outputText value="{!emailBody}" escape="false" />
 </apex:page>

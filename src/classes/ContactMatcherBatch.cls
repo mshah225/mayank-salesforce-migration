@@ -30,7 +30,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
         List<Contact_Upload_Detail__c> allDetailsFromLines = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
         detailCreator.setSubscriptionId(subscriptionId);
-        for (List<String> lineValues: csvLines) {
+        for (List<String> lineValues : csvLines) {
             Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRowForMatcher(lineValues);
             if (detailFromLine.Status__c != 'Error') {
                 detailsToProcess.add(detailFromLine);
@@ -87,8 +87,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
         List<Contact_Upload_Detail__c> successfulDetails = [
             SELECT Id
             FROM Contact_Upload_Detail__c
-            WHERE Contact_Upload__c =: contactUploadId
-            AND Status__c = 'Success'
+            WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Success'
             LIMIT 1
         ];
 
@@ -99,8 +98,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
         List<Contact_Upload_Detail__c> erroredDetails = [
             SELECT Id
             FROM Contact_Upload_Detail__c
-            WHERE Contact_Upload__c =: contactUploadId
-            AND Status__c = 'Error'
+            WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Error'
             LIMIT 1
         ];
 
@@ -108,9 +106,7 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
     }
 
     private void updateUploadStatus(String status) {
-        Contact_Upload__c cu = new Contact_Upload__c(
-            Id = contactUploadId,
-            Status__c = status);
+        Contact_Upload__c cu = new Contact_Upload__c(Id = contactUploadId, Status__c = status);
         update cu;
     }
 
@@ -138,7 +134,12 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
     }
 
     private void createNewAttachment() {
-        Attachment updatedAttachment = [SELECT Name, ParentId, Body, Description FROM Attachment WHERE Id =: attachmentId LIMIT 1];
+        Attachment updatedAttachment = [
+            SELECT Name, ParentId, Body, Description
+            FROM Attachment
+            WHERE Id = :attachmentId
+            LIMIT 1
+        ];
         updatedAttachment.Body = Blob.valueOf(updatedCSVBody);
         updatedAttachment.Id = null;
         updatedAttachment.Name = updateFileName(updatedAttachment.Name);

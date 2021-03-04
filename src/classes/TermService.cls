@@ -2,10 +2,8 @@
  * Created by aesanch2 on 9/28/15.
  */
 
-public class TermService
-{
-    public static Term__c createTestTerm()
-    {
+public class TermService {
+    public static Term__c createTestTerm() {
         Date today = Date.today();
         Integer year = today.year();
 

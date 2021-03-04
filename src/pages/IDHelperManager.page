@@ -4,109 +4,104 @@
 	a UI to manage it; for instance, the cache can be cleared from within this page.
 	-->
     <style>
-    	.recordTable tr:nth-child(odd) {
-        background-color:white;
+        .recordTable tr:nth-child(odd) {
+            background-color: white;
         }
-        
+
         .recordTable {
-        width:100%;
-        border-collapse:collapse;
+            width: 100%;
+            border-collapse: collapse;
         }
-        
-        .recordTable td, .recordTable th {
-        border: 1px solid #ccc;
-        padding:2px;
-        text-indent:2px;
-        }
-        
+
+        .recordTable td,
         .recordTable th {
-        background-color:rgb(241, 241, 241);
+            border: 1px solid #ccc;
+            padding: 2px;
+            text-indent: 2px;
         }
-        
-        .columnHead, .actionColumn {
-        text-align:center;
+
+        .recordTable th {
+            background-color: rgb(241, 241, 241);
         }
-        
+
+        .columnHead,
+        .actionColumn {
+            text-align: center;
+        }
+
         .rich-tab-inactive {
-        background-image:none;
-        background-color:white;
+            background-image: none;
+            background-color: white;
         }
-        
+
         .rich-tab-active {
-        background-image:none;
-        background-color:rgb(241, 241, 241);
+            background-image: none;
+            background-color: rgb(241, 241, 241);
         }
     </style>
-    <apex:form >
+    <apex:form>
         <apex:pageblock title="IDHelper">
             <apex:pageBlockButtons location="top">
-                <apex:commandButton action="{!clearCache}" value="Clear Cache"
-                                    reRender="IDHelperStats" status="ASUAjaxStatus"/>
-                <apex:commandButton action="{!rebuildCache}" value="Rebuild Cache"
-                                    reRender="IDHelperStats" status="ASUAjaxStatus"/>
+                <apex:commandButton action="{!clearCache}" value="Clear Cache" reRender="IDHelperStats" status="ASUAjaxStatus" />
+                <apex:commandButton action="{!rebuildCache}" value="Rebuild Cache" reRender="IDHelperStats" status="ASUAjaxStatus" />
             </apex:pageBlockButtons>
-            <apex:tabPanel >
+            <apex:tabPanel>
                 <apex:tab title="Stats" label="Stats">
                     <apex:pageBlockSection id="IDHelperStats">
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem>
                             <apex:outputLabel for="profileIdsCount">Number of Profiles</apex:outputLabel>
                             <apex:outputText id="profileIdsCount">{!ProfileIdsRecordCount}</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem>
                             <apex:outputLabel for="recordTypeIdsCount">Number of Record Types</apex:outputLabel>
                             <apex:outputText id="recordTypeIdsCount">{!RecordTypeIdsRecordCount}</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem>
                             <apex:outputLabel for="profileIdsSize">Size of Profiles</apex:outputLabel>
                             <apex:outputText id="profileIdsSize">{!profileIdRecordSizeInBytes} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem>
                             <apex:outputLabel for="recordTypeIdsSize">Size of Record Types</apex:outputLabel>
                             <apex:outputText id="recordTypeIdsSize">{!recordTypeIdRecordSizeInBytes} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem>
                             <apex:outputLabel for="totalProfileIdsSize">Total Size Of Profile_Ids__c</apex:outputLabel>
                             <apex:outputText id="totalProfileIdsSize">{!profileIdRecordSizeInBytes*ProfileIdsRecordCount} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem>
                             <apex:outputLabel for="totalRecordTypeIdsSize">Total Size of Record_Type_Ids__c</apex:outputLabel>
                             <apex:outputText id="totalRecordTypeIdsSize">{!recordTypeIdRecordSizeInBytes*RecordTypeIdsRecordCount} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
                         <apex:pageBlockSectionItem dataStyle="text-align:center;">
-                            <apex:commandButton action="{!rebuildProfileIdCache}" value="Rebuild Profile_Ids__c"
-                                                reRender="IDHelperStats" status="ASUAjaxStatus"/>
+                            <apex:commandButton action="{!rebuildProfileIdCache}" value="Rebuild Profile_Ids__c" reRender="IDHelperStats" status="ASUAjaxStatus"
+                            />
                         </apex:pageBlockSectionItem>
                         <apex:pageBlockSectionItem dataStyle="text-align:center;">
-                            <apex:commandButton action="{!rebuildRecordTypeIdCache}" value="Rebuild Record_Type_Ids__c"
-                                                reRender="IDHelperStats" status="ASUAjaxStatus"/>
+                            <apex:commandButton action="{!rebuildRecordTypeIdCache}" value="Rebuild Record_Type_Ids__c" reRender="IDHelperStats" status="ASUAjaxStatus"
+                            />
                         </apex:pageBlockSectionItem>
                     </apex:pageBlockSection>
                 </apex:tab>
                 <apex:tab title="Profile_Ids__c" label="Profile_Ids__c">
-                	<apex:dataTable value="{!ProfileIds}" var="pid" styleClass="recordTable">
-                        <apex:column headerValue="Actions" headerClass="columnHead" styleClass="actionColumn"
-                                     rendered="{!ProfileIdsRecordCount > 0}" >
-                            <apex:outputLink value="/{!pid.Id__c}" target="_blank">
-                                View
-                            </apex:outputLink>
+                    <apex:dataTable value="{!ProfileIds}" var="pid" styleClass="recordTable">
+                        <apex:column headerValue="Actions" headerClass="columnHead" styleClass="actionColumn" rendered="{!ProfileIdsRecordCount > 0}">
+                            <apex:outputLink value="/{!pid.Id__c}" target="_blank"> View </apex:outputLink>
                         </apex:column>
-                        <apex:column headerValue="Name" value="{!pid.Name__c}" headerClass="columnHead"
-                                     rendered="{!ProfileIdsRecordCount > 0}"/>
+                        <apex:column headerValue="Name" value="{!pid.Name__c}" headerClass="columnHead" rendered="{!ProfileIdsRecordCount > 0}" />
                         <apex:column headerValue="No Records To Display" rendered="{!NOT(ProfileIdsRecordCount > 0)}" />
                     </apex:dataTable>
                 </apex:tab>
                 <apex:tab title="Record_Type_Ids__c" label="Record_Type_Ids__c">
-                	<apex:dataTable value="{!RecordTypeIds}" var="rtid" styleClass="recordTable">
-                        <apex:column headerValue="Actions" headerClass="columnHead" styleClass="actionColumn"
-                                     rendered="{!RecordTypeIdsRecordCount > 0}" >
+                    <apex:dataTable value="{!RecordTypeIds}" var="rtid" styleClass="recordTable">
+                        <apex:column headerValue="Actions" headerClass="columnHead" styleClass="actionColumn" rendered="{!RecordTypeIdsRecordCount > 0}">
                             <apex:outputLink value="/setup/ui/recordtypefields.jsp?id={!rtid.Id__c}" target="_blank">
                                 View
                             </apex:outputLink>
                         </apex:column>
-                        <apex:column headerValue="Name" value="{!rtid.Name__c}" headerClass="columnHead"
-                                     rendered="{!RecordTypeIdsRecordCount > 0}"/>
-                        <apex:column headerValue="SObject_Type__c" value="{!rtid.SObject_Type__c}"
-                                     headerClass="columnHead" rendered="{!RecordTypeIdsRecordCount > 0}"/>
+                        <apex:column headerValue="Name" value="{!rtid.Name__c}" headerClass="columnHead" rendered="{!RecordTypeIdsRecordCount > 0}"
+                        />
+                        <apex:column headerValue="SObject_Type__c" value="{!rtid.SObject_Type__c}" headerClass="columnHead" rendered="{!RecordTypeIdsRecordCount > 0}"
+                        />
                         <apex:column headerValue="No Records To Display" rendered="{!NOT(RecordTypeIdsRecordCount > 0)}" />
                     </apex:dataTable>
                 </apex:tab>

@@ -1,24 +1,30 @@
-trigger EmailSendTrigger on et4ae5__SendDefinition__c (after delete, after insert, after undelete, after update,
-    before delete, before insert, before update) {
+trigger EmailSendTrigger on et4ae5__SendDefinition__c(
+    after delete,
+    after insert,
+    after undelete,
+    after update,
+    before delete,
+    before insert,
+    before update
+) {
+    EmailSendDispatcher dispatcher = new EmailSendDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
 
-    EmailSendDispatcher dispatcher = new EmailSendDispatcher(trigger.new, trigger.newMap, trigger.old, trigger.oldMap);
-
-    if (trigger.isBefore) {
-        if (trigger.isUpdate) {
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate) {
             dispatcher.beforeUpdate();
-        } else if (trigger.isInsert) {
+        } else if (Trigger.isInsert) {
             dispatcher.beforeInsert();
-        }else if (trigger.isDelete) {
+        } else if (Trigger.isDelete) {
             dispatcher.beforeDelete();
         }
-    } else if (trigger.isAfter) {
-        if (trigger.isUpdate) {
+    } else if (Trigger.isAfter) {
+        if (Trigger.isUpdate) {
             dispatcher.afterUpdate();
-        } else if (trigger.isInsert) {
+        } else if (Trigger.isInsert) {
             dispatcher.afterInsert();
-        } else if (trigger.isDelete) {
+        } else if (Trigger.isDelete) {
             dispatcher.afterDelete();
-        } else if (trigger.isUnDelete) {
+        } else if (Trigger.isUnDelete) {
             dispatcher.afterUnDelete();
         }
     }

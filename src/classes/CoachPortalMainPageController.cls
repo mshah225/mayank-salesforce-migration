@@ -138,7 +138,7 @@ public with sharing class CoachPortalMainPageController {
                     RecordTypeId = :CoachResourceRTID
                     AND Success_POD__c = :mySuccessPod
                     AND Resource__c != :ownerId
-                    AND isActive__c = true
+                    AND isActive__c = TRUE
                 ORDER BY Name ASC
             ]) {
                 mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);

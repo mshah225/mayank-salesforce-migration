@@ -3,11 +3,11 @@ public without sharing class SCHeaderController {
     public Contact loggedInContact;
 
     public SCHeaderController() {
-        loggedInContact=ContactService.getLoggedInContact();
-            if (loggedInContact==null) {
-                isUnsubscribeGuestUser = true;
-            } else {
-                isUnsubscribeGuestUser = false;
-            }
+        loggedInContact = ContactService.getLoggedInContact();
+        if (loggedInContact == null) {
+            isUnsubscribeGuestUser = true;
+        } else {
+            isUnsubscribeGuestUser = false;
+        }
     }
 }

@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="Set list of all user options">
+    <aura:attribute name="allUserOptions" type="List" />
+</aura:event>

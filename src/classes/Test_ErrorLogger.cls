@@ -4,14 +4,14 @@ public class Test_ErrorLogger {
     private static User userWithContact;
     private static User userWithoutContact;
     private static User siteGuestUser;
-    private static Map<Id,User> userMap;
+    private static Map<Id, User> userMap;
     private static List<Case> exceptionCases;
     private static String subject;
     private static Boolean debug;
     private static String description;
     private static Contact testContact;
     private static String className;
-  
+
     @testSetup
     static void setup() {
         List<lead> testLeads = TestDataFactory.createLeads(3);
@@ -23,7 +23,7 @@ public class Test_ErrorLogger {
         Contact testContact = TestDataFactory.createContact('testContact');
         insert testContact;
 
-        User userWithContact = TestDataFactory.createCommunityUser('CommunityUser',userContact.Id);
+        User userWithContact = TestDataFactory.createCommunityUser('CommunityUser', userContact.Id);
         insert userWithContact;
 
         Id profileId = [SELECT Id FROM Profile WHERE name = 'ASU Service - ASU Salesforce Support'].Id;
@@ -41,7 +41,7 @@ public class Test_ErrorLogger {
         userWithoutContact = [SELECT Id FROM User WHERE lastName = 'UserWithoutContact'];
         siteGuestUser = [SELECT Id FROM User WHERE lastName = 'siteGuestUser'];
         testContact = [SELECT Id FROM Contact WHERE lastName = 'testContact'];
-        userMap = new Map<Id,User>();
+        userMap = new Map<Id, User>();
         userMap.put(userWithContact.Id, userWithContact);
         userMap.put(userWithoutContact.Id, userWithoutContact);
         className = 'Test_ErrorLogger';
@@ -78,21 +78,22 @@ public class Test_ErrorLogger {
         }
         Test.stopTest();
 
-        String compareDebugLog = ex.getTypeName() + '\n' +
-            ex.getMessage() + '\n' +
-            ex.getStackTraceString() + '\n' +
+        String compareDebugLog =
+            ex.getTypeName() +
+            '\n' +
+            ex.getMessage() +
+            '\n' +
+            ex.getStackTraceString() +
+            '\n' +
             'User Description: \n' +
-            description + '\n';
+            description +
+            '\n';
         System.assert(debugLog.contains(compareDebugLog));
     }
 
     private static void validateCreatedCaseAndContactId(Integer numberOfCasesCreated, Id caseContactId) {
         List<Case> exceptionCases;
-        exceptionCases = [
-            SELECT Id, ContactId
-            FROM Case
-            WHERE Subject = :subject
-        ];
+        exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
 
         System.assertEquals(numberOfCasesCreated, exceptionCases.size());
 
@@ -115,7 +116,7 @@ public class Test_ErrorLogger {
     }
 
     @isTest
-    public static void checkDuplicateDebugCaseForUserWithContact(){
+    public static void checkDuplicateDebugCaseForUserWithContact() {
         setupTestVariables();
 
         Test.startTest();
@@ -143,7 +144,7 @@ public class Test_ErrorLogger {
     }
 
     @isTest
-    public static void checkDuplicateDebugCaseForUserWithoutContact(){
+    public static void checkDuplicateDebugCaseForUserWithoutContact() {
         setupTestVariables();
 
         Test.startTest();
@@ -196,11 +197,7 @@ public class Test_ErrorLogger {
         Test.stopTest();
 
         System.assertEquals(false, debug);
-        List<Case> exceptionCases = [
-            SELECT Id, ContactId
-            FROM Case
-            WHERE Subject = :subject
-        ];
+        List<Case> exceptionCases = [SELECT Id, ContactId FROM Case WHERE Subject = :subject];
         System.assertEquals(true, exceptionCases.isEmpty());
     }
 
@@ -259,11 +256,7 @@ public class Test_ErrorLogger {
 
         System.assertEquals(true, debug);
 
-        List<Case> exceptionCases = [
-            SELECT Id, Description, ContactId
-            FROM Case
-            WHERE Subject = :subject
-        ];
+        List<Case> exceptionCases = [SELECT Id, Description, ContactId FROM Case WHERE Subject = :subject];
 
         System.assertEquals(1, exceptionCases.size());
 
@@ -272,7 +265,9 @@ public class Test_ErrorLogger {
         }
 
         String timeStamp = String.valueOf(DateTime.now().dateGMT());
-        System.assert(exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp));
+        System.assert(
+            exceptionCases[0].description.indexOf(timeStamp) < exceptionCases[0].description.lastIndexOf(timeStamp)
+        );
     }
 
     @isTest
@@ -316,7 +311,7 @@ public class Test_ErrorLogger {
     /**
      * Tests for converting SObjects to JSON strings
      */
-    public static testmethod void Test_convertSObjectToJSON() {
+    public static testMethod void Test_convertSObjectToJSON() {
         string fakeName = 'SObject';
         Lead fakeValue = [SELECT Id FROM Lead LIMIT 1];
         string result = ErrorLogger.convertSObjectToJSON(fakeName, fakeValue);
@@ -328,7 +323,7 @@ public class Test_ErrorLogger {
     /**
      * Tests for converting Id values to JSON strings
      */
-    public static testmethod void Test_convertIdToJSON() {
+    public static testMethod void Test_convertIdToJSON() {
         string fakeName = 'objectId';
         Id fakeValue = userinfo.getUserId();
         string result = ErrorLogger.convertIdToJSON(fakeName, fakeValue);
@@ -339,7 +334,7 @@ public class Test_ErrorLogger {
     /**
      * Tests for converting Double values to JSON strings
      */
-    public static testmethod void Test_convertDoubleToJSON() {
+    public static testMethod void Test_convertDoubleToJSON() {
         string fakeName = 'myBankAccount';
         double fakeValue = 0.00;
         string result = ErrorLogger.convertDoubleToJSON(fakeName, fakeValue);
@@ -350,7 +345,7 @@ public class Test_ErrorLogger {
     /**
      * Tests for converting Integer values to JSON strings
      */
-    public static testmethod void Test_convertIntegerToJSON() {
+    public static testMethod void Test_convertIntegerToJSON() {
         string fakeName = 'longestRelationshipInDays';
         integer fakeValue = 3;
         string result = ErrorLogger.convertIntegerToJSON(fakeName, fakeValue);
@@ -361,7 +356,7 @@ public class Test_ErrorLogger {
     /**
      * Tests for converting Boolean values to JSON strings
      */
-    public static testmethod void Test_convertBooleanToJSON() {
+    public static testMethod void Test_convertBooleanToJSON() {
         string fakeName = 'amIGettingFiredForDoingThis';
         boolean fakeValue = true;
         string result = ErrorLogger.convertBooleanToJSON(fakeName, fakeValue);
@@ -372,71 +367,71 @@ public class Test_ErrorLogger {
     /**
      * Tests for converting maps to JSON strings - ID to Integer overload
      */
-    public static testmethod void Test_convertMapToJSON_Id_To_Int() {
+    public static testMethod void Test_convertMapToJSON_Id_To_Int() {
         string expected;
         string result;
         string fakeName = 'leadMap';
-        Map<Id,Integer> fakeMap;
+        Map<Id, Integer> fakeMap;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null map
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 2 - validate a non-null map with 0 entries
-        fakeMap = new Map<Id,Integer>();
+        fakeMap = new Map<Id, Integer>();
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 3 - validate a non null map containing 3 values
         for (Lead l : testLeads) {
-            fakeMap.put(l.Id,1);
+            fakeMap.put(l.Id, 1);
         }
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':[' + string.valueOf(fakeMap) + ']}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting maps to JSON strings - ID to SObject overload
      */
-    public static testmethod void Test_convertMapToJSON_Id_To_SObject() {
+    public static testMethod void Test_convertMapToJSON_Id_To_SObject() {
         string expected;
         string result;
         string fakeName = 'leadMap';
-        Map<Id,Lead> fakeMap;
+        Map<Id, Lead> fakeMap;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null map
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 2 - validate a non-null map with 0 entries
-        fakeMap = new Map<Id,Lead>();
+        fakeMap = new Map<Id, Lead>();
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 3 - validate a non null map containing 3 values
         for (Lead l : testLeads) {
-            fakeMap.put(l.Id,l);
+            fakeMap.put(l.Id, l);
         }
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':[' + string.valueOf(fakeMap) + ']}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting sets to JSON strings - ID overload
      */
-    public static testmethod void Test_convertSetToJSON_Id() {
+    public static testMethod void Test_convertSetToJSON_Id() {
         string expected;
         string result;
         string fakeName = 'leadSet';
@@ -446,14 +441,14 @@ public class Test_ErrorLogger {
         // Test 1 - validate a null set
         result = ErrorLogger.convertSetToJSON(fakeName, fakeSet);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 2 - validate a non-null set with 0 entries
         fakeSet = new Set<Id>();
 
         result = ErrorLogger.convertSetToJSON(fakeName, fakeSet);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 3 - validate a non null set containing 3 values
         for (Lead l : testLeads) {
@@ -462,13 +457,13 @@ public class Test_ErrorLogger {
 
         result = ErrorLogger.convertSetToJSON(fakeName, fakeSet);
         expected = '{' + fakeName + ':[' + string.valueOf(fakeSet) + ']}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting lists to JSON strings - ID overload
      */
-    public static testmethod void Test_convertListToJSON_Id() {
+    public static testMethod void Test_convertListToJSON_Id() {
         string expected;
         string result;
         string fakeName = 'leadList';
@@ -478,14 +473,14 @@ public class Test_ErrorLogger {
         // Test 1 - validate a null set
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 2 - validate a non-null set with 0 entries
         fakeList = new List<Id>();
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 3 - validate a non null set containing 3 values
         for (Lead l : testLeads) {
@@ -494,13 +489,13 @@ public class Test_ErrorLogger {
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':[' + string.valueOf(fakeList) + ']}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting lists to JSON strings - SObject overload
      */
-    public static testmethod void Test_convertListToJSON_SObject() {
+    public static testMethod void Test_convertListToJSON_SObject() {
         string expected;
         string result;
         string fakeName = 'leadList';
@@ -510,21 +505,20 @@ public class Test_ErrorLogger {
         // Test 1 - validate a null set
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 2 - validate a non-null set with 0 entries
         fakeList = new List<Lead>();
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
 
         // Test 3 - validate a non null set containing 3 values
         fakeList = testLeads;
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':[' + string.valueOf(fakeList) + ']}';
-        system.assertEquals(expected,result);
+        system.assertEquals(expected, result);
     }
-
 }

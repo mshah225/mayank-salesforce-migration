@@ -1,38 +1,43 @@
 @isTest
-private class Test_UndergradNewProspectController 
-{
+private class Test_UndergradNewProspectController {
     private static UndergradNewProspectController ug;
 
-    @testSetup static void setUpTest() 
-    {   
-        Account testAccount = new Account(
-            Name = 'Test School');
+    @testSetup
+    static void setUpTest() {
+        Account testAccount = new Account(Name = 'Test School');
         insert testAccount;
 
         Campaign testEventCam = new Campaign(
             Name = 'ASU Test Event',
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id);
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event']
+            .Id
+        );
         insert testEventCam;
 
         Campaign testEmailCam = new Campaign(
             Name = 'Email',
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event'].Id);
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Event']
+            .Id
+        );
         insert testEmailCam;
 
         Campaign testIntCam = new Campaign(
             Name = 'ASU Test Interest',
-            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest'].Id);
+            RecordTypeId = [SELECT Id FROM RecordType WHERE Name = 'Interest']
+            .Id
+        );
         insert testIntCam;
-        
+
         Case_Classification__c cc = new Case_Classification__c();
         cc.Name = 'Business';
         cc.Active__c = true;
-        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName().get('Functional Group').getRecordTypeId();
+        cc.RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
+            .get('Functional Group')
+            .getRecordTypeId();
         insert cc;
-    } 
+    }
 
-    private static void setUpController() 
-    {
+    private static void setUpController() {
         ug = new UndergradNewProspectController();
         ug.getContact();
         ug.getOpportunity();
@@ -56,8 +61,8 @@ private class Test_UndergradNewProspectController
         ug.getASUCollegesIntList();
     }
 
-    @isTest static void testCaseCreation() 
-    {
+    @isTest
+    static void testCaseCreation() {
         Test.startTest();
         setUpController();
 
@@ -66,7 +71,13 @@ private class Test_UndergradNewProspectController
         ug.pickSelection = '--Select--';
 
         // Create case
-        ug.c.CC_Functional_Group__c = [SELECT ID FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true LIMIT 1].ID;
+        ug.c.CC_Functional_Group__c = [
+            SELECT ID
+            FROM Case_Classification__c
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE
+            LIMIT 1
+        ]
+        .ID;
         ug.c.Subject = 'Test Subject';
 
         // Create contact
@@ -79,14 +90,14 @@ private class Test_UndergradNewProspectController
         Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
         ug.previousEducation.Account__c = testSchool;
         ug.savePage();
-        Test.stopTest(); 
+        Test.stopTest();
 
         System.assertNotEquals(null, ug.contact);
         System.assertNotEquals(null, ug.c);
     }
 
-    @isTest static void testOptionalInterest() 
-    {
+    @isTest
+    static void testOptionalInterest() {
         Campaign interestTestCam = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Interest'];
         Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;
 
@@ -100,7 +111,13 @@ private class Test_UndergradNewProspectController
         ug.selectedInterestId = interestTestCam.Id;
 
         // Create case
-        ug.c.CC_Functional_Group__c = [SELECT ID FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true LIMIT 1].ID;
+        ug.c.CC_Functional_Group__c = [
+            SELECT ID
+            FROM Case_Classification__c
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE
+            LIMIT 1
+        ]
+        .ID;
         ug.c.Subject = 'Test Subject';
 
         // Create contact
@@ -119,8 +136,8 @@ private class Test_UndergradNewProspectController
         System.assertNotEquals(null, ug.camMemInterest);
     }
 
-    @isTest static void testSaveErrors()
-    {
+    @isTest
+    static void testSaveErrors() {
         Test.setCurrentPage(Page.UndergradNewProspect);
         setUpController();
         ug.originSelection = 'Nothing';
@@ -130,12 +147,10 @@ private class Test_UndergradNewProspectController
         ug.savePage();
         ApexPages.Message[] msgs = ApexPages.getMessages();
         Boolean found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'You must select either ONE case OR ONE event.')
-           {
-              found = true;
-           }
+        for (ApexPages.Message msg : msgs) {
+            if (msg.getSummary() == 'You must select either ONE case OR ONE event.') {
+                found = true;
+            }
         }
         System.assert(found);
 
@@ -144,12 +159,10 @@ private class Test_UndergradNewProspectController
         ug.savePage();
         msgs = ApexPages.getMessages();
         found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'You must select either ONE case OR ONE event.')
-           {
-              found = true;
-           }
+        for (ApexPages.Message msg : msgs) {
+            if (msg.getSummary() == 'You must select either ONE case OR ONE event.') {
+                found = true;
+            }
         }
         System.assert(found);
 
@@ -159,12 +172,10 @@ private class Test_UndergradNewProspectController
         ug.savePage();
         msgs = ApexPages.getMessages();
         found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'After selecting a type of interest, you must select an interest.')
-           {
-              found = true;
-           }
+        for (ApexPages.Message msg : msgs) {
+            if (msg.getSummary() == 'After selecting a type of interest, you must select an interest.') {
+                found = true;
+            }
         }
         System.assert(found);
 
@@ -175,24 +186,28 @@ private class Test_UndergradNewProspectController
         ug.savePage();
         msgs = ApexPages.getMessages();
         found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'When selecting an Origin, you must also select a Functional Group.')
-           {
-              found = true;
-           }
+        for (ApexPages.Message msg : msgs) {
+            if (msg.getSummary() == 'When selecting an Origin, you must also select a Functional Group.') {
+                found = true;
+            }
         }
         System.assert(found);
     }
 
-    @isTest static void testContactValidation()
-    {
+    @isTest
+    static void testContactValidation() {
         setUpController();
 
         ug.originSelection = 'Email';
         ug.pickSelection = '--Select--';
 
-        ug.c.CC_Functional_Group__c = [SELECT ID FROM Case_Classification__c WHERE RecordType.Name = 'Functional Group' AND Active__c = true LIMIT 1].ID;
+        ug.c.CC_Functional_Group__c = [
+            SELECT ID
+            FROM Case_Classification__c
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE
+            LIMIT 1
+        ]
+        .ID;
         ug.c.Subject = 'Test Subject';
 
         ug.contact.FirstName = 'Test';
@@ -207,12 +222,13 @@ private class Test_UndergradNewProspectController
 
         ApexPages.Message[] msgs = ApexPages.getMessages();
         Boolean found = false;
-        for (ApexPages.Message msg : msgs)
-        {
-           if (msg.getSummary() == 'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.')
-           {
-              found = true;
-           }
+        for (ApexPages.Message msg : msgs) {
+            if (
+                msg.getSummary() ==
+                'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'
+            ) {
+                found = true;
+            }
         }
         System.assert(found);
     }

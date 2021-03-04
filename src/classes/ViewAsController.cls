@@ -25,35 +25,30 @@ public with sharing class ViewAsController {
      */
     public String viewAsId {
         get;
-
         set {
-             viewAsId = value;
-             viewAsCookie = new Cookie('viewAsId', viewAsId, null, -1, false);  // setting max age to -1 creates a session cookie
-             getCookieMap().put('viewAsId', viewAsCookie);
-             ApexPages.currentPage().setCookies(cookieMap.values());
+            viewAsId = value;
+            viewAsCookie = new Cookie('viewAsId', viewAsId, null, -1, false); // setting max age to -1 creates a session cookie
+            getCookieMap().put('viewAsId', viewAsCookie);
+            ApexPages.currentPage().setCookies(cookieMap.values());
         }
     }
 
     /*
      * Contains list owner ids selected by user in viewas component search box
      */
-    public String viewAsIdListString {
-        get;
-        set;
-    }
-
+    public String viewAsIdListString { get; set; }
 
     /*
      * Initialize component with current user's Id
      */
     public ViewAsController() {
-        if(getCookieMap()!=null) {
-            if(cookieMap.containsKey('viewAsId')) {
-                viewAsId=cookieMap.get('viewAsId').getValue();
+        if (getCookieMap() != null) {
+            if (cookieMap.containsKey('viewAsId')) {
+                viewAsId = cookieMap.get('viewAsId').getValue();
             }
         }
 
-        if(viewAsId==null || viewAsId=='') {
+        if (viewAsId == null || viewAsId == '') {
             viewAsId = UserInfo.getUserId();
         }
     }

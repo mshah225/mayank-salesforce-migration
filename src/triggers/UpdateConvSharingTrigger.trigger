@@ -1,23 +1,35 @@
-trigger UpdateConvSharingTrigger on smagicinteract__Conversation__c (before insert, before update, before delete,after insert,
-                                                                     after update, after delete, after undelete) {
-    ConversationDispatcher dispatcher = new ConversationDispatcher(trigger.new, trigger.newMap, trigger.old, trigger.oldMap);
-    if(trigger.isBefore) {
-        if (trigger.isUpdate) {
+trigger UpdateConvSharingTrigger on smagicinteract__Conversation__c(
+    before insert,
+    before update,
+    before delete,
+    after insert,
+    after update,
+    after delete,
+    after undelete
+) {
+    ConversationDispatcher dispatcher = new ConversationDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
+    if (Trigger.isBefore) {
+        if (Trigger.isUpdate) {
             dispatcher.beforeUpdate();
-        }else if (trigger.isInsert) {
+        } else if (Trigger.isInsert) {
             dispatcher.beforeInsert();
-        }else if (trigger.isDelete) {
+        } else if (Trigger.isDelete) {
             dispatcher.beforeDelete();
         }
-    } else if (trigger.isAfter){
-        if (trigger.isUpdate) {
+    } else if (Trigger.isAfter) {
+        if (Trigger.isUpdate) {
             dispatcher.afterUpdate();
-        }else if (trigger.isInsert) {
+        } else if (Trigger.isInsert) {
             dispatcher.afterInsert();
-        }else if (trigger.isDelete) {
+        } else if (Trigger.isDelete) {
             dispatcher.afterDelete();
-        }else if (trigger.isUndelete) {
+        } else if (Trigger.isUndelete) {
             dispatcher.afterUndelete();
         }
-    }                                                                    
+    }
 }

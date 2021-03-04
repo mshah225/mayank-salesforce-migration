@@ -4,8 +4,11 @@ public with sharing class SubscriberDispatcher implements IDispatch {
     private List<Subscriber__c> oldList;
     private Map<Id, Subscriber__c> oldMap;
 
-    public SubscriberDispatcher (List<Subscriber__c> newList, Map<Id, Subscriber__c> newMap, 
-        List<Subscriber__c> oldList, Map<Id, Subscriber__c> oldMap
+    public SubscriberDispatcher(
+        List<Subscriber__c> newList,
+        Map<Id, Subscriber__c> newMap,
+        List<Subscriber__c> oldList,
+        Map<Id, Subscriber__c> oldMap
     ) {
         this.newList = newList;
         this.newMap = newMap;
@@ -17,10 +20,12 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         SubscriberService.enforceOwnerPolicies(newList);
     }
 
-    public void beforeUpdate() { }
-     
-    public void beforeDelete() { }
-     
+    public void beforeUpdate() {
+    }
+
+    public void beforeDelete() {
+    }
+
     public void afterInsert() {
         SubscriberService.syncParentSubscribers(newList);
         List<Id> subscriberIds = new List<Id>();
@@ -32,14 +37,15 @@ public with sharing class SubscriberDispatcher implements IDispatch {
         } else {
             SubscriberService.setHashId(subscriberIds);
         }
-     }
-     
+    }
+
     public void afterUpdate() {
         SubscriberService.syncParentSubscribers(newList);
     }
-     
-    public void afterDelete() { }
-     
+
+    public void afterDelete() {
+    }
+
     public void afterUndelete() {
         SubscriberService.syncParentSubscribers(newList);
     }

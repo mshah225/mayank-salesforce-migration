@@ -5,19 +5,19 @@ public class BatchApplyIerPrivacy implements Database.Batchable<sObject>, Databa
     private Set<Id> subscriptionIdSet = new Set<Id>();
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        String query = 
-            'SELECT Id, OwnerId, Apex_Owner_Should_Be__c, Private_in_Salesforce__c, ' + 
-                'Apex_Private_in_Salesforce_Should_Be__c, ' +
-                'et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.IER_Privacy_Changed__c, ' +
-                'et4ae5__SendDefinition__r.et4ae5__Business_Unit__c, ' +
-                'et4ae5__SendDefinition__r.et4ae5__Campaign__r.IER_Privacy_Changed__c, ' + 
-                'et4ae5__SendDefinition__r.et4ae5__Campaign__c, ' +
-                'et4ae5__SendDefinition__r.et4ae5__Campaign__r.Subscription__r.IER_Privacy_Changed__c, ' + 
-                'et4ae5__SendDefinition__r.et4ae5__Campaign__r.Subscription__c ' +
+        String query =
+            'SELECT Id, OwnerId, Apex_Owner_Should_Be__c, Private_in_Salesforce__c, ' +
+            'Apex_Private_in_Salesforce_Should_Be__c, ' +
+            'et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.IER_Privacy_Changed__c, ' +
+            'et4ae5__SendDefinition__r.et4ae5__Business_Unit__c, ' +
+            'et4ae5__SendDefinition__r.et4ae5__Campaign__r.IER_Privacy_Changed__c, ' +
+            'et4ae5__SendDefinition__r.et4ae5__Campaign__c, ' +
+            'et4ae5__SendDefinition__r.et4ae5__Campaign__r.Subscription__r.IER_Privacy_Changed__c, ' +
+            'et4ae5__SendDefinition__r.et4ae5__Campaign__r.Subscription__c ' +
             'FROM   et4ae5__IndividualEmailResult__c ' +
             'WHERE  et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.IER_Privacy_Changed__c = true OR ' +
-                'et4ae5__SendDefinition__r.et4ae5__Campaign__r.IER_Privacy_Changed__c = true OR ' +
-                'et4ae5__SendDefinition__r.et4ae5__Campaign__r.Subscription__r.IER_Privacy_Changed__c = true';
+            'et4ae5__SendDefinition__r.et4ae5__Campaign__r.IER_Privacy_Changed__c = true OR ' +
+            'et4ae5__SendDefinition__r.et4ae5__Campaign__r.Subscription__r.IER_Privacy_Changed__c = true';
         return Database.getQueryLocator(query);
     }
 
@@ -26,7 +26,8 @@ public class BatchApplyIerPrivacy implements Database.Batchable<sObject>, Databa
         // Check each IER record, and set the Owner and Private_In_Salesforce fields to match the values
         // calculated by their corresponding formula fields if they don't match
         for (et4ae5__IndividualEmailResult__c ier : (List<et4ae5__IndividualEmailResult__c>) scope) {
-            if (ier.OwnerId != ier.Apex_Owner_Should_Be__c || 
+            if (
+                ier.OwnerId != ier.Apex_Owner_Should_Be__c ||
                 ier.Private_in_Salesforce__c != Boolean.valueOf(ier.Apex_Private_in_Salesforce_Should_Be__c)
             ) {
                 ier.OwnerId = ier.Apex_Owner_Should_Be__c;
@@ -60,7 +61,7 @@ public class BatchApplyIerPrivacy implements Database.Batchable<sObject>, Databa
         // Reset all of the IER_Privacy_Changed flags to false
         if (!businessUnitIdSet.isEmpty()) {
             List<et4ae5__Business_Unit__c> businessUnits = new List<et4ae5__Business_Unit__c>();
-            for (Id buId: businessUnitIdSet) {
+            for (Id buId : businessUnitIdSet) {
                 et4ae5__Business_Unit__c bu = new et4ae5__Business_Unit__c();
                 bu.Id = buId;
                 bu.IER_Privacy_Changed__c = false;
@@ -80,7 +81,7 @@ public class BatchApplyIerPrivacy implements Database.Batchable<sObject>, Databa
 
         if (!campaignIdSet.isEmpty()) {
             List<Campaign> campaigns = new List<Campaign>();
-            for (Id camId: campaignIdSet) {
+            for (Id camId : campaignIdSet) {
                 Campaign cam = new Campaign();
                 cam.Id = camId;
                 cam.IER_Privacy_Changed__c = false;
@@ -118,7 +119,7 @@ public class BatchApplyIerPrivacy implements Database.Batchable<sObject>, Databa
             }
         }
     }
-    
+
     public void execute(SchedulableContext sc) {
         BatchApplyIerPrivacy b = new BatchApplyIerPrivacy();
         database.executebatch(b, 200);

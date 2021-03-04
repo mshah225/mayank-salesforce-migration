@@ -1,6 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="ViewCaseController"
     action="{!init}" cache="true" extensions="ASUBrandController">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -81,14 +80,14 @@
         <script>
             $j(document).ready(function () {
                 var showChar = 250;
-                var ellipsestext = "...";
+                var ellipsestext = '...';
                 var moretext = 'Show More <span class="caret" style="margin-bottom:2px;"></span>';
-                var lesstext = 'Show Less <span class="dropup"><span class="caret"' +
-                    'style="margin-bottom:2px;"></span></span>';
+                var lesstext =
+                    'Show Less <span class="dropup"><span class="caret"' + 'style="margin-bottom:2px;"></span></span>';
 
-                $j("[id$=emailMore]").each(function () {
+                $j('[id$=emailMore]').each(function () {
                     var content = $j(this).clone().html();
-                    if (content.indexOf("Inline image") > 0) {
+                    if (content.indexOf('Inline image') > 0) {
                         content = content.replace(/\[[^\]]+\]/, '');
                         content = content.replace(/(<br\s*\/?>){2}/, '');
                     }
@@ -96,31 +95,34 @@
                     if (content.length > showChar) {
                         var c = content.substr(0, showChar);
                         var h = content.substr(showChar, content.length - showChar);
-                        var html = c + '<span class="moreellipses">' + ellipsestext +
-                            '&nbsp;</span><span class="morecontent"><span>' + h +
+                        var html =
+                            c +
+                            '<span class="moreellipses">' +
+                            ellipsestext +
+                            '&nbsp;</span><span class="morecontent"><span>' +
+                            h +
                             '</span>&nbsp;&nbsp;</span><a href="" class="emailToggle">' +
-                            moretext + '</a>';
+                            moretext +
+                            '</a>';
                         $j(this).html(html);
                     }
                 });
 
-                $j(".emailToggle").click(function () {
-                    if ($j(this).hasClass("less")) {
-                        $j(this).removeClass("less");
+                $j('.emailToggle').click(function () {
+                    if ($j(this).hasClass('less')) {
+                        $j(this).removeClass('less');
                         $j(this).html(moretext);
-                        $j(this).prevAll(".moreellipses:first").toggle();
-                    }
-                    else {
-                        $j(this).addClass("less");
+                        $j(this).prevAll('.moreellipses:first').toggle();
+                    } else {
+                        $j(this).addClass('less');
                         $j(this).html(lesstext);
-                        $j(this).prevAll(".moreellipses:first").toggle();
+                        $j(this).prevAll('.moreellipses:first').toggle();
                     }
                     $j(this).prev().toggle();
                     return false;
                 });
             });
         </script>
-
     </head>
 
     <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
@@ -146,14 +148,10 @@
             <div class="row">
                 <div class="col-md-7 myasu-help-region">
                     <div class="myasu-help-region-request-details">
-                        <div class="myasu-help-region-header">
-                            Request Details
-                        </div>
+                        <div class="myasu-help-region-header">Request Details</div>
                         <div class="myasu-help-region-request-details-content">
                             <apex:form styleClass="detailsForm">
-                                <div class="myasu-help-region-sub-header">
-                                    Request #{!caseDetails.CaseNumber}
-                                </div>
+                                <div class="myasu-help-region-sub-header">Request #{!caseDetails.CaseNumber}</div>
                                 <div class="myasu-help-region-request-details-info">
                                     <apex:pageBlock tabStyle="Case" mode="maindetail">
                                         <apex:pageBlockSection collapsible="false" columns="1">
@@ -162,12 +160,11 @@
                                             <apex:outputField value="{!caseDetails.Description}" />
                                             <apex:outputField value="{!caseDetails.CC_Functional_Group__r.Name}" label="Department" rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
                                             />
-                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d','  yyyy, hh:mm a z}" label="Date Opened">
-                                                <apex:param value="{!caseDetails.CreatedDate}" />
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0}" label="Date Opened">
+                                                <apex:param value="{!formattedCreatedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0, date, MMMM d',' yyyy, hh:mm a z}" label="Date Closed"
-                                                rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
-                                                <apex:param value="{!caseDetails.ClosedDate}" />
+                                            <apex:outputText styleClass="myasu-help-request-details-date" value="{0}" label="Date Closed" rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
+                                                <apex:param value="{!formattedClosedDate}" />
                                             </apex:outputText>
                                             <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
                                                 && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}"
@@ -192,7 +189,7 @@
                                             <div id="myasu-help-region-request-details-view-responses" class="panel-collapse collapse">
                                                 <div class="panel-body">
                                                     <apex:outputPanel id="myasu-help-region-request-details-view-responses-panel" rendered="{!!EmailMessages.empty}">
-                                                        <apex:repeat value="{!EmailMessages}" var="EM">
+                                                        <apex:repeat value="{!EmailMessagesWithFormattedDateTime}" var="EM">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-body">
                                                                     <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
@@ -203,7 +200,7 @@
                                                                         <br />
                                                                     </apex:outputPanel>
                                                                     <apex:outputLabel for="emailSentDate" value="Date:" />
-                                                                    <apex:outputText id="emailSentDate" value="{0, date, MMMM d',' yyyy, hh:mm a z}">
+                                                                    <apex:outputText id="emailSentDate" value="{0}">
                                                                         <apex:param value="{!EM.MessageDate}" />
                                                                     </apex:outputText>
                                                                     <br />
@@ -218,14 +215,18 @@
                                                                         <br />
                                                                     </apex:outputPanel>
                                                                     <br />
-                                                                    <apex:outputField id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="word-wrap: break-word !important;"
-                                                                    />
+                                                                    <apex:outputText id="emailMore" styleClass="emailMessage" value="{!EM.TextBody}" style="
+                                                                            word-wrap: break-word !important;
+                                                                            white-space: pre-line !important;
+                                                                        " />
                                                                 </div>
                                                             </div>
                                                         </apex:repeat>
                                                     </apex:outputPanel>
                                                     <apex:outputPanel rendered="{!EmailMessages.empty}">
-                                                        <p class="myasu-help-region-request-details-view-responses-no-emails">You do not currently have any responses for this request.</p>
+                                                        <p class="myasu-help-region-request-details-view-responses-no-emails">
+                                                            You do not currently have any responses for this request.
+                                                        </p>
                                                     </apex:outputPanel>
                                                 </div>
                                             </div>
@@ -243,12 +244,10 @@
                                             </div>
                                             <div id="myasu-help-region-request-details-reply" class="panel-collapse collapse">
                                                 <div class="panel-body">
-                                                    <apex:inputTextarea value="{!caseReply}" id="replyText" rows="5" cols="98" style="max-width: 100%; max-height: 100%;" />
-                                                    <span>
-                                                        Upload New Attachments (max size 25MB)
-                                                    </span>
+                                                    <apex:inputTextarea value="{!caseReply}" id="replyText" rows="5" cols="98" style="max-width: 100%; max-height: 100%" />
+                                                    <span> Upload New Attachments (max size 25MB) </span>
                                                     <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" />
-                                                    <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-primary" style="margin-top:1em !important;"
+                                                    <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-primary" style="margin-top: 1em !important"
                                                     />
                                                     <br />
                                                     <div class="errorMsg" id="errorDiv" />
@@ -270,12 +269,12 @@
                                                 <div class="panel-body">
                                                     <apex:outputPanel rendered="{!showCaseAttachments}">
                                                         <apex:pageBlock>
-                                                            <apex:pageBlockTable value="{!allCaseAttachments}" var="eachAttachment" columns="2">
+                                                            <apex:pageBlockTable value="{!allCaseAttachmentsFormattedTime}" var="eachAttachment" columns="2">
                                                                 <apex:column headerValue="Name">
-                                                                    <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color:#990033;" target="_blank">{!eachAttachment.Name}</apex:outputLink>
+                                                                    <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color: #990033" target="_blank">{!eachAttachment.Name}</apex:outputLink>
                                                                 </apex:column>
                                                                 <apex:column headerValue="Created Date">
-                                                                    <apex:outputText value="{0, date, MMMM d','  yyyy, hh:mm a z}" label="Date Opened">
+                                                                    <apex:outputText value="{0}" label="Date Opened">
                                                                         <apex:param value="{!eachAttachment.CreatedDate}" />
                                                                     </apex:outputText>
                                                                 </apex:column>
@@ -283,8 +282,9 @@
                                                         </apex:pageBlock>
                                                     </apex:outputPanel>
                                                     <apex:outputPanel rendered="{!!showCaseAttachments}">
-                                                        <p class="myasu-help-region-request-details-view-attachments-no-attachments">You do not currently have any uploaded attachments. Click the Reply
-                                                            section to submit an attachment for this request.</p>
+                                                        <p class="myasu-help-region-request-details-view-attachments-no-attachments">
+                                                            You do not currently have any uploaded attachments. Click the Reply section to submit an attachment for this request.
+                                                        </p>
                                                     </apex:outputPanel>
                                                 </div>
                                             </div>
@@ -315,8 +315,9 @@
                                                         </apex:repeat>
                                                     </apex:outputPanel>
                                                     <apex:outputPanel rendered="{!chatMessages.empty}">
-                                                        <p class="myasu-help-region-request-details-view-chat-history-no-history">You do not currently have any chat sessions to view. Click Live Chat
-                                                            under Contact Us to start a new chat session.</p>
+                                                        <p class="myasu-help-region-request-details-view-chat-history-no-history">
+                                                            You do not currently have any chat sessions to view. Click Live Chat under Contact Us to start a new chat session.
+                                                        </p>
                                                     </apex:outputPanel>
                                                 </div>
                                             </div>

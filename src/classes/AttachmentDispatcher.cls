@@ -1,14 +1,14 @@
 public with sharing class AttachmentDispatcher implements IDispatch {
     private static final boolean debug = false; // Toggle debug error reporting
-    private static Map<Id,Attachment> newAttachments; // trigger.new
-    private static Map<Id,Attachment> oldAttachments; // trigger.oldMap
-    private static Map<Id,Case> casesToUpdate; // Map of cases that need to be updated based on business logic
-    
-    public AttachmentDispatcher (Map<Id,Attachment> newMap, Map<Id,Attachment> oldMap) {
+    private static Map<Id, Attachment> newAttachments; // trigger.new
+    private static Map<Id, Attachment> oldAttachments; // trigger.oldMap
+    private static Map<Id, Case> casesToUpdate; // Map of cases that need to be updated based on business logic
+
+    public AttachmentDispatcher(Map<Id, Attachment> newMap, Map<Id, Attachment> oldMap) {
         newAttachments = newMap;
         oldAttachments = oldMap;
     }
-    
+
     /**
      * Method containing business logic to process after insert triggers
      * <p>
@@ -16,14 +16,14 @@ public with sharing class AttachmentDispatcher implements IDispatch {
      * attachments are inserted
      */
     public void afterInsert() {
-	    casesToUpdate = AttachmentService.getCasesFromAttachments(newAttachments.values());
+        casesToUpdate = AttachmentService.getCasesFromAttachments(newAttachments.values());
 
-	    if (casesToUpdate != null && !casesToUpdate.isEmpty()) {
-	        casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
-	        update casesToUpdate.values();
-	    }
+        if (casesToUpdate != null && !casesToUpdate.isEmpty()) {
+            casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
+            update casesToUpdate.values();
+        }
     }
-    
+
     /**
      * method containing business logic to process after undeleting records
      * <p>
@@ -34,7 +34,7 @@ public with sharing class AttachmentDispatcher implements IDispatch {
         beforeInsert();
         afterInsert();
     }
-    
+
     /**
      * Method containing business logic to process after delete triggers
      * <p>
@@ -43,16 +43,20 @@ public with sharing class AttachmentDispatcher implements IDispatch {
      */
     public void afterDelete() {
         casesToUpdate = AttachmentService.getCasesFromAttachments(oldAttachments.values());
-        
+
         if (casesToUpdate != null && !casesToUpdate.isEmpty()) {
             casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
             update casesToUpdate.values();
         }
     }
-    
+
     //Required by Dispatcher Interface
-    public void afterUpdate() { }
-    public void beforeInsert() { }
-    public void beforeUpdate() { }
-    public void beforeDelete() { }
+    public void afterUpdate() {
+    }
+    public void beforeInsert() {
+    }
+    public void beforeUpdate() {
+    }
+    public void beforeDelete() {
+    }
 }

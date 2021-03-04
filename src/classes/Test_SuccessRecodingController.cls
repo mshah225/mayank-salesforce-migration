@@ -1,13 +1,14 @@
 /*****************************************
-* File: Test_SuccessRecodingController
-* Author: Mathew Ruff, Sierra-Cedar
-* Description: Unit Tests for SuccessRecodingController.cls
-******************************************/
+ * File: Test_SuccessRecodingController
+ * Author: Mathew Ruff, Sierra-Cedar
+ * Description: Unit Tests for SuccessRecodingController.cls
+ ******************************************/
 @IsTest
 private class Test_SuccessRecodingController {
-    @testSetup static void setUpTest() {
+    @testSetup
+    static void setUpTest() {
         TestDataFactory.createFunctionalGroupWithCategory('ASU Coach Outreach', 'Ad Hoc', 'N/A');
-        
+
         Profile p = [SELECT Id FROM Profile WHERE Name = 'ASU Service - Success Coach'];
 
         // Test Users
@@ -17,9 +18,7 @@ private class Test_SuccessRecodingController {
         User testUser2 = TestDataFactory.createUser('test2', p.Id);
         insert testUser2;
 
-        Success_Pod__c testPod = new Success_Pod__c(
-            Name = 'pod 1'
-        );
+        Success_Pod__c testPod = new Success_Pod__c(Name = 'pod 1');
         insert testPod;
 
         // Test Resources

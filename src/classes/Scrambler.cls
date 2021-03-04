@@ -16,9 +16,9 @@ public class Scrambler {
 
         Integer randomOffset = 0;
         while (randomOffset == 0) {
-	    randomOffset = (Integer) (Math.random() * 30 - 15);
+            randomOffset = (Integer) (Math.random() * 30 - 15);
         }
-        
+
         dateToScramble = dateToScramble.addDays(randomOffset);
 
         return dateToScramble;

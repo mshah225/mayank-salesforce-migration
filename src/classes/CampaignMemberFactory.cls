@@ -1,12 +1,10 @@
 public class CampaignMemberFactory extends TestFactory {
-    public static final CampaignMember DEFAULT_CAMPAIGN_MEMBER = new CampaignMember(
-        Status = 'Interested'
-    );
-    
+    public static final CampaignMember DEFAULT_CAMPAIGN_MEMBER = new CampaignMember(Status = 'Interested');
+
     public CampaignMemberFactory(CampaignMember testCampaignMember) {
         super(testCampaignMember);
     }
-    
+
     public void setLeadOrContact(Sobject attachObject) {
         if (attachObject.getSObjectType().getDescribe().getName() == 'Contact') {
             this.setRelatedObject('ContactId', attachObject);
@@ -14,7 +12,7 @@ public class CampaignMemberFactory extends TestFactory {
             this.setRelatedObject('LeadId', attachObject);
         }
     }
-    
+
     public CampaignMember createOne() {
         return (CampaignMember) this.create()[0];
     }

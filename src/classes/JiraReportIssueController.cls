@@ -4,18 +4,10 @@ public class JiraReportIssueController {
         String jiraKey;
         System.debug(type);
         if (type.contains('New')) {
-            jiraKey = JIRAWebserviceCallout.createNewIssue(title,
-                                                           description,
-                                                           watchers,
-                                                           'Task'
-                                                          );
+            jiraKey = JIRAWebserviceCallout.createNewIssue(title, description, watchers, 'Task');
         } else {
-            jiraKey = JIRAWebserviceCallout.createNewIssue(title,
-                                                           description,
-                                                           watchers,
-                                                           'Bug'
-                                                          );
+            jiraKey = JIRAWebserviceCallout.createNewIssue(title, description, watchers, 'Bug');
         }
-        return jiraKey;  
+        return jiraKey;
     }
 }

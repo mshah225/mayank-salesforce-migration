@@ -42,6 +42,88 @@ public class Test_AdvisorPortalMainPage {
         validateCommitteesGroupId(listToTest);
     }
 
+    @isTest
+    private static void Test_allowedToMassTransfer() {
+        User allowedUser1 = TestDataFactory.createUser(
+            'test-mass-transfer-r1',
+            [SELECT Id FROM Profile WHERE Name = 'Standard User']
+            .Id
+        );
+        User allowedUser2 = TestDataFactory.createUser(
+            'test-mass-transfer-r2',
+            [SELECT Id FROM Profile WHERE Name = 'Standard User']
+            .Id
+        );
+        User unallowedUser1 = TestDataFactory.createUser(
+            'test-mass-transfer-r3',
+            [SELECT Id FROM Profile WHERE Name = 'Standard User']
+            .Id
+        );
+        User unallowedUser2 = TestDataFactory.createUser(
+            'test-mass-transfer-r4',
+            [SELECT Id FROM Profile WHERE Name = 'Standard User']
+            .Id
+        );
+        User unallowedUser3 = TestDataFactory.createUser(
+            'test-mass-transfer-r5',
+            [SELECT Id FROM Profile WHERE Name = 'Standard User']
+            .Id
+        );
+        insert new List<User>{ allowedUser1, allowedUser2, unallowedUser1, unallowedUser2, unallowedUser3 };
+
+        Success_Resource__c allowedUser1Resource = new Success_Resource__c(
+            Resource__c = allowedUser1.Id,
+            Role__c = 'Department Manager',
+            IsActive__c = true,
+            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+        );
+        Success_Resource__c allowedUser2Resource = new Success_Resource__c(
+            Resource__c = allowedUser2.Id,
+            Role__c = 'College Manager',
+            IsActive__c = true,
+            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+        );
+        Success_Resource__c unallowedUserResource = new Success_Resource__c(
+            Resource__c = unallowedUser1.Id,
+            Role__c = 'User',
+            IsActive__c = true,
+            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+        );
+        Success_Resource__c unallowedUserResource2 = new Success_Resource__c(
+            Resource__c = unallowedUser2.Id,
+            Role__c = 'College Manager',
+            IsActive__c = false,
+            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+        );
+        insert new List<Success_Resource__c>{
+            allowedUser1Resource,
+            allowedUser2Resource,
+            unallowedUserResource,
+            unallowedUserResource2
+        };
+
+        System.runAs(allowedUser1) {
+            apmpc = new AdvisorPortalMainPageController();
+            System.assert(apmpc.allowedToMassTransfer, 'Department Manager\'s should be allowed to use this feature');
+        }
+        System.runAs(allowedUser2) {
+            apmpc = new AdvisorPortalMainPageController();
+            System.assert(apmpc.allowedToMassTransfer, 'College Manager\'s should be allowed to use this feature');
+        }
+        System.runAs(unallowedUser1) {
+            apmpc = new AdvisorPortalMainPageController();
+            System.assert(!apmpc.allowedToMassTransfer, 'User\'s should not be allowed to use this feature');
+        }
+        System.runAs(unallowedUser2) {
+            apmpc = new AdvisorPortalMainPageController();
+            System.assert(!apmpc.allowedToMassTransfer, 'Should not consider inactive Success_Resources');
+        }
+        System.runAs(unallowedUser3) {
+            apmpc = new AdvisorPortalMainPageController();
+            System.assert(!apmpc.allowedToMassTransfer, 'Default (if no Success_Resources) should be to not allow');
+        }
+    }
+
     /*
      * As of right now the answer to this question should always be true.
      * We need to figure out under what circumstances the view as functionality should

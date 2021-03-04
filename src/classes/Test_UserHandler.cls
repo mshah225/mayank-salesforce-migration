@@ -246,8 +246,6 @@ public class Test_UserHandler {
         insert testUser;
 
         Test.stopTest();
-<<<<<<< HEAD
-=======
 
         //Query the CollabortationGroupId(Chatter Group) for the inserted user
         List<CollaborationGroupMember> lstCGM = [
@@ -295,7 +293,6 @@ public class Test_UserHandler {
         insert testUser;
 
         Test.stopTest();
->>>>>>> cc2426e0466523364570800a0253d8617035d559
 
         //Query the CollabortationGroupId(Chatter Group) for the inserted user
         List<CollaborationGroupMember> lstCGM = [
@@ -303,7 +300,6 @@ public class Test_UserHandler {
             FROM CollaborationGroupMember
             WHERE MemberId = :testUser.Id
         ];
-<<<<<<< HEAD
 
         System.assertEquals(lstCGM.size(), 1);
         //Check whether the user is added to the correct chatter group.
@@ -483,11 +479,5 @@ public class Test_UserHandler {
             }
         }
         return userFields;
-=======
-
-        System.assertEquals(lstCGM.size(), 1);
-        //Check whether the user is added to the correct chatter group.
-        System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
->>>>>>> cc2426e0466523364570800a0253d8617035d559
     }
 }

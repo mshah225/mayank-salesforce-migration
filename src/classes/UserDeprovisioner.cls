@@ -280,7 +280,7 @@ public without sharing class UserDeprovisioner {
         String fieldValue = (String) (userToDeprovision.get(fieldName));
 
         // Get name of field (instead of id) if possible
-        if (fieldIdToNameMap.containsKey(Id.valueOf(fieldValue))) {
+        if (fieldValue != null && fieldIdToNameMap.containsKey(Id.valueOf(fieldValue))) {
             fieldValue = fieldIdToNameMap.get(Id.valueOf(fieldValue));
         }
 

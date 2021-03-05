@@ -91,6 +91,7 @@
         <actionName>ViewSelfService</actionName>
         <type>Default</type>
     </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <compactLayouts>
         <fullName>Contacts</fullName>
         <fields>Name</fields>
@@ -101,6 +102,10 @@
         <fields>MailingAddress</fields>
         <label>Contacts</label>
     </compactLayouts>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <externalSharingModel>Private</externalSharingModel>
     <fields>
         <fullName>ASURite_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
@@ -990,16 +995,39 @@ AND ASU_NEW_UG_STATUS_CODE = 'FTF'</description>
     </fields>
     <fields>
         <fullName>First_Generation_Student__c</fullName>
-        <defaultValue>false</defaultValue>
+        <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>(PeopleSoft)
 PS_ASU_ADM_SAR_TBL WHERE ASU_ADS_QUESTNAME = 'FIRSTGEN' AND SAR.ASU_ADS_TXTRESP IN ('Y', 'YES', 'Yes')
 Or
 ASU_ADM_APPLICANT.FIRST_GEN_FLG = 'Y'</description>
         <externalId>false</externalId>
         <label>First Generation</label>
+        <required>false</required>
+        <securityClassification>Confidential</securityClassification>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Checkbox</type>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>--</fullName>
+                    <default>true</default>
+                    <label>--</label>
+                </value>
+                <value>
+                    <fullName>N</fullName>
+                    <default>false</default>
+                    <label>N</label>
+                </value>
+                <value>
+                    <fullName>Y</fullName>
+                    <default>false</default>
+                    <label>Y</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>Gender__c</fullName>
@@ -5616,67 +5644,6 @@ IMAGE("/resource/Thunderbird_icon","Thunderbird Student",20,20),
             </valueSetDefinition>
         </valueSet>
     </fields>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <enableEnhancedLookup>true</enableEnhancedLookup>
-    <enableFeeds>true</enableFeeds>
-    <enableHistory>true</enableHistory>
-    <externalSharingModel>Private</externalSharingModel>
-    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
-    <recordTypeTrackHistory>false</recordTypeTrackHistory>
-    <searchLayouts>
-        <customTabListAdditionalFields>FULL_NAME</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CONTACT.PHONE1</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CONTACT.EMAIL</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CONTACT.BIRTHDATE</customTabListAdditionalFields>
-        <customTabListAdditionalFields>ASURite_ID__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>EMPLID__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CONTACT.ADDRESS2_COUNTRY_CODE</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CONTACT.ADDRESS1_COUNTRY_CODE</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CONTACT.PHONE1</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CONTACT.EMAIL</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CONTACT.BIRTHDATE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>ASURite_ID__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>EMPLID__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CONTACT.ADDRESS2_COUNTRY_CODE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CONTACT.ADDRESS1_COUNTRY_CODE</lookupDialogsAdditionalFields>
-        <lookupFilterFields>CONTACT.FIRST_NAME</lookupFilterFields>
-        <lookupFilterFields>CONTACT.LAST_NAME</lookupFilterFields>
-        <lookupFilterFields>CONTACT.PHONE1</lookupFilterFields>
-        <lookupFilterFields>CONTACT.EMAIL</lookupFilterFields>
-        <lookupFilterFields>CONTACT.BIRTHDATE</lookupFilterFields>
-        <lookupFilterFields>EMPLID__c</lookupFilterFields>
-        <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.DO_NOT_CALL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE1</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.EMAIL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.BIRTHDATE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>ASURite_ID__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>EMPLID__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE3</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE4</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE5</lookupPhoneDialogsAdditionalFields>
-        <searchFilterFields>CONTACT.FIRST_NAME</searchFilterFields>
-        <searchFilterFields>CONTACT.LAST_NAME</searchFilterFields>
-        <searchFilterFields>CONTACT.PHONE1</searchFilterFields>
-        <searchFilterFields>CONTACT.PHONE4</searchFilterFields>
-        <searchFilterFields>CONTACT.EMAIL</searchFilterFields>
-        <searchFilterFields>CONTACT.BIRTHDATE</searchFilterFields>
-        <searchFilterFields>ASURite_ID__c</searchFilterFields>
-        <searchFilterFields>EMPLID__c</searchFilterFields>
-        <searchFilterFields>CONTACT.ADDRESS2_COUNTRY_CODE</searchFilterFields>
-        <searchFilterFields>CONTACT.ADDRESS1_COUNTRY_CODE</searchFilterFields>
-        <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.CREATED_DATE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.PHONE1</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.EMAIL</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.BIRTHDATE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>ASURite_ID__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>EMPLID__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CONTACT.ADDRESS2_COUNTRY_CODE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>Corporate_Relations_Contact_Owner__c</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>Read</sharingModel>
     <listViews>
         <fullName>ALL_CONTACTS</fullName>
         <columns>FULL_NAME</columns>
@@ -5845,6 +5812,8 @@ IMAGE("/resource/Thunderbird_icon","Thunderbird Student",20,20),
             <group>UTO_Administration</group>
         </sharedTo>
     </listViews>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
         <fullName>External_Mastered</fullName>
         <active>true</active>
@@ -8726,6 +8695,60 @@ IMAGE("/resource/Thunderbird_icon","Thunderbird Student",20,20),
             </values>
         </picklistValues>
     </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>FULL_NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CONTACT.PHONE1</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CONTACT.EMAIL</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CONTACT.BIRTHDATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ASURite_ID__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>EMPLID__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CONTACT.ADDRESS2_COUNTRY_CODE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CONTACT.ADDRESS1_COUNTRY_CODE</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CONTACT.PHONE1</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CONTACT.EMAIL</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CONTACT.BIRTHDATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ASURite_ID__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>EMPLID__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CONTACT.ADDRESS2_COUNTRY_CODE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CONTACT.ADDRESS1_COUNTRY_CODE</lookupDialogsAdditionalFields>
+        <lookupFilterFields>CONTACT.FIRST_NAME</lookupFilterFields>
+        <lookupFilterFields>CONTACT.LAST_NAME</lookupFilterFields>
+        <lookupFilterFields>CONTACT.PHONE1</lookupFilterFields>
+        <lookupFilterFields>CONTACT.EMAIL</lookupFilterFields>
+        <lookupFilterFields>CONTACT.BIRTHDATE</lookupFilterFields>
+        <lookupFilterFields>EMPLID__c</lookupFilterFields>
+        <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.DO_NOT_CALL</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE1</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.EMAIL</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.BIRTHDATE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ASURite_ID__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>EMPLID__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE3</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE4</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CONTACT.PHONE5</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>CONTACT.FIRST_NAME</searchFilterFields>
+        <searchFilterFields>CONTACT.LAST_NAME</searchFilterFields>
+        <searchFilterFields>CONTACT.PHONE1</searchFilterFields>
+        <searchFilterFields>CONTACT.PHONE4</searchFilterFields>
+        <searchFilterFields>CONTACT.EMAIL</searchFilterFields>
+        <searchFilterFields>CONTACT.BIRTHDATE</searchFilterFields>
+        <searchFilterFields>ASURite_ID__c</searchFilterFields>
+        <searchFilterFields>EMPLID__c</searchFilterFields>
+        <searchFilterFields>CONTACT.ADDRESS2_COUNTRY_CODE</searchFilterFields>
+        <searchFilterFields>CONTACT.ADDRESS1_COUNTRY_CODE</searchFilterFields>
+        <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.PHONE1</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.EMAIL</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.BIRTHDATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ASURite_ID__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EMPLID__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CONTACT.ADDRESS2_COUNTRY_CODE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Corporate_Relations_Contact_Owner__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
     <validationRules>
         <fullName>Contact_Data_Entry_Minimum_Requirements</fullName>
         <active>true</active>

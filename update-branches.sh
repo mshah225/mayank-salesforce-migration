@@ -59,17 +59,21 @@ else
     return
 fi
 
-# Prune local branches based on remote branches
-message="Pruning deleted remote origin branches........"; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
-git remote prune origin &>/dev/null
-message=" Pruned  "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
-printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
-
-# Fetch and apply all branch updates
+# Fetch branch updates
 message="Fetching all branch updates..................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
-git fetch --all &>/dev/null
+git checkout main
+git fetch --prune &>/dev/null
 message=" Fetched "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
 printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
+
+# Remove local branches based on remote branch status
+message="Removing obsolete branches...................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
+git removed-branches --prune &>/dev/null
+git branch --merged main --no-color | egrep -v '^\s*\*?\s*main$|dev$|qa$|rc$|uat$' | xargs git branch -d &>/dev/null
+message=" Removed "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;
+printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
+
+# Apply branch updates
 message="Syncing all branch updates...................."; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "${message:$i:1}"; done; echo -ne;
 hub sync &>/dev/null
 message=" Synced  "; for ((i=0; i<${#message}; i++)); do echo "after 5" | tclsh; printf "\033[1;32m${message:$i:1}\033[0m"; done; echo -ne;

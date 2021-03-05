@@ -238,8 +238,12 @@ public without sharing class UserDeprovisionOrganizer {
         Set<Id> userRoleIds = new Set<Id>();
         for (UserDeprovisioner toDepro : userDeprovisionersList) {
             User toDeproUser = toDepro.getUserToDeprovision();
-            profileIds.add(Id.valueOf((String) (toDeproUser.get('ProfileId'))));
-            userRoleIds.add(Id.valueOf((String) (toDeproUser.get('UserRoleId'))));
+            if ((toDeproUser.get('ProfileId')) != null) {
+                profileIds.add(Id.valueOf((String) (toDeproUser.get('ProfileId'))));
+            }
+            if ((toDeproUser.get('UserRoleId')) != null) {
+                userRoleIds.add(Id.valueOf((String) (toDeproUser.get('UserRoleId'))));
+            }
         }
 
         for (UserRole ur : [SELECT Id, Name FROM UserRole WHERE Id IN :userRoleIds]) {

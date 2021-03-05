@@ -33,29 +33,31 @@ esac
 # Title screen
 reset
 tput setaf 27
-echo "                                                                    "
-echo "                                                                    "
-echo "          ██    ██ ██████  ██████   █████  ████████ ███████         "
-echo "          ██    ██ ██   ██ ██   ██ ██   ██    ██    ██              "
-echo "          ██    ██ ██████  ██   ██ ███████    ██    █████           "
-echo "          ██    ██ ██      ██   ██ ██   ██    ██    ██              "
-echo "           ██████  ██      ██████  ██   ██    ██    ███████         "
-echo "                                                                    "
-echo "                                                                    "
-echo "      ███████ ███████  █████  ████████ ██    ██ ██████  ███████     "
-echo "      ██      ██      ██   ██    ██    ██    ██ ██   ██ ██          "
-echo "      █████   █████   ███████    ██    ██    ██ ██████  █████       "
-echo "      ██      ██      ██   ██    ██    ██    ██ ██   ██ ██          "
-echo "      ██      ███████ ██   ██    ██     ██████  ██   ██ ███████     "
-echo "                                                                    "
-echo "                                                                    "
-echo "  ██████  ██████   █████  ███    ██  ██████ ██   ██ ███████ ███████ "
-echo "  ██   ██ ██   ██ ██   ██ ████   ██ ██      ██   ██ ██      ██      "
-echo "  ██████  ██████  ███████ ██ ██  ██ ██      ███████ █████   ███████ "
-echo "  ██   ██ ██   ██ ██   ██ ██  ██ ██ ██      ██   ██ ██           ██ "
-echo "  ██████  ██   ██ ██   ██ ██   ████  ██████ ██   ██ ███████ ███████ "
-echo "                                                                    "
-echo "                                                                    "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "            ██   █    ▄█   ▄      ▄▄▄▄▄               "
+echo "            █ █  █    ██    █    █     ▀▄             "
+echo "            █▄▄█ █    ██ █   █ ▄  ▀▀▀▀▄               "
+echo "            █  █ ███▄ ▐█ █   █  ▀▄▄▄▄▀                "
+echo "               █     ▀ ▐ █▄ ▄█                        "
+echo "              █           ▀▀▀                         "
+echo "             ▀                                        "
+echo "                      by Michael Gilardi              "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
+echo "                                                      "
 sleep 3
 
 # Completely necessary narrative to begin script
@@ -91,7 +93,7 @@ if [[ "$machine" == 'Mac' ]]; then
 fi
 
 tput bold
-text_frame '                 Hello there, traveler. Im Alius.                   '
+text_frame "                 Hello there, traveler. I'm Alius.                  "
 sleep 3
 tput bold
 text_frame '        You look as though you have wondrous tales to share.        '
@@ -127,6 +129,18 @@ else
     reset
     exit 1
 fi
+
+tput setaf 27
+echo "                                            "
+echo "              ██   █    ▄█   ▄      ▄▄▄▄▄   "
+echo "              █ █  █    ██    █    █     ▀▄ "
+echo "              █▄▄█ █    ██ █   █ ▄  ▀▀▀▀▄   "
+echo "              █  █ ███▄ ▐█ █   █  ▀▄▄▄▄▀    "
+echo "                 █     ▀ ▐ █▄ ▄█            "
+echo "                █           ▀▀▀             "
+echo "               ▀                            "
+echo "                                            "
+tput sgr0
 
 # Fetch branch updates
 message="Fetching all branch updates..................."

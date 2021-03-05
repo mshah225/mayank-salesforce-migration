@@ -414,12 +414,8 @@ public class Test_UserHandler {
     private static void assertUserDeprovisioned(User deprovisionedUser) {
         Map<String, Deprovision_User_Configuration__c> deproivisionConfigurations = Deprovision_User_Configuration__c.getAll();
 
-        System.debug('-=-=-=-=-=- userConfiguration -=-=-=-=-=-');
-
         for (String configurationName : deproivisionConfigurations.keySet()) {
             Deprovision_User_Configuration__c userConfiguration = deproivisionConfigurations.get(configurationName);
-            System.debug(userConfiguration);
-
             if (configurationName.contains('UserRoleId')) {
                 System.assertEquals(userConfiguration.Id__c, deprovisionedUser.UserRoleId);
             } else if (configurationName.contains('ProfileId')) {
@@ -431,7 +427,6 @@ public class Test_UserHandler {
             }
         }
 
-        System.debug('-=-=-=-=-=- userConfiguration -=-=-=-=-=-');
         System.assert(!deprovisionedUser.Processing_Notes__c.contains('Exception Thrown'));
         System.assert(!deprovisionedUser.IsActive);
         System.assert(!deprovisionedUser.Deprovision_User__c);

@@ -1525,4 +1525,49 @@ public with sharing class Test_CaseInboundEmailHandler {
         System.assertEquals(null, lostEmail.CarbonCopies__c);
         System.assertEquals(true, lostEmail.RejectedAttachments__c);
     }
+
+    @isTest
+    static void testEmptyBodyFromOutlook() {
+        Test.startTest();
+        Contact c = new Contact(
+            FirstName = 'First',
+            LastName = 'Last',
+            Email = 'user@acme.com.test',
+            Personal_Email__c = 'user2@acme.com.test'
+        );
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        email.plainTextBody = null;
+        // 'Empty' in Outlook still leaves some head information
+        email.htmlBody = '<html>\n<head>\n<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=\n1">\n<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=\nttom:0;} </style>\n</head>\n<body dir=3D"ltr">\n<div style=3D"font-family: Calibri, Arial, Helvetica, sans-serif; font-size=\n: 12pt; color: rgb(0, 0, 0);">\n<br>\n</div>\n</body>\n</html>\n';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        System.assert(createdCase.Description != null);
+        System.assert(createdCase.Description.contains('without email body or attachment'));
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
 }

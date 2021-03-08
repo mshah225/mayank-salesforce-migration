@@ -413,6 +413,31 @@ public class AdvisorPortalMainPageController {
         set;
     }
 
+    /*
+     * Whether or not the currently logged in user has the permission to mass
+     * transfer cases
+     */
+    public boolean allowedToMassTransfer {
+        get {
+            if (allowedToMassTransfer == null) {
+                List<Success_Resource__c> resourceForCurrentUser = [
+                    SELECT Role__c
+                    FROM Success_Resource__c
+                    WHERE
+                        Resource__c = :UserInfo.getUserId()
+                        AND (Role__c = 'Department Manager'
+                        OR Role__c = 'College Manager')
+                        AND IsActive__c = TRUE
+                ];
+
+                allowedToMassTransfer = resourceForCurrentUser.size() > 0;
+            }
+
+            return allowedToMassTransfer;
+        }
+        set;
+    }
+
     public List<SelectOption> sortSelectOptionList(List<SelectOption> source) {
         List<string> sortable = new List<string>();
         for (SelectOption so : source) {

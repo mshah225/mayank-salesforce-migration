@@ -461,8 +461,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
             if (
                 success &&
-                (String.isBlank(email.HtmlBody) || String.isBlank(email.HtmlBody.replaceAll('<[^>]+>', ''))) &&
-                String.isBlank(email.plainTextBody)
+                htmlBodyIsEmpty(email.HtmlBody) &&
+                String.isBlank(removeAllWhitespaces(email.plainTextBody))
             ) {
                 if (this.theCase.Description == null) {
                     this.theCase.Description = '';
@@ -635,7 +635,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         /* **** From */
         theEmail.FromName = email.fromName;
-        theEmail.FromAddress = email.fromAddress;
+        // Clean from address (Remove @reply.asu.edu)
+        EmailTransformer cleanFromTransformer = new EmailTransformer();
+        theEmail.FromAddress = cleanFromTransformer.trimReplyFromSuffix(email.fromAddress);
 
         /* **** CC */
         if (email.ccAddresses != null) {
@@ -654,6 +656,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
 
         theEmail.CcAddress = limitLength(value, EmailMessage.CcAddress.getDescribe().getLength());
+
+        if (loggingSettings.Header_Logging__c) {
+            if (email.headers != null) {
+                theEmail.Headers = parseHeaders(email);
+            }
+        }
 
         insert theEmail;
     }
@@ -1241,6 +1249,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
     }
 
+    private String parseHeaders(Messaging.InboundEmail email) {
+        String header = '';
+        for (Messaging.InboundEmail.Header h : email.headers) {
+            header += h.name + ' : ' + h.value + '\n';
+        }
+        return header;
+    }
+
     // Make this public for unit test access
     public LostEmail__C generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
         loadConfigurationSettings();
@@ -1303,8 +1319,39 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             lostEmail.PlainTextBody__c += attachmentInfo;
         }
 
+        if (loggingSettings.Header_Logging__c) {
+            if (email.headers != null) {
+                lostEmail.Headers__c = parseHeaders(email);
+            }
+        }
+
         update lostEmail;
 
         return lostEmail;
+    }
+
+    private String removeAllWhitespaces(String removeFrom) {
+        // \s handles most whitespace characters.  Misses non-breaking space types and a couple others
+        // Using https://en.wikipedia.org/wiki/Whitespace_character as defining list of whitespace
+
+        if (removeFrom == null) {
+            removeFrom = '';
+        }
+        return removeFrom.replaceAll(
+                '[\\s|\\u00A0|\\u0085|\\u2007|\\u202F|\\u180E|\\u200B|\\u200C|\\u200D|\\u2060|\\uFEFF]',
+                ''
+            )
+            .replaceAll('&nbsp;', '');
+    }
+    private Boolean htmlBodyIsEmpty(String htmlBody) {
+        if (htmlBody == null) {
+            htmlBody = '';
+        }
+
+        htmlBody = htmlBody.replaceAll('<head>[\\s\\S]*</head>', '');
+        htmlBody = htmlBody.replaceAll('<[^>]+>', '');
+        htmlBody = removeAllWhitespaces(htmlBody);
+
+        return String.isBlank(htmlBody);
     }
 }

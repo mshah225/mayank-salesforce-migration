@@ -56,18 +56,20 @@ public class Test_QADefaultHandler {
      */
     public static testMethod void Test_getEmailFromAddress() {
         for (Case c : cases) {
+            EmailMessage em = new EmailMessage();
+            qadh.setEmailFromAndToAddress(c.Id, em);
             if (qadh.isAdvisorCase(c)) {
                 if (qadh.caseOwnedByGroup(c)) {
                     system.assertEquals(
                         [SELECT Primary_Email__c FROM Success_Pod__c WHERE OwnerId = :c.OwnerId]
                         .Primary_Email__c,
-                        qadh.getEmailFromAddress(c.Id)
+                        em.FromAddress
                     );
                 } else {
                     system.assertEquals(
                         [SELECT Primary_Email__c FROM Success_Pod__c WHERE Owner_Name__c = :c.Most_Recent_Queue__c]
                         .Primary_Email__c,
-                        qadh.getEmailFromAddress(c.Id)
+                        em.FromAddress
                     );
                 }
             }
@@ -75,7 +77,7 @@ public class Test_QADefaultHandler {
     }
 
     public static testMethod void Test_nullContextId() {
-        qadh.getEmailFromAddress(null);
+        qadh.setEmailFromAndToAddress(null, null);
         List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
         System.assertEquals(1, errorList.size());
     }

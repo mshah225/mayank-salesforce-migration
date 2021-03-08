@@ -41,14 +41,16 @@
                 <apex:tab label="My Proactive Cases" switchType="client" styleClass="wsTabContent" id="proactiveTab">
                     <c:showMyCases id="proactiveList" queryString="{!myProactiveQuery}" transferOptions="{!viewAsOptions}" proactiveRTID="{!AdvisorProactiveCaseRTID}"
                         emailRTID="{!advisorEmailRTID}" showSelection="true" showName="true" showEMPLID="true" showSubject="true"
-                        showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="true" showMassUpdate="true"
-                        showProactive="true" showReactive="true" showSearch="true" showRefresh="true" showCivitas="true" />
+                        showStatus="true" showFollowupDate="true" showTransfer="{!allowedToMassTransfer}" showMassEmail="true"
+                        showMassUpdate="true" showProactive="true" showReactive="true" showSearch="true" showRefresh="true" showCivitas="true"
+                    />
                 </apex:tab>
                 <apex:tab label="My Watchlist Cases" switchType="client" styleClass="wsTabContent" id="watchlistTab">
                     <c:showMyCases id="watchlistList" queryString="{!myWatchlistQuery}" transferOptions="{!viewAsOptions}" proactiveRTID="{!AdvisorProactiveCaseRTID}"
                         emailRTID="{!advisorEmailRTID}" showSelection="true" showName="true" showEMPLID="true" showSubject="true"
-                        showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="true" showMassUpdate="true"
-                        showProactive="true" showReactive="true" showSearch="true" showRefresh="true" showCivitas="true" />
+                        showStatus="true" showFollowupDate="true" showTransfer="{!allowedToMassTransfer}" showMassEmail="true"
+                        showMassUpdate="true" showProactive="true" showReactive="true" showSearch="true" showRefresh="true" showCivitas="true"
+                    />
                 </apex:tab>
                 <apex:tab label="My Students" switchType="client" styleClass="wsTabContent" id="studentsTab">
                     <c:showMyStudents queryString="{!myStudentsQuery}" proactiveRTID="{!AdvisorProactiveCaseRTID}" emailRTID="{!advisorEmailRTID}"

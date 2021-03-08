@@ -351,7 +351,7 @@ public class Test_UserHandler {
     @isTest
     public static void checkBulkDeprovisionedUsersWithProcessingNotes() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        List<User> usersToDeprovision = (List<User>) userCreator.create(201);
+        List<User> usersToDeprovision = (List<User>) userCreator.create(40);
         List<Id> deprovisionedUserIds = new List<Id>();
         Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
         Id successCoachRole = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;

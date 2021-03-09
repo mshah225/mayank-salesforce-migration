@@ -15,6 +15,40 @@
         helper.toggleEmailModal(component);
     },
 
+    massEmailPreview: function (component, event, helper) {
+        let isValid = true;
+        component.set('v.FormError', '');
+        event.getSource().set('v.disabled', true);
+
+        if (!component.get('v.EmailSubject')) {
+            isValid = false;
+        }
+
+        if (!component.get('v.EmailBody')) {
+            isValid = false;
+        }
+
+        if (!isValid) {
+            component.set('v.FormError', 'Please fill out all required fields.');
+            event.getSource().set('v.disabled', false);
+            return;
+        }
+
+        // Only supports one template right now, so hardcode details
+        let subject = component.get('v.EmailSubject');
+
+        let body = "Dear [Contact's FirstName],\n\n";
+        body += component.get('v.EmailBody');
+        body += '\n\nSincerely,\n' + component.get('v.userInfo').Name;
+
+        component.set('v.EmailPreviewSubject', subject);
+        component.set('v.EmailPreviewBody', body);
+    },
+    massEmailUnPreview: function (component, event, helper) {
+        component.set('v.EmailPreviewSubject', '');
+        component.set('v.EmailPreviewBody', '');
+    },
+
     massEmail: function (component, event, helper) {
         let contactToCaseToEmailMapping = new Map();
         let isValid = true;
@@ -75,6 +109,8 @@
             component.set('v.EmailSubject', '');
             component.set('v.EmailBody', '');
             component.set('v.FormError', '');
+            component.set('v.EmailPreviewSubject', '');
+            component.set('v.EmailPreviewBody', '');
             helper.toggleEmailModal(component);
             event.getSource().set('v.disabled', false);
         });

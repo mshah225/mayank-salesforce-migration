@@ -1,4 +1,4 @@
-import { LightningElement, api, track } from 'lwc';
+import {LightningElement, api, track} from 'lwc';
 import submitFeedback from '@salesforce/apex/FeedbackButtonService.submitFeedback';
 
 export default class FeedbackButton extends LightningElement {
@@ -21,7 +21,7 @@ export default class FeedbackButton extends LightningElement {
         this.hideModal = true;
         this.notHideModal = false;
     }
-    
+
     sendFeedback() {
         let feedback = '';
         if (this.template.querySelector('lightning-textarea').value) {
@@ -29,16 +29,21 @@ export default class FeedbackButton extends LightningElement {
         }
         if (feedback.length > 0) {
             this.loading = true;
-            submitFeedback({ carName: this.carName, feedbackText: feedback })
-                .then(result => {
+            submitFeedback({carName: this.carName, feedbackText: feedback})
+                .then((result) => {
                     this.closeModal();
                     this.template.querySelector('lightning-textarea').value = '';
                     this.makeToast('success', 'Success', 'Feedback successfully submitted');
                 })
-                .catch(error => {
+                .catch((error) => {
                     let errorMsg = error.body.message;
-                    if (!errorMsg.includes('Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080')) {
-                        errorMsg += '. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080';
+                    if (
+                        !errorMsg.includes(
+                            'Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080'
+                        )
+                    ) {
+                        errorMsg +=
+                            '. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080';
                     }
 
                     this.makeToast('error', 'Error', errorMsg);
@@ -47,7 +52,7 @@ export default class FeedbackButton extends LightningElement {
                     this.loading = false;
                 });
         } else {
-            this.makeToast('error','Error','Feedback must contain some content.')
+            this.makeToast('error', 'Error', 'Feedback must contain some content.');
         }
     }
 

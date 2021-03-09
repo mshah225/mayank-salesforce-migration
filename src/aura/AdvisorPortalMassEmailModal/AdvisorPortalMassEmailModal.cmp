@@ -5,7 +5,9 @@
     <aura:attribute name="FormError" type="String" />
     <aura:attribute name="userInfo" type="user" />
     <aura:attribute name="EmailPreviewSubject" type="String" default="" />
+    <aura:attribute name="sendLabel" type="String" default="Send" />
     <aura:attribute name="EmailPreviewBody" type="String" default="" />
+    <aura:attribute name="SendEmailsToMap" type="Map" />
     <aura:handler name="init" value="this" action="{!c.loadUserDetail}" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
@@ -91,7 +93,11 @@
                         />
                         <aura:set attribute="else">
                             <lightning:button variant="neutral" label="Go Back" onclick="{!c.massEmailUnPreview}" />
-                            <lightning:button type="submit" variant="brand" label="Send" onclick="{!c.massEmail}"
+                            <lightning:button
+                                type="submit"
+                                variant="brand"
+                                label="{!v.sendLabel}"
+                                onclick="{!c.massEmail}"
                         /></aura:set>
                     </aura:if>
                 </footer>

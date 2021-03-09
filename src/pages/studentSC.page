@@ -12,15 +12,15 @@
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
         <style>
-            #LWCHeaderSpacer {
+            #ASUBrandHeaderSpacer {
                 height: 145px;
             }
         </style>
     </head>
 
     <apex:includeLightning />
-    <div id="LWCHeaderSpacer"></div>
-    <div id='LWCHeaderWrapper'></div>
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id='ASUBrandHeaderWrapper'></div>
 
     <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
         viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div id='LWCFooterWrapper'></div>
+    <div id='ASUBrandFooterWrapper'></div>
 
     <script>
         var widthToPush;
@@ -83,12 +83,12 @@
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
                     {},
-                    "LWCHeaderWrapper"
+                    "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(
                     "c:asuBrandFooter",
                     {},
-                    "LWCFooterWrapper"
+                    "ASUBrandFooterWrapper"
                 );
             }
         );

@@ -1,11 +1,16 @@
 :host .openButton {
     display: inline-block;
+    cursor: pointer;
 }
 
 :host .openButton > lightning-icon {
     display: inline;
     margin-right: 5px;
     filter: invert(51%) sepia(11%) saturate(5749%) hue-rotate(179deg) brightness(79%) contrast(75%);
+}
+
+:host lightning-icon.slds-modal__close {
+    cursor: pointer;
 }
 
 :host .openButton:hover > lightning-icon {

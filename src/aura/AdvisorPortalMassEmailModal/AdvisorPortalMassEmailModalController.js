@@ -13,38 +13,6 @@
 
     toggleMassEmailModal: function (component, event, helper) {
         helper.toggleEmailModal(component);
-
-        // Load all selected cases/contacts into map attribute
-        // and count number of emails about to send
-        let contacts = component.get('v.Contacts');
-        let contactToCaseToEmailMapping = new Map();
-        let count = 0;
-        for (let i = 0; i < contacts.length; i++) {
-            let hasSomethingSelected = contacts[i].isSelected;
-
-            let casesForThisContact = [];
-            for (let j = 0; j < contacts[i].cases.length; j++) {
-                if (contacts[i].cases[j].isSelected) {
-                    casesForThisContact.push(contacts[i].cases[j].portalCase);
-                    hasSomethingSelected = true;
-                }
-            }
-
-            if (hasSomethingSelected) {
-                contactToCaseToEmailMapping.set(contacts[i].portalContact.Id, casesForThisContact);
-                if (casesForThisContact.length == 0) {
-                    count += 1;
-                } else {
-                    count += casesForThisContact.length;
-                }
-            }
-        }
-        component.set('v.SendEmailsToMap', contactToCaseToEmailMapping);
-        if (count == 1) {
-            component.set('v.sendLabel', 'Send (' + count + ' Email)');
-        } else {
-            component.set('v.sendLabel', 'Send (' + count + ' Emails)');
-        }
     },
 
     massEmailPreview: function (component, event, helper) {
@@ -121,9 +89,6 @@
             }
 
             helper.fireToast('Success', 'Email message(s) sent.', 'success');
-            component.set('v.EmailSubject', '');
-            component.set('v.EmailBody', '');
-            component.set('v.FormError', '');
             helper.toggleEmailModal(component);
             event.getSource().set('v.disabled', false);
         });

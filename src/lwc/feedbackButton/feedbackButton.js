@@ -4,6 +4,8 @@ import submitFeedback from '@salesforce/apex/FeedbackButtonService.submitFeedbac
 export default class FeedbackButton extends LightningElement {
     @api iconSize = 'xx-small';
     @api carName;
+    @api title =
+        'We value your feedback. Do you have a question, issue, or idea to improve this service? Submit it below';
     @track hideModal = true;
     @track notHideModal = false;
     @track loading = false;

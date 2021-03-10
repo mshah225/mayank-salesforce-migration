@@ -1,48 +1,27 @@
 <apex:page standardController="Case" extensions="CaseDetailWithRelatedCasesController" sidebar="false">
-    <table>
-        <tr>
-            <td class='label'>
-                <div>
-                    <div>
-                        <span class='.label'>Contact’s Open Cases in this Functional Group</span>
-                    </div>
-                    <div>
-                        <img class="helpOrb" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="How many other open cases are for the same contact and are in the same functional group?"
-                            title="How many other open cases are for the same contact and are in the same functional group?"
-                        />
-                    </div>
-                </div>
-            </td>
-            <td class='value'>
-                <div>
-                    <input disabled='true' value="{!relatedCaseCount}" />
-                </div>
-            </td>
-        </tr>
-    </table>
+    <div class='wrapper'>
+        <div class='label'>
+            <span title="How many other open cases are for the same contact and are in the same functional group?">Contact’s Open Cases in this Functional Group: </span>
+        </div>
+        <div class='value'>
+            <span>{!relatedCaseCount}</span>
+        </div>
+    </div>
 
     <style>
-        td {
-            vertical-align: top;
+        .wrapper {
+            border-radius: 4px;
+            border: 1px solid #eaeaea;
+            border-top: 3px solid #b7a752;
+            background-color: #f8f8f8;
+            display: flex;
+            padding: 5px;
         }
 
         .label {
-            width: 36.5%;
-            color: #4a4a56;
-            font-weight: bold;
-            font-size: 91%;
             word-wrap: break-word;
-            min-width: 150px;
-        }
+            margin-right: 10px;
 
-        .label>div {
-            display: flex;
-        }
-
-        input {
-            border: none;
-            background: none;
-            color: black;
         }
     </style>
 </apex:page>

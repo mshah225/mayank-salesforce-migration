@@ -1,0 +1,30 @@
+<apex:page standardController="Case" extensions="CaseDetailWithRelatedCasesController" sidebar="false">
+    <!-- Standardize label to match others on page -->
+    <label>Contact’s Open Cases in this Functional Group</label>
+
+    <!-- Help orb class add icon, src is transparent  -->
+    <img class="helpOrb" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="How many other open cases are for the same contact and are in the same functional group?"
+        title="How many other open cases are for the same contact and are in the same functional group?" />
+
+    <!-- The actual count -->
+    <input disabled='true' value="{!relatedCaseCount}" />
+
+    <style>
+        label {
+            color: #4a4a56;
+            font-weight: bold;
+            font-size: 91%;
+        }
+
+        img {
+            top: 4px;
+            position: relative;
+        }
+
+        input {
+            border: none;
+            background: none;
+            color: black;
+        }
+    </style>
+</apex:page>

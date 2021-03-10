@@ -1,0 +1,19 @@
+<apex:component>
+    <!-- 1. Insert component immediately after <apex:slds /> or <apex:includeLightning /> tag -->
+    <!-- 2. Add 'slds-scope' class to desired SLDS-based or Lightning container -->
+    <script>
+        jQuery(window).on('load', function () {
+            jQuery('.slds-scope').removeClass('slds-scope');
+        });
+
+        jQuery(window).on('beforeunload', function () {
+            // your logic here
+            jQuery('.slds-scope').removeClass('slds-scope');
+        });
+
+        setTimeout(
+            function () {
+                jQuery('.slds-scope').removeClass('slds-scope');
+            }, 1000);
+    </script>
+</apex:component>

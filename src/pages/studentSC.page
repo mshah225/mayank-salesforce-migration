@@ -22,8 +22,8 @@
     <div id="ASUBrandHeaderSpacer"></div>
     <div id='ASUBrandHeaderWrapper'></div>
 
-    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
+    <!-- <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" /> -->
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
@@ -95,4 +95,5 @@
 
     </script>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
+    <c:SLDSRemoveGlobalStyles />
 </apex:page>

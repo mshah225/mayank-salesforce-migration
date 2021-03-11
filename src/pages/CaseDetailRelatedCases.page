@@ -1,7 +1,7 @@
 <apex:page standardController="Case" extensions="CaseDetailWithRelatedCasesController" sidebar="false">
     <div class='wrapper'>
         <div class='label'>
-            <span title="How many other open cases are for the same contact and are in the same functional group?">Contact’s Open Cases in this Functional Group: </span>
+            <span title="How many total cases are for the same contact and are in the same functional group?">Contact’s Open Cases in this Functional Group: </span>
         </div>
         <div class='value'>
             <span>{!relatedCaseCount}</span>

@@ -15,11 +15,7 @@ public with sharing class CaseDetailWithRelatedCasesController {
             relatedCaseCount = (Integer) [
                     SELECT COUNT(Id)
                     FROM Case
-                    WHERE
-                        ContactId = :thisContact
-                        AND CC_Functional_Group__c = :thisFunctionalGrp
-                        AND IsClosed = FALSE
-                        AND Id != :caseRecordId
+                    WHERE ContactId = :thisContact AND CC_Functional_Group__c = :thisFunctionalGrp AND IsClosed = FALSE
                 ][0]
                 .get('expr0');
         } else {

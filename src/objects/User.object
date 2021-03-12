@@ -55,6 +55,9 @@
         <actionName>UserActivationAction</actionName>
         <type>Default</type>
     </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>true</enableFeeds>
+    <externalSharingModel>Private</externalSharingModel>
     <fields>
         <fullName>ASURITE_Id__c</fullName>
         <description>[??] - ASURITE ID</description>
@@ -605,34 +608,33 @@ HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <enableFeeds>true</enableFeeds>
-    <externalSharingModel>Private</externalSharingModel>
-    <searchLayouts>
-        <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CORE.USER_ROLE.NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CORE.USERS.TITLE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>CORE.PROFILE.NAME</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CORE.USER_ROLE.NAME</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Recruiter_Phone__c</lookupPhoneDialogsAdditionalFields>
-        <searchFilterFields>FULL_NAME</searchFilterFields>
-        <searchFilterFields>CORE.USERS.ALIAS</searchFilterFields>
-        <searchFilterFields>CORE.USERS.ACTIVE</searchFilterFields>
-        <searchFilterFields>CORE.USER_ROLE.NAME</searchFilterFields>
-        <searchFilterFields>CORE.PROFILE.NAME</searchFilterFields>
-        <searchFilterFields>CORE.USERS.LAST_LOGIN</searchFilterFields>
-        <searchFilterFields>LAST_UPDATE</searchFilterFields>
-        <searchFilterFields>LAST_UPDATE_BY_ALIAS</searchFilterFields>
-        <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.TITLE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.PHONE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CORE.USERS.EMAIL</searchResultsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>Read</sharingModel>
+    <fields>
+        <fullName>Deprovision_User__c</fullName>
+        <businessOwnerGroup>Data_Owner_IAM_Identity_Management</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <defaultValue>false</defaultValue>
+        <description>Start off the de-provisioning process.  Notes from this process will be put in the user's Processing_Notes__c field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this field to trigger the deprovision process on this user account.</inlineHelpText>
+        <label>Deprovision User</label>
+        <securityClassification>Internal</securityClassification>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Processing_Notes__c</fullName>
+        <businessOwnerGroup>Data_Owner_IAM_Identity_Management</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>Notes about the deprovision process - steps taken and errors encountered.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Notes from the deprovision process that is triggered by checking the checkbox Deprovision_User__c.</inlineHelpText>
+        <label>Processing Notes</label>
+        <length>131072</length>
+        <securityClassification>Internal</securityClassification>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
     <fieldSets>
         <fullName>PeopleSoft_Role_Fieldset</fullName>
         <description>Used in Chatter Apex Class. 
@@ -1848,6 +1850,31 @@ This fieldset should contain all the PeopleSoft Roles present on the User.</desc
         </filters>
         <label>zzDuplicates</label>
     </listViews>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USER_ROLE.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.TITLE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.PROFILE.NAME</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USER_ROLE.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Recruiter_Phone__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>FULL_NAME</searchFilterFields>
+        <searchFilterFields>CORE.USERS.ALIAS</searchFilterFields>
+        <searchFilterFields>CORE.USERS.ACTIVE</searchFilterFields>
+        <searchFilterFields>CORE.USER_ROLE.NAME</searchFilterFields>
+        <searchFilterFields>CORE.PROFILE.NAME</searchFilterFields>
+        <searchFilterFields>CORE.USERS.LAST_LOGIN</searchFilterFields>
+        <searchFilterFields>LAST_UPDATE</searchFilterFields>
+        <searchFilterFields>LAST_UPDATE_BY_ALIAS</searchFilterFields>
+        <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.TITLE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.PHONE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.EMAIL</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
     <validationRules>
         <fullName>Only_System_Admins_Create_Edit_Users</fullName>
         <active>true</active>

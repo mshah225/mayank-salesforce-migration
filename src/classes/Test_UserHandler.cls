@@ -305,4 +305,143 @@ public class Test_UserHandler {
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
+
+    @isTest
+    public static void checkDeprovisionedUserWithProcessingNotes() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User updateUser = (User) userCreator.create(1)[0];
+        Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
+        updateUser.ProfileId = standardProfile;
+        updateUser.UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert updateUser;
+        }
+
+        List<Deprovision_User_Configuration__c> deproivisionConfigurations = new List<Deprovision_User_Configuration__c>();
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'Change UserRoleId To',
+                Id__c = '00Ed00000017bQ5EAI',
+                Name__c = 'Z Unassigned (Temporary Role)'
+            )
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'Change ProfileId To',
+                Id__c = '00ed00000019yCpAAI',
+                Name__c = 'ASU Chatter User'
+            )
+        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert deproivisionConfigurations;
+        }
+
+        updateUser.Deprovision_User__c = true;
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Test.startTest();
+            update updateUser;
+            Test.stopTest();
+        }
+        Id userId = updateUser.Id;
+        updateUser = Database.Query('SELECT ' + userFieldsForDeprovision() + ' FROM User WHERE Id = :userId');
+
+        assertUserDeprovisioned(updateUser);
+    }
+
+    @isTest
+    public static void checkBulkDeprovisionedUsersWithProcessingNotes() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        List<User> usersToDeprovision = (List<User>) userCreator.create(40);
+        List<Id> deprovisionedUserIds = new List<Id>();
+        Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
+        Id successCoachRole = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
+
+        for (User user : usersToDeprovision) {
+            user.ProfileId = standardProfile;
+            user.UserRoleId = successCoachRole;
+        }
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert usersToDeprovision;
+        }
+
+        for (User user : usersToDeprovision) {
+            deprovisionedUserIds.add(user.Id);
+            user.Deprovision_User__c = true;
+        }
+
+        List<Deprovision_User_Configuration__c> deproivisionConfigurations = new List<Deprovision_User_Configuration__c>();
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'Change UserRoleId To',
+                Id__c = '00Ed00000017bQ5EAI',
+                Name__c = 'Z Unassigned (Temporary Role)'
+            )
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(
+                Name = 'Change ProfileId To',
+                Id__c = '00ed00000019yCpAAI',
+                Name__c = 'ASU Chatter User'
+            )
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(Name = 'RemoveValue_CallCenter', Name__c = 'CallCenterId')
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(Name = 'SwitchToFalse_Sandbox_DEV', Name__c = 'Sandbox_DEV__c')
+        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert deproivisionConfigurations;
+        }
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Test.startTest();
+            update usersToDeprovision;
+            Test.stopTest();
+        }
+
+        usersToDeprovision = Database.Query(
+            'SELECT ' +
+            userFieldsForDeprovision() +
+            ' FROM User WHERE Id IN :deprovisionedUserIds'
+        );
+
+        for (User user : usersToDeprovision) {
+            assertUserDeprovisioned(user);
+        }
+    }
+
+    private static void assertUserDeprovisioned(User deprovisionedUser) {
+        Map<String, Deprovision_User_Configuration__c> deproivisionConfigurations = Deprovision_User_Configuration__c.getAll();
+
+        for (String configurationName : deproivisionConfigurations.keySet()) {
+            Deprovision_User_Configuration__c userConfiguration = deproivisionConfigurations.get(configurationName);
+            if (configurationName.contains('UserRoleId')) {
+                System.assertEquals(userConfiguration.Id__c, deprovisionedUser.UserRoleId);
+            } else if (configurationName.contains('ProfileId')) {
+                System.assertEquals(userConfiguration.Id__c, deprovisionedUser.ProfileId);
+            } else if (configurationName.contains('RemoveValue')) {
+                System.assertEquals(null, deprovisionedUser.get(userConfiguration.Name__c));
+            } else if (configurationName.contains('SwitchToFalse')) {
+                System.assertEquals(false, deprovisionedUser.get(userConfiguration.Name__c));
+            }
+        }
+
+        System.assert(!deprovisionedUser.Processing_Notes__c.contains('Exception Thrown'));
+        System.assert(!deprovisionedUser.IsActive);
+        System.assert(!deprovisionedUser.Deprovision_User__c);
+    }
+
+    private static String userFieldsForDeprovision() {
+        String userFields = 'UserRoleId, ProfileId, IsActive, Deprovision_User__c, Processing_Notes__c';
+        Map<String, Deprovision_User_Configuration__c> deproivisionConfigurations = Deprovision_User_Configuration__c.getAll();
+
+        for (String configurationName : deproivisionConfigurations.keySet()) {
+            Deprovision_User_Configuration__c userConfiguration = deproivisionConfigurations.get(configurationName);
+            if (configurationName.contains('RemoveValue') || configurationName.contains('SwitchToFalse')) {
+                userFields += ', ' + userConfiguration.Name__c;
+            }
+        }
+        return userFields;
+    }
 }

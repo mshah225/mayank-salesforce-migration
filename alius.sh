@@ -335,7 +335,8 @@ echo
 printf "\n"
 
 # Switch back to main because it looks cleaner at the end
-git checkout main &>/dev/null
+git checkout -f main &>/dev/null
+git reset --hard origin/main &>/dev/null
 message='Feature branch update complete!'
 for ((i = 0; i < ${#message}; i++)); do
     echo "after 5" | tclsh

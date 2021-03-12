@@ -8,7 +8,6 @@ public class AdvisorPortalMassUpdateController {
     @AuraEnabled
     public static List<String> populateClosedCaseStatusOptions() {
         return new List<String>{
-            'Closed: Administratively Resolved (No Outreach)',
             'Closed: Customer Self-Resolved',
             'Conferred with Student by Email',
             'Conferred with Student by Phone',

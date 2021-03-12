@@ -14,7 +14,7 @@ private class AdvisorPortalMassUpdateControllerTest {
         Test.stopTest();
 
         // Assert
-        System.assertEquals(5, closedStatuses.size());
+        System.assertEquals(4, closedStatuses.size());
         System.assert(closedStatuses.contains('In Person Meeting'));
     }
 

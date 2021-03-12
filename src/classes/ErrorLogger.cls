@@ -7,6 +7,7 @@ public without sharing class ErrorLogger {
     private Case caseToCreate;
     private Exception errorLoggerException;
     private String className;
+    private Boolean allowRepeats;
 
     public ErrorLogger() {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
@@ -16,6 +17,7 @@ public without sharing class ErrorLogger {
         if (loggedInContact != null) {
             caseToCreate.ContactId = loggedInContact.Id;
         }
+        allowRepeats = false;
     }
 
     public void setClassName(String className) {
@@ -30,6 +32,10 @@ public without sharing class ErrorLogger {
     public void setDetails(String details) {
         this.details = details;
         setCaseDescription();
+    }
+
+    public void setAllowRepeats(Boolean allowRepeats) {
+        this.allowRepeats = allowRepeats;
     }
 
     private void setCaseDescription() {
@@ -90,7 +96,7 @@ public without sharing class ErrorLogger {
         caseToCreate.Subject = getSubject();
         List<Case> oldCases = getDuplicateCasesFromToday();
 
-        if (!oldCases.isEmpty()) {
+        if (!oldCases.isEmpty() && !allowRepeats) {
             oldCases[0].Description = oldCases[0].Description + '\n' + getCurrentTimeStamp();
             caseToCreate = oldCases[0];
         }
@@ -177,7 +183,23 @@ public without sharing class ErrorLogger {
      * @return Boolean True if case is inserted, False if case is not inserted, Null if error
      */
     public static boolean log(Exception ex, List<String> variables, Boolean debug) {
-        return log(ex, variables, debug, new Case(), null);
+        return log(ex, variables, debug, new Case(), null, false);
+    }
+
+    /**
+     * Report exceptions via desired method (system debug logs or cases). If case fails to
+     * insert, send an email alert.
+     *
+     * @param Exception The exception that needs to be reported
+     * @param List<String> A list of strings that represent the variable names and values
+     * seperated by commas
+     * @param Boolean Flag to determine if errors are logged to console or as cases
+     * @param Boolean Whether we should detect existing cases and append to those (fasle), or always make a new one (true)
+     * will be used, If no user is logged in, no contact will be associated
+     * @return Boolean True if case is inserted, False if case is not inserted, Null if error
+     */
+    public static boolean log(Exception ex, List<String> variables, Boolean debug, Boolean allowRepeats) {
+        return log(ex, variables, debug, new Case(), null, allowRepeats);
     }
 
     /**
@@ -193,7 +215,7 @@ public without sharing class ErrorLogger {
      * @return Boolean True if case is inserted, False if case is not inserted, Null if error
      */
     public static boolean log(Exception ex, List<String> variables, Boolean debug, Id contactId) {
-        return log(ex, variables, debug, new Case(), contactId);
+        return log(ex, variables, debug, new Case(), contactId, false);
     }
 
     /**
@@ -211,12 +233,39 @@ public without sharing class ErrorLogger {
      * @return Boolean True if case is inserted, False if case is not inserted, Null if error
      */
     public static boolean log(Exception ex, List<String> variables, Boolean debug, Case newCase, Id contactId) {
+        return log(ex, variables, debug, newCase, contactId, false);
+    }
+
+    /**
+     * Overload provided for testing only. Pass an invalid case to this overload to force an
+     * exception for code coverage.
+     *
+     * @param Exception The exception that needs to be reported
+     * @param List<String> A list of strings that represent the variable names and values
+     * seperated by commas
+     * @param Boolean Flag to determine if errors are logged to console or as cases
+     * @param Case A case object to use for the new case (allows for passing invalid cases for testing.
+     * this param should only be utilized directly for test classes)
+     * @param Id The contact Id the case should be associated with, If no ID is provided, the logged in user
+     * will be used, If no user is logged in, no contact will be associated
+     * @param Boolean Whether we should detect existing cases and append to those (fasle), or always make a new one (true)
+     * @return Boolean True if case is inserted, False if case is not inserted, Null if error
+     */
+    public static boolean log(
+        Exception ex,
+        List<String> variables,
+        Boolean debug,
+        Case newCase,
+        Id contactId,
+        Boolean allowRepeats
+    ) {
         ErrorLogger el = new ErrorLogger();
         el.setException(ex);
         if (variables != null) {
             el.setDetails(String.valueOf(variables));
         }
         el.setContactId(contactId);
+        el.setAllowRepeats(allowRepeats);
         return el.log();
     }
 
@@ -386,5 +435,45 @@ public without sharing class ErrorLogger {
      */
     public static string convertSObjectToJSON(String varName, SObject value) {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
+    }
+
+    public without sharing class ErrorLoggerQueue implements Queueable {
+        Exception error;
+        List<String> variables;
+        Boolean debug;
+        Boolean allowRepeats;
+
+        public ErrorLoggerQueue() {
+            this.allowRepeats = false;
+        }
+        public ErrorLoggerQueue(Exception error, List<String> variables, Boolean debug) {
+            this.error = error;
+            this.variables = variables;
+            this.debug = debug;
+            this.allowRepeats = false;
+        }
+        public ErrorLoggerQueue(Exception error, List<String> variables, Boolean debug, Boolean allowRepeats) {
+            this.error = error;
+            this.variables = variables;
+            this.debug = debug;
+            this.allowRepeats = allowRepeats;
+        }
+
+        public void setError(Exception error) {
+            this.error = error;
+        }
+        public void setVariables(List<String> variables) {
+            this.variables = variables;
+        }
+        public void setDebug(Boolean debug) {
+            this.debug = debug;
+        }
+        public void setAllowRepeats(Boolean allowRepeats) {
+            this.allowRepeats = allowRepeats;
+        }
+
+        public void execute(QueueableContext context) {
+            ErrorLogger.log(error, variables, debug, allowRepeats);
+        }
     }
 }

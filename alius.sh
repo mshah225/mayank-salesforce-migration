@@ -102,9 +102,6 @@ tput bold
 text_frame 'Unfortunately, I was not created with the ability to listen to them.'
 sleep 3
 tput bold
-text_frame '         I trust that you have not come with devious intent.        '
-sleep 3
-tput bold
 text_frame '                        Shall we begin? (y/n)                       '
 sleep 1
 printf "> "
@@ -121,7 +118,7 @@ if [ "$input" = "Y" ] || [ "$input" = "y" ] || [ "$input" = "yes" ] || [ "$input
     reset
 else
     tput bold
-    text_frame '                  Why must you trouble me? Be gone!                '
+    text_frame '                  Why must you trouble me? Be gone!                 '
     if [[ "$machine" == 'Mac' ]]; then
         afplay /System/Library/Sounds/Sosumi.aiff
     fi
@@ -130,6 +127,50 @@ else
     exit 1
 fi
 
+tput bold
+text_frame '         Which path will you take, traveler? Choose wisely.         '
+sleep 1
+
+message="[1] I'm on an original repository and I have no upstream."
+for ((i = 0; i < ${#message}; i++)); do
+    echo "after 5" | tclsh
+    printf "${message:$i:1}"
+done
+echo
+message="[2] I'm on a fork of the original repository and I want to pull upstream updates."
+for ((i = 0; i < ${#message}; i++)); do
+    echo "after 5" | tclsh
+    printf "${message:$i:1}"
+done
+echo
+message="[3] I'm on a fork of the original repository and I DO NOT want to pull upstream updates (not recommended)."
+for ((i = 0; i < ${#message}; i++)); do
+    echo "after 5" | tclsh
+    printf "${message:$i:1}"
+done
+echo
+printf "> "
+echo -ne
+read choice
+echo
+
+# If the user wants to additionally update their fork from upstream, proceed with the following
+remote=''
+if [ "$choice" = "2" ]; then
+    tput bold
+    text_frame '        Hark! After an arduous search, I found your remotes.        '
+    sleep 1
+    git remote
+
+    tput bold
+    text_frame "   The time has come to choose your fork's upstream. What say you?  "
+    sleep 1
+    printf "> "
+    echo -ne
+    read remote
+fi
+
+reset
 tput setaf 27
 echo "                                            "
 echo "              ██   █    ▄█   ▄      ▄▄▄▄▄   "
@@ -143,13 +184,13 @@ echo "                                            "
 tput sgr0
 
 # Fetch branch updates
-message="Fetching all branch updates..................."
+message="Fetching origin branch updates................"
 for ((i = 0; i < ${#message}; i++)); do
     echo "after 5" | tclsh
     printf "${message:$i:1}"
 done
 echo -ne
-git checkout main &>/dev/null
+git checkout -f main &>/dev/null
 git fetch --prune &>/dev/null
 message=" Fetched "
 for ((i = 0; i < ${#message}; i++)); do
@@ -234,6 +275,7 @@ for ((i = 0; i < ${#message}; i++)); do
     printf "${message:$i:1}"
 done
 echo
+
 successCount=0
 failureCount=0
 for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
@@ -252,7 +294,7 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
         echo -ne
         git checkout $branch &>/dev/null
         printf "\n\t"
-        message="> PULLING UPDATES"
+        message="> PULLING UPDATES FROM MAIN"
         for ((i = 0; i < ${#message}; i++)); do
             echo "after 5" | tclsh
             printf "\033[1;33m${message:$i:1}\033[0m"
@@ -261,13 +303,13 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
         git pull --no-edit origin main &>/dev/null
         if [ $? -eq 0 ]; then
             # Clean merge, proceed with pushing
-            message=" > CLEAN MERGE"
+            message=" > CLEAN"
             for ((i = 0; i < ${#message}; i++)); do
                 echo "after 5" | tclsh
                 printf "\033[1;32m${message:$i:1}\033[0m"
             done
             echo -ne
-            message=" > PUSHING UPDATES"
+            message=" > PUSHING TO REMOTE ORIGIN"
             for ((i = 0; i < ${#message}; i++)); do
                 echo "after 5" | tclsh
                 printf "\033[1;32m${message:$i:1}\033[0m"
@@ -277,7 +319,7 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
             successCount=$((successCount + 1))
         else
             # Conflicted merge, abort and handle manually
-            message=" > CONFLICTED MERGE"
+            message=" > CONFLICT"
             for ((i = 0; i < ${#message}; i++)); do
                 echo "after 5" | tclsh
                 printf "\033[1;31m${message:$i:1}\033[0m"
@@ -295,6 +337,126 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
         printf "\n"
     fi
 done
+
+if [ "$choice" = "2" ]; then
+    reset
+    tput setaf 27
+    echo "                                            "
+    echo "              ██   █    ▄█   ▄      ▄▄▄▄▄   "
+    echo "              █ █  █    ██    █    █     ▀▄ "
+    echo "              █▄▄█ █    ██ █   █ ▄  ▀▀▀▀▄   "
+    echo "              █  █ ███▄ ▐█ █   █  ▀▄▄▄▄▀    "
+    echo "                 █     ▀ ▐ █▄ ▄█            "
+    echo "                █           ▀▀▀             "
+    echo "               ▀         FORK EDITION       "
+    echo "                                            "
+    tput sgr0
+
+    # Check over all origin branches and track any new ones
+    message="Looking for upstream changes.................."
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "${message:$i:1}"
+    done
+    echo -ne
+    git checkout -f origin main &>/dev/null
+    git reset --hard origin/main &>/dev/null
+    message=" Handled "
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "\033[1;32m${message:$i:1}\033[0m"
+    done
+    echo -ne
+    printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
+
+    # Fetch branch updates
+    message="Fetching upstream branch updates.............."
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "${message:$i:1}"
+    done
+    echo -ne
+    git fetch --all --prune &>/dev/null
+    message=" Fetched "
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "\033[1;32m${message:$i:1}\033[0m"
+    done
+    echo -ne
+    printf "\033[1;32m\xE2\x9C\x94\033[0m\n"
+
+    # Iterate over all branches and attempt to apply any new changes in main to the selected branch
+    message="Attempting to pull changes from upstream......"
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "${message:$i:1}"
+    done
+    echo
+
+    successCountUpstream=0
+    failureCountUpstream=0
+    for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
+        if [[ "$branch" != *\/* ]]; then
+            message=">> Checking out "
+            for ((i = 0; i < ${#message}; i++)); do
+                echo "after 5" | tclsh
+                printf "${message:$i:1}"
+            done
+            echo -ne
+            message="$branch"
+            for ((i = 0; i < ${#message}; i++)); do
+                echo "after 5" | tclsh
+                printf "\033[1;34m${message:$i:1}\033[0m"
+            done
+            echo -ne
+            git checkout $branch
+            printf "\n\t"
+            message="> PULLING UPDATES FROM UPSTREAM"
+            for ((i = 0; i < ${#message}; i++)); do
+                echo "after 5" | tclsh
+                printf "\033[1;33m${message:$i:1}\033[0m"
+            done
+            echo -ne
+            git pull --no-edit $remote $branch
+            if [ $? -eq 0 ]; then
+                # Clean merge, proceed with pushing
+                message=" > CLEAN"
+                for ((i = 0; i < ${#message}; i++)); do
+                    echo "after 5" | tclsh
+                    printf "\033[1;32m${message:$i:1}\033[0m"
+                done
+                echo -ne
+                message=" > PUSHING TO REMOTE ORIGIN"
+                for ((i = 0; i < ${#message}; i++)); do
+                    echo "after 5" | tclsh
+                    printf "\033[1;32m${message:$i:1}\033[0m"
+                done
+                echo -ne
+                git push origin $branch
+                successCountUpstream=$((successCountUpstream + 1))
+            else
+                # Conflicted merge, abort and handle manually
+                message=" > CONFLICT"
+                for ((i = 0; i < ${#message}; i++)); do
+                    echo "after 5" | tclsh
+                    printf "\033[1;31m${message:$i:1}\033[0m"
+                done
+                echo -ne
+                message=" > ABORTING MERGE"
+                for ((i = 0; i < ${#message}; i++)); do
+                    echo "after 5" | tclsh
+                    printf "\033[1;31m${message:$i:1}\033[0m"
+                done
+                echo -ne
+                git merge --abort
+                failureCountUpstream=$((failureCountUpstream + 1))
+            fi
+            printf "\n"
+        fi
+    done
+fi
+
+# Print the results after completing all tasks
 printf "\n"
 message="==========================="
 for ((i = 0; i < ${#message}; i++)); do
@@ -302,6 +464,7 @@ for ((i = 0; i < ${#message}; i++)); do
     printf "${message:$i:1}"
 done
 echo
+
 message=">>> Number of successes: "
 for ((i = 0; i < ${#message}; i++)); do
     echo "after 5" | tclsh
@@ -326,6 +489,35 @@ for ((i = 0; i < ${#message}; i++)); do
     printf "${message:$i:1}"
 done
 echo
+
+if [ "$choice" = "2" ]; then
+    echo
+    message=">>> Number of upstream successes: "
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "\033[1;32m${message:$i:1}\033[0m"
+    done
+    echo -ne
+    message="$successCountUpstream"
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "${message:$i:1}"
+    done
+    echo
+    message=">>> Number of upstream failures:  "
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "\033[1;31m${message:$i:1}\033[0m"
+    done
+    echo -ne
+    message="$failureCountUpstream"
+    for ((i = 0; i < ${#message}; i++)); do
+        echo "after 5" | tclsh
+        printf "${message:$i:1}"
+    done
+    echo
+fi
+
 message="==========================="
 for ((i = 0; i < ${#message}; i++)); do
     echo "after 5" | tclsh
@@ -335,7 +527,7 @@ echo
 printf "\n"
 
 # Switch back to main because it looks cleaner at the end
-git checkout -f main &>/dev/null
+git checkout -f origin main &>/dev/null
 git reset --hard origin/main &>/dev/null
 message='Feature branch update complete!'
 for ((i = 0; i < ${#message}; i++)); do

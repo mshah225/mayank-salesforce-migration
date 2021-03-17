@@ -167,13 +167,14 @@
             <div id="first">
                 <apex:outputPanel id="innerfirst" layout="block">
                     <apex:outputPanel id="innerfirstSearchContact" layout="block" rendered="{!isNewContactSelected = false}">
-                        <apex:pageBlock title="{!IF(isContactSet,
-                                'Contact Details', 'Contact Search')}" id="criteria">
+                        <apex:pageBlock title="{!IF(isContactSet, 'Contact Details', 'Contact Search')}" id="criteria">
                             <apex:pageBlockButtons id="duoAuthStatus" location="top">
                                 <!-- TODO: replace these parameters with the correct information when available -->
                                 <!-- <c:DuoAuthButtons userId="mockUser" deviceId="mockDevice" /> -->
-                                <strong>Duo Authentication</strong>
-                                <i class="fa fa-circle" aria-hidden="true" style="color:#78BE20;" />
+                                <div style="text-align: right;">
+                                    <strong>Duo Authentication</strong>
+                                    <i class="fa fa-circle" aria-hidden="true" style="{!IF(isDuoAuthenticated, 'color:#78BE20;', 'color:#E31C3D;')}" />
+                                </div>
                             </apex:pageBlockButtons>
                             <apex:actionFunction name="searchServer" action="{!buildSearchString}" rerender="results,innersecond,messages" status="loadingStatus">
                                 <apex:param name="firstName" value="" />

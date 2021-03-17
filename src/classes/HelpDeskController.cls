@@ -82,6 +82,7 @@ public with sharing class HelpDeskController {
 
     // This stores the incoming phone number (ANI parameter)
     public String callerId { get; set; }
+    public Boolean userHasDuoAuthentication { get; set; }
 
     // the current sort direction. defaults to asc
     public String sortDir {

@@ -166,14 +166,16 @@ public with sharing class HelpDeskController {
     }
 
     private void setDuoAuthenticatedStatus() {
-        List<DUO_Authentication__c> authenticatedUsers = new List<DUO_Authentication__c>();
-        authenticatedUsers = [
-            SELECT Id, ANI__c, Status__c
+        Integer numberOfAuthenticatedMatches = [
+            SELECT COUNT()
             FROM DUO_Authentication__c
-            WHERE ANI__c = :callerId AND Time_of_Authentication__c > :Datetime.now().addMinutes(-5)
+            WHERE
+                ANI__c = :callerId
+                AND Status__c = 'Authenticated'
+                AND Time_of_Authentication__c > :Datetime.now().addMinutes(-5)
             LIMIT 1
         ];
-        if (authenticatedUsers.size() > 0 && authenticatedUsers[0].Status__c == 'Authenticated') {
+        if (numberOfAuthenticatedMatches == 1) {
             isDuoAuthenticated = true;
         }
     }
@@ -587,7 +589,7 @@ public with sharing class HelpDeskController {
             myCase.clear();
         }
 
-        ID functionalTypeId = RecordIdService.getRTID('Case_Classification__c', 'Functional_Group');
+        ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
         myCase.ContactId = selectedContactId;
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';

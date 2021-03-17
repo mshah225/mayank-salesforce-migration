@@ -83,6 +83,7 @@ public with sharing class HelpDeskController {
     // This stores the incoming phone number (ANI parameter)
     public String callerId { get; set; }
     public Boolean isDuoAuthenticated { get; set; }
+    public Boolean hasANIPresent { get; set; }
 
     // the current sort direction. defaults to asc
     public String sortDir {
@@ -121,6 +122,7 @@ public with sharing class HelpDeskController {
         isAttached = false;
         isPageLoaded = false;
         isDuoAuthenticated = false;
+        hasANIPresent = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
@@ -133,6 +135,7 @@ public with sharing class HelpDeskController {
     private void setCallerId() {
         if (ApexPages.currentPage().getParameters().containsKey('ANI')) {
             if (ApexPages.currentPage().getParameters().get('ANI') != '') {
+                hasANIPresent = true;
                 String searchNumber = ApexPages.currentPage().getParameters().get('ANI');
                 callerId = formatPhone(searchNumber);
 

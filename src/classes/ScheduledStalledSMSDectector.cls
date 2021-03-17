@@ -118,21 +118,55 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             constraintSenderIdUnits = new Set<String>();
             constraintStatuses = new Set<String>();
 
+            Boolean noMinHour = false, noMaxDay = false, noSenderIdConstraint = false, noStatusConstraint = false;
+            Integer tempMaxDays, tempMinHours;
+
             for (SMSDetectionRuleSet ruleset : subsets) {
                 // largest max hours
-                if (ruleset.maxDaysOld != null && (maxDaysOld == null || ruleset.maxDaysOld > maxDaysOld)) {
-                    maxDaysOld = ruleset.maxDaysOld;
-                }
-                // smallest min hours
-                if (ruleset.minHoursOld != null && (minHoursOld == null || ruleset.minHoursOld < minHoursOld)) {
-                    minHoursOld = ruleset.minHoursOld;
-                }
+                if (ruleset.maxDaysOld == null)
+                    noMaxDay = true;
+                else if (tempMaxDays == null || ruleset.maxDaysOld > tempMaxDays)
+                    tempMaxDays = ruleset.maxDaysOld;
 
+                // smallest min hours
+                if (ruleset.minHoursOld == null)
+                    noMinHour = true;
+                else if (tempMinHours == null || ruleset.minHoursOld < tempMinHours)
+                    tempMinHours = ruleset.minHoursOld;
+
+                // Add all emails
                 emailsSet.addAll(ruleset.emailsSet);
+
+                // Add all query fields
                 queryFields.addAll(ruleset.queryFields);
+
+                // Detect empty in sub ruleset so we can remove constraint later
+                if (ruleset.constraintSenderIdUnits.isEmpty())
+                    noSenderIdConstraint = true;
                 constraintSenderIdUnits.addAll(ruleset.constraintSenderIdUnits);
+
+                // Detect empty in sub ruleset so we can remove constraint later
+                if (ruleset.constraintStatuses.isEmpty())
+                    noStatusConstraint = true;
                 constraintStatuses.addAll(ruleset.constraintStatuses);
             }
+
+            // Handle setting values in case of null/empty fields in sub rulesets
+            if (noMinHour)
+                minHoursOld = null;
+            else
+                minHoursOld = tempMinHours;
+
+            if (noMaxDay)
+                maxDaysOld = null;
+            else
+                maxDaysOld = tempMaxDays;
+
+            if (noSenderIdConstraint)
+                constraintSenderIdUnits.clear();
+
+            if (noStatusConstraint)
+                constraintStatuses.clear();
         }
 
         // Filter a List of smagicinteract__smsMagic__c based on the rules of this rule set

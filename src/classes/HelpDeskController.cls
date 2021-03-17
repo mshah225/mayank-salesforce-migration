@@ -82,7 +82,7 @@ public with sharing class HelpDeskController {
 
     // This stores the incoming phone number (ANI parameter)
     public String callerId { get; set; }
-    public Boolean userHasDuoAuthentication { get; set; }
+    public Boolean isDuoAuthenticated { get; set; }
 
     // the current sort direction. defaults to asc
     public String sortDir {
@@ -120,11 +120,17 @@ public with sharing class HelpDeskController {
         isArticleDetails = false;
         isAttached = false;
         isPageLoaded = false;
+        isDuoAuthenticated = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
         ccPicklist = new CaseClassificationPicklistService();
+        setCallerId();
+        isPageLoaded = true;
+    }
+
+    private void setCallerId() {
         if (ApexPages.currentPage().getParameters().containsKey('ANI')) {
             if (ApexPages.currentPage().getParameters().get('ANI') != '') {
                 String searchNumber = ApexPages.currentPage().getParameters().get('ANI');
@@ -147,14 +153,26 @@ public with sharing class HelpDeskController {
                     ')';
 
                 runSearch(false);
+                setDuoAuthenticatedStatus();
             } else {
                 populateNonAffiliate();
             }
         } else {
             populateNonAffiliate();
         }
+    }
 
-        isPageLoaded = true;
+    private void setDuoAuthenticatedStatus() {
+        List<DUO_Authentication__c> authenticatedUsers = new List<DUO_Authentication__c>();
+        authenticatedUsers = [
+            SELECT Id, ANI__c, Status__c
+            FROM DUO_Authentication__c
+            WHERE ANI__c = :callerId AND Time_of_Authentication__c > :Datetime.now().addMinutes(-5)
+            LIMIT 1
+        ];
+        if (authenticatedUsers.size() > 0 && authenticatedUsers[0].Status__c == 'Authenticated') {
+            isDuoAuthenticated = true;
+        }
     }
 
     // Help Desk requests to have the non affiliate 1st in the list at all times.
@@ -566,7 +584,7 @@ public with sharing class HelpDeskController {
             myCase.clear();
         }
 
-        ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
+        ID functionalTypeId = RecordIdService.getRTID('Case_Classification__c', 'Functional_Group');
         myCase.ContactId = selectedContactId;
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';

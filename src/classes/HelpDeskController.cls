@@ -81,7 +81,7 @@ public with sharing class HelpDeskController {
     }
 
     // This stores the incoming phone number (ANI parameter)
-    public String callerId { get; set; }
+    public String callerID { get; set; }
     public Boolean isDuoAuthenticated { get; set; }
     public Boolean hasANIPresent { get; set; }
 
@@ -137,11 +137,11 @@ public with sharing class HelpDeskController {
             if (ApexPages.currentPage().getParameters().get('ANI') != '') {
                 hasANIPresent = true;
                 String searchNumber = ApexPages.currentPage().getParameters().get('ANI');
-                callerId = formatPhone(searchNumber);
+                callerID = formatPhone(searchNumber);
 
                 soql =
                     'FIND \'' +
-                    callerId +
+                    callerID +
                     '\' ' +
                     'IN PHONE FIELDS ' +
                     'RETURNING Contact(' +
@@ -170,7 +170,7 @@ public with sharing class HelpDeskController {
             SELECT COUNT()
             FROM DUO_Authentication__c
             WHERE
-                ANI__c = :callerId
+                ANI__c = :callerID
                 AND Status__c = 'Authenticated'
                 AND Time_of_Authentication__c > :Datetime.now().addMinutes(-5)
             LIMIT 1
@@ -621,7 +621,7 @@ public with sharing class HelpDeskController {
         mycontact.Lastname = contactsrch.Lastname;
         mycontact.Email = contactsrch.Personal_Email__c;
         mycontact.Phone = contactsrch.Phone;
-        mycontact.Help_Desk_Provided_Phone__c = callerId;
+        mycontact.Help_Desk_Provided_Phone__c = callerID;
 
         isContactSet = false;
         isNewCaseSelected = false;
@@ -878,7 +878,7 @@ public with sharing class HelpDeskController {
                 WHERE Id = :selectedContactId
             ];
 
-            contactsrch.Help_Desk_Provided_Phone__c = callerId;
+            contactsrch.Help_Desk_Provided_Phone__c = callerID;
             contactToUpdate.Help_Desk_Provided_Phone__c = contactsrch.Help_Desk_Provided_Phone__c;
 
             update contactToUpdate;

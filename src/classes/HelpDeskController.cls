@@ -128,11 +128,11 @@ public with sharing class HelpDeskController {
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
         ccPicklist = new CaseClassificationPicklistService();
-        setCallerId();
+        setCallerID();
         isPageLoaded = true;
     }
 
-    private void setCallerId() {
+    private void setCallerID() {
         if (ApexPages.currentPage().getParameters().containsKey('ANI')) {
             if (ApexPages.currentPage().getParameters().get('ANI') != '') {
                 hasANIPresent = true;

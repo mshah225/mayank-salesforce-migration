@@ -242,6 +242,22 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             if (newestDateAccepted != null) {
                 query += ' AND CreatedDate < ' + newestDateAccepted.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
             }
+
+            // Add constraint fields to filter is needed (as we might have to filter using these field later
+            // using Apex if we made a superset query)
+            String queriedFields = query.substring(query.indexOf('SELECT'), query.indexOf('WHERE'));
+            if (!queriedFields.contains('CreatedDate')) {
+                query = 'SELECT CreatedDate,' + query.substring(7);
+            }
+            queriedFields = query.substring(query.indexOf('SELECT'), query.indexOf('WHERE'));
+            if (!queriedFields.contains('smagicinteract__Status__c')) {
+                query = 'SELECT smagicinteract__Status__c,' + query.substring(7);
+            }
+            queriedFields = query.substring(query.indexOf('SELECT'), query.indexOf('WHERE'));
+            if (!queriedFields.contains('SenderIdUnit__c')) {
+                query = 'SELECT SenderIdUnit__c,' + query.substring(7);
+            }
+
             return query;
         }
         // Describe this SMS object using this rule set's queryFields

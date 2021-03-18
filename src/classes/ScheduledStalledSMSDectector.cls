@@ -37,7 +37,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
     private void initializeFromMetadata() {
         ruleSets = new List<SMSDetectionRuleSet>();
 
-        for (SMS_Stall_Detection_Rule__mdt rule : [
+        List<SMS_Stall_Detection_Rule__mdt> allRules = [
             SELECT
                 MasterLabel,
                 At_Least_N_Hours_Old__c,
@@ -48,7 +48,25 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
                 Statuses__c
             FROM SMS_Stall_Detection_Rule__mdt
             WHERE Enabled__c = TRUE
-        ]) {
+        ];
+
+        // When running tests - only use test metadata
+        if (Test.isRunningTest()) {
+            allRules = [
+                SELECT
+                    MasterLabel,
+                    At_Least_N_Hours_Old__c,
+                    Number_Of_Days__c,
+                    Email_Addresses__c,
+                    Fields__c,
+                    Sender_Id_Units__c,
+                    Statuses__c
+                FROM SMS_Stall_Detection_Rule__mdt
+                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[TEST]%'
+            ];
+        }
+
+        for (SMS_Stall_Detection_Rule__mdt rule : allRules) {
             ruleSets.add(new SMSDetectionRuleSet(rule));
         }
 

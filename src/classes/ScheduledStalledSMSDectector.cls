@@ -295,7 +295,9 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
         public String describeSMS(smagicinteract__smsMagic__c sms) {
             String constructed = '{';
             for (String field : queryFields) {
-                constructed += '"' + field + '" : "' + sms.get(field) + '",';
+                String value = sms.get(field) == null ? '' : '' + sms.get(field);
+                value = value.replace('"', '\\"').replace('\n', ' ');
+                constructed += '"' + field + '" : "' + value + '",';
             }
             constructed = constructed.substring(0, constructed.length() - 1); // remove trailing comma
             constructed += '}';

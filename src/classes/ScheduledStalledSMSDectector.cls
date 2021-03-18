@@ -175,10 +175,10 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             List<smagicinteract__smsMagic__c> newList = new List<smagicinteract__smsMagic__c>();
 
             if (minHoursOld != null) {
-                newestDateAccepted = System.now().addHours(minHoursOld);
+                newestDateAccepted = System.now().addHours(-1 * minHoursOld);
             }
             if (maxDaysOld != null) {
-                oldestDateAccepted = System.now().addDays(maxDaysOld);
+                oldestDateAccepted = System.now().addDays(-1 * maxDaysOld);
             }
 
             for (Integer i = 0; i < smsList.size(); i++) {

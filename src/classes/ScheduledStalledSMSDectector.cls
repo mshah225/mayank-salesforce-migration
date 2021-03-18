@@ -237,10 +237,10 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             }
 
             if (oldestDateAccepted != null) {
-                query += ' AND CreatedDate > ' + oldestDateAccepted.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
+                query += ' AND CreatedDate > ' + oldestDateAccepted.formatGmt('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
             }
             if (newestDateAccepted != null) {
-                query += ' AND CreatedDate < ' + newestDateAccepted.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
+                query += ' AND CreatedDate < ' + newestDateAccepted.formatGmt('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'');
             }
 
             // Add constraint fields to filter is needed (as we might have to filter using these field later

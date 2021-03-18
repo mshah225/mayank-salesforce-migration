@@ -155,7 +155,7 @@ read choice
 echo
 
 # If the user wants to additionally update their fork from upstream, proceed with the following
-remote=''
+remote='origin'
 if [ "$choice" = "2" ]; then
     tput bold
     text_frame '        Hark! After an arduous search, I found your remotes.        '
@@ -294,7 +294,7 @@ for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:sh
         echo -ne
         git checkout $branch &>/dev/null
         printf "\n\t"
-        message="> PULLING UPDATES FROM MAIN"
+        message="> PULLING UPDATES FROM ORIGIN"
         for ((i = 0; i < ${#message}; i++)); do
             echo "after 5" | tclsh
             printf "\033[1;33m${message:$i:1}\033[0m"
@@ -359,7 +359,7 @@ if [ "$choice" = "2" ]; then
         printf "${message:$i:1}"
     done
     echo -ne
-    git checkout -f origin main &>/dev/null
+    git checkout -f main &>/dev/null
     git reset --hard origin/main &>/dev/null
     message=" Handled "
     for ((i = 0; i < ${#message}; i++)); do
@@ -527,7 +527,7 @@ echo
 printf "\n"
 
 # Switch back to main because it looks cleaner at the end
-git checkout -f origin main &>/dev/null
+git checkout -f main &>/dev/null
 git reset --hard origin/main &>/dev/null
 message='Feature branch update complete!'
 for ((i = 0; i < ${#message}; i++)); do

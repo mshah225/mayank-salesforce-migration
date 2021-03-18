@@ -1,8 +1,15 @@
 global with sharing class ScheduledStalledSMSDectector implements Schedulable {
-    List<SMSDetectionRuleSet> ruleSets;
-    SMSDetectionRuleSet ruleSuperset; // used for the query so we can use just one query
+    @TestVisible
+    private List<SMSDetectionRuleSet> ruleSets;
+    @TestVisible
+    private SMSDetectionRuleSet ruleSuperset; // used for the query so we can use just one query
 
     global void execute(SchedulableContext SC) {
+        primaryMethod();
+    }
+
+    @TestVisible
+    private void primaryMethod() {
         initializeFromMetadata();
 
         List<smagicinteract__smsMagic__c> allSMSToReportOn = Database.query(ruleSuperset.getQuery());

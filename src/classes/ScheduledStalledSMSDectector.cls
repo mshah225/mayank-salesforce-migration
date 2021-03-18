@@ -23,11 +23,15 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
                 List<smagicinteract__smsMagic__c> smsForThisRule = ruleSet.filter(allSMSToReportOn);
 
                 if (smsForThisRule.size() > 0) {
-                    String description = smsForThisRule.size() + ' SMS are stalled.\n';
+                    String description = '{';
+                    description += '"Title" : "' + smsForThisRule.size() + ' SMS are stalled.",\n';
+                    description += '"List SMS" : [\n';
                     for (smagicinteract__smsMagic__c sms : smsForThisRule) {
                         description += ruleSet.describeSMS(sms);
-                        description += '\n';
+                        description += ',\n';
                     }
+                    description = description.substring(0, description.length() - 2);
+                    description += ']}';
                     allEmails.add(createEmail(new List<String>(ruleSet.emailsSet), description));
                 }
             }

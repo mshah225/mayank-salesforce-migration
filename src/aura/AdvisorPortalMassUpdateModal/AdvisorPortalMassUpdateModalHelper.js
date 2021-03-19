@@ -1,17 +1,4 @@
 ({
-    getOptionsValue: function (component, apexMethod, componentAttribute) {
-        let action = component.get('c.' + apexMethod);
-        action.setCallback(this, function (response) {
-            if (response.getState() !== 'SUCCESS') {
-                this.fireToast('Error', response.getError()[0].message, 'error');
-                return;
-            }
-
-            component.set('v.' + componentAttribute, response.getReturnValue());
-        });
-        $A.enqueueAction(action);
-    },
-
     getOptionsLabelAndValue: function (component, apexMethod, componentAttribute) {
         let action = component.get('c.' + apexMethod);
         action.setCallback(this, function (response) {
@@ -300,5 +287,67 @@
         component.set('v.RenderRequireRecommendedActionOther', false);
         component.set('v.RenderRequireNotReturningOther', false);
         component.set('v.RenderRequireStudentRiskOther', false);
+    },
+
+    loadCustomMetadata: function (component) {
+        // Map expected strings in custom metadata config to respective component ids (originally created as the same, this allows future changes though)
+        const configIdToComponentId = {
+            caseStatus: 'caseStatus',
+            reasonsAdminClosed: 'reasonsAdminClosed',
+            recommendedActions: 'recommendedActions',
+            recommendedActionOther: 'recommendedActionOther',
+            studentIntent: 'studentIntent',
+            notReturning: 'notReturning',
+            notReturningOther: 'notReturningOther',
+            returnTerm: 'returnTerm',
+            studentRisk: 'studentRisk',
+            studentRiskOther: 'studentRiskOther',
+        };
+        // Names of component ids mapped to the variables that contain their options
+        const componentIdToOptionsArrayName = {
+            caseStatus: 'v.CaseStatusOptions',
+            recommendedActions: 'v.RecommendedActionOptions',
+            studentIntent: 'v.StudentsIntentionOptions',
+            notReturning: 'v.NotReturningOptions',
+            returnTerm: 'v.StudentReturnTermOptions',
+            studentRisk: 'v.StudentRiskOptions',
+        };
+
+        let action = component.get('c.getCustomMetadata');
+        action.setCallback(this, function (response) {
+            if (response.getState() !== 'SUCCESS') {
+                this.fireToast('Error', response.getError()[0].message, 'error');
+                return;
+            }
+
+            let results = response.getReturnValue();
+
+            let optionsStatus = [];
+            let optionsIntent = [];
+            let generatedRequirements = {};
+
+            for (let key in results) {
+                if (key == 'caseStatus') {
+                    for (let key2 in results[key]) {
+                        optionsStatus.push(key2);
+                    }
+                } else if (key == 'studentIntent') {
+                    for (let key2 in results[key]) {
+                        optionsIntent.push(key2);
+                    }
+                }
+
+                generatedRequirements[key] = {};
+
+                for (let key2 in results[key]) {
+                    generatedRequirements[key][key2] = results[key][key2];
+                }
+            }
+
+            component.set(componentIdToOptionsArrayName[configIdToComponentId['caseStatus']], optionsStatus);
+            component.set(componentIdToOptionsArrayName[configIdToComponentId['studentIntent']], optionsIntent);
+            component.set('v.DynamicallyGeneratedRequirements', generatedRequirements);
+        });
+        $A.enqueueAction(action);
     },
 });

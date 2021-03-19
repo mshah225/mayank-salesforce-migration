@@ -1,20 +1,4 @@
-/**
- * @author Mathew Ruff, Sierra-Cedar
- * @date 2019-02-14
- *
- * Controller Logic for AdvisorPortalMassUpdate.cmp
- */
 public class AdvisorPortalMassUpdateController {
-    @AuraEnabled
-    public static List<String> populateClosedCaseStatusOptions() {
-        return new List<String>{
-            'Closed: Customer Self-Resolved',
-            'Conferred with Student by Email',
-            'Conferred with Student by Phone',
-            'In Person Meeting'
-        };
-    }
-
     @AuraEnabled
     public static Map<String, String> populateRecommendedActionOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
@@ -75,5 +59,42 @@ public class AdvisorPortalMassUpdateController {
     @AuraEnabled
     public static void updateCases(List<Case> casesToUpdate) {
         update casesToUpdate;
+    }
+
+    @AuraEnabled
+    //               dropdown     value     required
+    public static Map<String, Map<String, List<String>>> getCustomMetadata() {
+        List<Advisor_Portal_Mass_Close_Configuration__mdt> metadata = [
+            SELECT Dropdown__c, Value__c, Required_Fields__c
+            FROM Advisor_Portal_Mass_Close_Configuration__mdt
+            WHERE Enabled__c = TRUE
+        ];
+
+        if (Test.isRunningTest()) {
+            metadata = [
+                SELECT Dropdown__c, Value__c, Required_Fields__c
+                FROM Advisor_Portal_Mass_Close_Configuration__mdt
+                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[TEST]%'
+            ];
+        }
+
+        Map<String, Map<String, List<String>>> returnMapping = new Map<String, Map<String, List<String>>>();
+
+        for (Advisor_Portal_Mass_Close_Configuration__mdt metadatum : metadata) {
+            if (!returnMapping.containsKey(metadatum.Dropdown__c)) {
+                returnMapping.put(metadatum.Dropdown__c, new Map<String, List<String>>());
+            }
+
+            List<String> required = new List<String>();
+            if (metadatum.Required_Fields__c != null) {
+                List<String> splitUp = metadatum.Required_Fields__c.split(',');
+                for (String req : splitUp) {
+                    required.add(req.trim());
+                }
+            }
+            returnMapping.get(metadatum.Dropdown__c).put(metadatum.Value__c, required);
+        }
+
+        return returnMapping;
     }
 }

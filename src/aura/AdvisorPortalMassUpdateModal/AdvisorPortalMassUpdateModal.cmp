@@ -24,7 +24,8 @@
     <aura:attribute name="RenderRequireRecommendedActionOther" type="Boolean" />
     <aura:attribute name="RenderRequireNotReturningOther" type="Boolean" />
     <aura:attribute name="RenderRequireStudentRiskOther" type="Boolean" />
-    <!-- Conditional Required Field Management -->
+    <aura:attribute name="DynamicallyGeneratedRequirements" type="Map" />
+    <!-- End Conditional Required Field Management -->
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
     <aura:registerEvent name="refreshAdvisorPortalContacts" type="c:RefreshAdvisorPortalContacts" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />

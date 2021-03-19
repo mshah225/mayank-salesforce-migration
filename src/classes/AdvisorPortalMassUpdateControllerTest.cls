@@ -1,9 +1,3 @@
-/**
- * @author Mathew Ruff, Sierra-Cedar
- * @date 2019-02-15
- *
- *
- */
 @IsTest
 private class AdvisorPortalMassUpdateControllerTest {
     @IsTest

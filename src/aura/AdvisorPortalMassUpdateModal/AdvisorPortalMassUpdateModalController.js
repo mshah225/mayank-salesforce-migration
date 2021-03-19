@@ -1,11 +1,10 @@
 ({
     doInit: function (component, event, helper) {
-        helper.getOptionsValue(component, 'populateClosedCaseStatusOptions', 'CaseStatusOptions');
         helper.getOptionsLabelAndValue(component, 'populateRecommendedActionOptions', 'RecommendedActionOptions');
-        helper.getOptionsValue(component, 'populateStudentIntentionOptions', 'StudentsIntentionOptions');
         helper.getOptionsLabelAndValue(component, 'populateReturnTermOptions', 'StudentReturnTermOptions');
         helper.getOptionsLabelAndValue(component, 'populateStudentRiskOptions', 'StudentRiskOptions');
         helper.getOptionsLabelAndValue(component, 'populateReasonNotReturningOptions', 'NotReturningOptions');
+        helper.loadCustomMetadata(component);
     },
 
     updateDynamicFieldVisibility: function (component) {

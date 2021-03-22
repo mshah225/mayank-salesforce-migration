@@ -16,7 +16,7 @@ global class TopFiveArticleController {
             urlBase = sandboxName + '-asu';
             urlPrefix = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/articles/FAQ/';
         } else {
-            urlPrefix = 'http://asu.secure.force.com/kb/articles/FAQ/';
+            urlPrefix = 'https://asu.secure.force.com/kb/articles/FAQ/';
         }
         List<KnowledgeArticleViewStat> articleViewStatList = [
             SELECT Id, ParentId
@@ -161,7 +161,7 @@ global class TopFiveArticleController {
             urlBase = sandboxName + '-asu';
             urlPrefix = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/articles/';
         } else {
-            urlPrefix = 'http://asu.secure.force.com/kb/articles/';
+            urlPrefix = 'https://asu.secure.force.com/kb/articles/';
         }
 
         string articleTypeString;
@@ -189,7 +189,7 @@ global class TopFiveArticleController {
             urlBase = sandboxName + '-asu';
             url = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/pkb_Home?l=en_US&c=';
         } else {
-            url = 'http://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
+            url = 'https://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
         }
         url += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c', '');
 

@@ -1,114 +1,113 @@
 <apex:component controller="ASUBrandHeaderController">
-    <!-- This component renders the ASU responsive header for the Service Center -->
-    <apex:attribute name="firstName" description="The contacts first name" type="String"/>
-    <apex:attribute name="lastName" description="The contacts last name" type="String"/>
-    <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean"/>
-    <apex:attribute name="stopViewAsUrl" description="The Url to stop viewing as" type="String"/>
-    <apex:attribute name="viewAsUrl" description="The Url to start or change view as" type="String"/>
-    <apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String"/>
-    <apex:attribute name="linkList" description="The links from My ASU" type="Link[]"/>
-    <apex:attribute name="showNavBar" description="If true, the black navbar from Studen Center will be shown on the page" 
-        type="boolean"  default="true"/>
+	<!-- This component renders the ASU responsive header for the Service Center -->
+	<apex:attribute name="firstName" description="The contacts first name" type="String" />
+	<apex:attribute name="lastName" description="The contacts last name" type="String" />
+	<apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean" />
+	<apex:attribute name="stopViewAsUrl" description="The Url to stop viewing as" type="String" />
+	<apex:attribute name="viewAsUrl" description="The Url to start or change view as" type="String" />
+	<apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String" />
+	<apex:attribute name="linkList" description="The links from My ASU" type="Link[]" />
+	<apex:attribute name="showNavBar" description="If true, the black navbar from Studen Center will be shown on the page" type="boolean"
+	 default="true" />
 
-    <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
-    <div id="menuCSSWrap">
-	    <!-- MyASU Tab Bar -->
-	    <apex:outputPanel rendered="{!showNavBar}">
-		    <header class="navbar navbar-default" role="banner">
-		        <apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,
+	<!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
+	<div id="menuCSSWrap">
+		<!-- MyASU Tab Bar -->
+		<apex:outputPanel rendered="{!showNavBar}">
+			<header class="navbar navbar-default" role="banner">
+				<apex:outputPanel rendered="{!IF(ISNULL(linkList),true,false) || IF(ISBLANK(linkList),true,
 		                false)}">
-		            <div id="myasu-tabs" class="myasu-cont">
-		                <div class="navbar-links">
-		                    <span class='tab'>
-		                        <a href="https://webapp4.asu.edu/myasu" class="tracking">
-		                            <span class="fa fa-home" title="Home"></span>
-		                        </a>
-		                    </span>
-		
-		                    <span class='tab'>
-		                        <a href="https://webapp4.asu.edu/myasu/student/finances" class="tracking">
-		                            Finances
-		                        </a>
-		                    </span>
-		
-		                    <span class='selected tab'><a href="/" class="tracking">Service Center</a></span>
-		
-		                    <span class='tab'>
-		                        <a href="https://webapp4.asu.edu/myasu/student/campusservices" class="tracking">
-		                            Campus Services
-		                        </a>
-		                    </span>
-		
-		                    <span class='tab'>
-		                        <a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">
-		                            Profile
-		                        </a>
-		                    </span>
-		
-		                    <p class="username pull-right">
-		                    {!firstName} {!lastName}
-		
-		                        <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
-		                            &nbsp;&nbsp;({!emplId})
-		                            <br />
-		                            <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
-		                            <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
-		                        </apex:outputPanel>
-		                    </p>
-		                </div>
-		            </div>
-		        </apex:outputPanel>
-		
-		        <apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true)
+					<div id="myasu-tabs" class="myasu-cont">
+						<div class="navbar-links">
+							<span class='tab'>
+								<a href="https://webapp4.asu.edu/myasu" class="tracking">
+									<span class="fa fa-home" title="Home"></span>
+								</a>
+							</span>
+
+							<span class='tab'>
+								<a href="https://webapp4.asu.edu/myasu/student/finances" class="tracking">
+									Finances
+								</a>
+							</span>
+
+							<span class='selected tab'>
+								<a href="/" class="tracking">Service Center</a>
+							</span>
+
+							<span class='tab'>
+								<a href="https://webapp4.asu.edu/myasu/student/campusservices" class="tracking">
+									Campus Services
+								</a>
+							</span>
+
+							<span class='tab'>
+								<a href="https://webapp4.asu.edu/myasu/student/profile" class="tracking">
+									Profile
+								</a>
+							</span>
+
+							<p class="username pull-right">
+								{!firstName} {!lastName}
+
+								<apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+									&nbsp;&nbsp;({!emplId})
+									<br />
+									<a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
+									<a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
+								</apex:outputPanel>
+							</p>
+						</div>
+					</div>
+				</apex:outputPanel>
+
+				<apex:outputPanel rendered="{!IF(ISNULL(linkList),false,true)
 		                || IF(ISBLANK(linkList),false,true)}">
-		            <div id="myasu-tabs" class="myasu-cont">
-		                <div class="navbar-links">
-		                    <apex:repeat value="{!linkList}" var="link" id="linkRepeater">
-		                        <span class='tab'>
-		                            <apex:outputLink value="{!link.url}"
-		                                             title="{!link.name}"
-		                                             rendered="{!IF(link.name == 'Home',true,false)}">
-		                                <span class="fa fa-home" title="Home"></span>
-		                            </apex:outputLink>
-		
-		                            <apex:outputLink rendered="{!IF(link.name != 'Home'
-		                                    && link.name != 'Service Center',true,false)}"
-		                                             value="{!link.url}">
-		                                    {!link.name}
-		                            </apex:outputLink>
-		
-		                            <apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,
+					<div id="myasu-tabs" class="myasu-cont">
+						<div class="navbar-links">
+							<apex:repeat value="{!linkList}" var="link" id="linkRepeater">
+								<span class='tab'>
+									<apex:outputLink value="{!link.url}" title="{!link.name}" rendered="{!IF(link.name == 'Home',true,false)}">
+										<span class="fa fa-home" title="Home"></span>
+									</apex:outputLink>
+
+									<apex:outputLink rendered="{!IF(link.name != 'Home'
+		                                    && link.name != 'Service Center',true,false)}" value="{!link.url}">
+										{!link.name}
+									</apex:outputLink>
+
+									<apex:outputPanel rendered="{!IF(link.name == 'Service Center',true,
 		                                    false)}">
-		                                <span class='selected tab'>
-		                                    <a href="/" class="tracking">Service Center</a>
-		                                </span>
-		                            </apex:outputPanel>
-		                        </span>
-		                    </apex:repeat>
-		
-		                    <p class="username pull-right">
-		                    {!firstName} {!lastName}
-		
-		                        <apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
-		                            &nbsp;&nbsp;({!emplId})
-		                            <br />
-		                            <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
-		                            <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
-		                        </apex:outputPanel>
-		                    </p>
-		                </div>
-		            </div>
-		        </apex:outputPanel>
-		    </header>
-	    </apex:outputPanel>
-	    
-	    <apex:outputPanel rendered="{!NOT(showNavBar)}">
-	        <hr style="width:100%; border-style: solid !important; margin-top:6px; margin-Bottom:6px;" />
-	    </apex:outputPanel>
-	    <apex:outputPanel rendered="{!showNavBar}">
-		    <div class="page-title">
-		        <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
-		    </div>
-	    </apex:outputPanel>
-    </div>
+										<span class='selected tab'>
+											<a href="/" class="tracking">Service Center</a>
+										</span>
+									</apex:outputPanel>
+								</span>
+							</apex:repeat>
+
+							<p class="username pull-right">
+								{!firstName} {!lastName}
+
+								<apex:outputPanel rendered="{!viewingAs}" style="font-size:9pt;">
+									&nbsp;&nbsp;({!emplId})
+									<br />
+									<a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
+									<a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
+								</apex:outputPanel>
+							</p>
+						</div>
+					</div>
+				</apex:outputPanel>
+			</header>
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!NOT(showNavBar)}">
+			<hr style="width:100%; border-style: solid !important; margin-top:6px; margin-Bottom:6px;" />
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!showNavBar}">
+			<div class="page-title">
+				<a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
+			</div>
+		</apex:outputPanel>
+	</div>
 </apex:component>

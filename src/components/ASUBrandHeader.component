@@ -41,7 +41,7 @@
                 <div class="f-search" id="search_new" onclick="javascript:ASUHeader.toggleASU('main-search');"></div>
             </div>
             <div class="closed" id="asu_mobile_menu">
-                <div id="asu_nav_wrapper">
+                <nav id="asu_nav_wrapper" role="navigation" aria-label="Site-wide">
                     <span class="hidden"> Sign In / Sign Out </span>
                     <apex:outputPanel rendered="{!isLoggedInUser}">
                         <ul id="asu_login_module">
@@ -58,8 +58,7 @@
 							</li>
 						</ul>
 					</apex:outputPanel> -->
-                    <div id="asu_nav_menu" role="navigation" aria-labelledby="asuNavLabel">
-                        <span class="sr-only" id="asuNavLabel"> Navigation for Entire University </span>
+                    <div id="asu_nav_menu">
                         <div id="asu_universal_nav">
                             <ul>
                                 <li class="parent">
@@ -193,7 +192,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </nav>
                 <div id="asu_search">
                     <div id="asu_search_module" class="asu_search_module" name="asu_search_module">
                         <form target="_top" action="https://search.asu.edu/search" method="get" name="gs" role="search">

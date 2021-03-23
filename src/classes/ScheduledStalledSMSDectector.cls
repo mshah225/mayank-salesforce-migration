@@ -9,8 +9,13 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
     }
 
     @TestVisible
-    private void primaryMethod() {
+    public void primaryMethod() {
         initializeFromMetadata();
+
+        if (ruleSuperset == null) {
+            // Stop immediately if the superset is null (happens when none of the metadata are enabled)
+            return;
+        }
 
         List<smagicinteract__smsMagic__c> allSMSToReportOn = Database.query(ruleSuperset.getQuery());
 
@@ -41,8 +46,6 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
     }
 
     private void initializeFromMetadata() {
-        ruleSets = new List<SMSDetectionRuleSet>();
-
         List<SMS_Stall_Detection_Rule__mdt> allRules = [
             SELECT
                 MasterLabel,
@@ -72,11 +75,15 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             ];
         }
 
-        for (SMS_Stall_Detection_Rule__mdt rule : allRules) {
-            ruleSets.add(new SMSDetectionRuleSet(rule));
-        }
+        if (!allRules.isEmpty()) {
+            ruleSets = new List<SMSDetectionRuleSet>();
 
-        ruleSuperset = new SMSDetectionRuleSet(ruleSets);
+            for (SMS_Stall_Detection_Rule__mdt rule : allRules) {
+                ruleSets.add(new SMSDetectionRuleSet(rule));
+            }
+    
+            ruleSuperset = new SMSDetectionRuleSet(ruleSets);
+        }
     }
 
     private Messaging.SingleEmailMessage createEmail(List<String> toWho, String description) {

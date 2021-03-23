@@ -9,7 +9,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
     }
 
     @TestVisible
-    public void primaryMethod() {
+    private void primaryMethod() {
         initializeFromMetadata();
 
         if (ruleSuperset == null) {

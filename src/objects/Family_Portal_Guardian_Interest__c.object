@@ -156,10 +156,12 @@
     <fields>
         <fullName>Active_Interest__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <defaultValue>true</defaultValue>
         <description>If this is checked, the interest record is considered active by the submitter. Otherwise, it's considered an inactive interest.</description>
         <externalId>false</externalId>
         <label>Active Interest</label>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -167,10 +169,12 @@
     <fields>
         <fullName>Chosen_Interest__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Name of the Interest</description>
         <externalId>false</externalId>
         <label>Chosen Interest</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -182,6 +186,7 @@
     <fields>
         <fullName>Family_Portal_Guardian__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian Salesforce id</description>
         <externalId>false</externalId>
         <label>Family Portal Guardian</label>
@@ -190,6 +195,7 @@
         <relationshipName>Family_Portal_Guardian_Interests</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>true</reparentableMasterDetail>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
@@ -198,6 +204,7 @@
     <fields>
         <fullName>Guardian_Contact__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Guardian's Contact id</description>
         <externalId>false</externalId>
@@ -206,6 +213,7 @@
         <relationshipLabel>Family Portal Guardian Interests</relationshipLabel>
         <relationshipName>Family_Portal_Guardian_Interests</relationshipName>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -213,11 +221,13 @@
     <fields>
         <fullName>Interest_Choices__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>This is used by Apex Code for the web form to display the list of Interest
 for internal use only, will not contain data</description>
         <externalId>false</externalId>
         <label>Interest Choices</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>

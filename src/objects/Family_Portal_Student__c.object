@@ -156,10 +156,12 @@
     <fields>
         <fullName>Academic_College__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>ASU Academic College name. This option is available to Family Portal Student record with ASU Student enrollment status.</description>
         <externalId>false</externalId>
         <label>Academic College</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -171,10 +173,12 @@
     <fields>
         <fullName>Academic_Year__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Student College level of study. For example First Year, Second Year, Third year, fourth year, Graduate Student, etc.  This option is available to Family Portal Student record with ASU Student enrollment status.</description>
         <externalId>false</externalId>
         <label>Academic Year</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -186,10 +190,12 @@
     <fields>
         <fullName>Active_Relationship__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <defaultValue>true</defaultValue>
         <description>True if the guardian has submitted a relationship to a student, false if the guardian has removed a relationship from a student</description>
         <externalId>false</externalId>
         <label>Active Relationship</label>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -197,11 +203,13 @@
     <fields>
         <fullName>Enrollment_Status_Year__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>High School Graduation year for K-12 Student, ASU graduation year for ASU alumni or Expected graduation year for ASU Student</description>
         <externalId>false</externalId>
         <label>Enrollment Status Year</label>
         <length>4</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -210,10 +218,12 @@
     <fields>
         <fullName>Enrollment_Status__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Student's current Enrollment Status</description>
         <externalId>false</externalId>
         <label>Enrollment Status</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -248,6 +258,7 @@
     <fields>
         <fullName>Family_Portal_Guardian__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian Salesforce id</description>
         <externalId>false</externalId>
         <label>Family Portal Guardian</label>
@@ -256,6 +267,7 @@
         <relationshipName>Family_Portal_Students</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>true</reparentableMasterDetail>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
@@ -264,6 +276,7 @@
     <fields>
         <fullName>Guardian_Contact__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Contact id of the Guardian</description>
         <externalId>false</externalId>
@@ -272,6 +285,7 @@
         <relationshipLabel>Family Portal Students</relationshipLabel>
         <relationshipName>Family_Portal_Students</relationshipName>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -279,10 +293,12 @@
     <fields>
         <fullName>Military_Affiliation__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Student's Military Affiliation</description>
         <externalId>false</externalId>
         <label>Military Affiliation</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -311,10 +327,12 @@
     <fields>
         <fullName>Type__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Student Type indicates International Student, Transfer Student and Barrett Honors student. This option is available to Family Portal Student record with ASU Student enrollment status.</description>
         <externalId>false</externalId>
         <label>Student Type</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>

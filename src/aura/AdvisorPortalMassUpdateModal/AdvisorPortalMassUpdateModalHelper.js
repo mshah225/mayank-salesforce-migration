@@ -50,7 +50,11 @@
         let isValid = true;
 
         if (!component.get('v.CaseStatus')) {
-            component.find('caseStatus').showHelpMessageIfInvalid();
+            try {
+                component.find('caseStatus').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('caseStatus')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -59,7 +63,11 @@
             component.find('reasonsAdminClosed') &&
             !component.get('v.ReasonsAdministrativelyClosed')
         ) {
-            component.find('reasonsAdminClosed').showHelpMessageIfInvalid();
+            try {
+                component.find('reasonsAdminClosed').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('reasonsAdminClosed')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -69,7 +77,11 @@
             (component.find('recommendedActions').get('v.value') === undefined ||
                 component.find('recommendedActions').get('v.value').length === 0)
         ) {
-            component.find('recommendedActions').showHelpMessageIfInvalid();
+            try {
+                component.find('recommendedActions').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('recommendedActions')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -78,7 +90,11 @@
             component.find('recommendedActionOther') &&
             !component.get('v.RecommendedActionOther')
         ) {
-            component.find('recommendedActionOther').showHelpMessageIfInvalid();
+            try {
+                component.find('recommendedActionOther').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('recommendedActionOther')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -87,7 +103,11 @@
             component.find('studentIntent') &&
             !component.get('v.StudentsIntentions')
         ) {
-            component.find('studentIntent').showHelpMessageIfInvalid();
+            try {
+                component.find('studentIntent').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('studentIntent')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -97,7 +117,11 @@
             (component.find('notReturning').get('v.value') === undefined ||
                 component.find('notReturning').get('v.value').length === 0)
         ) {
-            component.find('notReturning').showHelpMessageIfInvalid();
+            try {
+                component.find('notReturning').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('notReturning')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -106,7 +130,11 @@
             component.find('notReturningOther') &&
             !component.get('v.NotReturningOther')
         ) {
-            component.find('notReturningOther').showHelpMessageIfInvalid();
+            try {
+                component.find('notReturningOther').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('notReturningOther')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -115,12 +143,20 @@
             component.find('returnTerm') &&
             !component.get('v.StudentReturnTerm')
         ) {
-            component.find('returnTerm').showHelpMessageIfInvalid();
+            try {
+                component.find('returnTerm').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('returnTerm')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
         if (component.get('v.RequireStudentRisk') && component.find('studentRisk') && !component.get('v.StudentRisk')) {
-            component.find('studentRisk').showHelpMessageIfInvalid();
+            try {
+                component.find('studentRisk').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('studentRisk')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 
@@ -129,7 +165,11 @@
             component.find('studentRiskOther') &&
             !component.get('v.StudentRiskOther')
         ) {
-            component.find('studentRiskOther').showHelpMessageIfInvalid();
+            try {
+                component.find('studentRiskOther').showHelpMessageIfInvalid();
+            } catch (err) {
+                component.find('studentRiskOther')[0].showHelpMessageIfInvalid();
+            }
             isValid = false;
         }
 

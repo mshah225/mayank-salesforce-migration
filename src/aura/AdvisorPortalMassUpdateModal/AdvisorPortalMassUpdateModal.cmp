@@ -142,18 +142,18 @@
                                     onchange="{!c.updateDynamicFieldVisibility}"
                                 />
                             </lightning:layoutItem>
-                        </aura:if>
 
-                        <aura:if isTrue="{!v.RenderRequireNotReturningOther}">
-                            <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
-                                <lightning:input
-                                    aura:id="notReturningOther"
-                                    type="text"
-                                    label="Reason(s) Not Returning Other"
-                                    value="{!v.NotReturningOther}"
-                                    required="true"
-                                />
-                            </lightning:layoutItem>
+                            <aura:if isTrue="{!v.RenderRequireNotReturningOther}">
+                                <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
+                                    <lightning:input
+                                        aura:id="notReturningOther"
+                                        type="text"
+                                        label="Reason(s) Not Returning Other"
+                                        value="{!v.NotReturningOther}"
+                                        required="true"
+                                    />
+                                </lightning:layoutItem>
+                            </aura:if>
                         </aura:if>
 
                         <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">

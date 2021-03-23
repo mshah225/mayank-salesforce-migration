@@ -36,51 +36,28 @@
         }
 
         const requirements = component.get('v.DynamicallyGeneratedRequirements');
-        // For each dropdown, in the requirements, check if value changes required fields
-        for (let dropdownNameCSL in requirements) {
-            // Split dropdown name by comma since it might be a multi-dropdown conditional
-            let dropdownNames = dropdownNameCSL.split(',');
-            for (let i = 0; i < dropdownNames.length; i++) {
-                dropdownNames[i] = dropdownNames[i].trim();
-            }
+        for (let dropdownName in requirements) {
+            // For each dropdown, in the requirements, check if value changes required fields
+            if (component.find(dropdownName) && component.find(dropdownName).get('v.value')) {
+                for (let value in requirements[dropdownName]) {
+                    // If it has a value specified in the custom metadata ...
+                    let addRequirements = false;
 
-            // Check to make sure all dropdowns are set
-            let noNulls = true;
-            for (let i = 0; i < dropdownNames.length; i++) {
-                let eachDropdown = dropdownNames[i];
-                if (!(component.find(eachDropdown) && component.find(eachDropdown).get('v.value'))) {
-                    noNulls = false;
-                }
-            }
-            if (noNulls) {
-                for (let valueCSL in requirements[dropdownNameCSL]) {
-                    let addRequirements = true;
-
-                    let values = valueCSL.split(',');
-                    for (let i = 0; i < values.length; i++) {
-                        values[i] = values[i].trim();
-                    }
-
-                    console.assert(dropdownNames.length == values.length);
-
-                    // If all values and dropdowns match up as specified in the custom metadata ...
-                    for (let i = 0; i < dropdownNames.length; i++) {
-                        let dropdownName = dropdownNames[i];
-                        let value = values[i];
-
-                        // How to check depends on dropdown type
-                        if (dropdownNameToDropdownType[dropdownName] == 'dropdown') {
-                            addRequirements = addRequirements && component.find(dropdownName).get('v.value') == value;
-                        } else if (dropdownNameToDropdownType[dropdownName] == 'dualListBox') {
-                            addRequirements =
-                                addRequirements && component.find(dropdownName).get('v.value').indexOf(value) !== -1;
+                    // How to check depends on dropdown type
+                    if (dropdownNameToDropdownType[dropdownName] == 'dropdown') {
+                        if (component.find(dropdownName).get('v.value') == value) {
+                            addRequirements = true;
+                        }
+                    } else if (dropdownNameToDropdownType[dropdownName] == 'dualListBox') {
+                        if (component.find(dropdownName).get('v.value').indexOf(value) !== -1) {
+                            addRequirements = true;
                         }
                     }
 
                     // ... Then require the requirements
                     if (addRequirements) {
-                        for (let i in requirements[dropdownNameCSL][valueCSL]) {
-                            let requirement = requirements[dropdownNameCSL][valueCSL][i];
+                        for (let i in requirements[dropdownName][value]) {
+                            let requirement = requirements[dropdownName][value][i];
                             componentIdToRequiredStatus[requirement] = true;
                         }
                     }

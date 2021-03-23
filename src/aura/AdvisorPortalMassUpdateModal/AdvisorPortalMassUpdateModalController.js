@@ -8,57 +8,64 @@
     },
 
     updateDynamicFieldVisibility: function (component) {
-        // Dependent on Case Status
-        if (component.find('caseStatus') && component.find('caseStatus').get('v.value')) {
-            if (component.find('caseStatus').get('v.value') === 'Closed: Administratively Resolved (No Outreach)') {
-                component.set('v.RenderRequireReasonsAdministrativelyClosed', true);
-            } else {
-                component.set('v.RenderRequireReasonsAdministrativelyClosed', false);
-            }
+        // String expected in custom metadata mapped to the required booleans
+        const componentIdToRequiredBoolean = {
+            reasonsAdminClosed: 'v.RenderRequireReasonsAdministrativelyClosed',
+            recommendedActions: 'v.RequireRecommendedAction',
+            recommendedActionOther: 'v.RenderRequireRecommendedActionOther',
+            studentIntent: 'v.RequireStudentIntent',
+            notReturning: 'v.RenderRequireNotReturning',
+            notReturningOther: 'v.RenderRequireNotReturningOther',
+            returnTerm: 'v.RequireReturnTerm',
+            studentRisk: 'v.RequireStudentRisk',
+            studentRiskOther: 'v.RenderRequireStudentRiskOther',
+        };
+        const dropdownNameToDropdownType = {
+            caseStatus: 'dropdown',
+            recommendedActions: 'dualListBox',
+            studentIntent: 'dropdown',
+            notReturning: 'dualListBox',
+            returnTerm: 'dropdown',
+            studentRisk: 'dropdown',
+        };
 
-            if (
-                component.find('caseStatus').get('v.value') === 'Conferred with Student by Phone' ||
-                component.find('caseStatus').get('v.value') === 'Conferred with Student by Email' ||
-                component.find('caseStatus').get('v.value') === 'In Person Meeting'
-            ) {
-                component.set('v.RequireRecommendedAction', true);
-                component.set('v.RequireStudentIntent', true);
-            } else {
-                component.set('v.RequireRecommendedAction', false);
-                component.set('v.RequireStudentIntent', false);
-            }
+        let componentIdToRequiredStatus = {};
+
+        for (let componentId in componentIdToRequiredBoolean) {
+            componentIdToRequiredStatus[componentId] = false;
         }
 
-        // Dependent on Recommended Actions
-        if (component.find('recommendedActions') && component.find('recommendedActions').get('v.value')) {
-            if (component.find('recommendedActions').get('v.value').indexOf('other') !== -1) {
-                component.set('v.RenderRequireRecommendedActionOther', true);
-            } else {
-                component.set('v.RenderRequireRecommendedActionOther', false);
-            }
-        }
+        const requirements = component.get('v.DynamicallyGeneratedRequirements');
+        for (let dropdownName in requirements) {
+            // For each dropdown, in the requirements, check if value changes required fields
+            if (component.find(dropdownName) && component.find(dropdownName).get('v.value')) {
+                for (let value in requirements[dropdownName]) {
+                    // If it has a value specified in the custom metadata ...
+                    let addRequirements = false;
 
-        // Dependent on Student Intent
-        if (component.find('studentIntent') && component.find('studentIntent').get('v.value')) {
-            if (
-                component.find('studentIntent').get('v.value') === 'Not returning ever' ||
-                component.find('studentIntent').get('v.value') === 'Not returning temporarily'
-            ) {
-                component.set('v.RenderRequireNotReturning', true);
-            } else {
-                component.set('v.RenderRequireNotReturning', false);
+                    // How to check depends on dropdown type
+                    if (dropdownNameToDropdownType[dropdownName] == 'dropdown') {
+                        if (component.find(dropdownName).get('v.value') == value) {
+                            addRequirements = true;
+                        }
+                    } else if (dropdownNameToDropdownType[dropdownName] == 'dualListBox') {
+                        if (component.find(dropdownName).get('v.value').indexOf(value) !== -1) {
+                            addRequirements = true;
+                        }
+                    }
+
+                    // ... Then require the requirements
+                    if (addRequirements) {
+                        for (let i in requirements[dropdownName][value]) {
+                            let requirement = requirements[dropdownName][value][i];
+                            componentIdToRequiredStatus[requirement] = true;
+                        }
+                    }
+                }
             }
 
-            if (component.find('studentIntent').get('v.value') === 'Not returning temporarily') {
-                component.set('v.RequireReturnTerm', true);
-            } else {
-                component.set('v.RequireReturnTerm', false);
-            }
-
-            if (component.find('studentIntent').get('v.value') === 'Enrolled') {
-                component.set('v.RequireStudentRisk', true);
-            } else {
-                component.set('v.RequireStudentRisk', false);
+            for (let componentId in componentIdToRequiredStatus) {
+                component.set(componentIdToRequiredBoolean[componentId], componentIdToRequiredStatus[componentId]);
             }
         }
 
@@ -76,15 +83,6 @@
                 component.set('v.RenderRequireNotReturningOther', true);
             } else {
                 component.set('v.RenderRequireNotReturningOther', false);
-            }
-        }
-
-        // Dependent on Student Risk
-        if (component.find('studentRisk') && component.find('studentRisk').get('v.value')) {
-            if (component.find('studentRisk').get('v.value') === 'Other') {
-                component.set('v.RenderRequireStudentRiskOther', true);
-            } else {
-                component.set('v.RenderRequireStudentRiskOther', false);
             }
         }
     },

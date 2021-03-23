@@ -16,11 +16,6 @@ public class AdvisorPortalMassUpdateController {
     }
 
     @AuraEnabled
-    public static List<String> populateStudentIntentionOptions() {
-        return new List<String>{ 'Not returning ever', 'Not returning temporarily', 'Enrolled' };
-    }
-
-    @AuraEnabled
     public static Map<String, String> populateReturnTermOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 

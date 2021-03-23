@@ -290,19 +290,6 @@
     },
 
     loadCustomMetadata: function (component) {
-        // Map expected strings in custom metadata config to respective component ids (originally created as the same, this allows future changes though)
-        const configIdToComponentId = {
-            caseStatus: 'caseStatus',
-            reasonsAdminClosed: 'reasonsAdminClosed',
-            recommendedActions: 'recommendedActions',
-            recommendedActionOther: 'recommendedActionOther',
-            studentIntent: 'studentIntent',
-            notReturning: 'notReturning',
-            notReturningOther: 'notReturningOther',
-            returnTerm: 'returnTerm',
-            studentRisk: 'studentRisk',
-            studentRiskOther: 'studentRiskOther',
-        };
         // Names of component ids mapped to the variables that contain their options
         const componentIdToOptionsArrayName = {
             caseStatus: 'v.CaseStatusOptions',
@@ -344,8 +331,8 @@
                 }
             }
 
-            component.set(componentIdToOptionsArrayName[configIdToComponentId['caseStatus']], optionsStatus);
-            component.set(componentIdToOptionsArrayName[configIdToComponentId['studentIntent']], optionsIntent);
+            component.set(componentIdToOptionsArrayName['caseStatus'], optionsStatus);
+            component.set(componentIdToOptionsArrayName['studentIntent'], optionsIntent);
             component.set('v.DynamicallyGeneratedRequirements', generatedRequirements);
         });
         $A.enqueueAction(action);

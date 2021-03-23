@@ -142,7 +142,7 @@
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>This Object is used to store the Guardian information</description>
+    <description>This Object is used to store the Guardian information for the Family Portal Community</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -156,11 +156,13 @@
     <fields>
         <fullName>ASURITE_ID__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian ASURITE</description>
         <externalId>false</externalId>
         <label>ASURITE ID</label>
         <length>20</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -169,10 +171,12 @@
     <fields>
         <fullName>ASU_Alumni__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>True if the Guardian is an ASU Alumni, false if the guardian is not an ASU Alumni</description>
         <externalId>false</externalId>
         <label>ASU Alumni</label>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
@@ -194,11 +198,14 @@
     </fields>
     <fields>
         <fullName>Business_Unit_Source__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>The source of where the guardian is coming from, if any</description>
         <externalId>false</externalId>
         <label>Business Unit Source</label>
         <length>128</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -207,11 +214,13 @@
     <fields>
         <fullName>City__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>City of the Guardian's address</description>
         <externalId>false</externalId>
         <label>City</label>
         <length>50</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -220,6 +229,7 @@
     <fields>
         <fullName>Contact__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Guardian Contact id</description>
         <externalId>false</externalId>
@@ -228,6 +238,7 @@
         <relationshipLabel>Family Portal Guardians</relationshipLabel>
         <relationshipName>Family_Portal_Guardians</relationshipName>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -235,11 +246,13 @@
     <fields>
         <fullName>Country__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Country name of the Guardian's address</description>
         <externalId>false</externalId>
         <label>Country</label>
         <length>50</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -248,11 +261,13 @@
     <fields>
         <fullName>EMPLID__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian ASU Emplid</description>
         <externalId>false</externalId>
         <label>EMPLID</label>
         <length>10</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -261,10 +276,12 @@
     <fields>
         <fullName>Email__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian email</description>
         <externalId>false</externalId>
         <label>Email</label>
         <required>true</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
@@ -273,11 +290,13 @@
     <fields>
         <fullName>First_Name__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian first name</description>
         <externalId>false</externalId>
         <label>First Name</label>
         <length>32</length>
         <required>true</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -286,11 +305,13 @@
     <fields>
         <fullName>Hash_ID__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian record Hash id</description>
         <externalId>false</externalId>
         <label>Hash ID</label>
         <length>255</length>
         <required>true</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -299,11 +320,13 @@
     <fields>
         <fullName>Last_Name__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian last name</description>
         <externalId>false</externalId>
         <label>Last Name</label>
         <length>64</length>
         <required>true</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -312,11 +335,13 @@
     <fields>
         <fullName>Middle_Name__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Optional name field to assist with matching</description>
         <externalId>false</externalId>
         <label>Middle Name</label>
         <length>32</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -325,10 +350,12 @@
     <fields>
         <fullName>Phone__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Guardian phone number</description>
         <externalId>false</externalId>
         <label>Phone</label>
         <required>true</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Phone</type>
@@ -336,11 +363,13 @@
     <fields>
         <fullName>Return_URL__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Family Portal return URL for the Guardian</description>
         <externalId>false</externalId>
         <label>Return URL</label>
         <length>255</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -349,11 +378,13 @@
     <fields>
         <fullName>State__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>State of the Guardian address</description>
         <externalId>false</externalId>
         <label>State</label>
         <length>25</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -362,11 +393,13 @@
     <fields>
         <fullName>Street__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Street address of the Guardian Address</description>
         <externalId>false</externalId>
         <label>Street</label>
         <length>100</length>
         <required>false</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -375,11 +408,13 @@
     <fields>
         <fullName>Zip_Code__c</fullName>
         <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
         <description>Postal Code of the Guardian Address</description>
         <externalId>false</externalId>
         <label>Zip Code</label>
         <length>10</length>
         <required>true</required>
+        <securityClassification>Internal</securityClassification>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>

@@ -7,7 +7,7 @@
         helper.loadCustomMetadata(component);
     },
 
-    updateDynamicFieldVisibility: function (component) {
+    updateDynamicFieldVisibility: function (component, event, helper) {
         // String expected in custom metadata mapped to the required booleans
         const componentIdToRequiredBoolean = {
             reasonsAdminClosed: 'v.RenderRequireReasonsAdministrativelyClosed',
@@ -38,18 +38,21 @@
         const requirements = component.get('v.DynamicallyGeneratedRequirements');
         for (let dropdownName in requirements) {
             // For each dropdown, in the requirements, check if value changes required fields
-            if (component.find(dropdownName) && component.find(dropdownName).get('v.value')) {
+            if (
+                helper.findByAuraId(component, dropdownName) &&
+                helper.findByAuraId(component, dropdownName).get('v.value')
+            ) {
                 for (let value in requirements[dropdownName]) {
                     // If it has a value specified in the custom metadata ...
                     let addRequirements = false;
 
                     // How to check depends on dropdown type
                     if (dropdownNameToDropdownType[dropdownName] == 'dropdown') {
-                        if (component.find(dropdownName).get('v.value') == value) {
+                        if (helper.findByAuraId(component, dropdownName).get('v.value') == value) {
                             addRequirements = true;
                         }
                     } else if (dropdownNameToDropdownType[dropdownName] == 'dualListBox') {
-                        if (component.find(dropdownName).get('v.value').indexOf(value) !== -1) {
+                        if (helper.findByAuraId(component, dropdownName).get('v.value').indexOf(value) !== -1) {
                             addRequirements = true;
                         }
                     }

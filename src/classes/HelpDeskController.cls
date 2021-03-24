@@ -166,16 +166,21 @@ public with sharing class HelpDeskController {
     }
 
     private void setDuoAuthenticatedStatus() {
+        String callMasterId;
+        if (ApexPages.currentPage().getParameters().get('_c') == '') {
+            return;
+        }
+        callMasterId = ApexPages.currentPage().getParameters().get('_c');
         Integer numberOfAuthenticatedMatches = [
             SELECT COUNT()
             FROM DUO_Authentication__c
             WHERE
                 ANI__c = :callerID
                 AND Status__c = 'Authenticated'
-                AND Time_of_Authentication__c > :Datetime.now().addMinutes(-5)
+                AND Call_Object_Identifier__c = :callMasterId
             LIMIT 1
         ];
-        if (numberOfAuthenticatedMatches == 1) {
+        if (numberOfAuthenticatedMatches >= 1) {
             isDuoAuthenticated = true;
         }
     }

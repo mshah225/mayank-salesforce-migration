@@ -170,7 +170,11 @@
                         <apex:pageBlock title="{!IF(isContactSet, 'Contact Details', 'Contact Search')}" id="criteria">
                             <apex:pageBlockButtons id="duoAuthStatus" location="top">
                                 <div style="text-align: right;">
-                                    <i class="fa fa-circle" aria-hidden="true" style="{!IF(isDuoAuthenticated, 'color:#78BE20;', 'color:#E31C3D;')}" />
+                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20;" rendered="{!isDuoAuthenticated = true}"/>
+                                    <strong>Duo Authentication</strong>
+                                </div>
+                                <div style="text-align: right;">
+                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D;" rendered="{!isDuoAuthenticated = false}"/>
                                     <strong>Duo Authentication</strong>
                                 </div>
                             </apex:pageBlockButtons>

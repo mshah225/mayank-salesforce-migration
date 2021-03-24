@@ -167,6 +167,7 @@ public with sharing class HelpDeskController {
 
     private void setDuoAuthenticatedStatus() {
         String callMasterId;
+        //_c is the only way that inContact can pass us the Unique Identifier.
         if (ApexPages.currentPage().getParameters().get('_c') == '') {
             return;
         }

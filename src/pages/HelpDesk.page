@@ -417,7 +417,7 @@
                                             <apex:actionRegion>
                                                 <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
                                                     size="1">
-                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:wrapper:categorySectionItem:categoryOptions, mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions"
+                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:pageSection:categorySectionItem:categoryOptions, mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions"
                                                     />
                                                     <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}" />
                                                 </apex:selectList>
@@ -430,7 +430,7 @@
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion>
                                                 <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:wrapper:subCategorySectionItem:subCategoryOptions, mypage:myform:case:wrapper:descriptionBox"
+                                                    <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions, mypage:myform:case:pageSection:descriptionBox"
                                                     />
                                                     <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
                                                 </apex:selectList>

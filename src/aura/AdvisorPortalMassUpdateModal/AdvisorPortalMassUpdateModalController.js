@@ -66,8 +66,10 @@
                     }
                 }
             }
+        }
 
-            for (let componentId in componentIdToRequiredStatus) {
+        for (let componentId in componentIdToRequiredStatus) {
+            if (component.get(componentIdToRequiredBoolean[componentId]) != componentIdToRequiredStatus[componentId]) {
                 component.set(componentIdToRequiredBoolean[componentId], componentIdToRequiredStatus[componentId]);
             }
         }

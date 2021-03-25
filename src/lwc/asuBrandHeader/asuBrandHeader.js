@@ -48,14 +48,17 @@ export default class AsuBrandHeader extends LightningElement {
     }
     renderedCallback() {
         loadScript(this, jquery).then(() => {
-            $.getScript('https://cdn.jsdelivr.net/gh/mgilardi/components-library/dist/vendor.js', () => {
-                $.getScript(
-                    'https://cdn.jsdelivr.net/gh/mgilardi/components-library/dist/components-library.js',
-                    () => {
-                        this.generateHeader();
-                    }
-                );
-            });
+            $.getScript(
+                'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js',
+                () => {
+                    $.getScript(
+                        'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js',
+                        () => {
+                            this.generateHeader();
+                        }
+                    );
+                }
+            );
         });
     }
     generateHeader() {

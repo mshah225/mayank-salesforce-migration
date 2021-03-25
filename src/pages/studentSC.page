@@ -20,7 +20,7 @@
 
     <apex:includeLightning />
     <div id="ASUBrandHeaderSpacer"></div>
-    <div id='ASUBrandHeaderWrapper'></div>
+    <div id="ASUBrandHeaderWrapper"></div>
 
     <!-- <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
         viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" /> -->
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div id='ASUBrandFooterWrapper'></div>
+    <div id="ASUBrandFooterWrapper"></div>
 
     <script>
         var widthToPush;

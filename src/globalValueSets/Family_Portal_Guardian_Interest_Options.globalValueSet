@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Assisting with an ASU event in my area</fullName>
+        <default>false</default>
+        <label>Assisting with an ASU event in my area</label>
+    </customValue>
+    <customValue>
+        <fullName>ASU Athletics</fullName>
+        <default>false</default>
+        <label>ASU Athletics</label>
+    </customValue>
+    <customValue>
+        <fullName>ASU Family Newsletter &amp; Communication</fullName>
+        <default>false</default>
+        <label>ASU Family Newsletter &amp; Communication</label>
+    </customValue>
+    <customValue>
+        <fullName>ASU President’s Club</fullName>
+        <default>false</default>
+        <label>ASU President’s Club</label>
+    </customValue>
+    <customValue>
+        <fullName>Campus events and programs</fullName>
+        <default>false</default>
+        <label>Campus events and programs</label>
+    </customValue>
+    <customValue>
+        <fullName>Connecting with my student’s academic college</fullName>
+        <default>false</default>
+        <label>Connecting with my student’s academic college</label>
+    </customValue>
+    <customValue>
+        <fullName>Continuing education and professional development</fullName>
+        <default>false</default>
+        <label>Continuing education and professional development</label>
+    </customValue>
+    <customValue>
+        <fullName>Family friendly events and activities for children under 12</fullName>
+        <default>false</default>
+        <label>Family friendly events and activities for children under 12</label>
+    </customValue>
+    <customValue>
+        <fullName>Involvement and volunteer opportunities</fullName>
+        <default>false</default>
+        <label>Involvement and volunteer opportunities</label>
+    </customValue>
+    <customValue>
+        <fullName>K-12 Summer Programs</fullName>
+        <default>false</default>
+        <label>K-12 Summer Programs</label>
+    </customValue>
+    <customValue>
+        <fullName>Making a gift to ASU Family</fullName>
+        <default>false</default>
+        <label>Making a gift to ASU Family</label>
+    </customValue>
+    <customValue>
+        <fullName>Mentoring</fullName>
+        <default>false</default>
+        <label>Mentoring</label>
+    </customValue>
+    <customValue>
+        <fullName>Parent/Family Leadership Opportunities</fullName>
+        <default>false</default>
+        <label>Parent/Family Leadership Opportunities</label>
+    </customValue>
+    <customValue>
+        <fullName>Preparando a su hijo K-12 para la universidad</fullName>
+        <default>false</default>
+        <label>Preparando a su hijo K-12 para la universidad</label>
+    </customValue>
+    <customValue>
+        <fullName>Preparing Your K-12 Child for College</fullName>
+        <default>false</default>
+        <label>Preparing Your K-12 Child for College</label>
+    </customValue>
+    <customValue>
+        <fullName>Women and Philanthropy</fullName>
+        <default>false</default>
+        <label>Women and Philanthropy</label>
+    </customValue>
+    <masterLabel>Family Portal Guardian Interest Options</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

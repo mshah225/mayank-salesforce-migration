@@ -39,6 +39,8 @@ public with sharing class Test_ShowMyCoachCasesController {
         List<Contact> contacts = (List<Contact>) contactFact.create(5);
         insert contacts; // Populate Contact IDs
 
+        Id coachRTId = [SELECT Id, Name, sObjectType  From RecordType WHERE Name = 'Coach' And SObjectType = 'Success_Student__c' LIMIT 1].Id;
+        
         List<Success_Student__c> students = (List<Success_Student__c>) successStudentFact.create(6);
         // Test cases:
         // -----------
@@ -48,6 +50,7 @@ public with sharing class Test_ShowMyCoachCasesController {
         // 1st Student - General Case
         student = students.get(0);
         con = contacts.get(0);
+        student.RecordTypeId = coachRTId;
         student.Student__c = con.Id;
         student.Time_Zone__c = 'Arizona (AZ)';
         student.Coaching_Student__c = true;
@@ -66,6 +69,7 @@ public with sharing class Test_ShowMyCoachCasesController {
         // 3rd Student - Not Active
         student = students.get(2);
         con = contacts.get(2);
+        student.RecordTypeId = coachRTId;
         student.Student__c = con.Id;
         student.Time_Zone__c = 'Hawaii-Hilo (HI)';
         student.Coaching_Student__c = true;
@@ -75,6 +79,7 @@ public with sharing class Test_ShowMyCoachCasesController {
         // 4th Student - No Time Zone
         student = students.get(3);
         con = contacts.get(3);
+        student.RecordTypeId = coachRTId;
         student.Student__c = con.Id;
         student.Time_Zone__c = null;
         student.Coaching_Student__c = true;
@@ -85,12 +90,14 @@ public with sharing class Test_ShowMyCoachCasesController {
         // Should only display Mountain (MST)
         student = students.get(4);
         con = contacts.get(4);
+        student.RecordTypeId = coachRTId;
         student.Student__c = con.Id;
         student.Time_Zone__c = null;
         student.Coaching_Student__c = true;
         student.Is_Active__c = true;
 
         student = students.get(5);
+        student.RecordTypeId = coachRTId;
         student.Student__c = con.Id;
         student.Time_Zone__c = 'Mountain (MST)';
         student.Coaching_Student__c = true;

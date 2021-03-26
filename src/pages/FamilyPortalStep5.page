@@ -1,0 +1,76 @@
+<apex:page controller="FamilyPortalController" action="{!familyPortalStep5OnLoad}" standardStylesheets="false" showHeader="false"
+    html-lang="en-US" docType="html-5.0" cache="false">
+    <title>ASU | ASU Family - Step 5</title>
+    <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    </head>
+
+    <c:ASUBrandHeader />
+    <div class="asu-header-site-title-container">
+        <div>
+            <div id="asu-header-site-title-welcome" class="asu-header-width">
+                <a href="https://webapp4.asu.edu/myasu">ASU Family</a>
+            </div>
+        </div>
+    </div>
+
+    <c:FamilyPortalStyles />
+    <apex:slds />
+    <c:SLDSRemoveGlobalStyles />
+
+    <apex:variable var="pbc" value="{!progressBarController}" />
+    <apex:form id="family-portal-upper-container" styleClass="slds-scope">
+        <div class="family-portal-progress-container well">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-3 family-portal-progress-bar">
+                    <span class="family-portal-progress-bar-title">Form Progress</span>
+                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                        <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
+                            <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
+                        </span>
+                    </div>
+                    <div class="slds-grid slds-grid_align-spread slds-p-bottom_x-small" id="progress-bar-label-id-6">
+                        <span></span>
+                        <span aria-hidden="true">
+                            <strong>{!pbc.progressCounter}% Complete</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+
+    <div id="asu-content-container" role="main">
+        <apex:form>
+            <div id="accessible-body">
+                <div class="family-portal-body-container">
+                    <div class="family-portal-5-container container">
+                        <div class="row">
+                            <div class="col-sm-6 family-portal-body-margin">
+                                <div class="family-portal-5-header">
+                                    <apex:outputPanel id="family-portal-5-header-h2-logged-in" layout="none" rendered="{!familyPortalGuardian.First_Name__c != null}">
+                                        <h2>
+                                            <apex:outputText value="{0}, thank you for your interest in ASU!">
+                                                <apex:param value="{!familyPortalGuardian.First_Name__c}" />
+                                            </apex:outputText>
+                                        </h2>
+                                        <p class="lead">An email confirmation will be sent. In the future, you can edit your interests or
+                                            students by clicking the link provided in the confirmation email.</p>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-5">
+                                <c:FamilyPortalSidebar />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+    </div>
+    <c:ASUBrandFooter />
+</apex:page>

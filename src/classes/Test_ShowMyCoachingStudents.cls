@@ -69,9 +69,12 @@ private class Test_ShowMyCoachingStudents {
         Success_Resource__c testResource = new Success_Resource__c(Resource__c = u1.Id);
         insert testResource;
 
+        Id coachRTId = [SELECT Id, Name, sObjectType  From RecordType WHERE Name = 'Coach' And SObjectType = 'Success_Student__c' LIMIT 1].Id;
+        
         for (Contact c : contactsToCreate) {
             studentsToCreate.add(
                 new Success_Student__c(
+                    RecordTypeId = coachRTId,
                     Student__c = c.Id,
                     Success_Pod__c = sp.Id,
                     Success_Resource__c = testResource.Id,

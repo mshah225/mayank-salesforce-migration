@@ -1,0 +1,238 @@
+<apex:page controller="FamilyPortalController" action="{!familyPortalStep2OnLoad}" standardStylesheets="false" showHeader="false"
+    html-lang="en-US" cache="false">
+    <title>ASU | ASU Family - Step 2</title>
+    <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+    </head>
+
+    <c:ASUBrandHeader />
+    <div class="asu-header-site-title-container">
+        <div>
+            <div id="asu-header-site-title" class="asu-header-width">
+                <a href="https://webapp4.asu.edu/myasu">ASU Family</a>
+            </div>
+        </div>
+    </div>
+
+    <c:FamilyPortalStyles />
+    <apex:slds />
+    <c:SLDSRemoveGlobalStyles />
+
+    <apex:variable var="pbc" value="{!progressBarController}" />
+    <apex:form id="family-portal-upper-container" styleClass="slds-scope">
+        <div class="family-portal-progress-container well">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-3 family-portal-progress-bar">
+                    <span class="family-portal-progress-bar-title">Form Progress</span>
+                    <div class="slds-progress-bar slds-progress-bar_circular family-portal-slds-progress-bar" aria-valuemin="0" aria-valuemax="100"
+                        aria-valuenow="{!pbc.currentPercentage}" role="progressbar">
+                        <span class="slds-progress-bar__value slds-progress-bar__value_success" style="width: {!pbc.currentPercentage}%;">
+                            <span class="slds-assistive-text">Progress: {!pbc.currentPercentage}%</span>
+                        </span>
+                    </div>
+                    <div class="slds-grid slds-grid_align-spread slds-p-bottom_x-small" id="progress-bar-label-id-6">
+                        <span></span>
+                        <span aria-hidden="true">
+                            <strong>{!pbc.progressCounter}% Complete</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+
+    <div id="asu-content-container" role="main">
+        <apex:form>
+            <div id="accessible-body">
+                <div class="family-portal-body-container">
+                    <div class="family-portal-2-container container">
+                        <div class="row">
+                            <div class="col-sm-12 family-portal-body-margin">
+                                <apex:pageBlock>
+                                    <div class="family-portal-2-header">
+                                        <h3>Let's get to know you.</h3>
+                                    </div>
+                                    <apex:pageBlockSection id="family-portal-2-body" columns="2">
+                                        <!-- ASURITE users -->
+                                        <apex:outputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:outputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:outputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:selectList label="Country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}">
+                                            <apex:selectOptions value="{!guardianCountryOptions}" />
+                                            <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Street Address" value="{!familyPortalGuardian.Street__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="City" value="{!familyPortalGuardian.City__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian, !guardianSelectedCountryIsUnitedStatesOrCanada)}"
+                                        />
+                                        <apex:selectList label="State" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" rendered="{!AND(isAsuriteUser, !isExistingGuardian, guardianSelectedCountryIsUS)}">
+                                            <apex:selectOptions value="{!guardianStateOptions}" />
+                                        </apex:selectList>
+                                        <apex:selectList label="Province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" rendered="{!AND(isAsuriteUser, !isExistingGuardian, guardianSelectedCountryIsCanada)}">
+                                            <apex:selectOptions value="{!guardianProvinceOptions}" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Zip Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian, guardianSelectedCountryIsUS)}"
+                                        />
+                                        <apex:inputField label="Postal Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!AND(isAsuriteUser, !isExistingGuardian, !guardianSelectedCountryIsUS)}"
+                                        />
+                                        <!-- existing guardian users -->
+                                        <apex:inputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" html-placeholder="{!familyPortalGuardian.First_Name__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" html-placeholder="{!familyPortalGuardian.Middle_Name__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" html-placeholder="{!familyPortalGuardian.Last_Name__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(!isAsuriteUser, isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:selectList label="Country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.Country__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}">
+                                            <apex:selectOptions value="{!guardianCountryOptions}" />
+                                            <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Street Address" value="{!familyPortalGuardian.Street__c}" html-placeholder="{!familyPortalGuardian.Street__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="City" value="{!familyPortalGuardian.City__c}" html-placeholder="{!familyPortalGuardian.City__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian, !guardianSelectedCountryIsUnitedStatesOrCanada)}"
+                                        />
+                                        <apex:selectList label="State" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian, guardianSelectedCountryIsUS)}">
+                                            <apex:selectOptions value="{!guardianStateOptions}" />
+                                        </apex:selectList>
+                                        <apex:selectList label="Province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian, guardianSelectedCountryIsCanada)}">
+                                            <apex:selectOptions value="{!guardianProvinceOptions}" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Zip Code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian, guardianSelectedCountryIsUS)}"
+                                        />
+                                        <apex:inputField label="Postal Code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            rendered="{!AND(!isAsuriteUser, isExistingGuardian, !guardianSelectedCountryIsUS)}"
+                                        />
+                                        <!-- ASURITE & existing guardian users -->
+                                        <apex:outputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
+                                        />
+                                        <apex:outputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
+                                        />
+                                        <apex:outputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
+                                        />
+                                        <apex:outputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(isAsuriteUser, isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:selectList label="Country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.Country__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian)}">
+                                            <apex:selectOptions value="{!guardianCountryOptions}" />
+                                            <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Street Address" value="{!familyPortalGuardian.Street__c}" html-placeholder="{!familyPortalGuardian.Street__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="City" value="{!familyPortalGuardian.City__c}" html-placeholder="{!familyPortalGuardian.City__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian)}" />
+                                        <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian, !guardianSelectedCountryIsUnitedStatesOrCanada)}"
+                                        />
+                                        <apex:selectList label="State" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian, guardianSelectedCountryIsUS)}">
+                                            <apex:selectOptions value="{!guardianStateOptions}" />
+                                        </apex:selectList>
+                                        <apex:selectList label="Province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian, guardianSelectedCountryIsCanada)}">
+                                            <apex:selectOptions value="{!guardianProvinceOptions}" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Zip Code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian, guardianSelectedCountryIsUS)}"
+                                        />
+                                        <apex:inputField label="Postal Code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            rendered="{!AND(isAsuriteUser, isExistingGuardian, !guardianSelectedCountryIsUS)}"
+                                        />
+                                        <!-- anonymous users -->
+                                        <apex:inputField label="First Name" value="{!familyPortalGuardian.First_Name__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Middle Name" value="{!familyPortalGuardian.Middle_Name__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Last Name" value="{!familyPortalGuardian.Last_Name__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Email" value="{!familyPortalGuardian.Email__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="Phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="ASU Alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:selectList label="Country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}">
+                                            <apex:selectOptions value="{!guardianCountryOptions}" />
+                                            <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Street Address" value="{!familyPortalGuardian.Street__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="City" value="{!familyPortalGuardian.City__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}"
+                                        />
+                                        <apex:inputField label="State/Province/Region" value="{!familyPortalGuardian.State__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian, !guardianSelectedCountryIsUnitedStatesOrCanada)}"
+                                        />
+                                        <apex:selectList label="State" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" rendered="{!AND(!isAsuriteUser, !isExistingGuardian, guardianSelectedCountryIsUS)}">
+                                            <apex:selectOptions value="{!guardianStateOptions}" />
+                                        </apex:selectList>
+                                        <apex:selectList label="Province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" rendered="{!AND(!isAsuriteUser, !isExistingGuardian, guardianSelectedCountryIsCanada)}">
+                                            <apex:selectOptions value="{!guardianProvinceOptions}" />
+                                        </apex:selectList>
+                                        <apex:inputField label="Zip Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian, guardianSelectedCountryIsUS)}"
+                                        />
+                                        <apex:inputField label="Postal Code" value="{!familyPortalGuardian.Zip_Code__c}" rendered="{!AND(!isAsuriteUser, !isExistingGuardian, !guardianSelectedCountryIsUS)}"
+                                        />
+                                    </apex:pageBlockSection>
+                                    <span role="button">
+                                        <apex:commandLink action="{!familyPortalStep3}" styleClass="btn btn-primary btn-block">
+                                            Next
+                                        </apex:commandLink>
+                                    </span>
+                                </apex:pageBlock>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('.family-portal-2-body-phone').keypress(function (e) {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+            });
+        });
+
+        $('.family-portal-2-container td.dataCol').each(function () {
+            if ($(this).children('div').hasClass('requiredInput')) {
+                var tableHeaderText = $(this).prev('th.vfLabelColTextWrap').html();
+                $(this).prev('th.vfLabelColTextWrap').html(tableHeaderText + ' <span class="requiredInputAsterisk"><sup>*</sup></span>');
+                $('.requiredInputAsterisk').css('color', 'red');
+            }
+        });
+    </script>
+
+    <c:ASUBrandFooter />
+</apex:page>

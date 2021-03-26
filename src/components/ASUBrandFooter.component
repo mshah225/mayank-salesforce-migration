@@ -1,7 +1,7 @@
 <apex:component>
     <br />
     <br />
-    <div id="innovation-footer" role="contentinfo">
+    <div id="innovation-footer">
         <div id="innovation-bar">
             <div class="innovation-top">
                 <div class="innovation-status">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div id="asu_footer">
+        <nav id="asu_footer" role="navigation" aria-label="Footer">
             <ul class="default myasu-cont">
                 <li class="innovation-mobile-only">
                     <a href="https://my.asu.edu/">My ASU</a>
@@ -44,7 +44,7 @@
                     <a href="https://www.asu.edu/contactasu/">Contact ASU</a>
                 </li>
             </ul>
-        </div>
+        </nav>
     </div>
     <c:ASUBrandFooterResources />
 </apex:component>

@@ -86,8 +86,11 @@ private class apiSSC_MyASUCoaches_Test {
         userStudent.EMPLID__c = '8888';
         insert userStudent;
 
+        Id coachRTId = [SELECT Id, Name, sObjectType  From RecordType WHERE Name = 'Coach' And SObjectType = 'Success_Student__c' LIMIT 1].Id;
+
         //create success student
         successStudent = new Success_Student__c();
+        successStudent.RecordTypeId = coachRTId;
         successStudent.Student__c = userStudent.Id;
         successStudent.Success_Resource__c = successCoach.Id;
         successStudent.Success_POD__c = successPOD.Id;

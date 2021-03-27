@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This Object is used to store the Guardian's student information</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ControlledByParent</externalSharingModel>
+    <fields>
+        <fullName>Academic_College__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>ASU Academic College name. This option is available to Family Portal Student record with ASU Student enrollment status.</description>
+        <externalId>false</externalId>
+        <label>Academic College</label>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Family_Portal_Student_College</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Academic_Year__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>Student College level of study. For example First Year, Second Year, Third year, fourth year, Graduate Student, etc.  This option is available to Family Portal Student record with ASU Student enrollment status.</description>
+        <externalId>false</externalId>
+        <label>Academic Year</label>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Family_Portal_Academic_Year</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Active_Relationship__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <defaultValue>true</defaultValue>
+        <description>True if the guardian has submitted a relationship to a student, false if the guardian has removed a relationship from a student</description>
+        <externalId>false</externalId>
+        <label>Active Relationship</label>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enrollment_Status_Year__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>High School Graduation year for K-12 Student, ASU graduation year for ASU alumni or Expected graduation year for ASU Student</description>
+        <externalId>false</externalId>
+        <label>Enrollment Status Year</label>
+        <length>4</length>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrollment_Status__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>Student's current Enrollment Status</description>
+        <externalId>false</externalId>
+        <label>Enrollment Status</label>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>K-12 Student</fullName>
+                    <default>true</default>
+                    <label>K-12 Student</label>
+                </value>
+                <value>
+                    <fullName>ASU Student</fullName>
+                    <default>false</default>
+                    <label>ASU Student</label>
+                </value>
+                <value>
+                    <fullName>ASU Alumni</fullName>
+                    <default>false</default>
+                    <label>ASU Alumni</label>
+                </value>
+                <value>
+                    <fullName>ASU Graduate Student</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>ASU Graduate Student</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Family_Portal_Guardian__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>Guardian Salesforce id</description>
+        <externalId>false</externalId>
+        <label>Family Portal Guardian</label>
+        <referenceTo>Family_Portal_Guardian__c</referenceTo>
+        <relationshipLabel>Family Portal Students</relationshipLabel>
+        <relationshipName>Family_Portal_Students</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Guardian_Contact__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Contact id of the Guardian</description>
+        <externalId>false</externalId>
+        <label>Guardian Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Family Portal Students</relationshipLabel>
+        <relationshipName>Family_Portal_Students</relationshipName>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Military_Affiliation__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>Student's Military Affiliation</description>
+        <externalId>false</externalId>
+        <label>Military Affiliation</label>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Active Military</fullName>
+                    <default>false</default>
+                    <label>Active Military</label>
+                </value>
+                <value>
+                    <fullName>Veteran</fullName>
+                    <default>false</default>
+                    <label>Veteran</label>
+                </value>
+                <value>
+                    <fullName>Dependent</fullName>
+                    <default>false</default>
+                    <label>Dependent</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+        <businessStatus>Active</businessStatus>
+        <description>Student Type indicates International Student, Transfer Student and Barrett Honors student. This option is available to Family Portal Student record with ASU Student enrollment status.</description>
+        <externalId>false</externalId>
+        <label>Student Type</label>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Family_Portal_Student_Types</valueSetName>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <label>Family Portal Student</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Guardian_Contact__c</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Family_Portal_Guardian__c</columns>
+        <columns>Active_Relationship__c</columns>
+        <columns>Enrollment_Status__c</columns>
+        <columns>Enrollment_Status_Year__c</columns>
+        <columns>Military_Affiliation__c</columns>
+        <columns>Academic_College__c</columns>
+        <columns>Type__c</columns>
+        <columns>Academic_Year__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>dl_all_students</fullName>
+        <columns>NAME</columns>
+        <columns>Guardian_Contact__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Enrollment_Status__c</columns>
+        <columns>Academic_College__c</columns>
+        <columns>Academic_Year__c</columns>
+        <columns>Type__c</columns>
+        <columns>Enrollment_Status_Year__c</columns>
+        <columns>Military_Affiliation__c</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>Family_Portal_Guardian__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>Active_Relationship__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Active_Relationship__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>*Active students</label>
+    </listViews>
+    <nameField>
+        <displayFormat>FPS-{0}</displayFormat>
+        <label>Family Portal Student ID</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Family Portal Students</pluralLabel>
+    <searchLayouts />
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -346,7 +346,8 @@ global with sharing class StudentProfileController {
                 Grad_ASU_Hours_Before__c,
                 Grad_ASU_Hours_Transfer__c,
                 Grad_Blanket_Hours__c,
-                Degree_Chkout_Stat_Code__c
+                Degree_Chkout_Stat_Code__c,
+                Plan_Transcript_Description__c
             FROM Student_Program_Plan__c
             WHERE Contact__c = :theContact.Id
             ORDER BY

@@ -335,7 +335,8 @@
                     var message = "/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=" + contactId + "&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach";
                     parent.postMessage(message, '*');
                 } else if (type == 'Profile') {
-                    //need to link to a new lightning tab embedded student profile, or open student profile in new window
+                    var message = "/apex/StudentProfile?contactId=" + asuriteId;
+                    parent.postMessage(message, '*');
                 } else if (type == 'All Cases') {
                     var message = "/lightning/r/Case/" + contactId + "/related/Cases/view";
                     parent.postMessage(message, '*');

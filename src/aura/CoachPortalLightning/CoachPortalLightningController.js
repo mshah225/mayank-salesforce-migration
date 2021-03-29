@@ -14,7 +14,8 @@
                 if (
                     event.data.includes('/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=') ||
                     event.data.includes('/lightning/r/Case/') ||
-                    event.data.includes('/apex/successRecoding')
+                    event.data.includes('/apex/successRecoding') ||
+                    event.data.includes('/apex/StudentProfile?contactId=')
                 ) {
                     messageValid = true;
                 }

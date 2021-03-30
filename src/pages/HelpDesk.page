@@ -176,9 +176,9 @@
                                 </div>
                             </apex:pageBlockButtons>
                             <apex:outputPanel>
-                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="ANI was provided, but no valid authentication records were found."
+                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="No valid authentication records were found."
                                     rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}" />
-                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="ANI was not provided, so an authentication check was not made."
+                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="Phone Number was not provided, so an authentication check was not made."
                                     rendered="{!NOT(hasANIPresent)}" />
                             </apex:outputPanel>
                             <apex:actionFunction name="searchServer" action="{!buildSearchString}" rerender="results,innersecond,messages" status="loadingStatus">

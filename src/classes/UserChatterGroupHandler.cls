@@ -3,6 +3,7 @@ public with sharing class UserChatterGroupHandler implements Queueable {
     Map<String, List<String>> chatterSettingsMap;
     Map<String, String> roleToEFrequency;
     Map<String, String> chatterGroupsMap;
+    Map<String, String> profileIdToName;
     Map<String, List<Id>> chatterGroupToMembers;
     List<CollaborationGroupMember> collabMembersToInsert;
     List<String> variables;
@@ -12,6 +13,7 @@ public with sharing class UserChatterGroupHandler implements Queueable {
         chatterSettingsMap = new Map<String, List<String>>();
         roleToEFrequency = new Map<String, String>();
         chatterGroupsMap = new Map<String, String>();
+        profileIdToName = new Map<String, String>();
         chatterGroupToMembers = new Map<String, List<Id>>();
         collabMembersToInsert = new List<CollaborationGroupMember>();
         variables = new List<String>();
@@ -49,6 +51,14 @@ public with sharing class UserChatterGroupHandler implements Queueable {
             chatterGroupToMembers.get(groupMember.CollaborationGroup.Name).add(groupMember.MemberId);
         }
 
+        // Get profile names
+        for (User user : alteredUsers) {
+            profileIdToName.put(user.ProfileId, null);
+        }
+        for (Profile p : [SELECT Id, Name FROM Profile WHERE Id IN :profileIdToName.keySet()]) {
+            profileIdToName.put(p.Id, p.Name);
+        }
+
         /*
          * Loop through the userList to decide which users need to be added to what groups
          * then add them to the main list for insertion.
@@ -63,7 +73,7 @@ public with sharing class UserChatterGroupHandler implements Queueable {
                 }
             }
             // Also use profile name to match with groups to add
-            userRoleList.add(user.Profile.Name);
+            userRoleList.add(profileIdToName.get(user.ProfileId));
 
             // iterate over above list and get the Chatter groups from chatterSettingsMap and
             // add collaboration members into one single list for insertion
@@ -96,8 +106,8 @@ public with sharing class UserChatterGroupHandler implements Queueable {
             }
 
             // General additions based on profile name
-            if (user.Profile != null && user.Profile.Name != null) {
-                if (user.Profile.Name.contains('ASU Service')) {
+            if (user.ProfileId != null && profileIdToName.get(user.ProfileId) != null) {
+                if (profileIdToName.get(user.ProfileId).contains('ASU Service')) {
                     String keyName = Test.isRunningTest() ? '[Test] ASU Service' : 'ASU Service';
                     if (chatterGroupsMap.containsKey(keyName)) {
                         if (chatterGroupToMembers.get(keyName) == null) {
@@ -114,7 +124,7 @@ public with sharing class UserChatterGroupHandler implements Queueable {
                         }
                     }
                 }
-                if (user.Profile.Name.contains('ASU Recruit')) {
+                if (profileIdToName.get(user.ProfileId).contains('ASU Recruit')) {
                     String keyName = Test.isRunningTest() ? '[Test] ASU Recruitment' : 'ASU Recruitment';
                     if (chatterGroupsMap.containsKey(keyName)) {
                         if (chatterGroupToMembers.get(keyName) == null) {
@@ -131,7 +141,7 @@ public with sharing class UserChatterGroupHandler implements Queueable {
                         }
                     }
                 }
-                if (!user.Profile.Name.contains('ASU Community')) {
+                if (!profileIdToName.get(user.ProfileId).contains('ASU Community')) {
                     String keyName = Test.isRunningTest() ? '[Test] ASU - Everyone' : 'ASU - Everyone';
                     if (chatterGroupsMap.containsKey(keyName)) {
                         if (chatterGroupToMembers.get(keyName) == null) {

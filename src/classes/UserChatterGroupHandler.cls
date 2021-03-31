@@ -64,97 +64,99 @@ public with sharing class UserChatterGroupHandler implements Queueable {
          * then add them to the main list for insertion.
          */
         for (User user : alteredUsers) {
-            List<String> userRoleList = new List<String>();
-            // get all the Fields from the FieldSets to get the Role(s) of User
-            for (Schema.FieldSetMember fld : SObjectType.User.FieldSets.PeopleSoft_Role_Fieldset.getFields()) {
-                // check if the Checkbox is set true, if true add to userRoleList for further processing
-                if ((Boolean) user.get(fld.getFieldPath())) {
-                    userRoleList.add(fld.getLabel());
+            if (user.isActive && user.EmployeeNumber != null && user.EmployeeNumber.length() != 0 ) {
+                List<String> userRoleList = new List<String>();
+                // get all the Fields from the FieldSets to get the Role(s) of User
+                for (Schema.FieldSetMember fld : SObjectType.User.FieldSets.PeopleSoft_Role_Fieldset.getFields()) {
+                    // check if the Checkbox is set true, if true add to userRoleList for further processing
+                    if ((Boolean) user.get(fld.getFieldPath())) {
+                        userRoleList.add(fld.getLabel());
+                    }
                 }
-            }
-            // Also use profile name to match with groups to add
-            userRoleList.add(profileIdToName.get(user.ProfileId));
+                // Also use profile name to match with groups to add
+                userRoleList.add(profileIdToName.get(user.ProfileId));
 
-            // iterate over above list and get the Chatter groups from chatterSettingsMap and
-            // add collaboration members into one single list for insertion
-            for (String str : userRoleList) {
-                // roles
-                if (chatterSettingsMap.containsKey(str)) {
-                    // check if role is in map of custom setting
+                // iterate over above list and get the Chatter groups from chatterSettingsMap and
+                // add collaboration members into one single list for insertion
+                for (String str : userRoleList) {
+                    // roles
+                    if (chatterSettingsMap.containsKey(str)) {
+                        // check if role is in map of custom setting
 
-                    List<String> chatterGroupsForRole = chatterSettingsMap.get(str);
+                        List<String> chatterGroupsForRole = chatterSettingsMap.get(str);
 
-                    for (String chatterGrpName : chatterGroupsForRole) {
-                        // do not create Collaboration member if the dupeSet has the User Id already present
-                        // check if group has already been used in this transaction,
-                        // as a chatter group can be common for multiple PeopleSoft roles
-                        if (chatterGroupToMembers.get(chatterGrpName) == null) {
-                            chatterGroupToMembers.put(chatterGrpName, new List<Id>());
-                        }
+                        for (String chatterGrpName : chatterGroupsForRole) {
+                            // do not create Collaboration member if the dupeSet has the User Id already present
+                            // check if group has already been used in this transaction,
+                            // as a chatter group can be common for multiple PeopleSoft roles
+                            if (chatterGroupToMembers.get(chatterGrpName) == null) {
+                                chatterGroupToMembers.put(chatterGrpName, new List<Id>());
+                            }
 
-                        if (!chatterGroupToMembers.get(chatterGrpName).contains(user.Id)) {
-                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
-                            newCollabMember.MemberId = user.Id;
-                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get(chatterGrpName);
-                            newCollabMember.NotificationFrequency = roleToEFrequency.get(str);
-                            collabMembersToInsert.add(newCollabMember);
+                            if (!chatterGroupToMembers.get(chatterGrpName).contains(user.Id)) {
+                                CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                                newCollabMember.MemberId = user.Id;
+                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(chatterGrpName);
+                                newCollabMember.NotificationFrequency = roleToEFrequency.get(str);
+                                collabMembersToInsert.add(newCollabMember);
 
-                            chatterGroupToMembers.get(chatterGrpName).add(user.Id);
+                                chatterGroupToMembers.get(chatterGrpName).add(user.Id);
+                            }
                         }
                     }
                 }
-            }
 
-            // General additions based on profile name
-            if (user.ProfileId != null && profileIdToName.get(user.ProfileId) != null) {
-                if (profileIdToName.get(user.ProfileId).contains('ASU Service')) {
-                    String keyName = Test.isRunningTest() ? '[Test] ASU Service' : 'ASU Service';
-                    if (chatterGroupsMap.containsKey(keyName)) {
-                        if (chatterGroupToMembers.get(keyName) == null) {
-                            chatterGroupToMembers.put(keyName, new List<Id>());
-                        }
+                // General additions based on profile name
+                if (user.ProfileId != null && profileIdToName.get(user.ProfileId) != null) {
+                    if (profileIdToName.get(user.ProfileId).contains('ASU Service')) {
+                        String keyName = Test.isRunningTest() ? '[Test] ASU Service' : 'ASU Service';
+                        if (chatterGroupsMap.containsKey(keyName)) {
+                            if (chatterGroupToMembers.get(keyName) == null) {
+                                chatterGroupToMembers.put(keyName, new List<Id>());
+                            }
 
-                        if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
-                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
-                            newCollabMember.MemberId = user.Id;
-                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
-                            newCollabMember.NotificationFrequency = 'D';
-                            collabMembersToInsert.add(newCollabMember);
-                            chatterGroupToMembers.get(keyName).add(user.Id);
+                            if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
+                                CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                                newCollabMember.MemberId = user.Id;
+                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
+                                newCollabMember.NotificationFrequency = 'D';
+                                collabMembersToInsert.add(newCollabMember);
+                                chatterGroupToMembers.get(keyName).add(user.Id);
+                            }
                         }
                     }
-                }
-                if (profileIdToName.get(user.ProfileId).contains('ASU Recruit')) {
-                    String keyName = Test.isRunningTest() ? '[Test] ASU Recruitment' : 'ASU Recruitment';
-                    if (chatterGroupsMap.containsKey(keyName)) {
-                        if (chatterGroupToMembers.get(keyName) == null) {
-                            chatterGroupToMembers.put(keyName, new List<Id>());
-                        }
+                    if (profileIdToName.get(user.ProfileId).contains('ASU Recruit')) {
+                        String keyName = Test.isRunningTest() ? '[Test] ASU Recruitment' : 'ASU Recruitment';
+                        if (chatterGroupsMap.containsKey(keyName)) {
+                            if (chatterGroupToMembers.get(keyName) == null) {
+                                chatterGroupToMembers.put(keyName, new List<Id>());
+                            }
 
-                        if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
-                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
-                            newCollabMember.MemberId = user.Id;
-                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
-                            newCollabMember.NotificationFrequency = 'D';
-                            collabMembersToInsert.add(newCollabMember);
-                            chatterGroupToMembers.get(keyName).add(user.Id);
+                            if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
+                                CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                                newCollabMember.MemberId = user.Id;
+                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
+                                newCollabMember.NotificationFrequency = 'D';
+                                collabMembersToInsert.add(newCollabMember);
+                                chatterGroupToMembers.get(keyName).add(user.Id);
+                            }
                         }
                     }
-                }
-                if (!profileIdToName.get(user.ProfileId).contains('ASU Community')) {
-                    String keyName = Test.isRunningTest() ? '[Test] ASU - Everyone' : 'ASU - Everyone';
-                    if (chatterGroupsMap.containsKey(keyName)) {
-                        if (chatterGroupToMembers.get(keyName) == null) {
-                            chatterGroupToMembers.put(keyName, new List<Id>());
-                        }
+                    if (!profileIdToName.get(user.ProfileId).contains('ASU Community')) {
+                        String keyName = Test.isRunningTest() ? '[Test] ASU - Everyone' : 'ASU - Everyone';
+                        if (chatterGroupsMap.containsKey(keyName)) {
+                            if (chatterGroupToMembers.get(keyName) == null) {
+                                chatterGroupToMembers.put(keyName, new List<Id>());
+                            }
 
-                        if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
-                            CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
-                            newCollabMember.MemberId = user.Id;
-                            newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
-                            newCollabMember.NotificationFrequency = 'D';
-                            collabMembersToInsert.add(newCollabMember);
-                            chatterGroupToMembers.get(keyName).add(user.Id);
+                            if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
+                                CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
+                                newCollabMember.MemberId = user.Id;
+                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
+                                newCollabMember.NotificationFrequency = 'D';
+                                collabMembersToInsert.add(newCollabMember);
+                                chatterGroupToMembers.get(keyName).add(user.Id);
+                            }
                         }
                     }
                 }

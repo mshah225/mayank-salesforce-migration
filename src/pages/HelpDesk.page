@@ -176,7 +176,7 @@
                                 </div>
                             </apex:pageBlockButtons>
                             <apex:outputPanel>
-                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="No valid authentication records were found."
+                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="The Caller did not complete DUO Authentication."
                                     rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}" />
                                 <apex:pageMessage severity="warning" title="Duo Authentication" summary="Phone Number was not provided, so an authentication check was not made."
                                     rendered="{!NOT(hasANIPresent)}" />

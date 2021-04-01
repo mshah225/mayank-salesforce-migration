@@ -2,8 +2,10 @@ public without sharing class UserChatterGroupHandler implements Queueable {
     List<User> alteredUsers;
     Map<String, List<String>> chatterSettingsMap;
     Map<String, String> roleToEFrequency;
+    Map<String, List<String>> roleToRequiredPermissionSets;
     Map<String, String> chatterGroupsMap;
     Map<String, String> profileIdToName;
+    Map<String, List<String>> userIdToPermSetNames;
     Map<String, List<Id>> chatterGroupToMembers;
     List<CollaborationGroupMember> collabMembersToInsert;
     List<String> variables;
@@ -12,8 +14,10 @@ public without sharing class UserChatterGroupHandler implements Queueable {
         this.alteredUsers = alteredUsers;
         chatterSettingsMap = new Map<String, List<String>>();
         roleToEFrequency = new Map<String, String>();
+        roleToRequiredPermissionSets = new Map<String, List<String>>();
         chatterGroupsMap = new Map<String, String>();
         profileIdToName = new Map<String, String>();
+        userIdToPermSetNames = new Map<String, List<String>>();
         chatterGroupToMembers = new Map<String, List<Id>>();
         collabMembersToInsert = new List<CollaborationGroupMember>();
         variables = new List<String>();
@@ -23,20 +27,36 @@ public without sharing class UserChatterGroupHandler implements Queueable {
         run();
     }
 
-    public void run() {
+    private void run() {
         // Load custom setting details
         for (Chatter_Auto_Add_Users__c caau : Chatter_Auto_Add_Users__c.getAll().values()) {
             if (!chatterSettingsMap.containsKey(caau.PeopleSoft_Role__c)) {
                 chatterSettingsMap.put(caau.PeopleSoft_Role__c, new List<String>());
             }
+            if (!roleToRequiredPermissionSets.containsKey(caau.PeopleSoft_Role__c)) {
+                roleToRequiredPermissionSets.put(caau.PeopleSoft_Role__c, new List<String>());
+            }
 
             chatterSettingsMap.get(caau.PeopleSoft_Role__c).add(caau.Chatter_Group_Name__c);
             roleToEFrequency.put(caau.PeopleSoft_Role__c, caau.NotificationFrequency__c);
+            if (caau.Required_Permission_Sets__c != null) {
+                for (String s : caau.PeopleSoft_Role__c.split(';')) {
+                    roleToRequiredPermissionSets.get(caau.PeopleSoft_Role__c).add(s.trim());
+                }
+            }
         }
 
         // map to store Chatter Group name vs Group Id using SOQL
         for (CollaborationGroup cg : [SELECT Id, Name FROM CollaborationGroup]) {
             chatterGroupsMap.put(cg.Name, cg.Id);
+        }
+
+        // Get perm set assignments for each user
+        for (PermissionSetAssignment psa : [SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment]) {
+            if (!userIdToPermSetNames.containsKey(psa.AssigneeId)) {
+                userIdToPermSetNames.put(psa.AssigneeId, new List<String>());
+            }
+            userIdToPermSetNames.get(psa.AssigneeId).add(psa.PermissionSet.Name);
         }
 
         // Existing users in each collab group
@@ -52,10 +72,7 @@ public without sharing class UserChatterGroupHandler implements Queueable {
         }
 
         // Get profile names
-        for (User user : alteredUsers) {
-            profileIdToName.put(user.ProfileId, null);
-        }
-        for (Profile p : [SELECT Id, Name FROM Profile WHERE Id IN :profileIdToName.keySet()]) {
+        for (Profile p : [SELECT Id, Name FROM Profile]) {
             profileIdToName.put(p.Id, p.Name);
         }
 
@@ -93,7 +110,19 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                                 chatterGroupToMembers.put(chatterGrpName, new List<Id>());
                             }
 
-                            if (!chatterGroupToMembers.get(chatterGrpName).contains(user.Id)) {
+                            Boolean hasAllRequiredPermSets = true;
+                            if (roleToRequiredPermissionSets.containsKey(chatterGrpName)) {
+                                for (String permSetName : roleToRequiredPermissionSets.get(chatterGrpName)) {
+                                    if (!userIdToPermSetNames.get(user.Id).contains(permSetName)) {
+                                        hasAllRequiredPermSets = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (
+                                !chatterGroupToMembers.get(chatterGrpName).contains(user.Id) && hasAllRequiredPermSets
+                            ) {
                                 CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
                                 newCollabMember.MemberId = user.Id;
                                 newCollabMember.CollaborationGroupId = chatterGroupsMap.get(chatterGrpName);

@@ -127,8 +127,8 @@ public class Test_UserHandler {
     }
 
     //methods to test bulkAfter
-    //insert a ASU Service user and check whether hes added to the corresponding chatter group or not.
 
+    //insert a ASU Service user and check whether hes added to the corresponding chatter group or not.
     @isTest
     static void insertASUServiceUser() {
         Double dbRandom = Math.random();
@@ -155,6 +155,7 @@ public class Test_UserHandler {
         Id asuServiceProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Service - ASU Online'].Id;
         testUser.ProfileId = asuServiceProfile;
         testUser.FederationIdentifier = 'testuserService@asu.edu';
+        testUser.EmployeeNumber = '9933663399';
         insert testUser;
         Test.stopTest();
         //Query the CollabortationGroupId(Chatter Group) for the inserted user
@@ -170,7 +171,6 @@ public class Test_UserHandler {
     }
 
     //insert a recruitment user and check whether hes added to the corresponding chatter group or not.
-
     @isTest
     static void insertASURecruitUser() {
         Double dbRandom = Math.random();
@@ -198,6 +198,7 @@ public class Test_UserHandler {
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Recruitment - Admission Services'].Id;
         testUser.ProfileId = asuRecruitProfile;
         testUser.FederationIdentifier = 'testuserRecruit@asu.edu';
+        testUser.EmployeeNumber = '9933663399';
         insert testUser;
         Test.stopTest();
 
@@ -214,7 +215,6 @@ public class Test_UserHandler {
     }
 
     //insert a knowledge user and check whether hes added to the corresponding chatter group or not.
-
     @isTest
     static void insertASUKnowledgeUser() {
         Double dbRandom = Math.random();
@@ -243,6 +243,7 @@ public class Test_UserHandler {
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
         testUser.ProfileId = asuRecruitProfile;
         testUser.FederationIdentifier = 'testuserKnowledge@asu.edu';
+        testUser.EmployeeNumber = '9933663399';
         insert testUser;
 
         Test.stopTest();
@@ -258,8 +259,8 @@ public class Test_UserHandler {
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
-    //insert a marketing cloud user and check whether the user is added to the corresponding collaboration group.
 
+    //insert a marketing cloud user and check whether the user is added to the corresponding collaboration group.
     @isTest
     static void insertASUMarketingUser() {
         Decimal dbRandom = Math.random();
@@ -290,6 +291,7 @@ public class Test_UserHandler {
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
         testUser.ProfileId = asuRecruitProfile;
         testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
+        testUser.EmployeeNumber = '9933663399';
         insert testUser;
 
         Test.stopTest();
@@ -304,6 +306,92 @@ public class Test_UserHandler {
         System.assertEquals(lstCGM.size(), 1);
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
+    }
+
+    //insert a advising user and check whether the user is added to the corresponding collaboration group.
+    @isTest
+    static void insertASUAdvisingUser() {
+        Decimal dbRandom = Math.random();
+        dbRandom = dbRandom.SetScale(2); // Round off to two decimal points(More decimal points may cause name character limit to exceed)
+
+        //Insert corresponding Permission Set
+        PermissionSet ps = new PermissionSet(
+            Name = 'Perm_Academic_Advisor_Portal_' + String.valueOf(dbRandom).replace('.', '_'),
+            Label = 'Perm Academic Advisor Portal ' + String.valueOf(dbRandom)
+        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert ps;
+        }
+
+        //Create record in Chatter Auto Add User custom setting
+        Chatter_Auto_Add_Users__c objAsuAdvising = new Chatter_Auto_Add_Users__c();
+        objAsuAdvising.Name = 'Advising1';
+        //Assign Connected Marketing Cloud Adm People Soft Role.
+        objAsuAdvising.PeopleSoft_Role__c = 'Academic Advisor Portal';
+        objAsuAdvising.NotificationFrequency__c = 'P';
+        objAsuAdvising.Required_Permission_Sets__c = ps.Name;
+        // Assign a chatter group name that is unique throughout the org(reason for appending random number)
+        objAsuAdvising.Chatter_Group_Name__c = 'Academic Advisor Portal ' + String.valueOf(dbRandom);
+        insert objAsuAdvising;
+
+        //Insert corresponding collaboration group record(name must be unique throughout org)
+        List<CollaborationGroup> testCGList = new List<CollaborationGroup>();
+        String strGrpName = 'Academic Advisor Portal ' + String.valueOf(dbRandom);
+        CollaborationGroup objCG = new CollaborationGroup(name = strGrpName, CollaborationType = 'Public');
+        testCGList.add(objCG);
+        insert (testCGList);
+
+        Test.startTest();
+
+        //Insert a user with Academic Advisor Portal People Soft Role
+        Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
+
+        List<User> users = UserService.createMultipleTestUsers(2);
+
+        User testUser = users[0];
+        testUser.Role_Academic_Advisor_Portal__c = true;
+        testUser.ProfileId = asuRecruitProfile;
+        testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
+        testUser.EmployeeNumber = '9933663399';
+
+        User testUser2 = users[1];
+        testUser2.Role_Academic_Advisor_Portal__c = true;
+        testUser2.ProfileId = asuRecruitProfile;
+        testUser2.FederationIdentifier = 'testuserMarketing2@asu.edu';
+        testUser2.EmployeeNumber = '9933663398';
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert new List<User>{ testUser, testUser2 };
+        }
+
+        PermissionSetAssignment psa = new PermissionSetAssignment(PermissionSetId = ps.Id, AssigneeID = testUser.Id);
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert psa;
+        }
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            update testUser;
+        }
+
+        Test.stopTest();
+
+        //Query the CollabortationGroupId(Chatter Group) for the inserted user
+        List<CollaborationGroupMember> lstCGM = [
+            SELECT MemberId, CollaborationGroupId
+            FROM CollaborationGroupMember
+            WHERE MemberId = :testUser.Id
+        ];
+
+        List<CollaborationGroupMember> lstCGM2 = [
+            SELECT MemberId, CollaborationGroupId
+            FROM CollaborationGroupMember
+            WHERE MemberId = :testUser2.Id
+        ];
+
+        System.assertEquals(1, lstCGM.size());
+        System.assertEquals(0, lstCGM2.size());
+        //Check whether the user is added to the correct chatter group.
+        System.assertEquals(testCGList[0].Id, lstCGM[0].CollaborationGroupId);
     }
 
     @isTest

@@ -2,7 +2,7 @@ public without sharing class UserChatterGroupHandler implements Queueable {
     List<User> alteredUsers;
     Map<String, List<String>> chatterSettingsMap;
     Map<String, String> roleToEFrequency;
-    Map<String, List<String>> roleToRequiredPermissionSets;
+    Map<String, List<String>> chatterToRequiredPermissionSets;
     Map<String, String> chatterGroupsMap;
     Map<String, String> profileIdToName;
     Map<String, List<String>> userIdToPermSetNames;
@@ -14,7 +14,7 @@ public without sharing class UserChatterGroupHandler implements Queueable {
         this.alteredUsers = alteredUsers;
         chatterSettingsMap = new Map<String, List<String>>();
         roleToEFrequency = new Map<String, String>();
-        roleToRequiredPermissionSets = new Map<String, List<String>>();
+        chatterToRequiredPermissionSets = new Map<String, List<String>>();
         chatterGroupsMap = new Map<String, String>();
         profileIdToName = new Map<String, String>();
         userIdToPermSetNames = new Map<String, List<String>>();
@@ -28,20 +28,26 @@ public without sharing class UserChatterGroupHandler implements Queueable {
     }
 
     private void run() {
+        // All user ids
+        List<Id> userIds = new List<Id>();
+        for (User u : alteredUsers) {
+            userIds.add(u.Id);
+        }
+
         // Load custom setting details
         for (Chatter_Auto_Add_Users__c caau : Chatter_Auto_Add_Users__c.getAll().values()) {
             if (!chatterSettingsMap.containsKey(caau.PeopleSoft_Role__c)) {
                 chatterSettingsMap.put(caau.PeopleSoft_Role__c, new List<String>());
             }
-            if (!roleToRequiredPermissionSets.containsKey(caau.PeopleSoft_Role__c)) {
-                roleToRequiredPermissionSets.put(caau.PeopleSoft_Role__c, new List<String>());
+            if (!chatterToRequiredPermissionSets.containsKey(caau.Chatter_Group_Name__c)) {
+                chatterToRequiredPermissionSets.put(caau.Chatter_Group_Name__c, new List<String>());
             }
 
             chatterSettingsMap.get(caau.PeopleSoft_Role__c).add(caau.Chatter_Group_Name__c);
             roleToEFrequency.put(caau.PeopleSoft_Role__c, caau.NotificationFrequency__c);
             if (caau.Required_Permission_Sets__c != null) {
-                for (String s : caau.PeopleSoft_Role__c.split(';')) {
-                    roleToRequiredPermissionSets.get(caau.PeopleSoft_Role__c).add(s.trim());
+                for (String s : caau.Required_Permission_Sets__c.split(';')) {
+                    chatterToRequiredPermissionSets.get(caau.Chatter_Group_Name__c).add(s.trim());
                 }
             }
         }
@@ -52,7 +58,11 @@ public without sharing class UserChatterGroupHandler implements Queueable {
         }
 
         // Get perm set assignments for each user
-        for (PermissionSetAssignment psa : [SELECT AssigneeId, PermissionSet.Name FROM PermissionSetAssignment]) {
+        for (PermissionSetAssignment psa : [
+            SELECT AssigneeId, PermissionSet.Name
+            FROM PermissionSetAssignment
+            WHERE AssigneeId IN :userIds
+        ]) {
             if (!userIdToPermSetNames.containsKey(psa.AssigneeId)) {
                 userIdToPermSetNames.put(psa.AssigneeId, new List<String>());
             }
@@ -76,6 +86,18 @@ public without sharing class UserChatterGroupHandler implements Queueable {
             profileIdToName.put(p.Id, p.Name);
         }
 
+        System.debug('=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=');
+        System.debug('chatterToRequiredPermissionSets');
+        System.debug(chatterToRequiredPermissionSets);
+        System.debug('chatterGroupsMap');
+        System.debug(chatterGroupsMap);
+        System.debug('userIdToPermSetNames');
+        System.debug(userIdToPermSetNames);
+        System.debug('chatterGroupToMembers');
+        System.debug(chatterGroupToMembers);
+        System.debug('alteredUsers');
+        System.debug(alteredUsers);
+
         /*
          * Loop through the userList to decide which users need to be added to what groups
          * then add them to the main list for insertion.
@@ -93,16 +115,24 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                 // Also use profile name to match with groups to add
                 userRoleList.add(profileIdToName.get(user.ProfileId));
 
+                System.debug('------------');
+
                 // iterate over above list and get the Chatter groups from chatterSettingsMap and
                 // add collaboration members into one single list for insertion
                 for (String str : userRoleList) {
+                    System.debug('.....');
+                    System.debug(str);
+                    System.debug(chatterSettingsMap.containsKey(str));
                     // roles
                     if (chatterSettingsMap.containsKey(str)) {
                         // check if role is in map of custom setting
 
                         List<String> chatterGroupsForRole = chatterSettingsMap.get(str);
+                        System.debug(chatterGroupsForRole);
 
                         for (String chatterGrpName : chatterGroupsForRole) {
+                            System.debug('__chatterGrpName__');
+                            System.debug(chatterGrpName);
                             // do not create Collaboration member if the dupeSet has the User Id already present
                             // check if group has already been used in this transaction,
                             // as a chatter group can be common for multiple PeopleSoft roles
@@ -111,14 +141,18 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                             }
 
                             Boolean hasAllRequiredPermSets = true;
-                            if (roleToRequiredPermissionSets.containsKey(chatterGrpName)) {
-                                for (String permSetName : roleToRequiredPermissionSets.get(chatterGrpName)) {
+                            if (chatterToRequiredPermissionSets.containsKey(chatterGrpName)) {
+                                for (String permSetName : chatterToRequiredPermissionSets.get(chatterGrpName)) {
+                                    System.debug('+++');
+                                    System.debug(permSetName);
+                                    System.debug(userIdToPermSetNames.get(user.Id));
                                     if (!userIdToPermSetNames.get(user.Id).contains(permSetName)) {
                                         hasAllRequiredPermSets = false;
                                         break;
                                     }
                                 }
                             }
+                            System.debug(hasAllRequiredPermSets);
 
                             if (
                                 !chatterGroupToMembers.get(chatterGrpName).contains(user.Id) && hasAllRequiredPermSets

@@ -452,8 +452,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
             }
 
+            Boolean success = handleAttachments(theCase, emailContact, email); // must run before createEmailMessage to cleanup cid images
             createEmailMessage(theCase, email);
-            Boolean success = handleAttachments(theCase, emailContact, email);
             Boolean hasAttachments =
                 (email.textAttachments != null && email.textAttachments.size() > 0) ||
                 (email.binaryAttachments != null &&
@@ -511,6 +511,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
     // Save attachments, if any
     private boolean handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
+        Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
+        List<Attachment> allEmailAttachments = new List<Attachment>();
         boolean successfulAttachment = true;
         Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
@@ -542,7 +544,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         attachment.ParentId = parentObject.Id;
                         if (!tAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
-                            insert attachment;
+                            allEmailAttachments.add(attachment);
                         }
                     }
                 } else if (!validFileExtensionSet.isEmpty()) {
@@ -569,10 +571,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         Attachment attachment = new Attachment();
                         attachment.Name = bAttachment.fileName;
                         attachment.Body = bAttachment.body;
+                        attachment.ContentType = bAttachment.mimeTypeSubType;
                         attachment.ParentId = parentObject.Id;
                         if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
                             neutralEmail = false;
-                            insert attachment;
+                            allEmailAttachments.add(attachment);
+                        }
+
+                        if (bAttachment.headers != null) {
+                            for (Integer i = 0; i < bAttachment.headers.size(); i++) {
+                                String headerValue = bAttachment.headers[i].value;
+                                String headerName = bAttachment.headers[i].name;
+                                if (
+                                    headerValue.startsWith('ii') ||
+                                    headerValue.startsWith('< image') ||
+                                    headerName.equals('Content-ID')
+                                ) {
+                                    headerValue = headerValue.replaceAll('<', '').replaceAll('>', '');
+                                    cidToAttachmentMap.put(headerValue, attachment);
+                                }
+                            }
                         }
                     }
                 } else if (!validFileExtensionSet.isEmpty()) {
@@ -584,6 +602,15 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         if (attachmentSize > 25000000) {
             successfulAttachment = false;
+        } else {
+            insert allEmailAttachments;
+
+            // change any cid links to new url
+            for (String headerValue : cidToAttachmentMap.keySet()) {
+                String refLink =
+                    '/servlet/../servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
+                email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
+            }
         }
 
         return successfulAttachment;

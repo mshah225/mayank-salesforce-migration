@@ -65,18 +65,7 @@ export default class AsuBrandHeader extends LightningElement {
         const idSelector = this.template.querySelector('.headerContainer').id;
         const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
 
-        // if (this.title == 'Arizona State University' && this.baseUrl == 'https://www.asu.edu/') {
-        const navButtons = [
-            {
-                href: '/apex/ViewAs',
-                text: 'View As',
-                maroon: true,
-                small: true,
-            },
-        ];
-        // }
-
-        // Additional header params:
+        // Additional header params to investigate:
         // buttons
         // logoutLink (need to set custom for SF here)
         // loginLink (need to set custom for sites that don't have users already logged in, like Family Portal)
@@ -89,7 +78,6 @@ export default class AsuBrandHeader extends LightningElement {
                     navTree: navTree,
                     title: this.title,
                     baseUrl: this.baseUrl,
-                    buttons: navButtons,
                 };
 
                 componentsLibrary.initHeader(props, idSelector, false, this.template);

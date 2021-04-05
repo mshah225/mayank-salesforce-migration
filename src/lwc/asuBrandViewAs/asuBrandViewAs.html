@@ -1,0 +1,17 @@
+<template>
+    <div class="slds-p-around_medium lgc-bg" style="text-align: right; background-color: #0085e2; color: #ffffff">
+        <lightning-button-menu alternative-text="Show view as menu">
+            <lightning-menu-item
+                href="\{viewAsUrl}"
+                icon-name="action:preview"
+                label="View as someone else"
+            ></lightning-menu-item>
+            <lightning-menu-item
+                href="\{stopViewAsUrl}"
+                icon-name="utility:logout"
+                label="Logout as {firstName} {lastName}"
+            ></lightning-menu-item>
+        </lightning-button-menu>
+        <span> {firstName} {lastName} ({emplId})</span>
+    </div>
+</template>

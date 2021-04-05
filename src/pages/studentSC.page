@@ -99,7 +99,7 @@
                         viewingAs: '{!viewingAs}',
                         emplId: '{!emplId}',
                         stopViewAsUrl: '{!stopViewAsUrl}',
-                        viewAsUrl: '{!viewAsUrl)'
+                        viewAsUrl: '{!viewAsUrl}'
                     },
                     "ASUBrandViewAsWrapper"
                 );

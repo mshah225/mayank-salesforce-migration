@@ -1,26 +1,23 @@
 public without sharing class UserChatterGroupHandler implements Queueable {
     List<User> alteredUsers;
-    Map<String, List<String>> chatterSettingsMap;
-    Map<String, String> roleToEFrequency;
-    Map<String, List<String>> chatterToRequiredPermissionSets;
-    Map<String, String> chatterGroupsMap;
+    Map<String, List<ChatterGroupDesc>> peopleSoftRoleToChatterGroups;
+    Map<String, String> chatterGroupNameToId;
     Map<String, String> profileIdToName;
     Map<String, List<String>> userIdToPermSetNames;
-    Map<String, List<Id>> chatterGroupToMembers;
+    Map<String, List<Id>> existingChatterGroupToMembers;
     List<CollaborationGroupMember> collabMembersToInsert;
     List<String> variables;
 
     public UserChatterGroupHandler(List<User> alteredUsers) {
         this.alteredUsers = alteredUsers;
-        chatterSettingsMap = new Map<String, List<String>>();
-        roleToEFrequency = new Map<String, String>();
-        chatterToRequiredPermissionSets = new Map<String, List<String>>();
-        chatterGroupsMap = new Map<String, String>();
+        chatterGroupNameToId = new Map<String, String>();
         profileIdToName = new Map<String, String>();
         userIdToPermSetNames = new Map<String, List<String>>();
-        chatterGroupToMembers = new Map<String, List<Id>>();
+        existingChatterGroupToMembers = new Map<String, List<Id>>();
         collabMembersToInsert = new List<CollaborationGroupMember>();
         variables = new List<String>();
+
+        peopleSoftRoleToChatterGroups = new Map<String, List<ChatterGroupDesc>>();
     }
 
     public void execute(QueueableContext context) {
@@ -28,61 +25,75 @@ public without sharing class UserChatterGroupHandler implements Queueable {
     }
 
     private void run() {
-        // All user ids
-        List<Id> userIds = new List<Id>();
-        for (User u : alteredUsers) {
-            userIds.add(u.Id);
-        }
-
         // Load custom setting details
         for (Chatter_Auto_Add_Users__c caau : Chatter_Auto_Add_Users__c.getAll().values()) {
-            if (!chatterSettingsMap.containsKey(caau.PeopleSoft_Role__c)) {
-                chatterSettingsMap.put(caau.PeopleSoft_Role__c, new List<String>());
+            if (!peopleSoftRoleToChatterGroups.containsKey(caau.PeopleSoft_Role__c)) {
+                peopleSoftRoleToChatterGroups.put(caau.PeopleSoft_Role__c, new List<ChatterGroupDesc>());
             }
-            if (!chatterToRequiredPermissionSets.containsKey(caau.Chatter_Group_Name__c)) {
-                chatterToRequiredPermissionSets.put(caau.Chatter_Group_Name__c, new List<String>());
-            }
+            peopleSoftRoleToChatterGroups.get(caau.PeopleSoft_Role__c).add(new ChatterGroupDesc(caau));
+        }
 
-            chatterSettingsMap.get(caau.PeopleSoft_Role__c).add(caau.Chatter_Group_Name__c);
-            roleToEFrequency.put(caau.PeopleSoft_Role__c, caau.NotificationFrequency__c);
-            if (caau.Required_Permission_Sets__c != null) {
-                for (String s : caau.Required_Permission_Sets__c.split(';')) {
-                    chatterToRequiredPermissionSets.get(caau.Chatter_Group_Name__c).add(s.trim());
-                }
+        // Get lists for subsequent queries
+        // All user ids
+        List<Id> userIds = new List<Id>();
+        List<Id> profileIds = new List<Id>();
+        for (User u : alteredUsers) {
+            userIds.add(u.Id);
+            profileIds.add(u.ProfileId);
+        }
+        // Lists of perm set and chatter group names
+        List<String> allPermSetNames = new List<String>();
+        List<String> allChatterGrpNames = new List<String>();
+        for (List<ChatterGroupDesc> cgds : peopleSoftRoleToChatterGroups.values()) {
+            for (ChatterGroupDesc cgd : cgds) {
+                allPermSetNames.addAll(cgd.requiredPermissionSetNames);
+                allChatterGrpNames.add(cgd.chatterGroupName);
             }
         }
 
-        // map to store Chatter Group name vs Group Id using SOQL
-        for (CollaborationGroup cg : [SELECT Id, Name FROM CollaborationGroup]) {
-            chatterGroupsMap.put(cg.Name, cg.Id);
+        // map to store Chatter Group name vs Group Id
+        if (Test.isRunningTest()) {
+            allChatterGrpNames.addAll(
+                new List<String>{ '[Test] ASU Service', '[Test] ASU Recruitment', '[Test] ASU - Everyone' }
+            );
+        } else {
+            allChatterGrpNames.addAll(new List<String>{ 'ASU Service', 'ASU Recruitment', 'ASU - Everyone' });
+        }
+        for (CollaborationGroup cg : [SELECT Id, Name FROM CollaborationGroup WHERE Name IN :allChatterGrpNames]) {
+            chatterGroupNameToId.put(cg.Name, cg.Id);
         }
 
         // Get perm set assignments for each user
         for (PermissionSetAssignment psa : [
             SELECT AssigneeId, PermissionSet.Name
             FROM PermissionSetAssignment
-            WHERE AssigneeId IN :userIds
+            WHERE AssigneeId IN :userIds AND PermissionSet.Name IN :allPermSetNames
         ]) {
             if (!userIdToPermSetNames.containsKey(psa.AssigneeId)) {
                 userIdToPermSetNames.put(psa.AssigneeId, new List<String>());
             }
             userIdToPermSetNames.get(psa.AssigneeId).add(psa.PermissionSet.Name);
         }
+        for(Id uid : userIds) {
+            if (!userIdToPermSetNames.containsKey(uid)) {
+                userIdToPermSetNames.put(uid, new List<String>());
+            }
+        }
 
         // Existing users in each collab group
         for (CollaborationGroupMember groupMember : [
             SELECT MemberId, CollaborationGroup.Name
             FROM CollaborationGroupMember
-            WHERE CollaborationGroupId IN :chatterGroupsMap.values()
+            WHERE CollaborationGroupId IN :chatterGroupNameToId.values() AND MemberId IN :userIds
         ]) {
-            if (!chatterGroupToMembers.containsKey(groupMember.CollaborationGroup.Name)) {
-                chatterGroupToMembers.put(groupMember.CollaborationGroup.Name, new List<Id>());
+            if (!existingChatterGroupToMembers.containsKey(groupMember.CollaborationGroup.Name)) {
+                existingChatterGroupToMembers.put(groupMember.CollaborationGroup.Name, new List<Id>());
             }
-            chatterGroupToMembers.get(groupMember.CollaborationGroup.Name).add(groupMember.MemberId);
+            existingChatterGroupToMembers.get(groupMember.CollaborationGroup.Name).add(groupMember.MemberId);
         }
 
         // Get profile names
-        for (Profile p : [SELECT Id, Name FROM Profile]) {
+        for (Profile p : [SELECT Id, Name FROM Profile WHERE Id IN :profileIds]) {
             profileIdToName.put(p.Id, p.Name);
         }
 
@@ -103,43 +114,37 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                 // Also use profile name to match with groups to add
                 userRoleList.add(profileIdToName.get(user.ProfileId));
 
-                // iterate over above list and get the Chatter groups from chatterSettingsMap and
-                // add collaboration members into one single list for insertion
                 for (String str : userRoleList) {
-                    // roles
-                    if (chatterSettingsMap.containsKey(str)) {
-                        // check if role is in map of custom setting
+                    if (peopleSoftRoleToChatterGroups.containsKey(str)) {
+                        List<ChatterGroupDesc> chatterGroupsDescsForRole = peopleSoftRoleToChatterGroups.get(str);
 
-                        List<String> chatterGroupsForRole = chatterSettingsMap.get(str);
-
-                        for (String chatterGrpName : chatterGroupsForRole) {
-                            // do not create Collaboration member if the dupeSet has the User Id already present
-                            // check if group has already been used in this transaction,
-                            // as a chatter group can be common for multiple PeopleSoft roles
-                            if (chatterGroupToMembers.get(chatterGrpName) == null) {
-                                chatterGroupToMembers.put(chatterGrpName, new List<Id>());
+                        for (ChatterGroupDesc eachGroupDesc : chatterGroupsDescsForRole) {
+                            if (!existingChatterGroupToMembers.containsKey(eachGroupDesc.chatterGroupName)) {
+                                existingChatterGroupToMembers.put(eachGroupDesc.chatterGroupName, new List<Id>());
                             }
 
+                            // Check all reuqired perm sets for this peoplesoft role - chatter group pair
                             Boolean hasAllRequiredPermSets = true;
-                            if (chatterToRequiredPermissionSets.containsKey(chatterGrpName)) {
-                                for (String permSetName : chatterToRequiredPermissionSets.get(chatterGrpName)) {
-                                    if (!userIdToPermSetNames.get(user.Id).contains(permSetName)) {
-                                        hasAllRequiredPermSets = false;
-                                        break;
-                                    }
+                            for (String permSetName : eachGroupDesc.requiredPermissionSetNames) {
+                                if (!userIdToPermSetNames.get(user.Id).contains(permSetName)) {
+                                    hasAllRequiredPermSets = false;
+                                    break;
                                 }
                             }
 
                             if (
-                                !chatterGroupToMembers.get(chatterGrpName).contains(user.Id) && hasAllRequiredPermSets
+                                !existingChatterGroupToMembers.get(eachGroupDesc.chatterGroupName).contains(user.Id) &&
+                                hasAllRequiredPermSets
                             ) {
                                 CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
                                 newCollabMember.MemberId = user.Id;
-                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(chatterGrpName);
-                                newCollabMember.NotificationFrequency = roleToEFrequency.get(str);
+                                newCollabMember.CollaborationGroupId = chatterGroupNameToId.get(
+                                    eachGroupDesc.chatterGroupName
+                                );
+                                newCollabMember.NotificationFrequency = eachGroupDesc.notificationFrequency;
                                 collabMembersToInsert.add(newCollabMember);
 
-                                chatterGroupToMembers.get(chatterGrpName).add(user.Id);
+                                existingChatterGroupToMembers.get(eachGroupDesc.chatterGroupName).add(user.Id);
                             }
                         }
                     }
@@ -149,52 +154,52 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                 if (user.ProfileId != null && profileIdToName.get(user.ProfileId) != null) {
                     if (profileIdToName.get(user.ProfileId).contains('ASU Service')) {
                         String keyName = Test.isRunningTest() ? '[Test] ASU Service' : 'ASU Service';
-                        if (chatterGroupsMap.containsKey(keyName)) {
-                            if (chatterGroupToMembers.get(keyName) == null) {
-                                chatterGroupToMembers.put(keyName, new List<Id>());
+                        if (chatterGroupNameToId.containsKey(keyName)) {
+                            if (!existingChatterGroupToMembers.containsKey(keyName)) {
+                                existingChatterGroupToMembers.put(keyName, new List<Id>());
                             }
 
-                            if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
+                            if (!existingChatterGroupToMembers.get(keyName).contains(user.Id)) {
                                 CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
                                 newCollabMember.MemberId = user.Id;
-                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
+                                newCollabMember.CollaborationGroupId = chatterGroupNameToId.get(keyName);
                                 newCollabMember.NotificationFrequency = 'D';
                                 collabMembersToInsert.add(newCollabMember);
-                                chatterGroupToMembers.get(keyName).add(user.Id);
+                                existingChatterGroupToMembers.get(keyName).add(user.Id);
                             }
                         }
                     }
                     if (profileIdToName.get(user.ProfileId).contains('ASU Recruit')) {
                         String keyName = Test.isRunningTest() ? '[Test] ASU Recruitment' : 'ASU Recruitment';
-                        if (chatterGroupsMap.containsKey(keyName)) {
-                            if (chatterGroupToMembers.get(keyName) == null) {
-                                chatterGroupToMembers.put(keyName, new List<Id>());
+                        if (chatterGroupNameToId.containsKey(keyName)) {
+                            if (!existingChatterGroupToMembers.containsKey(keyName)) {
+                                existingChatterGroupToMembers.put(keyName, new List<Id>());
                             }
 
-                            if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
+                            if (!existingChatterGroupToMembers.get(keyName).contains(user.Id)) {
                                 CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
                                 newCollabMember.MemberId = user.Id;
-                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
+                                newCollabMember.CollaborationGroupId = chatterGroupNameToId.get(keyName);
                                 newCollabMember.NotificationFrequency = 'D';
                                 collabMembersToInsert.add(newCollabMember);
-                                chatterGroupToMembers.get(keyName).add(user.Id);
+                                existingChatterGroupToMembers.get(keyName).add(user.Id);
                             }
                         }
                     }
                     if (!profileIdToName.get(user.ProfileId).contains('ASU Community')) {
                         String keyName = Test.isRunningTest() ? '[Test] ASU - Everyone' : 'ASU - Everyone';
-                        if (chatterGroupsMap.containsKey(keyName)) {
-                            if (chatterGroupToMembers.get(keyName) == null) {
-                                chatterGroupToMembers.put(keyName, new List<Id>());
+                        if (chatterGroupNameToId.containsKey(keyName)) {
+                            if (!existingChatterGroupToMembers.containsKey(keyName)) {
+                                existingChatterGroupToMembers.put(keyName, new List<Id>());
                             }
 
-                            if (!chatterGroupToMembers.get(keyName).contains(user.Id)) {
+                            if (!existingChatterGroupToMembers.get(keyName).contains(user.Id)) {
                                 CollaborationGroupMember newCollabMember = new CollaborationGroupMember();
                                 newCollabMember.MemberId = user.Id;
-                                newCollabMember.CollaborationGroupId = chatterGroupsMap.get(keyName);
+                                newCollabMember.CollaborationGroupId = chatterGroupNameToId.get(keyName);
                                 newCollabMember.NotificationFrequency = 'D';
                                 collabMembersToInsert.add(newCollabMember);
-                                chatterGroupToMembers.get(keyName).add(user.Id);
+                                existingChatterGroupToMembers.get(keyName).add(user.Id);
                             }
                         }
                     }
@@ -227,5 +232,25 @@ public without sharing class UserChatterGroupHandler implements Queueable {
 
     public static void handleChatterGroups(List<User> alteredUsers) {
         System.enqueueJob(new UserChatterGroupHandler(alteredUsers));
+    }
+
+    @TestVisible
+    private class ChatterGroupDesc {
+        public final String peopleSoftRole;
+        public final String chatterGroupName;
+        public final String notificationFrequency;
+        public final List<String> requiredPermissionSetNames;
+
+        public ChatterGroupDesc(Chatter_Auto_Add_Users__c customSetting) {
+            peopleSoftRole = customSetting.PeopleSoft_Role__c;
+            chatterGroupName = customSetting.Chatter_Group_Name__c;
+            notificationFrequency = customSetting.NotificationFrequency__c;
+            requiredPermissionSetNames = new List<String>();
+            if (customSetting.Required_Permission_Sets__c != null) {
+                for (String s : customSetting.Required_Permission_Sets__c.split(';')) {
+                    requiredPermissionSetNames.add(s.trim());
+                }
+            }
+        }
     }
 }

@@ -86,18 +86,6 @@ public without sharing class UserChatterGroupHandler implements Queueable {
             profileIdToName.put(p.Id, p.Name);
         }
 
-        System.debug('=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=');
-        System.debug('chatterToRequiredPermissionSets');
-        System.debug(chatterToRequiredPermissionSets);
-        System.debug('chatterGroupsMap');
-        System.debug(chatterGroupsMap);
-        System.debug('userIdToPermSetNames');
-        System.debug(userIdToPermSetNames);
-        System.debug('chatterGroupToMembers');
-        System.debug(chatterGroupToMembers);
-        System.debug('alteredUsers');
-        System.debug(alteredUsers);
-
         /*
          * Loop through the userList to decide which users need to be added to what groups
          * then add them to the main list for insertion.
@@ -115,24 +103,16 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                 // Also use profile name to match with groups to add
                 userRoleList.add(profileIdToName.get(user.ProfileId));
 
-                System.debug('------------');
-
                 // iterate over above list and get the Chatter groups from chatterSettingsMap and
                 // add collaboration members into one single list for insertion
                 for (String str : userRoleList) {
-                    System.debug('.....');
-                    System.debug(str);
-                    System.debug(chatterSettingsMap.containsKey(str));
                     // roles
                     if (chatterSettingsMap.containsKey(str)) {
                         // check if role is in map of custom setting
 
                         List<String> chatterGroupsForRole = chatterSettingsMap.get(str);
-                        System.debug(chatterGroupsForRole);
 
                         for (String chatterGrpName : chatterGroupsForRole) {
-                            System.debug('__chatterGrpName__');
-                            System.debug(chatterGrpName);
                             // do not create Collaboration member if the dupeSet has the User Id already present
                             // check if group has already been used in this transaction,
                             // as a chatter group can be common for multiple PeopleSoft roles
@@ -143,16 +123,12 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                             Boolean hasAllRequiredPermSets = true;
                             if (chatterToRequiredPermissionSets.containsKey(chatterGrpName)) {
                                 for (String permSetName : chatterToRequiredPermissionSets.get(chatterGrpName)) {
-                                    System.debug('+++');
-                                    System.debug(permSetName);
-                                    System.debug(userIdToPermSetNames.get(user.Id));
                                     if (!userIdToPermSetNames.get(user.Id).contains(permSetName)) {
                                         hasAllRequiredPermSets = false;
                                         break;
                                     }
                                 }
                             }
-                            System.debug(hasAllRequiredPermSets);
 
                             if (
                                 !chatterGroupToMembers.get(chatterGrpName).contains(user.Id) && hasAllRequiredPermSets

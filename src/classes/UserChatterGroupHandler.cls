@@ -74,7 +74,7 @@ public without sharing class UserChatterGroupHandler implements Queueable {
             }
             userIdToPermSetNames.get(psa.AssigneeId).add(psa.PermissionSet.Name);
         }
-        for(Id uid : userIds) {
+        for (Id uid : userIds) {
             if (!userIdToPermSetNames.containsKey(uid)) {
                 userIdToPermSetNames.put(uid, new List<String>());
             }
@@ -221,7 +221,7 @@ public without sharing class UserChatterGroupHandler implements Queueable {
                 }
                 for (Id groupId : chatterGroupToUserId.keySet()) {
                     variables.add(
-                        ErrorLogger.convertListToJSON('groupId:' + groupId, chatterGroupToUserId.get(groupId))
+                        ErrorLogger.convertListToJSON('groupId=' + groupId, chatterGroupToUserId.get(groupId))
                     );
                 }
 

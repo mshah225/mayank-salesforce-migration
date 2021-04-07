@@ -23,8 +23,7 @@
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
-        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
-        />
+        <c:MyASUHelpPageNotifications maintenanceString="{!mMessage}" />
         <div class="container">
             <div class="row">
                 <div class="col-md-7 myasu-help-region">

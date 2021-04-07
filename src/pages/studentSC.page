@@ -12,6 +12,8 @@
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
         <style>
+            /* @TODO - Make sure to check mobile spacing */
+
             #ASUBrandHeaderSpacer {
                 height: 145px;
             }
@@ -19,12 +21,10 @@
     </head>
 
     <apex:includeLightning />
-    <div id="ASUBrandHeaderSpacer"></div>
-    <div id="ASUBrandHeaderWrapper"></div>
-    <div id="ASUBrandViewAsWrapper"></div>
-
-    <!-- <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" /> -->
+    <div id="ASUBrandHeaderSpacer" />
+    <div id="ASUBrandHeaderWrapper" />
+    <!-- <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" /> -->
+    <div id="ASUBrandViewAsWrapper" />
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">

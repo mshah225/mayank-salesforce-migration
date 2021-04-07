@@ -3,20 +3,20 @@
     <!-- 2. Add 'slds-scope' class to desired SLDS-based or Lightning container -->
     <script>
         document.body.className = document.body.className.replace("slds-scope", "");
-    
-        jQuery(window).on('load', function () {
-            jQuery('.slds-scope').removeClass('slds-scope');
-        });
 
-        jQuery(window).on('beforeunload', function () {
-            // your logic here
-            jQuery('.slds-scope').removeClass('slds-scope');
-        });
+        // jQuery(window).on('load', function () {
+        //     jQuery('.slds-scope').removeClass('slds-scope');
+        // });
 
-        setTimeout(
-            function () {
-                jQuery('.slds-scope').removeClass('slds-scope');
-            }, 1000
-        );
+        // jQuery(window).on('beforeunload', function () {
+        //     // your logic here
+        //     jQuery('.slds-scope').removeClass('slds-scope');
+        // });
+
+        // setTimeout(
+        //     function () {
+        //         jQuery('.slds-scope').removeClass('slds-scope');
+        //     }, 1000
+        // );
     </script>
 </apex:component>

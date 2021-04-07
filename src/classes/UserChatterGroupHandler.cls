@@ -102,7 +102,12 @@ public without sharing class UserChatterGroupHandler implements Queueable {
          * then add them to the main list for insertion.
          */
         for (User user : alteredUsers) {
-            if (user.isActive && user.EmployeeNumber != null && user.EmployeeNumber.length() != 0) {
+            if (
+                user.isActive &&
+                !user.Deprovision_User__c &&
+                user.EmployeeNumber != null &&
+                user.EmployeeNumber.length() != 0
+            ) {
                 List<String> userRoleList = new List<String>();
                 // get all the Fields from the FieldSets to get the Role(s) of User
                 for (Schema.FieldSetMember fld : SObjectType.User.FieldSets.PeopleSoft_Role_Fieldset.getFields()) {

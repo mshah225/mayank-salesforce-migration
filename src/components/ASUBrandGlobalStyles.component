@@ -1,0 +1,13 @@
+<apex:component>
+    <style>
+        #ASUBrandHeaderSpacer {
+            height: 145px;
+        }
+
+        @media (max-width: 992px) {
+            #ASUBrandHeaderSpacer {
+                height: 113px;
+            }
+        }
+    </style>
+</apex:component>

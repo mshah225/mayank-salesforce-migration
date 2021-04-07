@@ -11,17 +11,20 @@
 :host .flex-item-left {
     padding: 10px;
     flex: 50%;
+    text-align: left;
 }
 
 :host .flex-item-right {
     padding: 10px;
     flex: 50%;
+    text-align: right;
 }
 
 /* Responsive layout - makes a one column-layout instead of a two-column layout */
-@media (max-width: 800px) {
+@media (max-width: 600px) {
     :host .flex-item-right,
     :host .flex-item-left {
         flex: 100%;
+        text-align: center;
     }
 }

@@ -9,22 +9,17 @@
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
         <c:MyASUHelpStyles />
+
+        <c:ASUBrandGlobalStyles />
+
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
-        <style>
-            /* @TODO - Make sure to check mobile spacing */
-
-            #ASUBrandHeaderSpacer {
-                height: 145px;
-            }
-        </style>
     </head>
 
     <apex:includeLightning />
     <div id="ASUBrandHeaderSpacer" />
     <div id="ASUBrandHeaderWrapper" />
-    <!-- <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" /> -->
-    <div id="ASUBrandViewAsWrapper" />
+    <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">

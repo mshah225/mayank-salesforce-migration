@@ -17,7 +17,6 @@
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
-        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
         <div class="container">
             <ol class="breadcrumb">
                 <li class="active">Home</li>

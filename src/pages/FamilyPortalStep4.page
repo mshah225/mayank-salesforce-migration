@@ -7,7 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
     </head>
 
-    <c:ASUBrandHeader />
+    <apex:includeLightning />
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id="ASUBrandHeaderWrapper"></div>
+
     <div class="asu-header-site-title-container">
         <div>
             <div id="asu-header-site-title-welcome" class="asu-header-width">
@@ -133,7 +136,7 @@
             </div>
         </apex:form>
     </div>
-    <c:ASUBrandFooter />
+    <div id="ASUBrandFooterWrapper"></div>
 
     <script>
         $("body").bind("DOMNodeInserted", function () {
@@ -163,5 +166,22 @@
                 $('.family-portal-4-no-students-text').toggle();
             }
         })
+
+
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {},
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+            }
+        );
     </script>
 </apex:page>

@@ -15,7 +15,6 @@
             f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-KDWN8Z');
     </script>
-    <c:asu_responsive_header_section />
 
     <head>
         <title>ASU | Subscription Center</title>
@@ -188,8 +187,11 @@
         <noscript>
             <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDWN8Z" height="0" width="0" style="display: none; visibility: hidden"></iframe>
         </noscript>
-        <div id="main-search" class="main-search closed"></div>
-        <c:SCHeader pageHead="Subscription Center" showNavBar="false" />
+
+        <apex:includeLightning />
+        <div id="ASUBrandHeaderSpacer"></div>
+        <div id="ASUBrandHeaderWrapper"></div>
+
         <apex:outputPanel id="optedOut">
             <apex:form>
                 <div class="modal fade" id="optedOutModal" role="dialog">
@@ -573,7 +575,26 @@
             </div>
             <div class="col-xs-1"></div>
         </div>
-        <c:SCFooter />
+        <div id="ASUBrandFooterWrapper"></div>
+
+
+        <script>        
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        {},
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                }
+            );
+        </script>
     </body>
 
     </html>

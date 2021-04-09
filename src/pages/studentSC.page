@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
-    action="{!init}" cache="true" extensions="ASUBrandController,MyASUHelpPaginationController">
+    cache="true" extensions="MyASUHelpPaginationController">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -21,9 +21,6 @@
     <apex:includeLightning />
     <div id="ASUBrandHeaderSpacer"></div>
     <div id="ASUBrandHeaderWrapper"></div>
-
-    <!-- <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" /> -->
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
@@ -95,5 +92,4 @@
 
     </script>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
-    <c:SLDSRemoveGlobalStyles />
 </apex:page>

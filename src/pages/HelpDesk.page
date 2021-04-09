@@ -156,10 +156,6 @@
     </style>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
             'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
-    <!--<c:asu_responsive_header_section />
-    <div id="bgWrapper">
-           <c:customAlerts alerts="{!alerts.alerts}" />
-    </div>-->
     <apex:outputPanel layout="block" style="margin-top: 10px; min-width: 1300px; overflow: auto; padding: 10px">
         <apex:form id="myform" html-novalidate="novalidate">
             <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />

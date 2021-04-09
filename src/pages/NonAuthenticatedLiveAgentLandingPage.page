@@ -4,8 +4,10 @@
 
     <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
     <c:ASUWebStandards />
-    <c:asu_responsive_header_section />
-    <c:SCHeader />
+
+    <apex:includeLightning />
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id="ASUBrandHeaderWrapper"></div>
 
     <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
 
@@ -34,6 +36,9 @@
                 <a id="liveagent_button_offline" class="btn btn-primary btn-lg" style="cursor: pointer">Offline</a>
             </div>
         </div>
+
+        <div id="ASUBrandFooterWrapper"></div>
+
         <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js"></script>
         <script type="text/javascript">
             var orgId = '{!orgId}';
@@ -61,7 +66,23 @@
             }
 
             initLiveAgent(() => startChat());
+
+
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        {},
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                }
+            );
         </script>
     </body>
-    <c:SCFooter />
 </apex:page>

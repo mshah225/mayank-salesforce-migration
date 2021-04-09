@@ -1,5 +1,5 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="ViewAllCasesController"
-    action="{!init}" cache="true" extensions="ASUBrandController">
+    cache="true">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
@@ -11,9 +11,9 @@
         <c:MyASUHelpStyles />
     </head>
 
-    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
-    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
+    <apex:includeLightning />
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id="ASUBrandHeaderWrapper"></div>
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
@@ -109,6 +109,24 @@
             </div>
         </div>
     </div>
-    <c:ASUBrandFooter />
+    <div id="ASUBrandFooterWrapper"></div>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
+
+    <script>
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {},
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+            }
+        );
+    </script>
 </apex:page>

@@ -12,8 +12,9 @@
                 }
                 // List of valid messages
                 if (
-                    event.data.includes('/lightning/r/Case/') ||
-                    event.data.includes('lightning/r/et4ae5__IndividualEmailResult__c/')
+                    typeof event.data === 'string' &&
+                    (event.data.includes('/lightning/r/Case/') ||
+                        event.data.includes('lightning/r/et4ae5__IndividualEmailResult__c/'))
                 ) {
                     messageValid = true;
                 }

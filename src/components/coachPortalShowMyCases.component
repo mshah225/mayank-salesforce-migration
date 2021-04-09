@@ -151,7 +151,8 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink value="javascript:;" onclick="openStudentProfile('{!c.obj.contactId}', '{!c.obj.contact.name}')" styleClass="standardLink">{!c.obj.contact.EMPLID__c}</apex:outputLink>
+                    <apex:outputLink value="javascript:;" onclick="openStudentProfileLightning('{!c.obj.contactId}', '{!c.obj.contact.name}', '{!c.obj.contact.EMPLID__c}')"
+                        styleClass="standardLink">{!c.obj.contact.EMPLID__c}</apex:outputLink>
                 </apex:column>
 
                 <apex:column headerValue="Case (Details)" rendered="{! showSubject}" headerClass="ASUColumnHead" styleClass="ASUColumn">
@@ -167,7 +168,7 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink value="javascript:;" onclick="openCase('{!c.obj.Id}', '{!c.obj.CaseNumber}')" styleClass="standardLink">{!c.obj.subject}</apex:outputLink>
+                    <apex:outputLink value="javascript:;" onclick="openCaseLightning('{!c.obj.Id}', '{!c.obj.CaseNumber}')" styleClass="standardLink">{!c.obj.subject}</apex:outputLink>
                 </apex:column>
 
                 <apex:column headerValue="Status" value="{!c.obj.status}" rendered="{! showStatus}" headerClass="ASUColumnHead" styleClass="ASUColumn">
@@ -398,4 +399,53 @@
             </div>
         </apex:form>
     </apex:outputPanel>
+
+
+    <script>
+        function isLightningExperienceOrSalesforce1() {
+            return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
+        function openStudentProfileLightning(contactId, contactName, contactEmplid) {
+            var isFound = false;
+            if (sforce.console.isInConsole()) {
+                sforce.console.openPrimaryTab(null, '/' + contactId, true, contactName, function (result) {
+                    if (result.success) {
+                        sforce.console.openSubtab(result.id, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
+                    } else {
+                        sforce.console.getPrimaryTabIds(function (primaryTabResult) {
+                            for (x = 0; x < primaryTabResult.ids.length; x++) {
+                                console.log(primaryTabResult.ids[x]);
+                                var parentTabId = primaryTabResult.ids[x];
+
+                                sforce.console.getPageInfo(primaryTabResult.ids[x], function (pageInfoResult) {
+                                    if (pageInfoResult.success) {
+                                        var info = JSON.parse(pageInfoResult.pageInfo);
+
+                                        if (info.objectId == contactId.substring(0, 15)) { // contactId is 18 digit, ObjectId is 15
+                                            sforce.console.openSubtab(parentTabId, '/apex/studentProfile?contactId=' + contactId, true, contactName + ' Student Profile', null);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            } else if (isLightningExperienceOrSalesforce1()) {
+                var message = "/apex/StudentProfile?contactId=" + contactEmplid;
+                parent.postMessage(message, '*');
+            }
+        }
+
+        function openCaseLightning(Id, caseNumber) {
+            if (sforce.console.isInConsole()) {
+                sforce.console.openPrimaryTab(null, '/' + Id, true, caseNumber);
+            } else if (isLightningExperienceOrSalesforce1()) {
+                console.log('lightning');
+                var message = "/lightning/r/Case/" + Id + "/view";
+                console.log(message);
+                parent.postMessage(message, '*');
+            }
+        }
+    </script>
 </apex:component>

@@ -280,6 +280,25 @@ public class SuccessRecodingController {
         }
     }
 
+    public void page1Reset() {
+        allStudentsChecked = false;
+        selectedCoachId = '';
+        transferToCoachId = '';
+        resourceResults = null;
+        coachSearchString = '';
+        studentSearchString = '';
+        selectedCoachName = '';
+        transferToCoachName = '';
+        selectedStudentName = '';
+        studentsResults = new List<StudentWrapper>();
+        selectedStudents = new List<StudentWrapper>();
+        contactResults = new List<Contact>();
+
+        selectedInitOpt = '--Select--';
+        coachPath = false;
+        page = 1;
+    }
+
     // Select path page
     public void page1() {
         selectedInitOpt = '--Select--';

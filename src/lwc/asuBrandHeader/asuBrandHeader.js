@@ -1,6 +1,6 @@
 import {LightningElement, api} from 'lwc';
 import {loadScript} from 'lightning/platformResourceLoader';
-import jquery from '@salesforce/resourceUrl/jQuery_3_1_1';
+import jQuery from '@salesforce/resourceUrl/jQuery_3_1_1';
 import getFirstName from '@salesforce/apex/ASUBrandUtilities.getFirstName';
 
 export default class AsuBrandHeader extends LightningElement {
@@ -47,7 +47,7 @@ export default class AsuBrandHeader extends LightningElement {
         }
     }
     renderedCallback() {
-        loadScript(this, jquery).then(() => {
+        loadScript(this, jQuery).then(() => {
             $.getScript(
                 'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js',
                 () => {

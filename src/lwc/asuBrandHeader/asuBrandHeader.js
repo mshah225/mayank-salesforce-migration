@@ -7,6 +7,8 @@ export default class AsuBrandHeader extends LightningElement {
     @api title;
     @api baseUrl;
     @api navTreeStr;
+    @api noAutoSpacer = false;
+
     connectedCallback() {
         let params = this.getQueryParameters();
 
@@ -93,6 +95,7 @@ export default class AsuBrandHeader extends LightningElement {
                 };
 
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
+                this.setupSpacerResizing();
             })
             .catch(() => {
                 const props = {
@@ -102,6 +105,7 @@ export default class AsuBrandHeader extends LightningElement {
                 };
 
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
+                this.setupSpacerResizing();
             });
     }
     getQueryParameters() {
@@ -152,5 +156,20 @@ export default class AsuBrandHeader extends LightningElement {
             }
         }
         return listOfLinks;
+    }
+
+    setupSpacerResizing() {
+        // Don't do this if auto resizing is off
+        if (this.noAutoSpacer) {
+            return;
+        }
+
+        this.template.querySelector('.headerSpacer').style.height =
+            this.template.querySelector('header').clientHeight + 'px';
+
+        window.addEventListener('resize', () => {
+            this.template.querySelector('.headerSpacer').style.height =
+                this.template.querySelector('header').clientHeight + 'px';
+        });
     }
 }

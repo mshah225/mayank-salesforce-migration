@@ -3,35 +3,12 @@
     <head>
         <title>My ASU - Service Center</title>
         <meta charset="utf-8" />
-        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_303, 'favicon.ico')}" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
 
-        <apex:includeLightning />
-        <div id="ASUBrandHeaderSpacer"></div>
-        <div id="ASUBrandHeaderWrapper"></div>
-
-        <c:myasustyles />
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
-        <style>
-            body {
-                margin: 0px;
-                padding: 0px;
-                font-family: Helvetica, Arial, sans-serif;
-            }
-
-            a {
-                color: #990033;
-            }
-
-            .mainBody {
-                width: 90%;
-                max-width: 500px;
-            }
-
-            #ASUBrandHeaderSpacer {
-                height: 145px;
-            }
-        </style>
-
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
         <script>
             function getUrlParameter(sParam) {
                 var sPageURL = window.location.search.substring(1);
@@ -59,6 +36,8 @@
     </head>
 
     <body onload="replaceIframe()">
+        <div id="ASUBrandHeaderWrapper" class="slds-scope"></div>
+
         <center>
             <div class="mainBody">
                 <img src="https://webapp4.asu.edu/myasu/images/loader_all_yellow.gif" style="margin-top: 50px" />
@@ -71,9 +50,9 @@
             </div>
         </center>
 
-        <div id="ASUBrandFooterWrapper"></div>
-
         <iframe src="" scrolling="true" id="theIframe" style="display: none" frameborder="true" width="700px" />
+
+        <div id="ASUBrandFooterWrapper" class="slds-scope"></div>
 
         <script>
             $Lightning.use(

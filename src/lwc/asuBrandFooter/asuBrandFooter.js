@@ -1,6 +1,6 @@
 import {LightningElement} from 'lwc';
 import {loadStyle} from 'lightning/platformResourceLoader';
-import bootstrap from '@salesforce/resourceUrl/bootstrap_4';
+import bootstrap4_asu from '@salesforce/resourceUrl/bootstrap_4_asu';
 
 export default class AsuBrandFooter extends LightningElement {
     renderedCallback() {
@@ -11,6 +11,6 @@ export default class AsuBrandFooter extends LightningElement {
             element.id = element.dataset.lwcForceId;
         }
 
-        loadStyle(this, bootstrap);
+        loadStyle(this, bootstrap4_asu + '/dist/css/bootstrap-asu.min.css');
     }
 }

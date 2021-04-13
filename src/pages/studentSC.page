@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
-        <!-- <c:MyASUHelpStyles /> -->
+        <c:MyASUHelpStyles />
         <c:ASUBrandGlobalStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />

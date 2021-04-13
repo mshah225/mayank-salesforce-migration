@@ -1,6 +1,6 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
     action="{!init}" cache="true" extensions="ASUBrandController,MyASUHelpPaginationController">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" /> -->
 
     <head>
         <title>My ASU | Help</title>
@@ -9,9 +9,7 @@
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
         <c:MyASUHelpStyles />
-
         <c:ASUBrandGlobalStyles />
-
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
     </head>

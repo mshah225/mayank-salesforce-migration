@@ -165,11 +165,11 @@ export default class AsuBrandHeader extends LightningElement {
         }
 
         this.template.querySelector('.headerSpacer').style.height =
-            this.template.querySelector('header').clientHeight + 'px';
+            this.template.querySelector('header').clientHeight + 10 + 'px';
 
         window.addEventListener('resize', () => {
             this.template.querySelector('.headerSpacer').style.height =
-                this.template.querySelector('header').clientHeight + 'px';
+                this.template.querySelector('header').clientHeight + 10 + 'px';
         });
     }
 }

@@ -1,6 +1,6 @@
 <apex:component>
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4)}" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <style>
         /* My ASU Help - General */
 
@@ -18,6 +18,19 @@
 
         .myasu-help-region .pbBody {
             margin: 0 !important;
+        }
+
+        *:hover {
+            z-index: 1;
+        }
+
+        *:active,
+        .active {
+            z-index: 2;
+        }
+
+        *:focus {
+            z-index: 3;
         }
 
         .myasu-help-region textarea {
@@ -310,14 +323,29 @@
 
         /* My ASU Help - Contact Us */
 
-        .myasu-help-region [id*='liveagent_button_'] {
-            text-decoration: underline;
+        .myasu-help-region .myasu-help-region-contact-us a {
+            text-decoration: none;
         }
 
-        .myasu-help-region .accordion-toggle:focus,
-        .myasu-help-region .accordion-toggle2:focus,
-        .myasu-help-region .accordion-toggle3:focus {
+        .myasu-help-region .myasu-help-region-contact-us i {
+            color: #8c1d40;
+        }
+
+        .myasu-help-region .myasu-help-region-contact-us .accordion .panel:focus i,
+        .myasu-help-region .myasu-help-region-contact-us .accordion .panel:hover i {
             color: #d23153;
+        }
+
+        .myasu-help-region .myasu-help-region-contact-us .panel-heading {
+            padding: 10px 15px;
+        }
+
+        .myasu-help-region .myasu-help-region-contact-us h4 {
+            font-size: 1em;
+        }
+
+        .myasu-help-region .myasu-help-region-contact-us [id*='liveagent_button_'] {
+            text-decoration: underline;
         }
 
         .myasu-help-region .myasu-help-region-contact-us-accordion-container .fa {

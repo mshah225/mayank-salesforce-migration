@@ -6,20 +6,17 @@
         <title>My ASU | Help</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
         <c:MyASUHelpStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
-        <style>
-            #ASUBrandHeaderSpacer {
-                height: 145px;
-            }
-        </style>
     </head>
 
     <apex:includeLightning />
-    <div id="ASUBrandHeaderSpacer"></div>
+    <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderWrapper"></div>
 
     <c:GoogleTagManagerBody />

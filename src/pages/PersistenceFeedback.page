@@ -3,7 +3,6 @@
 
     <head>
         <title>{!carName} Feedback</title>
-        <c:asu_responsive_header_section />
         <c:myASUStylesMin />
         <style>
             #asu_login_module:nth-child(2) {
@@ -65,7 +64,10 @@
         <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
         <div id="main-search" class="main-search closed"></div>
 
-        <c:SCHeader pageHead="Persistence Outlook" showNavBar="false" />
+        <apex:includeLightning />
+        <div id="ASUBrandHeaderSpacer"></div>
+        <div id="ASUBrandHeaderWrapper"></div>
+
         <style></style>
 
         <div id="asu-content-container" role="main">
@@ -114,7 +116,25 @@
 
         <br />
 
-        <c:SCFooter />
+        <div id="ASUBrandFooterWrapper"></div>
+
+        <script>        
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        {},
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                }
+            );
+        </script>
 
         <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/js/asu_header.js')}" />
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />

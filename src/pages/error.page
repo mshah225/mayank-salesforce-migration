@@ -9,7 +9,9 @@
         <c:MyASUHelpStyles />
     </head>
 
-    <c:ASUBrandHeader siteTitleName="My ASU" siteTitleUrl="{!$Label.MyASU_Help_Base_URL}/myasu" />
+    <apex:includeLightning />
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id="ASUBrandHeaderWrapper"></div>
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
@@ -34,6 +36,24 @@
         </div>
     </div>
 
-    <c:ASUBrandFooter />
+    <div id="ASUBrandFooterWrapper"></div>
     <c:MyASUHelpPageResources />
+
+    <script>
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {},
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+            }
+        );
+    </script>
 </apex:page>

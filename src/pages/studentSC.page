@@ -1,13 +1,15 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
-    action="{!init}" cache="true" extensions="ASUBrandController,MyASUHelpPaginationController">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" /> -->
+    cache="true" extensions="MyASUHelpPaginationController">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
         <title>My ASU | Help</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
         <c:MyASUHelpStyles />
         <c:ASUBrandGlobalStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
@@ -15,8 +17,8 @@
     </head>
 
     <apex:includeLightning />
-    <div id="ASUBrandHeaderSpacer" />
-    <div id="ASUBrandHeaderWrapper" />
+    <c:SLDSRemoveGlobalStyles />
+    <div id="ASUBrandHeaderWrapper"></div>
     <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
 
     <c:GoogleTagManagerBody />
@@ -100,5 +102,4 @@
 
     </script>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
-    <c:SLDSRemoveGlobalStyles />
 </apex:page>

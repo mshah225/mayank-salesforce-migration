@@ -1,10 +1,9 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandController"
-    action="{!optOutOfEmails}" standardStylesheets="false">
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" action="{!optOutOfEmails}"
+    standardStylesheets="false">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
         <title>ASU | Unsubscribe from Campaign</title>
-        <c:asu_responsive_header_section />
         <style>
             .feedbackButton {
                 float: right;
@@ -13,8 +12,10 @@
     </head>
 
     <body>
-        <div id="main-search" class="main-search closed"></div>
-        <c:SCHeader pageHead="Subscription Center" showNavBar="false" />
+        <apex:includeLightning />
+        <div id="ASUBrandHeaderSpacer"></div>
+        <div id="ASUBrandHeaderWrapper"></div>
+
         <div id="bgWrapper">
             <div id="asu-content-container" role="main">
                 <div class="container">
@@ -57,6 +58,25 @@
                 </div>
             </div>
         </div>
-        <c:SCFooter />
+
+        <div id="ASUBrandFooterWrapper"></div>
+
+        <script>        
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        {},
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                }
+            );
+        </script>
     </body>
 </apex:page>

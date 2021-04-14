@@ -1,4 +1,4 @@
-<apex:component controller="MyASUHelpController" extensions="ASUBrandController,MyASUHelpPaginationController">
+<apex:component controller="MyASUHelpController" extensions="MyASUHelpPaginationController">
     <apex:attribute name="EmbedLocation" description="The location the component is embedded" type="String" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />

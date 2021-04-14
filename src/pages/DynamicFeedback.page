@@ -23,7 +23,9 @@
         </style>
     </head>
 
-    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
+    <apex:includeLightning />
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id="ASUBrandHeaderWrapper"></div>
 
     <c:GoogleTagManagerBody />
     <div class="dynamic-feedback-container" id="asu-content-container">
@@ -59,5 +61,23 @@
         </div>
     </div>
 
-    <c:ASUBrandFooter />
+    <div id="ASUBrandFooterWrapper"></div>
+
+    <script>
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {},
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+            }
+        );
+    </script>
 </apex:page>

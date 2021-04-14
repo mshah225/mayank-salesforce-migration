@@ -293,10 +293,6 @@
             vertical-align: middle;
         }
 
-        .myasu-help-region .fa-search {
-            font-size: 1.5em !important;
-        }
-
         .myasu-help-region-faq-search-results-current-page {
             vertical-align: middle;
             padding: 0.25em 0.5em 0.25em 0.5em;

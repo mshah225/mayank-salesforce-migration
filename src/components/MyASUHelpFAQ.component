@@ -1,10 +1,14 @@
 <apex:component controller="MyASUHelpController" extensions="MyASUHelpPaginationController">
     <apex:attribute name="EmbedLocation" description="The location the component is embedded" type="String" />
 
+    <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
 
     <div class="myasu-help-region-faq">
-        <div class="myasu-help-region-header">Frequently Asked Questions</div>
+        <h2 class="myasu-help-region-header m-0">
+            <strong>Frequently Asked Questions</strong>
+        </h2>
         <div class="myasu-help-region-faq-content" id="search_content">
             <apex:form id="searchForm" styleClass="searchKB">
                 <apex:pageBlock mode="maindetail">
@@ -16,9 +20,9 @@
                                     <apex:inputText id="articleTextBoxId" value="{!textToSearch}" styleClass="myasu-help-region-faq-search-input" html-placeholder="Type your question here"
                                         html-pattern=".{2,}" html-type="search" required="true" title="Please enter a minimum of 2 characters"
                                         maxlength="99" />
-                                    <apex:commandLink styleClass="btn btn-secondary myasu-help-region-faq-search-input-button" reRender="myasu-help-region-faq-search-results"
+                                    <apex:commandLink styleClass="btn btn-gray btn-sm myasu-help-region-faq-search-input-button" reRender="myasu-help-region-faq-search-results"
                                         oncomplete="myASUHelpFAQ()">
-                                        <i class="fa fa-search" aria-hidden="true">
+                                        <i class="fa fa-lg fa-search" aria-hidden="true">
                                             <span class="sr-only">Search</span>
                                         </i>
                                     </apex:commandLink>

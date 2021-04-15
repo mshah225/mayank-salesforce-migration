@@ -432,7 +432,8 @@
                     }
                 });
             } else if (isLightningExperienceOrSalesforce1()) {
-                var message = "/apex/StudentProfile?contactId=" + contactEmplid;
+                // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
+                var message = contactId + "/apex/StudentProfile?contactId=" + contactEmplid;
                 parent.postMessage(message, '*');
             }
         }

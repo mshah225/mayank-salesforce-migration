@@ -10,9 +10,10 @@
                 if (event.origin.substring(0, 11) == 'https://asu') {
                     validOrigin = true;
                 }
-                // List of valid messages
+                // List of valid messages and criteria for message
                 if (
                     typeof event.data === 'string' &&
+                    event.data.substring(0, 1) != '{' &&
                     (event.data.includes('/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=') ||
                         event.data.includes('/lightning/r/Case/') ||
                         event.data.includes('/apex/successRecoding') ||
@@ -21,10 +22,29 @@
                     messageValid = true;
                 }
                 if (validOrigin && messageValid) {
-                    workspaceAPI.openTab({
-                        url: event.data,
-                        focus: true,
-                    });
+                    if (event.data.includes('/apex/StudentProfile?contactId=')) {
+                        // Pull contactId off of message, use to open primary toab for Contact
+                        var contactId = event.data.substring(0, 18);
+                        workspaceAPI
+                            .openTab({
+                                url: '/lightning/r/Contact/' + contactId + '/view',
+                                focus: true,
+                            })
+                            .then(function (response) {
+                                // Use rest of StudentProfile message to open StudentProfile
+                                workspaceAPI.openSubtab({
+                                    parentTabId: response,
+                                    url: event.data.substring(18, event.length),
+                                    focus: true,
+                                });
+                            })
+                            .catch(function (error) {});
+                    } else {
+                        workspaceAPI.openTab({
+                            url: event.data,
+                            focus: true,
+                        });
+                    }
                 } else {
                     return;
                 }

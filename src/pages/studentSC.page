@@ -25,17 +25,20 @@
         <c:MyASUHelpPageNotifications maintenanceString="{!mMessage}" />
         <div class="container">
             <div class="row">
-                <div class="col-md-7 myasu-help-region">
+                <div class="col-lg-7 myasu-help-region">
                     <c:MyASUHelpFAQ />
                 </div>
-                <div class="col-md-5 myasu-help-region">
-                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
-                    <div style="margin-bottom: 2em"></div>
-                    <c:MyASUHelpMyRequests />
+                <div class="col-lg-5 myasu-help-region">
+                    <div class="mb-4">
+                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
+                    </div>
+                    <div class="mb-4">
+                        <c:MyASUHelpMyRequests/>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-lg-12">
                     <div id="bgWrapper">
                         <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
                     </div>

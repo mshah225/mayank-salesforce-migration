@@ -445,22 +445,9 @@
             font-size: 0.9em;
         }
 
-        .myasu-help-region .myasu-help-region-my-requests-content {
-            padding-left: 1em;
-            padding-right: 1em;
-        }
-
-        .myasu-help-region .myasu-help-region-my-requests-content a:hover {
-            color: #191919 !important;
-        }
-
         .myasu-help-region .myasu-help-region-my-requests-content p {
             font-weight: 400;
             font-size: 0.9em;
-        }
-
-        .myasu-help-region .myasu-help-region-my-requests {
-            margin-bottom: 2em;
         }
 
         /* My ASU Help - View Case */

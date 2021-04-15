@@ -335,6 +335,7 @@
                     var message = "/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=" + contactId + "&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach";
                     parent.postMessage(message, '*');
                 } else if (type == 'Profile') {
+                    // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
                     var message = contactId + "/apex/StudentProfile?contactId=" + emplId;
                     parent.postMessage(message, '*');
                 } else if (type == 'All Cases') {

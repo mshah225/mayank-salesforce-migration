@@ -23,6 +23,7 @@
                 }
                 if (validOrigin && messageValid) {
                     if (event.data.includes('/apex/StudentProfile?contactId=')) {
+                        // Pull contactId off of message, use to open primary toab for Contact
                         var contactId = event.data.substring(0, 18);
                         workspaceAPI
                             .openTab({
@@ -30,6 +31,7 @@
                                 focus: true,
                             })
                             .then(function (response) {
+                                // Use rest of StudentProfile message to open StudentProfile
                                 workspaceAPI.openSubtab({
                                     parentTabId: response,
                                     url: event.data.substring(18, event.length),

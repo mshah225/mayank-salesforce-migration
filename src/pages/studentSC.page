@@ -37,7 +37,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div id="bgWrapper">
-                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-primary" />
+                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
                     </div>
                 </div>
             </div>

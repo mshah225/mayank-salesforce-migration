@@ -432,7 +432,7 @@
                     }
                 });
             } else if (isLightningExperienceOrSalesforce1()) {
-                var message = "/apex/StudentProfile?contactId=" + contactEmplid;
+                var message = contactId + "/apex/StudentProfile?contactId=" + contactEmplid;
                 parent.postMessage(message, '*');
             }
         }

@@ -166,7 +166,7 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Profile')"
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.EMPLID__c}', 'Profile')"
                         styleClass="standardLink">
                         {!c.obj.EMPLID__c}
                     </apex:outputLink>
@@ -241,16 +241,16 @@
     </apex:outputPanel>
 
     <script>
-        var primaryTabId, contactId, contactName, asurite, type;
+        var primaryTabId, contactId, emplId, contactName, type;
 
         function isLightningExperienceOrSalesforce1() {
             return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
         }
 
-        function openActionLink(id, name, asuriteId, buttonType) {
+        function openActionLink(id, name, emplIdIn, buttonType) {
             contactId = id;
             contactName = name;
-            asurite = asuriteId;
+            emplId = emplIdIn;
             type = buttonType;
             var isFound = false;
 
@@ -335,7 +335,7 @@
                     var message = "/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=" + contactId + "&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach";
                     parent.postMessage(message, '*');
                 } else if (type == 'Profile') {
-                    var message = "/apex/StudentProfile?contactId=" + asuriteId;
+                    var message = contactId + "/apex/StudentProfile?contactId=" + emplId;
                     parent.postMessage(message, '*');
                 } else if (type == 'All Cases') {
                     var message = "/lightning/r/Case/" + contactId + "/related/Cases/view";

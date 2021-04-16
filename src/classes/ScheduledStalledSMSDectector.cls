@@ -16,32 +16,66 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             // Stop immediately if the superset is null (happens when none of the metadata are enabled)
             return;
         }
+        try {
+            List<smagicinteract__smsMagic__c> allSMSToReportOn = Database.query(ruleSuperset.getQuery());
 
-        List<smagicinteract__smsMagic__c> allSMSToReportOn = Database.query(ruleSuperset.getQuery());
+            // Report about the stalled SMS
+            if (!allSMSToReportOn.isEmpty()) {
+                List<Messaging.SingleEmailMessage> allEmails = new List<Messaging.SingleEmailMessage>();
 
-        // Report about the stalled SMS
-        if (!allSMSToReportOn.isEmpty()) {
-            List<Messaging.SingleEmailMessage> allEmails = new List<Messaging.SingleEmailMessage>();
+                // For each rule set create a separate email about different SMS
+                for (SMSDetectionRuleSet ruleSet : ruleSets) {
+                    List<smagicinteract__smsMagic__c> smsForThisRule = ruleSet.filter(allSMSToReportOn);
 
-            // For each rule set create a separate email about different SMS
-            for (SMSDetectionRuleSet ruleSet : ruleSets) {
-                List<smagicinteract__smsMagic__c> smsForThisRule = ruleSet.filter(allSMSToReportOn);
-
-                if (smsForThisRule.size() > 0) {
-                    String description = '{';
-                    description += '"Title" : "' + smsForThisRule.size() + ' SMS are stalled.",\n';
-                    description += '"List SMS" : [\n';
-                    for (smagicinteract__smsMagic__c sms : smsForThisRule) {
-                        description += ruleSet.describeSMS(sms);
-                        description += ',\n';
+                    if (smsForThisRule.size() > 0) {
+                        String description = '{';
+                        description += '"Title" : "' + smsForThisRule.size() + ' SMS are stalled.",\n';
+                        description += '"List SMS" : [\n';
+                        for (smagicinteract__smsMagic__c sms : smsForThisRule) {
+                            description += ruleSet.describeSMS(sms);
+                            description += ',\n';
+                        }
+                        description = description.substring(0, description.length() - 2);
+                        description += ']}';
+                        allEmails.add(createEmail(new List<String>(ruleSet.emailsSet), description));
                     }
-                    description = description.substring(0, description.length() - 2);
-                    description += ']}';
-                    allEmails.add(createEmail(new List<String>(ruleSet.emailsSet), description));
                 }
-            }
 
-            Messaging.sendEmail(allEmails);
+                Messaging.sendEmail(allEmails);
+            }
+        } catch (Exception ex) {
+            List<String> variables = new List<String>();
+            variables.add('superSet description:');
+            variables.add(ErrorLogger.convertStringToJSON('ruleSuperset.getQuery()', ruleSuperset.getQuery()));
+            variables.add(ErrorLogger.convertIntegerToJSON('ruleSuperset.maxDaysOld', ruleSuperset.maxDaysOld));
+            variables.add(ErrorLogger.convertIntegerToJSON('ruleSuperset.minHoursOld', ruleSuperset.minHoursOld));
+            variables.add(ErrorLogger.convertSetToJSON('ruleSuperset.emailsSet', ruleSuperset.emailsSet));
+            variables.add(ErrorLogger.convertSetToJSON('ruleSuperset.queryFields', ruleSuperset.queryFields));
+            variables.add(
+                ErrorLogger.convertSetToJSON(
+                    'ruleSuperset.constraintSenderIdUnits',
+                    ruleSuperset.constraintSenderIdUnits
+                )
+            );
+            variables.add(
+                ErrorLogger.convertSetToJSON('ruleSuperset.constraintStatuses', ruleSuperset.constraintStatuses)
+            );
+
+            variables.add('Each rule description:');
+            for (Integer i = 0; i < ruleSets.size(); i++) {
+                SMSDetectionRuleSet rule = ruleSets[i];
+                variables.add('Rule #' + i);
+                variables.add(ErrorLogger.convertStringToJSON('rule.getQuery()', rule.getQuery()));
+                variables.add(ErrorLogger.convertIntegerToJSON('rule.maxDaysOld', rule.maxDaysOld));
+                variables.add(ErrorLogger.convertIntegerToJSON('rule.minHoursOld', rule.minHoursOld));
+                variables.add(ErrorLogger.convertSetToJSON('rule.emailsSet', rule.emailsSet));
+                variables.add(ErrorLogger.convertSetToJSON('rule.queryFields', rule.queryFields));
+                variables.add(
+                    ErrorLogger.convertSetToJSON('rule.constraintSenderIdUnits', rule.constraintSenderIdUnits)
+                );
+                variables.add(ErrorLogger.convertSetToJSON('rule.constraintStatuses', rule.constraintStatuses));
+            }
+            ErrorLogger.log(ex, variables, false);
         }
     }
 
@@ -81,7 +115,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
             for (SMS_Stall_Detection_Rule__mdt rule : allRules) {
                 ruleSets.add(new SMSDetectionRuleSet(rule));
             }
-    
+
             ruleSuperset = new SMSDetectionRuleSet(ruleSets);
         }
     }

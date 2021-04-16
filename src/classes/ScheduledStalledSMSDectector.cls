@@ -330,6 +330,8 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
                 query = 'SELECT SenderIdUnit__c,' + query.substring(7);
             }
 
+            query += ' LIMIT 5000';
+
             return query;
         }
         // Describe this SMS object using this rule set's queryFields

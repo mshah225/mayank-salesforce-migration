@@ -1,7 +1,7 @@
 <apex:component>
     <div class="family-portal-sidebar">
-        <img width="100%" src="https://asu.widen.net/content/ko6p9gshrg/jpeg/190508%20ASU%20Graduate%20and%20Family%20-%20DAY%2002b%20-%20Amanda%20Alibrandi%20-%20FZ9A7446%20-%20rt01%20-%20CL.jpg"
-            alt="ASU family at graduation signing pitchforks with their hands" />
+        <img width="100%" src="{!URLFOR($Resource.Family_Portal_Step_5_Image)}" alt="ASU family at graduation signing pitchforks with their hands"
+        />
         <div class="well">
             <p class="lead">
                 <strong>Have Questions?</strong>

@@ -1,6 +1,6 @@
 <apex:component>
     <div class="family-portal-sidebar">
-        <img width="100%" src="{!URLFOR($Resource.Family_Portal_Step_5_Image)}" alt="ASU family at graduation signing pitchforks with their hands"
+        <img width="100%" src="{!URLFOR($Resource.Family_Portal_Sidebar_Image)}" alt="ASU family at graduation signing pitchforks with their hands"
         />
         <div class="well">
             <p class="lead">

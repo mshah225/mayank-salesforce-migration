@@ -282,8 +282,6 @@ public class SuccessRecodingController {
 
     public void page1Reset() {
         allStudentsChecked = false;
-        selectedCoachId = '';
-        transferToCoachId = '';
         resourceResults = null;
         coachSearchString = '';
         studentSearchString = '';

@@ -28,6 +28,13 @@
 
         a:hover:not(.btn) {
             color: #d23153 !important;
+        }
+
+        a:hover:not(.btn):not(.no-underline) {
+            text-decoration: underline;
+        }
+
+        .underline {
             text-decoration: underline;
         }
 

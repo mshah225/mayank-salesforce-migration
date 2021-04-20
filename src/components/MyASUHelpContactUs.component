@@ -20,40 +20,38 @@
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
     </script>
 
-    <div class="myasu-help-region-contact-us">
-        <h2 class="myasu-help-region-header m-0">
-            <strong>Contact Us</strong>
-        </h2>
-        <div class="myasu-help-region-contact-us-content myasu-help-region-content-section">
-            <p class="p-3 mb-0">
+    <div class="border">
+        <h2 class="h6 border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Contact Us</h2>
+        <div>
+            <p class="p-2 border-bottom mb-0">
                 We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
                 chat session, or call to talk now.
             </p>
-            <hr class="m-0" />
-            <div class="myasu-help-region-contact-us-accordion-container">
+            <div>
                 <div class="accordion" id="accordion">
                     <div class="panel panel-default position-relative">
                         <a data-toggle="collapse" data-target="#myasu-help-contact-us-email-link" href="#myasu-help-contact-us-email-link" aria-expanded="false"
-                            aria-controls="myasu-help-contact-us-email-link" id="toggleEmail" class="position-relative">
+                            aria-controls="myasu-help-contact-us-email-link" id="toggleEmail" class="position-relative no-underline">
                             <div class="panel-heading" id="headingEmail">
-                                <h3 class="m-0 h6">
+                                <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-envelope myasu-help-contact-us-email-icon" aria-hidden="true" />
-                                    <strong class="myasu-help-contact-us-email">Email Us</strong>
+                                    <span class="c-text-black">Email Us</span>
                                 </h3>
                             </div>
                         </a>
 
-                        <div id="myasu-help-contact-us-email-link" class="collapse p-2" aria-labelledby="headingEmail" data-parent="#accordion">
+                        <div id="myasu-help-contact-us-email-link" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingEmail"
+                            data-parent="#accordion">
                             <div class="panel-body">
                                 <apex:form>
-                                    <label for="myasu-help-contact-us-email-subject" class="myasu-help-contact-us-email-subject-label">Subject</label>
-                                    <apex:inputField id="myasu-help-contact-us-email-subject" styleClass="myasu-help-contact-us-email-subject" value="{!newCase.Subject}"
-                                        required="true" label="" />
-                                    <label for="myasu-help-contact-us-email-message" class="myasu-help-contact-us-email-message-label">Message</label>
-                                    <apex:inputField id="myasu-help-contact-us-email-message" styleClass="myasu-help-contact-us-email-message" value="{!newCase.Description}"
-                                        required="true" label="" />
+                                    <label for="myasu-help-contact-us-email-subject" class="">Subject</label>
+                                    <apex:inputField id="myasu-help-contact-us-email-subject" styleClass="w-100" value="{!newCase.Subject}" required="true" label=""
+                                    />
+                                    <label for="myasu-help-contact-us-email-message" class="">Message</label>
+                                    <apex:inputField id="myasu-help-contact-us-email-message" styleClass="w-100" value="{!newCase.Description}" required="true"
+                                        label="" />
                                     <div>
-                                        <apex:commandLink styleClass="btn btn-maroon btn-md" action="{!submitCase}">
+                                        <apex:commandLink styleClass="btn btn-maroon btn-md mt-1" action="{!submitCase}">
                                             Submit
                                         </apex:commandLink>
                                     </div>
@@ -63,22 +61,22 @@
                     </div>
                     <div class="panel panel-default position-relative border-bottom border-top">
                         <a data-toggle="collapse" data-target="#myasu-help-contact-us-chat-link" href="#myasu-help-contact-us-chat-link" aria-expanded="false"
-                            aria-controls="myasu-help-contact-us-chat-link" id="toggleChat" class="position-relative">
+                            aria-controls="myasu-help-contact-us-chat-link" id="toggleChat" class="position-relative no-underline">
                             <div class="panel-heading" id="headingChat">
-                                <h3 class="m-0 h6">
+                                <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-commenting myasu-help-contact-us-chat-icon" aria-hidden="true" />
-                                    <strong class="myasu-help-contact-us-chat">Live Chat</strong>
+                                    <span class="c-text-black">Live Chat</span>
                                 </h3>
                             </div>
                         </a>
 
-                        <div id="myasu-help-contact-us-chat-link" class="collapse p-2" aria-labelledby="headingChat" data-parent="#accordion">
+                        <div id="myasu-help-contact-us-chat-link" class="collapse p-2 bg-f5f5f5 border-top" aria-labelledby="headingChat" data-parent="#accordion">
                             <div class="panel-body">
-                                <div class="myasu-help-contact-us-chat-link-finance">
-                                    <a id="liveagent_button_finances_online" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                <div class="mb-1">
+                                    <a id="liveagent_button_finances_online" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
                                         {!financeDisplayName}
                                     </a>
-                                    <a id="liveagent_button_finances_offline" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_finances_offline" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
                                         {!financeDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -97,11 +95,11 @@
                                         });
                                     </script>
                                 </div>
-                                <div class="myasu-help-contact-us-chat-link-technical">
-                                    <a id="liveagent_button_technical_support_online" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                <div class="mb-1">
+                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="liveagent.startChat(techSupportChatId);">
                                         {!technicalSupportDisplayName}
                                     </a>
-                                    <a id="liveagent_button_technical_support_offline" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="liveagent.startChat(techSupportChatId);">
                                         {!technicalSupportDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -122,11 +120,11 @@
                                         });
                                     </script>
                                 </div>
-                                <div class="myasu-help-contact-us-chat-link-student-services">
-                                    <a id="liveagent_button_student_services_online" href="#" onclick="liveagent.startChat(studentServiceChatId);">
+                                <div>
+                                    <a id="liveagent_button_student_services_online" class="underline c-text-black" href="#" onclick="liveagent.startChat(studentServiceChatId);">
                                         {!studentServicesDisplayName}
                                     </a>
-                                    <a id="liveagent_button_student_services_offline" href="#" onclick="liveagent.startChat(studentServiceChatId);">
+                                    <a id="liveagent_button_student_services_offline" class="underline c-text-black" href="#" onclick="liveagent.startChat(studentServiceChatId);">
                                         {!studentServicesDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -149,21 +147,21 @@
                         </div>
                     </div>
                     <div class="panel panel-default position-relative">
-                        <apex:outputLink styleClass="myasu-help-contact-us-phone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
+                        <apex:outputLink styleClass="no-underline" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
                             <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
-                                <h3 class="m-0 h6">
+                                <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
-                                    <strong class="myasu-help-contact-us-phone-number-rover">Call 1-855-ASU-5080</strong>
+                                    <span class="c-text-black">Call 1-855-ASU-5080</span>
                                 </h3>
                             </div>
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>
                         </apex:outputLink>
 
-                        <apex:outputLink styleClass="myasu-help-contact-us-phone-rover" id="togglePhone" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
+                        <apex:outputLink styleClass="no-underline" id="togglePhone" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
                             <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
-                                <h3 class="m-0 h6">
+                                <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
-                                    <strong class="myasu-help-contact-us-phone-number-rover">Call 1-844-ASU-6693</strong>
+                                    <span class="c-text-black">Call 1-844-ASU-6693</span>
                                 </h3>
                             </div>
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>

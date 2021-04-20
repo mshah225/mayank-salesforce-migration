@@ -8,9 +8,12 @@
         <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
+
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
         <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <script>$ = jQuery.noConflict();</script>
-        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
+
         <c:MyASUHelpStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
@@ -22,118 +25,132 @@
 
     <c:GoogleTagManagerBody />
     <div id="asu-content-container" role="main">
-        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+        <c:MyASUHelpPageNotifications />
 
         <div class="container myasu-help-region">
-            <ol class="breadcrumb">
-                <li class="active">Home</li>
-                <li class="active">
-                    <a href="/">Help</a>
-                </li>
-                <li class="active">View Article</li>
-                <li class="active">{!article.title}</li>
-            </ol>
+            <nav aria-label="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">
+                        <a href="/">Help</a>
+                    </li>
+                    <li class="breadcrumb-item">View Article</li>
+                    <li class="breadcrumb-item active">{!article.title}</li>
+                </ol>
+            </nav>
             <div class="row">
-                <div class="col-md-7 myasu-help-region-view-article-container">
-                    <div class="myasu-help-region-view-article">
-                        <div class="myasu-help-region-header">Knowledge Article #{!article.ArticleNumber}</div>
-                        <div class="myasu-help-region-view-article-content myasu-help-region-content-section">
-                            <div class="myasu-help-region-view-article-info-container">
-                                <div class="myasu-help-region-sub-header">{!article.title}</div>
+                <div class="col-lg-7">
+                    <div class="mr-4 border">
+                        <h2 class="h6 border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Knowledge Article #{!article.ArticleNumber}</h2>
+                        <div>
+                            <div class="p-2 border-bottom">
+                                <h3 class="lead m-0 mb-2">{!article.title}</h3>
                                 <apex:outputPanel rendered="{!article.ArticleType == 'FAQ__kav'}">
                                     <apex:outputField value="{!faq.Answer__c}" label="" />
                                     <apex:outputPanel rendered="{!faq.Functional_Group__c != null}">
-                                        <apex:outputLabel styleClass="myasu-help-region-view-article-category-label" value="Category: " for="myasu-help-region-view-article-category"
-                                        />
-                                        <span class="myasu-help-region-view-article-category">
-                                            <apex:outputField id="myasu-help-region-view-article-category" value="{!faq.Functional_Group__c}" />
+                                        <b>
+                                            <apex:outputLabel styleClass="h6 font-weight-bold mt-4" value="Category: " for="myasu-help-region-view-article-category"
+                                            />
+                                        </b>
+                                        <span>
+                                            <apex:outputField id="myasu-help-xregion-view-article-category" value="{!faq.Functional_Group__c}" />
                                         </span>
                                         <br />
                                     </apex:outputPanel>
-                                    <apex:outputLabel styleClass="myasu-help-region-view-article-date-updated-label" value="Date Updated: " for="myasu-help-region-view-article-date-updated"
-                                    />
-                                    <span class="myasu-help-region-view-article-date-updated">
-                                        <apex:outputText styleClass="myasu-help-region-view-article-date-updated" id="myasu-help-region-view-article-date-updated"
-                                            value="{0,date,MMMMM' 'd', 'yyyy}">
+                                    <b>
+                                        <apex:outputLabel styleClass="h6 font-weight-bold" value="Date Updated: " for="myasu-help-region-view-article-date-updated"
+                                        />
+                                    </b>
+                                    <span>
+                                        <apex:outputText id="myasu-help-region-view-article-date-updated" value="{0,date,MMMMM' 'd', 'yyyy}">
                                             <apex:param value="{!faq.LastModifiedDate}" />
                                         </apex:outputText>
                                     </span>
                                 </apex:outputPanel>
                             </div>
-                            <hr />
-                            <apex:form id="feedbackButtons" styleClass="myasu-help-region-view-article-feedback">
-                                <apex:outputPanel rendered="{!AND(feedbackVisible, articleWasHelpful == '')}">
-                                    <span>Was this article helpful?</span>
-                                    <apex:commandLink action="{!helpfulYes}" styleClass="btn btn-secondary myasu-help-region-view-article-helpful myasu-help-region-view-article-helpful-yes"
-                                        html-aria-label="Yes">
-                                        <i class="fa fa-check" />
-                                    </apex:commandLink>
-                                    <apex:commandLink action="{!setArticleHelpfulNo}" styleClass="btn btn-secondary myasu-help-region-view-article-helpful myasu-help-region-view-article-helpful-no"
-                                        html-aria-label="No" reRender="feedbackButtons">
-                                        <i class="fa fa-times" />
-                                    </apex:commandLink>
-                                </apex:outputPanel>
-                                <apex:outputPanel rendered="{!NOT(feedbackVisible)}">
-                                    <p>Thanks for the feedback!</p>
-                                </apex:outputPanel>
-                                <apex:outputPanel rendered="{!articleWasHelpful == 'no'}">
-                                    <p>Please tell us how we can make this article more useful.</p>
-                                    <apex:pageBlock mode="maindetail">
-                                        <apex:inputField id="articleFeedback" value="{!feedbackHelpful.Comments__c}" />
-                                    </apex:pageBlock>
-                                    <apex:commandLink value="Submit" action="{!helpfulNo}" styleClass="btn btn-primary" />
-                                    <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-secondary" style="margin-left: 1em !important"
-                                        reRender="feedbackButtons" />
-                                </apex:outputPanel>
-                            </apex:form>
+                            <div class="p-2">
+                                <apex:form id="feedbackButtons">
+                                    <apex:outputPanel rendered="{!AND(feedbackVisible, articleWasHelpful == '')}">
+                                        <strong class="h6 font-weight-bold">Was this article helpful?</strong>
+                                        <div class="d-inline-block ml-1">
+                                            <apex:commandLink action="{!helpfulYes}" styleClass="btn btn-gray btn-sm" html-aria-label="Yes">
+                                                <i class="fa fa-check" />
+                                            </apex:commandLink>
+                                        </div>
+                                        <div class="d-inline-block ml-2">
+                                            <apex:commandLink action="{!setArticleHelpfulNo}" styleClass="btn btn-gray btn-sm" html-aria-label="No" reRender="feedbackButtons">
+                                                <i class="fa fa-times" />
+                                            </apex:commandLink>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!NOT(feedbackVisible)}">
+                                        <p>Thanks for the feedback!</p>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!articleWasHelpful == 'no'}">
+
+                                        <apex:outputLabel styleClass="h6 p-0 m-0" value="Please tell us how we can make this article more useful." for="myasu-help-region-article-feedback"
+                                        />
+                                        <apex:pageBlock mode="maindetail">
+                                            <apex:inputField styleClass="w-100" id="myasu-help-region-article-feedback" value="{!feedbackHelpful.Comments__c}" />
+                                        </apex:pageBlock>
+                                        <div class="d-inline-block">
+                                            <apex:commandLink value="Submit" action="{!helpfulNo}" styleClass="btn btn-maroon btn-md" />
+                                        </div>
+                                        <div class="d-inline-block ml-2">
+                                            <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-gray btn-md" reRender="feedbackButtons"
+                                            />
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:form>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-5 myasu-help-region-view-article-container">
-                    <div class="myasu-help-region-view-article-helpful-articles">
-                        <div class="myasu-help-region-header">Articles You May Find Helpful</div>
-                        <div class="myasu-help-region-view-article-content myasu-help-region-content-section">
-                            <knowledge:articleList articleVar="relatedart" keyword="{!titleKeyword}" hasMoreVar="true" pageSize="5">
-                                <div class="myasu-help-region-faq-search-results-article-container">
-                                    <apex:outputLink styleClass="myasu-help-region-faq-search-results-article" value="/authkb?id={!relatedart.id}">
-                                        {!relatedart.title}
+                <div class="col-lg-5">
+                    <div class="mb-4 border">
+                        <h2 class="h6 border-bottom m-0 font-weight-bold p-1 pl-2 bg-f5f5f5">Articles You May Find Helpful</h2>
+                        <div>
+                            <div class="pt-2 pl-2 pr-2 pb-1 border-bottom">
+                                <knowledge:articleList articleVar="relatedart" keyword="{!titleKeyword}" hasMoreVar="true" pageSize="5">
+                                    <div class="pb-2">
+                                        <apex:outputLink styleClass="c-text-black" value="/authkb?id={!relatedart.id}">
+                                            {!relatedart.title}
+                                        </apex:outputLink>
+                                    </div>
+                                </knowledge:articleList>
+                                <div class="pt-1 pb-1 m-0">
+                                    <apex:outputLink styleClass="c-text-maroon" value="/">
+                                        View all common questions
                                     </apex:outputLink>
                                 </div>
-                            </knowledge:articleList>
-                            <apex:outputLink styleClass="myasu-help-region-faq-search-results-view-all" value="/">
-                                View all common questions
-                            </apex:outputLink>
-                            <div class="myasu-help-region-view-article-suggest-article-accordion-container">
-                                <hr />
-                                <div class="panel-group" id="accordion">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#myasu-help-region-view-article-suggest-article-link">
-                                                    <strong>
-                                                        <i class="fa fa-pencil myasu-help-contact-us-email-icon" aria-hidden="true" />
-                                                        <span class="myasu-help-region-view-article-suggest-article">Suggest An Article</span>
-                                                    </strong>
-                                                </a>
-                                            </h4>
+                            </div>
+                            <div class="p-2">
+                                <div>
+                                    <a data-toggle="collapse" data-target="#suggest-an-article" href="#suggest-an-article" aria-expanded="false" aria-controls="suggest-an-article">
+                                        <div class="panel-heading" id="headingChat">
+                                            <h3 class="m-0 h6">
+                                                <i class="fa fa-pencil myasu-help-contact-us-email-icon" aria-hidden="true" />
+                                                <span class="c-text-black">Suggest An Article</span>
+                                            </h3>
                                         </div>
-                                        <div id="myasu-help-region-view-article-suggest-article-link" class="panel-collapse collapse">
-                                            <div class="panel-body">
-                                                <apex:form id="suggestAnArticle">
-                                                    <apex:pageBlock mode="maindetail">
-                                                        <p>
-                                                            Have an idea for an article you'd like to see? Please tell us below!
-                                                        </p>
-                                                        <apex:pageBlock mode="maindetail">
-                                                            <apex:inputTextarea id="articleDetails" required="true" value="{!suggestedArticleDescription}" />
-                                                        </apex:pageBlock>
-                                                        <apex:commandLink value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-primary" />
-                                                    </apex:pageBlock>
-                                                </apex:form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-2 collapse border-top" id="suggest-an-article">
+                                <div class="panel-body">
+                                    <apex:form>
+                                        <apex:pageBlock mode="maindetail">
+
+                                            <apex:outputLabel styleClass="h6 p-0 m-0" value="Have an idea for an article you'd like to see? Please tell us below!" for="myasu-help-region-suggest-article"
+                                            />
+                                            <apex:pageBlock mode="maindetail">
+                                                <apex:inputTextarea styleClass="w-100" id="myasu-help-region-suggest-article" required="true" value="{!suggestedArticleDescription}"
+                                                />
+                                            </apex:pageBlock>
+                                            <apex:commandLink value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-maroon btn-md mt-1" />
+                                        </apex:pageBlock>
+                                    </apex:form>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +160,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-lg-12">
                     <div id="bgWrapper">
                         <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
                     </div>

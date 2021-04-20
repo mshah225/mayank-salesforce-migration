@@ -18,50 +18,6 @@
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
-
-        $(document).ready(function () {
-            const clearBorder = (ele) => {
-                ele.style.boxShadow = 'unset';
-                ele.classList.remove('active');
-            }
-
-            $('#headingEmail').click(function (event) {
-                clearBorder($('.myasu-help-region-contact-us-accordion-container #headingChat')[0]);
-                clearBorder($('.myasu-help-region-contact-us-accordion-container #headingPhone')[0]);
-                ele = $('.myasu-help-region-contact-us-accordion-container #headingEmail')[0];
-                if (ele.style.boxShadow === "rgb(0, 186, 255) 0px 0px 8px") {
-                    ele.style.boxShadow = 'unset';
-                    ele.classList.remove('active');
-                } else {
-                    ele.style.boxShadow = 'rgb(0, 186, 255) 0px 0px 8px';
-                    ele.classList.add('active');
-                }
-            });
-            $('#headingChat').click(function (event) {
-                clearBorder($('.myasu-help-region-contact-us-accordion-container #headingEmail')[0]);
-                clearBorder($('.myasu-help-region-contact-us-accordion-container #headingPhone')[0]);
-                ele = $('.myasu-help-region-contact-us-accordion-container #headingChat')[0];
-                if (ele.style.boxShadow === "rgb(0, 186, 255) 0px 0px 8px") {
-                    ele.style.boxShadow = 'unset';
-                    ele.classList.remove('active');
-                } else {
-                    ele.style.boxShadow = 'rgb(0, 186, 255) 0px 0px 8px';
-                    ele.classList.add('active');
-                }
-            });
-            $('#headingPhone').click(function (event) {
-                clearBorder($('.myasu-help-region-contact-us-accordion-container #headingEmail')[0]);
-                clearBorder($('.myasu-help-region-contact-us-accordion-container #headingChat')[0]);
-                ele = $('.myasu-help-region-contact-us-accordion-container #headingPhone')[0];
-                if (ele.style.boxShadow === "rgb(0, 186, 255) 0px 0px 8px") {
-                    ele.style.boxShadow = 'unset';
-                    ele.classList.remove('active');
-                } else {
-                    ele.style.boxShadow = 'rgb(0, 186, 255) 0px 0px 8px';
-                    ele.classList.add('active');
-                }
-            });
-        });
     </script>
 
     <div class="myasu-help-region-contact-us">

@@ -2,19 +2,23 @@
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <style>
-        a {
+        .myasu-help-scope * {
+            font-size: 0.95rem;
+        }
+
+        .myasu-help-scope a {
             text-decoration: none;
         }
 
-        .bg-f5f5f5 {
+        .myasu-help-scope .bg-f5f5f5 {
             background-color: #f5f5f5;
         }
 
-        .c-text-maroon {
+        .myasu-help-scope .c-text-maroon {
             color: #8c1d40;
         }
 
-        a.c-text-maroon:visited {
+        .myasu-help-scope a.c-text-maroon:visited {
             color: #8c1d40;
         }
 
@@ -22,34 +26,33 @@
             color: black;
         }
 
-        a.c-text-black:visited {
+        .myasu-help-scope a.c-text-black:visited {
             color: black;
         }
 
-        a:hover:not(.btn) {
+        .myasu-help-scope a:hover:not(.btn) {
             color: #d23153 !important;
         }
 
-        a:hover:not(.btn):not(.no-underline) {
+        .myasu-help-scope a:hover:not(.btn):not(.no-underline) {
             text-decoration: underline;
         }
 
-        .underline {
+        .myasu-help-scope .underline {
             text-decoration: underline;
         }
 
 
-
-        *:hover {
+        .myasu-help-scope *:hover {
             z-index: 1;
         }
 
-        *:active,
-        .active {
+        .myasu-help-scope *:active,
+        .myasu-help-scope .active {
             z-index: 2;
         }
 
-        *:focus {
+        .myasu-help-scope *:focus {
             z-index: 3;
         }
     </style>

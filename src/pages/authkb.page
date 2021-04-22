@@ -27,7 +27,7 @@
     <div role="main">
         <c:MyASUHelpPageNotifications />
 
-        <div class="container">
+        <div class="container myasu-help-scope">
             <nav aria-label="breadcrumbs">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Home</li>
@@ -156,14 +156,14 @@
                         </div>
                     </div>
                     <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
-                    <c:MyASUHelpMyRequests />
+                    <div class='mt-4'>
+                        <c:MyASUHelpMyRequests />
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div id="bgWrapper">
-                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
-                    </div>
+                    <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mt-1 mb-1" />
                 </div>
             </div>
         </div>

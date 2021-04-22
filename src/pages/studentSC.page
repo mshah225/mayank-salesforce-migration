@@ -22,14 +22,14 @@
     <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
 
     <c:GoogleTagManagerBody />
-    <div id="asu-content-container" role="main">
+    <div role="main">
         <c:MyASUHelpPageNotifications maintenanceString="{!mMessage}" />
-        <div class="container">
+        <div class="container myasu-help-scope">
             <div class="row">
-                <div class="col-lg-7 myasu-help-region">
+                <div class="col-lg-7">
                     <c:MyASUHelpFAQ />
                 </div>
-                <div class="col-lg-5 myasu-help-region">
+                <div class="col-lg-5">
                     <div class="mb-4">
                         <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
                     </div>
@@ -40,9 +40,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div id="bgWrapper">
-                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
-                    </div>
+                    <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
                 </div>
             </div>
         </div>

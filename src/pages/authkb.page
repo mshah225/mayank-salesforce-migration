@@ -32,7 +32,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Home</li>
                     <li class="breadcrumb-item">
-                        <a href="/">Help</a>
+                        <a class="c-text-maroon" href="/">Help</a>
                     </li>
                     <li class="breadcrumb-item">View Article</li>
                     <li class="breadcrumb-item active">{!article.title}</li>
@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="mr-4 border">
-                        <h2 class="h6 border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Knowledge Article #{!article.ArticleNumber}</h2>
+                        <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Knowledge Article #{!article.ArticleNumber}</h2>
                         <div>
                             <div class="p-2 border-bottom">
                                 <h3 class="lead m-0 mb-2">{!article.title}</h3>
@@ -49,7 +49,7 @@
                                     <apex:outputField value="{!faq.Answer__c}" label="" />
                                     <apex:outputPanel rendered="{!faq.Functional_Group__c != null}">
                                         <b>
-                                            <apex:outputLabel styleClass="h6 font-weight-bold mt-4" value="Category: " for="myasu-help-region-view-article-category"
+                                            <apex:outputLabel styleClass="c-p9rem font-weight-bold mt-4" value="Category: " for="myasu-help-region-view-article-category"
                                             />
                                         </b>
                                         <span>
@@ -58,7 +58,7 @@
                                         <br />
                                     </apex:outputPanel>
                                     <b>
-                                        <apex:outputLabel styleClass="h6 font-weight-bold" value="Date Updated: " for="myasu-help-region-view-article-date-updated"
+                                        <apex:outputLabel styleClass="c-p9rem font-weight-bold" value="Date Updated: " for="myasu-help-region-view-article-date-updated"
                                         />
                                     </b>
                                     <span>
@@ -71,7 +71,7 @@
                             <div class="p-2">
                                 <apex:form id="feedbackButtons">
                                     <apex:outputPanel rendered="{!AND(feedbackVisible, articleWasHelpful == '')}">
-                                        <strong class="h6 font-weight-bold">Was this article helpful?</strong>
+                                        <strong class="c-p9rem font-weight-bold">Was this article helpful?</strong>
                                         <div class="d-inline-block ml-1">
                                             <apex:commandLink action="{!helpfulYes}" styleClass="btn btn-gray btn-sm" html-aria-label="Yes">
                                                 <i class="fa fa-check" />
@@ -88,7 +88,7 @@
                                     </apex:outputPanel>
                                     <apex:outputPanel rendered="{!articleWasHelpful == 'no'}">
 
-                                        <apex:outputLabel styleClass="h6 p-0 m-0" value="Please tell us how we can make this article more useful." for="myasu-help-region-article-feedback"
+                                        <apex:outputLabel styleClass="c-p9rem p-0 m-0" value="Please tell us how we can make this article more useful." for="myasu-help-region-article-feedback"
                                         />
                                         <apex:pageBlock mode="maindetail">
                                             <apex:inputField styleClass="w-100" id="myasu-help-region-article-feedback" value="{!feedbackHelpful.Comments__c}" />
@@ -109,7 +109,7 @@
 
                 <div class="col-lg-5">
                     <div class="mb-4 border">
-                        <h2 class="h6 border-bottom m-0 font-weight-bold p-1 pl-2 bg-f5f5f5">Articles You May Find Helpful</h2>
+                        <h2 class="c-p9rem border-bottom m-0 font-weight-bold p-1 pl-2 bg-f5f5f5">Articles You May Find Helpful</h2>
                         <div>
                             <div class="pt-2 pl-2 pr-2 pb-1 border-bottom">
                                 <knowledge:articleList articleVar="relatedart" keyword="{!titleKeyword}" hasMoreVar="true" pageSize="5">
@@ -142,8 +142,8 @@
                                     <apex:form>
                                         <apex:pageBlock mode="maindetail">
 
-                                            <apex:outputLabel styleClass="h6 p-0 m-0" value="Have an idea for an article you'd like to see? Please tell us below!" for="myasu-help-region-suggest-article"
-                                            />
+                                            <apex:outputLabel styleClass="c-p9rem p-0 m-0" value="Have an idea for an article you'd like to see? Please tell us below!"
+                                                for="myasu-help-region-suggest-article" />
                                             <apex:pageBlock mode="maindetail">
                                                 <apex:inputTextarea styleClass="w-100" id="myasu-help-region-suggest-article" required="true" value="{!suggestedArticleDescription}"
                                                 />

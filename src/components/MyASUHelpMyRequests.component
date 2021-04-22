@@ -1,7 +1,7 @@
 <apex:component controller="MyASUHelpController" allowDML="true">
     <apex:outputPanel>
         <div class="border myasu-help-scope">
-            <h2 class="h6 border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">My Requests</h2>
+            <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">My Requests</h2>
 
             <div class="p-2">
                 <p class="mb-4 {!IF(myCases.size > 0 || closedCases.size > 0, 'd-block', 'd-none')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or

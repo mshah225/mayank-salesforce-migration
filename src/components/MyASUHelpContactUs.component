@@ -21,7 +21,7 @@
     </script>
 
     <div class="border myasu-help-scope">
-        <h2 class="h6 border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Contact Us</h2>
+        <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Contact Us</h2>
         <div>
             <p class="p-2 border-bottom mb-0">
                 We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
@@ -34,7 +34,7 @@
                             aria-controls="myasu-help-contact-us-email-link" id="toggleEmail" class="position-relative no-underline">
                             <div class="panel-heading" id="headingEmail">
                                 <h3 class="m-0 h6 p-2">
-                                    <i class="fa fa-envelope myasu-help-contact-us-email-icon" aria-hidden="true" />
+                                    <i class="fa fa-envelope myasu-help-contact-us-email-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Email Us</span>
                                 </h3>
                             </div>
@@ -64,7 +64,7 @@
                             aria-controls="myasu-help-contact-us-chat-link" id="toggleChat" class="position-relative no-underline">
                             <div class="panel-heading" id="headingChat">
                                 <h3 class="m-0 h6 p-2">
-                                    <i class="fa fa-commenting myasu-help-contact-us-chat-icon" aria-hidden="true" />
+                                    <i class="fa fa-commenting myasu-help-contact-us-chat-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Live Chat</span>
                                 </h3>
                             </div>
@@ -150,7 +150,7 @@
                         <apex:outputLink styleClass="no-underline" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
                             <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
-                                    <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
+                                    <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Call 1-855-ASU-5080</span>
                                 </h3>
                             </div>
@@ -160,7 +160,7 @@
                         <apex:outputLink styleClass="no-underline" id="togglePhone" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
                             <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
-                                    <i class="fa fa-phone myasu-help-contact-us-phone-icon" aria-hidden="true" />
+                                    <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Call 1-844-ASU-6693</span>
                                 </h3>
                             </div>

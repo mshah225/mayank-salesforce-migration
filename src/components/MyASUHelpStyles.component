@@ -2,8 +2,12 @@
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <style>
-        .myasu-help-scope * {
-            font-size: 0.95rem;
+        .myasu-help-scope {
+            font-size: 0.9rem
+        }
+
+        .myasu-help-scope .c-p9rem {
+            font-size: 0.9rem;
         }
 
         .myasu-help-scope a {
@@ -22,7 +26,11 @@
             color: #8c1d40;
         }
 
-        .c-text-black {
+        .myasu-help-scope a:visited .c-text-maroon {
+            color: #8c1d40;
+        }
+
+        .myasu-help-scope .c-text-black {
             color: black;
         }
 
@@ -30,7 +38,12 @@
             color: black;
         }
 
-        .myasu-help-scope a:hover:not(.btn) {
+        .myasu-help-scope a:visited .c-text-black {
+            color: black;
+        }
+
+        .myasu-help-scope a:hover:not(.btn),
+        .myasu-help-scope a:hover:not(.btn) i {
             color: #d23153 !important;
         }
 
@@ -40,6 +53,12 @@
 
         .myasu-help-scope .underline {
             text-decoration: underline;
+        }
+
+        .myasu-help-scope ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
         }
 
 

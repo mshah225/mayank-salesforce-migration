@@ -8,8 +8,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
         primaryMethod();
     }
 
-    @TestVisible
-    private void primaryMethod() {
+    public void primaryMethod() {
         initializeFromMetadata();
 
         if (ruleSuperset == null) {
@@ -28,16 +27,18 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
                     List<smagicinteract__smsMagic__c> smsForThisRule = ruleSet.filter(allSMSToReportOn);
 
                     if (smsForThisRule.size() > 0) {
-                        String description = '{';
-                        description += '"Title" : "' + smsForThisRule.size() + ' SMS are stalled.",\n';
-                        description += '"List SMS" : [\n';
+                        String title =
+                            'Stalled SMS Messages for ' +
+                            ruleSet.label +
+                            ' - ' +
+                            smsForThisRule.size() +
+                            ' SMS are stalled';
+                        String description = ruleSet.describeSMSHeader() + '\n';
                         for (smagicinteract__smsMagic__c sms : smsForThisRule) {
                             description += ruleSet.describeSMS(sms);
-                            description += ',\n';
+                            description += '\n';
                         }
-                        description = description.substring(0, description.length() - 2);
-                        description += ']}';
-                        allEmails.add(createEmail(new List<String>(ruleSet.emailsSet), description));
+                        allEmails.add(createEmail(new List<String>(ruleSet.emailsSet), description, title));
                     }
                 }
 
@@ -120,10 +121,10 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
         }
     }
 
-    private Messaging.SingleEmailMessage createEmail(List<String> toWho, String description) {
+    private Messaging.SingleEmailMessage createEmail(List<String> toWho, String description, String title) {
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
-        mail.setSubject('Stalled SMS Messages');
+        mail.setSubject(title);
         mail.setToAddresses(toWho);
         mail.setPlainTextBody(description);
 
@@ -132,6 +133,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
 
     @TestVisible
     private class SMSDetectionRuleSet {
+        public final String label;
         public final Integer maxDaysOld;
         public final Integer minHoursOld;
         public final Set<String> emailsSet;
@@ -141,6 +143,9 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
 
         // Normal constructor
         public SMSDetectionRuleSet(SMS_Stall_Detection_Rule__mdt rule) {
+            // Which metadatum does this represent?
+            label = rule.MasterLabel;
+
             // Optional n hours old minimum
             if (rule.At_Least_N_Hours_Old__c != null) {
                 minHoursOld = Integer.valueOf(rule.At_Least_N_Hours_Old__c);
@@ -192,7 +197,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
 
             Boolean noMinHour = false, noMaxDay = false, noSenderIdConstraint = false, noStatusConstraint = false;
             Integer tempMaxDays, tempMinHours;
-
+            label = 'Superset Rule';
             for (SMSDetectionRuleSet ruleset : subsets) {
                 // largest max hours
                 if (ruleset.maxDaysOld == null)
@@ -334,16 +339,26 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
 
             return query;
         }
-        // Describe this SMS object using this rule set's queryFields
-        public String describeSMS(smagicinteract__smsMagic__c sms) {
-            String constructed = '{';
+
+        // List this rule set's fields - use for first row of CSV
+        public String describeSMSHeader() {
+            String constructed = '';
             for (String field : queryFields) {
-                String value = sms.get(field) == null ? '' : '' + sms.get(field);
-                value = value.replace('"', '\\"').replace('\n', ' ');
-                constructed += '"' + field + '" : "' + value + '",';
+                constructed += field + ',';
             }
             constructed = constructed.substring(0, constructed.length() - 1); // remove trailing comma
-            constructed += '}';
+
+            return constructed;
+        }
+        // Describe this SMS object using this rule set's queryFields
+        public String describeSMS(smagicinteract__smsMagic__c sms) {
+            String constructed = '';
+            for (String field : queryFields) {
+                String value = sms.get(field) == null ? '' : '' + sms.get(field);
+                value = value.replace('\n', '<NEWLINE>').replace(',', '<COMMA>');
+                constructed += value + ',';
+            }
+            constructed = constructed.substring(0, constructed.length() - 1); // remove trailing comma
 
             return constructed;
         }

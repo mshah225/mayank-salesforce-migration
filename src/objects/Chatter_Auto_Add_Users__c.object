@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>The custom setting used to set which Chatter group new and updated users should be added to based on their profile.</description>
+    <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Chatter_Group_Name__c</fullName>
         <description>The Chatter group to associate with the given Profile name</description>
@@ -45,11 +48,19 @@ https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_object
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <customSettingsType>List</customSettingsType>
-    <description>The custom setting used to set which Chatter group new and updated users should be added to based on their profile.</description>
-    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Required_Permission_Sets__c</fullName>
+        <businessStatus>Active</businessStatus>
+        <description>Required Permission Set API name for adding the user to this chatter group. Leave this blank if no permission set is required.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the required Permission Set API name for adding the user to this chatter group. Leave this blank if no permission set is required.</inlineHelpText>
+        <label>Required Permission Sets</label>
+        <required>false</required>
+        <securityClassification>Internal</securityClassification>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
     <label>Chatter Auto Add Users</label>
-    <visibility>Public</visibility>
     <listViews>
         <fullName>All_Chatter_Settings</fullName>
         <columns>NAME</columns>
@@ -63,4 +74,5 @@ https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_object
         <filterScope>Everything</filterScope>
         <label>All Chatter Settings</label>
     </listViews>
+    <visibility>Public</visibility>
 </CustomObject>

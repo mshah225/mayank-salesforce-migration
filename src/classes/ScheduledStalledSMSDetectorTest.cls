@@ -1,5 +1,5 @@
 @isTest
-public with sharing class ScheduledStalledSMSDectectorTest {
+public with sharing class ScheduledStalledSMSDetectorTest {
     @TestSetup
     private static void setup() {
         // Insert neccessary senders
@@ -77,7 +77,7 @@ public with sharing class ScheduledStalledSMSDectectorTest {
 
     @isTest
     private static void testEmailSends() {
-        ScheduledStalledSMSDectector smsDetector = new ScheduledStalledSMSDectector();
+        ScheduledStalledSMSDetector smsDetector = new ScheduledStalledSMSDetector();
 
         Test.startTest();
 
@@ -112,21 +112,21 @@ public with sharing class ScheduledStalledSMSDectectorTest {
             Number_Of_Days__c = 7
         );
 
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata1
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet2 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet2 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata2
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet3 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet3 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata3
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet4 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet4 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata4
         );
 
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSuperSet = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
-            new List<ScheduledStalledSMSDectector.SMSDetectionRuleSet>{ ruleSet1, ruleSet2, ruleSet3, ruleSet4 }
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSuperSet = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
+            new List<ScheduledStalledSMSDetector.SMSDetectionRuleSet>{ ruleSet1, ruleSet2, ruleSet3, ruleSet4 }
         );
 
         List<smagicinteract__smsMagic__c> resultsSuperSet = Database.query(ruleSuperSet.getQuery());
@@ -204,21 +204,21 @@ public with sharing class ScheduledStalledSMSDectectorTest {
             Statuses__c = 'QUEUED,ERROR'
         );
 
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata1
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet2 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet2 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata2
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet3 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet3 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata3
         );
 
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSuperSet = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
-            new List<ScheduledStalledSMSDectector.SMSDetectionRuleSet>{ ruleSet1, ruleSet2 }
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSuperSet = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
+            new List<ScheduledStalledSMSDetector.SMSDetectionRuleSet>{ ruleSet1, ruleSet2 }
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSuperSet2 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
-            new List<ScheduledStalledSMSDectector.SMSDetectionRuleSet>{ ruleSet1, ruleSet3 }
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSuperSet2 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
+            new List<ScheduledStalledSMSDetector.SMSDetectionRuleSet>{ ruleSet1, ruleSet3 }
         );
 
         // RuleSet 1
@@ -326,15 +326,15 @@ public with sharing class ScheduledStalledSMSDectectorTest {
             Statuses__c = 'QUEUED'
         );
 
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata1
         );
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet2 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet2 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             metadata2
         );
 
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSuperSet = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
-            new List<ScheduledStalledSMSDectector.SMSDetectionRuleSet>{ ruleSet1, ruleSet2 }
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSuperSet = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
+            new List<ScheduledStalledSMSDetector.SMSDetectionRuleSet>{ ruleSet1, ruleSet2 }
         );
 
         String query1 = ruleSet1.getQuery();
@@ -400,7 +400,7 @@ public with sharing class ScheduledStalledSMSDectectorTest {
 
     @isTest
     private static void SMSDetectionRuleSetDescribeSMS() {
-        ScheduledStalledSMSDectector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDectector.SMSDetectionRuleSet(
+        ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             new SMS_Stall_Detection_Rule__mdt(
                 Email_Addresses__c = 'test1@test.com, test2@test.com',
                 Fields__c = 'smagicinteract__SMSText__c,smagicinteract__Direction__c,smagicinteract__Status__c'

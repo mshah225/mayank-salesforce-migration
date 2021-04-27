@@ -1,4 +1,4 @@
-global with sharing class ScheduledStalledSMSDectector implements Schedulable {
+global with sharing class ScheduledStalledSMSDetector implements Schedulable {
     @TestVisible
     private List<SMSDetectionRuleSet> ruleSets;
     @TestVisible

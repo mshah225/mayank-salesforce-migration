@@ -13,9 +13,9 @@
 
     <div id="myasu-tabs-wrapper">
         <apex:outputPanel rendered="{!showNavBar}">
-            <header class="navbar navbar-default" role="banner" style="max-height: 57px">
+            <div class="navbar navbar-default" style="max-height:57px;">
                 <div id="myasu-tabs" class="myasu-cont">
-                    <div class="navbar-links">
+                    <nav class="navbar-links" role="navigation" aria-label="MyASU">
                         <apex:outputPanel rendered="{!IF(ISNULL(menuLinks) || ISBLANK(menuLinks), false, true)}" layout="none">
                             <apex:repeat value="{!menuLinks}" var="link" id="linkRepeater">
                                 <apex:outputPanel rendered="{!IF(link.name != 'Service Center' && link.name != 'Help', true, false)}">
@@ -64,9 +64,9 @@
                                 </span>
                             </div>
                         </apex:outputPanel>
-                    </div>
+                    </nav>
                 </div>
-            </header>
+            </div>
         </apex:outputPanel>
     </div>
 </apex:component>

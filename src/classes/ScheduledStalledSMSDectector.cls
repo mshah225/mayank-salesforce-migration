@@ -105,7 +105,7 @@ global with sharing class ScheduledStalledSMSDectector implements Schedulable {
                     Sender_Id_Units__c,
                     Statuses__c
                 FROM SMS_Stall_Detection_Rule__mdt
-                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[TEST]%'
+                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[DO NOT CHANGE]%'
             ];
         }
 

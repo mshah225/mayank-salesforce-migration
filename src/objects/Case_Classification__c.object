@@ -39,6 +39,20 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>An object used for classifying cases for some fields such as Functional Group, Category and Sub Category.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableLicensing>false</enableLicensing>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
     <fields>
         <fullName>Active__c</fullName>
         <defaultValue>true</defaultValue>
@@ -148,6 +162,18 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Queue_Id__c</fullName>
+        <description>If a case with this functional group is assigned to a user, and that user is then deprovisioned, set the owner of the case to this Id post-deprovision.</description>
+        <externalId>false</externalId>
+        <label>Queue Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Receives_Chatter_Notifications__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This denotes if the functional group is configured to receive Chatter notifications regarding a change in case ownership. The setting only applies to Functional Groups.</description>
@@ -234,35 +260,7 @@
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
-    <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <deploymentStatus>Deployed</deploymentStatus>
-    <description>An object used for classifying cases for some fields such as Functional Group, Category and Sub Category.</description>
-    <enableActivities>false</enableActivities>
-    <enableBulkApi>true</enableBulkApi>
-    <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
-    <enableLicensing>false</enableLicensing>
-    <enableReports>true</enableReports>
-    <enableSearch>true</enableSearch>
-    <enableSharing>true</enableSharing>
-    <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>ReadWrite</externalSharingModel>
     <label>Case Classification</label>
-    <nameField>
-        <label>Case Classification Name</label>
-        <trackHistory>false</trackHistory>
-        <type>Text</type>
-    </nameField>
-    <pluralLabel>Case Classifications</pluralLabel>
-    <recordTypeTrackHistory>false</recordTypeTrackHistory>
-    <searchLayouts>
-        <lookupDialogsAdditionalFields>RECORDTYPE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Description__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Parent__c</lookupDialogsAdditionalFields>
-    </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
-    <visibility>Public</visibility>
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
@@ -345,6 +343,13 @@
             <role>UTO_University_Technology_Office</role>
         </sharedTo>
     </listViews>
+    <nameField>
+        <label>Case Classification Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Case Classifications</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
         <fullName>Category</fullName>
         <active>true</active>
@@ -453,6 +458,12 @@
             </values>
         </picklistValues>
     </recordTypes>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>RECORDTYPE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Description__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Parent__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
     <validationRules>
         <fullName>Record_Type_Id_Required_for_Functional_G</fullName>
         <active>true</active>
@@ -463,4 +474,5 @@
         <errorDisplayField>Record_Types__c</errorDisplayField>
         <errorMessage>Functional Groups must be associated to at least one record type</errorMessage>
     </validationRules>
+    <visibility>Public</visibility>
 </CustomObject>

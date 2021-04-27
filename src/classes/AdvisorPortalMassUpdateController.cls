@@ -69,7 +69,7 @@ public class AdvisorPortalMassUpdateController {
             metadata = [
                 SELECT Dropdown__c, Value__c, Required_Fields__c
                 FROM Advisor_Portal_Mass_Close_Configuration__mdt
-                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[TEST]%'
+                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[DO NOT CHANGE]%'
             ];
         }
 

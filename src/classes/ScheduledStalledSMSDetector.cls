@@ -38,7 +38,18 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
                             description += ruleSet.describeSMS(sms);
                             description += '\n';
                         }
-                        allEmails.add(createEmail(new List<String>(ruleSet.emailsSet), description, title));
+
+                        Messaging.EmailFileAttachment emailAttachment = new Messaging.EmailFileAttachment();
+                        emailAttachment.setFileName('SMS for ' + ruleSet.label + '.csv');
+                        emailAttachment.setBody(Blob.valueOf(description));
+                        emailAttachment.setContentType('text/csv');
+                        List<Messaging.EmailFileAttachment> allAttachments = new List<Messaging.EmailFileAttachment>{
+                            emailAttachment
+                        };
+
+                        allEmails.add(
+                            createEmail(new List<String>(ruleSet.emailsSet), description, title, allAttachments)
+                        );
                     }
                 }
 
@@ -87,7 +98,7 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
                 At_Least_N_Hours_Old__c,
                 Number_Of_Days__c,
                 Email_Addresses__c,
-                Fields__c,
+                Report_Fields__c,
                 Sender_Id_Units__c,
                 Statuses__c
             FROM SMS_Stall_Detection_Rule__mdt
@@ -102,7 +113,7 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
                     At_Least_N_Hours_Old__c,
                     Number_Of_Days__c,
                     Email_Addresses__c,
-                    Fields__c,
+                    Report_Fields__c,
                     Sender_Id_Units__c,
                     Statuses__c
                 FROM SMS_Stall_Detection_Rule__mdt
@@ -121,12 +132,18 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
         }
     }
 
-    private Messaging.SingleEmailMessage createEmail(List<String> toWho, String description, String title) {
+    private Messaging.SingleEmailMessage createEmail(
+        List<String> toWho,
+        String description,
+        String title,
+        List<Messaging.EmailFileAttachment> attachments
+    ) {
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
 
         mail.setSubject(title);
         mail.setToAddresses(toWho);
         mail.setPlainTextBody(description);
+        mail.setFileAttachments(attachments);
 
         return mail;
     }
@@ -164,7 +181,7 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
             }
             // Make field name list
             queryFields = new Set<String>();
-            for (String s : rule.Fields__c.split(',')) {
+            for (String s : rule.Report_Fields__c.split(',')) {
                 if (s.trim().length() > 0) {
                     queryFields.add(s.trim());
                 }

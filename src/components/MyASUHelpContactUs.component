@@ -31,7 +31,7 @@
                 <div class="accordion" id="accordion">
                     <div class="panel panel-default position-relative">
                         <a data-toggle="collapse" data-target="#myasu-help-contact-us-email-link" href="#myasu-help-contact-us-email-link" aria-expanded="false"
-                            aria-controls="myasu-help-contact-us-email-link" id="toggleEmail" class="position-relative no-underline">
+                            aria-controls="myasu-help-contact-us-email-link" class="position-relative no-underline">
                             <div class="panel-heading" id="headingEmail">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-envelope myasu-help-contact-us-email-icon c-text-maroon" aria-hidden="true" />
@@ -61,7 +61,7 @@
                     </div>
                     <div class="panel panel-default position-relative border-bottom border-top">
                         <a data-toggle="collapse" data-target="#myasu-help-contact-us-chat-link" href="#myasu-help-contact-us-chat-link" aria-expanded="false"
-                            aria-controls="myasu-help-contact-us-chat-link" id="toggleChat" class="position-relative no-underline">
+                            aria-controls="myasu-help-contact-us-chat-link" class="position-relative no-underline">
                             <div class="panel-heading" id="headingChat">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-commenting myasu-help-contact-us-chat-icon c-text-maroon" aria-hidden="true" />
@@ -157,7 +157,7 @@
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>
                         </apex:outputLink>
 
-                        <apex:outputLink styleClass="no-underline" id="togglePhone" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
+                        <apex:outputLink styleClass="no-underline" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
                             <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />

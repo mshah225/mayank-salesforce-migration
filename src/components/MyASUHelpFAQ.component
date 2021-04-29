@@ -102,7 +102,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="">
+                            <div>
                                 <h4 class="c-p9rem font-weight-bold mb-2">Housing</h4>
                                 <ul>
                                     <apex:repeat value="{!topThreeHousingArticles}" var="article" id="myasu-help-region-common-questions-housing">

@@ -2,6 +2,8 @@
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <style>
+        /** Site wide styles */
+
         .myasu-help-scope {
             font-size: 0.9rem
         }
@@ -61,6 +63,51 @@
             margin: 0;
         }
 
+        .myasu-help-scope .c-w-15 {
+            width: 15%;
+        }
+
+        .myasu-help-scope .c-w-85 {
+            width: 85%;
+        }
+
+        /** viewcase styles - can't apply bootstrap styles to table since it generated automatically*/
+
+        .myasu-help-scope .myasu-case-details table {
+            width: 100%;
+        }
+
+        .myasu-help-scope .myasu-case-details table tr:not(tr:last-of-type) {
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .myasu-help-scope .myasu-case-details table tbody>:nth-child(odd) {
+            background-color: #f5f5f5;
+        }
+
+        .myasu-help-scope .myasu-case-details table td,
+        .myasu-help-scope .myasu-case-details table th {
+            padding: 0.5rem;
+        }
+
+        .myasu-help-scope .myasu-case-details table th {
+            font-size: 1.0rem;
+        }
+
+        .myasu-help-scope .myasu-case-details table label {
+            font-size: 1.0rem;
+            margin-bottom: 0rem;
+        }
+
+        .myasu-help-scope .chat-history {
+            font-weight: bold;
+        }
+
+        .myasu-help-scope .chat-history p {
+            font-weight: normal;
+        }
+
+        /** Should have been part of Bootstrap, but apparently not included */
 
         .myasu-help-scope *:hover {
             z-index: 1;

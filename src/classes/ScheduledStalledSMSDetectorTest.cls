@@ -93,22 +93,22 @@ public with sharing class ScheduledStalledSMSDetectorTest {
     private static void SMSDetectionRuleSetFiltering() {
         SMS_Stall_Detection_Rule__mdt metadata1 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test1@test.com',
-            Fields__c = 'Id,smagicinteract__SMSText__c',
+            Report_Fields__c = 'Id,smagicinteract__SMSText__c',
             Sender_Id_Units__c = 'EdPlus'
         );
         SMS_Stall_Detection_Rule__mdt metadata2 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test2@test.com',
-            Fields__c = 'Id,smagicinteract__SMSText__c',
+            Report_Fields__c = 'Id,smagicinteract__SMSText__c',
             Statuses__c = 'QUEUED'
         );
         SMS_Stall_Detection_Rule__mdt metadata3 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test3@test.com',
-            Fields__c = 'Id,smagicinteract__SMSText__c',
+            Report_Fields__c = 'Id,smagicinteract__SMSText__c',
             At_Least_N_Hours_Old__c = 1
         );
         SMS_Stall_Detection_Rule__mdt metadata4 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test4@test.com',
-            Fields__c = 'Id,smagicinteract__SMSText__c',
+            Report_Fields__c = 'Id,smagicinteract__SMSText__c',
             Number_Of_Days__c = 7
         );
 
@@ -187,17 +187,17 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             At_Least_N_Hours_Old__c = 1,
             Number_Of_Days__c = 7,
             Email_Addresses__c = 'test1@test.com, test2@test.com',
-            Fields__c = 'Id,SenderIdUnit__c,Name',
+            Report_Fields__c = 'Id,SenderIdUnit__c,Name',
             Sender_Id_Units__c = 'EdPlus',
             Statuses__c = 'SUBMITTED,ERROR'
         );
         SMS_Stall_Detection_Rule__mdt metadata2 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test1@test.com, test3@test.com',
-            Fields__c = 'smagicinteract__PhoneNumber__c'
+            Report_Fields__c = 'smagicinteract__PhoneNumber__c'
         );
         SMS_Stall_Detection_Rule__mdt metadata3 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test2@test.com, test4@test.com',
-            Fields__c = 'SenderIdUnit__c',
+            Report_Fields__c = 'SenderIdUnit__c',
             At_Least_N_Hours_Old__c = 0,
             Number_Of_Days__c = 12,
             Sender_Id_Units__c = 'FYS,EdPlus',
@@ -316,13 +316,13 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             At_Least_N_Hours_Old__c = 1,
             Number_Of_Days__c = 7,
             Email_Addresses__c = 'test1@test.com, test2@test.com',
-            Fields__c = 'Id,SenderIdUnit__c,Name',
+            Report_Fields__c = 'Id,SenderIdUnit__c,Name',
             Sender_Id_Units__c = 'EdPlus',
             Statuses__c = 'SUBMITTED,ERROR'
         );
         SMS_Stall_Detection_Rule__mdt metadata2 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test1@test.com, test3@test.com',
-            Fields__c = 'smagicinteract__PhoneNumber__c',
+            Report_Fields__c = 'smagicinteract__PhoneNumber__c',
             Statuses__c = 'QUEUED'
         );
 
@@ -403,7 +403,7 @@ public with sharing class ScheduledStalledSMSDetectorTest {
         ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             new SMS_Stall_Detection_Rule__mdt(
                 Email_Addresses__c = 'test1@test.com, test2@test.com',
-                Fields__c = 'smagicinteract__SMSText__c,smagicinteract__Direction__c,smagicinteract__Status__c'
+                Report_Fields__c = 'smagicinteract__SMSText__c,smagicinteract__Direction__c,smagicinteract__Status__c'
             )
         );
 
@@ -418,10 +418,14 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             smagicinteract__Status__c = 'QUEUED'
         );
 
+        String header = ruleSet1.describeSMSHeader();
         String description = ruleSet1.describeSMS(sms);
 
-        System.assert(description.contains('"smagicinteract__SMSText__c" : "Test123"'));
-        System.assert(description.contains('"smagicinteract__Direction__c" : "OUT"'));
-        System.assert(description.contains('"smagicinteract__Status__c" : "QUEUED"'));
+        List<String> headerSplit = header.split(',');
+        List<String> descriptionSplit = description.split(',');
+
+        System.assertEquals(descriptionSplit.indexOf('Test123'), headerSplit.indexOf('smagicinteract__SMSText__c'));
+        System.assertEquals(descriptionSplit.indexOf('OUT'), headerSplit.indexOf('smagicinteract__Direction__c'));
+        System.assertEquals(descriptionSplit.indexOf('QUEUED'), headerSplit.indexOf('smagicinteract__Status__c'));
     }
 }

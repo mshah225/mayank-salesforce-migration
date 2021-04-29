@@ -33,22 +33,31 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
                             ' - ' +
                             smsForThisRule.size() +
                             ' SMS are stalled';
-                        String description = ruleSet.describeSMSHeader() + '\n';
+                        String emailBody =
+                            'Report for stalled SMS for rule ' +
+                            ruleSet.label +
+                            '.\nRan at ' +
+                            System.now().format('YYYY-MM-dd HH:mm:ss zzz') +
+                            '.\nThere are ' +
+                            smsForThisRule.size() +
+                            ' SMS stalled.\n' +
+                            'Attached file contains a list of all related records.';
+                        String csvBody = ruleSet.describeSMSHeader() + '\n';
                         for (smagicinteract__smsMagic__c sms : smsForThisRule) {
-                            description += ruleSet.describeSMS(sms);
-                            description += '\n';
+                            csvBody += ruleSet.describeSMS(sms);
+                            csvBody += '\n';
                         }
 
                         Messaging.EmailFileAttachment emailAttachment = new Messaging.EmailFileAttachment();
                         emailAttachment.setFileName('SMS for ' + ruleSet.label + '.csv');
-                        emailAttachment.setBody(Blob.valueOf(description));
+                        emailAttachment.setBody(Blob.valueOf(csvBody));
                         emailAttachment.setContentType('text/csv');
                         List<Messaging.EmailFileAttachment> allAttachments = new List<Messaging.EmailFileAttachment>{
                             emailAttachment
                         };
 
                         allEmails.add(
-                            createEmail(new List<String>(ruleSet.emailsSet), description, title, allAttachments)
+                            createEmail(new List<String>(ruleSet.emailsSet), emailBody, title, allAttachments)
                         );
                     }
                 }

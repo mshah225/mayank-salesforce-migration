@@ -147,8 +147,8 @@
                         </div>
                     </div>
                     <div class="panel panel-default position-relative">
-                        <apex:outputLink styleClass="no-underline" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
-                            <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
+                        <apex:outputLink styleClass="no-underline" id="normalPhone" rendered="{!NormalPhone}" value="tel:1-855-278-5080">
+                            <div class="panel-heading position-relative" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Call 1-855-ASU-5080</span>
@@ -157,8 +157,8 @@
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>
                         </apex:outputLink>
 
-                        <apex:outputLink styleClass="no-underline" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
-                            <div class="panel-heading position-relative" id="headingPhone" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
+                        <apex:outputLink styleClass="no-underline" id="roverPhone" rendered="{!RoverPhone}" value="tel:1-844-278-6693">
+                            <div class="panel-heading position-relative" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Call 1-844-ASU-6693</span>
@@ -171,4 +171,38 @@
             </div>
         </div>
     </div>
+    <script>
+        if (
+            !(
+                navigator.userAgent.match(/Android/i) ||
+                navigator.userAgent.match(/webOS/i) ||
+                navigator.userAgent.match(/iPhone/i) ||
+                navigator.userAgent.match(/iPad/i) ||
+                navigator.userAgent.match(/iPod/i) ||
+                navigator.userAgent.match(/BlackBerry/i) ||
+                navigator.userAgent.match(/Windows Phone/i)
+            )
+        ) {
+            if (document.getElementById('normalPhone') != null) {
+                document.getElementById('normalPhone').addEventListener('click', function (event) {
+                    event.preventDefault();
+                });
+
+                document.getElementById('normalPhone').addEventListener('contextmenu', function (event) {
+                    event.preventDefault();
+                });
+            }
+
+            if (document.getElementById('roverPhone') != null) {
+                document.getElementById('roverPhone').addEventListener('click', function (event) {
+                    event.preventDefault();
+                });
+
+                document.getElementById('roverPhone').addEventListener('contextmenu', function (event) {
+                    event.preventDefault();
+                });
+            }
+        }
+
+    </script>
 </apex:component>

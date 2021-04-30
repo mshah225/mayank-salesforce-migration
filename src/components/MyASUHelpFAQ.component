@@ -35,7 +35,7 @@
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
                             <div class="d-none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
-                            <div class="lead">Showing all results for '{!textToSearch}'</div>
+                            <h3 class="lead">Showing all results for '{!textToSearch}'</h3>
                             <ul class='pt-1 pb-1 revert-blockquote-to-ul'>
                                 <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPageNumber}"
                                     pageSize="{!IF(textToSearch != '', pageSize, 0)}">
@@ -73,15 +73,20 @@
                             <a class="c-text-maroon underline d-inline-block mt-1 mb-1" href="/">Back to Frequently Asked Questions</a>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation != 'viewAllArticles')}">
-                            <div class="">Showing top results for '{!textToSearch}'</div>
-                            <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageSize="{!IF(textToSearch != '',pageSize,0)}">
-                                <div class="">
-                                    <apex:outputLink styleClass="" value="/authkb?id={!article.id}">
-                                        {!article.title}
-                                    </apex:outputLink>
-                                </div>
-                            </knowledge:articleList>
-                            <apex:commandLink styleClass="" value="View all results" action="{!viewAllResults}" />
+                            <h3 class="lead">Showing top results for '{!textToSearch}'</h3>
+                            <ul>
+                                <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageSize="{!IF(textToSearch != '',pageSize,0)}">
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.id}">
+                                            {!article.title}
+                                        </apex:outputLink>
+                                    </li>
+                                </knowledge:articleList>
+                                <li>
+                                    <apex:commandLink styleClass="c-text-maroon underline d-inline-block mt-1 mb-1" value="View all results" action="{!viewAllResults}"
+                                    />
+                                </li>
+                            </ul>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch == '', !isSearchingWithFunctionalGroup)}">
                             <h3 class="lead mb-4 mt-0">Browse common questions</h3>

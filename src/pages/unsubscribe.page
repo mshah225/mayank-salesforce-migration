@@ -1,59 +1,56 @@
 <apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" action="{!optOutOfEmails}"
     standardStylesheets="false">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
 
     <head>
         <title>ASU | Unsubscribe from Campaign</title>
-        <style>
-            .feedbackButton {
-                float: right;
-            }
-        </style>
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
     </head>
 
     <body>
         <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
+
         <div id="ASUBrandHeaderSpacer"></div>
         <div id="ASUBrandHeaderWrapper"></div>
 
-        <div id="bgWrapper">
-            <div id="asu-content-container" role="main">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <apex:outputPanel rendered="{!NOT(failState)}">
-                                <h3 style="margin-top: 17px">
-                                    <a href="mailto:{!emailAddress}">{!emailAddress}</a> has been unsubscribed
-                                </h3>
-                            </apex:outputPanel>
-                            <apex:outputPanel rendered="{!failState}">
-                                <p>
-                                    ASU was unable to process your unsubscribe request. We apologize for the inconvenience. Our support team has been notified
-                                    of this error. Please visit the subscription center to manage your subscriptions.
-                                </p>
-                                <p>
-                                    Please click on the button below to visit ASU's Subscription Center and manage your subscriptions. If you're unable to access
-                                    the Subscription Center or need immediate assistance, please call 1-855-ASU-5080.
-                                </p>
-                            </apex:outputPanel>
-                        </div>
+        <div role="main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:outputPanel rendered="{!NOT(failState)}">
+                            <h3 style="margin-top: 17px">
+                                <a href="mailto:{!emailAddress}">{!emailAddress}</a> has been unsubscribed
+                            </h3>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!failState}">
+                            <p>
+                                ASU was unable to process your unsubscribe request. We apologize for the inconvenience. Our support team has been notified
+                                of this error. Please visit the subscription center to manage your subscriptions.
+                            </p>
+                            <p>
+                                Please click on the button below to visit ASU's Subscription Center and manage your subscriptions. If you're unable to access
+                                the Subscription Center or need immediate assistance, please call 1-855-ASU-5080.
+                            </p>
+                        </apex:outputPanel>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <h4>{!displayCampaign.name}</h4>
-                            <p>{!displayCampaign.Subscription_Center_Description__c}</p>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>{!displayCampaign.name}</h4>
+                        <p>{!displayCampaign.Subscription_Center_Description__c}</p>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <!-- Update URL to subscription center once it is created -->
-                            <a href="./SubscriptionCenter?subId={!subscriberId}" class="btn btn-primary btn-lg">Visit Subscription Center</a>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Update URL to subscription center once it is created -->
+                        <a href="./SubscriptionCenter?subId={!subscriberId}" class="btn btn-maroon btn-lg">Visit Subscription Center</a>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <c:FeedbackButton carName="One Click Unsubscribe Page" classes="btn btn-primary btn-lg" />
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <c:FeedbackButton carName="One Click Unsubscribe Page" classes="btn btn-maroon btn-md mt-1 mb-1" />
                     </div>
                 </div>
             </div>

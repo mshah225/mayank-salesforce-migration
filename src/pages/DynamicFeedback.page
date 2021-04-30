@@ -57,12 +57,14 @@
     <div id="ASUBrandFooterWrapper"></div>
 
     <script>
+        const title = '{!carName}';
+        const baseUrl = 'https://webapp4.asu.edu/myasu/student/servicecenter';
         $Lightning.use(
             "c:ASUBrandApp",
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    {},
+                    { title, baseUrl },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

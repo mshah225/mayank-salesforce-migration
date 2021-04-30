@@ -43,12 +43,15 @@
     <c:MyASUHelpPageResources />
 
     <script>
+        let title = 'My ASU';
+        let baseUrl = 'https://webapp4.asu.edu/myasu';
+
         $Lightning.use(
             "c:ASUBrandApp",
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    {},
+                    { title, baseUrl },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

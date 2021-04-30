@@ -1,291 +1,55 @@
-<apex:page sidebar="false" showHeader="false" controller="MyASUHelpController" cache="true" extensions="FeedbackController">
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MyASUHelpController" cache="true" extensions="FeedbackController">
     <html>
 
     <head>
         <title>My ASU | Help | Feedback</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="shortcut icon" href="{!URLFOR($Resource.sc_favicon)}" />
-        <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}" />
-        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/asu_header.min.css')}" />
-        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/css/myASUHeader.min.css')}" />
-        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
-        <c:myASUStylesMin />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
         <style>
-            #asu_login_module:nth-child(2) {
-                padding-right: 7px !important;
+            .feedback-page-scope .c-text-maroon {
+                color: #8c1d40;
             }
-        </style>
-        <!--[if IE 9]>
-                <style type="text/css">
-                    #asu_universal_nav ul ul {
-                        filter: none;
-                        box-shadow: 0 6px 6px 0 #999;
-                    }
-                    #asu_universal_nav > ul > li.parent:hover > a {
-                        filter: none;
-                        box-shadow: 6px 0 6px -6px #999, -6px 0 6px -6px #999;
-                    }
-                </style>
-            <![endif]-->
-        <script>
-            var ASUHeader = ASUHeader || {};
-            ASUHeader.browser = false;
-            window.ASUHeader = window.ASUHeader || {};
-            ASUHeader.site_menu = ASUHeader.site_menu || {};
-            ASUHeader.site_menu.json = '[{"title":"Home","path":"{!$Label.MyASU_Help_Base_URL}/myasu"}]';
 
-            ASUHeader.site_menu.site_name = 'Student Service Center';
-            ASUHeader.user_signedin = true;
-            ASUHeader.user_displayname = '{!JSENCODE($User.FirstName)}';
-        </script>
-        <!--[if IE 5
-                ]><script>
-                    ASUHeader.browser = true;
-                </script><!
-            [endif]-->
-        <!--[if IE 6
-                ]><script>
-                    ASUHeader.browser = true;
-                </script><!
-            [endif]-->
-        <!--[if IE 7
-                ]><script>
-                    ASUHeader.browser = true;
-                </script><!
-            [endif]-->
-        <!--[if IE 8
-                ]><script>
-                    ASUHeader.browser = true;
-                </script><!
-            [endif]-->
+            .feedback-page-scope a.c-text-maroon:visited {
+                color: #8c1d40;
+            }
 
-        <style>
-            .panel {
-                border-radius: 0px !important;
+            .feedback-page-scope a:visited .c-text-maroon {
+                color: #8c1d40;
+            }
+
+            a {
+                text-decoration: none;
             }
         </style>
     </head>
 
-    <body>
-        <!-- START /asuthemes/4.3/headers/default_myasu.shtml -->
-        <div id="main-search" class="main-search closed"></div>
-        <div id="asu_hdr" class="asu_hdr_white myasu-cont">
-            <div id="asu_mobile_hdr">
-                <div id="asu_logo">
-                    <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
-                        <img alt="Arizona State University" title="Arizona State University" src="https://www.asu.edu/asuthemes/4.8/assets/full_logo.png"
-                            height="36" width="200" />
-                    </a>
-                </div>
-                <img alt="Arizona State University" title="Arizona State University" id="asu_print_logo" src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png"
-                />
-                <div class="f-navicon" id="asu_mobile_button" onclick="javascript:ASUHeader.toggleASU();">
-                    <a href="javascript:ASUHeader.toggleASU();">Menu</a>
-                </div>
-                <div class="f-search" id="search_new" onclick="javascript:ASUHeader.toggleASU('main-search');"></div>
-            </div>
-            <div class="closed" id="asu_mobile_menu">
-                <div id="asu_nav_wrapper">
-                    <h2 class="hidden">Sign In / Sign Out</h2>
-                    <ul id="asu_login_module">
-                        <li>{!$User.FirstName}</li>
-                        <li>
-                            <a href="/secur/logout.jsp" target="_top">SIGN OUT</a>
-                        </li>
-                    </ul>
-                    <div id="asu_nav_menu">
-                        <h2 class="hidden">Menu</h2>
-                        <div id="asu_universal_nav">
-                            <ul>
-                                <li>
-                                    <a href="https://www.asu.edu/" target="_top">ASU Home</a>
-                                </li>
-                                <li>
-                                    <a href="https://my.asu.edu/" target="_top">My ASU</a>
-                                </li>
-                                <li class="parent">
-                                    <a href="https://www.asu.edu/colleges/" target="_top">Colleges &amp; Schools</a>
-                                    <ul>
-                                        <li>
-                                            <a class="first" href="https://artsandsciences.asu.edu/" target="_top" title="Arts and Sciences website">Arts and Sciences</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://wpcarey.asu.edu/" target="_top" title="W. P. Carey School of Business Web and Morrison School of Agribusiness website">Business</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://herbergerinstitute.asu.edu" target="_top" title="Herberger Institute for Design and the Arts website">Design and the Arts</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://education.asu.edu/" target="_top" title="Mary Lou Fulton Teachers College website">Education</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://engineering.asu.edu/" target="_top" title="Engineering website">Engineering</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://graduate.asu.edu" target="_top" title="Graduate College website">Graduate</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://chs.asu.edu/" target="_top" title="Health Solutions website">Health Solutions</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://honors.asu.edu/" target="_top" title="Barrett, The Honors College website">Honors</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://cronkite.asu.edu" target="_top" title="Walter Cronkite School of Journalism and Mass Communication website">Journalism</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://www.law.asu.edu/" target="_top" title="Sandra Day O' Connor College of Law website">Law</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://nursingandhealth.asu.edu/" target="_top" title="College of Nursing and Health Innovation website">Nursing and Health Innovation</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://copp.asu.edu" target="_top" title="College of Public Programs website">Public Programs</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://schoolofsustainability.asu.edu" target="_top" title="School of Sustainability website">Sustainability</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://uc.asu.edu/" target="_top" title="University College website">University College</a>
-                                        </li>
-                                        <li>
-                                            <a target="_top" href="http://www.thunderbird.edu/" title="Thunderbird School of Global Management website">New: Thunderbird School of Global Management</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="parent">
-                                    <a href="https://www.asu.edu/map/" target="_top">Map &amp; Locations</a>
-                                    <ul>
-                                        <li>
-                                            <a class="border first" href="https://www.asu.edu/map/" target="_top">Map</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://campus.asu.edu/tempe/" target="_top" title="Tempe campus">Tempe</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://campus.asu.edu/west/" target="_top" title="West campus">West</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://campus.asu.edu/polytechnic/" target="_top" title="Polytechnic campus">Polytechnic</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://campus.asu.edu/downtown/" target="_top" title="Downtown Phoenix campus">Downtown Phoenix</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://asuonline.asu.edu/" target="_top" title="Online and Extended campus">Online and Extended</a>
-                                        </li>
-                                        <li>
-                                            <a class="border" href="https://havasu.asu.edu/" target="_top">Lake Havasu</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://skysong.asu.edu/" target="_top">Skysong</a>
-                                        </li>
-                                        <li>
-                                            <a href="http://asuresearchpark.com/" target="_top">Research Park</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://washingtoncenter.asu.edu/" target="_top">Washington D.C.</a>
-                                        </li>
-                                        <li>
-                                            <a href="https://wpcarey.asu.edu/mba/china-program/english/" target="_top">China</a>
-                                        </li>
-                                        <li>
-                                            <a target="_top" href="http://www.thunderbird.edu/about-thunderbird/locations/phoenix-arizona">Thunderbird</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="https://www.asu.edu/contactasu/" target="_top" title="Directory, Index and other info">Directory</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div id="asu_search">
-                    <h2 class="hidden">Search</h2>
-                    <div id="asu_search_module"></div>
-                </div>
-            </div>
-        </div>
+    <body class="feedback-page-scope">
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
 
-        <script type="text/javascript">
-                < !--//--><![CDATA[//><!--
-                ASUHeader.default_search_text = "Search ASU";
-            ASUHeader.default_search_alttext = "Search ASU";
-            if (typeof ASUHeader.signin_callback_url == "undefined") {
-                ASUHeader.signin_callback_url = '';
-            }
-            if (typeof ASUHeader.signin_url == "undefined") {
-                ASUHeader.signin_url = '';
-            }
-            if (typeof ASUHeader.signout_url == "undefined") {
-                ASUHeader.signout_url = 'https://webapp4.asu.edu/myasu/Signout';
-            }
-            if (typeof ASUHeader.user_signedin == "undefined" || (ASUHeader.user_signedin != false && typeof ASUHeader.user_displayname == "undefined")) {
-                ASUHeader.checkSSOCookie();
-            }
-            if (ASUHeader.user_signedin == true) {
-                ASUHeader.setSSOLink();
-            }
-            if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-                document.getElementById('asu_hdr').className = document.getElementById('asu_hdr').className + " chrome";
-            }
-                //--><!]]>
-        </script>
-        <div style="clear: both"></div>
-        <!-- END /asuthemes/4.3/headers/default_myasu.shtml -->
+        <div id="ASUBrandHeaderWrapper"></div>
 
-        <div id="myasu-header-seo" class="myasu-cont">
-            <a href="{!$Label.MyASU_Help_Base_URL}/myasu">My ASU</a>
-        </div>
-
-        <!-- MyASU Tab Bar -->
-        <header class="navbar navbar-default" role="banner">
-            <div id="myasu-tabs" class="myasu-cont">
-                <div class="navbar-links">
-                    <span class="tab">
-                        <a href="{!$Label.MyASU_Help_Base_URL}/myasu" class="tracking">
-                            <span class="fa fa-home" title="Home"></span>
-                        </a>
-                    </span>
-
-                    <apex:outputPanel rendered="{!viewingAs}">
-                        <p class="username pull-right">
-                            {!firstName} {!lastName}
-                            <apex:outputPanel rendered="{!viewingAs}" style="font-size: 9pt">
-                                &nbsp;&nbsp;({!emplId})
-                                <br />
-                                <a class="viewAsLink" href="{!viewAsUrl}">Change View As</a>
-                                <a class="viewAsLink" href="{!stopViewAsUrl}">Stop Viewing As</a>
-                            </apex:outputPanel>
-                        </p>
-                    </apex:outputPanel>
-                </div>
-            </div>
-        </header>
-
-        <div class="page-title">
-            <a href="/studentSC" class="mobileHeaderLink">Student Service Center</a>
-        </div>
-
-        <div id="asu-content-container" role="main">
+        <main role="main">
             <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
             <div class="container">
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="/studentSC">Back</a>
-                    </li>
-                    <li class="active" style="font-size: 10pt">Feedback</li>
-                </ol>
+                <nav aria-label="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="c-text-maroon" href="/">Back</a>
+                        </li>
+                        <li class="breadcrumb-item active">Feedback</li>
+                    </ol>
+                </nav>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <apex:form id="feedbackForm" style="max-width: 600px">
-                            <h3>
-                                <b style="font-weight: 400">My ASU Service Center Feedback</b>
-                            </h3>
-                            <br />
-                            <br />
+                            <h3 class="lead"> My ASU Service Center Feedback </h3>
 
                             <p>
                                 ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized
@@ -299,41 +63,15 @@
                             <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width: 100%; border: solid 1px #999; border-radius: 2px"
                                 rows="5" cols="120" required="true" />
                             <br />
-                            <apex:commandButton value="Submit" action="{!submit}" styleClass="kbbtn submitButton" style="margin-top: 15px; width: 45px"
-                            />
+                            <apex:commandButton value="Submit" action="{!submit}" styleClass="btn btn-maroon btn-md mt-1 mb-2" />
                         </apex:form>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <br />
-
-        <div id="asu_footer">
-            <ul class="default myasu-cont">
-                <li>
-                    <a href="http://www.asu.edu/copyright/">Copyright &amp; Trademark</a>
-                </li>
-                <li>
-                    <a href="http://www.asu.edu/accessibility/">Accessibility</a>
-                </li>
-                <li>
-                    <a href="http://www.asu.edu/privacy/">Privacy</a>
-                </li>
-                <li>
-                    <a href="http://www.asu.edu/asujobs/">Jobs@ASU</a>
-                </li>
-                <li>
-                    <a href="http://www.asu.edu/emergency/">Emergency</a>
-                </li>
-                <li class="no-border">
-                    <a href="http://www.asu.edu/contactasu/">Contact ASU</a>
-                </li>
-            </ul>
-        </div>
-
-        <apex:includeScript value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/js/asu_header.js')}" />
-        <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
+        <div id="ASUBrandFooterWrapper"></div>
+        <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 
         <script>
             viewAsLinks();
@@ -355,6 +93,23 @@
                     });
                 }
             }
+
+            const navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu" }]}';
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        { navTreeStr },
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                }
+            );
         </script>
     </body>
 

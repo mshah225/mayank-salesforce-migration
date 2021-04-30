@@ -371,12 +371,26 @@
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
+        let title = 'My ASU';
+        let baseUrl = 'https://webapp4.asu.edu/myasu/student';
+        if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
+            navTreeStr = undefined;
+        }
+        if (urlParams.get('title') != null) {
+            title = undefined;
+        }
+        if (urlParams.get('baseUrl') != null) {
+            baseUrl = undefined;
+        }
+
         $Lightning.use(
             "c:ASUBrandApp",
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    {},
+                    { title, baseUrl, navTreeStr },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

@@ -12,6 +12,8 @@ reviewers:
             - repository-maintainers
         rnordmanASU:
             - repository-maintainers
+        carlhussey-asu:
+            - repository-maintainers
 options:
     ignore_draft: true
     ignored_keywords:

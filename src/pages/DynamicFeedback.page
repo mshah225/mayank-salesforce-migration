@@ -12,28 +12,19 @@
         <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <script>$ = jQuery.noConflict();</script>
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
-
-        <style>
-            .dynamic-feedback-container .webform-component-textarea {
-                font-weight: 400;
-            }
-
-            .dynamic-feedback-container .alert-block p {
-                padding: 0 !important;
-            }
-        </style>
     </head>
 
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
+
     <div id="ASUBrandHeaderWrapper"></div>
 
     <c:GoogleTagManagerBody />
-    <div class="dynamic-feedback-container" id="asu-content-container">
+    <main role="main">
         <c:MyASUHelpPageNotifications />
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-lg-12">
                     <apex:outputPanel id="alerts">
                         <c:customAlerts alerts="{!alertHandler.alerts}" />
                     </apex:outputPanel>
@@ -61,7 +52,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <div id="ASUBrandFooterWrapper"></div>
 

@@ -48,7 +48,7 @@
                                         <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" headerValue="Date Opened" width="15%" value="{!case.CreatedDate}"
                                         />
                                         <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" width="5%">
-                                            <apex:commandLink value="View" styleClass="btn btn-gray btn-md" action="{!viewCase}">
+                                            <apex:commandLink value="View" styleClass="btn btn-light btn-md" action="{!viewCase}">
                                                 <apex:param name="caseId" value="{!case.Id}" />
                                             </apex:commandLink>
                                         </apex:column>
@@ -83,7 +83,7 @@
                                         />
 
                                         <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" width="5%">
-                                            <apex:commandLink value="View" styleClass="btn btn-gray btn-md" action="{!viewCase}">
+                                            <apex:commandLink value="View" styleClass="btn btn-light btn-md" action="{!viewCase}">
                                                 <apex:param name="caseId" value="{!case.Id}" />
                                             </apex:commandLink>
                                         </apex:column>

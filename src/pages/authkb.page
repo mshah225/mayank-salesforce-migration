@@ -73,12 +73,12 @@
                                     <apex:outputPanel rendered="{!AND(feedbackVisible, articleWasHelpful == '')}">
                                         <strong class="c-p9rem font-weight-bold">Was this article helpful?</strong>
                                         <div class="d-inline-block ml-1">
-                                            <apex:commandLink action="{!helpfulYes}" styleClass="btn btn-gray btn-sm" html-aria-label="Yes">
+                                            <apex:commandLink action="{!helpfulYes}" styleClass="btn btn-light btn-sm" html-aria-label="Yes">
                                                 <i class="fa fa-check" />
                                             </apex:commandLink>
                                         </div>
                                         <div class="d-inline-block ml-2">
-                                            <apex:commandLink action="{!setArticleHelpfulNo}" styleClass="btn btn-gray btn-sm" html-aria-label="No" reRender="feedbackButtons">
+                                            <apex:commandLink action="{!setArticleHelpfulNo}" styleClass="btn btn-light btn-sm" html-aria-label="No" reRender="feedbackButtons">
                                                 <i class="fa fa-times" />
                                             </apex:commandLink>
                                         </div>
@@ -97,7 +97,7 @@
                                             <apex:commandLink value="Submit" action="{!helpfulNo}" styleClass="btn btn-maroon btn-md" />
                                         </div>
                                         <div class="d-inline-block ml-2">
-                                            <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-gray btn-md" reRender="feedbackButtons"
+                                            <apex:commandLink value="Cancel" action="{!setArticleHelpfulNull}" styleClass="btn btn-light btn-md" reRender="feedbackButtons"
                                             />
                                         </div>
                                     </apex:outputPanel>

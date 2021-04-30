@@ -14,7 +14,7 @@
                             <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1" value="{!case.Subject}" />
                             <apex:column headerValue="Status" width="30%" headerClass="p-1" styleClass="p-1" value="{!case.Status}" />
                             <apex:column headerClass="p-1" styleClass="p-1" width="10%">
-                                <apex:commandLink value="View" styleClass="btn btn-gray btn-md text-dark" action="{!viewCase}">
+                                <apex:commandLink value="View" styleClass="btn btn-light btn-md text-dark" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
                             </apex:column>
@@ -34,7 +34,7 @@
                             <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1" value="{!case.Subject}" />
                             <apex:column headerValue="Status" width="30%" headerClass="p-1" styleClass="p-1" value="{!case.Status}" />
                             <apex:column headerClass="p-1" styleClass="p-1" width="10%">
-                                <apex:commandLink value="View" styleClass="btn btn-gray btn-md text-dark" action="{!viewCase}">
+                                <apex:commandLink value="View" styleClass="btn btn-light btn-md text-dark" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
                             </apex:column>
@@ -51,7 +51,7 @@
                     <div class="d-block text-right">
                         <apex:form>
                             <apex:pageBlock mode="maindetail">
-                                <a href="/viewAllCases?source=studentSC" class="btn btn-gray btn-md"> View All </a>
+                                <a href="/viewAllCases?source=studentSC" class="btn btn-light btn-md"> View All </a>
                             </apex:pageBlock>
                         </apex:form>
                     </div>

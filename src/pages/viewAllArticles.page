@@ -14,29 +14,33 @@
     <c:GoogleTagManagerBody />
 
     <apex:includeLightning />
+    <c:SLDSRemoveGlobalStyles />
+
     <div id="ASUBrandHeaderSpacer"></div>
     <div id="ASUBrandHeaderWrapper"></div>
 
-    <div id="asu-content-container" class="myasu-help-region myasu-help-region-full-width">
-        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
-        <div class="container myasu-help-region">
-            <ol class="breadcrumb">
-                <li class="active">Home</li>
-                <li class="active">
-                    <a href="/">Help</a>
-                </li>
-                <li class="active">View All Articles</li>
-            </ol>
+    <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+
+    <div role="main">
+        <div class="container myasu-help-scope">
+            <nav aria-label="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">
+                        <a class="c-text-maroon" href="/">Help</a>
+                    </li>
+                    <li class="breadcrumb-item active">View All Articles</li>
+                </ol>
+            </nav>
+
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-lg-12">
                     <c:MyASUHelpFAQ EmbedLocation="viewAllArticles" />
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div id="bgWrapper">
-                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-primary" />
-                    </div>
+                <div class="col-lg-12">
+                    <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mt-1 mb-1" />
                 </div>
             </div>
         </div>

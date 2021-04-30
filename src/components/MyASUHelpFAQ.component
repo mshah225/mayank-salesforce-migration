@@ -15,11 +15,11 @@
                         <center>
                             <p class="lead d-inline-block text-white">Ask us anything.</p>
                             <div>
-                                <div class="form-horizontal" style="height: 2em;">
+                                <div class="d-flex justify-content-center" style="height: 2rem;">
                                     <apex:inputText id="articleTextBoxId" value="{!textToSearch}" styleClass="w-75 h-100 pl-1 border-0" html-placeholder="Type your question here"
                                         html-pattern=".{2,}" html-type="search" required="true" title="Please enter a minimum of 2 characters"
                                         maxlength="99" />
-                                    <apex:commandLink styleClass="btn btn-gray btn-sm" reRender="myasu-help-region-faq-search-results" oncomplete="myASUHelpFAQ()">
+                                    <apex:commandLink styleClass="btn btn-light btn-sm rounded-0" reRender="myasu-help-region-faq-search-results" oncomplete="myASUHelpFAQ()">
                                         <i class="fa fa-lg fa-search" aria-hidden="true">
                                             <span class="sr-only">Search</span>
                                         </i>
@@ -34,32 +34,43 @@
                 <apex:actionRegion>
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
-                            <div style="display: none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
-                            <div class="">Showing all results for '{!textToSearch}'</div>
-                            <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPageNumber}"
-                                pageSize="{!IF(textToSearch != '', pageSize, 0)}">
-                                <div class="">
-                                    <apex:outputLink styleClass="" value="/authkb?id={!article.id}">
-                                        {!article.title}
-                                    </apex:outputLink>
-                                </div>
-                            </knowledge:articleList>
-                            <div class="">
-                                <apex:commandLink action="{!previous}" styleClass="btn btn-secondary" style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
+                            <div class="d-none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
+                            <div class="lead">Showing all results for '{!textToSearch}'</div>
+                            <ul class='pt-1 pb-1 revert-blockquote-to-ul'>
+                                <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPageNumber}"
+                                    pageSize="{!IF(textToSearch != '', pageSize, 0)}">
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.id}">
+                                            {!article.title}
+                                        </apex:outputLink>
+                                    </li>
+                                </knowledge:articleList>
+                            </ul>
+                            <script>
+                                // Fix when the <ul> magically converts to a <blockquote>.  Known issue - https://developer.salesforce.com/forums/?id=9060G000000IBvRQAW
+                                const allToConvert = document.querySelectorAll('blockquote.revert-blockquote-to-ul');
+                                for (let i = 0; i < allToConvert.length; i++) {
+                                    const oldBlockquote = allToConvert[i];
+                                    const newUl = document.createElement('ul');
+                                    newUl.innerHTML = oldBlockquote.innerHTML;
+                                    newUl.className = oldBlockquote.className;
+                                    oldBlockquote.replaceWith(newUl);
+                                }
+                            </script>
+                            <div class="d-flex">
+                                <apex:commandLink action="{!previous}" styleClass="btn btn-light btn-sm d-inline-block rounded-0" style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-backward" aria-hidden="true" />
                                 </apex:commandLink>
-                                <div class="">
+                                <div class='d-inline-block c-bg-gray c-border-gray text-white page-number'>
                                     {!currentPageNumber}
                                 </div>
-                                <apex:commandLink action="{!next}" styleClass="btn btn-secondary" style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
+                                <apex:commandLink action="{!next}" styleClass="btn btn-light btn-sm d-inline-block rounded-0" style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block">
                                     <i class="fa fa-step-forward" aria-hidden="true" />
                                 </apex:commandLink>
                             </div>
-                            <p class="myasu-append-no-results-text-back-main">
-                                <a href="/">Back to Frequently Asked Questions</a>
-                            </p>
+                            <a class="c-text-maroon underline d-inline-block mt-1 mb-1" href="/">Back to Frequently Asked Questions</a>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation != 'viewAllArticles')}">
                             <div class="">Showing top results for '{!textToSearch}'</div>
@@ -119,35 +130,44 @@
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch == '', isSearchingWithFunctionalGroup)}">
                             <apex:outputPanel rendered="{!functionalGroup == 'Financial Aid'}">
-                                <div class="">Showing all Finance results</div>
-                                <apex:repeat value="{!allFinancialArticles}" var="article" id="myasu-help-region-view-all-articles-finance">
-                                    <div class="">
-                                        <apex:outputLink styleClass="" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                        <br />
-                                    </div>
-                                </apex:repeat>
+                                <h3 class="lead">Showing all Finance results</h3>
+                                <ul>
+                                    <apex:repeat value="{!allFinancialArticles}" var="article">
+                                        <li>
+                                            <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1" value="/">View all common questions</apex:outputLink>
+                                    </li>
+                                </ul>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!functionalGroup == '%Technical Resources%'}">
-                                <div class="">Showing all Technology results</div>
-                                <apex:repeat value="{!allTechnicalArticles}" var="article" id="myasu-help-region-view-all-articles-technical">
-                                    <div class="">
-                                        <apex:outputLink styleClass="" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                        <br />
-                                    </div>
-                                </apex:repeat>
+                                <h3 class="lead">Showing all Technology results</h3>
+                                <ul>
+                                    <apex:repeat value="{!allTechnicalArticles}" var="article">
+                                        <li>
+                                            <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1" value="/">View all common questions</apex:outputLink>
+                                    </li>
+                                </ul>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!functionalGroup == 'Housing'}">
-                                <div class="">Showing all Housing results</div>
-                                <apex:repeat value="{!allHousingArticles}" var="article" id="myasu-help-region-view-all-articles-housing">
-                                    <div class="">
-                                        <apex:outputLink styleClass="" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
-                                        <br />
-                                    </div>
-                                </apex:repeat>
+                                <h3 class="lead">Showing all Housing results</h3>
+                                <ul>
+                                    <apex:repeat value="{!allHousingArticles}" var="article">
+                                        <li>
+                                            <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1" value="/">View all common questions</apex:outputLink>
+                                    </li>
+                                </ul>
                             </apex:outputPanel>
-                            <div class="">
-                                <apex:outputLink styleClass="" value="/">View all common questions</apex:outputLink>
-                            </div>
                         </apex:outputPanel>
                     </apex:pageBlock>
                 </apex:actionRegion>

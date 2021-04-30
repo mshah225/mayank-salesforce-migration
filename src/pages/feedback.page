@@ -49,7 +49,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <apex:form id="feedbackForm" style="max-width: 600px">
-                            <h3 class="lead"> My ASU Service Center Feedback </h3>
+                            <h1 class="lead"> My ASU Service Center Feedback </h1>
 
                             <p>
                                 ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized

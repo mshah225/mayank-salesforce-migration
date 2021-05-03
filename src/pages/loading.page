@@ -39,7 +39,7 @@
     </head>
 
     <body onload="replaceIframe()">
-        <div id="ASUBrandHeaderWrapper" class="slds-scope"></div>
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <center>
             <div class="mainBody">
@@ -55,7 +55,7 @@
 
         <iframe src="" scrolling="true" id="theIframe" style="display: none" frameborder="true" width="700px" />
 
-        <div id="ASUBrandFooterWrapper" class="slds-scope"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
         <script>
             $Lightning.use(

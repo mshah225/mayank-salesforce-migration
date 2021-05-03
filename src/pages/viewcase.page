@@ -134,7 +134,7 @@
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderSpacer"></div>
-    <div id="ASUBrandHeaderWrapper"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
 
@@ -368,7 +368,7 @@
         </div>
     </div>
 
-    <div id="ASUBrandFooterWrapper"></div>
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 
     <script>

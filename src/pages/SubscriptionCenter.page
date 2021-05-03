@@ -190,7 +190,7 @@
 
         <apex:includeLightning />
         <div id="ASUBrandHeaderSpacer"></div>
-        <div id="ASUBrandHeaderWrapper"></div>
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <apex:outputPanel id="optedOut">
             <apex:form>
@@ -575,7 +575,7 @@
             </div>
             <div class="col-xs-1"></div>
         </div>
-        <div id="ASUBrandFooterWrapper"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
 
         <script>        

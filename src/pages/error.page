@@ -16,7 +16,7 @@
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
 
-    <div id="ASUBrandHeaderWrapper"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
     <main role="main">
@@ -39,7 +39,7 @@
         </div>
     </main>
 
-    <div id="ASUBrandFooterWrapper"></div>
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
     <c:MyASUHelpPageResources />
 
     <script>

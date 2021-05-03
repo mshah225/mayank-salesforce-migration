@@ -7,7 +7,7 @@
 
     <apex:includeLightning />
     <div id="ASUBrandHeaderSpacer"></div>
-    <div id="ASUBrandHeaderWrapper"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
 
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div id="ASUBrandFooterWrapper"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
         <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js"></script>
         <script type="text/javascript">

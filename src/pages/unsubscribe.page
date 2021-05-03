@@ -14,7 +14,7 @@
         <c:SLDSRemoveGlobalStyles />
 
         <div id="ASUBrandHeaderSpacer"></div>
-        <div id="ASUBrandHeaderWrapper"></div>
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <div role="main">
             <div class="container">
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div id="ASUBrandFooterWrapper"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
         <script>     
             const urlParams = new URLSearchParams(window.location.search);

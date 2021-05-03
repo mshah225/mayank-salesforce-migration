@@ -18,7 +18,7 @@
     <body class="persistence-feedback-page-scope">
         <apex:includeLightning />
         <c:SLDSRemoveGlobalStyles />
-        <div id="ASUBrandHeaderWrapper"></div>
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <main role="main">
             <div class="container">
@@ -65,7 +65,7 @@
 
         <br />
 
-        <div id="ASUBrandFooterWrapper"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
         <script>
             let title = 'Persistence Outlook';

@@ -33,7 +33,7 @@
         <apex:includeLightning />
         <c:SLDSRemoveGlobalStyles />
 
-        <div id="ASUBrandHeaderWrapper"></div>
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <main role="main">
             <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
@@ -70,7 +70,7 @@
             </div>
         </main>
 
-        <div id="ASUBrandFooterWrapper"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
         <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 
         <script>

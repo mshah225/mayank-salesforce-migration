@@ -9,7 +9,7 @@
 
     <apex:includeLightning />
     <div id="ASUBrandHeaderSpacer"></div>
-    <div id="ASUBrandHeaderWrapper"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <div class="asu-header-site-title-container">
         <div>
@@ -136,7 +136,7 @@
             </div>
         </apex:form>
     </div>
-    <div id="ASUBrandFooterWrapper"></div>
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
     <script>
         $("body").bind("DOMNodeInserted", function () {

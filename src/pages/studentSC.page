@@ -18,7 +18,7 @@
 
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
-    <div id="ASUBrandHeaderWrapper"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
     <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
 
     <c:GoogleTagManagerBody />
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <div id="ASUBrandFooterWrapper"></div>
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
     <script>
         var widthToPush;

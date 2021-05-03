@@ -1,0 +1,19 @@
+name: Alius CI Trigger
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    http-request-action:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Initiate HTTP request
+              uses: fjogeleit/http-request-action@master
+              with:
+                  url: 'https://w4p04uhwd5.execute-api.us-east-1.amazonaws.com/default/AliusCI'
+                  timeout: 90000
+                  preventFailureOnNoResponse: 'true'
+                  ignoreStatusCodes: '500,404,401'
+                  method: 'POST'

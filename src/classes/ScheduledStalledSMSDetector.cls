@@ -282,6 +282,9 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
             }
             if (maxDaysOld != null) {
                 oldestDateAccepted = System.now().addDays(-1 * maxDaysOld);
+                oldestDateAccepted = oldestDateAccepted.addHours(-1 * oldestDateAccepted.hour())
+                    .addMinutes(-1 * oldestDateAccepted.minute())
+                    .addSeconds(-1 * oldestDateAccepted.second());
             }
 
             for (Integer i = 0; i < smsList.size(); i++) {
@@ -310,6 +313,9 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
             }
             if (maxDaysOld != null) {
                 oldestDateAccepted = System.now().addDays(-1 * maxDaysOld);
+                oldestDateAccepted = oldestDateAccepted.addHours(-1 * oldestDateAccepted.hour())
+                    .addMinutes(-1 * oldestDateAccepted.minute())
+                    .addSeconds(-1 * oldestDateAccepted.second());
             }
 
             // Contruct the query

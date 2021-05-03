@@ -15,5 +15,5 @@ jobs:
                   url: 'https://w4p04uhwd5.execute-api.us-east-1.amazonaws.com/default/AliusCI'
                   timeout: 90000
                   preventFailureOnNoResponse: 'true'
-                  ignoreStatusCodes: '500,404,401'
+                  ignoreStatusCodes: '401,404,500,503'
                   method: 'POST'

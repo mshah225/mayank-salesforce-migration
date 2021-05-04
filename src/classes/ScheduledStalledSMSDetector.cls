@@ -386,7 +386,13 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
         public String describeSMS(smagicinteract__smsMagic__c sms) {
             String constructed = '';
             for (String field : queryFields) {
-                String value = sms.get(field) == null ? '' : '' + sms.get(field);
+                String value = '';
+                if (field.equals('CreatedDate') || field.equals('smagicinteract__CreatedOn__c')) {
+                    value = sms.get(field) == null ? '' : ((Datetime) sms.get(field)).format('M/d/YYYY h:mm:ss a');
+                } else {
+                    value = sms.get(field) == null ? '' : '' + sms.get(field);
+                }
+
                 value = value.replace('\n', '<NEWLINE>').replace(',', '<COMMA>');
                 constructed += value + ',';
             }

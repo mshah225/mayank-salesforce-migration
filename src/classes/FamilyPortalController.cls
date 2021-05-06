@@ -141,7 +141,7 @@ public without sharing class FamilyPortalController {
 
     private Boolean isAsuriteUser() {
         if (UserInfo.getUserId() != null && !UserInfo.getLastName().containsIgnoreCase('site guest user')) {
-            isAsuriteUser = false;
+            isAsuriteUser = true;
 
             User guardianUser = [SELECT Id, ContactId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
             if (guardianUser.ContactId != null) {
@@ -183,13 +183,10 @@ public without sharing class FamilyPortalController {
                 familyPortalGuardian.Last_Name__c = UserInfo.getLastName();
                 familyPortalGuardian.Email__c = UserInfo.getUserEmail();
             }
-            familyPortalGuardian.Email__c = 'rnordman@asu.edu';
-            familyPortalGuardian.Street__c = '1362 S Vineyard Apt 2109';
-            familyPortalGuardian.State__c = 'Arizona';
 
-            return false;
+            return true;
         } else if (familyPortalGuardian.ASURITE_ID__c != null) {
-            return false;
+            return true;
         }
 
         return false;

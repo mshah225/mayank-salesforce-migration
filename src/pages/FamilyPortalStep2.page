@@ -74,7 +74,7 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-a-phone">Phone</apex:outputLabel>
-                                            <apex:inputField id="fp-a-phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" />
+                                            <apex:inputField id="fp-a-phone" styleClass="family-portal-2-body-phone col-7" value="{!familyPortalGuardian.Phone__c}" />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-a-alumni">ASU Alumni</apex:outputLabel>
@@ -111,7 +111,7 @@
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsCanada}">
                                             <apex:outputLabel styleclass="col-4" for="fp-a-province">Province</apex:outputLabel>
-                                            <apex:selectList id="fp-a-province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1">
+                                            <apex:selectList styleClass="col-7" id="fp-a-province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1">
                                                 <apex:selectOptions value="{!guardianProvinceOptions}" />
                                             </apex:selectList>
                                         </apex:outputPanel>
@@ -119,11 +119,11 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-a-zip-code">Zip Code</apex:outputLabel>
-                                            <apex:inputField id="fp-a-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-a-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" />
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-a-postal-code">Postal Code</apex:outputLabel>
-                                            <apex:inputField id="fp-a-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-a-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" />
                                         </apex:outputPanel>
                                         <div class="p-1 col-lg-6 col-12 row"></div>
                                     </div>
@@ -134,19 +134,19 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-fname">First Name</apex:outputLabel>
-                                            <apex:inputField id="fp-g-fname" value="{!familyPortalGuardian.First_Name__c}" html-placeholder="{!familyPortalGuardian.First_Name__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-fname" value="{!familyPortalGuardian.First_Name__c}" html-placeholder="{!familyPortalGuardian.First_Name__c}"
                                             />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-mname">Middle Name</apex:outputLabel>
-                                            <apex:inputField id="fp-g-mname" value="{!familyPortalGuardian.Middle_Name__c}" html-placeholder="{!familyPortalGuardian.Middle_Name__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-mname" value="{!familyPortalGuardian.Middle_Name__c}" html-placeholder="{!familyPortalGuardian.Middle_Name__c}"
                                             />
                                         </div>
                                     </div>
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-lname">Last Name</apex:outputLabel>
-                                            <apex:inputField id="fp-g-lname" value="{!familyPortalGuardian.Last_Name__c}" html-placeholder="{!familyPortalGuardian.Last_Name__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-lname" value="{!familyPortalGuardian.Last_Name__c}" html-placeholder="{!familyPortalGuardian.Last_Name__c}"
                                             />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
@@ -157,49 +157,52 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-phone">Phone</apex:outputLabel>
-                                            <apex:inputField id="fp-g-phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
+                                            <apex:inputField id="fp-g-phone" styleClass="family-portal-2-body-phone col-7" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
                                             />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-alumni">ASU Alumni</apex:outputLabel>
-                                            <apex:inputField id="fp-g-alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
                                             />
                                         </div>
                                     </div>
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-country">Country</apex:outputLabel>
-                                            <apex:selectList id="fp-g-country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.Country__c}">
+                                            <apex:selectList styleClass="col-7" id="fp-g-country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1"
+                                                html-placeholder="{!familyPortalGuardian.Country__c}">
                                                 <apex:selectOptions value="{!guardianCountryOptions}" />
                                                 <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
                                             </apex:selectList>
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-street-addr">Street Address</apex:outputLabel>
-                                            <apex:inputField id="fp-g-street-addr" value="{!familyPortalGuardian.Street__c}" html-placeholder="{!familyPortalGuardian.Street__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-street-addr" value="{!familyPortalGuardian.Street__c}" html-placeholder="{!familyPortalGuardian.Street__c}"
                                             />
                                         </div>
                                     </div>
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-city">City</apex:outputLabel>
-                                            <apex:inputField id="fp-g-city" value="{!familyPortalGuardian.City__c}" html-placeholder="{!familyPortalGuardian.City__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-city" value="{!familyPortalGuardian.City__c}" html-placeholder="{!familyPortalGuardian.City__c}"
                                             />
                                         </div>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!!guardianSelectedCountryIsUnitedStatesOrCanada}">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-region">State/Province/Region</apex:outputLabel>
-                                            <apex:inputField id="fp-g-region" value="{!familyPortalGuardian.State__c}" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-region" value="{!familyPortalGuardian.State__c}" html-placeholder="{!familyPortalGuardian.State__c}"
                                             />
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-state">State</apex:outputLabel>
-                                            <apex:selectList id="fp-g-state" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}">
+                                            <apex:selectList styleClass="col-7" id="fp-g-state" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1"
+                                                html-placeholder="{!familyPortalGuardian.State__c}">
                                                 <apex:selectOptions value="{!guardianStateOptions}" />
                                             </apex:selectList>
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsCanada}">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-province">Province</apex:outputLabel>
-                                            <apex:selectList id="fp-g-province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}">
+                                            <apex:selectList styleClass="col-7" id="fp-g-province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1"
+                                                html-placeholder="{!familyPortalGuardian.State__c}">
                                                 <apex:selectOptions value="{!guardianProvinceOptions}" />
                                             </apex:selectList>
                                         </apex:outputPanel>
@@ -207,12 +210,12 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-zip-code">Zip Code</apex:outputLabel>
-                                            <apex:inputField id="fp-g-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
                                             />
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-g-postal-code">Postal Code</apex:outputLabel>
-                                            <apex:inputField id="fp-g-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-g-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
                                             />
                                         </apex:outputPanel>
                                         <div class="p-1 col-lg-6 col-12 row"></div>
@@ -245,49 +248,52 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-phone">Phone</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" html-placeholder="{!familyPortalGuardian.Phone__c}"
-                                            />
+                                            <apex:inputField id="fp-ag-phone" styleClass="family-portal-2-body-phone col-7" value="{!familyPortalGuardian.Phone__c}"
+                                                html-placeholder="{!familyPortalGuardian.Phone__c}" />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-alumni">ASU Alumni</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-ag-alumni" value="{!familyPortalGuardian.ASU_Alumni__c}" html-placeholder="{!familyPortalGuardian.ASU_Alumni__c}"
                                             />
                                         </div>
                                     </div>
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-country">Country</apex:outputLabel>
-                                            <apex:selectList id="fp-ag-country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.Country__c}">
+                                            <apex:selectList styleClass="col-7" id="fp-ag-country" value="{!familyPortalGuardian.Country__c}" multiselect="false" size="1"
+                                                html-placeholder="{!familyPortalGuardian.Country__c}">
                                                 <apex:selectOptions value="{!guardianCountryOptions}" />
                                                 <apex:actionSupport event="onchange" rerender="family-portal-2-body" />
                                             </apex:selectList>
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-street-addr">Street Address</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-street-addr" value="{!familyPortalGuardian.Street__c}" html-placeholder="{!familyPortalGuardian.Street__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-ag-street-addr" value="{!familyPortalGuardian.Street__c}" html-placeholder="{!familyPortalGuardian.Street__c}"
                                             />
                                         </div>
                                     </div>
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-city">City</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-city" value="{!familyPortalGuardian.City__c}" html-placeholder="{!familyPortalGuardian.City__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-ag-city" value="{!familyPortalGuardian.City__c}" html-placeholder="{!familyPortalGuardian.City__c}"
                                             />
                                         </div>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!!guardianSelectedCountryIsUnitedStatesOrCanada}">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-region">State/Province/Region</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-region" value="{!familyPortalGuardian.State__c}" html-placeholder="{!familyPortalGuardian.State__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-ag-region" value="{!familyPortalGuardian.State__c}" html-placeholder="{!familyPortalGuardian.State__c}"
                                             />
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-state">State</apex:outputLabel>
-                                            <apex:selectList id="fp-ag-state" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}">
+                                            <apex:selectList styleClass="col-7" id="fp-ag-state" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1"
+                                                html-placeholder="{!familyPortalGuardian.State__c}">
                                                 <apex:selectOptions value="{!guardianStateOptions}" />
                                             </apex:selectList>
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsCanada}">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-province">Province</apex:outputLabel>
-                                            <apex:selectList id="fp-ag-province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1" html-placeholder="{!familyPortalGuardian.State__c}">
+                                            <apex:selectList styleClass="col-7" id="fp-ag-province" value="{!familyPortalGuardian.State__c}" multiselect="false" size="1"
+                                                html-placeholder="{!familyPortalGuardian.State__c}">
                                                 <apex:selectOptions value="{!guardianProvinceOptions}" />
                                             </apex:selectList>
                                         </apex:outputPanel>
@@ -295,12 +301,12 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-zip-code">Zip Code</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-ag-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
                                             />
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-ag-postal-code">Postal Code</apex:outputLabel>
-                                            <apex:inputField id="fp-ag-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
+                                            <apex:inputField styleClass="col-7" id="fp-ag-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" html-placeholder="{!familyPortalGuardian.Zip_Code__c}"
                                             />
                                         </apex:outputPanel>
                                         <div class="p-1 col-lg-6 col-12 row"></div>
@@ -312,7 +318,7 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-fname">First Name</apex:outputLabel>
-                                            <apex:inputField id="fp-fname" value="{!familyPortalGuardian.First_Name__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-fname" value="{!familyPortalGuardian.First_Name__c}" />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-mname">Middle Name</apex:outputLabel>
@@ -322,17 +328,17 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-lname">Last Name</apex:outputLabel>
-                                            <apex:inputField id="fp-lname" value="{!familyPortalGuardian.Last_Name__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-lname" value="{!familyPortalGuardian.Last_Name__c}" />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-email">Email</apex:outputLabel>
-                                            <apex:inputField id="fp-email" value="{!familyPortalGuardian.Email__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-email" value="{!familyPortalGuardian.Email__c}" />
                                         </div>
                                     </div>
                                     <div class="d-flex flex-lg-row flex-column">
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-phone">Phone</apex:outputLabel>
-                                            <apex:inputField id="fp-phone" styleClass="family-portal-2-body-phone" value="{!familyPortalGuardian.Phone__c}" />
+                                            <apex:inputField id="fp-phone" styleClass="family-portal-2-body-phone col-7" value="{!familyPortalGuardian.Phone__c}" />
                                         </div>
                                         <div class="p-1 col-lg-6 col-12 row">
                                             <apex:outputLabel styleclass="col-4" for="fp-alumni">ASU Alumni</apex:outputLabel>
@@ -377,11 +383,11 @@
                                     <div class="d-flex flex-lg-row flex-column">
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-zip-code">Zip Code</apex:outputLabel>
-                                            <apex:inputField id="fp-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-zip-code" value="{!familyPortalGuardian.Zip_Code__c}" />
                                         </apex:outputPanel>
                                         <apex:outputPanel layout="block" styleClass="p-1 col-lg-6 col-12 row" rendered="{!!guardianSelectedCountryIsUS}">
                                             <apex:outputLabel styleclass="col-4" for="fp-postal-code">Postal Code</apex:outputLabel>
-                                            <apex:inputField id="fp-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" />
+                                            <apex:inputField styleClass="col-7" id="fp-postal-code" value="{!familyPortalGuardian.Zip_Code__c}" />
                                         </apex:outputPanel>
                                         <div class="p-1 col-lg-6 col-12 row"></div>
                                     </div>
@@ -414,10 +420,10 @@
             $('.requiredInputAsterisk').css('color', 'red');
         });
 
-        // Add classes to required nodes
+        // Fix classes for required fields - need to add padding and move col-7 to wrapper div
         $('.requiredInput').addClass('col-7');
         $('.requiredInput').each(function () {
-            $(this.parentNode).find('input').addClass('pl-2');
+            $(this.parentNode).find('input').addClass('pl-2').removeClass('col-7');
         });
 
     </script>

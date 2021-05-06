@@ -48,22 +48,22 @@
                             <apex:pageBlock>
                                 <div>
                                     <apex:outputPanel layout="none" rendered="{!isExistingGuardian}">
-                                        <h2>
+                                        <h1 class="mb-4">
                                             <apex:outputText value="Welcome back, {0}!">
                                                 <apex:param value="{!familyPortalGuardian.First_Name__c}" />
                                             </apex:outputText>
-                                        </h2>
-                                        <p class="lead">We'd like to ask you a few questions to learn more about your interests.</p>
+                                        </h1>
+                                        <p class="lead pt-3 pb-3">We'd like to ask you a few questions to learn more about your interests.</p>
                                         <apex:commandLink action="{!familyPortalStep2}" styleClass="btn btn-maroon btn-md btn-block">
                                             Next
                                         </apex:commandLink>
                                     </apex:outputPanel>
                                     <apex:outputPanel layout="none" rendered="{!AND(isAsuriteUser, !isExistingGuardian)}">
-                                        <h2 class="mb-4">
+                                        <h1 class="mb-4">
                                             <apex:outputText value="Welcome, {0}!">
                                                 <apex:param value="{!$User.FirstName}" />
                                             </apex:outputText>
-                                        </h2>
+                                        </h1>
                                         <p class="lead pt-3 pb-3">By filling out your information, we will be able to keep in touch with you with updates
                                             and information about ASU that matter to you and your family.</p>
                                         <apex:commandLink action="{!familyPortalStep2}" styleClass="btn btn-maroon btn-md btn-block">
@@ -71,25 +71,25 @@
                                         </apex:commandLink>
                                     </apex:outputPanel>
                                     <apex:outputPanel layout="none" rendered="{!AND(!isAsuriteUser, !isExistingGuardian)}">
-                                        <h2>Welcome to the ASU Family</h2>
-                                        <p class="lead">By filling out your information, we will be able to keep in touch with you with updates
+                                        <h1 class="mb-4">Welcome to the ASU Family</h1>
+                                        <p class="lead pt-3 pb-3">By filling out your information, we will be able to keep in touch with you with updates
                                             and information about ASU that matter to you and your family.</p>
                                         <div>
-                                            <p class="lead">Do you have an ASU login?</p>
+                                            <p class="font-weight-bold lead">Do you have an ASU login?</p>
                                         </div>
-                                        <div>
-                                            <div class="w-50">
+                                        <div class="d-flex flex-lg-row mt-4 flex-column">
+                                            <div class="col-12 col-lg-6 m-1">
                                                 <apex:commandLink styleClass="btn btn-maroon btn-md btn-block" action="{!sendUserToLoginScreen}">
                                                     <i class="fa fa-check-circle" /> Yes
                                                 </apex:commandLink>
                                             </div>
-                                            <div class="w-50">
+                                            <div class="col-12 col-lg-6 m-1">
                                                 <apex:commandLink styleClass="btn btn-light btn-md btn-block" action="{!familyPortalStep2}">
                                                     <i class="fa fa-times-circle" /> No
                                                 </apex:commandLink>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div class="float-right small font-weight-bold">
                                             <a href="http://asu.edu/lostpassword">Forgot your password?</a>
                                         </div>
                                     </apex:outputPanel>

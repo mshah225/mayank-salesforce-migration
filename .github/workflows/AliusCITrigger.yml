@@ -12,8 +12,8 @@ jobs:
             - name: Initiate HTTP request
               uses: fjogeleit/http-request-action@master
               with:
-                  url: 'https://w4p04uhwd5.execute-api.us-east-1.amazonaws.com/default/AliusCI'
+                  url: 'https://br1op9genk.execute-api.us-east-1.amazonaws.com/default/AliusCI'
+                  customHeaders: '{"Authorization":"82C645A5E20FA9E3EECADEDF77668063FD12C831831"}'
                   timeout: 90000
                   preventFailureOnNoResponse: 'true'
                   ignoreStatusCodes: '401,404,500,503'
-                  method: 'POST'

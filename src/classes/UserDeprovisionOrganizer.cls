@@ -178,7 +178,7 @@ public without sharing class UserDeprovisionOrganizer {
         allUserChatterGroupMemberships = [
             SELECT MemberId, CollaborationGroup.Name
             FROM CollaborationGroupMember
-            WHERE MemberId IN :userToDeprovisionIds
+            WHERE MemberId IN :userToDeprovisionIds AND NetworkId = ''
         ];
 
         for (CollaborationGroupMember collaborationGroupMember : allUserChatterGroupMemberships) {

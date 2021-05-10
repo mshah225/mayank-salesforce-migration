@@ -1,10 +1,10 @@
 /*****************************************
- * File: EdPlusEALAApplicationsControllerTest 
+ * File: EdPlusEALAApplicationsControllerTest
  * Author: Carl Hussey, ASU
  * Description: Unit Tests for EdPlusEALAApplicationsControllerTest .cls
  ******************************************/
 @isTest
-public class EdPlusEALAApplicationsControllerTest  {
+public class EdPlusEALAApplicationsControllerTest {
     /**
      * Extend our Query class to mock our external data
      */
@@ -27,7 +27,6 @@ public class EdPlusEALAApplicationsControllerTest  {
      * Setup the test for the main controller
      */
     public static testMethod void testController() {
-
         // Create mocked data
         createTestData();
 
@@ -72,7 +71,6 @@ public class EdPlusEALAApplicationsControllerTest  {
      * Test ability to insert tracking record
      */
     public static testMethod void insertTracking() {
-
         // Create mocked data
         createTestData();
 
@@ -123,7 +121,6 @@ public class EdPlusEALAApplicationsControllerTest  {
      * Create the test data
      */
     public static void createTestData() {
-        
         // Create test contacts
         List<Contact> internalContacts = TestDataFactory.createContacts(5);
         for (Integer i = 0; i < 5; i++) {
@@ -135,7 +132,12 @@ public class EdPlusEALAApplicationsControllerTest  {
         List<EA_Learner_Application__x> mockExternalApplications = new List<EA_Learner_Application__x>();
         for (Integer i = 0; i < 5; i++) {
             mockExternalApplications.add(
-                new EA_Learner_Application__x(Completed__c = true, Number_of_Credits_Completed__c = 3.0, Number_of_Credits_Needed__c = 12.0, Name__c = 'ELEA-'+i)
+                new EA_Learner_Application__x(
+                    Completed__c = true,
+                    Number_of_Credits_Completed__c = 3.0,
+                    Number_of_Credits_Needed__c = 12.0,
+                    Name__c = 'ELEA-' + i
+                )
             );
         }
 

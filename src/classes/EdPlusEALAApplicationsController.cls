@@ -27,7 +27,9 @@ public with sharing class EdPlusEALAApplicationsController {
                     Completed__c,
                     Number_of_Credits_Completed__c,
                     Number_of_Credits_Needed__c,
-                    Name__c
+                    Name__c,
+                    Eligibility_Start_Date__c,
+                    Eligibility_End_Date__c
                 FROM EA_Learner_Application__x
                 WHERE Contact__c IN :Contacts
             ]

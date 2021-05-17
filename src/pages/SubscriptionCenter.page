@@ -90,6 +90,11 @@
                 width: 65px;
                 display: inline-block;
             }
+
+            .subscription-center-scope .checkLabel {
+                width: 200%;
+                transform: translateX(-25%);
+            }
         </style>
         <c:GoogleTagManager />
         <apex:includeLightning />
@@ -164,15 +169,12 @@
                                 <div class="modal-body">
                                     <p>You have successfully updated your subscriptions</p>
                                 </div>
-                                <button id="successOk" type="button" data-dismiss="modal" ng-click="cancel()" style="
-                                        text-align: center;
-                                        text-decoration: none;
-                                        margin-left: 5px;
-                                        background: #8c1d40;
-                                    " class="btn">
-                                    Ok
-                                </button>
-                                <p />
+
+                                <div class="pl-3 pr-3 pb-3">
+                                    <button id="successOk" type="button" data-dismiss="modal" ng-click="cancel()" class="btn btn-maroon btn-lg btn-block">
+                                        Ok
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -253,17 +255,17 @@
                                                     <input type="checkbox" aria-label="{!subbedBuSubIdToWrapperMap[buSubId].name}_toggle_box" class="multi-switch" initial-value="{!subbedBuSubIdToWrapperMap[buSubId].multiCheckVal}"
                                                         unchecked-value="2" checked-value="1" value="{!subbedBuSubIdToWrapperMap[buSubId].multiCheckVal}"
                                                     />
-                                                    <apex:inputText styleClass="d-none" value="{!subbedBuSubIdToWrapperMap[buSubId].subscriberStatus}" title="{!subbedBuSubIdToWrapperMap[buSubId].subscriberStatus}"
+                                                    <apex:inputText styleClass="hiddencmw d-none" value="{!subbedBuSubIdToWrapperMap[buSubId].subscriberStatus}" title="{!subbedBuSubIdToWrapperMap[buSubId].subscriberStatus}"
                                                         label="{!subbedBuSubIdToWrapperMap[buSubId].subscriberStatus}" />
-                                                </div>
-                                                <br/>
-                                                <div class="d-md-inline d-none">
-                                                    {!IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Preference', IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus
-                                                    == 'Unsubscribed','No','Yes'))}
-                                                </div>
-                                                <div class="d-sm-inline d-md-none">
-                                                    {!IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Pref', IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus
-                                                    == 'Unsubscribed','No','Yes'))}
+
+                                                    <div class="d-md-block d-none checkLabel">
+                                                        {!IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Preference', IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus
+                                                        == 'Unsubscribed','No','Yes'))}
+                                                    </div>
+                                                    <div class="d-sm-block d-md-none checkLabel">
+                                                        {!IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Pref', IF(subbedBuSubIdToWrapperMap[buSubId].subscriberStatus
+                                                        == 'Unsubscribed','No','Yes'))}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-1">
@@ -293,15 +295,15 @@
                                                             <div class="multi-switch-wrapper">
                                                                 <input type="checkbox" aria-label="{!subw.name}_toggle_box" class="multi-switch" initial-value="{!subw.multiCheckVal}" unchecked-value="2"
                                                                     checked-value="1" value="{!subw.multiCheckVal}" />
-                                                                <apex:inputText styleClass="d-none" value="{!subw.subscriberStatus}" title="{!subw.subscriberStatus}" label="{!subw.subscriberStatus}"
+                                                                <apex:inputText styleClass="hiddencmw d-none" value="{!subw.subscriberStatus}" title="{!subw.subscriberStatus}" label="{!subw.subscriberStatus}"
                                                                 />
-                                                            </div>
-                                                            <br/>
-                                                            <div class="d-md-inline d-none">
-                                                                {!IF(subw.subscriberStatus == 'No Preference', 'No Preference', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
-                                                            </div>
-                                                            <div class="d-sm-inline d-md-none">
-                                                                {!IF(subw.subscriberStatus == 'No Preference', 'No Pref', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
+
+                                                                <div class="d-md-block d-none checkLabel">
+                                                                    {!IF(subw.subscriberStatus == 'No Preference', 'No Preference', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
+                                                                </div>
+                                                                <div class="d-sm-block d-md-none checkLabel">
+                                                                    {!IF(subw.subscriberStatus == 'No Preference', 'No Pref', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-1"></div>
@@ -369,18 +371,18 @@
                                                         <input type="checkbox" aria-label="{!notSubbedBuSubIdToWrapperMap[buSubId].name}_toggle_box" class="multi-switch" initial-value="{!notSubbedBuSubIdToWrapperMap[buSubId].multiCheckVal}"
                                                             unchecked-value="2" checked-value="1" value="{!notSubbedBuSubIdToWrapperMap[buSubId].multiCheckVal}"
                                                         />
-                                                        <apex:inputText styleClass="d-none" value="{!notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus}" title="{!notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus}"
+                                                        <apex:inputText styleClass="hiddencmw d-none" value="{!notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus}" title="{!notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus}"
                                                             label="{!notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus}"
                                                         />
-                                                    </div>
-                                                    <br/>
-                                                    <div class="d-md-inline d-none">
-                                                        {!IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Preference', IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus
-                                                        == 'Unsubscribed','No','Yes'))}
-                                                    </div>
-                                                    <div class="d-sm-inline d-md-none">
-                                                        {!IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Pref', IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus
-                                                        == 'Unsubscribed','No','Yes'))}
+
+                                                        <div class="d-md-block d-none checkLabel">
+                                                            {!IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Preference', IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus
+                                                            == 'Unsubscribed','No','Yes'))}
+                                                        </div>
+                                                        <div class="d-sm-block d-md-none checkLabel">
+                                                            {!IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus == 'No Preference', 'No Pref', IF(notSubbedBuSubIdToWrapperMap[buSubId].subscriberStatus
+                                                            == 'Unsubscribed','No','Yes'))}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-1">
@@ -411,17 +413,16 @@
                                                                 <div class="multi-switch-wrapper">
                                                                     <input type="checkbox" aria-label="{!subw.name}_toggle_box" class="multi-switch" initial-value="{!subw.multiCheckVal}" unchecked-value="2"
                                                                         checked-value="1" value="{!subw.multiCheckVal}" />
-                                                                    <apex:inputText styleClass="d-none" value="{!subw.subscriberStatus}" title="{!subw.subscriberStatus}" label="{!subw.subscriberStatus}"
+                                                                    <apex:inputText styleClass="hiddencmw d-none" value="{!subw.subscriberStatus}" title="{!subw.subscriberStatus}" label="{!subw.subscriberStatus}"
                                                                     />
-                                                                </div>
-                                                                <br/>
-                                                                <div class="d-md-inline d-none">
-                                                                    {!IF(subw.subscriberStatus == 'No Preference', 'No Preference', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
-                                                                </div>
-                                                                <div class="d-sm-inline d-md-none">
-                                                                    {!IF(subw.subscriberStatus == 'No Preference', 'No Pref', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
-                                                                </div>
 
+                                                                    <div class="d-md-block d-none checkLabel">
+                                                                        {!IF(subw.subscriberStatus == 'No Preference', 'No Preference', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
+                                                                    </div>
+                                                                    <div class="d-sm-block d-md-none checkLabel">
+                                                                        {!IF(subw.subscriberStatus == 'No Preference', 'No Pref', IF(subw.subscriberStatus == 'Unsubscribed','No','Yes'))}
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                             <div class="col-1"></div>
                                                         </div>

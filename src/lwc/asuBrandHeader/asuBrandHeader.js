@@ -8,6 +8,8 @@ export default class AsuBrandHeader extends LightningElement {
     @api baseUrl;
     @api navTreeStr;
     @api noAutoSpacer = false;
+    oldStyle = false;
+    oldStyleSelectedTab = null;
 
     connectedCallback() {
         let params = this.getQueryParameters();
@@ -39,8 +41,13 @@ export default class AsuBrandHeader extends LightningElement {
         // Nav Tree
         if (this.navTreeStr === undefined) {
             this.navTreeStr = params['navTree'];
+
             if (this.navTreeStr == undefined) {
                 this.navTreeStr = params['navbar'];
+                if (this.navTreeStr != undefined) {
+                    this.oldStyle = true;
+                    this.oldStyleSelectedTab = params['salesforceTabName'];
+                }
             }
 
             if (this.navTreeStr === undefined) {
@@ -124,9 +131,10 @@ export default class AsuBrandHeader extends LightningElement {
                 }
             }
 
-            if (newStyle) {
+            if (!this.oldStyle) {
                 listOfLinks = entries;
             } else {
+                // Backward compatibility with existing URL structure
                 for (let i = 0; i < entries.length; i++) {
                     let entry = entries[i];
                     for (let j in entry) {
@@ -138,6 +146,11 @@ export default class AsuBrandHeader extends LightningElement {
                             listOfLinks.push({href: url, text: name, type: 'icon', class: 'home'});
                         } else {
                             listOfLinks.push({href: url, text: name});
+                        }
+
+                        // Mark whichever tab is selected
+                        if (name === this.oldStyleSelectedTab) {
+                            listOfLinks[listOfLinks.length - 1]['selected'] = true;
                         }
                     }
                 }

@@ -259,6 +259,7 @@ public class AdvisorPortalFilterSectionController {
             'Contact.Id, ' +
             'Contact.Name, ' +
             'Contact.FirstName, ' +
+            'Contact.Preferred_First_Name__c, ' +
             'Contact.LastName, ' +
             'Contact.EmplId__c, ' +
             'Contact.ASURite_Id__c, ' +

@@ -13,15 +13,20 @@
         <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <script>$ = jQuery.noConflict();</script>
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
-    </head>
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
 
-    <apex:includeLightning />
-    <c:SLDSRemoveGlobalStyles />
+        <style>
+            .dynamic-feedback-scope .form-control:focus {
+                border-color: lightgray;
+            }
+        </style>
+    </head>
 
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
-    <main role="main">
+    <main role="main" class="dynamic-feedback-scope">
         <c:MyASUHelpPageNotifications />
         <div class="container">
             <div class="row">
@@ -38,7 +43,11 @@
                         </ol>
                     </apex:outputPanel>
                     <apex:form id="feedbackForm">
-                        <p class="lead">
+                        <p class="lead d-none d-md-block">
+                            ASU values your experience and wants to ensure that you receive quality service. Tell us how we can improve your experience
+                            below.
+                        </p>
+                        <p class="d-block d-md-none">
                             ASU values your experience and wants to ensure that you receive quality service. Tell us how we can improve your experience
                             below.
                         </p>
@@ -58,7 +67,7 @@
     <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
     <script>
-        const title = '{!carName}';
+        const title = '{!carName} Feedback';
         const baseUrl = 'https://webapp4.asu.edu/myasu/student/servicecenter';
         $Lightning.use(
             "c:ASUBrandApp",

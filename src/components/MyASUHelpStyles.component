@@ -71,6 +71,10 @@
             width: 85%;
         }
 
+        .myasu-help-scope .text-truncate {
+            white-space: pre-line;
+        }
+
         /** viewAllArticles styles - need some custom for pagination buttons */
 
         .myasu-help-scope .page-number {

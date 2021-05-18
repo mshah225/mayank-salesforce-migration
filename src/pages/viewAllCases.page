@@ -70,7 +70,7 @@
                     <div class="border">
                         <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Completed Requests</h2>
                         <div class="p-2">
-                            <p class="{!IF(myCases.size > 0, 'd-block', 'd-none')}">
+                            <p class="{!IF(allClosedCases.size > 0, 'd-block', 'd-none')}">
                                 Click the View button to see a history of your request, including chat and email history.
                             </p>
                             <apex:form>

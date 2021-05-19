@@ -162,6 +162,8 @@ export default class AsuBrandHeader extends LightningElement {
     resizeIt() {
         this.template.querySelector('.headerSpacer').style.height =
             this.template.querySelector('header').clientHeight + 10 + 'px';
+
+        console.log(eval('console.log("abc")'));
     }
     setupSpacerResizing() {
         // Don't do this if auto resizing is off
@@ -189,6 +191,12 @@ export default class AsuBrandHeader extends LightningElement {
                         this.resizeIt();
                     }, 100);
                 }
+            });
+            this.template.querySelector('.headerContainer').addEventListener('click', () => {
+                // only run near the top of the page
+                window.setTimeout(() => {
+                    this.resizeIt();
+                }, 100);
             });
         }
     }

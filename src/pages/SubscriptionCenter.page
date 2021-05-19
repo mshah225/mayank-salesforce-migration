@@ -2,9 +2,10 @@
     applyBodyTag="false" controller="SubscriptionCenterController">
     <!--action="{!init}"-->
 
+    <html lang="en">
+
     <head>
         <title>ASU | Subscription Center</title>
-        <html lang="en">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
@@ -167,52 +168,43 @@
                     </div>
                 </apex:form>
             </apex:outputPanel>
-            <div class="row pb-3 {!IF(directUnsubscribe,'bg-light','bg-white')}">
+            <div class="row mb-3 p-2 {!IF(directUnsubscribe,'bg-light','bg-white')}">
                 <div class="col-1"></div>
                 <div class="col-10">
                     <apex:outputPanel id="unsubscribeDone" rendered="{!directUnsubscribe}">
                         <apex:form>
                             <apex:outputPanel rendered="{!(!directUnsubscribeSuccess)}">
-                                <div class="panel panel-default" style="margin: 50px 0 20px; min-height: 300px">
-                                    <div class="panel-body" style="text-align: center">
-                                        <div style="padding: 15px 0px">
-                                            <h2>Unsubscribe from Messages</h2>
-                                        </div>
-                                        <p>
-                                            <h4>
-                                                Are you sure you want to unsubscribe from {!directUnsubscribeName} messages?
-                                            </h4>
+                                <div class="panel panel-default">
+                                    <div class="panel-body text-center">
+                                        <h2 class="font-weight-normal h3 my-2 mx-0 text-center">Unsubscribe from Messages</h2>
+                                        <p class="my-2">
+                                            Are you sure you want to unsubscribe from {!directUnsubscribeName} messages?
                                         </p>
-                                        <apex:commandLink id="confirmUnsub" action="{!doUnsubscribe}" value="Yes, unsubscribe me" style="text-decoration: none; margin: 15px; background: #8c1d40"
-                                            styleClass="btn" />
-                                        <p>
-                                            <h4>
-                                                You can also
-                                                <a href="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" id="manage1" class="sclink">manage your subscriptions</a>.
-                                            </h4>
+                                        <apex:commandLink id="confirmUnsub" action="{!doUnsubscribe}" value="Yes, unsubscribe me" styleClass="btn btn-maroon btn-md text-white"
+                                        />
+                                        <p class="my-2">
+                                            You can also
+                                            <a href="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" id="manage1">manage your subscriptions</a>.
                                         </p>
                                     </div>
                                 </div>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!directUnsubscribeSuccess}">
-                                <div class="panel panel-default" style="margin: 50px 0 20px; min-height: 300px">
-                                    <div class="panel-body" style="text-align: center">
-                                        <div style="padding: 50px 0px">
-                                            <h2>
-                                                <span style="font-weight: bold">{!subscriberEmail}</span>{!unsubscribeMessage}
-                                            </h2>
-                                        </div>
-                                        <apex:outputLink id="manage3" value="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" style="text-decoration: none; margin: 15px; background: #8c1d40"
-                                            styleClass="btn">Manage My Subscriptions</apex:outputLink>
+                                <div class="panel panel-default">
+                                    <div class="panel-body text-center">
+                                        <h2 class="font-weight-normal h3 my-2 mx-0 text-center">
+                                            <span class="font-weight-bold">{!subscriberEmail}</span>{!unsubscribeMessage}
+                                        </h2>
+                                        <apex:outputLink id="manage3" value="SubscriptionCenter?subscriberKey={!subscriberIdentifier}" styleClass="mt-2 btn btn-maroon btn-md text-white">Manage My Subscriptions</apex:outputLink>
                                     </div>
                                 </div>
                             </apex:outputPanel>
                         </apex:form>
                     </apex:outputPanel>
                     <apex:outputPanel id="noSubscriber" rendered="{!noSubscriber}">
-                        <p>
-                            <h4>A valid subscriber or subscription could not be found. For further assistance...</h4>
-                        </p>
+                        <div class="mt-3 mb-3">
+                            <h2 class="font-weight-normal h3 m-0">A valid subscriber or subscription could not be found. For further assistance...</h2>
+                        </div>
                     </apex:outputPanel>
                     <apex:outputPanel id="manageSubs" rendered="{!AND(AND(!hasOptedOutOfEmail, !noSubscriber), !directUnsubscribe)}">
                         <apex:form>

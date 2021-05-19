@@ -259,6 +259,7 @@ public class AdvisorPortalFilterSectionController {
             'Contact.Id, ' +
             'Contact.Name, ' +
             'Contact.FirstName, ' +
+            'Contact.Preferred_Full_Name__c, ' +
             'Contact.Preferred_First_Name__c, ' +
             'Contact.LastName, ' +
             'Contact.EmplId__c, ' +
@@ -350,13 +351,13 @@ public class AdvisorPortalFilterSectionController {
             queryString += ' AND Change_Date__c <= ' + filter.persistenceToDate;
         }
         if (!String.isBlank(filter.studentString)) {
-            queryString += ' AND ( Contact.Name = \'' + filter.studentString;
+            queryString += ' AND ( Contact.Preferred_Full_Name__c = \'' + filter.studentString;
             queryString += '\' OR Contact.EmplId__c = \'' + filter.studentString;
             queryString += '\' OR Contact.ASURite_ID__c = \'' + filter.studentString;
             queryString += '\') ';
         }
 
-        queryString += ' ORDER BY Contact.LastName, Contact.FirstName ASC';
+        queryString += ' ORDER BY Contact.LastName, Contact.Preferred_First_Name__c ASC';
         queryString += ' LIMIT 30000';
 
         return Database.query(queryString);
@@ -394,6 +395,8 @@ public class AdvisorPortalFilterSectionController {
                     Student__r.Id,
                     Student__r.Name,
                     Student__r.FirstName,
+                    Student__r.Preferred_Full_Name__c,
+                    Student__r.Preferred_First_Name__c,
                     Student__r.LastName,
                     Student__r.EmplId__c,
                     Student__r.ASURITE_Id__c,
@@ -405,10 +408,10 @@ public class AdvisorPortalFilterSectionController {
                 WHERE
                     Success_Pod__r.OwnerId IN :viewAsOptions
                     AND Is_Active__c = TRUE
-                    AND (Student__r.Name = :filter.studentString
+                    AND (Student__r.Preferred_Full_Name__c = :filter.studentString
                     OR Student__r.EmplId__c = :filter.studentString
                     OR Student__r.ASURite_ID__c = :filter.studentString)
-                ORDER BY Student__r.LastName, Student__r.FirstName ASC
+                ORDER BY Student__r.LastName, Student__r.Preferred_First_Name__c ASC
                 LIMIT 10000
             ];
         } else {
@@ -418,6 +421,8 @@ public class AdvisorPortalFilterSectionController {
                     Student__r.Id,
                     Student__r.Name,
                     Student__r.FirstName,
+                    Student__r.Preferred_Full_Name__c,
+                    Student__r.Preferred_First_Name__c,
                     Student__r.LastName,
                     Student__r.EmplId__c,
                     Student__r.ASURITE_Id__c,
@@ -427,7 +432,7 @@ public class AdvisorPortalFilterSectionController {
                     Student__r.Curr_Cont_Prediction_Level__c
                 FROM Success_Student__c
                 WHERE Success_Pod__r.OwnerId IN :viewAsOptions AND Is_Active__c = TRUE
-                ORDER BY Student__r.LastName, Student__r.FirstName ASC
+                ORDER BY Student__r.LastName, Student__r.Preferred_First_Name__c ASC
                 LIMIT 10000
             ];
         }

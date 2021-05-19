@@ -352,6 +352,7 @@ public class AdvisorPortalFilterSectionController {
         }
         if (!String.isBlank(filter.studentString)) {
             queryString += ' AND ( Contact.Preferred_Full_Name__c = \'' + filter.studentString;
+            queryString += '\' OR Contact.Name = \'' + filter.studentString;
             queryString += '\' OR Contact.EmplId__c = \'' + filter.studentString;
             queryString += '\' OR Contact.ASURite_ID__c = \'' + filter.studentString;
             queryString += '\') ';
@@ -409,6 +410,7 @@ public class AdvisorPortalFilterSectionController {
                     Success_Pod__r.OwnerId IN :viewAsOptions
                     AND Is_Active__c = TRUE
                     AND (Student__r.Preferred_Full_Name__c = :filter.studentString
+                    OR Student__r.Name = :filter.studentString
                     OR Student__r.EmplId__c = :filter.studentString
                     OR Student__r.ASURite_ID__c = :filter.studentString)
                 ORDER BY Student__r.LastName, Student__r.Preferred_First_Name__c ASC

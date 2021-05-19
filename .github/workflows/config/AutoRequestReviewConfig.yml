@@ -1,0 +1,21 @@
+reviewers:
+    groups:
+        repository-maintainers:
+            - jdsanch8
+            - mgilardi
+    per_author:
+        jahami10:
+            - repository-maintainers
+        jldalbey:
+            - repository-maintainers
+        mjain1541:
+            - repository-maintainers
+        rnordmanASU:
+            - repository-maintainers
+        carlhussey-asu:
+            - repository-maintainers
+options:
+    ignore_draft: true
+    ignored_keywords:
+        - DO NOT REVIEW
+    enable_group_assignment: false

@@ -12,6 +12,10 @@
             .persistence-feedback-page-scope .bg-f5f5f5 {
                 background-color: #f5f5f5;
             }
+
+            .persistence-feedback-page-scope .form-control:focus {
+                border-color: lightgray;
+            }
         </style>
     </head>
 

@@ -9,6 +9,10 @@
             text-decoration: none;
         }
 
+        .family-portal-scope label {
+            font-size: 1rem !important;
+        }
+
         .family-portal-scope a:hover:not(.btn) {
             text-decoration: underline;
             color: #d23153 !important;
@@ -29,10 +33,6 @@
         }
 
         /** Family Portal Step 2 */
-
-        .family-portal-scope .family-portal-2-table-wrapper label {
-            font-size: 1rem !important;
-        }
 
         .family-portal-scope .family-portal-2-table-wrapper input,
         .family-portal-scope .family-portal-2-table-wrapper select {

@@ -159,18 +159,37 @@ export default class AsuBrandHeader extends LightningElement {
         return listOfLinks;
     }
 
+    resizeIt() {
+        this.template.querySelector('.headerSpacer').style.height =
+            this.template.querySelector('header').clientHeight + 10 + 'px';
+    }
     setupSpacerResizing() {
         // Don't do this if auto resizing is off
         if (this.noAutoSpacer) {
             return;
         }
+        this.resizeIt();
 
-        this.template.querySelector('.headerSpacer').style.height =
-            this.template.querySelector('header').clientHeight + 10 + 'px';
-
-        window.addEventListener('resize', () => {
-            this.template.querySelector('.headerSpacer').style.height =
-                this.template.querySelector('header').clientHeight + 10 + 'px';
-        });
+        // Bind to element resize via ResizeObserver
+        try {
+            new ResizeObserver(() => {
+                this.resizeIt();
+            }).observe(this.template.querySelector('header'));
+        } catch (e) {
+            // Bind to window resize and scroll
+            window.addEventListener('resize', () => {
+                window.setTimeout(() => {
+                    this.resizeIt();
+                }, 100);
+            });
+            window.addEventListener('scroll', () => {
+                if (window.scrollY < 30) {
+                    // only run near the top of the page
+                    window.setTimeout(() => {
+                        this.resizeIt();
+                    }, 100);
+                }
+            });
+        }
     }
 }

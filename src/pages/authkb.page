@@ -40,7 +40,7 @@
                 </ol>
             </nav>
             <div class="row">
-                <div class="col-lg-7">
+                <div class="col-lg-7 mb-4">
                     <div class="mr-4 border">
                         <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Knowledge Article #{!article.ArticleNumber}</h2>
                         <div>

@@ -8,6 +8,8 @@ export default class AsuBrandHeader extends LightningElement {
     @api baseUrl;
     @api navTreeStr;
     @api noAutoSpacer = false;
+    oldStyle = false;
+    oldStyleSelectedTab = null;
 
     connectedCallback() {
         let params = this.getQueryParameters();
@@ -39,8 +41,13 @@ export default class AsuBrandHeader extends LightningElement {
         // Nav Tree
         if (this.navTreeStr === undefined) {
             this.navTreeStr = params['navTree'];
+
             if (this.navTreeStr == undefined) {
                 this.navTreeStr = params['navbar'];
+                if (this.navTreeStr != undefined) {
+                    this.oldStyle = true;
+                    this.oldStyleSelectedTab = params['salesforceTabName'];
+                }
             }
 
             if (this.navTreeStr === undefined) {
@@ -124,9 +131,10 @@ export default class AsuBrandHeader extends LightningElement {
                 }
             }
 
-            if (newStyle) {
+            if (!this.oldStyle) {
                 listOfLinks = entries;
             } else {
+                // Backward compatibility with existing URL structure
                 for (let i = 0; i < entries.length; i++) {
                     let entry = entries[i];
                     for (let j in entry) {
@@ -139,6 +147,11 @@ export default class AsuBrandHeader extends LightningElement {
                         } else {
                             listOfLinks.push({href: url, text: name});
                         }
+
+                        // Mark whichever tab is selected
+                        if (name === this.oldStyleSelectedTab) {
+                            listOfLinks[listOfLinks.length - 1]['selected'] = true;
+                        }
                     }
                 }
             }
@@ -146,18 +159,45 @@ export default class AsuBrandHeader extends LightningElement {
         return listOfLinks;
     }
 
+    resizeIt() {
+        this.template.querySelector('.headerSpacer').style.height =
+            this.template.querySelector('header').clientHeight + 10 + 'px';
+
+        console.log(eval('console.log("abc")'));
+    }
     setupSpacerResizing() {
         // Don't do this if auto resizing is off
         if (this.noAutoSpacer) {
             return;
         }
+        this.resizeIt();
 
-        this.template.querySelector('.headerSpacer').style.height =
-            this.template.querySelector('header').clientHeight + 10 + 'px';
-
-        window.addEventListener('resize', () => {
-            this.template.querySelector('.headerSpacer').style.height =
-                this.template.querySelector('header').clientHeight + 10 + 'px';
-        });
+        // Bind to element resize via ResizeObserver
+        try {
+            new ResizeObserver(() => {
+                this.resizeIt();
+            }).observe(this.template.querySelector('header'));
+        } catch (e) {
+            // Bind to window resize and scroll
+            window.addEventListener('resize', () => {
+                window.setTimeout(() => {
+                    this.resizeIt();
+                }, 100);
+            });
+            window.addEventListener('scroll', () => {
+                if (window.scrollY < 30) {
+                    // only run near the top of the page
+                    window.setTimeout(() => {
+                        this.resizeIt();
+                    }, 100);
+                }
+            });
+            this.template.querySelector('.headerContainer').addEventListener('click', () => {
+                // only run near the top of the page
+                window.setTimeout(() => {
+                    this.resizeIt();
+                }, 100);
+            });
+        }
     }
 }

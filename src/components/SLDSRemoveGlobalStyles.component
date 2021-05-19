@@ -5,24 +5,23 @@
         document.body.className = document.body.className.replace("slds-scope", "");
 
         jQuery(window).on('load', function () {
-            jQuery('.slds-scope').removeClass('slds-scope');
+            jQuery('.no-slds-scope').removeClass('slds-scope');
         });
 
         jQuery(window).on('beforeunload', function () {
-            // your logic here
-            jQuery('.slds-scope').removeClass('slds-scope');
+            jQuery('.no-slds-scope').removeClass('slds-scope');
         });
 
         setTimeout(
             function () {
-                jQuery('.slds-scope').removeClass('slds-scope');
+                jQuery('.no-slds-scope').removeClass('slds-scope');
             }, 1000
         );
 
         let maxTries = 10;
         let int = setInterval(
             () => {
-                jQuery('.slds-scope').removeClass('slds-scope');
+                jQuery('.no-slds-scope').removeClass('slds-scope');
                 if (--maxTries <= 0) {
                     clearInterval(int);
                 }

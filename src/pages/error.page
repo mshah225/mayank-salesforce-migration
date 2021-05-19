@@ -4,48 +4,53 @@
         <title>My ASU | Error</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
         <c:MyASUHelpStyles />
     </head>
 
-    <apex:includeLightning />
-    <div id="ASUBrandHeaderSpacer"></div>
-    <div id="ASUBrandHeaderWrapper"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
-    <div id="asu-content-container" role="main">
-        <div class="container">
-            <div class="panel-body">
-                <p class="lead">
-                    <apex:outputText styleClass="title" value="{!$Label.site.error}">
-                        <apex:param value="{!$Site.ErrorDescription}" />
-                        <!-- this parameter needs to be italic in the site.error label -->
-                    </apex:outputText>
-                </p>
-                <p>
-                    ASU was unable to process your request. We apologize for the inconvenience.
-                    <br />
-                    <br /> Please return to the
-                    <a href="/">Help tab in My ASU</a> to ask questions, report an issue, and get help.
-                    <br />
-                    <br /> If you’re unable to access the My ASU Help tab or need immediate assistance, please call
-                    <a href="tel:1-855-ASU-5080">1-855-ASU-5080</a>.
-                </p>
-            </div>
+    <main role="main">
+        <div class="container myasu-help-scope">
+            <h1 class="lead">
+                <apex:outputText styleClass="lead" value="{!$Label.site.error}">
+                    <apex:param value="{!$Site.ErrorDescription}" />
+                    <!-- this parameter needs to be italic in the site.error label -->
+                </apex:outputText>
+            </h1>
+            <p>
+                ASU was unable to process your request. We apologize for the inconvenience.
+                <br />
+                <br /> Please return to the
+                <a class="c-text-maroon" href="/">Help tab in My ASU</a> to ask questions, report an issue, and get help.
+                <br />
+                <br /> If you’re unable to access the My ASU Help tab or need immediate assistance, please call
+                <a class="c-text-maroon" href="tel:1-855-278-5080">1-855-ASU-5080</a>.
+            </p>
         </div>
-    </div>
+    </main>
 
-    <div id="ASUBrandFooterWrapper"></div>
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
     <c:MyASUHelpPageResources />
 
     <script>
+        let title = 'My ASU';
+        let baseUrl = 'https://webapp4.asu.edu/myasu';
+
         $Lightning.use(
             "c:ASUBrandApp",
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    {},
+                    { title, baseUrl },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

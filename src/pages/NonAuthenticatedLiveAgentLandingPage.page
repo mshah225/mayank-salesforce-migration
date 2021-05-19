@@ -1,43 +1,38 @@
-<apex:page showHeader="false" controller="NonAuthenticatedLiveAgentLandingPage">
-    <apex:includeScript value="{!URLFOR($Resource.bootstrap_337, '/bootstrap_337/js/bootstrap.min.js')}" />
-    <title>ASU |Live Chat Support</title>
+<apex:page showHeader="false" standardStylesheets="false" controller="NonAuthenticatedLiveAgentLandingPage">
 
-    <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
-    <c:ASUWebStandards />
+    <head>
+        <title>ASU | Live Chat Support</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
+        <apex:includeLightning />
+        <apex:slds />
+        <c:SLDSRemoveGlobalStyles />
+    </head>
 
-    <apex:includeLightning />
-    <div id="ASUBrandHeaderSpacer"></div>
-    <div id="ASUBrandHeaderWrapper"></div>
-
-    <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <body>
         <div id="online">
-            <div style="
-                    margin-top: 50px;
-                    margin-left: 5%;
-                    font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;
-                ">
+            <div class="text-center mt-4">
                 Please wait while we redirect your chat! If the chat window doesn't appear, please click the link below!
             </div>
-            <div style="margin-top: 50px; margin-left: 5%">
-                <a id="liveagent_button_online" class="btn btn-primary btn-lg" style="cursor: pointer" onclick="liveagent.startChat(chatButtonId);">Chat Now!</a>
+            <div class="text-center mt-4 mb-6">
+                <a id="liveagent_button_online" role="button" class="btn btn-maroon btn-md" style="cursor: pointer" onclick="liveagent.startChat(chatButtonId);">Chat Now!</a>
             </div>
         </div>
         <div id="offline">
-            <div style="
-                    margin-top: 50px;
-                    margin-left: 5%;
-                    font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;
-                ">
+            <div class="text-center mt-4">
                 {!agentOfflineMessage}
             </div>
-            <div style="margin-top: 50px; margin-left: 5%">
-                <a id="liveagent_button_offline" class="btn btn-primary btn-lg" style="cursor: pointer">Offline</a>
+            <div class="text-center mt-4 mb-6">
+                <a id="liveagent_button_offline" role="button" class="btn btn-maroon btn-md" style="cursor: pointer">Offline</a>
             </div>
         </div>
 
-        <div id="ASUBrandFooterWrapper"></div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
         <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js"></script>
         <script type="text/javascript">
@@ -67,13 +62,26 @@
 
             initLiveAgent(() => startChat());
 
+            const urlParams = new URLSearchParams(window.location.search);
+            let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
+            let title = 'My ASU';
+            let baseUrl = 'https://webapp4.asu.edu/myasu';
+            if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
+                navTreeStr = undefined;
+            }
+            if (urlParams.get('title') != null) {
+                title = undefined;
+            }
+            if (urlParams.get('baseUrl') != null) {
+                baseUrl = undefined;
+            }
 
             $Lightning.use(
                 "c:ASUBrandApp",
                 function () {
                     $Lightning.createComponent(
                         "c:asuBrandHeader",
-                        {},
+                        { title, baseUrl, navTreeStr },
                         "ASUBrandHeaderWrapper"
                     );
                     $Lightning.createComponent(

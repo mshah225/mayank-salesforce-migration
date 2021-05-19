@@ -1,0 +1,7 @@
+.headerSpacer {
+    height: 150px;
+}
+
+button:focus {
+    box-shadow: unset !important;
+}

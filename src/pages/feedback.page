@@ -11,14 +11,14 @@
         <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <script>$ = jQuery.noConflict();</script>
         <style>
-            .feedback-page-scope .c-text-maroon {
-                color: #8c1d40;
+            .feedback-page-scope a:hover:not(.btn),
+            .feedback-page-scope a:hover:not(.btn) i {
+                color: #d23153 !important;
+                text-decoration: underline;
             }
 
-            .feedback-page-scope a.c-text-maroon:visited {
-                color: #8c1d40;
-            }
-
+            .feedback-page-scope .c-text-maroon,
+            .feedback-page-scope a.c-text-maroon:visited,
             .feedback-page-scope a:visited .c-text-maroon {
                 color: #8c1d40;
             }

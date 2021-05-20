@@ -89,6 +89,16 @@
                         {},
                         "ASUBrandFooterWrapper"
                     );
+                    // Hide errors that appear randomly from LWC
+                    const observer = new MutationObserver(function (mutations) {
+                        const errorDiv = document.querySelector('#auraErrorMessage');
+                        if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                            console.error(errorDiv.innerText);
+                            errorDiv.innerHTML = '';
+                        }
+                    });
+                    observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+
                 }
             );
         </script>

@@ -18,15 +18,16 @@
             }, 1000
         );
 
-        let maxTries = 10;
-        let int = setInterval(
+        window.sldsRemoveGlobalStylesMaxTries = 10;
+        window.sldsRemoveGlobalStylesInterval = setInterval(
             () => {
                 jQuery('.no-slds-scope').removeClass('slds-scope');
-                if (--maxTries <= 0) {
-                    clearInterval(int);
+                if (--window.sldsRemoveGlobalStylesMaxTries <= 0) {
+                    clearInterval(window.sldsRemoveGlobalStylesInterval);
                 }
             },
             1000);
 
+        }
     </script>
 </apex:component>

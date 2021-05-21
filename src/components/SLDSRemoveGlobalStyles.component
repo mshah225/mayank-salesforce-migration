@@ -19,15 +19,15 @@
         );
 
         window.sldsRemoveGlobalStylesMaxTries = 10;
-        window.sldsRemoveGlobalStylesInterval = setInterval(
-            () => {
-                jQuery('.no-slds-scope').removeClass('slds-scope');
-                if (--window.sldsRemoveGlobalStylesMaxTries <= 0) {
-                    clearInterval(window.sldsRemoveGlobalStylesInterval);
-                }
-            },
-            1000);
-
+        if (window.sldsRemoveGlobalStylesInterval === undefined) {
+            window.sldsRemoveGlobalStylesInterval = setInterval(
+                () => {
+                    jQuery('.no-slds-scope').removeClass('slds-scope');
+                    if (--window.sldsRemoveGlobalStylesMaxTries <= 0) {
+                        clearInterval(window.sldsRemoveGlobalStylesInterval);
+                    }
+                },
+                1000);
         }
     </script>
 </apex:component>

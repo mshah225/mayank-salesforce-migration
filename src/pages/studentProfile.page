@@ -3641,7 +3641,7 @@
 
                 var advisorNoteQuery =
                     'SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl, ' +
-                    'EMPLID__c, ExternalId, Id, NAME__c, STRM__c ' +
+                    'EMPLID__c, ExternalId, Id, NAME__c, STRM__c,  Academic_Plan__c, Academic_Plan__r.Name, Academic_Program__r.Name, Student_Career_Number__c ' +
                     'FROM PS_ASU_SP_ADNOTE_V__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                     'ORDER BY CREATDTTM__c DESC';
@@ -3667,11 +3667,11 @@
                                         if (!Object.getOwnPropertyNames(result).length == 0) {
                                             document.getElementById('psAdvisingNotesResponseErrors').style.display =
                                                 'none';
-                                            var html = '';
+                                            var html = '<table class="table table-striped table-bordered">';
 
                                             for (var i = 0; i < result.length; i++) {
-                                                var utcSeconds = result[i].note.CREATDTTM__c;
-                                                var commentDate = new Date(utcSeconds);
+                                                var dateStamp = new Date(result[i].note.CREATDTTM__c);
+                                                var commentDate = new Date((dateStamp).toLocaleString("en-US", {timeZone: "Etc/GMT"})); 
                                                 commentDate =
                                                     commentDate.getMonth() +
                                                     1 +
@@ -3679,11 +3679,9 @@
                                                     commentDate.getDate() +
                                                     '/' +
                                                     commentDate.getFullYear();
-                                                html +=
-                                                    '' +
-                                                    "<div class='comments-panel'>" +
-                                                    "<div class='comments-header'>" +
-                                                    '<h4>' +
+                                                html += 
+                                                    '<tr>' +
+                                                    '<td>' +
                                                     (result[i].advUserId == undefined
                                                         ? ''
                                                         : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
@@ -3691,19 +3689,15 @@
                                                         "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
                                                     result[i].note.NAME__c +
                                                     (result[i].advUserId == undefined ? '' : '</a>') +
-                                                    '</h4>' +
-                                                    "<span class='comments-header-date'>" +
-                                                    '&nbsp;&nbsp;-&nbsp;&nbsp;' +
-                                                    commentDate +
-                                                    '</span>' +
-                                                    '</div>' +
-                                                    "<div class='comments-main-comment'" +
-                                                    "id='ps_comments_main'>" +
-                                                    result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') +
-                                                    '</div>' +
-                                                    '</div>' +
-                                                    "<hr class='comments-hr'/>";
+                                                    '</td> <td>' + commentDate + '</td>' +
+                                                    '</td> <td>' + result[i].note.Academic_Plan__r.Name + '</td>' +
+                                                    '</td> <td>' + result[i].note.Academic_Program__r.Name + '</td>' +
+                                                    '</tr>' +
+                                                    '<tr>' +
+                                                    '<td colspan="4">' + result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />')  + '</td>' +
+                                                    '</tr>';
                                             }
+                                            html += '</table>';
                                             document.getElementById('ps_advising_notes_section').innerHTML = html;
                                             cleanUpUndefined('ps_advising_notes_section');
                                             advisorNotesLoaded = true;
@@ -3752,7 +3746,7 @@
                     'SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c, ' +
                     'COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c ' +
                     'FROM PS_ASU_SP_COMMNT_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' AND CMNT_Category__c  <> 'GRPOS'" +
+                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' AND CMNT_Category__c  != 'GRPOS' AND CMNT_Category__c != 'GRGCPS'" +
                     'ORDER BY COMMENT_DTTM__c DESC';
                 var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(commentQuery, function (err, response) {

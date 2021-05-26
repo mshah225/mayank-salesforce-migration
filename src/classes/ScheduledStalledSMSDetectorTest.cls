@@ -8,7 +8,7 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             smagicinteract__senderId__c = 'ID-EP-1'
         );
         smagicinteract__SMS_SenderId__c globalFreshmanSender = new smagicinteract__SMS_SenderId__c(
-            SenderIdUnit__c = 'Global Freshman Academy',
+            SenderIdUnit__c = 'Universal Learner Courses',
             smagicinteract__senderId__c = 'ID-GFM-1'
         );
         smagicinteract__SMS_SenderId__c fysSender = new smagicinteract__SMS_SenderId__c(

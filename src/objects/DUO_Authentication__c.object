@@ -187,6 +187,17 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>Call_Object_Identifier__c</fullName>
+        <externalId>true</externalId>
+        <label>Call Object Identifier</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Contact__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>Contact record related to the DUO Authentication</description>

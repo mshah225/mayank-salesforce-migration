@@ -37,7 +37,3 @@ The following metadata types are contained in this repository:
 
 -   Prettier, a code formatter, is required for development on crm-salesforce-enterprise
 -   Environment setup instructions are available [here](https://asudev.jira.com/l/c/VrE21oBJ)
-
-### Updating Feature Branches
-
-Details on how to update all feature branches after commits are pushed to ASU/main are available [here](https://asudev.jira.com/l/c/15zCXpB6)

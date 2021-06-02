@@ -321,6 +321,23 @@ public without sharing class ErrorLogger {
     }
 
     /**
+     * Convert Supplied Set of Strings to a JSON string
+     *
+     * @param String Name of the list being passed to lable the object
+     * @param Set<String> List of objects to be converted to JSON string
+     * @return String JSON string from converted set
+     */
+    public static string convertSetToJSON(String varName, Set<String> stringSet) {
+        if (stringSet != null && stringSet.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(stringSet) + ']}';
+        } else if (stringSet == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
+    }
+
+    /**
      * Convert Supplied Map - Ids to SObjects - to a JSON string
      *
      * @param String Name of the list being passed to lable the object

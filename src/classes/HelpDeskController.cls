@@ -87,7 +87,9 @@ public with sharing class HelpDeskController {
     }
 
     // This stores the incoming phone number (ANI parameter)
-    public String callerId { get; set; }
+    public String callerID { get; set; }
+    public Boolean isDuoAuthenticated { get; set; }
+    public Boolean hasANIPresent { get; set; }
 
     // the current sort direction. defaults to asc
     public String sortDir {
@@ -125,19 +127,27 @@ public with sharing class HelpDeskController {
         isArticleDetails = false;
         isAttached = false;
         isPageLoaded = false;
+        isDuoAuthenticated = false;
+        hasANIPresent = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
         ccPicklist = new CaseClassificationPicklistService();
+        setCallerID();
+        isPageLoaded = true;
+    }
+
+    private void setCallerID() {
         if (ApexPages.currentPage().getParameters().containsKey('ANI')) {
             if (ApexPages.currentPage().getParameters().get('ANI') != '') {
+                hasANIPresent = true;
                 String searchNumber = ApexPages.currentPage().getParameters().get('ANI');
-                callerId = formatPhone(searchNumber);
+                callerID = formatPhone(searchNumber);
 
                 soql =
                     'FIND \'' +
-                    callerId +
+                    callerID +
                     '\' ' +
                     'IN PHONE FIELDS ' +
                     'RETURNING Contact(' +
@@ -152,14 +162,34 @@ public with sharing class HelpDeskController {
                     ')';
 
                 runSearch(false);
+                setDuoAuthenticatedStatus();
             } else {
                 populateNonAffiliate();
             }
         } else {
             populateNonAffiliate();
         }
+    }
 
-        isPageLoaded = true;
+    private void setDuoAuthenticatedStatus() {
+        String callMasterId;
+        //_c is the only way that inContact can pass us the Unique Identifier.
+        if (ApexPages.currentPage().getParameters().get('_c') == '') {
+            return;
+        }
+        callMasterId = ApexPages.currentPage().getParameters().get('_c');
+        Integer numberOfAuthenticatedMatches = [
+            SELECT COUNT()
+            FROM DUO_Authentication__c
+            WHERE
+                ANI__c = :callerID
+                AND Status__c = 'Authenticated'
+                AND Call_Object_Identifier__c = :callMasterId
+            LIMIT 1
+        ];
+        if (numberOfAuthenticatedMatches >= 1) {
+            isDuoAuthenticated = true;
+        }
     }
 
     // Help Desk requests to have the non affiliate 1st in the list at all times.
@@ -603,7 +633,7 @@ public with sharing class HelpDeskController {
         mycontact.Lastname = contactsrch.Lastname;
         mycontact.Email = contactsrch.Personal_Email__c;
         mycontact.Phone = contactsrch.Phone;
-        mycontact.Help_Desk_Provided_Phone__c = callerId;
+        mycontact.Help_Desk_Provided_Phone__c = callerID;
 
         isContactSet = false;
         isNewCaseSelected = false;
@@ -860,7 +890,7 @@ public with sharing class HelpDeskController {
                 WHERE Id = :selectedContactId
             ];
 
-            contactsrch.Help_Desk_Provided_Phone__c = callerId;
+            contactsrch.Help_Desk_Provided_Phone__c = callerID;
             contactToUpdate.Help_Desk_Provided_Phone__c = contactsrch.Help_Desk_Provided_Phone__c;
 
             update contactToUpdate;

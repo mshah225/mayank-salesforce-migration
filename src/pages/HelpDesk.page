@@ -167,8 +167,20 @@
             <div id="first">
                 <apex:outputPanel id="innerfirst" layout="block">
                     <apex:outputPanel id="innerfirstSearchContact" layout="block" rendered="{!isNewContactSelected = false}">
-                        <apex:pageBlock title="{!IF(isContactSet,
-                                'Contact Details', 'Contact Search')}" id="criteria">
+                        <apex:pageBlock title="{!IF(isContactSet, 'Contact Details', 'Contact Search')}" id="criteria">
+                            <apex:pageBlockButtons id="duoAuthStatus" location="top">
+                                <div style="text-align: right;">
+                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}"/>
+                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}"/>
+                                    <strong>Duo Authentication</strong>
+                                </div>
+                            </apex:pageBlockButtons>
+                            <apex:outputPanel>
+                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="The Caller did not complete DUO Authentication."
+                                    rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}" />
+                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="Phone Number was not provided, so an authentication check was not made."
+                                    rendered="{!NOT(hasANIPresent)}" />
+                            </apex:outputPanel>
                             <apex:actionFunction name="searchServer" action="{!buildSearchString}" rerender="results,innersecond,messages" status="loadingStatus">
                                 <apex:param name="firstName" value="" />
 
@@ -225,7 +237,7 @@
 
                                     <apex:inputField value="{!contactsrch.Personal_Email__c}" required="false" id="personalemailsrch" />
 
-                                    <apex:outputText value="{!callerId}" id="callerId" label="Caller Id" />
+                                    <apex:outputText value="{!callerID}" id="callerID" label="Caller ID" />
 
                                     <apex:outputField value="{!contactsrch.Help_Desk_Provided_Phone__c}" id="helpDeskPhone" />
 
@@ -255,9 +267,13 @@
                                     </apex:pageBlockSectionItem>
                                 </apex:pageBlockSection>
 
-                                <i>Note: Due to platform limitations on date searches, searching Birthdate may take longer than
-                                    usual.
-                                </i>
+                                <br />
+                                <div>
+                                    <i>
+                                        <strong>Please note:</strong> Due to platform limitations on date searches, searching with
+                                        a birthdate may take longer than expected.
+                                    </i>
+                                </div>
                             </div>
 
                             <div style="

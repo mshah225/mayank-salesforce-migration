@@ -186,15 +186,14 @@ function execute_changes() {
                         # If there are file changes, we ignore
                         branchesToIgnoreArray+=("$branch")
                         branchesToIgnoreCount=$((branchesToIgnoreCount + 1))
+                        branchesThatAreAheadArray+=("$branch")
+                        branchesThatAreAheadCount=$((branchesThatAreAheadCount + 1))
 
                         if [[ $VERBOSE -eq 1 ]]; then
                             echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
                             echo "...we will: do nothing"
                         fi
                     fi
-
-                    branchesThatAreAheadArray+=("$branch")
-                    branchesThatAreAheadCount=$((branchesThatAreAheadCount + 1))
                 elif [[ $behindCount -gt 0 ]] && [[ $aheadCount -eq 0 ]]; then
                     git checkout $branch &>/dev/null
                     git reset --hard ASU/$branch &>/dev/null

@@ -1,3 +1,31 @@
+"commands.commands": [
+    {
+        "text": "$(heart) Zen",
+        "command": "workbench.action.toggleZenMode",
+        "tooltip": "Toggle Zen mode"
+    },
+    {
+        "text": "$(chevron-right) Commands",
+        "command": "workbench.action.showCommands",
+        "tooltip": "Show commands"
+    },
+    {
+        "command": "workbench.action.files.newUntitledFile",
+        "text": "$(file-code) New file",
+        "tooltip": "New file"
+    },
+    {
+        "text": "$(terminal) Aliusito CI",
+        "command": "terminals.runTerminalByName",
+        "arguments": ["Aliusito CI"],
+        "tooltip": "A script to safely update all branches from the upstream"
+    },
+    {
+        "text": "$(gear) Settings",
+        "command": "workbench.action.openSettingsJson",
+        "tooltip": "Settings"
+    }
+],
 "editor.formatOnSave": true,
 "prettier.configPath": "force-app/crm-salesforce-enterprise/settings/prettier/.prettierrc",
 "prettier.ignorePath": "force-app/crm-salesforce-enterprise/settings/prettier/.prettierignore",
@@ -5,6 +33,17 @@
 "prettier.requireConfig": true,
 "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
 "terminal.integrated.cwd": "force-app/crm-salesforce-enterprise/src",
+"terminals.terminals": [
+    {
+        "name": "Aliusito CI",
+        "description": "A script to safely update all branches from the upstream",
+        "icon": "code",
+        "commands": ["cd ~/VSCode/asu/force-app/crm-salesforce-enterprise/scripts", "./aliusito.sh"],
+        "recycle": true,
+        "open": true,
+        "focus": true
+    }
+],
 "[apex]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
 },

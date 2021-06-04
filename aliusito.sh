@@ -118,9 +118,9 @@ start_spinner() {
 
 # Execute all major logic
 function execute_changes() {
-    branchesToDoNothingCount=0
-    branchesToDoNothingArray=()
-    branchesToDoNothingText=""
+    branchesToIgnoreCount=0
+    branchesToIgnoreArray=()
+    branchesToIgnoreText=""
 
     branchesThatAreAheadCount=0
     branchesThatAreAheadArray=()
@@ -160,27 +160,49 @@ function execute_changes() {
                 aheadCount=${upstreamComparisonArray[1]}
 
                 if [[ $behindCount -eq 0 ]] && [[ $aheadCount -eq 0 ]]; then
-                    branchesToDoNothingArray+=("$branch")
-                    branchesToDoNothingCount=$((branchesToDoNothingCount + 1))
+                    branchesToIgnoreArray+=("$branch")
+                    branchesToIgnoreCount=$((branchesToIgnoreCount + 1))
+
                     if [[ $VERBOSE -eq 1 ]]; then
                         echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
                         echo "...we will: do nothing"
                     fi
                 elif [[ $behindCount -eq 0 ]] && [[ $aheadCount -gt 0 ]]; then
-                    branchesToDoNothingArray+=("$branch")
-                    branchesToDoNothingCount=$((branchesToDoNothingCount + 1))
+                    git checkout $branch &>/dev/null
+
+                    if git diff-index --quiet ASU/$branch --; then
+                        # If there are no file changes, we can safely reset
+                        git reset --hard ASU/$branch &>/dev/null
+                        git push -f origin $branch &>/dev/null
+
+                        branchesToResetArray+=("$branch")
+                        branchesToResetCount=$((branchesToResetCount + 1))
+
+                        if [[ $VERBOSE -eq 1 ]]; then
+                            echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
+                            echo "...we will: reset the state to the upstream branch because there are no file changes"
+                        fi
+                    else
+                        # If there are file changes, we ignore
+                        branchesToIgnoreArray+=("$branch")
+                        branchesToIgnoreCount=$((branchesToIgnoreCount + 1))
+
+                        if [[ $VERBOSE -eq 1 ]]; then
+                            echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
+                            echo "...we will: do nothing"
+                        fi
+                    fi
+
                     branchesThatAreAheadArray+=("$branch")
                     branchesThatAreAheadCount=$((branchesThatAreAheadCount + 1))
-                    if [[ $VERBOSE -eq 1 ]]; then
-                        echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
-                        echo "...we will: do nothing"
-                    fi
                 elif [[ $behindCount -gt 0 ]] && [[ $aheadCount -eq 0 ]]; then
                     git checkout $branch &>/dev/null
                     git reset --hard ASU/$branch &>/dev/null
                     git push -f origin $branch &>/dev/null
+
                     branchesToResetArray+=("$branch")
                     branchesToResetCount=$((branchesToResetCount + 1))
+
                     if [[ $VERBOSE -eq 1 ]]; then
                         echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
                         echo "...we will: reset the state to the upstream branch"
@@ -189,19 +211,24 @@ function execute_changes() {
                     git checkout $branch &>/dev/null
                     git reset --hard origin/$branch &>/dev/null
                     git pull --no-edit ASU $branch &>/dev/null
+
                     if [[ $? -eq 0 ]]; then
                         git push origin $branch &>/dev/null
+
                         cleanMergeArray+=("$branch")
                         cleanMergeCount=$((cleanMergeCount + 1))
                     else
                         git merge --abort &>/dev/null
+
                         abortedMergeArray+=("$branch")
                         abortedMergeCount=$((abortedMergeCount + 1))
                     fi
+
                     branchesToPullArray+=("$branch")
                     branchesToPullCount=$((branchesToPullCount + 1))
                     branchesThatAreAheadArray+=("$branch")
                     branchesThatAreAheadCount=$((branchesThatAreAheadCount + 1))
+
                     if [[ $VERBOSE -eq 1 ]]; then
                         echo "This branch is $aheadCount commits ahead, $behindCount commits behind ASU:$branch"
                         echo "...we will: pull changes from the upstream branch"
@@ -234,6 +261,7 @@ function execute_changes() {
 
     if [[ $branchesThatAreAheadCount -gt 0 ]]; then
         print_typed_text "--> You may want to check these branches:" && echo
+
         firstRun=true
         for value in "${branchesThatAreAheadArray[@]}"; do
             if $firstRun; then
@@ -243,6 +271,7 @@ function execute_changes() {
                 branchesThatAreAheadText="$branchesThatAreAheadText, $value"
             fi
         done
+
         print_typed_text "  $branchesThatAreAheadText" && echo
         print_typed_text "    --> They were ahead of their upstream counterpart, but to avoid losing any in progress work, we can't delete them automatically." && echo
         print_typed_text "    --> If the difference is only merge commits, you can simply run 'git fetch --all && git reset --hard ASU/<branch> && git push -f origin <branch>' to reset them." && echo
@@ -250,14 +279,14 @@ function execute_changes() {
 
     if [[ $VERBOSE -eq 1 ]]; then
         print_typed_text "The Aliusito CI job completed with the following results:" && echo
-        print_typed_text "-- Number of branches to do nothing: $branchesToDoNothingCount" && echo
+        print_typed_text "-- Number of branches to do nothing: $branchesToIgnoreCount" && echo
         print_typed_text "-- Number of branches that were reset: $branchesToResetCount" && echo
         print_typed_text "-- Number of branches that were pulled: $branchesToPullCount" && echo
         print_typed_text "  -- Number of branches that were clean: $cleanMergeCount" && echo
         print_typed_text "  -- Number of branches that were aborted: $abortedMergeCount" && echo
 
-        for value in "${branchesToDoNothingArray[@]}"; do
-            branchesToDoNothingText="$branchesToDoNothingText- $value\n"
+        for value in "${branchesToIgnoreArray[@]}"; do
+            branchesToIgnoreText="$branchesToIgnoreText- $value\n"
         done
         for value in "${branchesToResetArray[@]}"; do
             branchesToResetText="$branchesToResetText- $value\n"
@@ -272,8 +301,8 @@ function execute_changes() {
             abortedBranchText="$abortedBranchText- $value\n"
         done
 
-        print_typed_text "--- BRANCHES TO DO NOTHING ---" && echo
-        print_typed_text "$branchesToDoNothingText" && echo && echo
+        print_typed_text "--- BRANCHES TO IGNORE ---" && echo
+        print_typed_text "$branchesToIgnoreText" && echo && echo
         print_typed_text "--- BRANCHES TO RESET ---" && echo
         print_typed_text "$branchesToResetText" && echo && echo
         print_typed_text "--- BRANCHES TO PULL ---" && echo

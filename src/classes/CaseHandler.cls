@@ -149,6 +149,7 @@ public without sharing class CaseHandler implements ITrigger {
                 if (caseRecord.Original_Functional_Group__c == null) {
                     caseRecord.Original_Functional_Group__c = caseRecord.Functional_Group__c;
                     caseRecord.Original_Category__c = caseRecord.Category__c;
+                    caseRecord.Original_Sub_Category__c = caseRecord.Sub_Category__c;
                 }
                 assignRecordType(caseRecord);
                 ownerIdForCasesBeingInserted.add(caseRecord.OwnerId);

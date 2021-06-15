@@ -12,13 +12,13 @@ export default class AsuBrandHeader extends LightningElement {
     oldStyleSelectedTab = null;
 
     connectedCallback() {
-        let params = this.getQueryParameters();
+        const params = new URLSearchParams(window.location.search);
 
         // Precedence: @api defined > URL param > default value
 
         // Title
         if (this.title === undefined) {
-            this.title = params['title'];
+            this.title = params.get('title');
 
             if (this.title === undefined) {
                 this.title = 'Arizona State University';
@@ -27,7 +27,7 @@ export default class AsuBrandHeader extends LightningElement {
 
         // Base URL
         if (this.baseUrl === undefined) {
-            this.baseUrl = params['baseUrl'];
+            this.baseUrl = params.get('baseUrl');
 
             if (this.baseUrl === undefined) {
                 this.baseUrl = 'https://www.asu.edu/';
@@ -40,13 +40,13 @@ export default class AsuBrandHeader extends LightningElement {
 
         // Nav Tree
         if (this.navTreeStr === undefined) {
-            this.navTreeStr = params['navTree'];
+            this.navTreeStr = params.get('navTree');
 
             if (this.navTreeStr == undefined) {
-                this.navTreeStr = params['navbar'];
+                this.navTreeStr = params.get('navbar');
                 if (this.navTreeStr != undefined) {
                     this.oldStyle = true;
-                    this.oldStyleSelectedTab = params['salesforceTabName'];
+                    this.oldStyleSelectedTab = params.get('salesforceTabName');
                 }
             }
 
@@ -102,18 +102,6 @@ export default class AsuBrandHeader extends LightningElement {
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
                 this.setupSpacerResizing();
             });
-    }
-    getQueryParameters() {
-        var params = {};
-        var search = location.search.substring(1);
-
-        if (search) {
-            params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', (key, value) => {
-                return key === '' ? value : decodeURIComponent(value);
-            });
-        }
-
-        return params;
     }
     convertStrToNavTreeObj(navTreeStr) {
         const json = JSON.parse(navTreeStr);

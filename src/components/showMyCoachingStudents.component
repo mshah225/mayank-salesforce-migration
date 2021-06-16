@@ -25,26 +25,23 @@
                         <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
                             rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
+                    <apex:outputPanel layout="block" styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
                         <apex:inputText id="myStudentsInput" value="{!searchString}" html-placeholder="Filter Students" onkeypress="return noenter(event);"
                             style="
                                 padding: 6px 12px;
                                 vertical-align: middle;
                                 border-radius: 4px;
                                 border: solid 1px #ccc;
-                                max-width: 300px;
-                                width: 100%;
                                 font-size: 11pt;
                                 border-top-right-radius: 0;
                                 border-bottom-right-radius: 0;
                                 border-right: none;
-                            " />
-                        <span class="input-group-addon">
-                            <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
-                                oncomplete="focusSearch()">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            </apex:commandLink>
-                        </span>
+                                margin-right: 0px !important;
+                            " styleClass="form-control" />
+                        <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
+                            oncomplete="focusSearch()" styleClass="input-group-append btn btn-md m-0 rounded-0">
+                            <span class="glyphicon glyphicon-search" style="font-size: 16px !important" aria-hidden="true"></span>
+                        </apex:commandLink>
 
                         <script>
                             function noenter(ev) {
@@ -79,11 +76,13 @@
                             focusSearch();
                         </script>
 
-                        <span class="input-group-addon">
-                            <apex:commandLink action="{!resetMyStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555">
-                                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                            </apex:commandLink>
-                        </span>
+                        <apex:commandLink action="{!resetMyStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="
+                                color: #555; 
+                                border-radius: 0px; 
+                                border-top-right-radius: 4px; 
+                                border-bottom-right-radius: 4px;" styleClass="input-group-append btn btn-md m-0">
+                            <span class="glyphicon glyphicon-refresh" style="font-size: 16px !important" aria-hidden="true"></span>
+                        </apex:commandLink>
                     </apex:outputPanel>
                 </div>
 

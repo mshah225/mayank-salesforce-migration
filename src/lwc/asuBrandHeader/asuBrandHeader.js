@@ -20,7 +20,7 @@ export default class AsuBrandHeader extends LightningElement {
         if (this.title === undefined) {
             this.title = params.get('title');
 
-            if (this.title === undefined) {
+            if (this.title === null) {
                 this.title = 'Arizona State University';
             }
         }
@@ -29,7 +29,7 @@ export default class AsuBrandHeader extends LightningElement {
         if (this.baseUrl === undefined) {
             this.baseUrl = params.get('baseUrl');
 
-            if (this.baseUrl === undefined) {
+            if (this.baseUrl === null) {
                 this.baseUrl = 'https://www.asu.edu/';
             }
         }
@@ -42,15 +42,15 @@ export default class AsuBrandHeader extends LightningElement {
         if (this.navTreeStr === undefined) {
             this.navTreeStr = params.get('navTree');
 
-            if (this.navTreeStr == undefined) {
+            if (this.navTreeStr === null) {
                 this.navTreeStr = params.get('navbar');
-                if (this.navTreeStr != undefined) {
+                if (this.navTreeStr != null) {
                     this.oldStyle = true;
                     this.oldStyleSelectedTab = params.get('salesforceTabName');
                 }
             }
 
-            if (this.navTreeStr === undefined) {
+            if (this.navTreeStr === null) {
                 this.navTreeStr = '{ "navbarLinks" : [ { } ] }';
             }
         }

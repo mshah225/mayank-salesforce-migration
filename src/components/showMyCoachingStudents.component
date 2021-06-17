@@ -1,5 +1,7 @@
 <apex:component controller="showMyCoachingStudentsController" allowDML="true">
     <apex:includeLightning />
+    <c:SLDSRemoveGlobalStyles />
+
     <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudents.js')}" />
     <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }" />
     <apex:stylesheet value="{!URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
@@ -22,7 +24,7 @@
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
+                        <apex:outputLink styleClass="btn btn-default asu-primary btn-md" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
                             rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
                     <apex:outputPanel layout="block" styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
@@ -39,8 +41,8 @@
                                 margin-right: 0px !important;
                             " styleClass="form-control" />
                         <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
-                            oncomplete="focusSearch()" styleClass="input-group-append btn btn-md m-0 rounded-0">
-                            <span class="glyphicon glyphicon-search" style="font-size: 16px !important" aria-hidden="true"></span>
+                            oncomplete="focusSearch()" styleClass="input-group-append btn btn-md btn-light m-0 rounded-0">
+                            <span class="fa fa-search" style="font-size: 16px !important" aria-hidden="true"></span>
                         </apex:commandLink>
 
                         <script>
@@ -80,8 +82,8 @@
                                 color: #555; 
                                 border-radius: 0px; 
                                 border-top-right-radius: 4px; 
-                                border-bottom-right-radius: 4px;" styleClass="input-group-append btn btn-md m-0">
-                            <span class="glyphicon glyphicon-refresh" style="font-size: 16px !important" aria-hidden="true"></span>
+                                border-bottom-right-radius: 4px;" styleClass="input-group-append btn btn-md btn-light m-0">
+                            <span class="fa fa-refresh" style="font-size: 16px !important" aria-hidden="true"></span>
                         </apex:commandLink>
                     </apex:outputPanel>
                 </div>
@@ -109,8 +111,9 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <!-- Modal Title should be set by JS -->
+                            <h4 class="modal-title summary-modal-title">Mass Email</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Mass Email</h4>
                         </div>
 
                         <div class="modal-body">
@@ -121,8 +124,9 @@
                         </div>
 
                         <div class="modal-footer">
-                            <apex:commandLink type="button" action="{!massEmail}" reRender="tableForm" styleClass="btn btn-default asu-primary" status="ASUAjaxStatus"
-                                value="Send" oncomplete="actionComplete()" onclick="toggleEmailModal(this)" />
+                            <apex:commandLink type="button" action="{!massEmail}" reRender="tableForm" styleClass="btn btn-default btn-md asu-primary"
+                                status="ASUAjaxStatus" value="Send" oncomplete="actionComplete()" onclick="toggleEmailModal(this)"
+                            />
                             <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
                                 Cancel
                             </button>
@@ -143,10 +147,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="studentName" value="Student_Name__c" assignTo="{!sortField}" /> Name&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Student_Name__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Student_Name__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -157,10 +161,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="studentEmplid" value="EMPLID__c" assignTo="{!sortField}" /> EMPLID&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'EMPLID__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'EMPLID__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>

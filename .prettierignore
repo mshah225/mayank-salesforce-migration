@@ -1,0 +1,13 @@
+# List files or directories below to ignore them when running prettier
+# More information: https://prettier.io/docs/en/ignore.html
+#
+
+**/staticresources/**
+.localdevserver
+.sfdx
+
+force-app/main/default/pages/Bulk_SMS_FYS.page
+force-app/main/default/pages/pkb_RSS.page
+force-app/main/default/components/vsPageBlockTableEnhancer.component
+force-app/main/default/components/vsNavbar.component
+force-app/main/default/classes/StudentProfileExternalObjectjs.cls

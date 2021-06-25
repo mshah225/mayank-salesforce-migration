@@ -1,0 +1,92 @@
+{
+    "commands.commands": [
+        {
+            "text": "$(file-code) SF Metadata Parser",
+            "command": "terminals.runTerminalByName",
+            "arguments": ["SF Metadata Parser"],
+            "tooltip": "A script to parse out SF metadata security settings"
+        },
+        {
+            "text": "$(terminal) Aliusito CI",
+            "command": "terminals.runTerminalByName",
+            "arguments": ["Aliusito CI"],
+            "tooltip": "A script to safely update all branches from the upstream"
+        },
+        {
+            "text": "$(play) Developer Setup",
+            "command": "terminals.runTerminalByName",
+            "arguments": ["Developer Setup"],
+            "tooltip": "A script to initialize or refresh a developer's setup"
+        }
+    ],
+    "editor.formatOnSave": true,
+    "prettier.configPath": ".prettierrc",
+    "prettier.ignorePath": ".prettierignore",
+    "prettier.printWidth": 120,
+    "prettier.tabWidth": 4,
+    "prettier.bracketSpacing": false,
+    "prettier.jsxSingleQuote": true,
+    "prettier.singleQuote": true,
+    "prettier.prettierPath": "/usr/local/lib/node_modules/prettier",
+    "prettier.requireConfig": true,
+    "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/.sfdx": true,
+        "**/bin/metadata-parser/queries": true,
+        "**/bin/metadata-parser/results": true
+    },
+    "terminal.integrated.cwd": "force-app/main/default",
+    "terminals.terminals": [
+        {
+            "name": "SF Metadata Parser",
+            "description": "A script to parse out SF metadata security settings",
+            "icon": "code",
+            "commands": [
+                "[ -d 'bin/metadata-parser' ] && cd bin/metadata-parser",
+                "python3 metadata_parser.py",
+                "exit"
+            ],
+            "recycle": true,
+            "open": true,
+            "focus": true
+        },
+        {
+            "name": "Aliusito CI",
+            "description": "A script to safely update all branches from the upstream",
+            "icon": "code",
+            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito.sh"],
+            "recycle": true,
+            "open": true,
+            "focus": true
+        },
+        {
+            "name": "Developer Setup",
+            "description": "A script to initialize or refresh a developer's setup",
+            "icon": "code",
+            "commands": ["[ -d 'bin/developer-setup' ] && cd bin/developer-setup", "./developer_setup.sh"],
+            "recycle": true,
+            "open": true,
+            "focus": true
+        }
+    ],
+    "[apex]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    }
+}

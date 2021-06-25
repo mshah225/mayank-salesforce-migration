@@ -1,0 +1,27 @@
+<apex:page standardController="Case" extensions="CaseDetailWithRelatedCasesController" sidebar="false">
+    <div class='wrapper'>
+        <div class='label'>
+            <span title="How many total cases are for the same contact and are in the same functional group?">Contact’s Open Cases in this Functional Group: </span>
+        </div>
+        <div class='value'>
+            <span>{!relatedCaseCount}</span>
+        </div>
+    </div>
+
+    <style>
+        .wrapper {
+            border-radius: 4px;
+            border: 1px solid #eaeaea;
+            border-top: 3px solid #b7a752;
+            background-color: #f8f8f8;
+            display: flex;
+            padding: 5px;
+        }
+
+        .label {
+            word-wrap: break-word;
+            margin-right: 10px;
+
+        }
+    </style>
+</apex:page>

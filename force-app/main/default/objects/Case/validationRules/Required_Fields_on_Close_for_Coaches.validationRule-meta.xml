@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Required_Fields_on_Close_for_Coaches</fullName>
+    <active>true</active>
+    <description>Require Engagement, Communication Close Method picklist values when Coach Outreach is Record Type.</description>
+    <errorConditionFormula>AND(
+      OR(
+          ISPICKVAL( Status , "Closed: Customer Self-Resolved"),
+          ISPICKVAL( Status , "Closed: Customer Unresponsive"),
+          ISPICKVAL( Status , "Closed: Resolved")          
+          ), 
+       RecordTypeId = "012d00000021xGL",
+      OR(
+          ISBLANK( TEXT( Engagement__c )),
+          ISBLANK( TEXT( Communication_Close_Method__c))
+          )
+)</errorConditionFormula>
+    <errorMessage>The following fields are required to close this case: Engagement, Communication Close Method.</errorMessage>
+</ValidationRule>

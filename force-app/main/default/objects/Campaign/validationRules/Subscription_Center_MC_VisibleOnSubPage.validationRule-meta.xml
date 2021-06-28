@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subscription_Center_MC_VisibleOnSubPage</fullName>
+    <active>true</active>
+    <description>If the campaign is for the subscription center, then make sure the Marketing_Cloud_Private_Campaign__c and Visible_on_Subscription_Center__c are not true at the same time.</description>
+    <errorConditionFormula>AND(
+RecordType.Name = 'Subscription Center',
+ Marketing_Cloud_Private_Campaign__c ,
+ Visible_on_Subscription_Center__c 
+)</errorConditionFormula>
+    <errorMessage>You need to modify your campaign - it cannot be both private and visible on subscription center page at the same time. It should be private OR visible on subscription page.</errorMessage>
+</ValidationRule>

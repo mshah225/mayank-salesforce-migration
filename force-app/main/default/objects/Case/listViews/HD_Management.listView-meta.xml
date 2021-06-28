@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HD_Management</fullName>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Preferred_Full_Name__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>notEqual</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Category__c</field>
+        <operation>equals</operation>
+        <value>Help Desk Management</value>
+    </filters>
+    <label>HD Management</label>
+    <queue>Help_Desk_Case</queue>
+    <sharedTo>
+        <group>Additional_Access_to_HD_Management_View</group>
+        <group>UTO_Administration</group>
+        <role>HD_Help_Desk_Manager</role>
+    </sharedTo>
+</ListView>

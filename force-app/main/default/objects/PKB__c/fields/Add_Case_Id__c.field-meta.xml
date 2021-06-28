@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Add_Case_Id__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Send Case number detail with the phone call.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Case number wil be used in the phone call for CTI integration.</inlineHelpText>
+    <label>Add Case Number</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

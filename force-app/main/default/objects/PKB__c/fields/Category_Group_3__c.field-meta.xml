@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category_Group_3__c</fullName>
+    <description>Group name that should be displayed under the "Narrow Search" section of the PKB home page. The field named Root Category 3 must have a value that is a category in this group.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Group name that should be displayed under the "Narrow Search" section of the PKB home page. The field named Root Category 3 must have a value that is a category in this group.</inlineHelpText>
+    <label>Category Group 3</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

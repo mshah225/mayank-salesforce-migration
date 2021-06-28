@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact_to_Contact</fullName>
+    <active>true</active>
+    <description>Defines a Relationship from a Person to a Person (e.g. Spouse, Parent)</description>
+    <label>Contact to Contact</label>
+    <picklistValues>
+        <picklist>Relationship_Type__c</picklist>
+        <values>
+            <fullName>Child</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Parent%2FGuardian</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partner</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sibling</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Spouse</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Source__c</picklist>
+        <values>
+            <fullName>Application</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manual Population</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>PS MyASU Guest Portal</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PeopleSoft</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Sub_Type__c</picklist>
+        <values>
+            <fullName>Aunt</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Father</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Grandparent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Legal Guardian</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mother</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Aunt</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Father</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Grandparent</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Legal Guardian</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Mother</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Stepfather</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Stepmother</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Related is Uncle</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Spouse</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Stepfather</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Stepmother</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Uncle</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

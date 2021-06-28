@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Popular_Articles_Size__c</fullName>
+    <defaultValue>3</defaultValue>
+    <description>The number of articles that will appear in the popular articles section. Should not be set to greater than 5 to maintain the page's structure.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The number of articles that will appear in the popular articles section. Should not be set to greater than 5 to maintain the page's structure.</inlineHelpText>
+    <label>Popular Articles Size</label>
+    <precision>2</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Maximum_Attachment_Upload_Per_Case__c</fullName>
+    <defaultValue>1</defaultValue>
+    <description>Maximun number of  attachments to upload for a single case.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Maximun number of  attachments to upload for a single case.</inlineHelpText>
+    <label>Maximum attachment upload per case</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

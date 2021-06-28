@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU_COLLEGE_URL__c</fullName>
+    <description>Data sourced from PS_ASU_ACAD_ORG_CO.ASU_COLLEGE_URL</description>
+    <externalDeveloperName>ASU_COLLEGE_URL</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>College Website</label>
+    <required>false</required>
+    <type>Url</type>
+</CustomField>

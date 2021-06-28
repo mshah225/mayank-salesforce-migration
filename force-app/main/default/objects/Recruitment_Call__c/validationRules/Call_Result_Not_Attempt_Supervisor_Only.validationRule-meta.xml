@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Call_Result_Not_Attempt_Supervisor_Only</fullName>
+    <active>true</active>
+    <description>Validation rule that allows the Call Result value of "Not Attempted (Supervisor Only)" to not be chosen by a user with the role of AS Peer Admissions Representative.</description>
+    <errorConditionFormula>$UserRole.Name="AS Peer Admission Representative" &amp;&amp;
+ISPICKVAL(Call_Result__c, "Not Attempted")</errorConditionFormula>
+    <errorDisplayField>Call_Result__c</errorDisplayField>
+    <errorMessage>You are not allowed to select "Not Attempted", please select a different value or contact your supervisor.</errorMessage>
+</ValidationRule>

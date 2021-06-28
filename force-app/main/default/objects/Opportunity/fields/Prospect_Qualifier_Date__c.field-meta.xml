@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prospect_Qualifier_Date__c</fullName>
+    <description>[manual entry] - Date the qualifier was captured for a prospective student in the Prospect status.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the date the information was received.</inlineHelpText>
+    <label>Prospect Qualifer Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

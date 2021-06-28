@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>International_Students_and_Scholars_QT_Msgs</fullName>
+    <columns>Owner_Display__c</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Category</field>
+        <operation>equals</operation>
+        <value>International Students and Scholars</value>
+    </filters>
+    <label>International Students &amp; Scholars QT</label>
+    <sharedTo>
+        <group>Additional_Intl_Stds_Schl_Case</group>
+        <group>International_Students_and_Scholars_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+        <roleAndSubordinatesInternal>SCI_Student_Centric_Initiatives_Manager</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

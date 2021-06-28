@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Planned_Message_1_Date__c</fullName>
+    <description>Some future date for this engagement (one-time send)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Some future date for this engagement (one-time send)</inlineHelpText>
+    <label>Planned Message 1 Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

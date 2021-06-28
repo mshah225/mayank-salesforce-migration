@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Will_Return_Values__c</fullName>
+    <description>Dependent picklist for Student's Intentions when picklist value = Not returning temporarily. Viewable on the ASU Advisor Outreach and ASU Coach Outreach Cases only.</description>
+    <externalId>false</externalId>
+    <label>Reasons Not Returning Temporarily</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Academic</fullName>
+                <default>false</default>
+                <label>Academic</label>
+            </value>
+            <value>
+                <fullName>Compassionate W/D</fullName>
+                <default>false</default>
+                <label>Compassionate W/D</label>
+            </value>
+            <value>
+                <fullName>Disqualified</fullName>
+                <default>false</default>
+                <label>Disqualified</label>
+            </value>
+            <value>
+                <fullName>Family</fullName>
+                <default>false</default>
+                <label>Family</label>
+            </value>
+            <value>
+                <fullName>Financial</fullName>
+                <default>false</default>
+                <label>Financial</label>
+            </value>
+            <value>
+                <fullName>Health</fullName>
+                <default>false</default>
+                <label>Health</label>
+            </value>
+            <value>
+                <fullName>Job Opportunity</fullName>
+                <default>false</default>
+                <label>Job Opportunity</label>
+            </value>
+            <value>
+                <fullName>Judicial Affairs</fullName>
+                <default>false</default>
+                <label>Judicial Affairs</label>
+            </value>
+            <value>
+                <fullName>Medical W/D</fullName>
+                <default>false</default>
+                <label>Medical W/D</label>
+            </value>
+            <value>
+                <fullName>Military Leave</fullName>
+                <default>false</default>
+                <label>Military Leave</label>
+            </value>
+            <value>
+                <fullName>Non-Responsive</fullName>
+                <default>false</default>
+                <label>Non-Responsive</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Religious Mission Leave</fullName>
+                <default>false</default>
+                <label>Religious Mission Leave</label>
+            </value>
+            <value>
+                <fullName>Social Engagement</fullName>
+                <default>false</default>
+                <label>Social Engagement</label>
+            </value>
+            <value>
+                <fullName>Transferring In-State (other)</fullName>
+                <default>false</default>
+                <label>Transferring In-State (other)</label>
+            </value>
+            <value>
+                <fullName>Transferring Out-of-State (2-year)</fullName>
+                <default>false</default>
+                <label>Transferring Out-of-State (2-year)</label>
+            </value>
+            <value>
+                <fullName>Transferring Out-of-State (4-year)</fullName>
+                <default>false</default>
+                <label>Transferring Out-of-State (4-year)</label>
+            </value>
+            <value>
+                <fullName>Transferring Public In-State (4-year)</fullName>
+                <default>false</default>
+                <label>Transferring Public In-State (4-year)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

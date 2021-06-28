@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PHONE__c</fullName>
+    <description>Data sourced from PS_PERSONAL_PHONE.PHONE</description>
+    <externalDeveloperName>PHONE</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Advisor Phone</label>
+    <required>false</required>
+    <type>Phone</type>
+</CustomField>

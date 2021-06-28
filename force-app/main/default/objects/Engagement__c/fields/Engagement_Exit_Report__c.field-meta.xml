@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Engagement_Exit_Report__c</fullName>
+    <description>Unsubscribers report</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Unsubscribers report</inlineHelpText>
+    <label>Engagement Exit Report</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

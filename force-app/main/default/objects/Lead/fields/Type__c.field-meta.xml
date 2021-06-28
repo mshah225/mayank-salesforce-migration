@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <description>[import] - Examples include: First Time Freshman, Transfer, Readmission, Masters, Doctoral, Juris Doctor, Certificate, Non-Degree</description>
+    <externalId>false</externalId>
+    <label>Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Career__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>First Time Freshman</fullName>
+                <default>false</default>
+                <label>First Time Freshman</label>
+            </value>
+            <value>
+                <fullName>Transfer</fullName>
+                <default>false</default>
+                <label>Transfer</label>
+            </value>
+            <value>
+                <fullName>Readmission</fullName>
+                <default>false</default>
+                <label>Readmission</label>
+            </value>
+            <value>
+                <fullName>Masters</fullName>
+                <default>false</default>
+                <label>Masters</label>
+            </value>
+            <value>
+                <fullName>Doctoral</fullName>
+                <default>false</default>
+                <label>Doctoral</label>
+            </value>
+            <value>
+                <fullName>Juris Doctor</fullName>
+                <default>false</default>
+                <label>Juris Doctor</label>
+            </value>
+            <value>
+                <fullName>Certificate</fullName>
+                <default>false</default>
+                <label>Certificate</label>
+            </value>
+            <value>
+                <fullName>Non-Degree</fullName>
+                <default>false</default>
+                <label>Non-Degree</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Undergraduate</controllingFieldValue>
+            <valueName>First Time Freshman</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Undergraduate</controllingFieldValue>
+            <valueName>Transfer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Undergraduate</controllingFieldValue>
+            <valueName>Readmission</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Graduate</controllingFieldValue>
+            <valueName>Masters</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Graduate</controllingFieldValue>
+            <valueName>Doctoral</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Graduate</controllingFieldValue>
+            <valueName>Juris Doctor</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Graduate</controllingFieldValue>
+            <valueName>Certificate</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Graduate</controllingFieldValue>
+            <valueName>Non-Degree</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

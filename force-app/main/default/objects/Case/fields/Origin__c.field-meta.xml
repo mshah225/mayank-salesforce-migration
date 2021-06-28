@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Origin__c</fullName>
+    <description>[Manual, Automated] -  Where was this Case initiated? Dependent on Functional Group.  Examples include; Advising Community, BBSS, Email, Incoming Call, In Person, My ASU, Orientation, Outgoing Call, Web</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Where was this Case initiated?</inlineHelpText>
+    <label>Origin</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Advising Community</fullName>
+                <default>false</default>
+                <label>Advising Community</label>
+            </value>
+            <value>
+                <fullName>Alteryx</fullName>
+                <default>false</default>
+                <label>Alteryx</label>
+            </value>
+            <value>
+                <fullName>Alteryx - Financial Intake</fullName>
+                <default>false</default>
+                <label>Alteryx - Financial Intake</label>
+            </value>
+            <value>
+                <fullName>Automated</fullName>
+                <default>false</default>
+                <label>Automated</label>
+            </value>
+            <value>
+                <fullName>BBSS</fullName>
+                <default>false</default>
+                <label>BBSS</label>
+            </value>
+            <value>
+                <fullName>Chat</fullName>
+                <default>false</default>
+                <label>Chat</label>
+            </value>
+            <value>
+                <fullName>Chatbot</fullName>
+                <default>false</default>
+                <label>Chatbot</label>
+            </value>
+            <value>
+                <fullName>Clone</fullName>
+                <default>false</default>
+                <label>Clone</label>
+            </value>
+            <value>
+                <fullName>Email</fullName>
+                <default>true</default>
+                <label>Email</label>
+            </value>
+            <value>
+                <fullName>Error Logger</fullName>
+                <default>false</default>
+                <label>Error Logger</label>
+            </value>
+            <value>
+                <fullName>ESM</fullName>
+                <default>false</default>
+                <label>ESM</label>
+            </value>
+            <value>
+                <fullName>Fax</fullName>
+                <default>false</default>
+                <label>Fax</label>
+            </value>
+            <value>
+                <fullName>FC DPC</fullName>
+                <default>false</default>
+                <label>FC DPC</label>
+            </value>
+            <value>
+                <fullName>FC Poly</fullName>
+                <default>false</default>
+                <label>FC Poly</label>
+            </value>
+            <value>
+                <fullName>FC Tempe</fullName>
+                <default>false</default>
+                <label>FC Tempe</label>
+            </value>
+            <value>
+                <fullName>FC Virtual</fullName>
+                <default>false</default>
+                <label>FC Virtual</label>
+            </value>
+            <value>
+                <fullName>FC West</fullName>
+                <default>false</default>
+                <label>FC West</label>
+            </value>
+            <value>
+                <fullName>Financial Intake</fullName>
+                <default>false</default>
+                <label>Financial Intake</label>
+            </value>
+            <value>
+                <fullName>Help Desk</fullName>
+                <default>false</default>
+                <label>Help Desk</label>
+            </value>
+            <value>
+                <fullName>Incoming Call</fullName>
+                <default>false</default>
+                <label>Incoming Call</label>
+            </value>
+            <value>
+                <fullName>In Person</fullName>
+                <default>false</default>
+                <label>In Person</label>
+            </value>
+            <value>
+                <fullName>My ASU</fullName>
+                <default>false</default>
+                <label>My ASU</label>
+            </value>
+            <value>
+                <fullName>Orientation</fullName>
+                <default>false</default>
+                <label>Orientation</label>
+            </value>
+            <value>
+                <fullName>Outgoing Call</fullName>
+                <default>false</default>
+                <label>Outgoing Call</label>
+            </value>
+            <value>
+                <fullName>Outreach</fullName>
+                <default>false</default>
+                <label>Outreach</label>
+            </value>
+            <value>
+                <fullName>Record Review</fullName>
+                <default>false</default>
+                <label>Record Review</label>
+            </value>
+            <value>
+                <fullName>Resource</fullName>
+                <default>false</default>
+                <label>Resource</label>
+            </value>
+            <value>
+                <fullName>Slack</fullName>
+                <default>false</default>
+                <label>Slack</label>
+            </value>
+            <value>
+                <fullName>Student Profile</fullName>
+                <default>false</default>
+                <label>Student Profile</label>
+            </value>
+            <value>
+                <fullName>Text</fullName>
+                <default>false</default>
+                <label>Text</label>
+            </value>
+            <value>
+                <fullName>U.S. Mail</fullName>
+                <default>false</default>
+                <label>U.S. Mail</label>
+            </value>
+            <value>
+                <fullName>Web</fullName>
+                <default>false</default>
+                <label>Web</label>
+            </value>
+            <value>
+                <fullName>Zoom</fullName>
+                <default>false</default>
+                <label>Zoom</label>
+            </value>
+            <value>
+                <fullName>EdPlus Salesforce</fullName>
+                <default>false</default>
+                <label>EdPlus Salesforce</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

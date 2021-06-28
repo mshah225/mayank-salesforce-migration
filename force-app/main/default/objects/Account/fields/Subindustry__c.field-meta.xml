@@ -1,0 +1,1333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subindustry__c</fullName>
+    <description>Dependent on the Industry field. Further categorizes a business description.</description>
+    <externalId>false</externalId>
+    <label>Subindustry</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Industry</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Farming and Ranching</fullName>
+                <default>false</default>
+                <label>Farming and Ranching</label>
+            </value>
+            <value>
+                <fullName>Fishing, Hunting, Trapping</fullName>
+                <default>false</default>
+                <label>Fishing, Hunting, Trapping</label>
+            </value>
+            <value>
+                <fullName>Forestry and Logging</fullName>
+                <default>false</default>
+                <label>Forestry and Logging</label>
+            </value>
+            <value>
+                <fullName>Apparel Wholesalers</fullName>
+                <default>false</default>
+                <label>Apparel Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Clothing and Shoe Stores</fullName>
+                <default>false</default>
+                <label>Clothing and Shoe Stores</label>
+            </value>
+            <value>
+                <fullName>Department Stores</fullName>
+                <default>false</default>
+                <label>Department Stores</label>
+            </value>
+            <value>
+                <fullName>Textiles, Apparel and Accessories</fullName>
+                <default>false</default>
+                <label>Textiles, Apparel and Accessories</label>
+            </value>
+            <value>
+                <fullName>Banks</fullName>
+                <default>false</default>
+                <label>Banks</label>
+            </value>
+            <value>
+                <fullName>Credit Cards and Related Services</fullName>
+                <default>false</default>
+                <label>Credit Cards and Related Services</label>
+            </value>
+            <value>
+                <fullName>Lending and Mortgage</fullName>
+                <default>false</default>
+                <label>Lending and Mortgage</label>
+            </value>
+            <value>
+                <fullName>Personal Financial Planning and Private Banking</fullName>
+                <default>false</default>
+                <label>Personal Financial Planning and Private Banking</label>
+            </value>
+            <value>
+                <fullName>Trust, Fiduciary, and Custody Activities</fullName>
+                <default>false</default>
+                <label>Trust, Fiduciary, and Custody Activities</label>
+            </value>
+            <value>
+                <fullName>Biotechnology</fullName>
+                <default>false</default>
+                <label>Biotechnology</label>
+            </value>
+            <value>
+                <fullName>Chemicals and Petrochemicals</fullName>
+                <default>false</default>
+                <label>Chemicals and Petrochemicals</label>
+            </value>
+            <value>
+                <fullName>Chemicals and Plastics Wholesalers</fullName>
+                <default>false</default>
+                <label>Chemicals and Plastics Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Petroleum Products Wholesalers</fullName>
+                <default>false</default>
+                <label>Petroleum Products Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Advertising, Marketing, and PR</fullName>
+                <default>false</default>
+                <label>Advertising, Marketing, and PR</label>
+            </value>
+            <value>
+                <fullName>Architecture, Engineering and Design</fullName>
+                <default>false</default>
+                <label>Architecture, Engineering and Design</label>
+            </value>
+            <value>
+                <fullName>Concrete, Glass, and Building Materials</fullName>
+                <default>false</default>
+                <label>Concrete, Glass, and Building Materials</label>
+            </value>
+            <value>
+                <fullName>Construction and Remodeling</fullName>
+                <default>false</default>
+                <label>Construction and Remodeling</label>
+            </value>
+            <value>
+                <fullName>Construction Equipment and Supplies</fullName>
+                <default>false</default>
+                <label>Construction Equipment and Supplies</label>
+            </value>
+            <value>
+                <fullName>Facilities and Management Maintenance</fullName>
+                <default>false</default>
+                <label>Facilities and Management Maintenance</label>
+            </value>
+            <value>
+                <fullName>Hardware and Building Materials Dealers</fullName>
+                <default>false</default>
+                <label>Hardware and Building Materials Dealers</label>
+            </value>
+            <value>
+                <fullName>Lumber and Construction Materials Wholesalers</fullName>
+                <default>false</default>
+                <label>Lumber and Construction Materials Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Property Leasing and Management</fullName>
+                <default>false</default>
+                <label>Property Leasing and Management</label>
+            </value>
+            <value>
+                <fullName>HR, Recruiting and Payroll Services</fullName>
+                <default>false</default>
+                <label>HR, Recruiting and Payroll Services</label>
+            </value>
+            <value>
+                <fullName>Legal Services</fullName>
+                <default>false</default>
+                <label>Legal Services</label>
+            </value>
+            <value>
+                <fullName>Management Consulting</fullName>
+                <default>false</default>
+                <label>Management Consulting</label>
+            </value>
+            <value>
+                <fullName>Sales Services</fullName>
+                <default>false</default>
+                <label>Sales Services</label>
+            </value>
+            <value>
+                <fullName>Security Services</fullName>
+                <default>false</default>
+                <label>Security Services</label>
+            </value>
+            <value>
+                <fullName>Colleges and Universities</fullName>
+                <default>false</default>
+                <label>Colleges and Universities</label>
+            </value>
+            <value>
+                <fullName>Elementary and Secondary Schools</fullName>
+                <default>false</default>
+                <label>Elementary and Secondary Schools</label>
+            </value>
+            <value>
+                <fullName>Libraries, Archives and Museums</fullName>
+                <default>false</default>
+                <label>Libraries, Archives and Museums</label>
+            </value>
+            <value>
+                <fullName>Sports, Arts and Recreation Instruction</fullName>
+                <default>false</default>
+                <label>Sports, Arts and Recreation Instruction</label>
+            </value>
+            <value>
+                <fullName>Technical and Trade Schools</fullName>
+                <default>false</default>
+                <label>Technical and Trade Schools</label>
+            </value>
+            <value>
+                <fullName>Test Preparation</fullName>
+                <default>false</default>
+                <label>Test Preparation</label>
+            </value>
+            <value>
+                <fullName>Audio, Video and Photography</fullName>
+                <default>false</default>
+                <label>Audio, Video and Photography</label>
+            </value>
+            <value>
+                <fullName>Computers, Parts, and Repair</fullName>
+                <default>false</default>
+                <label>Computers, Parts, and Repair</label>
+            </value>
+            <value>
+                <fullName>Consumer Electronics, Parts and Repair</fullName>
+                <default>false</default>
+                <label>Consumer Electronics, Parts and Repair</label>
+            </value>
+            <value>
+                <fullName>Instruments and Controls</fullName>
+                <default>false</default>
+                <label>Instruments and Controls</label>
+            </value>
+            <value>
+                <fullName>Office Machinery and Equipment</fullName>
+                <default>false</default>
+                <label>Office Machinery and Equipment</label>
+            </value>
+            <value>
+                <fullName>Peripherals Manufacturing</fullName>
+                <default>false</default>
+                <label>Peripherals Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Alternative Energy Sources</fullName>
+                <default>false</default>
+                <label>Alternative Energy Sources</label>
+            </value>
+            <value>
+                <fullName>Gasoline and Oil Refineries</fullName>
+                <default>false</default>
+                <label>Gasoline and Oil Refineries</label>
+            </value>
+            <value>
+                <fullName>Mining and Quarrying</fullName>
+                <default>false</default>
+                <label>Mining and Quarrying</label>
+            </value>
+            <value>
+                <fullName>Adult Entertainment</fullName>
+                <default>false</default>
+                <label>Adult Entertainment</label>
+            </value>
+            <value>
+                <fullName>Motion Picture and Recording Producers</fullName>
+                <default>false</default>
+                <label>Motion Picture and Recording Producers</label>
+            </value>
+            <value>
+                <fullName>Motion Picture Exhibitors</fullName>
+                <default>false</default>
+                <label>Motion Picture Exhibitors</label>
+            </value>
+            <value>
+                <fullName>Newspapers, Books and Periodicals</fullName>
+                <default>false</default>
+                <label>Newspapers, Books and Periodicals</label>
+            </value>
+            <value>
+                <fullName>Performing Arts</fullName>
+                <default>false</default>
+                <label>Performing Arts</label>
+            </value>
+            <value>
+                <fullName>Radio and Television Broadcasting</fullName>
+                <default>false</default>
+                <label>Radio and Television Broadcasting</label>
+            </value>
+            <value>
+                <fullName>Spectator Sports and Teams</fullName>
+                <default>false</default>
+                <label>Spectator Sports and Teams</label>
+            </value>
+            <value>
+                <fullName>Accounting and Tax Preparation</fullName>
+                <default>false</default>
+                <label>Accounting and Tax Preparation</label>
+            </value>
+            <value>
+                <fullName>Investment Banking and Venture Capital</fullName>
+                <default>false</default>
+                <label>Investment Banking and Venture Capital</label>
+            </value>
+            <value>
+                <fullName>Real Estate Investment and Development</fullName>
+                <default>false</default>
+                <label>Real Estate Investment and Development</label>
+            </value>
+            <value>
+                <fullName>Securities Agents and Brokers</fullName>
+                <default>false</default>
+                <label>Securities Agents and Brokers</label>
+            </value>
+            <value>
+                <fullName>Alcoholic Beverages</fullName>
+                <default>false</default>
+                <label>Alcoholic Beverages</label>
+            </value>
+            <value>
+                <fullName>Beer, Wine, and Liquor Stores</fullName>
+                <default>false</default>
+                <label>Beer, Wine, and Liquor Stores</label>
+            </value>
+            <value>
+                <fullName>Beer, Wine, and Liquor Wholesalers</fullName>
+                <default>false</default>
+                <label>Beer, Wine, and Liquor Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Food &amp; Dairy Product Manufacturing and Packaging</fullName>
+                <default>false</default>
+                <label>Food &amp; Dairy Product Manufacturing and Packaging</label>
+            </value>
+            <value>
+                <fullName>Grocery and Food Wholesalers</fullName>
+                <default>false</default>
+                <label>Grocery and Food Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Grocery and Specialty Food Stores</fullName>
+                <default>false</default>
+                <label>Grocery and Specialty Food Stores</label>
+            </value>
+            <value>
+                <fullName>Nonalcoholic Beverages</fullName>
+                <default>false</default>
+                <label>Nonalcoholic Beverages</label>
+            </value>
+            <value>
+                <fullName>Restaurants and Bars</fullName>
+                <default>false</default>
+                <label>Restaurants and Bars</label>
+            </value>
+            <value>
+                <fullName>International Bodies and Organization</fullName>
+                <default>false</default>
+                <label>International Bodies and Organization</label>
+            </value>
+            <value>
+                <fullName>Local Government</fullName>
+                <default>false</default>
+                <label>Local Government</label>
+            </value>
+            <value>
+                <fullName>National Government</fullName>
+                <default>false</default>
+                <label>National Government</label>
+            </value>
+            <value>
+                <fullName>State/Provincial Government</fullName>
+                <default>false</default>
+                <label>State/Provincial Government</label>
+            </value>
+            <value>
+                <fullName>Diagnostic Laboratories</fullName>
+                <default>false</default>
+                <label>Diagnostic Laboratories</label>
+            </value>
+            <value>
+                <fullName>Doctors and Healthcare Practitioners</fullName>
+                <default>false</default>
+                <label>Doctors and Healthcare Practitioners</label>
+            </value>
+            <value>
+                <fullName>Hospitals</fullName>
+                <default>false</default>
+                <label>Hospitals</label>
+            </value>
+            <value>
+                <fullName>Medical Supplies and Equipment</fullName>
+                <default>false</default>
+                <label>Medical Supplies and Equipment</label>
+            </value>
+            <value>
+                <fullName>Outpatient Care Centers</fullName>
+                <default>false</default>
+                <label>Outpatient Care Centers</label>
+            </value>
+            <value>
+                <fullName>Personal Care</fullName>
+                <default>false</default>
+                <label>Personal Care</label>
+            </value>
+            <value>
+                <fullName>Personal Health Care Products</fullName>
+                <default>false</default>
+                <label>Personal Health Care Products</label>
+            </value>
+            <value>
+                <fullName>Pharmaceuticals</fullName>
+                <default>false</default>
+                <label>Pharmaceuticals</label>
+            </value>
+            <value>
+                <fullName>Residential and Long-Term Care Facilities</fullName>
+                <default>false</default>
+                <label>Residential and Long-Term Care Facilities</label>
+            </value>
+            <value>
+                <fullName>Veterinary Clinics and Services</fullName>
+                <default>false</default>
+                <label>Veterinary Clinics and Services</label>
+            </value>
+            <value>
+                <fullName>Insurance and Risk Management</fullName>
+                <default>false</default>
+                <label>Insurance and Risk Management</label>
+            </value>
+            <value>
+                <fullName>Farming and Mining Machinery and Equipment</fullName>
+                <default>false</default>
+                <label>Farming and Mining Machinery and Equipment</label>
+            </value>
+            <value>
+                <fullName>Heavy Machinery</fullName>
+                <default>false</default>
+                <label>Heavy Machinery</label>
+            </value>
+            <value>
+                <fullName>Tools, Hardware and Light Machinery</fullName>
+                <default>false</default>
+                <label>Tools, Hardware and Light Machinery</label>
+            </value>
+            <value>
+                <fullName>Aerospace and Defense</fullName>
+                <default>false</default>
+                <label>Aerospace and Defense</label>
+            </value>
+            <value>
+                <fullName>Automobiles, Boats, and Motor Vehicles</fullName>
+                <default>false</default>
+                <label>Automobiles, Boats, and Motor Vehicles</label>
+            </value>
+            <value>
+                <fullName>Furniture Manufacturing</fullName>
+                <default>false</default>
+                <label>Furniture Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Metals Manufacturing</fullName>
+                <default>false</default>
+                <label>Metals Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Plastics and Rubber Manufacturing</fullName>
+                <default>false</default>
+                <label>Plastics and Rubber Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Cable Television Providers</fullName>
+                <default>false</default>
+                <label>Cable Television Providers</label>
+            </value>
+            <value>
+                <fullName>Games and Gaming</fullName>
+                <default>false</default>
+                <label>Games and Gaming</label>
+            </value>
+            <value>
+                <fullName>Advocacy Organizations</fullName>
+                <default>false</default>
+                <label>Advocacy Organizations</label>
+            </value>
+            <value>
+                <fullName>Charitable Organizations and Foundations</fullName>
+                <default>false</default>
+                <label>Charitable Organizations and Foundations</label>
+            </value>
+            <value>
+                <fullName>Professional Associations</fullName>
+                <default>false</default>
+                <label>Professional Associations</label>
+            </value>
+            <value>
+                <fullName>Religious Organizations</fullName>
+                <default>false</default>
+                <label>Religious Organizations</label>
+            </value>
+            <value>
+                <fullName>Social and Membership Organizations</fullName>
+                <default>false</default>
+                <label>Social and Membership Organizations</label>
+            </value>
+            <value>
+                <fullName>Trade Groups and Labor Unions</fullName>
+                <default>false</default>
+                <label>Trade Groups and Labor Unions</label>
+            </value>
+            <value>
+                <fullName>Automotive Repair and Maintenance</fullName>
+                <default>false</default>
+                <label>Automotive Repair and Maintenance</label>
+            </value>
+            <value>
+                <fullName>Funeral Homes and Funeral Services</fullName>
+                <default>false</default>
+                <label>Funeral Homes and Funeral Services</label>
+            </value>
+            <value>
+                <fullName>Laundry and Dry Cleaning</fullName>
+                <default>false</default>
+                <label>Laundry and Dry Cleaning</label>
+            </value>
+            <value>
+                <fullName>Metal &amp; Mineral Wholesalers</fullName>
+                <default>false</default>
+                <label>Metal &amp; Mineral Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Office Equipment and Supplies Wholesalers</fullName>
+                <default>false</default>
+                <label>Office Equipment and Supplies Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Photofinishing Services</fullName>
+                <default>false</default>
+                <label>Photofinishing Services</label>
+            </value>
+            <value>
+                <fullName>Real Estate Agents and Appraisers</fullName>
+                <default>false</default>
+                <label>Real Estate Agents and Appraisers</label>
+            </value>
+            <value>
+                <fullName>Amusement Parks and Attractions</fullName>
+                <default>false</default>
+                <label>Amusement Parks and Attractions</label>
+            </value>
+            <value>
+                <fullName>Cruise Ship Operations</fullName>
+                <default>false</default>
+                <label>Cruise Ship Operations</label>
+            </value>
+            <value>
+                <fullName>Gambling and Gaming Industries</fullName>
+                <default>false</default>
+                <label>Gambling and Gaming Industries</label>
+            </value>
+            <value>
+                <fullName>Hotels, Motels and Lodging</fullName>
+                <default>false</default>
+                <label>Hotels, Motels and Lodging</label>
+            </value>
+            <value>
+                <fullName>Participatory Sports and Recreation</fullName>
+                <default>false</default>
+                <label>Participatory Sports and Recreation</label>
+            </value>
+            <value>
+                <fullName>Resorts and Casinos</fullName>
+                <default>false</default>
+                <label>Resorts and Casinos</label>
+            </value>
+            <value>
+                <fullName>Automobile Dealers</fullName>
+                <default>false</default>
+                <label>Automobile Dealers</label>
+            </value>
+            <value>
+                <fullName>Automobile Parts Stores</fullName>
+                <default>false</default>
+                <label>Automobile Parts Stores</label>
+            </value>
+            <value>
+                <fullName>Automobile Parts Wholesalers</fullName>
+                <default>false</default>
+                <label>Automobile Parts Wholesalers</label>
+            </value>
+            <value>
+                <fullName>Florists</fullName>
+                <default>false</default>
+                <label>Florists</label>
+            </value>
+            <value>
+                <fullName>Furniture Stores</fullName>
+                <default>false</default>
+                <label>Furniture Stores</label>
+            </value>
+            <value>
+                <fullName>Jewelry, Luggage, and Leather Goods Stores</fullName>
+                <default>false</default>
+                <label>Jewelry, Luggage, and Leather Goods Stores</label>
+            </value>
+            <value>
+                <fullName>Office Supplies Stores</fullName>
+                <default>false</default>
+                <label>Office Supplies Stores</label>
+            </value>
+            <value>
+                <fullName>Paper and Paper Products</fullName>
+                <default>false</default>
+                <label>Paper and Paper Products</label>
+            </value>
+            <value>
+                <fullName>Sporting Goods, Hobby, Book, and Music Stores</fullName>
+                <default>false</default>
+                <label>Sporting Goods, Hobby, Book, and Music Stores</label>
+            </value>
+            <value>
+                <fullName>Air Couriers and Cargo Services</fullName>
+                <default>false</default>
+                <label>Air Couriers and Cargo Services</label>
+            </value>
+            <value>
+                <fullName>Freight Hauling (Rail and Truck)</fullName>
+                <default>false</default>
+                <label>Freight Hauling (Rail and Truck)</label>
+            </value>
+            <value>
+                <fullName>Marine and Inland Shipping</fullName>
+                <default>false</default>
+                <label>Marine and Inland Shipping</label>
+            </value>
+            <value>
+                <fullName>Moving Companies and Services</fullName>
+                <default>false</default>
+                <label>Moving Companies and Services</label>
+            </value>
+            <value>
+                <fullName>Postal, Express Delivery, and Couriers</fullName>
+                <default>false</default>
+                <label>Postal, Express Delivery, and Couriers</label>
+            </value>
+            <value>
+                <fullName>Warehousing and Storage</fullName>
+                <default>false</default>
+                <label>Warehousing and Storage</label>
+            </value>
+            <value>
+                <fullName>Data Analytics, Management and Storage</fullName>
+                <default>false</default>
+                <label>Data Analytics, Management and Storage</label>
+            </value>
+            <value>
+                <fullName>Data and Records Management</fullName>
+                <default>false</default>
+                <label>Data and Records Management</label>
+            </value>
+            <value>
+                <fullName>E-Commerce and Internet Businesses</fullName>
+                <default>false</default>
+                <label>E-Commerce and Internet Businesses</label>
+            </value>
+            <value>
+                <fullName>IT and Network Services and Support</fullName>
+                <default>false</default>
+                <label>IT and Network Services and Support</label>
+            </value>
+            <value>
+                <fullName>Semiconductor and Microchip Manufacturing</fullName>
+                <default>false</default>
+                <label>Semiconductor and Microchip Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Software</fullName>
+                <default>false</default>
+                <label>Software</label>
+            </value>
+            <value>
+                <fullName>Network Security Products</fullName>
+                <default>false</default>
+                <label>Network Security Products</label>
+            </value>
+            <value>
+                <fullName>Networking Equipment and Systems</fullName>
+                <default>false</default>
+                <label>Networking Equipment and Systems</label>
+            </value>
+            <value>
+                <fullName>Telecommunications Equipment and Accessories</fullName>
+                <default>false</default>
+                <label>Telecommunications Equipment and Accessories</label>
+            </value>
+            <value>
+                <fullName>Telephone Service Providers and Carriers</fullName>
+                <default>false</default>
+                <label>Telephone Service Providers and Carriers</label>
+            </value>
+            <value>
+                <fullName>Video and Teleconferencing</fullName>
+                <default>false</default>
+                <label>Video and Teleconferencing</label>
+            </value>
+            <value>
+                <fullName>Wireless and Mobile</fullName>
+                <default>false</default>
+                <label>Wireless and Mobile</label>
+            </value>
+            <value>
+                <fullName>Airport, Harbor and Terminal Operations</fullName>
+                <default>false</default>
+                <label>Airport, Harbor and Terminal Operations</label>
+            </value>
+            <value>
+                <fullName>Gasoline Stations</fullName>
+                <default>false</default>
+                <label>Gasoline Stations</label>
+            </value>
+            <value>
+                <fullName>Parking Lots and Garage Maintenance</fullName>
+                <default>false</default>
+                <label>Parking Lots and Garage Maintenance</label>
+            </value>
+            <value>
+                <fullName>Passenger Airlines</fullName>
+                <default>false</default>
+                <label>Passenger Airlines</label>
+            </value>
+            <value>
+                <fullName>Rental Cars</fullName>
+                <default>false</default>
+                <label>Rental Cars</label>
+            </value>
+            <value>
+                <fullName>Taxi and Limousine Services</fullName>
+                <default>false</default>
+                <label>Taxi and Limousine Services</label>
+            </value>
+            <value>
+                <fullName>Trains, Buses and Transit Systems</fullName>
+                <default>false</default>
+                <label>Trains, Buses and Transit Systems</label>
+            </value>
+            <value>
+                <fullName>Travel Agents &amp; Services</fullName>
+                <default>false</default>
+                <label>Travel Agents &amp; Services</label>
+            </value>
+            <value>
+                <fullName>Gas and Electric Utilities</fullName>
+                <default>false</default>
+                <label>Gas and Electric Utilities</label>
+            </value>
+            <value>
+                <fullName>Sewage Treatment Facilities</fullName>
+                <default>false</default>
+                <label>Sewage Treatment Facilities</label>
+            </value>
+            <value>
+                <fullName>Waste Management and Recycling</fullName>
+                <default>false</default>
+                <label>Waste Management and Recycling</label>
+            </value>
+            <value>
+                <fullName>Water Treatment and Utilities</fullName>
+                <default>false</default>
+                <label>Water Treatment and Utilities</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Electronics</controllingFieldValue>
+            <valueName>Audio, Video and Photography</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Electronics</controllingFieldValue>
+            <valueName>Computers, Parts, and Repair</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Electronics</controllingFieldValue>
+            <valueName>Consumer Electronics, Parts and Repair</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Electronics</controllingFieldValue>
+            <valueName>Instruments and Controls</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Electronics</controllingFieldValue>
+            <valueName>Office Machinery and Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Electronics</controllingFieldValue>
+            <valueName>Peripherals Manufacturing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Finance</controllingFieldValue>
+            <valueName>Accounting and Tax Preparation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Finance</controllingFieldValue>
+            <valueName>Real Estate Investment and Development</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Finance</controllingFieldValue>
+            <valueName>Securities Agents and Brokers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Machinery</controllingFieldValue>
+            <valueName>Farming and Mining Machinery and Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Machinery</controllingFieldValue>
+            <valueName>Heavy Machinery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Machinery</controllingFieldValue>
+            <valueName>Tools, Hardware and Light Machinery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Recreation</controllingFieldValue>
+            <valueName>Amusement Parks and Attractions</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Recreation</controllingFieldValue>
+            <valueName>Cruise Ship Operations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Recreation</controllingFieldValue>
+            <valueName>Gambling and Gaming Industries</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Recreation</controllingFieldValue>
+            <valueName>Hotels, Motels and Lodging</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Recreation</controllingFieldValue>
+            <valueName>Participatory Sports and Recreation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Recreation</controllingFieldValue>
+            <valueName>Resorts and Casinos</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Airport, Harbor and Terminal Operations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Gasoline Stations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Parking Lots and Garage Maintenance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Passenger Airlines</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Rental Cars</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Taxi and Limousine Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Trains, Buses and Transit Systems</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Transportation</controllingFieldValue>
+            <valueName>Travel Agents &amp; Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Banking</controllingFieldValue>
+            <valueName>Banks</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Banking</controllingFieldValue>
+            <valueName>Credit Cards and Related Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Banking</controllingFieldValue>
+            <valueName>Lending and Mortgage</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Banking</controllingFieldValue>
+            <valueName>Personal Financial Planning and Private Banking</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Banking</controllingFieldValue>
+            <valueName>Trust, Fiduciary, and Custody Activities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Consulting</controllingFieldValue>
+            <valueName>HR, Recruiting and Payroll Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Consulting</controllingFieldValue>
+            <valueName>Legal Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Consulting</controllingFieldValue>
+            <valueName>Management Consulting</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Consulting</controllingFieldValue>
+            <valueName>Sales Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Consulting</controllingFieldValue>
+            <valueName>Security Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Adult Entertainment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Motion Picture and Recording Producers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Motion Picture Exhibitors</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Newspapers, Books and Periodicals</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Performing Arts</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Radio and Television Broadcasting</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Entertainment</controllingFieldValue>
+            <valueName>Spectator Sports and Teams</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Architecture, Engineering and Design</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Concrete, Glass, and Building Materials</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Construction and Remodeling</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Construction Equipment and Supplies</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Facilities and Management Maintenance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Hardware and Building Materials Dealers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Lumber and Construction Materials Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Construction</controllingFieldValue>
+            <valueName>Property Leasing and Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Diagnostic Laboratories</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Doctors and Healthcare Practitioners</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Hospitals</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Medical Supplies and Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Outpatient Care Centers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Personal Care</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Personal Health Care Products</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Pharmaceuticals</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Residential and Long-Term Care Facilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Healthcare</controllingFieldValue>
+            <valueName>Veterinary Clinics and Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not For Profit</controllingFieldValue>
+            <valueName>Advocacy Organizations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not For Profit</controllingFieldValue>
+            <valueName>Charitable Organizations and Foundations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not For Profit</controllingFieldValue>
+            <valueName>Professional Associations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not For Profit</controllingFieldValue>
+            <valueName>Religious Organizations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not For Profit</controllingFieldValue>
+            <valueName>Social and Membership Organizations</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Not For Profit</controllingFieldValue>
+            <valueName>Trade Groups and Labor Unions</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Government</controllingFieldValue>
+            <valueName>International Bodies and Organization</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Government</controllingFieldValue>
+            <valueName>Local Government</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Government</controllingFieldValue>
+            <valueName>National Government</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Government</controllingFieldValue>
+            <valueName>State/Provincial Government</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology</controllingFieldValue>
+            <valueName>Data Analytics, Management and Storage</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology</controllingFieldValue>
+            <valueName>Data and Records Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology</controllingFieldValue>
+            <valueName>E-Commerce and Internet Businesses</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology</controllingFieldValue>
+            <valueName>IT and Network Services and Support</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology</controllingFieldValue>
+            <valueName>Semiconductor and Microchip Manufacturing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Technology</controllingFieldValue>
+            <valueName>Software</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Media</controllingFieldValue>
+            <valueName>Cable Television Providers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Media</controllingFieldValue>
+            <valueName>Games and Gaming</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shipping</controllingFieldValue>
+            <valueName>Air Couriers and Cargo Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shipping</controllingFieldValue>
+            <valueName>Freight Hauling (Rail and Truck)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shipping</controllingFieldValue>
+            <valueName>Marine and Inland Shipping</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shipping</controllingFieldValue>
+            <valueName>Moving Companies and Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shipping</controllingFieldValue>
+            <valueName>Postal, Express Delivery, and Couriers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Shipping</controllingFieldValue>
+            <valueName>Warehousing and Storage</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Biotechnology</controllingFieldValue>
+            <valueName>Biotechnology</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Education</controllingFieldValue>
+            <valueName>Colleges and Universities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Education</controllingFieldValue>
+            <valueName>Elementary and Secondary Schools</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Education</controllingFieldValue>
+            <valueName>Libraries, Archives and Museums</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Education</controllingFieldValue>
+            <valueName>Sports, Arts and Recreation Instruction</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Education</controllingFieldValue>
+            <valueName>Technical and Trade Schools</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Education</controllingFieldValue>
+            <valueName>Test Preparation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Insurance</controllingFieldValue>
+            <valueName>Insurance and Risk Management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Automotive Repair and Maintenance</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Funeral Homes and Funeral Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Laundry and Dry Cleaning</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Metal &amp; Mineral Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Office Equipment and Supplies Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Photofinishing Services</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Other</controllingFieldValue>
+            <valueName>Real Estate Agents and Appraisers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Agriculture</controllingFieldValue>
+            <valueName>Farming and Ranching</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Agriculture</controllingFieldValue>
+            <valueName>Fishing, Hunting, Trapping</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Agriculture</controllingFieldValue>
+            <valueName>Forestry and Logging</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Communications</controllingFieldValue>
+            <valueName>Advertising, Marketing, and PR</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Energy</controllingFieldValue>
+            <valueName>Alternative Energy Sources</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Energy</controllingFieldValue>
+            <valueName>Gasoline and Oil Refineries</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Energy</controllingFieldValue>
+            <valueName>Mining and Quarrying</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Alcoholic Beverages</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Beer, Wine, and Liquor Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Beer, Wine, and Liquor Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Food &amp; Dairy Product Manufacturing and Packaging</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Grocery and Food Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Grocery and Specialty Food Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Nonalcoholic Beverages</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Food &amp; Beverage</controllingFieldValue>
+            <valueName>Restaurants and Bars</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manufacturing</controllingFieldValue>
+            <valueName>Aerospace and Defense</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manufacturing</controllingFieldValue>
+            <valueName>Automobiles, Boats, and Motor Vehicles</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manufacturing</controllingFieldValue>
+            <valueName>Furniture Manufacturing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manufacturing</controllingFieldValue>
+            <valueName>Metals Manufacturing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manufacturing</controllingFieldValue>
+            <valueName>Plastics and Rubber Manufacturing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Automobile Dealers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Automobile Parts Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Automobile Parts Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Florists</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Furniture Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Jewelry, Luggage, and Leather Goods Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Office Supplies Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Paper and Paper Products</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Retail</controllingFieldValue>
+            <valueName>Sporting Goods, Hobby, Book, and Music Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Utilities</controllingFieldValue>
+            <valueName>Gas and Electric Utilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Utilities</controllingFieldValue>
+            <valueName>Sewage Treatment Facilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Utilities</controllingFieldValue>
+            <valueName>Waste Management and Recycling</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Utilities</controllingFieldValue>
+            <valueName>Water Treatment and Utilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apparel</controllingFieldValue>
+            <valueName>Apparel Wholesalers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apparel</controllingFieldValue>
+            <valueName>Clothing and Shoe Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apparel</controllingFieldValue>
+            <valueName>Department Stores</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Apparel</controllingFieldValue>
+            <valueName>Textiles, Apparel and Accessories</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Telecommunications</controllingFieldValue>
+            <valueName>Network Security Products</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Telecommunications</controllingFieldValue>
+            <valueName>Networking Equipment and Systems</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Telecommunications</controllingFieldValue>
+            <valueName>Telecommunications Equipment and Accessories</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Telecommunications</controllingFieldValue>
+            <valueName>Telephone Service Providers and Carriers</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Telecommunications</controllingFieldValue>
+            <valueName>Video and Teleconferencing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Telecommunications</controllingFieldValue>
+            <valueName>Wireless and Mobile</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Chemicals</controllingFieldValue>
+            <valueName>Chemicals and Petrochemicals</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Chemicals</controllingFieldValue>
+            <valueName>Petroleum Products Wholesalers</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

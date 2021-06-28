@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Applicant_Services_INTL_UG_NAS</fullName>
+    <booleanFilter>1 AND 2 AND 3 AND 4 and 5 AND 6 AND 9 AND (7 OR 8)</booleanFilter>
+    <columns>CAP__c</columns>
+    <columns>Case_Owner__c</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Opportunity_Location__c</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>Needs_Attention__c</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Applicant Services - Undergraduate</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>notContain</operation>
+        <value>INTL</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>notEqual</operation>
+        <value>Home School Student,Transcript - GED,Transfer Credit Inquiry</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>notEqual</operation>
+        <value>Transcript - Status,Transfer Pathways,Major Change,Decline/Cancel,Deferment</value>
+    </filters>
+    <filters>
+        <field>Opportunity_Type__c</field>
+        <operation>notContain</operation>
+        <value>Read</value>
+    </filters>
+    <filters>
+        <field>Student_Visa__c</field>
+        <operation>contains</operation>
+        <value>J,A,T,E,L,F</value>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>contains</operation>
+        <value>INTL,International</value>
+    </filters>
+    <filters>
+        <field>Intended_Recipient__c</field>
+        <operation>notEqual</operation>
+        <value>highschoolaccreditation@asu.edu</value>
+    </filters>
+    <label>AS Applicant Services INTL - UG NAS *</label>
+    <queue>Admission_Services_Undergrad_Case</queue>
+    <sharedTo>
+        <group>AS_Additional_Applicant_Services_Case</group>
+        <group>AS_Applicant_Services_Graduate_Case</group>
+        <group>AS_Applicant_Services_UG_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

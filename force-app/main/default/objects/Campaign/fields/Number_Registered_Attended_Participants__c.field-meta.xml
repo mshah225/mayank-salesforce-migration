@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Number_Registered_Attended_Participants__c</fullName>
+    <description>The sum of the Number of Participants (e.g Students) at any of the following Statuses: Applicant, Attendee, Completer, Not Registered - Attended, Participant, Registered, Registered - Attended, Saver</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The sum of the Number of Participants (e.g Students) at any of the following Statuses: Applicant, Attendee, Completer, Not Registered - Attended, Participant, Registered, Registered - Attended, Saver</inlineHelpText>
+    <label>Number Registered/Attended Participants</label>
+    <summaryFilterItems>
+        <field>CampaignMember.Status</field>
+        <operation>equals</operation>
+        <value>The sum of the Number of Guests at any of the following Statuses: Applicant, Attendee, Completer, Not Registered - Attended, Participant, Registered, Registered - Attended, Saver</value>
+    </summaryFilterItems>
+    <summaryForeignKey>CampaignMember.CampaignId</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

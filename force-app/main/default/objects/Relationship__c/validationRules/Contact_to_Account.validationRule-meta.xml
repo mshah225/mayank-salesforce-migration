@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact_to_Account</fullName>
+    <active>true</active>
+    <description>Prevents users from inputting values in the 'Account' or 'Related Contact' field for record type: Contact to Account. In addition, it requires both the 'Contact' and 'Related Account (of)' fields to be populated.</description>
+    <errorConditionFormula>AND(
+RecordType.DeveloperName = "Contact_to_Account",
+ISNEW(),
+
+OR(
+AND(
+NOT(ISBLANK(Contact__c)),
+NOT(ISBLANK(Related_Contact__c))
+),
+AND(
+NOT(ISBLANK(Related_Account__c)),
+NOT(ISBLANK(Account__c))
+),
+ISBLANK(Contact__c),
+ISBLANK(Related_Account__c)
+
+)
+)</errorConditionFormula>
+    <errorMessage>In an 'Contact to Account' relationship, the fields 'Contact' and 'Related Account (of)' are REQUIRED. Do NOT select 'Related Contact (of)' or 'Account' as these are not valid for record type: Contact to Account.</errorMessage>
+</ValidationRule>

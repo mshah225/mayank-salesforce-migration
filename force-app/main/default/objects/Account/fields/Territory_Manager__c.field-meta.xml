@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Territory_Manager__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Peoplesoft or manual] - Name of Territoy Manager</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The user assigned as the current Territory Manager for this Institution.</inlineHelpText>
+    <label>Territory Manager</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Accounts</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

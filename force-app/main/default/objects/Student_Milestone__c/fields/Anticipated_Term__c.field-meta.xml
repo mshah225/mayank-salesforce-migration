@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Anticipated_Term__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>(PeopleSoft) PS_STDNT_CAR_MLSTN .ANTICIPATED_TERM</description>
+    <externalId>false</externalId>
+    <label>Term Anticipated</label>
+    <referenceTo>Term__c</referenceTo>
+    <relationshipLabel>Student_Milestones (Term)</relationshipLabel>
+    <relationshipName>Student_Milestones1</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

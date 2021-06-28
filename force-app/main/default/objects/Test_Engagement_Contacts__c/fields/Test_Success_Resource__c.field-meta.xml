@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Test_Success_Resource__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Used to associate the message with a success resource.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Used to associate the message with a success resource.</inlineHelpText>
+    <label>Test Success Resource</label>
+    <referenceTo>Success_Resource__c</referenceTo>
+    <relationshipLabel>Test Engagement Contacts</relationshipLabel>
+    <relationshipName>Test_Engagement_Contacts</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

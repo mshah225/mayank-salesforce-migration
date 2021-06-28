@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Root_Category_3__c</fullName>
+    <description>Root Category name that will be used as the root category in the category group's picklist in the "Narrow Search" section of the PKB home page. The value for this field must be a category of the group named in the Category Group 3 field.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Root Category name that will be used as the root category in the category group's picklist in the "Narrow Search" section of the PKB home page. The value for this field must be a category of the group named in the Category Group 3 field.</inlineHelpText>
+    <label>Root Category 3</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

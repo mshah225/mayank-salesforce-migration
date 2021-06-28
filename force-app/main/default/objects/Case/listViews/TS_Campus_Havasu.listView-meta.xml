@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TS_Campus_Havasu</fullName>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Campus__c</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>OWNER_NAME</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>Campus__c</field>
+        <operation>equals</operation>
+        <value>Havasu</value>
+    </filters>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>notEqual</operation>
+        <value>1</value>
+    </filters>
+    <label>TS Campus:Havasu</label>
+    <queue>Tech_Studio_Case</queue>
+    <sharedTo>
+        <group>Tech_Studio_Case</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

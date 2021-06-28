@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reason_Administratively_Closed__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>DeprecateCandidate</businessStatus>
+    <description>NO LONGER IN USE: If case status is "Closed: Administratively Resolved (No Outreach)", a reason should be entered in this field.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If Closed: Administratively Resolved (No Outreach), enter the reason.</inlineHelpText>
+    <label>Reason Administratively Closed</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

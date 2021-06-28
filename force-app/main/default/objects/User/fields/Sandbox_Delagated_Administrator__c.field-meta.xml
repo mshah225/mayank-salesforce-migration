@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sandbox_Delagated_Administrator__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Indicates if user has a corresponding Delegated Administrator permission set in a sandbox.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates if user has a corresponding Delegated Administrator permission set in a sandbox.</inlineHelpText>
+    <label>Delagated Administrator</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

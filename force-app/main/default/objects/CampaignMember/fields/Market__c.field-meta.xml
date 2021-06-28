@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Market__c</fullName>
+    <description>Area segmentation, provided from the scholarship import.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Area segmentation, provided from the scholarship import.</inlineHelpText>
+    <label>Market</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Arizona</fullName>
+                <default>false</default>
+                <label>Arizona</label>
+            </value>
+            <value>
+                <fullName>California</fullName>
+                <default>false</default>
+                <label>California</label>
+            </value>
+            <value>
+                <fullName>Out-of-State</fullName>
+                <default>false</default>
+                <label>Out-of-State</label>
+            </value>
+            <value>
+                <fullName>International</fullName>
+                <default>false</default>
+                <label>International</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

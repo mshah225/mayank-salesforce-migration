@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CBO__c</fullName>
+    <description>This field captures what community based organization the event is affiliate. This field is for EOSS event record type only.</description>
+    <externalId>false</externalId>
+    <label>Community Based Organization</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Aguila</fullName>
+                <default>false</default>
+                <label>Aguila</label>
+            </value>
+            <value>
+                <fullName>AZ Junior High School Council Association</fullName>
+                <default>false</default>
+                <label>AZ Junior High School Council Association</label>
+            </value>
+            <value>
+                <fullName>Be A Leader Foundation</fullName>
+                <default>false</default>
+                <label>Be A Leader Foundation</label>
+            </value>
+            <value>
+                <fullName>Boys and Girls Club</fullName>
+                <default>false</default>
+                <label>Boys and Girls Club</label>
+            </value>
+            <value>
+                <fullName>CoLLEGE Bound Mesa</fullName>
+                <default>false</default>
+                <label>CoLLEGE Bound Mesa</label>
+            </value>
+            <value>
+                <fullName>Girls Rule</fullName>
+                <default>false</default>
+                <label>Girls Rule</label>
+            </value>
+            <value>
+                <fullName>Hermanas Conference</fullName>
+                <default>false</default>
+                <label>Hermanas Conference</label>
+            </value>
+            <value>
+                <fullName>Isaac Amaya Foundation</fullName>
+                <default>false</default>
+                <label>Isaac Amaya Foundation</label>
+            </value>
+            <value>
+                <fullName>JAG</fullName>
+                <default>false</default>
+                <label>JAG</label>
+            </value>
+            <value>
+                <fullName>Maker Fair</fullName>
+                <default>false</default>
+                <label>Maker Fair</label>
+            </value>
+            <value>
+                <fullName>Navajo Housing Authority</fullName>
+                <default>false</default>
+                <label>Navajo Housing Authority</label>
+            </value>
+            <value>
+                <fullName>Mac-Ro-Rodel Foundation</fullName>
+                <default>false</default>
+                <label>Mac-Ro-Rodel Foundation</label>
+            </value>
+            <value>
+                <fullName>Southwest Behavior Health Community</fullName>
+                <default>false</default>
+                <label>Southwest Behavior Health Community</label>
+            </value>
+            <value>
+                <fullName>Stand for Children</fullName>
+                <default>false</default>
+                <label>Stand for Children</label>
+            </value>
+            <value>
+                <fullName>The Harvard Club of Phoenix</fullName>
+                <default>false</default>
+                <label>The Harvard Club of Phoenix</label>
+            </value>
+            <value>
+                <fullName>Tumbleweed Learning Center</fullName>
+                <default>false</default>
+                <label>Tumbleweed Learning Center</label>
+            </value>
+            <value>
+                <fullName>UMOM New Day Center</fullName>
+                <default>false</default>
+                <label>UMOM New Day Center</label>
+            </value>
+            <value>
+                <fullName>Yacuievers</fullName>
+                <default>false</default>
+                <label>Yacuievers</label>
+            </value>
+            <value>
+                <fullName>YMCA Y Achievers</fullName>
+                <default>false</default>
+                <label>YMCA Y Achievers</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

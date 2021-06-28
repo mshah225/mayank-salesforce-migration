@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Segmentation_Type__c</fullName>
+    <businessOwnerGroup>Data_Owner_Ed_Plus</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Used by EdPlus Success Center to identify student's segmentation, used in conjunction with Exception Segmentation Type field.  This field is populated by users with Success Portal Management permission set.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This reflects the student's segmentation, used in conjunction with field Exception Segmentation Type.</inlineHelpText>
+    <label>Segmentation Type</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Core GRAD</fullName>
+                <default>false</default>
+                <label>Core GRAD</label>
+            </value>
+            <value>
+                <fullName>Core UGRD</fullName>
+                <default>false</default>
+                <label>Core UGRD</label>
+            </value>
+            <value>
+                <fullName>Corp Part GRAD</fullName>
+                <default>false</default>
+                <label>Corp Part GRAD</label>
+            </value>
+            <value>
+                <fullName>Corp Part UGRD</fullName>
+                <default>false</default>
+                <label>Corp Part UGRD</label>
+            </value>
+            <value>
+                <fullName>Military GRAD</fullName>
+                <default>false</default>
+                <label>Military GRAD</label>
+            </value>
+            <value>
+                <fullName>Military UGRD</fullName>
+                <default>false</default>
+                <label>Military UGRD</label>
+            </value>
+            <value>
+                <fullName>Reentry</fullName>
+                <default>false</default>
+                <label>Reentry</label>
+            </value>
+            <value>
+                <fullName>Starbucks</fullName>
+                <default>false</default>
+                <label>Starbucks</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

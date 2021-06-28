@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU_AA_DEFENSE_TM__c</fullName>
+    <description>Data sourced from PS_ASU_AA_POS_DFNS.ASU_AA_DEFENSE_TM</description>
+    <externalDeveloperName>ASU_AA_DEFENSE_TM</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Defense Time</label>
+    <length>10</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

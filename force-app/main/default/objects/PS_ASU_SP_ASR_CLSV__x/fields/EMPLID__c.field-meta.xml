@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EMPLID__c</fullName>
+    <description>Data sourced from PS_ASU_ACAD_STATUS.EMPLID</description>
+    <externalDeveloperName>EMPLID</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Contact</label>
+    <length>10</length>
+    <referenceTargetField>Contact.EMPLID__c</referenceTargetField>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Class Academic Student Record (external)</relationshipLabel>
+    <relationshipName>Class_Academic_Student_Record_external</relationshipName>
+    <type>IndirectLookup</type>
+</CustomField>

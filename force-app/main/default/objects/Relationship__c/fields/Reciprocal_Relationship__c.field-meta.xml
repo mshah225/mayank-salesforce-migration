@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reciprocal_Relationship__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Provides a direct connection between a Relationship and it's reciprocal record. Used for Contact to Contact and Account to Account Relationships.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Provides a direct connection between a Relationship and it's reciprocal record. Used for Contact to Contact and Account to Account Relationships.</inlineHelpText>
+    <label>Reciprocal Relationship</label>
+    <referenceTo>Relationship__c</referenceTo>
+    <relationshipLabel>Reciprocal Relationships</relationshipLabel>
+    <relationshipName>Relationships</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

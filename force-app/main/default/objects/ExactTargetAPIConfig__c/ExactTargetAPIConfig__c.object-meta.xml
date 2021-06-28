@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Holds the information needed to access Marketing Cloud web services.</description>
+    <enableFeeds>false</enableFeeds>
+    <label>ExactTargetAPIConfig</label>
+    <visibility>Protected</visibility>
+</CustomObject>

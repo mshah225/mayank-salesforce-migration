@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Priority__c</fullName>
+    <description>Used to set the Case priority upon creation.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Used to set the Case priority upon creation.</inlineHelpText>
+    <label>Priority</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>High</fullName>
+                <default>false</default>
+                <label>High</label>
+            </value>
+            <value>
+                <fullName>Normal</fullName>
+                <default>false</default>
+                <label>Normal</label>
+            </value>
+            <value>
+                <fullName>Urgent</fullName>
+                <default>false</default>
+                <label>Urgent</label>
+            </value>
+            <value>
+                <fullName>1 - Highest Priority</fullName>
+                <default>false</default>
+                <label>1 - Highest Priority</label>
+            </value>
+            <value>
+                <fullName>2 - High Priority</fullName>
+                <default>false</default>
+                <label>2 - High Priority</label>
+            </value>
+            <value>
+                <fullName>3 - Normal Priority</fullName>
+                <default>false</default>
+                <label>3 - Normal Priority</label>
+            </value>
+            <value>
+                <fullName>4 - Minor Priority</fullName>
+                <default>false</default>
+                <label>4 - Minor Priority</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

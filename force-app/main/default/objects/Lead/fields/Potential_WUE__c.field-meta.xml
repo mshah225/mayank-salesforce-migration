@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Potential_WUE__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[import] - Western Undergraduate Exchange - a prospective student who might be eligible for reduced tuition rate based on the students geographic location and other criteria.</description>
+    <externalId>false</externalId>
+    <label>Potential WUE</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

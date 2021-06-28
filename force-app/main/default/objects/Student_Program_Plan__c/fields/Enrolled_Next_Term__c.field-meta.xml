@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enrolled_Next_Term__c</fullName>
+    <businessOwnerGroup>Data_Owner_Registrar</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>(Peoplesoft) Enrolled in Next Term should accurately reflect students not enrolled in the target term, excluding students who are:
+a.     Active (Prog_Status = ‘AC’)
+b.     Not applied to graduate (Asu_Stdnt_Profile_Maj_Term.Exp_Grad_Term current term or in the past acad year)
+c.     Not deceased (Srvc_Ind_Cd = ‘S00’)
+d.     Not discontinued or disqualified (Acad_Std_Bot IN (‘DIS’, ‘DSQ’)
+e.     Don’t have a Student Life hold (Srvc_Ind_Cd IN (‘S03’, ‘S53’, ‘S54’, ‘S55’
+f.      Not in program UGPR (mostly exchange and visiting status)
+g.     Past their enrollment appointment open date (Ps_Appointment_Tbl.Appt_Start_Dt &lt; Sysdate or is null)
+Visible on the Graduate Student Profile tab; Access granted via PS security role 'Student Profile'.</description>
+    <externalId>false</externalId>
+    <label>Enrolled Next Term</label>
+    <length>1</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_View_Only__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>PeopleSoft security role = ASU_FC_SF AD View Only</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Users will receive the ASU Read Only profile for this role.</inlineHelpText>
+    <label>View Only</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

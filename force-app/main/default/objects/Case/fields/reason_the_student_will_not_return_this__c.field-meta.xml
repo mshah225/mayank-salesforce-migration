@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>reason_the_student_will_not_return_this__c</fullName>
+    <description>For use on Retention Outreach Close Case Layout</description>
+    <externalId>false</externalId>
+    <label>Reason not returning this semester:</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Financial</fullName>
+                <default>false</default>
+                <label>Financial</label>
+            </value>
+            <value>
+                <fullName>Academic Support</fullName>
+                <default>false</default>
+                <label>Academic Support</label>
+            </value>
+            <value>
+                <fullName>Health</fullName>
+                <default>false</default>
+                <label>Health</label>
+            </value>
+            <value>
+                <fullName>Social Engagement</fullName>
+                <default>false</default>
+                <label>Social Engagement</label>
+            </value>
+            <value>
+                <fullName>Judicial Affairs</fullName>
+                <default>false</default>
+                <label>Judicial Affairs</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

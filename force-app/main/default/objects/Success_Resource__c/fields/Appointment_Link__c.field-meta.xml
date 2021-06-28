@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Appointment_Link__c</fullName>
+    <description>[Ed Plus Integration] Field will be populated by imports managed by EdPlus</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Field will be populated by imports managed by EdPlus</inlineHelpText>
+    <label>Appointment Link</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>This is used to minimize queries for record type ids.</description>
+    <enableFeeds>false</enableFeeds>
+    <label>Record Type Ids</label>
+    <visibility>Protected</visibility>
+</CustomObject>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Institution_Attending__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>institution attending</description>
+    <externalId>false</externalId>
+    <inlineHelpText>2 year or 4 year institution as self-identified on Qualifier webform</inlineHelpText>
+    <label>Institution Attending</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>Please select a valid institution type. It must be 2YR, 4YR, CC, COL, or UNV.</errorMessage>
+        <filterItems>
+            <field>Account.Type</field>
+            <operation>equals</operation>
+            <value>Institution</value>
+        </filterItems>
+        <filterItems>
+            <field>Account.Institution_Type__c</field>
+            <operation>equals</operation>
+            <value>2YR, 4YR, CC, COL, UNV</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Opportunities (Institution Attending)</relationshipLabel>
+    <relationshipName>Opportunities</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

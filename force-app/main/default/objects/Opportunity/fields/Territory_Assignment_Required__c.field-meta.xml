@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Territory_Assignment_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>This checkbox is used to indicate the record should be evaluated for territory assignment. When set to true the trigger will fire. The trigger sets the value back to false.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If the Opportunity owner needs to be reassigned based on the Contact's recruitment details, please check this box for the auto-territory assignment rules to run.</inlineHelpText>
+    <label>Territory Assignment Required</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

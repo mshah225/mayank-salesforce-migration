@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Troubleshooting</fullName>
+    <columns>NAME</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>Additional_Message_Text__c</columns>
+    <columns>Case__c</columns>
+    <columns>Case_Thread_Id__c</columns>
+    <columns>Contact__c</columns>
+    <columns>Contact_EMPLID__c</columns>
+    <columns>Engagement__c</columns>
+    <columns>Expiration_Date__c</columns>
+    <columns>Status__c</columns>
+    <columns>Success_Resource_Primary_Email__c</columns>
+    <columns>Success_Resource_Record__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CREATEDBY_USER</field>
+        <operation>equals</operation>
+        <value>Jessica Jenner</value>
+    </filters>
+    <label>Troubleshooting</label>
+</ListView>

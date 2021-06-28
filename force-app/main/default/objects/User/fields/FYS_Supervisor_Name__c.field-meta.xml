@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FYS_Supervisor_Name__c</fullName>
+    <description>FYS user's supervisor name</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the user'ss supervisor name listed in the Success Coach Mapping Tab</inlineHelpText>
+    <label>FYS Supervisor Name</label>
+    <length>50</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

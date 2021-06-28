@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Program__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>[Peoplesoft] - Relationship to program (college)</description>
+    <externalId>false</externalId>
+    <label>(DO NOT USE) Program</label>
+    <referenceTo>Program__c</referenceTo>
+    <relationshipLabel>Organizations</relationshipLabel>
+    <relationshipName>Organizations</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

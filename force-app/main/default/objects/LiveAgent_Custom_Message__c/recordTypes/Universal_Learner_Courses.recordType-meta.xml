@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Universal_Learner_Courses</fullName>
+    <active>true</active>
+    <description>Record type for Universal Learner Courses Custom Messages for Live Chat</description>
+    <label>Universal Learner Courses</label>
+    <picklistValues>
+        <picklist>LiveAgent_Button__c</picklist>
+        <values>
+            <fullName>Open_Scale_Authenticated_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Open_Scale_Unauthenticated_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

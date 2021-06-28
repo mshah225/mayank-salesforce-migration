@@ -95,6 +95,7 @@ public with sharing class FeedbackButtonService {
         }
     }
 
+    @TestVisible
     private class LWCFeedbackException extends Exception {
     }
 }

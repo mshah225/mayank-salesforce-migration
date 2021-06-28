@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact_Required</fullName>
+    <active>true</active>
+    <description>The Contact field must be populated to save the record</description>
+    <errorConditionFormula>ISBLANK( Contact__c )</errorConditionFormula>
+    <errorDisplayField>Contact__c</errorDisplayField>
+    <errorMessage>The Contact is required to save an Opportunity record.</errorMessage>
+</ValidationRule>

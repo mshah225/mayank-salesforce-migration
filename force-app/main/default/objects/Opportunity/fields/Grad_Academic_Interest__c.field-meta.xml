@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grad_Academic_Interest__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Grad Academic Interest</label>
+    <lookupFilter>
+        <active>true</active>
+        <errorMessage>The value you selected is not the correct Campaign Type. Please select a Graduate Academic type.</errorMessage>
+        <filterItems>
+            <field>Campaign.Type</field>
+            <operation>equals</operation>
+            <value>Graduate Academic</value>
+        </filterItems>
+        <infoMessage>Be sure to select a Graduate Academic Campaign Type.</infoMessage>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Campaign</referenceTo>
+    <relationshipLabel>Opportunities (Grad Academic Interest)</relationshipLabel>
+    <relationshipName>Oppty_Grad_Acad_Interest</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

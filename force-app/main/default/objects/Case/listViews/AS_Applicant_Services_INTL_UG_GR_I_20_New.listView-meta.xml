@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Applicant_Services_INTL_UG_GR_I_20_New</fullName>
+    <columns>Case_Owner__c</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Opportunity_Location__c</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>Student_Visa__c</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>Needs_Attention__c</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Functional_Group__c</field>
+        <operation>equals</operation>
+        <value>Admission Services</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Applicant Services - Undergraduate</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>equals</operation>
+        <value>INTL Financial Guarantee,INTL I-20</value>
+    </filters>
+    <label>AS Applicant Services INTL - UG I-20*</label>
+    <sharedTo>
+        <group>AS_Additional_Applicant_Services_Case</group>
+        <group>AS_Applicant_Services_Graduate_Case</group>
+        <group>AS_Applicant_Services_UG_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>International_Recruiter_Case</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

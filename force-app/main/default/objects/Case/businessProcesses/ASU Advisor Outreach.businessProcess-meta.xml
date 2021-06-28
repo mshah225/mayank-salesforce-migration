@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU Advisor Outreach</fullName>
+    <description>for cases created in the Success Student Portal</description>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Busy Signal</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Customer Self-Resolved</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Conferred with Student by Email</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Conferred with Student by Phone</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Email Sent</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>In Person Meeting</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>In Progress</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Left Message with Third Party</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Left voicemail</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Outreach Required</fullName>
+        <default>true</default>
+    </values>
+    <values>
+        <fullName>Text message sent</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Unable to Leave Voicemail</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Wrong number</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

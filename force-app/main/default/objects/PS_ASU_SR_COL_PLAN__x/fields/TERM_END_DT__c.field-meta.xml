@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TERM_END_DT__c</fullName>
+    <description>Data sourced from PS_TERM_TBL.TERM_END_DT</description>
+    <externalDeveloperName>TERM_END_DT</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Term End Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

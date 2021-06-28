@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Call_Result__c</fullName>
+    <description>Used for calling campaigns. It is the result of the call attempt. The picklist value is dependent on the Status.</description>
+    <externalId>false</externalId>
+    <label>Call Result</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Status</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Left Voicemail</fullName>
+                <default>false</default>
+                <label>Left Voicemail</label>
+            </value>
+            <value>
+                <fullName>No Answer</fullName>
+                <default>false</default>
+                <label>No Answer</label>
+            </value>
+            <value>
+                <fullName>Number disconnected</fullName>
+                <default>false</default>
+                <label>Number disconnected</label>
+            </value>
+            <value>
+                <fullName>Spoke with 3rd Party</fullName>
+                <default>false</default>
+                <label>Spoke with 3rd Party</label>
+            </value>
+            <value>
+                <fullName>Spoke with Student</fullName>
+                <default>false</default>
+                <label>Spoke with Student</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Closed: Contacted 1st Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 2nd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: No Contact on 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>1st Attempt</controllingFieldValue>
+            <controllingFieldValue>2nd Attempt</controllingFieldValue>
+            <valueName>Left Voicemail</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed: Contacted 1st Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 2nd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: No Contact on 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>1st Attempt</controllingFieldValue>
+            <controllingFieldValue>2nd Attempt</controllingFieldValue>
+            <valueName>No Answer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed: Contacted 1st Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 2nd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: No Contact on 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>1st Attempt</controllingFieldValue>
+            <controllingFieldValue>2nd Attempt</controllingFieldValue>
+            <valueName>Number disconnected</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed: Contacted 1st Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 2nd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: No Contact on 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>1st Attempt</controllingFieldValue>
+            <controllingFieldValue>2nd Attempt</controllingFieldValue>
+            <valueName>Spoke with 3rd Party</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Closed: Contacted 1st Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 2nd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: Contacted 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>Closed: No Contact on 3rd Attempt</controllingFieldValue>
+            <controllingFieldValue>1st Attempt</controllingFieldValue>
+            <controllingFieldValue>2nd Attempt</controllingFieldValue>
+            <valueName>Spoke with Student</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

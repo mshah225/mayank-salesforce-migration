@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Admit_Qualifier__c</fullName>
+    <description>[webform, manual entry] - Response from a prospective student in the Admit stage</description>
+    <externalId>false</externalId>
+    <label>Admit Qualifier</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>I plan to attend</fullName>
+                <default>false</default>
+                <label>I plan to attend</label>
+            </value>
+            <value>
+                <fullName>I am still considering</fullName>
+                <default>false</default>
+                <label>I am still considering</label>
+            </value>
+            <value>
+                <fullName>I am not interested</fullName>
+                <default>false</default>
+                <label>I am not interested</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

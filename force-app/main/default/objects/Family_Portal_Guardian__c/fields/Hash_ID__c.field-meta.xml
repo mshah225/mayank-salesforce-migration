@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hash_ID__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Guardian record Hash id</description>
+    <externalId>false</externalId>
+    <label>Hash ID</label>
+    <length>255</length>
+    <required>true</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

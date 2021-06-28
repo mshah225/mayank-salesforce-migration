@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>lastextracttime__c</fullName>
+    <description>This field stores the date and time when a user, identified by a unique extractId, last ran a particular delta extraction job.</description>
+    <externalId>false</externalId>
+    <label>lastextracttime</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

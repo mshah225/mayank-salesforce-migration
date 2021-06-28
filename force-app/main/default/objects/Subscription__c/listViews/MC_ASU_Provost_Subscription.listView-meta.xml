@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MC_ASU_Provost_Subscription</fullName>
+    <filterScope>Queue</filterScope>
+    <label>MC: ASU Provost</label>
+    <queue>MC_ASU_Provost</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

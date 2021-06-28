@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Only_System_Admins_Create_Edit_Users</fullName>
+    <active>true</active>
+    <description>Prevents delegated administrators from creating or editing users. 
+FYS Supervisor can edit FYS staff member's Out of Office.</description>
+    <errorConditionFormula>OR(
+AND(
+OR (ISNEW(),ISCHANGED( Email ),ISCHANGED( Alias ),ISCHANGED( Username ),ISCHANGED( FederationIdentifier) ),
+$User.ProfileId &lt;&gt; '00ed00000017Iob' 
+),
+AND(
+$User.ProfileId = '00ed0000000jboW' , 
+NOT(
+OR(ISCHANGED(Out_Of_Office_Message__c), ISCHANGED( omniChannel_loggedIn__c))
+),
+ Alias &lt;&gt; $User.Alias
+))</errorConditionFormula>
+    <errorMessage>Only System Administrators can create or edit users.  
+Please contact salesforce.support@asu.edu.</errorMessage>
+</ValidationRule>

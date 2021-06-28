@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Required</fullName>
+    <active>true</active>
+    <description>An Account is required to save the Opportunity record.</description>
+    <errorConditionFormula>ISBLANK( AccountId )</errorConditionFormula>
+    <errorDisplayField>AccountId</errorDisplayField>
+    <errorMessage>The Account is required to be entered when saving an Opportunity record.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU_Online_Student__c</fullName>
+    <description>Populate field with contents of the Contact.ASU_Online_Student field</description>
+    <externalId>false</externalId>
+    <formula>Contact.ASU_Online_Student__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Indicates a student who is active in an online academic program as of today</inlineHelpText>
+    <label>ASU Online Student</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

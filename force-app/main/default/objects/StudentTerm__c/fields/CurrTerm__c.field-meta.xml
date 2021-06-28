@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CurrTerm__c</fullName>
+    <description>Current Term at ASU</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Previous → CURRENT TERM → Next → Future</inlineHelpText>
+    <label>CurrTerm</label>
+    <length>4</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

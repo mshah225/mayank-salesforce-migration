@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Related_Articles_Size__c</fullName>
+    <defaultValue>5</defaultValue>
+    <description>Number of related articles that will display when viewing an article. Recommended maximum value is 5.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Number of related articles that will display when viewing an article. Recommended maximum value is 5.</inlineHelpText>
+    <label>Related Articles Size</label>
+    <precision>2</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

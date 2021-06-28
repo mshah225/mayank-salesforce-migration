@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>De_dupe__c</fullName>
+    <description>Used for Subscription Center Campaign Member record types - Marketing Cloud de-dup = contactId+campaignId</description>
+    <externalId>false</externalId>
+    <formula>ContactId&amp;"+"&amp;CampaignId</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Used for Subscription Center Campaign Member record types - Marketing Cloud de-dup = contactId+campaignId</inlineHelpText>
+    <label>MC De-dupe</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

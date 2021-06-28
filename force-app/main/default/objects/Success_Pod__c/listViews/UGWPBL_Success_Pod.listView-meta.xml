@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UGWPBL_Success_Pod</fullName>
+    <filterScope>Queue</filterScope>
+    <label>UGWPBL</label>
+    <queue>UGWPBL</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

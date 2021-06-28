@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trans_Path_2nd_Plan__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Peoplesoft] - Backup major for transfer student</description>
+    <externalId>false</externalId>
+    <label>TP: Secondary Plan</label>
+    <referenceTo>Plan__c</referenceTo>
+    <relationshipLabel>Opportunities (Secondary Plan)</relationshipLabel>
+    <relationshipName>Opportunities_TransPath2ndPlan</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

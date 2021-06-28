@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Open_Help_Desk_FA_SBS</fullName>
+    <booleanFilter>(1 AND 2 AND 3) OR (1 AND 2 AND 4 AND 5)</booleanFilter>
+    <columns>Case_Owner__c</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Origin__c</columns>
+    <columns>Functional_Group__c</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Preferred_Full_Name__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CASES.CREATED_DATE</field>
+        <operation>greaterOrEqual</operation>
+        <value>LAST_N_DAYS:30</value>
+    </filters>
+    <filters>
+        <field>CC_Functional_Group__c</field>
+        <operation>equals</operation>
+        <value>Financial Aid,Student Business Services</value>
+    </filters>
+    <filters>
+        <field>CC_Functional_Group__c</field>
+        <operation>equals</operation>
+        <value>Help Desk</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Finances (Help Desk)</value>
+    </filters>
+    <label>All Open - Help Desk, FA, SBS (Last 30d)</label>
+    <sharedTo>
+        <group>Help_Desk_Case</group>
+        <group>Student_Business_Services_Case</group>
+        <group>Student_Financial_Assistance_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

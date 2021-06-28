@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Academic_Interest__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>[manual import] - Relation to the Acadmeic Intrest</description>
+    <externalId>false</externalId>
+    <label>Academic Interest</label>
+    <referenceTo>Academic_Interest__c</referenceTo>
+    <relationshipLabel>Lead Interests</relationshipLabel>
+    <relationshipName>Lead_Interests_Academic_Interest</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

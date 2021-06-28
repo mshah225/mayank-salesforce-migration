@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campus__c</fullName>
+    <externalId>false</externalId>
+    <label>Campus</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Downtown</fullName>
+                <default>false</default>
+                <label>Downtown</label>
+            </value>
+            <value>
+                <fullName>Lake Havasu</fullName>
+                <default>false</default>
+                <label>Lake Havasu</label>
+            </value>
+            <value>
+                <fullName>Online</fullName>
+                <default>false</default>
+                <label>Online</label>
+            </value>
+            <value>
+                <fullName>Poly</fullName>
+                <default>false</default>
+                <label>Poly</label>
+            </value>
+            <value>
+                <fullName>Tempe</fullName>
+                <default>false</default>
+                <label>Tempe</label>
+            </value>
+            <value>
+                <fullName>West</fullName>
+                <default>false</default>
+                <label>West</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

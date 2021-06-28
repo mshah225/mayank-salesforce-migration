@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Barrett_Application_Status__c</fullName>
+    <description>[Import] - Complete when test scores and letters of rec are received and ASU admitted.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Complete when both required letters of rec are received. Please also verify student is admitted to ASU with a test score on file.</inlineHelpText>
+    <label>Barrett Application Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Applicant - Complete</fullName>
+                <default>false</default>
+                <label>Applicant - Complete</label>
+            </value>
+            <value>
+                <fullName>Applicant - In Progress</fullName>
+                <default>false</default>
+                <label>Applicant - In Progress</label>
+            </value>
+            <value>
+                <fullName>Applicant - In Review</fullName>
+                <default>false</default>
+                <label>Applicant - In Review</label>
+            </value>
+            <value>
+                <fullName>Applicant - Submitted</fullName>
+                <default>false</default>
+                <label>Applicant - Submitted</label>
+            </value>
+            <value>
+                <fullName>Cancelled - In Review</fullName>
+                <default>false</default>
+                <label>Cancelled - In Review</label>
+            </value>
+            <value>
+                <fullName>Cancelled - Pre-Review</fullName>
+                <default>false</default>
+                <label>Cancelled - Pre-Review</label>
+            </value>
+            <value>
+                <fullName>Cancelled - Pre-Submit</fullName>
+                <default>false</default>
+                <label>Cancelled - Pre-Submit</label>
+            </value>
+            <value>
+                <fullName>Cancelled - Purge</fullName>
+                <default>false</default>
+                <label>Cancelled - Purge</label>
+            </value>
+            <value>
+                <fullName>Decision Rendered</fullName>
+                <default>false</default>
+                <label>Decision Rendered</label>
+            </value>
+            <value>
+                <fullName>Decision Rendered Spring</fullName>
+                <default>false</default>
+                <label>Decision Rendered Spring</label>
+            </value>
+            <value>
+                <fullName>Deleted</fullName>
+                <default>false</default>
+                <label>Deleted</label>
+            </value>
+            <value>
+                <fullName>Waiting Student Notice</fullName>
+                <default>false</default>
+                <label>Waiting Student Notice</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Call_Result__c</fullName>
+    <description>Picklist field that allows users to select the call result.</description>
+    <externalId>false</externalId>
+    <label>Call Result</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Disconnected</fullName>
+                <default>false</default>
+                <label>Disconnected</label>
+            </value>
+            <value>
+                <fullName>Emailed</fullName>
+                <default>false</default>
+                <label>Emailed</label>
+            </value>
+            <value>
+                <fullName>Left Message on Voicemail</fullName>
+                <default>false</default>
+                <label>Left Message on Voicemail</label>
+            </value>
+            <value>
+                <fullName>Left Message with Family Member</fullName>
+                <default>false</default>
+                <label>Left Message with Family Member</label>
+            </value>
+            <value>
+                <fullName>No Answer</fullName>
+                <default>false</default>
+                <label>No Answer</label>
+            </value>
+            <value>
+                <fullName>Not Attempted</fullName>
+                <default>false</default>
+                <label>Not Attempted</label>
+            </value>
+            <value>
+                <fullName>Notecard Sent</fullName>
+                <default>false</default>
+                <label>Notecard Sent</label>
+            </value>
+            <value>
+                <fullName>Spoke with Other Family Member</fullName>
+                <default>false</default>
+                <label>Spoke with Other Family Member</label>
+            </value>
+            <value>
+                <fullName>Spoke with Parent/Guardian</fullName>
+                <default>false</default>
+                <label>Spoke with Parent/Guardian</label>
+            </value>
+            <value>
+                <fullName>Spoke with Student</fullName>
+                <default>false</default>
+                <label>Spoke with Student</label>
+            </value>
+            <value>
+                <fullName>Wrong Number</fullName>
+                <default>false</default>
+                <label>Wrong Number</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

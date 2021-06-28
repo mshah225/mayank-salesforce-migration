@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Event_Mode__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[Populated by Recruitment users who create campaigns]-Event Mode on Event Campaign Record Type</description>
+    <externalId>false</externalId>
+    <inlineHelpText>For in person events, select either "On-campus" or "Off-campus".  Select "Sync" if the event has both virtual and in-person components happening simultaneously or "Virtual" if the event is 100% online.</inlineHelpText>
+    <label>Event Mode</label>
+    <required>false</required>
+    <securityClassification>Public</securityClassification>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Off-campus</fullName>
+                <default>false</default>
+                <label>Off-campus</label>
+            </value>
+            <value>
+                <fullName>On-campus</fullName>
+                <default>false</default>
+                <label>On-campus</label>
+            </value>
+            <value>
+                <fullName>Sync</fullName>
+                <default>false</default>
+                <label>Sync</label>
+            </value>
+            <value>
+                <fullName>Virtual</fullName>
+                <default>false</default>
+                <label>Virtual</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

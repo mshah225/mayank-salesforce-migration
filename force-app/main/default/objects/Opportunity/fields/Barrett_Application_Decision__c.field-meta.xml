@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Barrett_Application_Decision__c</fullName>
+    <description>[??] - Examples include: Accepted, Denied</description>
+    <externalId>false</externalId>
+    <label>Barrett Application Decision</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+                <label>Accepted</label>
+            </value>
+            <value>
+                <fullName>Denied</fullName>
+                <default>false</default>
+                <label>Denied</label>
+            </value>
+            <value>
+                <fullName>Deny Tempe, Admit Poly</fullName>
+                <default>false</default>
+                <label>Deny Tempe, Admit Poly</label>
+            </value>
+            <value>
+                <fullName>Deny Tempe, Admit Poly &amp; West</fullName>
+                <default>false</default>
+                <label>Deny Tempe, Admit Poly &amp; West</label>
+            </value>
+            <value>
+                <fullName>Deny Tempe, Admit West</fullName>
+                <default>false</default>
+                <label>Deny Tempe, Admit West</label>
+            </value>
+            <value>
+                <fullName>DPC Admit</fullName>
+                <default>false</default>
+                <label>DPC Admit</label>
+            </value>
+            <value>
+                <fullName>Poly Admit</fullName>
+                <default>false</default>
+                <label>Poly Admit</label>
+            </value>
+            <value>
+                <fullName>Priority Action Wait List</fullName>
+                <default>false</default>
+                <label>Priority Action Wait List</label>
+            </value>
+            <value>
+                <fullName>Regular Decision Wait List</fullName>
+                <default>false</default>
+                <label>Regular Decision Wait List</label>
+            </value>
+            <value>
+                <fullName>Tempe Admit</fullName>
+                <default>false</default>
+                <label>Tempe Admit</label>
+            </value>
+            <value>
+                <fullName>West Admit</fullName>
+                <default>false</default>
+                <label>West Admit</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TC_SHESC_Graduate_Recruitment</fullName>
+    <booleanFilter>1 AND ((2 AND 3 AND 7 AND (4 OR 5 OR 6)) OR (8 AND 9 AND 10))</booleanFilter>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>notEqual</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>CC_Functional_Group__c</field>
+        <operation>equals</operation>
+        <value>The College</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Graduate Recruitment</value>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>contains</operation>
+        <value>LAMUSEUMCE,LAMUSSTMA,LAURBPHD,LAANTHRPHD,LASSHCHPHD</value>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>contains</operation>
+        <value>LASSHCPHD,LAAMLCPHD,LAAMLPHD,LAANTHCPHD,LAESSCPHD,LAESSPHD</value>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>contains</operation>
+        <value>LAESSURPHD,LASSHEPHD,LASSHMA,LASSHPHD,LASSHURPHD</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>The College (Case)</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>TC - SHESC (Case)</value>
+    </filters>
+    <filters>
+        <field>CC_Functional_Group__c</field>
+        <operation>equals</operation>
+        <value>TC - SHESC</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Graduate Recruitment - SHESC</value>
+    </filters>
+    <label>TC SHESC - Graduate Recruitment</label>
+    <sharedTo>
+        <group>CLAS_SHESC_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

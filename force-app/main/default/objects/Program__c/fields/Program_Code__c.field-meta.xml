@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Program_Code__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>[Peoplesoft] - Code for the program (College)</description>
+    <externalId>true</externalId>
+    <label>Program Code</label>
+    <length>10</length>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

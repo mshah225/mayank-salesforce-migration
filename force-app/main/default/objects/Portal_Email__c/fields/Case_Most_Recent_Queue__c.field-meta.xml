@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Most_Recent_Queue__c</fullName>
+    <description>The queue the case was most recently assigned to.</description>
+    <externalId>false</externalId>
+    <formula>Case__r.Most_Recent_Queue__c</formula>
+    <inlineHelpText>Used to determine which queue to send at if the primary ownerId is a userId.</inlineHelpText>
+    <label>Case Most Recent Queue</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

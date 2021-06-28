@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Send_Date_Last_Planned_Message__c</fullName>
+    <description>The End Date indicated in the associated Engagement record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The End Date indicated in the associated Engagement record.</inlineHelpText>
+    <label>Send Date (Last Planned Message)</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

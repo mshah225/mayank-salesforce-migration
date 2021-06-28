@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Course_Load__c</fullName>
+    <description>[import] - Examples include Part-time, Full-Time, Undecided, No response</description>
+    <externalId>false</externalId>
+    <label>Course Load</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Part-time</fullName>
+                <default>false</default>
+                <label>Part-time</label>
+            </value>
+            <value>
+                <fullName>Full-time</fullName>
+                <default>false</default>
+                <label>Full-time</label>
+            </value>
+            <value>
+                <fullName>Undecided</fullName>
+                <default>false</default>
+                <label>Undecided</label>
+            </value>
+            <value>
+                <fullName>No response</fullName>
+                <default>false</default>
+                <label>No response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

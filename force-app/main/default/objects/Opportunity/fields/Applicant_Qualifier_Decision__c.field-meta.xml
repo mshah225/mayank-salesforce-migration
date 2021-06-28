@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Applicant_Qualifier_Decision__c</fullName>
+    <description>[webform, manual entry] - Decision factor received when a prospective student is in the Applicant stage</description>
+    <externalId>false</externalId>
+    <label>Applicant Qualifier Decision</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Applicant_Qualifier__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>1st Choice Program unavailable</fullName>
+                <default>false</default>
+                <label>1st Choice Program unavailable</label>
+            </value>
+            <value>
+                <fullName>BHC Admission</fullName>
+                <default>false</default>
+                <label>BHC Admission</label>
+            </value>
+            <value>
+                <fullName>Career placement</fullName>
+                <default>false</default>
+                <label>Career placement</label>
+            </value>
+            <value>
+                <fullName>Continuing at 2 yr institution</fullName>
+                <default>false</default>
+                <label>Continuing at 2 yr institution</label>
+            </value>
+            <value>
+                <fullName>Course Availability</fullName>
+                <default>false</default>
+                <label>Course Availability</label>
+            </value>
+            <value>
+                <fullName>COVID-19 may have impacted my plans</fullName>
+                <default>false</default>
+                <label>COVID-19 may have impacted my plans</label>
+            </value>
+            <value>
+                <fullName>Decided to attend elsewhere</fullName>
+                <default>false</default>
+                <label>Decided to attend elsewhere</label>
+            </value>
+            <value>
+                <fullName>Decided to attend online program</fullName>
+                <default>false</default>
+                <label>Decided to attend online program</label>
+            </value>
+            <value>
+                <fullName>Distance from Home</fullName>
+                <default>false</default>
+                <label>Distance from Home</label>
+            </value>
+            <value>
+                <fullName>Family or work</fullName>
+                <default>false</default>
+                <label>Family or work</label>
+            </value>
+            <value>
+                <fullName>Financial</fullName>
+                <default>false</default>
+                <label>Financial</label>
+            </value>
+            <value>
+                <fullName>Going to 4 yr institution</fullName>
+                <default>false</default>
+                <label>Going to 4 yr institution</label>
+            </value>
+            <value>
+                <fullName>Housing</fullName>
+                <default>false</default>
+                <label>Housing</label>
+            </value>
+            <value>
+                <fullName>I-20 issued by another University</fullName>
+                <default>false</default>
+                <label>I-20 issued by another University</label>
+            </value>
+            <value>
+                <fullName>I-20 not issued in time</fullName>
+                <default>false</default>
+                <label>I-20 not issued in time</label>
+            </value>
+            <value>
+                <fullName>I-20 not received in time</fullName>
+                <default>false</default>
+                <label>I-20 not received in time</label>
+            </value>
+            <value>
+                <fullName>Interested in deferring</fullName>
+                <default>false</default>
+                <label>Interested in deferring</label>
+            </value>
+            <value>
+                <fullName>Job offer</fullName>
+                <default>false</default>
+                <label>Job offer</label>
+            </value>
+            <value>
+                <fullName>Location</fullName>
+                <default>false</default>
+                <label>Location</label>
+            </value>
+            <value>
+                <fullName>Major not offered at preferred campus</fullName>
+                <default>false</default>
+                <label>Major not offered at preferred campus</label>
+            </value>
+            <value>
+                <fullName>Military</fullName>
+                <default>false</default>
+                <label>Military</label>
+            </value>
+            <value>
+                <fullName>Mission</fullName>
+                <default>false</default>
+                <label>Mission</label>
+            </value>
+            <value>
+                <fullName>Not admitted to 1st choice</fullName>
+                <default>false</default>
+                <label>Not admitted to 1st choice</label>
+            </value>
+            <value>
+                <fullName>Playing Athletics elsewhere</fullName>
+                <default>false</default>
+                <label>Playing Athletics elsewhere</label>
+            </value>
+            <value>
+                <fullName>Reputation</fullName>
+                <default>false</default>
+                <label>Reputation</label>
+            </value>
+            <value>
+                <fullName>Response time</fullName>
+                <default>false</default>
+                <label>Response time</label>
+            </value>
+            <value>
+                <fullName>Size (too big)</fullName>
+                <default>false</default>
+                <label>Size (too big)</label>
+            </value>
+            <value>
+                <fullName>Size (too small)</fullName>
+                <default>false</default>
+                <label>Size (too small)</label>
+            </value>
+            <value>
+                <fullName>Starting at 2 yr institution</fullName>
+                <default>false</default>
+                <label>Starting at 2 yr institution</label>
+            </value>
+            <value>
+                <fullName>Waiting on decision elsewhere</fullName>
+                <default>false</default>
+                <label>Waiting on decision elsewhere</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>1st Choice Program unavailable</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>BHC Admission</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Career placement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Continuing at 2 yr institution</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Course Availability</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>COVID-19 may have impacted my plans</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Distance from Home</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Family or work</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Financial</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Going to 4 yr institution</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Housing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>I-20 issued by another University</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>I-20 not issued in time</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>I-20 not received in time</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <valueName>Interested in deferring</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Job offer</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Location</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Major not offered at preferred campus</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Military</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Mission</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Not admitted to 1st choice</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Playing Athletics elsewhere</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Reputation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Response time</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Size (too big)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Size (too small)</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Starting at 2 yr institution</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am still considering</controllingFieldValue>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Waiting on decision elsewhere</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Decided to attend elsewhere</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>I am not interested</controllingFieldValue>
+            <valueName>Decided to attend online program</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

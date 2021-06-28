@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_DepartmentCollege</fullName>
+    <active>true</active>
+    <description>Require "Department/College" on College Department Event Types</description>
+    <errorConditionFormula>AND(
+RecordType.Name = 'Event',
+ISPICKVAL(Type, 'College Department Events'),
+ISBLANK(Requested__c)  
+)</errorConditionFormula>
+    <errorDisplayField>Requested__c</errorDisplayField>
+    <errorMessage>If this is a College Department Event, then Department / College cannot be left blank.</errorMessage>
+</ValidationRule>

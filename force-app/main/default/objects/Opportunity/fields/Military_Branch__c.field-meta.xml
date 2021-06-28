@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Military_Branch__c</fullName>
+    <description>[Self-reported] - From the supplemental application. The data has not been confirmed. Examples include: Air Force, Army, Coast Guard, Marines, Navy</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Self-reported from the supplemental application. The data has not been confirmed.</inlineHelpText>
+    <label>Military Branch</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Air Force</fullName>
+                <default>false</default>
+                <label>Air Force</label>
+            </value>
+            <value>
+                <fullName>Army</fullName>
+                <default>false</default>
+                <label>Army</label>
+            </value>
+            <value>
+                <fullName>Coast Guard</fullName>
+                <default>false</default>
+                <label>Coast Guard</label>
+            </value>
+            <value>
+                <fullName>Marines</fullName>
+                <default>false</default>
+                <label>Marines</label>
+            </value>
+            <value>
+                <fullName>Navy</fullName>
+                <default>false</default>
+                <label>Navy</label>
+            </value>
+            <value>
+                <fullName>NOAA</fullName>
+                <default>false</default>
+                <label>NOAA</label>
+            </value>
+            <value>
+                <fullName>USPHS</fullName>
+                <default>false</default>
+                <label>USPHS</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

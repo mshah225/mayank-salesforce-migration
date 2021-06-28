@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enrollment_Term__c</fullName>
+    <externalId>false</externalId>
+    <label>Enrollment Term</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>2012 Fall</fullName>
+                <default>false</default>
+                <label>2012 Fall</label>
+            </value>
+            <value>
+                <fullName>2013 Spring</fullName>
+                <default>false</default>
+                <label>2013 Spring</label>
+            </value>
+            <value>
+                <fullName>2013 Summer</fullName>
+                <default>false</default>
+                <label>2013 Summer</label>
+            </value>
+            <value>
+                <fullName>2013 Fall</fullName>
+                <default>false</default>
+                <label>2013 Fall</label>
+            </value>
+            <value>
+                <fullName>2014 Spring</fullName>
+                <default>false</default>
+                <label>2014 Spring</label>
+            </value>
+            <value>
+                <fullName>2014 Summer</fullName>
+                <default>false</default>
+                <label>2014 Summer</label>
+            </value>
+            <value>
+                <fullName>2014 Fall</fullName>
+                <default>false</default>
+                <label>2014 Fall</label>
+            </value>
+            <value>
+                <fullName>2015 Spring</fullName>
+                <default>false</default>
+                <label>2015 Spring</label>
+            </value>
+            <value>
+                <fullName>2015 Summer</fullName>
+                <default>false</default>
+                <label>2015 Summer</label>
+            </value>
+            <value>
+                <fullName>2015 Fall</fullName>
+                <default>false</default>
+                <label>2015 Fall</label>
+            </value>
+            <value>
+                <fullName>2016 Spring</fullName>
+                <default>false</default>
+                <label>2016 Spring</label>
+            </value>
+            <value>
+                <fullName>2016 Summer</fullName>
+                <default>false</default>
+                <label>2016 Summer</label>
+            </value>
+            <value>
+                <fullName>2016 Fall</fullName>
+                <default>false</default>
+                <label>2016 Fall</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

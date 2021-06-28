@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Institution_Status__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[??] -</description>
+    <externalId>false</externalId>
+    <label>Institution Status</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

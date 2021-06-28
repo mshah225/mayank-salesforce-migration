@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reporting_Category__c</fullName>
+    <description>Picklist value to further categorize cases</description>
+    <externalId>false</externalId>
+    <label>Help Desk Reporting Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Accept/Decline</fullName>
+                <default>false</default>
+                <label>Accept/Decline</label>
+            </value>
+            <value>
+                <fullName>Account Creation </fullName>
+                <default>false</default>
+                <label>Account Creation </label>
+            </value>
+            <value>
+                <fullName>Adjustments</fullName>
+                <default>false</default>
+                <label>Adjustments</label>
+            </value>
+            <value>
+                <fullName>Amount</fullName>
+                <default>false</default>
+                <label>Amount</label>
+            </value>
+            <value>
+                <fullName>Appeals Past Due Fees</fullName>
+                <default>false</default>
+                <label>Appeals Past Due Fees</label>
+            </value>
+            <value>
+                <fullName>Award Criteria</fullName>
+                <default>false</default>
+                <label>Award Criteria</label>
+            </value>
+            <value>
+                <fullName>Balance After Payment</fullName>
+                <default>false</default>
+                <label>Balance After Payment</label>
+            </value>
+            <value>
+                <fullName>Balance Past Due</fullName>
+                <default>false</default>
+                <label>Balance Past Due</label>
+            </value>
+            <value>
+                <fullName>Book Grant</fullName>
+                <default>false</default>
+                <label>Book Grant</label>
+            </value>
+            <value>
+                <fullName>Cancel Aid</fullName>
+                <default>false</default>
+                <label>Cancel Aid</label>
+            </value>
+            <value>
+                <fullName>Certification Status</fullName>
+                <default>false</default>
+                <label>Certification Status</label>
+            </value>
+            <value>
+                <fullName>Charge Breakdown</fullName>
+                <default>false</default>
+                <label>Charge Breakdown</label>
+            </value>
+            <value>
+                <fullName>Citizenship Verification </fullName>
+                <default>false</default>
+                <label>Citizenship Verification </label>
+            </value>
+            <value>
+                <fullName>Deadlines </fullName>
+                <default>false</default>
+                <label>Deadlines </label>
+            </value>
+            <value>
+                <fullName>Default </fullName>
+                <default>false</default>
+                <label>Default </label>
+            </value>
+            <value>
+                <fullName>Disbursement Hold</fullName>
+                <default>false</default>
+                <label>Disbursement Hold</label>
+            </value>
+            <value>
+                <fullName>Disbursement Status</fullName>
+                <default>false</default>
+                <label>Disbursement Status</label>
+            </value>
+            <value>
+                <fullName>Dropping a Class</fullName>
+                <default>false</default>
+                <label>Dropping a Class</label>
+            </value>
+            <value>
+                <fullName>Eligibility</fullName>
+                <default>false</default>
+                <label>Eligibility</label>
+            </value>
+            <value>
+                <fullName>Email Verification or Reset </fullName>
+                <default>false</default>
+                <label>Email Verification or Reset </label>
+            </value>
+            <value>
+                <fullName>Entrance Counseling</fullName>
+                <default>false</default>
+                <label>Entrance Counseling</label>
+            </value>
+            <value>
+                <fullName>E-Sign </fullName>
+                <default>false</default>
+                <label>E-Sign </label>
+            </value>
+            <value>
+                <fullName>Exit Counseling</fullName>
+                <default>false</default>
+                <label>Exit Counseling</label>
+            </value>
+            <value>
+                <fullName>FA Impact</fullName>
+                <default>false</default>
+                <label>FA Impact</label>
+            </value>
+            <value>
+                <fullName>FAQ</fullName>
+                <default>false</default>
+                <label>FAQ</label>
+            </value>
+            <value>
+                <fullName>Federal Work Study</fullName>
+                <default>false</default>
+                <label>Federal Work Study</label>
+            </value>
+            <value>
+                <fullName>Funding</fullName>
+                <default>false</default>
+                <label>Funding</label>
+            </value>
+            <value>
+                <fullName>Guest Access</fullName>
+                <default>false</default>
+                <label>Guest Access</label>
+            </value>
+            <value>
+                <fullName>Household Size Verification </fullName>
+                <default>false</default>
+                <label>Household Size Verification </label>
+            </value>
+            <value>
+                <fullName>Independent Status Verification </fullName>
+                <default>false</default>
+                <label>Independent Status Verification </label>
+            </value>
+            <value>
+                <fullName>Inquiry</fullName>
+                <default>false</default>
+                <label>Inquiry</label>
+            </value>
+            <value>
+                <fullName>Insufficient Enrollment</fullName>
+                <default>false</default>
+                <label>Insufficient Enrollment</label>
+            </value>
+            <value>
+                <fullName>Loan Adjustment</fullName>
+                <default>false</default>
+                <label>Loan Adjustment</label>
+            </value>
+            <value>
+                <fullName>Marital Status Verification </fullName>
+                <default>false</default>
+                <label>Marital Status Verification </label>
+            </value>
+            <value>
+                <fullName>Non-Tax Filing Letter </fullName>
+                <default>false</default>
+                <label>Non-Tax Filing Letter </label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Overpayment </fullName>
+                <default>false</default>
+                <label>Overpayment </label>
+            </value>
+            <value>
+                <fullName>Parent Login </fullName>
+                <default>false</default>
+                <label>Parent Login </label>
+            </value>
+            <value>
+                <fullName>Parent Signature </fullName>
+                <default>false</default>
+                <label>Parent Signature </label>
+            </value>
+            <value>
+                <fullName>Parent Tax Transcript</fullName>
+                <default>false</default>
+                <label>Parent Tax Transcript</label>
+            </value>
+            <value>
+                <fullName>Payment Options</fullName>
+                <default>false</default>
+                <label>Payment Options</label>
+            </value>
+            <value>
+                <fullName>Payment Plan</fullName>
+                <default>false</default>
+                <label>Payment Plan</label>
+            </value>
+            <value>
+                <fullName>Post Disbursement</fullName>
+                <default>false</default>
+                <label>Post Disbursement</label>
+            </value>
+            <value>
+                <fullName>Process</fullName>
+                <default>false</default>
+                <label>Process</label>
+            </value>
+            <value>
+                <fullName>Processing Time</fullName>
+                <default>false</default>
+                <label>Processing Time</label>
+            </value>
+            <value>
+                <fullName>Processing Time </fullName>
+                <default>false</default>
+                <label>Processing Time </label>
+            </value>
+            <value>
+                <fullName>Refund Eligibility</fullName>
+                <default>false</default>
+                <label>Refund Eligibility</label>
+            </value>
+            <value>
+                <fullName>Reimbursement</fullName>
+                <default>false</default>
+                <label>Reimbursement</label>
+            </value>
+            <value>
+                <fullName>Returned Documents </fullName>
+                <default>false</default>
+                <label>Returned Documents </label>
+            </value>
+            <value>
+                <fullName>Selective Service Verification </fullName>
+                <default>false</default>
+                <label>Selective Service Verification </label>
+            </value>
+            <value>
+                <fullName>Status</fullName>
+                <default>false</default>
+                <label>Status</label>
+            </value>
+            <value>
+                <fullName>Student Tax Transcript</fullName>
+                <default>false</default>
+                <label>Student Tax Transcript</label>
+            </value>
+            <value>
+                <fullName>Tax Return Transcripts </fullName>
+                <default>false</default>
+                <label>Tax Return Transcripts </label>
+            </value>
+            <value>
+                <fullName>Third-Party</fullName>
+                <default>false</default>
+                <label>Third-Party</label>
+            </value>
+            <value>
+                <fullName>Unlocking Documents </fullName>
+                <default>false</default>
+                <label>Unlocking Documents </label>
+            </value>
+            <value>
+                <fullName>Uploading Documents </fullName>
+                <default>false</default>
+                <label>Uploading Documents </label>
+            </value>
+            <value>
+                <fullName>VA</fullName>
+                <default>false</default>
+                <label>VA</label>
+            </value>
+            <value>
+                <fullName>Verification</fullName>
+                <default>false</default>
+                <label>Verification</label>
+            </value>
+            <value>
+                <fullName>W2</fullName>
+                <default>false</default>
+                <label>W2</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

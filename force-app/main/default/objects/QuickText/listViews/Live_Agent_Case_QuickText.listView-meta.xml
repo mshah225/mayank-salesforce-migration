@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Live_Agent_Case_QuickText</fullName>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>Category</columns>
+    <columns>Channel</columns>
+    <filterScope>Everything</filterScope>
+    <label>Live Agent (Case)</label>
+    <sharedTo>
+        <group>Blackboard_UTO_Case</group>
+        <group>Help_Desk_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

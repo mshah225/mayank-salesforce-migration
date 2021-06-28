@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ISSC_Missed_Chats</fullName>
+    <columns>Name</columns>
+    <columns>LiveChatButton</columns>
+    <columns>LiveChatVisitor</columns>
+    <columns>StartTime</columns>
+    <columns>EndTime</columns>
+    <columns>Status</columns>
+    <columns>Owner</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>LiveChatButton</field>
+        <operation>equals</operation>
+        <value>ISSC Chat</value>
+    </filters>
+    <label>ISSC - Missed Chats</label>
+    <sharedTo>
+        <group>International_Students_and_Scholars_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

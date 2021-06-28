@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Value Pairs of Relationship Sub Types (e.g.  Father - Related is Father).</description>
+    <enableFeeds>false</enableFeeds>
+    <label>Relationship SubType</label>
+    <visibility>Public</visibility>
+</CustomObject>

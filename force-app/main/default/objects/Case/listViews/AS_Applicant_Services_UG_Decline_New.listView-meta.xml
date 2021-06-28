@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Applicant_Services_UG_Decline_New</fullName>
+    <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+    <columns>Case_Owner__c</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Opportunity_Location__c</columns>
+    <columns>NAME</columns>
+    <columns>CAP__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>Needs_Attention__c</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Applicant Services - Undergraduate</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>equals</operation>
+        <value>Decline/Cancel</value>
+    </filters>
+    <filters>
+        <field>Student_Visa__c</field>
+        <operation>notContain</operation>
+        <value>J,T,F,A,E,L</value>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>notContain</operation>
+        <value>International,Readmission,RAD</value>
+    </filters>
+    <filters>
+        <field>Opportunity_Type__c</field>
+        <operation>notContain</operation>
+        <value>Read</value>
+    </filters>
+    <label>AS Applicant Services UG - Decline *</label>
+    <queue>Admission_Services_Undergrad_Case</queue>
+    <sharedTo>
+        <group>AS_Additional_Applicant_Services_Case</group>
+        <group>AS_Applicant_Services_Graduate_Case</group>
+        <group>AS_Applicant_Services_UG_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

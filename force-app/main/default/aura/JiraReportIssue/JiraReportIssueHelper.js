@@ -15,18 +15,18 @@
         var type = component.get('v.type');
 
         var problemDescription =
-            questionOne +
+            '*' + questionOne + '*' +
             '\\n' +
             answerOne +
-            '\\n' +
-            questionTwo +
+            '\\n\\n' +
+            '*' + questionTwo + '*' +
             '\\n' +
             answerTwo +
-            '\\n' +
-            questionThree +
+            '\\n\\n' +
+            '*' + questionThree + '*' +
             '\\n' +
             answerThree +
-            '\\n';
+            '\\n\\n';
 
         if (requestForm != undefined) {
             problemDescription += 'Request Form: ' + '\\n' + requestForm + '\\n';

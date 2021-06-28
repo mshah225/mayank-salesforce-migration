@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ORIENT_DT__c</fullName>
+    <description>Data sourced from OR_RESERVATIONS_VW.CREATEDDATETIME</description>
+    <externalDeveloperName>ORIENT_DT</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Orientation Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

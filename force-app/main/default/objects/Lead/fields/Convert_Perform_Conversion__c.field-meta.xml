@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Convert_Perform_Conversion__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[import] - If Checked, this Lead will be converted to a Contact record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If Checked, this Lead will be converted to a Contact record.</inlineHelpText>
+    <label>Convert Lead: Perform Conversion</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

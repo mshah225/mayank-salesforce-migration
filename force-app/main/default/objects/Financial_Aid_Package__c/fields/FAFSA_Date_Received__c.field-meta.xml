@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FAFSA_Date_Received__c</fullName>
+    <description>[Peoplesoft] - Date the FASFA was received</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Financial Aid Date FAFSA Received</inlineHelpText>
+    <label>Date Received</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Country_of_Citizenship__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[import] - Picklist with 241 countries listed</description>
+    <externalId>false</externalId>
+    <label>Country of Citizenship</label>
+    <referenceTo>Country__c</referenceTo>
+    <relationshipLabel>Leads</relationshipLabel>
+    <relationshipName>Lead_Citizenship</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

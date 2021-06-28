@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Records_Processed__c</fullName>
+    <externalId>false</externalId>
+    <label>Records Processed</label>
+    <summaryForeignKey>Contact_Upload_Detail__c.Contact_Upload__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

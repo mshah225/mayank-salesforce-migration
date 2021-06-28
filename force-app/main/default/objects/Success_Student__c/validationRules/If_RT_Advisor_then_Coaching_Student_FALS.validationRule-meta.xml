@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>If_RT_Advisor_then_Coaching_Student_FALS</fullName>
+    <active>true</active>
+    <description>If record type is Advisor, then Coaching Student = FALSE.</description>
+    <errorConditionFormula>AND(
+ RecordType.Name = 'Advisor',
+ Coaching_Student__c 
+)</errorConditionFormula>
+    <errorMessage>If Success Student Record Type is Advisor, then Coaching Student = FALSE.</errorMessage>
+</ValidationRule>

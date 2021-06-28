@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subscription_Center</fullName>
+    <columns>CAMPAIGN.ACTIVE</columns>
+    <columns>PARENT_NAME</columns>
+    <columns>CAMPAIGN.NAME</columns>
+    <columns>CAMPAIGN.CAMPAIGN_TYPE</columns>
+    <columns>CAMPAIGN.STATUS</columns>
+    <columns>Marketing_Cloud_Private_Campaign__c</columns>
+    <columns>Subscription_Center_Description__c</columns>
+    <columns>Subscription_Center_Topic__c</columns>
+    <columns>Marketing_Cloud_Business_Unit__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CAMPAIGN.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Campaign.Subscription_Center</value>
+    </filters>
+    <label>Subscription Center</label>
+</ListView>

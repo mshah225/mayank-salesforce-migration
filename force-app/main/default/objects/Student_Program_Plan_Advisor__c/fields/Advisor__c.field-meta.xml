@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Advisor__c</fullName>
+    <businessOwnerGroup>Data_Owner_AA_Academic_Advising</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Match with EMPLID for an Advisor</description>
+    <externalId>false</externalId>
+    <label>Advisor</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Student Program Plan Advisors</relationshipLabel>
+    <relationshipName>Student_Program_Plan_Advisors</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

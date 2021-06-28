@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Help_Desk</fullName>
+    <active>true</active>
+    <description>Record type for Help Desk Custom Messages for Live Chat</description>
+    <label>Help Desk</label>
+    <picklistValues>
+        <picklist>LiveAgent_Button__c</picklist>
+        <values>
+            <fullName>ASU_Services_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Blackboard_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Canvas_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Finances_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non_Authenticated_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical_Support_Live_Chat</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

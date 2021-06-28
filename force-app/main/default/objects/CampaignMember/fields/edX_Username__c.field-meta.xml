@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>edX_Username__c</fullName>
+    <description>Unique login user creates for the edX system.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This is an edX related username and is only referenced in their database.</inlineHelpText>
+    <label>edX Campaign Member Username</label>
+    <length>60</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

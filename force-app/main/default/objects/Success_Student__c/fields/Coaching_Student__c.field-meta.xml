@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Coaching_Student__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Used to identify which students will be part of Success Student Coaching. Info will be imported from the lists of new students for the initial cohort and each subsequent cohort as they transition from ITK to ASU. This field can be replaced with a lookup to campus once all online students are coached by ASU.</description>
+    <externalId>false</externalId>
+    <label>Coaching Student</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Information_Tech_Support_Hub_QT_Messages</fullName>
+    <columns>Owner_Display__c</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Category</field>
+        <operation>equals</operation>
+        <value>Information Technology Support Hub</value>
+    </filters>
+    <label>Information Tech Support Hub QT Messages</label>
+    <sharedTo>
+        <group>Information_Technology_Support_Hub_Case</group>
+    </sharedTo>
+</ListView>

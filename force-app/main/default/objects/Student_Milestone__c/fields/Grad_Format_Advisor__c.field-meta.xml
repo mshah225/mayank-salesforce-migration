@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grad_Format_Advisor__c</fullName>
+    <businessOwnerGroup>Data_Owner_AA_Academic_Advising</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>(Peoplesoft) Graduate format advisor name lookup on PS_NAME_CURR_VW.NAME using EMPLID from PS_ASU_AA_POSFMT_V.ADVISOR1_ID
+Visible on the Graduate Student Profile tab; Access granted via PS security role 'Student Profile'.</description>
+    <externalId>false</externalId>
+    <label>Grad Format Advisor</label>
+    <length>100</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Task_Source__c</fullName>
+    <externalId>false</externalId>
+    <label>Task Source</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+                <label>Advertisement</label>
+            </value>
+            <value>
+                <fullName>ASU UG</fullName>
+                <default>false</default>
+                <label>ASU UG</label>
+            </value>
+            <value>
+                <fullName>College Fair - US</fullName>
+                <default>false</default>
+                <label>College Fair - US</label>
+            </value>
+            <value>
+                <fullName>College Fair - Int.</fullName>
+                <default>false</default>
+                <label>College Fair - Int.</label>
+            </value>
+            <value>
+                <fullName>Email</fullName>
+                <default>false</default>
+                <label>Email</label>
+            </value>
+            <value>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+                <label>Employee Referral</label>
+            </value>
+            <value>
+                <fullName>Event</fullName>
+                <default>false</default>
+                <label>Event</label>
+            </value>
+            <value>
+                <fullName>Phone Call</fullName>
+                <default>false</default>
+                <label>Phone Call</label>
+            </value>
+            <value>
+                <fullName>Walk-in</fullName>
+                <default>false</default>
+                <label>Walk-in</label>
+            </value>
+            <value>
+                <fullName>Web Form - College</fullName>
+                <default>false</default>
+                <label>Web Form - College</label>
+            </value>
+            <value>
+                <fullName>Web Form - Degree Search</fullName>
+                <default>false</default>
+                <label>Web Form - Degree Search</label>
+            </value>
+            <value>
+                <fullName>Web Form - GC Prospect</fullName>
+                <default>false</default>
+                <label>Web Form - GC Prospect</label>
+            </value>
+            <value>
+                <fullName>Web Form</fullName>
+                <default>false</default>
+                <label>Web Form</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valid_Date_Range</fullName>
+    <active>false</active>
+    <description>Invalid date range.  This combination of "At Least N Hours Old" and "Number of Days" makes it so no case can be both at the same time.</description>
+    <errorConditionFormula>AND(NOT(ISBLANK(At_Least_N_Hours_Old__c)),NOT(ISBLANK(Number_Of_Days__c)),At_Least_N_Hours_Old__c &gt;= 24*Number_Of_Days__c)</errorConditionFormula>
+    <errorMessage>Invalid date range.  This combination of "At Least N Hours Old" and "Number of Days" makes it so no case can be both at the same time.</errorMessage>
+</ValidationRule>

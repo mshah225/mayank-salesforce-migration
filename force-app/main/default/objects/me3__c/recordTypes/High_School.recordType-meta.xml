@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>High_School</fullName>
+    <active>true</active>
+    <description>me3 data for High School students that are not affiliated with ASU</description>
+    <label>High School</label>
+</RecordType>

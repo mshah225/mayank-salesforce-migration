@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Private_Note_NewStudent_FamilyPrograms__c</fullName>
+    <description>Private Note area for New Student and Family Programs.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Private notes are visible and editable only to New Student and Family Programs team members and any other user who has been given explicit permission to view, and/or edit.</inlineHelpText>
+    <label>Private Note - NewStudent+FamilyPrograms</label>
+    <length>1000</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

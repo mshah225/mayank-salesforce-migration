@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EFC_Range__c</fullName>
+    <description>[Peoplesoft] - Financial Aid EFC Range. Examples include: Very High, High, Moderate, Low, Very Low
+Note: Whatever is in the Help Text will display as a hover help text on the Student Profile VF page.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>“Very High” need indicates an Expected Family Contribution (EFC) of $0
+“High,” less than $5,000
+“Moderate,” less than $15,000
+“Low,” less than $33,000
+“Very Low,” greater than $33,000</inlineHelpText>
+    <label>EFC Range</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Very High</fullName>
+                <default>false</default>
+                <label>Very High</label>
+            </value>
+            <value>
+                <fullName>High</fullName>
+                <default>false</default>
+                <label>High</label>
+            </value>
+            <value>
+                <fullName>Moderate</fullName>
+                <default>false</default>
+                <label>Moderate</label>
+            </value>
+            <value>
+                <fullName>Low</fullName>
+                <default>false</default>
+                <label>Low</label>
+            </value>
+            <value>
+                <fullName>Very Low</fullName>
+                <default>false</default>
+                <label>Very Low</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

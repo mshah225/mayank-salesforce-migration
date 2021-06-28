@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EC_Unassigned_Havasu_2021_Fall_new</fullName>
+    <columns>Enrollment_Coach__c</columns>
+    <columns>OPPORTUNITY.TYPE</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>Term__c</columns>
+    <columns>Location__c</columns>
+    <columns>Admitted_Location__c</columns>
+    <columns>Contact__c</columns>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Enrollment_Coach__c</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>Location__c</field>
+        <operation>equals</operation>
+        <value>Lake Havasu</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Undergraduate_Application</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.TYPE</field>
+        <operation>equals</operation>
+        <value>First Time Freshman,Transfer</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.STAGE_NAME</field>
+        <operation>contains</operation>
+        <value>Applicant,Admitted</value>
+    </filters>
+    <filters>
+        <field>Term__c</field>
+        <operation>equals</operation>
+        <value>2021 Fall</value>
+    </filters>
+    <label>EC Unassigned - Havasu 2021 Fall</label>
+    <sharedTo>
+        <group>Havasu_Recruiter_Case</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

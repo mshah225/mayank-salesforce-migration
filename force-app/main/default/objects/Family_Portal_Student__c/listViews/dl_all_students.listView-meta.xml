@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>dl_all_students</fullName>
+    <columns>NAME</columns>
+    <columns>Guardian_Contact__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>Enrollment_Status__c</columns>
+    <columns>Academic_College__c</columns>
+    <columns>Academic_Year__c</columns>
+    <columns>Type__c</columns>
+    <columns>Enrollment_Status_Year__c</columns>
+    <columns>Military_Affiliation__c</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>Family_Portal_Guardian__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>Active_Relationship__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Active_Relationship__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>*Active students</label>
+</ListView>

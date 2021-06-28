@@ -1,0 +1,2442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Category__c</fullName>
+    <description>[Manual or Automated] - Examples include: 098-T, Collections, Counselor, Customer Services, Document Processing, Graduate Applicant Services, Graduation, International, Late Fee Appeals, Loan Research, Non-Degree, Office Specialist, Online Student, Other</description>
+    <externalId>false</externalId>
+    <label>Category</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>1098-T</fullName>
+                <default>false</default>
+                <label>1098-T</label>
+            </value>
+            <value>
+                <fullName>Academic Inquiries</fullName>
+                <default>false</default>
+                <label>Academic Inquiries</label>
+            </value>
+            <value>
+                <fullName>Academic Records</fullName>
+                <default>false</default>
+                <label>Academic Records</label>
+            </value>
+            <value>
+                <fullName>Academic Services</fullName>
+                <default>false</default>
+                <label>Academic Services</label>
+            </value>
+            <value>
+                <fullName>Academic Services - Training</fullName>
+                <default>false</default>
+                <label>Academic Services - Training</label>
+            </value>
+            <value>
+                <fullName>Academic Status Reports</fullName>
+                <default>false</default>
+                <label>Academic Status Reports</label>
+            </value>
+            <value>
+                <fullName>Academic Success Operations</fullName>
+                <default>false</default>
+                <label>Academic Success Operations</label>
+            </value>
+            <value>
+                <fullName>Academic Support</fullName>
+                <default>false</default>
+                <label>Academic Support</label>
+            </value>
+            <value>
+                <fullName>Access</fullName>
+                <default>false</default>
+                <label>Access</label>
+            </value>
+            <value>
+                <fullName>Accountancy</fullName>
+                <default>false</default>
+                <label>Accountancy</label>
+            </value>
+            <value>
+                <fullName>Ad Hoc</fullName>
+                <default>false</default>
+                <label>Ad Hoc</label>
+            </value>
+            <value>
+                <fullName>Admissions</fullName>
+                <default>false</default>
+                <label>Admissions</label>
+            </value>
+            <value>
+                <fullName>Admissions (Help Desk)</fullName>
+                <default>false</default>
+                <label>Admissions (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Admission Services Business Intelligence</fullName>
+                <default>false</default>
+                <label>Admission Services Business Intelligence</label>
+            </value>
+            <value>
+                <fullName>Admission Services - General</fullName>
+                <default>false</default>
+                <label>Admission Services - General</label>
+            </value>
+            <value>
+                <fullName>Admissions Inquiries</fullName>
+                <default>false</default>
+                <label>Admissions Inquiries</label>
+            </value>
+            <value>
+                <fullName>Advising</fullName>
+                <default>false</default>
+                <label>Advising</label>
+            </value>
+            <value>
+                <fullName>Advising (Help Desk)</fullName>
+                <default>false</default>
+                <label>Advising (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Advising - GOEE</fullName>
+                <default>false</default>
+                <label>Advising - GOEE</label>
+            </value>
+            <value>
+                <fullName>Agreements and Contracts</fullName>
+                <default>false</default>
+                <label>Agreements and Contracts</label>
+            </value>
+            <value>
+                <fullName>Agribusiness</fullName>
+                <default>false</default>
+                <label>Agribusiness</label>
+            </value>
+            <value>
+                <fullName>Airport Arrivals</fullName>
+                <default>false</default>
+                <label>Airport Arrivals</label>
+            </value>
+            <value>
+                <fullName>AISSS Appointments</fullName>
+                <default>false</default>
+                <label>AISSS Appointments</label>
+            </value>
+            <value>
+                <fullName>Alternate Modes</fullName>
+                <default>false</default>
+                <label>Alternate Modes</label>
+            </value>
+            <value>
+                <fullName>Alumni</fullName>
+                <default>false</default>
+                <label>Alumni</label>
+            </value>
+            <value>
+                <fullName>Ambassador Team</fullName>
+                <default>false</default>
+                <label>Ambassador Team</label>
+            </value>
+            <value>
+                <fullName>Applicant Services - Graduate</fullName>
+                <default>false</default>
+                <label>Applicant Services - Graduate</label>
+            </value>
+            <value>
+                <fullName>Applicant Services - Undergraduate</fullName>
+                <default>false</default>
+                <label>Applicant Services - Undergraduate</label>
+            </value>
+            <value>
+                <fullName>Appointments</fullName>
+                <default>false</default>
+                <label>Appointments</label>
+            </value>
+            <value>
+                <fullName>Arcadia Residential Community</fullName>
+                <default>false</default>
+                <label>Arcadia Residential Community</label>
+            </value>
+            <value>
+                <fullName>Archive</fullName>
+                <default>false</default>
+                <label>Archive</label>
+            </value>
+            <value>
+                <fullName>Army Human Resource</fullName>
+                <default>false</default>
+                <label>Army Human Resource</label>
+            </value>
+            <value>
+                <fullName>Assignment</fullName>
+                <default>false</default>
+                <label>Assignment</label>
+            </value>
+            <value>
+                <fullName>AS Student EC</fullName>
+                <default>false</default>
+                <label>AS Student EC</label>
+            </value>
+            <value>
+                <fullName>ASU Info/Gear Requests</fullName>
+                <default>false</default>
+                <label>ASU Info/Gear Requests</label>
+            </value>
+            <value>
+                <fullName>ASU Local LA Site 1</fullName>
+                <default>false</default>
+                <label>ASU Local LA Site 1</label>
+            </value>
+            <value>
+                <fullName>ASUN</fullName>
+                <default>false</default>
+                <label>ASUN</label>
+            </value>
+            <value>
+                <fullName>ASU Polytechnic Student Engagement</fullName>
+                <default>false</default>
+                <label>ASU Polytechnic Student Engagement</label>
+            </value>
+            <value>
+                <fullName>ASU Pplan Late Reg. Appeals</fullName>
+                <default>false</default>
+                <label>ASU Pplan Late Reg. Appeals</label>
+            </value>
+            <value>
+                <fullName>ASU Student Organizations</fullName>
+                <default>false</default>
+                <label>ASU Student Organizations</label>
+            </value>
+            <value>
+                <fullName>ASU Thrive</fullName>
+                <default>false</default>
+                <label>ASU Thrive</label>
+            </value>
+            <value>
+                <fullName>ASU West Student Engagement</fullName>
+                <default>false</default>
+                <label>ASU West Student Engagement</label>
+            </value>
+            <value>
+                <fullName>Bachelor of Arts in Interdisciplinary Studies</fullName>
+                <default>false</default>
+                <label>Bachelor of Arts in Interdisciplinary Studies</label>
+            </value>
+            <value>
+                <fullName>Biosafety</fullName>
+                <default>false</default>
+                <label>Biosafety</label>
+            </value>
+            <value>
+                <fullName>Biosafety Lab Registrations</fullName>
+                <default>false</default>
+                <label>Biosafety Lab Registrations</label>
+            </value>
+            <value>
+                <fullName>Biosafety Paperwork</fullName>
+                <default>false</default>
+                <label>Biosafety Paperwork</label>
+            </value>
+            <value>
+                <fullName>Blackboard/Class Access (Help Desk)</fullName>
+                <default>false</default>
+                <label>Blackboard/Class Access (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Blackboard LMS</fullName>
+                <default>false</default>
+                <label>Blackboard LMS</label>
+            </value>
+            <value>
+                <fullName>Business</fullName>
+                <default>false</default>
+                <label>Business</label>
+            </value>
+            <value>
+                <fullName>Business and Finance</fullName>
+                <default>false</default>
+                <label>Business and Finance</label>
+            </value>
+            <value>
+                <fullName>Business Career Services</fullName>
+                <default>false</default>
+                <label>Business Career Services</label>
+            </value>
+            <value>
+                <fullName>Cadet Enrollment</fullName>
+                <default>false</default>
+                <label>Cadet Enrollment</label>
+            </value>
+            <value>
+                <fullName>Campus Community</fullName>
+                <default>false</default>
+                <label>Campus Community</label>
+            </value>
+            <value>
+                <fullName>Campus Safety</fullName>
+                <default>false</default>
+                <label>Campus Safety</label>
+            </value>
+            <value>
+                <fullName>CAP</fullName>
+                <default>false</default>
+                <label>CAP</label>
+            </value>
+            <value>
+                <fullName>CAP Follow Up</fullName>
+                <default>false</default>
+                <label>CAP Follow Up</label>
+            </value>
+            <value>
+                <fullName>Card Troubleshooting</fullName>
+                <default>false</default>
+                <label>Card Troubleshooting</label>
+            </value>
+            <value>
+                <fullName>Career Center</fullName>
+                <default>false</default>
+                <label>Career Center</label>
+            </value>
+            <value>
+                <fullName>Career Management</fullName>
+                <default>false</default>
+                <label>Career Management</label>
+            </value>
+            <value>
+                <fullName>Career Services</fullName>
+                <default>false</default>
+                <label>Career Services</label>
+            </value>
+            <value>
+                <fullName>Changemaker Central Office</fullName>
+                <default>false</default>
+                <label>Changemaker Central Office</label>
+            </value>
+            <value>
+                <fullName>CIDSE Tech Support</fullName>
+                <default>false</default>
+                <label>CIDSE Tech Support</label>
+            </value>
+            <value>
+                <fullName>CISA Advising Appointment</fullName>
+                <default>false</default>
+                <label>CISA Advising Appointment</label>
+            </value>
+            <value>
+                <fullName>Classrooms</fullName>
+                <default>false</default>
+                <label>Classrooms</label>
+            </value>
+            <value>
+                <fullName>Coalition of International Students</fullName>
+                <default>false</default>
+                <label>Coalition of International Students</label>
+            </value>
+            <value>
+                <fullName>Collections</fullName>
+                <default>false</default>
+                <label>Collections</label>
+            </value>
+            <value>
+                <fullName>College Level</fullName>
+                <default>false</default>
+                <label>College Level</label>
+            </value>
+            <value>
+                <fullName>Commencement and Convocations</fullName>
+                <default>false</default>
+                <label>Commencement and Convocations</label>
+            </value>
+            <value>
+                <fullName>Community of Care</fullName>
+                <default>false</default>
+                <label>Community of Care</label>
+            </value>
+            <value>
+                <fullName>Compliance Officer Program</fullName>
+                <default>false</default>
+                <label>Compliance Officer Program</label>
+            </value>
+            <value>
+                <fullName>Computer Accounts</fullName>
+                <default>false</default>
+                <label>Computer Accounts</label>
+            </value>
+            <value>
+                <fullName>Connections Survey</fullName>
+                <default>false</default>
+                <label>Connections Survey</label>
+            </value>
+            <value>
+                <fullName>Consent and Respect</fullName>
+                <default>false</default>
+                <label>Consent and Respect</label>
+            </value>
+            <value>
+                <fullName>Consultation</fullName>
+                <default>false</default>
+                <label>Consultation</label>
+            </value>
+            <value>
+                <fullName>Corporate Relations</fullName>
+                <default>false</default>
+                <label>Corporate Relations</label>
+            </value>
+            <value>
+                <fullName>Counselor</fullName>
+                <default>false</default>
+                <label>Counselor</label>
+            </value>
+            <value>
+                <fullName>Counselor - FinancialAidInfo</fullName>
+                <default>false</default>
+                <label>Counselor - FinancialAidInfo</label>
+            </value>
+            <value>
+                <fullName>Course Access</fullName>
+                <default>false</default>
+                <label>Course Access</label>
+            </value>
+            <value>
+                <fullName>Course Materials</fullName>
+                <default>false</default>
+                <label>Course Materials</label>
+            </value>
+            <value>
+                <fullName>Cultural Organizations</fullName>
+                <default>false</default>
+                <label>Cultural Organizations</label>
+            </value>
+            <value>
+                <fullName>Curriculum</fullName>
+                <default>false</default>
+                <label>Curriculum</label>
+            </value>
+            <value>
+                <fullName>Curriculum Management</fullName>
+                <default>false</default>
+                <label>Curriculum Management</label>
+            </value>
+            <value>
+                <fullName>Customer Services</fullName>
+                <default>false</default>
+                <label>Customer Services</label>
+            </value>
+            <value>
+                <fullName>Dean's Office - MLFTC</fullName>
+                <default>false</default>
+                <label>Dean's Office - MLFTC</label>
+            </value>
+            <value>
+                <fullName>Dean of Students Office</fullName>
+                <default>false</default>
+                <label>Dean of Students Office</label>
+            </value>
+            <value>
+                <fullName>Departmental Requests</fullName>
+                <default>false</default>
+                <label>Departmental Requests</label>
+            </value>
+            <value>
+                <fullName>Dependent Advocacy</fullName>
+                <default>false</default>
+                <label>Dependent Advocacy</label>
+            </value>
+            <value>
+                <fullName>Design and the Arts (Help Desk)</fullName>
+                <default>false</default>
+                <label>Design and the Arts (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Directions</fullName>
+                <default>false</default>
+                <label>Directions</label>
+            </value>
+            <value>
+                <fullName>Discussions</fullName>
+                <default>false</default>
+                <label>Discussions</label>
+            </value>
+            <value>
+                <fullName>eAdvisor</fullName>
+                <default>false</default>
+                <label>eAdvisor</label>
+            </value>
+            <value>
+                <fullName>ECEE Tech Support</fullName>
+                <default>false</default>
+                <label>ECEE Tech Support</label>
+            </value>
+            <value>
+                <fullName>Economics</fullName>
+                <default>false</default>
+                <label>Economics</label>
+            </value>
+            <value>
+                <fullName>Education Mentors</fullName>
+                <default>false</default>
+                <label>Education Mentors</label>
+            </value>
+            <value>
+                <fullName>Elections</fullName>
+                <default>false</default>
+                <label>Elections</label>
+            </value>
+            <value>
+                <fullName>Email (Help Desk)</fullName>
+                <default>false</default>
+                <label>Email (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Email Templates</fullName>
+                <default>false</default>
+                <label>Email Templates</label>
+            </value>
+            <value>
+                <fullName>Employers</fullName>
+                <default>false</default>
+                <label>Employers</label>
+            </value>
+            <value>
+                <fullName>Engineering Tech Support</fullName>
+                <default>false</default>
+                <label>Engineering Tech Support</label>
+            </value>
+            <value>
+                <fullName>Enrollment Inquiry</fullName>
+                <default>false</default>
+                <label>Enrollment Inquiry</label>
+            </value>
+            <value>
+                <fullName>Escalated Issues</fullName>
+                <default>false</default>
+                <label>Escalated Issues</label>
+            </value>
+            <value>
+                <fullName>Escalations</fullName>
+                <default>false</default>
+                <label>Escalations</label>
+            </value>
+            <value>
+                <fullName>ETS Classroom Support (Help Desk)</fullName>
+                <default>false</default>
+                <label>ETS Classroom Support (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Event Information (Help Desk)</fullName>
+                <default>false</default>
+                <label>Event Information (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Events</fullName>
+                <default>false</default>
+                <label>Events</label>
+            </value>
+            <value>
+                <fullName>Facilities</fullName>
+                <default>false</default>
+                <label>Facilities</label>
+            </value>
+            <value>
+                <fullName>Facilities - SMS</fullName>
+                <default>false</default>
+                <label>Facilities - SMS</label>
+            </value>
+            <value>
+                <fullName>Faculty/Staff Referral</fullName>
+                <default>false</default>
+                <label>Faculty/Staff Referral</label>
+            </value>
+            <value>
+                <fullName>Fall Welcome</fullName>
+                <default>false</default>
+                <label>Fall Welcome</label>
+            </value>
+            <value>
+                <fullName>Family Programs</fullName>
+                <default>false</default>
+                <label>Family Programs</label>
+            </value>
+            <value>
+                <fullName>Finance and Real Estate</fullName>
+                <default>false</default>
+                <label>Finance and Real Estate</label>
+            </value>
+            <value>
+                <fullName>Finances (Help Desk)</fullName>
+                <default>false</default>
+                <label>Finances (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Financial Aid</fullName>
+                <default>false</default>
+                <label>Financial Aid</label>
+            </value>
+            <value>
+                <fullName>Financial Resources</fullName>
+                <default>false</default>
+                <label>Financial Resources</label>
+            </value>
+            <value>
+                <fullName>Fire Marshal</fullName>
+                <default>false</default>
+                <label>Fire Marshal</label>
+            </value>
+            <value>
+                <fullName>Foresee</fullName>
+                <default>false</default>
+                <label>Foresee</label>
+            </value>
+            <value>
+                <fullName>Format</fullName>
+                <default>false</default>
+                <label>Format</label>
+            </value>
+            <value>
+                <fullName>Freshman Recruitment</fullName>
+                <default>false</default>
+                <label>Freshman Recruitment</label>
+            </value>
+            <value>
+                <fullName>Front Counter</fullName>
+                <default>false</default>
+                <label>Front Counter</label>
+            </value>
+            <value>
+                <fullName>GE-ACCEX</fullName>
+                <default>false</default>
+                <label>GE-ACCEX</label>
+            </value>
+            <value>
+                <fullName>GE-AEI China</fullName>
+                <default>false</default>
+                <label>GE-AEI China</label>
+            </value>
+            <value>
+                <fullName>General</fullName>
+                <default>false</default>
+                <label>General</label>
+            </value>
+            <value>
+                <fullName>General - CISA</fullName>
+                <default>false</default>
+                <label>General - CISA</label>
+            </value>
+            <value>
+                <fullName>General Customer Service</fullName>
+                <default>false</default>
+                <label>General Customer Service</label>
+            </value>
+            <value>
+                <fullName>General Escalation</fullName>
+                <default>false</default>
+                <label>General Escalation</label>
+            </value>
+            <value>
+                <fullName>General Help Desk</fullName>
+                <default>false</default>
+                <label>General Help Desk</label>
+            </value>
+            <value>
+                <fullName>General Model Info</fullName>
+                <default>false</default>
+                <label>General Model Info</label>
+            </value>
+            <value>
+                <fullName>General - Psychology</fullName>
+                <default>false</default>
+                <label>General - Psychology</label>
+            </value>
+            <value>
+                <fullName>General Studies</fullName>
+                <default>false</default>
+                <label>General Studies</label>
+            </value>
+            <value>
+                <fullName>General - ULC</fullName>
+                <default>false</default>
+                <label>General - ULC</label>
+            </value>
+            <value>
+                <fullName>Global Guides</fullName>
+                <default>false</default>
+                <label>Global Guides</label>
+            </value>
+            <value>
+                <fullName>GOEE Tech Support</fullName>
+                <default>false</default>
+                <label>GOEE Tech Support</label>
+            </value>
+            <value>
+                <fullName>Grades</fullName>
+                <default>false</default>
+                <label>Grades</label>
+            </value>
+            <value>
+                <fullName>Graduate</fullName>
+                <default>false</default>
+                <label>Graduate</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - AIS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - AIS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - Army ROTC</fullName>
+                <default>false</default>
+                <label>Graduate Advising - Army ROTC</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - CHS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - CHS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - CIDSE</fullName>
+                <default>false</default>
+                <label>Graduate Advising - CIDSE</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - CISA</fullName>
+                <default>false</default>
+                <label>Graduate Advising - CISA</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - CONHI</fullName>
+                <default>false</default>
+                <label>Graduate Advising - CONHI</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - ECEE</fullName>
+                <default>false</default>
+                <label>Graduate Advising - ECEE</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - English</fullName>
+                <default>false</default>
+                <label>Graduate Advising - English</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - HDSHC</fullName>
+                <default>false</default>
+                <label>Graduate Advising - HDSHC</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - Journalism</fullName>
+                <default>false</default>
+                <label>Graduate Advising - Journalism</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - NCIAS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - NCIAS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - Physics</fullName>
+                <default>false</default>
+                <label>Graduate Advising - Physics</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - Poly</fullName>
+                <default>false</default>
+                <label>Graduate Advising - Poly</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - Psychology</fullName>
+                <default>false</default>
+                <label>Graduate Advising - Psychology</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SBHSE</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SBHSE</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SEMTE</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SEMTE</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SESE</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SESE</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SFIS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SFIS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SGSUP</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SGSUP</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SHESC</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SHESC</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SHPRS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SHPRS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SILC</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SILC</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SMS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SMS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SOLS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SOLS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SoMSS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SoMSS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SPGS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SPGS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SSEBE</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SSEBE</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - SST</fullName>
+                <default>false</default>
+                <label>Graduate Advising - SST</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - STS</fullName>
+                <default>false</default>
+                <label>Graduate Advising - STS</label>
+            </value>
+            <value>
+                <fullName>Graduate Advising - The Sanford School</fullName>
+                <default>false</default>
+                <label>Graduate Advising - The Sanford School</label>
+            </value>
+            <value>
+                <fullName>Graduate and Professional Student Association (GPSA)</fullName>
+                <default>false</default>
+                <label>Graduate and Professional Student Association (GPSA)</label>
+            </value>
+            <value>
+                <fullName>Graduate Dismissal</fullName>
+                <default>false</default>
+                <label>Graduate Dismissal</label>
+            </value>
+            <value>
+                <fullName>Graduate Faculty</fullName>
+                <default>false</default>
+                <label>Graduate Faculty</label>
+            </value>
+            <value>
+                <fullName>Graduate - ISSR</fullName>
+                <default>false</default>
+                <label>Graduate - ISSR</label>
+            </value>
+            <value>
+                <fullName>Graduate Programs</fullName>
+                <default>false</default>
+                <label>Graduate Programs</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - AIS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - AIS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - Army ROTC</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - Army ROTC</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - AS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - AS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - CHS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - CHS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - CIDSE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - CIDSE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - CISA</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - CISA</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - CLAS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - CLAS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - CONHI</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - CONHI</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - CPSCS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - CPSCS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - ECEE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - ECEE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - English</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - English</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - FSE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - FSE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - GOEE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - GOEE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - HDSHC</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - HDSHC</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - IIGE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - IIGE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - Journalism</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - Journalism</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - MLFTC</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - MLFTC</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - NCIAS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - NCIAS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - Physics</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - Physics</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - Poly</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - Poly</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - Psychology</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - Psychology</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SBHSE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SBHSE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SEMTE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SEMTE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SESE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SESE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SFIS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SFIS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SGSUP</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SGSUP</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SHESC</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SHESC</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SHPRS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SHPRS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SILC</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SILC</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SMS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SMS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SOLS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SOLS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SoMSS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SoMSS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SOS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SOS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SPGS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SPGS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SSEBE</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SSEBE</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - SST</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - SST</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - STS</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - STS</label>
+            </value>
+            <value>
+                <fullName>Graduate Recruitment - The Sanford School</fullName>
+                <default>false</default>
+                <label>Graduate Recruitment - The Sanford School</label>
+            </value>
+            <value>
+                <fullName>Graduate Student Services / PHD</fullName>
+                <default>false</default>
+                <label>Graduate Student Services / PHD</label>
+            </value>
+            <value>
+                <fullName>Graduation</fullName>
+                <default>false</default>
+                <label>Graduation</label>
+            </value>
+            <value>
+                <fullName>Guest Access (Help Desk)</fullName>
+                <default>false</default>
+                <label>Guest Access (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Hardware</fullName>
+                <default>false</default>
+                <label>Hardware</label>
+            </value>
+            <value>
+                <fullName>Hazardous Materials</fullName>
+                <default>false</default>
+                <label>Hazardous Materials</label>
+            </value>
+            <value>
+                <fullName>Health &amp; Safety</fullName>
+                <default>false</default>
+                <label>Health &amp; Safety</label>
+            </value>
+            <value>
+                <fullName>Help Desk Management</fullName>
+                <default>false</default>
+                <label>Help Desk Management</label>
+            </value>
+            <value>
+                <fullName>Herberger Degree Information Request (Recruitment)</fullName>
+                <default>false</default>
+                <label>Herberger Degree Information Request (Recruitment)</label>
+            </value>
+            <value>
+                <fullName>Herberger General</fullName>
+                <default>false</default>
+                <label>Herberger General</label>
+            </value>
+            <value>
+                <fullName>Herberger Online Classes Support</fullName>
+                <default>false</default>
+                <label>Herberger Online Classes Support</label>
+            </value>
+            <value>
+                <fullName>Herberger Tours Request (Undergraduate Recruitment)</fullName>
+                <default>false</default>
+                <label>Herberger Tours Request (Undergraduate Recruitment)</label>
+            </value>
+            <value>
+                <fullName>Hiring</fullName>
+                <default>false</default>
+                <label>Hiring</label>
+            </value>
+            <value>
+                <fullName>Homework and Exams</fullName>
+                <default>false</default>
+                <label>Homework and Exams</label>
+            </value>
+            <value>
+                <fullName>Housing</fullName>
+                <default>false</default>
+                <label>Housing</label>
+            </value>
+            <value>
+                <fullName>Housing - FSL</fullName>
+                <default>false</default>
+                <label>Housing - FSL</label>
+            </value>
+            <value>
+                <fullName>IM Data Loss Prevention</fullName>
+                <default>false</default>
+                <label>IM Data Loss Prevention</label>
+            </value>
+            <value>
+                <fullName>Inbound Program</fullName>
+                <default>false</default>
+                <label>Inbound Program</label>
+            </value>
+            <value>
+                <fullName>Incoming Students (Help Desk)</fullName>
+                <default>false</default>
+                <label>Incoming Students (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Information Systems</fullName>
+                <default>false</default>
+                <label>Information Systems</label>
+            </value>
+            <value>
+                <fullName>Information Technology</fullName>
+                <default>false</default>
+                <label>Information Technology</label>
+            </value>
+            <value>
+                <fullName>Information Technology - EHS</fullName>
+                <default>false</default>
+                <label>Information Technology - EHS</label>
+            </value>
+            <value>
+                <fullName>Inquiry</fullName>
+                <default>false</default>
+                <label>Inquiry</label>
+            </value>
+            <value>
+                <fullName>Integration</fullName>
+                <default>false</default>
+                <label>Integration</label>
+            </value>
+            <value>
+                <fullName>International Recruitment</fullName>
+                <default>false</default>
+                <label>International Recruitment</label>
+            </value>
+            <value>
+                <fullName>International Welcome</fullName>
+                <default>false</default>
+                <label>International Welcome</label>
+            </value>
+            <value>
+                <fullName>ISE Clubs and Organizations</fullName>
+                <default>false</default>
+                <label>ISE Clubs and Organizations</label>
+            </value>
+            <value>
+                <fullName>ISE Programming</fullName>
+                <default>false</default>
+                <label>ISE Programming</label>
+            </value>
+            <value>
+                <fullName>ISSC Thunderbird</fullName>
+                <default>false</default>
+                <label>ISSC Thunderbird</label>
+            </value>
+            <value>
+                <fullName>IT - SMS</fullName>
+                <default>false</default>
+                <label>IT - SMS</label>
+            </value>
+            <value>
+                <fullName>K12 Engineering Education</fullName>
+                <default>false</default>
+                <label>K12 Engineering Education</label>
+            </value>
+            <value>
+                <fullName>Knowledge</fullName>
+                <default>false</default>
+                <label>Knowledge</label>
+            </value>
+            <value>
+                <fullName>Laboratory Safety</fullName>
+                <default>false</default>
+                <label>Laboratory Safety</label>
+            </value>
+            <value>
+                <fullName>Lake Havasu</fullName>
+                <default>false</default>
+                <label>Lake Havasu</label>
+            </value>
+            <value>
+                <fullName>Late Fee Appeals</fullName>
+                <default>false</default>
+                <label>Late Fee Appeals</label>
+            </value>
+            <value>
+                <fullName>Leadership Scholarship Program (LSP)</fullName>
+                <default>false</default>
+                <label>Leadership Scholarship Program (LSP)</label>
+            </value>
+            <value>
+                <fullName>Loans</fullName>
+                <default>false</default>
+                <label>Loans</label>
+            </value>
+            <value>
+                <fullName>Loans - Training</fullName>
+                <default>false</default>
+                <label>Loans - Training</label>
+            </value>
+            <value>
+                <fullName>Lost/Found</fullName>
+                <default>false</default>
+                <label>Lost/Found</label>
+            </value>
+            <value>
+                <fullName>Lost and Found</fullName>
+                <default>false</default>
+                <label>Lost and Found</label>
+            </value>
+            <value>
+                <fullName>Major and Career</fullName>
+                <default>false</default>
+                <label>Major and Career</label>
+            </value>
+            <value>
+                <fullName>Management</fullName>
+                <default>false</default>
+                <label>Management</label>
+            </value>
+            <value>
+                <fullName>Marketing</fullName>
+                <default>false</default>
+                <label>Marketing</label>
+            </value>
+            <value>
+                <fullName>Marketing Cloud</fullName>
+                <default>false</default>
+                <label>Marketing Cloud</label>
+            </value>
+            <value>
+                <fullName>Mashup</fullName>
+                <default>false</default>
+                <label>Mashup</label>
+            </value>
+            <value>
+                <fullName>Math Placement Test</fullName>
+                <default>false</default>
+                <label>Math Placement Test</label>
+            </value>
+            <value>
+                <fullName>Media / Interview</fullName>
+                <default>false</default>
+                <label>Media / Interview</label>
+            </value>
+            <value>
+                <fullName>Media Requests</fullName>
+                <default>false</default>
+                <label>Media Requests</label>
+            </value>
+            <value>
+                <fullName>Medical Surveillance</fullName>
+                <default>false</default>
+                <label>Medical Surveillance</label>
+            </value>
+            <value>
+                <fullName>Meeting Requests</fullName>
+                <default>false</default>
+                <label>Meeting Requests</label>
+            </value>
+            <value>
+                <fullName>Midfirst Bank</fullName>
+                <default>false</default>
+                <label>Midfirst Bank</label>
+            </value>
+            <value>
+                <fullName>Military</fullName>
+                <default>false</default>
+                <label>Military</label>
+            </value>
+            <value>
+                <fullName>Military/Veteran Advocacy</fullName>
+                <default>false</default>
+                <label>Military/Veteran Advocacy</label>
+            </value>
+            <value>
+                <fullName>MLF Information Systems (Help Desk)</fullName>
+                <default>false</default>
+                <label>MLF Information Systems (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>MLFTC Advising Appointment</fullName>
+                <default>false</default>
+                <label>MLFTC Advising Appointment</label>
+            </value>
+            <value>
+                <fullName>MOOC</fullName>
+                <default>false</default>
+                <label>MOOC</label>
+            </value>
+            <value>
+                <fullName>My ASU / Service Center</fullName>
+                <default>false</default>
+                <label>My ASU / Service Center</label>
+            </value>
+            <value>
+                <fullName>My ASU (Help Desk)</fullName>
+                <default>false</default>
+                <label>My ASU (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Network/Wifi (Help Desk)</fullName>
+                <default>false</default>
+                <label>Network/Wifi (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>New College Experience</fullName>
+                <default>false</default>
+                <label>New College Experience</label>
+            </value>
+            <value>
+                <fullName>New Development</fullName>
+                <default>false</default>
+                <label>New Development</label>
+            </value>
+            <value>
+                <fullName>New Student Orientation</fullName>
+                <default>false</default>
+                <label>New Student Orientation</label>
+            </value>
+            <value>
+                <fullName>New User Request</fullName>
+                <default>false</default>
+                <label>New User Request</label>
+            </value>
+            <value>
+                <fullName>NGSC Advising</fullName>
+                <default>false</default>
+                <label>NGSC Advising</label>
+            </value>
+            <value>
+                <fullName>Non-Degree</fullName>
+                <default>false</default>
+                <label>Non-Degree</label>
+            </value>
+            <value>
+                <fullName>Occupational Health and Safety</fullName>
+                <default>false</default>
+                <label>Occupational Health and Safety</label>
+            </value>
+            <value>
+                <fullName>Office of Student Athlete Development</fullName>
+                <default>false</default>
+                <label>Office of Student Athlete Development</label>
+            </value>
+            <value>
+                <fullName>Office Specialist</fullName>
+                <default>false</default>
+                <label>Office Specialist</label>
+            </value>
+            <value>
+                <fullName>On Campus Card Request</fullName>
+                <default>false</default>
+                <label>On Campus Card Request</label>
+            </value>
+            <value>
+                <fullName>Online/Extended Campus Card Request</fullName>
+                <default>false</default>
+                <label>Online/Extended Campus Card Request</label>
+            </value>
+            <value>
+                <fullName>Online Advising - CHS</fullName>
+                <default>false</default>
+                <label>Online Advising - CHS</label>
+            </value>
+            <value>
+                <fullName>Online Advising - CIDSE</fullName>
+                <default>false</default>
+                <label>Online Advising - CIDSE</label>
+            </value>
+            <value>
+                <fullName>Online Advising - CONHI</fullName>
+                <default>false</default>
+                <label>Online Advising - CONHI</label>
+            </value>
+            <value>
+                <fullName>Online Advising - CPSCS</fullName>
+                <default>false</default>
+                <label>Online Advising - CPSCS</label>
+            </value>
+            <value>
+                <fullName>Online Advising - ECEE</fullName>
+                <default>false</default>
+                <label>Online Advising - ECEE</label>
+            </value>
+            <value>
+                <fullName>Online Advising - NCIAS</fullName>
+                <default>false</default>
+                <label>Online Advising - NCIAS</label>
+            </value>
+            <value>
+                <fullName>Online Advising - Poly</fullName>
+                <default>false</default>
+                <label>Online Advising - Poly</label>
+            </value>
+            <value>
+                <fullName>Online - English</fullName>
+                <default>false</default>
+                <label>Online - English</label>
+            </value>
+            <value>
+                <fullName>Online Proctoring</fullName>
+                <default>false</default>
+                <label>Online Proctoring</label>
+            </value>
+            <value>
+                <fullName>Online Recruitment - CIDSE</fullName>
+                <default>false</default>
+                <label>Online Recruitment - CIDSE</label>
+            </value>
+            <value>
+                <fullName>Online Recruitment - ECEE</fullName>
+                <default>false</default>
+                <label>Online Recruitment - ECEE</label>
+            </value>
+            <value>
+                <fullName>Online Recruitment - Poly</fullName>
+                <default>false</default>
+                <label>Online Recruitment - Poly</label>
+            </value>
+            <value>
+                <fullName>Online - SMS</fullName>
+                <default>false</default>
+                <label>Online - SMS</label>
+            </value>
+            <value>
+                <fullName>Online Student</fullName>
+                <default>false</default>
+                <label>Online Student</label>
+            </value>
+            <value>
+                <fullName>Online - The Sanford School</fullName>
+                <default>false</default>
+                <label>Online - The Sanford School</label>
+            </value>
+            <value>
+                <fullName>Opt-Out</fullName>
+                <default>false</default>
+                <label>Opt-Out</label>
+            </value>
+            <value>
+                <fullName>Orientation</fullName>
+                <default>false</default>
+                <label>Orientation</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Other (Help Desk)</fullName>
+                <default>false</default>
+                <label>Other (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Outages (Help Desk)</fullName>
+                <default>false</default>
+                <label>Outages (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Outbound Programs</fullName>
+                <default>false</default>
+                <label>Outbound Programs</label>
+            </value>
+            <value>
+                <fullName>Outgoing Transcripts</fullName>
+                <default>false</default>
+                <label>Outgoing Transcripts</label>
+            </value>
+            <value>
+                <fullName>Outreach</fullName>
+                <default>false</default>
+                <label>Outreach</label>
+            </value>
+            <value>
+                <fullName>Overrides - SoMSS</fullName>
+                <default>false</default>
+                <label>Overrides - SoMSS</label>
+            </value>
+            <value>
+                <fullName>Paperwork</fullName>
+                <default>false</default>
+                <label>Paperwork</label>
+            </value>
+            <value>
+                <fullName>Parent</fullName>
+                <default>false</default>
+                <label>Parent</label>
+            </value>
+            <value>
+                <fullName>Parking (Help Desk)</fullName>
+                <default>false</default>
+                <label>Parking (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Parking and Transit</fullName>
+                <default>false</default>
+                <label>Parking and Transit</label>
+            </value>
+            <value>
+                <fullName>Parking Reservation</fullName>
+                <default>false</default>
+                <label>Parking Reservation</label>
+            </value>
+            <value>
+                <fullName>Parking Support</fullName>
+                <default>false</default>
+                <label>Parking Support</label>
+            </value>
+            <value>
+                <fullName>Pathways</fullName>
+                <default>false</default>
+                <label>Pathways</label>
+            </value>
+            <value>
+                <fullName>PeopleSoft Security</fullName>
+                <default>false</default>
+                <label>PeopleSoft Security</label>
+            </value>
+            <value>
+                <fullName>Peralta Engineering Studio</fullName>
+                <default>false</default>
+                <label>Peralta Engineering Studio</label>
+            </value>
+            <value>
+                <fullName>Persistence Outlook</fullName>
+                <default>false</default>
+                <label>Persistence Outlook</label>
+            </value>
+            <value>
+                <fullName>Petitions</fullName>
+                <default>false</default>
+                <label>Petitions</label>
+            </value>
+            <value>
+                <fullName>Photo Upload</fullName>
+                <default>false</default>
+                <label>Photo Upload</label>
+            </value>
+            <value>
+                <fullName>Polytechnic Tech Support</fullName>
+                <default>false</default>
+                <label>Polytechnic Tech Support</label>
+            </value>
+            <value>
+                <fullName>Presentation / Education Request</fullName>
+                <default>false</default>
+                <label>Presentation / Education Request</label>
+            </value>
+            <value>
+                <fullName>Canon (Help Desk)</fullName>
+                <default>false</default>
+                <label>Print Anywhere (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Canon Escalated Support</fullName>
+                <default>false</default>
+                <label>Print Anywhere Escalated Support</label>
+            </value>
+            <value>
+                <fullName>Printing</fullName>
+                <default>false</default>
+                <label>Printing</label>
+            </value>
+            <value>
+                <fullName>Programming and Activities Board (PAB)</fullName>
+                <default>false</default>
+                <label>Programming and Activities Board (PAB)</label>
+            </value>
+            <value>
+                <fullName>Project Connections</fullName>
+                <default>false</default>
+                <label>Project Connections</label>
+            </value>
+            <value>
+                <fullName>PSM - Solar Energy Engineering &amp; Commercialization</fullName>
+                <default>false</default>
+                <label>PSM - Solar Energy Engineering &amp; Commercialization</label>
+            </value>
+            <value>
+                <fullName>QA</fullName>
+                <default>false</default>
+                <label>QA</label>
+            </value>
+            <value>
+                <fullName>Radiation Safety</fullName>
+                <default>false</default>
+                <label>Radiation Safety</label>
+            </value>
+            <value>
+                <fullName>Recruitment</fullName>
+                <default>false</default>
+                <label>Recruitment</label>
+            </value>
+            <value>
+                <fullName>Recruitment Events</fullName>
+                <default>false</default>
+                <label>Recruitment Events</label>
+            </value>
+            <value>
+                <fullName>Recruitment - FSL</fullName>
+                <default>false</default>
+                <label>Recruitment - FSL</label>
+            </value>
+            <value>
+                <fullName>Recruitment Operations</fullName>
+                <default>false</default>
+                <label>Recruitment Operations</label>
+            </value>
+            <value>
+                <fullName>Recruitment - PTVC</fullName>
+                <default>false</default>
+                <label>Recruitment - PTVC</label>
+            </value>
+            <value>
+                <fullName>Registrar</fullName>
+                <default>false</default>
+                <label>Registrar</label>
+            </value>
+            <value>
+                <fullName>Registrar (Help Desk)</fullName>
+                <default>false</default>
+                <label>Registrar (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>RegTech</fullName>
+                <default>false</default>
+                <label>RegTech</label>
+            </value>
+            <value>
+                <fullName>Reports and Dashboards</fullName>
+                <default>false</default>
+                <label>Reports and Dashboards</label>
+            </value>
+            <value>
+                <fullName>Residency</fullName>
+                <default>false</default>
+                <label>Residency</label>
+            </value>
+            <value>
+                <fullName>Residential Life</fullName>
+                <default>false</default>
+                <label>Residential Life</label>
+            </value>
+            <value>
+                <fullName>ResLife Facilities</fullName>
+                <default>false</default>
+                <label>ResLife Facilities</label>
+            </value>
+            <value>
+                <fullName>ResLife Operations</fullName>
+                <default>false</default>
+                <label>ResLife Operations</label>
+            </value>
+            <value>
+                <fullName>Salesforce Security</fullName>
+                <default>false</default>
+                <label>Salesforce Security</label>
+            </value>
+            <value>
+                <fullName>SBHSE Tech Support</fullName>
+                <default>false</default>
+                <label>SBHSE Tech Support</label>
+            </value>
+            <value>
+                <fullName>Scholars</fullName>
+                <default>false</default>
+                <label>Scholars</label>
+            </value>
+            <value>
+                <fullName>Scholarships</fullName>
+                <default>false</default>
+                <label>Scholarships</label>
+            </value>
+            <value>
+                <fullName>Scholarships - SOS</fullName>
+                <default>false</default>
+                <label>Scholarships - SOS</label>
+            </value>
+            <value>
+                <fullName>Scholarships - Training</fullName>
+                <default>false</default>
+                <label>Scholarships - Training</label>
+            </value>
+            <value>
+                <fullName>School of Art</fullName>
+                <default>false</default>
+                <label>School of Art</label>
+            </value>
+            <value>
+                <fullName>School of Arts, Media + Engineering</fullName>
+                <default>false</default>
+                <label>School of Arts, Media + Engineering</label>
+            </value>
+            <value>
+                <fullName>School of Community and Resource Development</fullName>
+                <default>false</default>
+                <label>School of Community and Resource Development</label>
+            </value>
+            <value>
+                <fullName>School of Criminology &amp; Criminal Justice</fullName>
+                <default>false</default>
+                <label>School of Criminology &amp; Criminal Justice</label>
+            </value>
+            <value>
+                <fullName>School of Film, Dance and Theatre</fullName>
+                <default>false</default>
+                <label>School of Film, Dance and Theatre</label>
+            </value>
+            <value>
+                <fullName>School of Music</fullName>
+                <default>false</default>
+                <label>School of Music</label>
+            </value>
+            <value>
+                <fullName>School of Public Affairs</fullName>
+                <default>false</default>
+                <label>School of Public Affairs</label>
+            </value>
+            <value>
+                <fullName>School of Social Work</fullName>
+                <default>false</default>
+                <label>School of Social Work</label>
+            </value>
+            <value>
+                <fullName>Security</fullName>
+                <default>false</default>
+                <label>Security</label>
+            </value>
+            <value>
+                <fullName>SEED</fullName>
+                <default>false</default>
+                <label>SEED</label>
+            </value>
+            <value>
+                <fullName>Seeking Information / Resources</fullName>
+                <default>false</default>
+                <label>Seeking Information / Resources</label>
+            </value>
+            <value>
+                <fullName>SEMTE Tech Support</fullName>
+                <default>false</default>
+                <label>SEMTE Tech Support</label>
+            </value>
+            <value>
+                <fullName>Service</fullName>
+                <default>false</default>
+                <label>Service</label>
+            </value>
+            <value>
+                <fullName>Service Center Feedback</fullName>
+                <default>false</default>
+                <label>Service Center Feedback</label>
+            </value>
+            <value>
+                <fullName>Check-In</fullName>
+                <default>false</default>
+                <label>SEVIS Check-In</label>
+            </value>
+            <value>
+                <fullName>Social Studio</fullName>
+                <default>false</default>
+                <label>Social Studio</label>
+            </value>
+            <value>
+                <fullName>Software</fullName>
+                <default>false</default>
+                <label>Software</label>
+            </value>
+            <value>
+                <fullName>Software (Help Desk)</fullName>
+                <default>false</default>
+                <label>Software (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>SPARKS Ask</fullName>
+                <default>false</default>
+                <label>SPARKS Ask</label>
+            </value>
+            <value>
+                <fullName>Sponsor Billings</fullName>
+                <default>false</default>
+                <label>Sponsor Billings</label>
+            </value>
+            <value>
+                <fullName>Sponsored</fullName>
+                <default>false</default>
+                <label>Sponsored</label>
+            </value>
+            <value>
+                <fullName>Sponsor Team</fullName>
+                <default>false</default>
+                <label>Sponsor Team</label>
+            </value>
+            <value>
+                <fullName>SSEBE Tech Support</fullName>
+                <default>false</default>
+                <label>SSEBE Tech Support</label>
+            </value>
+            <value>
+                <fullName>TRIO SSS/STEM</fullName>
+                <default>false</default>
+                <label>SSS/STEM Downtown</label>
+            </value>
+            <value>
+                <fullName>TRIO Program Office</fullName>
+                <default>false</default>
+                <label>SSS Poly</label>
+            </value>
+            <value>
+                <fullName>Student Accounts</fullName>
+                <default>false</default>
+                <label>Student Accounts</label>
+            </value>
+            <value>
+                <fullName>Student Accounts - OP</fullName>
+                <default>false</default>
+                <label>Student Accounts - OP</label>
+            </value>
+            <value>
+                <fullName>Student Affairs</fullName>
+                <default>false</default>
+                <label>Student Affairs</label>
+            </value>
+            <value>
+                <fullName>Student Ambassadors</fullName>
+                <default>false</default>
+                <label>Student Ambassadors</label>
+            </value>
+            <value>
+                <fullName>Student Business Services</fullName>
+                <default>false</default>
+                <label>Student Business Services</label>
+            </value>
+            <value>
+                <fullName>Student Business Services (Help Desk)</fullName>
+                <default>false</default>
+                <label>Student Business Services (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>Student Communication</fullName>
+                <default>false</default>
+                <label>Student Communication</label>
+            </value>
+            <value>
+                <fullName>Student Employment</fullName>
+                <default>false</default>
+                <label>Student Employment</label>
+            </value>
+            <value>
+                <fullName>Student Employment - ISSC</fullName>
+                <default>false</default>
+                <label>Student Employment - ISSC</label>
+            </value>
+            <value>
+                <fullName>Student Engagement - CONHI</fullName>
+                <default>false</default>
+                <label>Student Engagement - CONHI</label>
+            </value>
+            <value>
+                <fullName>Student Indicators</fullName>
+                <default>false</default>
+                <label>Student Indicators</label>
+            </value>
+            <value>
+                <fullName>Student Inquiries</fullName>
+                <default>false</default>
+                <label>Student Inquiries</label>
+            </value>
+            <value>
+                <fullName>Student Issues</fullName>
+                <default>false</default>
+                <label>Student Issues</label>
+            </value>
+            <value>
+                <fullName>Student Profile</fullName>
+                <default>false</default>
+                <label>Student Profile</label>
+            </value>
+            <value>
+                <fullName>Students</fullName>
+                <default>false</default>
+                <label>Students</label>
+            </value>
+            <value>
+                <fullName>Student Services</fullName>
+                <default>false</default>
+                <label>Student Services</label>
+            </value>
+            <value>
+                <fullName>Student Services - Training</fullName>
+                <default>false</default>
+                <label>Student Services - Training</label>
+            </value>
+            <value>
+                <fullName>Student Success</fullName>
+                <default>false</default>
+                <label>Student Success</label>
+            </value>
+            <value>
+                <fullName>Success Programs</fullName>
+                <default>false</default>
+                <label>Success Programs</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Athletics</fullName>
+                <default>false</default>
+                <label>Sun Devil Athletics</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Dining</fullName>
+                <default>false</default>
+                <label>Sun Devil Dining</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Rewards</fullName>
+                <default>false</default>
+                <label>Sun Devil Rewards</label>
+            </value>
+            <value>
+                <fullName>Supplemental Instruction</fullName>
+                <default>false</default>
+                <label>Supplemental Instruction</label>
+            </value>
+            <value>
+                <fullName>Supply Chain Management</fullName>
+                <default>false</default>
+                <label>Supply Chain Management</label>
+            </value>
+            <value>
+                <fullName>Tbird Activation</fullName>
+                <default>false</default>
+                <label>Tbird Activation</label>
+            </value>
+            <value>
+                <fullName>Teaching Assistant</fullName>
+                <default>false</default>
+                <label>Teaching Assistant</label>
+            </value>
+            <value>
+                <fullName>Team Thrive</fullName>
+                <default>false</default>
+                <label>Team Thrive</label>
+            </value>
+            <value>
+                <fullName>Technical</fullName>
+                <default>false</default>
+                <label>Technical</label>
+            </value>
+            <value>
+                <fullName>Technical - ISSC</fullName>
+                <default>false</default>
+                <label>Technical - ISSC</label>
+            </value>
+            <value>
+                <fullName>Technology Requests</fullName>
+                <default>false</default>
+                <label>Technology Requests</label>
+            </value>
+            <value>
+                <fullName>Tempe Cashiering</fullName>
+                <default>false</default>
+                <label>Tempe Cashiering</label>
+            </value>
+            <value>
+                <fullName>Test/Exam/Quiz</fullName>
+                <default>false</default>
+                <label>Test/Exam/Quiz</label>
+            </value>
+            <value>
+                <fullName>Textbooks (Help Desk)</fullName>
+                <default>false</default>
+                <label>Textbooks (Help Desk)</label>
+            </value>
+            <value>
+                <fullName>The Design School</fullName>
+                <default>false</default>
+                <label>The Design School</label>
+            </value>
+            <value>
+                <fullName>Thunderbird Teach Out</fullName>
+                <default>false</default>
+                <label>Thunderbird Teach Out</label>
+            </value>
+            <value>
+                <fullName>Training</fullName>
+                <default>false</default>
+                <label>Training</label>
+            </value>
+            <value>
+                <fullName>Training - EHS</fullName>
+                <default>false</default>
+                <label>Training - EHS</label>
+            </value>
+            <value>
+                <fullName>Transfer</fullName>
+                <default>false</default>
+                <label>Transfer</label>
+            </value>
+            <value>
+                <fullName>Transfer Ambassadors</fullName>
+                <default>false</default>
+                <label>Transfer Ambassadors</label>
+            </value>
+            <value>
+                <fullName>Transfer Credit Evaluations</fullName>
+                <default>false</default>
+                <label>Transfer Credit Evaluations</label>
+            </value>
+            <value>
+                <fullName>Transfer Recruitment</fullName>
+                <default>false</default>
+                <label>Transfer Recruitment</label>
+            </value>
+            <value>
+                <fullName>Tuition and Fees</fullName>
+                <default>false</default>
+                <label>Tuition and Fees</label>
+            </value>
+            <value>
+                <fullName>Tuition Calculation Issues</fullName>
+                <default>false</default>
+                <label>Tuition Calculation Issues</label>
+            </value>
+            <value>
+                <fullName>Tutoring</fullName>
+                <default>false</default>
+                <label>Tutoring</label>
+            </value>
+            <value>
+                <fullName>UE Mentorship</fullName>
+                <default>false</default>
+                <label>UE Mentorship</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - AIS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - AIS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - Army ROTC</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - Army ROTC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - CHS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - CHS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - CIDSE</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - CIDSE</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - CISA</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - CISA</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - CONHI</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - CONHI</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - English</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - English</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - HDSHC</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - HDSHC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - Herberger</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - Herberger</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - NCIAS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - NCIAS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - Physics</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - Physics</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - Poly</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - Poly</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - Psychology</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - Psychology</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SBHSE</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SBHSE</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SEMTE</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SEMTE</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SESE</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SESE</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SGSUP</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SGSUP</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SHESC</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SHESC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SHPRS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SHPRS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SILC</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SILC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SMS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SMS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SOLS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SOLS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SoMSS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SoMSS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SPGS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SPGS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SSEBE</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SSEBE</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - SST</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - SST</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - STS</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - STS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - The Sanford School</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - The Sanford School</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - Thunderbird</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - Thunderbird</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Advising - WPC</fullName>
+                <default>false</default>
+                <label>Undergraduate Advising - WPC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Engagement</fullName>
+                <default>false</default>
+                <label>Undergraduate Engagement</label>
+            </value>
+            <value>
+                <fullName>Undergraduate - ISSR</fullName>
+                <default>false</default>
+                <label>Undergraduate - ISSR</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Programs</fullName>
+                <default>false</default>
+                <label>Undergraduate Programs</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - Army ROTC</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - Army ROTC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - CISA</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - CISA</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - CONHI</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - CONHI</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - Physics</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - Physics</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - ProMod</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - ProMod</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - PSA</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - PSA</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - SILC</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - SILC</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - SPGS</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - SPGS</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - The Sanford School</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - The Sanford School</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Recruitment - Thunderbird</fullName>
+                <default>false</default>
+                <label>Undergraduate Recruitment - Thunderbird</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Student Engagement</fullName>
+                <default>false</default>
+                <label>Undergraduate Student Engagement</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Student Government (USG)</fullName>
+                <default>false</default>
+                <label>Undergraduate Student Government (USG)</label>
+            </value>
+            <value>
+                <fullName>Undergraduate Student Services</fullName>
+                <default>false</default>
+                <label>Undergraduate Student Services</label>
+            </value>
+            <value>
+                <fullName>University Registrar</fullName>
+                <default>false</default>
+                <label>University Registrar</label>
+            </value>
+            <value>
+                <fullName>Upward Bound</fullName>
+                <default>false</default>
+                <label>Upward Bound Tempe</label>
+            </value>
+            <value>
+                <fullName>UTO</fullName>
+                <default>false</default>
+                <label>UTO</label>
+            </value>
+            <value>
+                <fullName>VA Billing</fullName>
+                <default>false</default>
+                <label>VA Billing</label>
+            </value>
+            <value>
+                <fullName>Verify FAFSA</fullName>
+                <default>false</default>
+                <label>Verify FAFSA</label>
+            </value>
+            <value>
+                <fullName>Veterans Center</fullName>
+                <default>false</default>
+                <label>Veterans Center</label>
+            </value>
+            <value>
+                <fullName>Veterans Resources</fullName>
+                <default>false</default>
+                <label>Veterans Resources</label>
+            </value>
+            <value>
+                <fullName>Veterans Upward Bound</fullName>
+                <default>false</default>
+                <label>Veterans Upward Bound</label>
+            </value>
+            <value>
+                <fullName>Veteran Survey</fullName>
+                <default>false</default>
+                <label>Veteran Survey</label>
+            </value>
+            <value>
+                <fullName>VIP</fullName>
+                <default>false</default>
+                <label>VIP</label>
+            </value>
+            <value>
+                <fullName>Watchlist</fullName>
+                <default>false</default>
+                <label>Watchlist</label>
+            </value>
+            <value>
+                <fullName>Web Forms</fullName>
+                <default>false</default>
+                <label>Web Forms</label>
+            </value>
+            <value>
+                <fullName>Web Forms - ASU Wellness</fullName>
+                <default>false</default>
+                <label>Web Forms - ASU Wellness</label>
+            </value>
+            <value>
+                <fullName>Web-Team</fullName>
+                <default>false</default>
+                <label>Web-Team</label>
+            </value>
+            <value>
+                <fullName>Welcome</fullName>
+                <default>false</default>
+                <label>Welcome</label>
+            </value>
+            <value>
+                <fullName>Windows Group</fullName>
+                <default>false</default>
+                <label>Windows Group</label>
+            </value>
+            <value>
+                <fullName>WPC Blackboard</fullName>
+                <default>false</default>
+                <label>WPC Blackboard</label>
+            </value>
+            <value>
+                <fullName>WPC Classroom and Graduate</fullName>
+                <default>false</default>
+                <label>WPC Classroom and Graduate</label>
+            </value>
+            <value>
+                <fullName>WPC Multimedia</fullName>
+                <default>false</default>
+                <label>WPC Multimedia</label>
+            </value>
+            <value>
+                <fullName>WPC Network Ops</fullName>
+                <default>false</default>
+                <label>WPC Network Ops</label>
+            </value>
+            <value>
+                <fullName>WPC Support</fullName>
+                <default>false</default>
+                <label>WPC Support</label>
+            </value>
+            <value>
+                <fullName>WPC Walkup</fullName>
+                <default>false</default>
+                <label>WPC Walkup</label>
+            </value>
+            <value>
+                <fullName>Writing Programs</fullName>
+                <default>false</default>
+                <label>Writing Programs</label>
+            </value>
+            <value>
+                <fullName>Writing Tutoring</fullName>
+                <default>false</default>
+                <label>Writing Tutoring</label>
+            </value>
+            <value>
+                <fullName>Alumni Success</fullName>
+                <default>false</default>
+                <label>Alumni Success</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

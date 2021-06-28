@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Display_Article_Summary__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>When checked, the Article Summary will appear anywhere a list of articles is displayed, such as search results and most popular.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>When checked, the Article Summary will appear anywhere a list of articles is displayed, such as search results and most popular.</inlineHelpText>
+    <label>Display Article Summary?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

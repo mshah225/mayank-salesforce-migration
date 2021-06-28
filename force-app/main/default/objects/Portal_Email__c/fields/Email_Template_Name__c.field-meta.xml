@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Template_Name__c</fullName>
+    <externalId>false</externalId>
+    <label>Email Template Name</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Default</fullName>
+                <default>true</default>
+                <label>Default</label>
+            </value>
+            <value>
+                <fullName>Advisor Ad-hoc template</fullName>
+                <default>false</default>
+                <label>Advisor Ad-hoc template</label>
+            </value>
+            <value>
+                <fullName>CISA Mass Email - May 2017</fullName>
+                <default>false</default>
+                <label>CISA Mass Email - May 2017</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Macros_with_Owner</fullName>
+    <columns>Name</columns>
+    <columns>StartingContext</columns>
+    <columns>LastModifiedDate</columns>
+    <columns>LastModifiedBy</columns>
+    <columns>Owner</columns>
+    <columns>CreatedDate</columns>
+    <columns>CreatedBy</columns>
+    <columns>SystemModstamp</columns>
+    <columns>Description</columns>
+    <columns>IsAlohaSupported</columns>
+    <columns>IsLightningSupported</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Macros with Owner</label>
+</ListView>

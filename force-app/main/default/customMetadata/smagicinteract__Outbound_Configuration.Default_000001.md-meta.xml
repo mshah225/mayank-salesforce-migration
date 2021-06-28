@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default_000001</label>
+    <protected>false</protected>
+    <values>
+        <field>smagicinteract__Interface_Category__c</field>
+        <value xsi:type="xsd:string">smagicinteract__AUTOMATION</value>
+    </values>
+    <values>
+        <field>smagicinteract__New_Interface_Category__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>smagicinteract__Not_Available__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>smagicinteract__Routing_Rule__c</field>
+        <value xsi:type="xsd:string">smagicinteract__Default</value>
+    </values>
+    <values>
+        <field>smagicinteract__Sender_Id_Advance_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>smagicinteract__Sender_Id_Basic_Type__c</field>
+        <value xsi:type="xsd:string">AllSenderId</value>
+    </values>
+    <values>
+        <field>smagicinteract__Sender_JSON_Detail__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

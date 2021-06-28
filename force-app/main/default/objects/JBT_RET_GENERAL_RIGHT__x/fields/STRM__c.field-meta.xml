@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>STRM__c</fullName>
+    <description>Data sourced from ASU_STDNT_PROFILE_MAJ_TERM.STRM</description>
+    <externalDeveloperName>STRM</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Term</label>
+    <length>4</length>
+    <referenceTargetField>Term__c.PeopleSoft_Code__c</referenceTargetField>
+    <referenceTo>Term__c</referenceTo>
+    <relationshipLabel>Student Program Data (external)</relationshipLabel>
+    <relationshipName>Student_Program_Data_external</relationshipName>
+    <type>IndirectLookup</type>
+</CustomField>

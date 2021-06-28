@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CI_Score__c</fullName>
+    <description>[Self Calculated] - Used for scholorship, admisstions, etc - calculated by Troy Buchanan in Admissions</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Calculated Index Score</inlineHelpText>
+    <label>CI Score</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

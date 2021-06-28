@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Acad_Plan__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>PS_STDNT_CAR_MLSTN.ACAD_PLAN</description>
+    <externalId>false</externalId>
+    <label>Academic Plan</label>
+    <referenceTo>Plan__c</referenceTo>
+    <relationshipLabel>Student_Milestones</relationshipLabel>
+    <relationshipName>Student_Milestones</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

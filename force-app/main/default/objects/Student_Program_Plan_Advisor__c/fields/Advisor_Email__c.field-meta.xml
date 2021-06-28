@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Advisor_Email__c</fullName>
+    <description>(PeopleSoft) PS_EMAIL_ADDRESSES where type = ASU</description>
+    <externalId>false</externalId>
+    <label>Advisor Email</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Email</type>
+    <unique>false</unique>
+</CustomField>

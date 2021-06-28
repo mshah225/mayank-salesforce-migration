@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Private_to_Functional_Group__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When Checked, Chat Transcript is only visible to members in the related Case's Functional Group.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>When Checked, Chat Transcript is only visible to members in the related Case's Functional Group.</inlineHelpText>
+    <label>Is Private to Functional Group</label>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

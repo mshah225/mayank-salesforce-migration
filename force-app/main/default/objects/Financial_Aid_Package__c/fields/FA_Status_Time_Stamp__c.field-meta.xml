@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FA_Status_Time_Stamp__c</fullName>
+    <description>[Salesforce] - shows the day and time the financial aid status field was updated.</description>
+    <externalId>false</externalId>
+    <label>FA Status Time Stamp</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>If marked true, this record will be available for use on cases. If marked false, this record cannot be used for case creation or edits.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If marked true, this record will be available for use on cases. If marked false, this record cannot be used for case creation or edits.</inlineHelpText>
+    <label>Active</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

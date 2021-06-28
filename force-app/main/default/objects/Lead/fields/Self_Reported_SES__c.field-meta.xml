@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Self_Reported_SES__c</fullName>
+    <description>Socioeconomic status (SES) is determined by a combination of parental income, 
+education, occupation, and household items.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Socioeconomic status reported by the prospective student.</inlineHelpText>
+    <label>Self-Reported SES</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Very High</fullName>
+                <default>false</default>
+                <label>Very High</label>
+            </value>
+            <value>
+                <fullName>High</fullName>
+                <default>false</default>
+                <label>High</label>
+            </value>
+            <value>
+                <fullName>Moderate</fullName>
+                <default>false</default>
+                <label>Moderate</label>
+            </value>
+            <value>
+                <fullName>Low</fullName>
+                <default>false</default>
+                <label>Low</label>
+            </value>
+            <value>
+                <fullName>Very Low</fullName>
+                <default>false</default>
+                <label>Very Low</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

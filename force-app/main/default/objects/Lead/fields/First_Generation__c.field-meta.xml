@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>First_Generation__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[import] - Indicates the prospective student is the first to attend college from his/her family.</description>
+    <externalId>false</externalId>
+    <label>First Generation</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

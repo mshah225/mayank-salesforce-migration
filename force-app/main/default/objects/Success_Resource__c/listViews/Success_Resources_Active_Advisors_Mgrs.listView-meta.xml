@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Success_Resources_Active_Advisors_Mgrs</fullName>
+    <columns>NAME</columns>
+    <columns>IsActive__c</columns>
+    <columns>Resource__c</columns>
+    <columns>Program_Code__c</columns>
+    <columns>Success_Pod__c</columns>
+    <columns>Role__c</columns>
+    <columns>RECORDTYPE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Role__c</field>
+        <operation>equals</operation>
+        <value>Manager,Department Manager,College Manager,Lead</value>
+    </filters>
+    <label>Success Resources - Active Advisors Mgrs</label>
+</ListView>

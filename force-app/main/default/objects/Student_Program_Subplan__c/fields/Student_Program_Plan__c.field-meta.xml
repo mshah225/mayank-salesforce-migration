@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Student_Program_Plan__c</fullName>
+    <description>Referencing the associated student program plan</description>
+    <externalId>false</externalId>
+    <label>Student Program Plan</label>
+    <referenceTo>Student_Program_Plan__c</referenceTo>
+    <relationshipLabel>Student Program Subplans</relationshipLabel>
+    <relationshipName>Student_Sub_Plans</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

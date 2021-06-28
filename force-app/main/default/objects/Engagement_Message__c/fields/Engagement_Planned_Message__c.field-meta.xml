@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Engagement_Planned_Message__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Engagement Planned Message</label>
+    <referenceTo>Engagement_Planned_Message__c</referenceTo>
+    <relationshipLabel>Engagement Messages</relationshipLabel>
+    <relationshipName>Engagement_Messages</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

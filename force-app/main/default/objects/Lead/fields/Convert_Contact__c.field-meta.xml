@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Convert_Contact__c</fullName>
+    <businessOwnerGroup>Data_Owner_Campus_Community</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[import] - If a Contact is connected here, the Lead will automatically convert to that Contact (without an Opportunity).
+[MDM] - Read</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If a Contact  is connected here, the Lead will automatically convert to that Contact (without an Opportunity).</inlineHelpText>
+    <label>Convert: Contact</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Leads</relationshipLabel>
+    <relationshipName>Leads</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

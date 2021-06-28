@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fee_Waiver_Status</fullName>
+    <active>true</active>
+    <description>A Fee Waiver related Processing Status must be selected if Fee Waiver is set as the Sub-Category, the Case is part of the NAS process and is Closed.</description>
+    <errorConditionFormula>AND( 
+$RecordType.Name="ASU Admission Services", 
+(CC_Sub_Category__r.Name= "Fee Waiver Inquiry"), 
+NOT ISPICKVAL(Processing_Status__c, "Approved"), 
+NOT ISPICKVAL(Processing_Status__c, "Approved - by Recruiter"),
+NOT ISPICKVAL (Processing_Status__c, "Received - App Fee Paid"),
+NOT ISPICKVAL (Processing_Status__c, "Received - Missing Info"),
+NOT ISPICKVAL (Processing_Status__c, "Received - Needs to Apply/Re-Apply"),
+NOT ISPICKVAL (Processing_Status__c, "Received - Not Applicable"), 
+Needs_Attention__c,
+OR ( 
+ISPICKVAL (Status, "Closed: Resolved"), 
+ISPICKVAL (Status, "Closed: Customer Self-Resolved"), 
+ISPICKVAL (Status, "Closed: Customer Unresponsive") 
+))</errorConditionFormula>
+    <errorMessage>A Fee Waiver related Processing Status must be selected if Fee Waiver is set as the Sub-Category, the Case is part of the NAS process and is Closed.</errorMessage>
+</ValidationRule>

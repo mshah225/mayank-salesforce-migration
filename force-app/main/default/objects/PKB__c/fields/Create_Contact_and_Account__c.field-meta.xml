@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Create_Contact_and_Account__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>When checked, will cause a Contact and an Account to be created when a user submits a question. (If email address is found on another Contact, it will use that Contact and account.) Unchecking this box will put all of the submitted data into the Case.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>When checked, will cause a Contact and an Account to be created when a user submits a question. (If email address is found on another Contact, it will use that Contact and account.) Unchecking this box will put all of the submitted data into the Case.</inlineHelpText>
+    <label>Create Contact and Account</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

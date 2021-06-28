@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Contains items that will flag an incoming email as spam; incoming email containing any of these items will be ignored</description>
+    <enableFeeds>false</enableFeeds>
+    <label>Email To Case Filter</label>
+    <visibility>Public</visibility>
+</CustomObject>

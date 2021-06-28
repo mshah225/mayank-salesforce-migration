@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>First_Generation_Student__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>(PeopleSoft)
+PS_ASU_ADM_SAR_TBL WHERE ASU_ADS_QUESTNAME = 'FIRSTGEN' AND SAR.ASU_ADS_TXTRESP IN ('Y', 'YES', 'Yes')
+Or
+ASU_ADM_APPLICANT.FIRST_GEN_FLG = 'Y'</description>
+    <externalId>false</externalId>
+    <label>First Generation</label>
+    <required>false</required>
+    <securityClassification>Highly Sensitive</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>--</fullName>
+                <default>true</default>
+                <label>--</label>
+            </value>
+            <value>
+                <fullName>N</fullName>
+                <default>false</default>
+                <label>N</label>
+            </value>
+            <value>
+                <fullName>Y</fullName>
+                <default>false</default>
+                <label>Y</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RejectedAttachments__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If there were attachments that were rejected</description>
+    <externalId>false</externalId>
+    <label>RejectedAttachments</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

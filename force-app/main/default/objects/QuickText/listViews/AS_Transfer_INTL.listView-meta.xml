@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Transfer_INTL</fullName>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Owner_Display__c</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <columns>Channel</columns>
+    <columns>Id</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Owner_Display__c</field>
+        <operation>equals</operation>
+        <value>matthew buffington</value>
+    </filters>
+    <label>AS - Transfer / INTL Quick Text</label>
+    <sharedTo>
+        <group>AS_Graduate_Recruitment</group>
+        <group>International_Recruiter_Case</group>
+        <group>Transfer_Recruiter_Case</group>
+    </sharedTo>
+</ListView>

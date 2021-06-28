@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Secondary_Source__c</fullName>
+    <description>[manual import] - Examples include: Coll Technology &amp; Innovation, College of Public Programs, Cronkite School-Journ/MassComm, Graduate Education, Health Solutions, Herberger Institute, Ira A Fulton Engineering, Liberal Arts &amp; Sciences, MaryLouFulton Teachers College, New Interdis Arts &amp; Sciences, Nursing &amp; Health Innovation, School of Letters &amp; Sciences, School of Sustainability, W.P. Carey School of Business, O'Connor College of Law, Degree Search, ASU Online, USA Today, EGSS Applying, EGSS Financing, EGSS GRE Prep, EGSS Personal Statement, Info Session - Online, Info Session - Campus, GRE, GRE Subject, TOEFL, CA Diversity, Idealist, NNE, Graduate College, Sun Devil Days, Saudi Arabiav</description>
+    <externalId>false</externalId>
+    <label>Source Subtype</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Primary_Source__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Coll Technology &amp; Innovation</fullName>
+                <default>false</default>
+                <label>Coll Technology &amp; Innovation</label>
+            </value>
+            <value>
+                <fullName>College of Public Programs</fullName>
+                <default>false</default>
+                <label>College of Public Programs</label>
+            </value>
+            <value>
+                <fullName>Cronkite School-Journ/MassComm</fullName>
+                <default>false</default>
+                <label>Cronkite School-Journ/MassComm</label>
+            </value>
+            <value>
+                <fullName>Graduate Education</fullName>
+                <default>false</default>
+                <label>Graduate Education</label>
+            </value>
+            <value>
+                <fullName>Health Solutions</fullName>
+                <default>false</default>
+                <label>Health Solutions</label>
+            </value>
+            <value>
+                <fullName>Herberger Institute</fullName>
+                <default>false</default>
+                <label>Herberger Institute</label>
+            </value>
+            <value>
+                <fullName>Ira A Fulton Engineering</fullName>
+                <default>false</default>
+                <label>Ira A Fulton Engineering</label>
+            </value>
+            <value>
+                <fullName>Liberal Arts &amp; Sciences</fullName>
+                <default>false</default>
+                <label>Liberal Arts &amp; Sciences</label>
+            </value>
+            <value>
+                <fullName>MaryLouFulton Teachers College</fullName>
+                <default>false</default>
+                <label>MaryLouFulton Teachers College</label>
+            </value>
+            <value>
+                <fullName>New Interdis Arts &amp; Sciences</fullName>
+                <default>false</default>
+                <label>New Interdis Arts &amp; Sciences</label>
+            </value>
+            <value>
+                <fullName>Nursing &amp; Health Innovation</fullName>
+                <default>false</default>
+                <label>Nursing &amp; Health Innovation</label>
+            </value>
+            <value>
+                <fullName>School of Letters &amp; Sciences</fullName>
+                <default>false</default>
+                <label>School of Letters &amp; Sciences</label>
+            </value>
+            <value>
+                <fullName>School of Sustainability</fullName>
+                <default>false</default>
+                <label>School of Sustainability</label>
+            </value>
+            <value>
+                <fullName>W.P. Carey School of Business</fullName>
+                <default>false</default>
+                <label>W.P. Carey School of Business</label>
+            </value>
+            <value>
+                <fullName>O'Connor College of Law</fullName>
+                <default>false</default>
+                <label>O'Connor College of Law</label>
+            </value>
+            <value>
+                <fullName>Degree Search</fullName>
+                <default>false</default>
+                <label>Degree Search</label>
+            </value>
+            <value>
+                <fullName>ASU Online</fullName>
+                <default>false</default>
+                <label>ASU Online</label>
+            </value>
+            <value>
+                <fullName>USA Today</fullName>
+                <default>false</default>
+                <label>USA Today</label>
+            </value>
+            <value>
+                <fullName>EGSS Applying</fullName>
+                <default>false</default>
+                <label>EGSS Applying</label>
+            </value>
+            <value>
+                <fullName>EGSS Financing</fullName>
+                <default>false</default>
+                <label>EGSS Financing</label>
+            </value>
+            <value>
+                <fullName>EGSS GRE Prep</fullName>
+                <default>false</default>
+                <label>EGSS GRE Prep</label>
+            </value>
+            <value>
+                <fullName>EGSS Personal Statement</fullName>
+                <default>false</default>
+                <label>EGSS Personal Statement</label>
+            </value>
+            <value>
+                <fullName>Info Session - Online</fullName>
+                <default>false</default>
+                <label>Info Session - Online</label>
+            </value>
+            <value>
+                <fullName>Info Session - Campus</fullName>
+                <default>false</default>
+                <label>Info Session - Campus</label>
+            </value>
+            <value>
+                <fullName>GRE</fullName>
+                <default>false</default>
+                <label>GRE</label>
+            </value>
+            <value>
+                <fullName>GRE Subject</fullName>
+                <default>false</default>
+                <label>GRE Subject</label>
+            </value>
+            <value>
+                <fullName>TOEFL</fullName>
+                <default>false</default>
+                <label>TOEFL</label>
+            </value>
+            <value>
+                <fullName>CA Diversity</fullName>
+                <default>false</default>
+                <label>CA Diversity</label>
+            </value>
+            <value>
+                <fullName>Idealist</fullName>
+                <default>false</default>
+                <label>Idealist</label>
+            </value>
+            <value>
+                <fullName>NNE</fullName>
+                <default>false</default>
+                <label>NNE</label>
+            </value>
+            <value>
+                <fullName>Graduate College</fullName>
+                <default>false</default>
+                <label>Graduate College</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Days</fullName>
+                <default>false</default>
+                <label>Sun Devil Days</label>
+            </value>
+            <value>
+                <fullName>Saudi Arabia</fullName>
+                <default>false</default>
+                <label>Saudi Arabia</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Coll Technology &amp; Innovation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>College of Public Programs</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Cronkite School-Journ/MassComm</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Graduate Education</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>College Fair - US</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Health Solutions</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Herberger Institute</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Ira A Fulton Engineering</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Liberal Arts &amp; Sciences</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>MaryLouFulton Teachers College</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>New Interdis Arts &amp; Sciences</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Nursing &amp; Health Innovation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>School of Letters &amp; Sciences</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>School of Sustainability</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>W.P. Carey School of Business</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>O'Connor College of Law</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <valueName>Degree Search</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Web Form</controllingFieldValue>
+            <controllingFieldValue>Walk-in</controllingFieldValue>
+            <valueName>Graduate College</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Test Scores</controllingFieldValue>
+            <controllingFieldValue>Purchased List</controllingFieldValue>
+            <valueName>GRE</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Test Scores</controllingFieldValue>
+            <valueName>GRE Subject</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Test Scores</controllingFieldValue>
+            <controllingFieldValue>Purchased List</controllingFieldValue>
+            <valueName>TOEFL</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Advertisement</controllingFieldValue>
+            <valueName>USA Today</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>College Fair - US</controllingFieldValue>
+            <valueName>CA Diversity</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>College Fair - US</controllingFieldValue>
+            <valueName>Idealist</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>College Fair - Int</controllingFieldValue>
+            <valueName>Saudi Arabia</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Event</controllingFieldValue>
+            <valueName>EGSS Applying</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Event</controllingFieldValue>
+            <valueName>EGSS Financing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Event</controllingFieldValue>
+            <valueName>EGSS GRE Prep</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Event</controllingFieldValue>
+            <valueName>EGSS Personal Statement</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Event</controllingFieldValue>
+            <valueName>Info Session - Online</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Event</controllingFieldValue>
+            <valueName>Info Session - Campus</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Purchased List</controllingFieldValue>
+            <valueName>NNE</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

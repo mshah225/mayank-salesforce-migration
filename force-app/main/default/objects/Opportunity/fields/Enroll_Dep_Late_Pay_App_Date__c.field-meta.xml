@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enroll_Dep_Late_Pay_App_Date__c</fullName>
+    <description>[??] - Lists the day when the late payment was approved.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Lists the day when the late payment was approved.</inlineHelpText>
+    <label>Late Payment Approval Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

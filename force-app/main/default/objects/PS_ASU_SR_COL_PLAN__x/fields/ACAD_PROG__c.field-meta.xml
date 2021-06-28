@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ACAD_PROG__c</fullName>
+    <description>Data sourced from PS_ACAD_PROG.ACAD_PROG</description>
+    <externalDeveloperName>ACAD_PROG</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Program</label>
+    <length>4</length>
+    <referenceTargetField>Program__c.Program_Code__c</referenceTargetField>
+    <referenceTo>Program__c</referenceTo>
+    <relationshipLabel>Student Graduate Plan (external)</relationshipLabel>
+    <relationshipName>Student_Graduate_Plan_external</relationshipName>
+    <type>IndirectLookup</type>
+</CustomField>

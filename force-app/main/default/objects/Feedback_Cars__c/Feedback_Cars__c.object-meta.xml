@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>Used to store Ids of case assignment rules for various feedback buttons</description>
+    <enableFeeds>false</enableFeeds>
+    <label>Feedback Cars</label>
+    <visibility>Protected</visibility>
+</CustomObject>

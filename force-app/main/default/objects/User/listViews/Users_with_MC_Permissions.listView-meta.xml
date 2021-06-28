@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Users_with_MC_Permissions</fullName>
+    <booleanFilter>1 OR 2</booleanFilter>
+    <columns>FULL_NAME</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>CORE.USERS.USERNAME</columns>
+    <columns>CORE.USERS.LAST_LOGIN</columns>
+    <columns>CORE.USER_ROLE.NAME</columns>
+    <columns>CORE.USERS.ACTIVE</columns>
+    <columns>CORE.PROFILE.NAME</columns>
+    <columns>et4ae5__ExactTargetForAppExchangeAdmin__c</columns>
+    <columns>et4ae5__ExactTargetForAppExchangeUser__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>et4ae5__ExactTargetForAppExchangeAdmin__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>et4ae5__ExactTargetForAppExchangeUser__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Users with MC Permissions</label>
+    <sharedTo>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

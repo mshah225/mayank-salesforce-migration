@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Engagement_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Engagement Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Ad Hoc Email</fullName>
+                <default>false</default>
+                <label>Ad Hoc Email</label>
+            </value>
+            <value>
+                <fullName>Ad Hoc SMS Message</fullName>
+                <default>false</default>
+                <label>Ad Hoc SMS Message</label>
+            </value>
+            <value>
+                <fullName>Mass Email</fullName>
+                <default>false</default>
+                <label>Mass Email</label>
+            </value>
+            <value>
+                <fullName>Mass SMS Message</fullName>
+                <default>false</default>
+                <label>Mass SMS Message</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

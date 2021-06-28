@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>View_Edit_Login__c</fullName>
+    <description>[??] - Can be used in Reports to give an admin the ability to View, Edit or Login as the User.</description>
+    <externalId>false</externalId>
+    <formula>HYPERLINK("https://asu.my.salesforce.com/"&amp;Id&amp;"?noredirect=1","View","_blank")
+&amp;"  |  "&amp;
+HYPERLINK("https://asu.my.salesforce.com/"&amp;Id&amp;"/e?retURL=%2F"&amp;Id&amp;"%3Fnoredirect%3D1?noredirect=1","Edit","_blank")
+&amp;"  |  "&amp;
+HYPERLINK("https://asu.my.salesforce.com/servlet/servlet.su?oid=00Dd0000000hLoc&amp;suorgadminid="&amp;Id&amp;"&amp;retURL=%"&amp;Id&amp;"%3Fnoredirect%3D1&amp;targetURL=%2Fhome%2Fhome.jsp","Login","_blank")</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Can be used in Reports to give an admin the ability to View, Edit or Login as the User.</inlineHelpText>
+    <label>View  |  Edit  |  Login</label>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

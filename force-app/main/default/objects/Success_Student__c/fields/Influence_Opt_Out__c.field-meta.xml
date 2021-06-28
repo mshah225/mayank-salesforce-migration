@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Influence_Opt_Out__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Coaching students who have opted out of receiving emails from Influence (Success Center Interactive Video / Email provider) can be marked true by coaches.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Coaching students who have opted out of receiving emails from Influence (Success Center Interactive Video / Email provider) can be marked true by coaches.</inlineHelpText>
+    <label>Influence Opt-Out</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

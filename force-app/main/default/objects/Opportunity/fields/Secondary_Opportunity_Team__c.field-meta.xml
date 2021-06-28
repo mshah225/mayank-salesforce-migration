@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Secondary_Opportunity_Team__c</fullName>
+    <description>This shows more data on how how the opportunity will be used.</description>
+    <externalId>false</externalId>
+    <label>Secondary Opportunity Team</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Opportunity_Team__c</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ATP3 membership</fullName>
+                <default>false</default>
+                <label>ATP3 membership</label>
+            </value>
+            <value>
+                <fullName>Biomass/feedstock production</fullName>
+                <default>false</default>
+                <label>Biomass/feedstock production</label>
+            </value>
+            <value>
+                <fullName>Business relocation</fullName>
+                <default>false</default>
+                <label>Business relocation</label>
+            </value>
+            <value>
+                <fullName>Chemical and biochemical analysis</fullName>
+                <default>false</default>
+                <label>Chemical and biochemical analysis</label>
+            </value>
+            <value>
+                <fullName>CO2 – Carbon capture</fullName>
+                <default>false</default>
+                <label>CO2 – Carbon capture</label>
+            </value>
+            <value>
+                <fullName>Downstream processing</fullName>
+                <default>false</default>
+                <label>Downstream processing</label>
+            </value>
+            <value>
+                <fullName>Education and training</fullName>
+                <default>false</default>
+                <label>Education and training</label>
+            </value>
+            <value>
+                <fullName>Environmental management</fullName>
+                <default>false</default>
+                <label>Environmental management</label>
+            </value>
+            <value>
+                <fullName>Equipment evaluation</fullName>
+                <default>false</default>
+                <label>Equipment evaluation</label>
+            </value>
+            <value>
+                <fullName>Extraction and conversion</fullName>
+                <default>false</default>
+                <label>Extraction and conversion</label>
+            </value>
+            <value>
+                <fullName>Full Service Sale</fullName>
+                <default>false</default>
+                <label>Full Service Sale</label>
+            </value>
+            <value>
+                <fullName>Grant</fullName>
+                <default>false</default>
+                <label>Grant</label>
+            </value>
+            <value>
+                <fullName>Grant opportunities</fullName>
+                <default>false</default>
+                <label>Grant opportunities</label>
+            </value>
+            <value>
+                <fullName>Guideline</fullName>
+                <default>false</default>
+                <label>Guideline</label>
+            </value>
+            <value>
+                <fullName>Harvesting and dewatering</fullName>
+                <default>false</default>
+                <label>Harvesting and dewatering</label>
+            </value>
+            <value>
+                <fullName>Industry consortia</fullName>
+                <default>false</default>
+                <label>Industry consortia</label>
+            </value>
+            <value>
+                <fullName>Institutional Support</fullName>
+                <default>false</default>
+                <label>Institutional Support</label>
+            </value>
+            <value>
+                <fullName>LCA – Life cycle assessment</fullName>
+                <default>false</default>
+                <label>LCA – Life cycle assessment</label>
+            </value>
+            <value>
+                <fullName>Methods development</fullName>
+                <default>false</default>
+                <label>Methods development</label>
+            </value>
+            <value>
+                <fullName>Nutrient scaling and management</fullName>
+                <default>false</default>
+                <label>Nutrient scaling and management</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>PBR – Photobioreactor development</fullName>
+                <default>false</default>
+                <label>PBR – Photobioreactor development</label>
+            </value>
+            <value>
+                <fullName>Physics-based modeling</fullName>
+                <default>false</default>
+                <label>Physics-based modeling</label>
+            </value>
+            <value>
+                <fullName>Policy/EE</fullName>
+                <default>false</default>
+                <label>Policy/EE</label>
+            </value>
+            <value>
+                <fullName>Publications</fullName>
+                <default>false</default>
+                <label>Publications</label>
+            </value>
+            <value>
+                <fullName>SBIR – Small business opportunities</fullName>
+                <default>false</default>
+                <label>SBIR – Small business opportunities</label>
+            </value>
+            <value>
+                <fullName>Self Service Sale</fullName>
+                <default>false</default>
+                <label>Self Service Sale</label>
+            </value>
+            <value>
+                <fullName>Solar electric</fullName>
+                <default>false</default>
+                <label>Solar electric</label>
+            </value>
+            <value>
+                <fullName>Sustainable fuels and products</fullName>
+                <default>false</default>
+                <label>Sustainable fuels and products</label>
+            </value>
+            <value>
+                <fullName>TEA – Technoeconomic assessment</fullName>
+                <default>false</default>
+                <label>TEA – Technoeconomic assessment</label>
+            </value>
+            <value>
+                <fullName>Testbed – All</fullName>
+                <default>false</default>
+                <label>Testbed – All</label>
+            </value>
+            <value>
+                <fullName>Testbed – Arizona</fullName>
+                <default>false</default>
+                <label>Testbed – Arizona</label>
+            </value>
+            <value>
+                <fullName>Testbed – California</fullName>
+                <default>false</default>
+                <label>Testbed – California</label>
+            </value>
+            <value>
+                <fullName>Testbed – Georgia</fullName>
+                <default>false</default>
+                <label>Testbed – Georgia</label>
+            </value>
+            <value>
+                <fullName>Testbed – Hawaii</fullName>
+                <default>false</default>
+                <label>Testbed – Hawaii</label>
+            </value>
+            <value>
+                <fullName>Testbed – Ohio</fullName>
+                <default>false</default>
+                <label>Testbed – Ohio</label>
+            </value>
+            <value>
+                <fullName>Water conservation and recycling</fullName>
+                <default>false</default>
+                <label>Water conservation and recycling</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Digital Antiquity</controllingFieldValue>
+            <valueName>Full Service Sale</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Antiquity</controllingFieldValue>
+            <valueName>Grant</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Antiquity</controllingFieldValue>
+            <valueName>Guideline</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Antiquity</controllingFieldValue>
+            <valueName>Institutional Support</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Antiquity</controllingFieldValue>
+            <valueName>Other</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Antiquity</controllingFieldValue>
+            <valueName>Self Service Sale</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>ATP3 membership</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Biomass/feedstock production</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Business relocation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Chemical and biochemical analysis</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>CO2 – Carbon capture</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Downstream processing</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Education and training</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Environmental management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Equipment evaluation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Extraction and conversion</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Grant opportunities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Harvesting and dewatering</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Industry consortia</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>LCA – Life cycle assessment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Methods development</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Nutrient scaling and management</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>PBR – Photobioreactor development</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Physics-based modeling</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Policy/EE</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Publications</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>SBIR – Small business opportunities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Solar electric</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Sustainable fuels and products</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>TEA – Technoeconomic assessment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Testbed – All</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Testbed – Arizona</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Testbed – California</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Testbed – Georgia</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Testbed – Hawaii</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Testbed – Ohio</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lightworks</controllingFieldValue>
+            <valueName>Water conservation and recycling</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

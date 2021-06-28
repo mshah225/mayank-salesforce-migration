@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Assignment_Rule__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <externalId>false</externalId>
+    <inlineHelpText>When a Case is created with this Campaign listed as the "Case Source", some ASU managed processes will use the Case Assignment Rule listed for specific guidance on how to provision that Case.</inlineHelpText>
+    <label>Case Assignment Rule</label>
+    <referenceTo>Case_Assignment_Rule__c</referenceTo>
+    <relationshipLabel>Source Campaigns</relationshipLabel>
+    <relationshipName>Campaigns</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

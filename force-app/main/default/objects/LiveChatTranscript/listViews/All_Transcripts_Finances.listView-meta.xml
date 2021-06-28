@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Transcripts_Finances</fullName>
+    <columns>Id</columns>
+    <columns>Name</columns>
+    <columns>LiveChatVisitor</columns>
+    <columns>Case</columns>
+    <columns>StartTime</columns>
+    <columns>EndTime</columns>
+    <columns>Status</columns>
+    <columns>Contact</columns>
+    <columns>Lead</columns>
+    <columns>Owner_Display_Name__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LiveChatButton</field>
+        <operation>equals</operation>
+        <value>Finances Live Chat</value>
+    </filters>
+    <label>All Transcripts - Finances</label>
+    <sharedTo>
+        <group>Blackboard_UTO_Case</group>
+        <group>Help_Desk_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

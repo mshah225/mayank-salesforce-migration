@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Owner_Email__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(ISBLANK(Case__r.Owner:Queue.QueueEmail),  Case__r.Owner:User.Email ,Case__r.Owner:Queue.QueueEmail)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Case Owner Email</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

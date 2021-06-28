@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Subscribed__c</fullName>
+    <description>Used for Subscription Center Campaign Member record types - Marketing Cloud Last Subscribed date/time</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Used for Subscription Center Campaign Member record types - Marketing Cloud Last Subscribed date/time</inlineHelpText>
+    <label>MC Last Subscribed</label>
+    <required>false</required>
+    <type>DateTime</type>
+</CustomField>

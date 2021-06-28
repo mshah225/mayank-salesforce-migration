@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MC_Alumni_Partner_Subscription</fullName>
+    <columns>NAME</columns>
+    <columns>Subscription_Type__c</columns>
+    <columns>Subscription_Description__c</columns>
+    <columns>Subscription_Center_Description__c</columns>
+    <columns>Available_for_Opt_In__c</columns>
+    <columns>Business_Unit__c</columns>
+    <filterScope>Queue</filterScope>
+    <label>MC: Alumni Partner</label>
+    <queue>MC_Alumni_Partner</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

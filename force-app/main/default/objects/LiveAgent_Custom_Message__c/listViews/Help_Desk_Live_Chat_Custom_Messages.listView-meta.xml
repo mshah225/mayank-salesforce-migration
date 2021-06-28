@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Help_Desk_Live_Chat_Custom_Messages</fullName>
+    <columns>NAME</columns>
+    <columns>LiveAgent_Button__c</columns>
+    <columns>Start_Date_Time__c</columns>
+    <columns>End_Date_Time__c</columns>
+    <columns>Custom_Message__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>OWNER.ALIAS</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>LiveAgent_Custom_Message__c.Help_Desk</value>
+    </filters>
+    <label>Help Desk - Live Chat Custom Messages</label>
+    <sharedTo>
+        <group>Blackboard_UTO_Case</group>
+        <group>Help_Desk_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

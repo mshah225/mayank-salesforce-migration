@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CTPColumn__c</fullName>
+    <description>This picklist lists the columns from the Case Transfer page. It is used to tell where a CAR list will be placed on that page.</description>
+    <externalId>false</externalId>
+    <label>CTP Column</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Service Departments</fullName>
+                <default>false</default>
+                <label>Service Departments</label>
+            </value>
+            <value>
+                <fullName>Colleges</fullName>
+                <default>false</default>
+                <label>Colleges</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

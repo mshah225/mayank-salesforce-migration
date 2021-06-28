@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ACAD_PLAN__c</fullName>
+    <description>Data sourced from PS_ASU_AA_POS_PETN.ACAD_PLAN</description>
+    <externalDeveloperName>ACAD_PLAN</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Academic Plan</label>
+    <length>25</length>
+    <referenceTargetField>Plan__c.Plan_Code__c</referenceTargetField>
+    <referenceTo>Plan__c</referenceTo>
+    <relationshipLabel>Defense Status (external)</relationshipLabel>
+    <relationshipName>Defense_Status_external</relationshipName>
+    <type>IndirectLookup</type>
+</CustomField>

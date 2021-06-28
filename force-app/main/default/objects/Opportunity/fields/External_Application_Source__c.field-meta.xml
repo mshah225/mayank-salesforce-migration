@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Application_Source__c</fullName>
+    <description>New Export/Import from The Common App data from PS_ADM_APPL_RCR_CA</description>
+    <externalId>false</externalId>
+    <inlineHelpText>New Export/Import from The Common App data from PS_ADM_APPL_RCR_CA</inlineHelpText>
+    <label>External Application Source</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Coalition App</fullName>
+                <default>false</default>
+                <label>Coalition App</label>
+            </value>
+            <value>
+                <fullName>Common App</fullName>
+                <default>false</default>
+                <label>Common App</label>
+            </value>
+            <value>
+                <fullName>Common App Transfer</fullName>
+                <default>false</default>
+                <label>Common App Transfer</label>
+            </value>
+            <value>
+                <fullName>Kaplan</fullName>
+                <default>false</default>
+                <label>Kaplan</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

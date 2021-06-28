@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Send_Email_ID_Lead_Interest</fullName>
+    <availability>online</availability>
+    <description>Sends an email based on the formula field Send Email ID found in the Lead Interest object</description>
+    <displayType>massActionButton</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>Send Email to Lead</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <requireRowSelection>false</requireRowSelection>
+    <url>/_ui/core/email/author/EmailAuthor?p2_lkid={!Lead_Interest__c.Send_Email_ID__c}&amp;retURL={!Lead_Interest__c.Id}</url>
+</WebLink>

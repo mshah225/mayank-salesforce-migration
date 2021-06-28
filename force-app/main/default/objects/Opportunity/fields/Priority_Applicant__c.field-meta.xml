@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Priority_Applicant__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[Manual] - checkbox for early applicant, Student qualified to participate in the program.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Student qualified to participate in the program.</inlineHelpText>
+    <label>Priority Applicant</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

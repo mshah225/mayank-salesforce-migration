@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CC_Functional_Group__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup to the Case Classification Functional Group field</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Lookup to the Case Classification Functional Group field</inlineHelpText>
+    <label>Case Functional Group</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Case_Classification__c.Active__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </filterItems>
+        <filterItems>
+            <field>Case_Classification__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Functional Group</value>
+        </filterItems>
+        <filterItems>
+            <field>Case_Classification__c.Name</field>
+            <operation>contains</operation>
+            <value>Coach</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Case_Classification__c</referenceTo>
+    <relationshipLabel>Success Coach Case Flags (Functional Group)</relationshipLabel>
+    <relationshipName>Success_Coach_Case_Flags</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

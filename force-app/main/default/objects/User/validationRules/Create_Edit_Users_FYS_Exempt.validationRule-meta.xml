@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Create_Edit_Users_FYS_Exempt</fullName>
+    <active>false</active>
+    <description>System Administrator can create and edit primary fields on a User record.
+First Success Center profile user can edit "Out Of Office Message" fields.</description>
+    <errorConditionFormula>OR(
+AND(
+OR (ISNEW(),ISCHANGED( Email ),ISCHANGED( Alias ),ISCHANGED( Username),ISCHANGED( FederationIdentifier )),
+$User.ProfileId &lt;&gt; '00ed00000017Iob' 
+),
+AND(
+$User.ProfileId = '00ed0000000jboW' , 
+NOT(
+OR(ISCHANGED(Out_Of_Office_Message__c), ISCHANGED( omniChannel_loggedIn__c))
+),
+ Alias &lt;&gt; $User.Alias
+))</errorConditionFormula>
+    <errorMessage>Only System Administrator can create new or edit users. Please contact salesforce.support@asu.edu if you need to make a change.</errorMessage>
+</ValidationRule>

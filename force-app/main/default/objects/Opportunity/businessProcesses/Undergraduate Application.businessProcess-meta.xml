@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Undergraduate Application</fullName>
+    <description>Process for the lifecycle of an undergraduate application</description>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Admitted</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Admitted - College Review</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Admitted - Conditional</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Admitted - Deferred</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant - College Review</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant - In Evalution</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant - Incomplete</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant - Individual Review</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant - Post-Eval Info Required</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Applicant - Withdrawn</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Denied</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Enrolled</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Enrolled - 21st Day</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Withdrawn</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

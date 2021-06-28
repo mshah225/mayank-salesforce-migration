@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Success_Resource__c</fullName>
+    <externalId>false</externalId>
+    <label>Success Resource</label>
+    <referenceTo>Success_Resource__c</referenceTo>
+    <relationshipLabel>Success Resource Skills</relationshipLabel>
+    <relationshipName>Success_Resource_Skills1</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

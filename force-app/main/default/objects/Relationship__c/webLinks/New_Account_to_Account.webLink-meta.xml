@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>New_Account_to_Account</fullName>
+    <availability>online</availability>
+    <description>Create a new account to account relationship</description>
+    <displayType>massActionButton</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>New Account to Account</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <requireRowSelection>false</requireRowSelection>
+    <url>/a15/e?CF00Nd0000007v9eP={!Account.Name}&amp;CF00Nd0000007v9eP_lkid={!Account.Id}&amp;retURL={!Account.Id}&amp;RecordType=012d0000000x7bF</url>
+</WebLink>

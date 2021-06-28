@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Call_Type__c</fullName>
+    <description>Picklist field that allows users to select the type of phone call made.</description>
+    <externalId>false</externalId>
+    <label>Call Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Admit (College FA Package)</fullName>
+                <default>false</default>
+                <label>Admit (College FA Package)</label>
+            </value>
+            <value>
+                <fullName>Admit (College New Admit)</fullName>
+                <default>false</default>
+                <label>Admit (College New Admit)</label>
+            </value>
+            <value>
+                <fullName>Admit (College New Deposit)</fullName>
+                <default>false</default>
+                <label>Admit (College New Deposit)</label>
+            </value>
+            <value>
+                <fullName>Admit (Conditional Admit)</fullName>
+                <default>false</default>
+                <label>Admit (Conditional Admit)</label>
+            </value>
+            <value>
+                <fullName>Admit (Department)</fullName>
+                <default>false</default>
+                <label>Admit (Department)</label>
+            </value>
+            <value>
+                <fullName>Admit (Department Push to Enroll)</fullName>
+                <default>false</default>
+                <label>Admit (Department Push to Enroll)</label>
+            </value>
+            <value>
+                <fullName>Admit (EC FA Package)</fullName>
+                <default>false</default>
+                <label>Admit (EC FA Package)</label>
+            </value>
+            <value>
+                <fullName>Admit (EC New Admit)</fullName>
+                <default>false</default>
+                <label>Admit (EC New Admit)</label>
+            </value>
+            <value>
+                <fullName>Admit (EC New Deposit)</fullName>
+                <default>false</default>
+                <label>Admit (EC New Deposit)</label>
+            </value>
+            <value>
+                <fullName>Admit (Enrollment Deposit Push)</fullName>
+                <default>false</default>
+                <label>Admit (Enrollment Deposit Push)</label>
+            </value>
+            <value>
+                <fullName>Admit (Enrollment Deposit Push 2)</fullName>
+                <default>false</default>
+                <label>Admit (Enrollment Deposit Push 2)</label>
+            </value>
+            <value>
+                <fullName>Admit (FAFSA Follow-up)</fullName>
+                <default>false</default>
+                <label>Admit (FAFSA Follow-up)</label>
+            </value>
+            <value>
+                <fullName>Admit (FA Package)</fullName>
+                <default>false</default>
+                <label>Admit (FA Package)</label>
+            </value>
+            <value>
+                <fullName>Admit (Housing Push)</fullName>
+                <default>false</default>
+                <label>Admit (Housing Push)</label>
+            </value>
+            <value>
+                <fullName>Admit (Housing Push 2)</fullName>
+                <default>false</default>
+                <label>Admit (Housing Push 2)</label>
+            </value>
+            <value>
+                <fullName>Admit (New)</fullName>
+                <default>false</default>
+                <label>Admit (New)</label>
+            </value>
+            <value>
+                <fullName>Admit (New) 14 Day Follow-up</fullName>
+                <default>false</default>
+                <label>Admit (New) 14 Day Follow-up</label>
+            </value>
+            <value>
+                <fullName>Admit (New) 20 Day Follow-up</fullName>
+                <default>false</default>
+                <label>Admit (New) 20 Day Follow-up</label>
+            </value>
+            <value>
+                <fullName>Admit (New) 7 Day Follow-up</fullName>
+                <default>false</default>
+                <label>Admit (New) 7 Day Follow-up</label>
+            </value>
+            <value>
+                <fullName>Admit (No FAFSA)</fullName>
+                <default>false</default>
+                <label>Admit (No FAFSA)</label>
+            </value>
+            <value>
+                <fullName>Admit (Orientation Push)</fullName>
+                <default>false</default>
+                <label>Admit (Orientation Push)</label>
+            </value>
+            <value>
+                <fullName>Admit (Orientation Push 2)</fullName>
+                <default>false</default>
+                <label>Admit (Orientation Push 2)</label>
+            </value>
+            <value>
+                <fullName>Admit (PAR New Admit)</fullName>
+                <default>false</default>
+                <label>Admit (PAR New Admit)</label>
+            </value>
+            <value>
+                <fullName>Admit (PAR New Deposit)</fullName>
+                <default>false</default>
+                <label>Admit (PAR New Deposit)</label>
+            </value>
+            <value>
+                <fullName>Admit (Push to Enroll)</fullName>
+                <default>false</default>
+                <label>Admit (Push to Enroll)</label>
+            </value>
+            <value>
+                <fullName>Admit (Push to Enroll) Final Attempt</fullName>
+                <default>false</default>
+                <label>Admit (Push to Enroll) Final Attempt</label>
+            </value>
+            <value>
+                <fullName>Admit (Re-Engage)</fullName>
+                <default>false</default>
+                <label>Admit (Re-Engage)</label>
+            </value>
+            <value>
+                <fullName>Admit (Veteran)</fullName>
+                <default>false</default>
+                <label>Admit (Veteran)</label>
+            </value>
+            <value>
+                <fullName>Admit Hub - Sunny Follow Up (Admissions)</fullName>
+                <default>false</default>
+                <label>Admit Hub - Sunny Follow Up (Admissions)</label>
+            </value>
+            <value>
+                <fullName>Admit Hub - Sunny Follow Up (College)</fullName>
+                <default>false</default>
+                <label>Admit Hub - Sunny Follow Up (College)</label>
+            </value>
+            <value>
+                <fullName>Admit Hub - Sunny Follow Up (Partner)</fullName>
+                <default>false</default>
+                <label>Admit Hub - Sunny Follow Up (Partner)</label>
+            </value>
+            <value>
+                <fullName>Admit Qualifier 1</fullName>
+                <default>false</default>
+                <label>Admit Qualifier 1</label>
+            </value>
+            <value>
+                <fullName>Admit Qualifier 2</fullName>
+                <default>false</default>
+                <label>Admit Qualifier 2</label>
+            </value>
+            <value>
+                <fullName>Applicant (App in Committee)</fullName>
+                <default>false</default>
+                <label>Applicant (App in Committee)</label>
+            </value>
+            <value>
+                <fullName>Applicant (Department)</fullName>
+                <default>false</default>
+                <label>Applicant (Department)</label>
+            </value>
+            <value>
+                <fullName>Applicant (EC New)</fullName>
+                <default>false</default>
+                <label>Applicant (EC New)</label>
+            </value>
+            <value>
+                <fullName>Applicant (Incomplete Final Attempt)</fullName>
+                <default>false</default>
+                <label>Applicant (Incomplete Final Attempt)</label>
+            </value>
+            <value>
+                <fullName>Applicant (Incomplete Push 1)</fullName>
+                <default>false</default>
+                <label>Applicant (Incomplete Push 1)</label>
+            </value>
+            <value>
+                <fullName>Applicant (Incomplete Push 2)</fullName>
+                <default>false</default>
+                <label>Applicant (Incomplete Push 2)</label>
+            </value>
+            <value>
+                <fullName>Applicant (Incomplete Push 3)</fullName>
+                <default>false</default>
+                <label>Applicant (Incomplete Push 3)</label>
+            </value>
+            <value>
+                <fullName>Applicant (New)</fullName>
+                <default>false</default>
+                <label>Applicant (New)</label>
+            </value>
+            <value>
+                <fullName>Barrett Honors College</fullName>
+                <default>false</default>
+                <label>Barrett Honors College</label>
+            </value>
+            <value>
+                <fullName>Barrett Honors College (Apply Push)</fullName>
+                <default>false</default>
+                <label>Barrett Honors College (Apply Push)</label>
+            </value>
+            <value>
+                <fullName>Barrett Honors College (New Admit)</fullName>
+                <default>false</default>
+                <label>Barrett Honors College (New Admit)</label>
+            </value>
+            <value>
+                <fullName>Calendly Appointment</fullName>
+                <default>false</default>
+                <label>Calendly Appointment</label>
+            </value>
+            <value>
+                <fullName>Campus or Major Mismatch Intervention</fullName>
+                <default>false</default>
+                <label>Campus or Major Mismatch Intervention</label>
+            </value>
+            <value>
+                <fullName>Campus Visit Attended (New)</fullName>
+                <default>false</default>
+                <label>Campus Visit Attended (New)</label>
+            </value>
+            <value>
+                <fullName>Event Follow Up</fullName>
+                <default>false</default>
+                <label>Event Follow Up</label>
+            </value>
+            <value>
+                <fullName>Event Push</fullName>
+                <default>false</default>
+                <label>Event Push</label>
+            </value>
+            <value>
+                <fullName>Event Reminder</fullName>
+                <default>false</default>
+                <label>Event Reminder</label>
+            </value>
+            <value>
+                <fullName>Event Thank You</fullName>
+                <default>false</default>
+                <label>Event Thank You</label>
+            </value>
+            <value>
+                <fullName>FAFSA outreach</fullName>
+                <default>false</default>
+                <label>FAFSA outreach</label>
+            </value>
+            <value>
+                <fullName>Financial Aid Fit (1st Attempt)</fullName>
+                <default>false</default>
+                <label>Financial Aid Fit (1st Attempt)</label>
+            </value>
+            <value>
+                <fullName>Financial Aid Fit (2nd Attempt)</fullName>
+                <default>false</default>
+                <label>Financial Aid Fit (2nd Attempt)</label>
+            </value>
+            <value>
+                <fullName>Flinn Recruitment (Admissions)</fullName>
+                <default>false</default>
+                <label>Flinn Recruitment (Admissions)</label>
+            </value>
+            <value>
+                <fullName>Flinn Recruitment (College)</fullName>
+                <default>false</default>
+                <label>Flinn Recruitment (College)</label>
+            </value>
+            <value>
+                <fullName>Flinn Recruitment (Department)</fullName>
+                <default>false</default>
+                <label>Flinn Recruitment (Department)</label>
+            </value>
+            <value>
+                <fullName>I-20 Push</fullName>
+                <default>false</default>
+                <label>I-20 Push</label>
+            </value>
+            <value>
+                <fullName>MyPath2ASU Welcome</fullName>
+                <default>false</default>
+                <label>MyPath2ASU Welcome</label>
+            </value>
+            <value>
+                <fullName>Pathways</fullName>
+                <default>false</default>
+                <label>Pathways</label>
+            </value>
+            <value>
+                <fullName>Post Enrollment (Department)</fullName>
+                <default>false</default>
+                <label>Post Enrollment (Department)</label>
+            </value>
+            <value>
+                <fullName>Post Enrollment (EC)</fullName>
+                <default>false</default>
+                <label>Post Enrollment (EC)</label>
+            </value>
+            <value>
+                <fullName>Post Enrollment (Final Needs)</fullName>
+                <default>false</default>
+                <label>Post Enrollment (Final Needs)</label>
+            </value>
+            <value>
+                <fullName>Post Enrollment Follow-up (Department)</fullName>
+                <default>false</default>
+                <label>Post Enrollment Follow-up (Department)</label>
+            </value>
+            <value>
+                <fullName>Prospect</fullName>
+                <default>false</default>
+                <label>Prospect</label>
+            </value>
+            <value>
+                <fullName>Prospect (College)</fullName>
+                <default>false</default>
+                <label>Prospect (College)</label>
+            </value>
+            <value>
+                <fullName>Prospect (Department)</fullName>
+                <default>false</default>
+                <label>Prospect (Department)</label>
+            </value>
+            <value>
+                <fullName>Prospect (Final Attempt)</fullName>
+                <default>false</default>
+                <label>Prospect (Final Attempt)</label>
+            </value>
+            <value>
+                <fullName>Prospect (Second Attempt)</fullName>
+                <default>false</default>
+                <label>Prospect (Second Attempt)</label>
+            </value>
+            <value>
+                <fullName>Prospect (Third Attempt)</fullName>
+                <default>false</default>
+                <label>Prospect (Third Attempt)</label>
+            </value>
+            <value>
+                <fullName>Scholarship Outreach</fullName>
+                <default>false</default>
+                <label>Scholarship Outreach</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

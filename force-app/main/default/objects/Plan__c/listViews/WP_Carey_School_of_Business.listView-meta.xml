@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WP_Carey_School_of_Business</fullName>
+    <columns>NAME</columns>
+    <columns>Plan_Code__c</columns>
+    <columns>Organization__c</columns>
+    <columns>Plan_Status__c</columns>
+    <columns>Plan_Type__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Program__c</field>
+        <operation>equals</operation>
+        <value>W.P. Carey School of Business</value>
+    </filters>
+    <label>WP Carey School of Business</label>
+    <sharedTo />
+</ListView>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Results_Page_Size__c</fullName>
+    <defaultValue>5</defaultValue>
+    <description>Number of articles to display per page of search results. Should not be set to more than 10-15 to ensure a visually manageable number of results per page.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Number of articles to display per page of search results. Should not be set to more than 10-15 to ensure a visually manageable number of results per page.</inlineHelpText>
+    <label>Results Page Size</label>
+    <precision>2</precision>
+    <required>true</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

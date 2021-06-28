@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Keyword_Article__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[??] - Check this field if this article is linked to a keyword. When checked, this article will not appear in the Featured Articles section of the PKB and will instead appear as a Recommended article whenever the keyword(s) specified on this record are searched for.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Check this field if this article is linked to a keyword. When checked, this article will not appear in the Featured Articles section of the PKB and will instead appear as a Recommended article whenever the keyword(s) specified on this record are searched</inlineHelpText>
+    <label>Is Keyword Article?</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

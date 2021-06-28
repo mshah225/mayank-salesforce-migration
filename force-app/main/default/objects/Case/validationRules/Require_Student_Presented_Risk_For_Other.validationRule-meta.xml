@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Student_Presented_Risk_For_Other</fullName>
+    <active>true</active>
+    <description>The Student Presented Risk For Other field must have a value if "Other" is a selected option in the Student Presented Risk For field.</description>
+    <errorConditionFormula>AND(
+ ISBLANK( Student_Presented_Risk_for_Other__c ),
+ ISPICKVAL( Student_Presented_Risk_for__c , 'Other')
+)</errorConditionFormula>
+    <errorDisplayField>Student_Presented_Risk_for_Other__c</errorDisplayField>
+    <errorMessage>Student Presented Risk for Other is required when Student Presented Risk for is "Other"</errorMessage>
+</ValidationRule>

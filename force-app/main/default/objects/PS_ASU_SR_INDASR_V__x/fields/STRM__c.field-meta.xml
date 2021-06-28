@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>STRM__c</fullName>
+    <description>Data sourced from PS_ASU_ACAD_STATUS.STRM</description>
+    <externalDeveloperName>STRM</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Term</label>
+    <length>4</length>
+    <referenceTargetField>Term__c.PeopleSoft_Code__c</referenceTargetField>
+    <referenceTo>Term__c</referenceTo>
+    <relationshipLabel>Academic Status Report Indicator (ext)</relationshipLabel>
+    <relationshipName>Academic_Status_Report_Indicator_ext</relationshipName>
+    <type>IndirectLookup</type>
+</CustomField>

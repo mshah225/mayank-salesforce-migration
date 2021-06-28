@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Survey_Status__c</fullName>
+    <description>Calculated based on the Date fields below:
+If Case Survey Sent Date is empty = “Survey Not Sent” 
+If Case Survey Sent Dates not empty AND Case Survey Received Date is empty = “Survey Sent” 
+If Case Survey Received Date is not empty = “Survey Response Received”</description>
+    <externalId>false</externalId>
+    <formula>IF(ISNULL(Case_Survey_Sent_Date__c),'Survey Not Sent',
+IF(ISNULL(Case_Survey_Received_Date__c),'Survey Sent' 
+,'Survey Response Received'))</formula>
+    <inlineHelpText>If Case Survey Sent Date is empty = “Survey Not Sent” 
+If Case Survey Sent Dates not empty AND Case Survey Received Date is empty = “Survey Sent” 
+If Case Survey Received Date is not empty = “Survey Response Received”</inlineHelpText>
+    <label>Case Survey Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

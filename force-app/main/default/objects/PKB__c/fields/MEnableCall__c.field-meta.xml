@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MEnableCall__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Enable call button in mobile site</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enable / Disable Call button in mobile site</inlineHelpText>
+    <label>Enable Call</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

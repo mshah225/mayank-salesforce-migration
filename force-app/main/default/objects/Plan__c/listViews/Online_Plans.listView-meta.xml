@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Online_Plans</fullName>
+    <columns>Degree_Search_Name__c</columns>
+    <columns>NAME</columns>
+    <columns>Plan_Code__c</columns>
+    <columns>Organization__c</columns>
+    <columns>Program__c</columns>
+    <columns>Plan_Effective_Date__c</columns>
+    <columns>Plan_Status__c</columns>
+    <columns>Plan_Type__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ASU_Online__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Online Plans</label>
+</ListView>

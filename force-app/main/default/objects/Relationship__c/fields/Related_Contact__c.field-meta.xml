@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Related_Contact__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The associated person in a Contact to Contact Relationship. Used in Contact to Contact Relationships only. Note that the Related List from this Lookup is never to be added to a page layout.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The associated person in a Contact to Contact Relationship.</inlineHelpText>
+    <label>Related Contact (of)</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Relationships - Related Contact</relationshipLabel>
+    <relationshipName>Reciprocal_Relationships</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

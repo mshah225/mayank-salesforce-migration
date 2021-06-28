@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DEGR_CONFER_DT__c</fullName>
+    <description>Data sourced from PS_ACAD_DEGR (AD).DEGR_CONFER_DT</description>
+    <externalDeveloperName>DEGR_CONFER_DT</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Degree Conferral Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

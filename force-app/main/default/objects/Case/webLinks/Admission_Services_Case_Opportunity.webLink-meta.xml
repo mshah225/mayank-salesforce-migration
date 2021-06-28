@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Admission_Services_Case_Opportunity</fullName>
+    <availability>online</availability>
+    <description>Custom button for Opportunity Page Layout related list to allow for Undergraduate Admission Services to create a quick case.</description>
+    <displayType>massActionButton</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>New Case</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <requireRowSelection>false</requireRowSelection>
+    <url>/500/e?retURL={!Opportunity.Id}
+&amp;
+RecordType=012d0000000x6giAAA
+&amp;
+cas3_lkid={!Opportunity.ContactId__c}
+&amp;
+CF00Nd0000007uduP={!Opportunity.Name}
+&amp;
+CF00Nd0000007uduP_lkid={!Opportunity.Id}</url>
+</WebLink>

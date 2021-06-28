@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Institutions</fullName>
+    <columns>Institution_Type__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>External_Organization_ID__c</columns>
+    <columns>ATP_Code__c</columns>
+    <columns>FICE_Code__c</columns>
+    <columns>Geomarket_Code__c</columns>
+    <columns>ASU_Geomarket_Code__c</columns>
+    <columns>Territory_Manager__c</columns>
+    <columns>Defer_Territory_Assignment__c</columns>
+    <columns>EOSS_Target__c</columns>
+    <columns>ACCOUNT.LAST_UPDATE</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ACCOUNT.TYPE</field>
+        <operation>equals</operation>
+        <value>Institution</value>
+    </filters>
+    <label>Institutions</label>
+    <sharedTo>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

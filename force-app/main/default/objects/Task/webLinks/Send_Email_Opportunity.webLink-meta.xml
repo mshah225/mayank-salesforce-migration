@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Send_Email_Opportunity</fullName>
+    <availability>online</availability>
+    <description>Sends an email based on the formula field Send Email ID found in the Opportunity object</description>
+    <displayType>massActionButton</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>Send Email</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <requireRowSelection>false</requireRowSelection>
+    <url>/_ui/core/email/author/EmailAuthor?p2_lkid={!Opportunity.ContactId__c}&amp;rtype=003&amp;p3_lkid={!Opportunity.Id}&amp;retURL={!Opportunity.Id}</url>
+</WebLink>

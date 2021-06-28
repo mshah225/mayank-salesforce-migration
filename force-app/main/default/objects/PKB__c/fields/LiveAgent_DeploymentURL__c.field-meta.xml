@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LiveAgent_DeploymentURL__c</fullName>
+    <description>Url for the saleforce LiveAgent deployment javascript library</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Url for the saleforce LiveAgent deployment javascript library</inlineHelpText>
+    <label>Live Agent Deployment URL</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

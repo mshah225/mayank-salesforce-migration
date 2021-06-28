@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Additional_Message_Text__c</fullName>
+    <description>Use this field to append text onto the bottom of the email.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Use this field to append text onto the bottom of the email.</inlineHelpText>
+    <label>Additional Message Text</label>
+    <length>2000</length>
+    <trackTrending>false</trackTrending>
+    <type>Html</type>
+    <visibleLines>25</visibleLines>
+</CustomField>

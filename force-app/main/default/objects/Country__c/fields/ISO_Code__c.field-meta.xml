@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ISO_Code__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>[manual import] - 2 digit country code;  http://www.iso.org/iso/home/standards/country_codes/country_names_and_code_elements.htm</description>
+    <externalId>false</externalId>
+    <label>ISO Code</label>
+    <length>2</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

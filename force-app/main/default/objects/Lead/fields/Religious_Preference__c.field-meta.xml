@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Religious_Preference__c</fullName>
+    <description>[import] - Examples include: Assembly of God, Baha'I, Baptist, Buddhism, Catholic,Christian Reformed Church in America, Christian Science, Christian, Non-denominational, Christian-Disciples, Church of Christ, Church of God, Church of Jesus Christ of Latter-Day Saints, Church of the Nazarene, Eastern Orthodox churches, Episcopal, Evangelical Lutheran Church in America, Hinduism, I prefer not to answer, Islam/Muslim/Moslem, Judaism, Lutheran, Lutheran Church-Missouri Synod, Methodist, None, no preference or affiliation, Other, Pentecostal, Presbyterian, Presbyterian Church (USA), Reformed Church in America, Roman Catholic, Secular Free-Thought, Seventh-day Adventist, Southern Baptist Convention, Unitarian Universalist Association, United Methodist</description>
+    <externalId>false</externalId>
+    <label>Religious Preference</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Assembly of God</fullName>
+                <default>false</default>
+                <label>Assembly of God</label>
+            </value>
+            <value>
+                <fullName>Baha'I</fullName>
+                <default>false</default>
+                <label>Baha'I</label>
+            </value>
+            <value>
+                <fullName>Baptist</fullName>
+                <default>false</default>
+                <label>Baptist</label>
+            </value>
+            <value>
+                <fullName>Buddhism</fullName>
+                <default>false</default>
+                <label>Buddhism</label>
+            </value>
+            <value>
+                <fullName>Catholic</fullName>
+                <default>false</default>
+                <label>Catholic</label>
+            </value>
+            <value>
+                <fullName>Christian, Non-denominational</fullName>
+                <default>false</default>
+                <label>Christian, Non-denominational</label>
+            </value>
+            <value>
+                <fullName>Christian-Disciples</fullName>
+                <default>false</default>
+                <label>Christian-Disciples</label>
+            </value>
+            <value>
+                <fullName>Christian Reformed Church in America</fullName>
+                <default>false</default>
+                <label>Christian Reformed Church in America</label>
+            </value>
+            <value>
+                <fullName>Christian Science</fullName>
+                <default>false</default>
+                <label>Christian Science</label>
+            </value>
+            <value>
+                <fullName>Church of Christ</fullName>
+                <default>false</default>
+                <label>Church of Christ</label>
+            </value>
+            <value>
+                <fullName>Church of God</fullName>
+                <default>false</default>
+                <label>Church of God</label>
+            </value>
+            <value>
+                <fullName>Church of Jesus Christ of Latter-Day Saints</fullName>
+                <default>false</default>
+                <label>Church of Jesus Christ of Latter-Day Saints</label>
+            </value>
+            <value>
+                <fullName>Church of the Nazarene</fullName>
+                <default>false</default>
+                <label>Church of the Nazarene</label>
+            </value>
+            <value>
+                <fullName>Eastern Orthodox churches</fullName>
+                <default>false</default>
+                <label>Eastern Orthodox churches</label>
+            </value>
+            <value>
+                <fullName>Episcopal</fullName>
+                <default>false</default>
+                <label>Episcopal</label>
+            </value>
+            <value>
+                <fullName>Evangelical Lutheran Church in America</fullName>
+                <default>false</default>
+                <label>Evangelical Lutheran Church in America</label>
+            </value>
+            <value>
+                <fullName>Hinduism</fullName>
+                <default>false</default>
+                <label>Hinduism</label>
+            </value>
+            <value>
+                <fullName>I prefer not to answer</fullName>
+                <default>false</default>
+                <label>I prefer not to answer</label>
+            </value>
+            <value>
+                <fullName>Islam/Muslim/Moslem</fullName>
+                <default>false</default>
+                <label>Islam/Muslim/Moslem</label>
+            </value>
+            <value>
+                <fullName>Judaism</fullName>
+                <default>false</default>
+                <label>Judaism</label>
+            </value>
+            <value>
+                <fullName>Lutheran</fullName>
+                <default>false</default>
+                <label>Lutheran</label>
+            </value>
+            <value>
+                <fullName>Lutheran Church-Missouri Synod</fullName>
+                <default>false</default>
+                <label>Lutheran Church-Missouri Synod</label>
+            </value>
+            <value>
+                <fullName>Methodist</fullName>
+                <default>false</default>
+                <label>Methodist</label>
+            </value>
+            <value>
+                <fullName>None, no preference or affiliation</fullName>
+                <default>false</default>
+                <label>None, no preference or affiliation</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Pentecostal</fullName>
+                <default>false</default>
+                <label>Pentecostal</label>
+            </value>
+            <value>
+                <fullName>Presbyterian</fullName>
+                <default>false</default>
+                <label>Presbyterian</label>
+            </value>
+            <value>
+                <fullName>Presbyterian Church (USA)</fullName>
+                <default>false</default>
+                <label>Presbyterian Church (USA)</label>
+            </value>
+            <value>
+                <fullName>Reformed Church in America</fullName>
+                <default>false</default>
+                <label>Reformed Church in America</label>
+            </value>
+            <value>
+                <fullName>Roman Catholic</fullName>
+                <default>false</default>
+                <label>Roman Catholic</label>
+            </value>
+            <value>
+                <fullName>Secular Free-Thought</fullName>
+                <default>false</default>
+                <label>Secular Free-Thought</label>
+            </value>
+            <value>
+                <fullName>Seventh-day Adventist</fullName>
+                <default>false</default>
+                <label>Seventh-day Adventist</label>
+            </value>
+            <value>
+                <fullName>Society of Friends (Quaker)</fullName>
+                <default>false</default>
+                <label>Society of Friends (Quaker)</label>
+            </value>
+            <value>
+                <fullName>Southern Baptist Convention</fullName>
+                <default>false</default>
+                <label>Southern Baptist Convention</label>
+            </value>
+            <value>
+                <fullName>Unitarian Universalist Association</fullName>
+                <default>false</default>
+                <label>Unitarian Universalist Association</label>
+            </value>
+            <value>
+                <fullName>United Methodist</fullName>
+                <default>false</default>
+                <label>United Methodist</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

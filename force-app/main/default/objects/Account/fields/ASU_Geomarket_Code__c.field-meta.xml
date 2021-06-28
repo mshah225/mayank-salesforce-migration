@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU_Geomarket_Code__c</fullName>
+    <description>[??] - is maintained by import and defined by Admission Services.  It breaks ASU’s target market into more geographic areas (still several zipcodes but finer definition than what CollegeBoard assigns, AZ is broken into 10 or 11 AZ Geomarkets).</description>
+    <externalId>false</externalId>
+    <label>ASU Geomarket Code</label>
+    <length>10</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

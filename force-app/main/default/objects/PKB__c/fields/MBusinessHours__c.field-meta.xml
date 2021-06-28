@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MBusinessHours__c</fullName>
+    <description>Name of the BusinessHours record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Name of the BusinessHours record, by leaving this field blank, business hours will be 24/7</inlineHelpText>
+    <label>Business Hours Name</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

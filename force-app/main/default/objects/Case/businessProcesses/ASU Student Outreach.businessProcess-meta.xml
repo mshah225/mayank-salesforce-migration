@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU Student Outreach</fullName>
+    <description>Used for calling campaigns for student outreach</description>
+    <isActive>true</isActive>
+    <values>
+        <fullName>1st Attempt</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>2nd Attempt</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Contacted 1st Attempt</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Contacted 2nd Attempt</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Contacted 3rd Attempt</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A No Contact Necessary</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A No Contact on 3rd Attempt</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Outreach Required</fullName>
+        <default>true</default>
+    </values>
+</BusinessProcess>

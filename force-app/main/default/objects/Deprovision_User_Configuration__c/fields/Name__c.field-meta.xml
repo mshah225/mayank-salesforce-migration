@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Name__c</fullName>
+    <businessOwnerGroup>Data_Owner_IAM_Identity_Management</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <caseSensitive>true</caseSensitive>
+    <description>This is the API field name that is being updated by the deprovision process</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This is the API field name that is being updated by the deprovision process</inlineHelpText>
+    <label>Name</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

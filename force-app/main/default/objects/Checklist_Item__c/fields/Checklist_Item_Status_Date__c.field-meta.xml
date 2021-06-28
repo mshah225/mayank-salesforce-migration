@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Checklist_Item_Status_Date__c</fullName>
+    <description>PS_Person_CHK_ITEM.Status_DT</description>
+    <externalId>false</externalId>
+    <label>Checklist Item Status Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

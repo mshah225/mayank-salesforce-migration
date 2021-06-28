@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Transfer_Advisor_Case</fullName>
+    <availability>online</availability>
+    <description>Button for advisor layout to transfer case</description>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Transfer Case</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>{!requireScript('/resource/1487085180000/AdvisorCaseTransfer/AdvisorCaseTransfer.js')}
+init('{!Case.Id}','{!Case.ContactId}','{!GETSESSIONID()}');</url>
+</WebLink>

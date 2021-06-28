@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IER_Privacy_Changed__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Indicates whether the "IER Privacy" field was recently changed; used by a scheduled job to set IER records' visibility</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates whether the "IER Privacy" field was recently changed; used by a scheduled job to set IER records' visibility</inlineHelpText>
+    <label>IER Privacy Changed</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

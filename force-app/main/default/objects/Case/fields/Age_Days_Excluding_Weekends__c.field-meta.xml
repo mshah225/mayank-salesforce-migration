@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Age_Days_Excluding_Weekends__c</fullName>
+    <description>[??]  - The number days (rounded up) a Case was Open or has been Open, excluding weekends.
+Examples:
+- Opened today and Still Open: 1 (assuming today is a weekday)
+- Opened Friday and Closed the next Monday: 2
+- Opened Tuesday and Closed the next Tuesday: 6
+
+ Explanation of formula is below. 
+
+&lt;-- Calculate the number of weeks that have passed, round down and multiply by 5 --&gt;
+(FLOOR((DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate))/7)*5)
++
+&lt;-- Determine what day the Case was Created (0=Monday,1=Tuesday, etc)
+CASE(MOD(DATEVALUE(CreatedDate)-DATE(1900,1,1),7),
+&lt;-- Calculate the remainder when divided by 7. Depending on the day the Case was created, return additional days to make up for the time missing when only assuming 5 days per whole week above.  --&gt;
+0,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,2,2,3,3,4,4,5,5,5,6,5,1),
+1,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,2,2,3,3,4,4,4,5,4,6,5,1),
+2,CASE(MOD(DATEV...</description>
+    <externalId>false</externalId>
+    <formula>IF(IsClosed,
+(FLOOR((DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate))/7)*5)
++
+CASE(MOD(DATEVALUE(CreatedDate)-DATE(1900,1,1),7),
+0,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,2,2,3,3,4,4,5,5,5,6,5,1),
+1,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,2,2,3,3,4,4,4,5,4,6,5,1),
+2,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,2,2,3,3,3,4,3,5,4,6,5,1),
+3,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,2,2,2,3,2,4,3,5,4,6,5,1),
+4,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,1,2,1,3,2,4,3,5,4,6,5,1),
+5,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,0,2,1,3,2,4,3,5,4,6,5,0),
+6,CASE(MOD(DATEVALUE(ClosedDate)-DATEVALUE(CreatedDate),7),1,1,2,2,3,3,4,4,5,5,6,5,0),
+Null)
+,
+(FLOOR((DATEVALUE(NOW())-DATEVALUE(CreatedDate))/7)*5)
++
+CASE(MOD(DATEVALUE(CreatedDate)-DATE(1900,1,1),7),
+0,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,2,2,3,3,4,4,5,5,5,6,5,1),
+1,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,2,2,3,3,4,4,4,5,4,6,5,1),
+2,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,2,2,3,3,3,4,3,5,4,6,5,1),
+3,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,2,2,2,3,2,4,3,5,4,6,5,1),
+4,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,1,2,1,3,2,4,3,5,4,6,5,1),
+5,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,0,2,1,3,2,4,3,5,4,6,5,0),
+6,CASE(MOD(TODAY()-DATEVALUE(CreatedDate),7),1,1,2,2,3,3,4,4,5,5,6,5,0),
+Null)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>The number days (rounded up) a Case was Open or has been Open, excluding weekends.
+Examples:
+- Opened today and Still Open: 1 (assuming today is a weekday)
+- Opened Friday and Closed the next Monday: 2
+- Opened Tuesday and Closed the next Tuesday: 6</inlineHelpText>
+    <label>Age in Days Excluding Weekends</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

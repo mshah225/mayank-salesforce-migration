@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>K12_Engineering_Education_QT_Messages</fullName>
+    <columns>Owner_Display__c</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Category</field>
+        <operation>equals</operation>
+        <value>K12 Engineering Education</value>
+    </filters>
+    <label>K12 Engineering Education QT Messages</label>
+    <sharedTo>
+        <group>Engineering_K12_Engineering_Edu_Case</group>
+        <role>S_Service</role>
+        <role>UTO_University_Technology_Office</role>
+        <roleAndSubordinatesInternal>SCI_Student_Centric_Initiatives_Manager</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

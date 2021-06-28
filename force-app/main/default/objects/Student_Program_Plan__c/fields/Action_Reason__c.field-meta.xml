@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action_Reason__c</fullName>
+    <description>Data sourced from PROG_RSN_TBL.DESCR</description>
+    <externalId>false</externalId>
+    <label>Action Reason</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Application Withdrawn</fullName>
+                <default>false</default>
+                <label>Application Withdrawn</label>
+            </value>
+            <value>
+                <fullName>Applied to Graduate</fullName>
+                <default>false</default>
+                <label>Applied to Graduate</label>
+            </value>
+            <value>
+                <fullName>Concurrent Approved Program</fullName>
+                <default>false</default>
+                <label>Concurrent Approved Program</label>
+            </value>
+            <value>
+                <fullName>Conversion</fullName>
+                <default>false</default>
+                <label>Conversion</label>
+            </value>
+            <value>
+                <fullName>Courtesy App - Cert Prog Only</fullName>
+                <default>false</default>
+                <label>Courtesy App - Cert Prog Only</label>
+            </value>
+            <value>
+                <fullName>Division of Graduate Studies</fullName>
+                <default>false</default>
+                <label>Division of Graduate Studies</label>
+            </value>
+            <value>
+                <fullName>Grad POS Sub-Plan Chg</fullName>
+                <default>false</default>
+                <label>Grad POS Sub-Plan Chg</label>
+            </value>
+            <value>
+                <fullName>Minor Added</fullName>
+                <default>false</default>
+                <label>Minor Added</label>
+            </value>
+            <value>
+                <fullName>Non-degree to Degree</fullName>
+                <default>false</default>
+                <label>Non-degree to Degree</label>
+            </value>
+            <value>
+                <fullName>Not Enrolled in Previous Term</fullName>
+                <default>false</default>
+                <label>Not Enrolled in Previous Term</label>
+            </value>
+            <value>
+                <fullName>Requirement term changed</fullName>
+                <default>false</default>
+                <label>Requirement term changed</label>
+            </value>
+            <value>
+                <fullName>Student Request</fullName>
+                <default>false</default>
+                <label>Student Request</label>
+            </value>
+            <value>
+                <fullName>Voluntary Withdrawal (GRAD)</fullName>
+                <default>false</default>
+                <label>Voluntary Withdrawal (GRAD)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Category_SubCategory_ULC</fullName>
+    <active>true</active>
+    <description>Require Category and SubCategory for Universal Learner Courses when closing cases excluding Status Closed : SPAM , Closed : Forwarded
+excluding System Administrator</description>
+    <errorConditionFormula>AND(
+(CC_Functional_Group__r.Name = "Universal Learner Courses" ),
+OR ( (ISBLANK(TEXT( Category__c ))),
+(ISBLANK(TEXT( Sub_Category__c )))  ),
+($User.ProfileId &lt;&gt; "00ed00000017Iob"),
+OR (
+ISPICKVAL (Status, "Closed: Cancellation"),
+ISPICKVAL (Status, "Closed: Customer Self-Resolved"),
+ISPICKVAL (Status, "Closed: Customer Unresponsive"),
+ISPICKVAL (Status, "Closed: Duplicate"),
+ISPICKVAL (Status, "Closed: No Show"),
+ISPICKVAL (Status, "Closed: Resolved"))
+)</errorConditionFormula>
+    <errorMessage>Please provide Category and Sub-Category when Functional Group is Universal Learner Courses</errorMessage>
+</ValidationRule>

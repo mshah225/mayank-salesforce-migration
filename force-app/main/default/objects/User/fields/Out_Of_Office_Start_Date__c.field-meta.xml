@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Out_Of_Office_Start_Date__c</fullName>
+    <description>SMS use this field for Out of Office start date</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter Out of Office Start Date, Out of Office End Date and Out of Office Message for SMS text messages to auto reply</inlineHelpText>
+    <label>Out Of Office Start Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Date</type>
+</CustomField>

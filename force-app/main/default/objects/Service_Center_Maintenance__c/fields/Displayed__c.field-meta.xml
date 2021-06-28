@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Displayed__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If the start and end time match up and this box is checked, the message will be displayed. Ideally, only one message should be marked Displayed = TRUE.Checkbox that decides if the message is displayed on the page.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If the start and end time match up and this box is checked, the message will be displayed. Ideally, only one message should be marked Displayed = TRUE.</inlineHelpText>
+    <label>Displayed</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

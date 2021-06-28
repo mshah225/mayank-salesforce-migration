@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Research_Centers_and_Consortiums__c</fullName>
+    <description>[manual entry] - allows user to select the research center that is tied to the account.</description>
+    <externalId>false</externalId>
+    <label>Research Centers and Consortiums</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Adaptive, Intelligent, Materials, System</fullName>
+                <default>false</default>
+                <label>Adaptive, Intelligent, Materials, System</label>
+            </value>
+            <value>
+                <fullName>Advanced Technology Environments</fullName>
+                <default>false</default>
+                <label>Advanced Technology Environments</label>
+            </value>
+            <value>
+                <fullName>Advanced Technology Innovation Center</fullName>
+                <default>false</default>
+                <label>Advanced Technology Innovation Center</label>
+            </value>
+            <value>
+                <fullName>Algae Testbed Public-Private Partnership</fullName>
+                <default>false</default>
+                <label>Algae Testbed Public-Private Partnership</label>
+            </value>
+            <value>
+                <fullName>Arizona Initiative for Renewable Energy</fullName>
+                <default>false</default>
+                <label>Arizona Initiative for Renewable Energy</label>
+            </value>
+            <value>
+                <fullName>Arizona Institute for Nano-Electronics</fullName>
+                <default>false</default>
+                <label>Arizona Institute for Nano-Electronics</label>
+            </value>
+            <value>
+                <fullName>AZ Cen for Algae Technology &amp; Innovation</fullName>
+                <default>false</default>
+                <label>AZ Cen for Algae Technology &amp; Innovation</label>
+            </value>
+            <value>
+                <fullName>Cen for Solid State Electronics Research</fullName>
+                <default>false</default>
+                <label>Cen for Solid State Electronics Research</label>
+            </value>
+            <value>
+                <fullName>Cen of Renewable Energy Electrochemistry</fullName>
+                <default>false</default>
+                <label>Cen of Renewable Energy Electrochemistry</label>
+            </value>
+            <value>
+                <fullName>Center for Adaptive Neural Systems</fullName>
+                <default>false</default>
+                <label>Center for Adaptive Neural Systems</label>
+            </value>
+            <value>
+                <fullName>Center for Applied Nanoionics</fullName>
+                <default>false</default>
+                <label>Center for Applied Nanoionics</label>
+            </value>
+            <value>
+                <fullName>Center for Bioelectronics and Biosensors</fullName>
+                <default>false</default>
+                <label>Center for Bioelectronics and Biosensors</label>
+            </value>
+            <value>
+                <fullName>Center for Biosignatures Discovery Auto</fullName>
+                <default>false</default>
+                <label>Center for Biosignatures Discovery Auto</label>
+            </value>
+            <value>
+                <fullName>Center for Cognitive Ubiquitous Compu</fullName>
+                <default>false</default>
+                <label>Center for Cognitive Ubiquitous Compu</label>
+            </value>
+            <value>
+                <fullName>Center for Computational Nanoscience</fullName>
+                <default>false</default>
+                <label>Center for Computational Nanoscience</label>
+            </value>
+            <value>
+                <fullName>Center for Cybersecurity and Digital Forensics</fullName>
+                <default>false</default>
+                <label>Center for Cybersecurity and Digital Forensics</label>
+            </value>
+            <value>
+                <fullName>Center for Earth Systems Engineering</fullName>
+                <default>false</default>
+                <label>Center for Earth Systems Engineering</label>
+            </value>
+            <value>
+                <fullName>Center for Embedded Systems</fullName>
+                <default>false</default>
+                <label>Center for Embedded Systems</label>
+            </value>
+            <value>
+                <fullName>Center for Environmental Fluid Dynamics</fullName>
+                <default>false</default>
+                <label>Center for Environmental Fluid Dynamics</label>
+            </value>
+            <value>
+                <fullName>Center for Environmental Security</fullName>
+                <default>false</default>
+                <label>Center for Environmental Security</label>
+            </value>
+            <value>
+                <fullName>Center for Negative Carbon Emissions</fullName>
+                <default>false</default>
+                <label>Center for Negative Carbon Emissions</label>
+            </value>
+            <value>
+                <fullName>Center for Photonics Innovation</fullName>
+                <default>false</default>
+                <label>Center for Photonics Innovation</label>
+            </value>
+            <value>
+                <fullName>Center for Sustainable Health</fullName>
+                <default>false</default>
+                <label>Center for Sustainable Health</label>
+            </value>
+            <value>
+                <fullName>Center of Excellence on SMART Innovation</fullName>
+                <default>false</default>
+                <label>Center of Excellence on SMART Innovation</label>
+            </value>
+            <value>
+                <fullName>Connection One</fullName>
+                <default>false</default>
+                <label>Connection One</label>
+            </value>
+            <value>
+                <fullName>Cybersecurity Education Consortium</fullName>
+                <default>false</default>
+                <label>Cybersecurity Education Consortium</label>
+            </value>
+            <value>
+                <fullName>Decision Theater</fullName>
+                <default>false</default>
+                <label>Decision Theater</label>
+            </value>
+            <value>
+                <fullName>Flexible Display Center</fullName>
+                <default>false</default>
+                <label>Flexible Display Center</label>
+            </value>
+            <value>
+                <fullName>Information Assurance Center</fullName>
+                <default>false</default>
+                <label>Information Assurance Center</label>
+            </value>
+            <value>
+                <fullName>LeRoy Eyring for Solid State Science</fullName>
+                <default>false</default>
+                <label>LeRoy Eyring for Solid State Science</label>
+            </value>
+            <value>
+                <fullName>Lincoln Center for Applied Ethics</fullName>
+                <default>false</default>
+                <label>Lincoln Center for Applied Ethics</label>
+            </value>
+            <value>
+                <fullName>Partner for Research in Spatial Model</fullName>
+                <default>false</default>
+                <label>Partner for Research in Spatial Model</label>
+            </value>
+            <value>
+                <fullName>Power System Engineering Research Center</fullName>
+                <default>false</default>
+                <label>Power System Engineering Research Center</label>
+            </value>
+            <value>
+                <fullName>Quantum Energy &amp; Solar Technologies</fullName>
+                <default>false</default>
+                <label>Quantum Energy &amp; Solar Technologies</label>
+            </value>
+            <value>
+                <fullName>Security and Defense Systems Initiative</fullName>
+                <default>false</default>
+                <label>Security and Defense Systems Initiative</label>
+            </value>
+            <value>
+                <fullName>Sensor, Signal &amp; Information Processing</fullName>
+                <default>false</default>
+                <label>Sensor, Signal &amp; Information Processing</label>
+            </value>
+            <value>
+                <fullName>SkySong</fullName>
+                <default>false</default>
+                <label>SkySong</label>
+            </value>
+            <value>
+                <fullName>Swette for Environmental Biotechnology</fullName>
+                <default>false</default>
+                <label>Swette for Environmental Biotechnology</label>
+            </value>
+            <value>
+                <fullName>Water and Environmental Technology</fullName>
+                <default>false</default>
+                <label>Water and Environmental Technology</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>10</visibleLines>
+</CustomField>

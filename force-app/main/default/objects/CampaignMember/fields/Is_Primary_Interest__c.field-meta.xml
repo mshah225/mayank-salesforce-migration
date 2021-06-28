@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Primary_Interest__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If box is checked, then it is considered the primary interest. Populated through code.</description>
+    <externalId>false</externalId>
+    <label>Is Primary Interest</label>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Masked_Data_Exists__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If marked true, then sensitive data was detected in Email TextBody;Subject;HtmlBody by the GearsDataMask package.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If marked true, then sensitive data was detected in Email TextBody;Subject;HtmlBody by the GearsDataMask package.</inlineHelpText>
+    <label>Masked Data Exists</label>
+    <type>Checkbox</type>
+</CustomField>

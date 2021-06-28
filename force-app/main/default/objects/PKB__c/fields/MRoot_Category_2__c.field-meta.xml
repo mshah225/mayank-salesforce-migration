@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MRoot_Category_2__c</fullName>
+    <description>Root Category name that will be used as the root category in the category group's displayed in filters menu of the PKB mobile page. The value for this field must be a category of the group named in the Category Group 2 field.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Root Category name that will be used as the root category in the category group's displayed in filters menu of the PKB mobile page. The value for this field must be a category of the group named in the Category Group 2 field.</inlineHelpText>
+    <label>Root Category 2</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

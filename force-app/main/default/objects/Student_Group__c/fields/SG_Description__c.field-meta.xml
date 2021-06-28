@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SG_Description__c</fullName>
+    <description>[Peoplesoft] - Examples include: All Arizona Academic Team, CI reqs alt Sun Devil Success, CI requires Sun Devil Success, Denied Pathway Eligible Student, Eastern AZ College, HONORS GD STND LOW DIV &lt; 2107, HONORS GD, STND LOW DIV &gt;= 2107, HONORS GD STND UPP DIV &lt; 2107, HONORS GD STND UPP DIV &gt;= 2107, HONORS, PROV-LOWER DIVISION, HONORS, PROV-UPPER DIVISION, Huazhong Unv Sci&amp;Tech students (HUST), Lake Havasu, MLFTC ESP provisional admits, National Achievement Semifinalist, National Hispanic Scholar Finalist, National Merit Semifinalist, New College GAIN, Not Admissible recvd CC invite, Provisional Admt - NR students, RHHE, SDS 2013 - 11 credit hour option, SDS 2013 - 4 credit hour option, SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar), SDS 2013 Overall group, Sichun University, Sponsored International App, TA Prospect-Signed Agreement, W.P. Carey Provisional, WUE Western Undergrad Exchange</description>
+    <externalId>false</externalId>
+    <label>Description</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>All Arizona Academic Team</fullName>
+                <default>false</default>
+                <label>All Arizona Academic Team</label>
+            </value>
+            <value>
+                <fullName>CI reqs alt Sun Devil Success</fullName>
+                <default>false</default>
+                <label>CI reqs alt Sun Devil Success</label>
+            </value>
+            <value>
+                <fullName>CI requires Sun Devil Success</fullName>
+                <default>false</default>
+                <label>CI requires Sun Devil Success</label>
+            </value>
+            <value>
+                <fullName>Denied Pathway Eligible Student</fullName>
+                <default>false</default>
+                <label>Denied Pathway Eligible Student</label>
+            </value>
+            <value>
+                <fullName>Eastern AZ College</fullName>
+                <default>false</default>
+                <label>Eastern AZ College</label>
+            </value>
+            <value>
+                <fullName>HONORS GD STND LOW DIV &lt; 2107</fullName>
+                <default>false</default>
+                <label>HONORS GD STND LOW DIV &lt; 2107</label>
+            </value>
+            <value>
+                <fullName>HONORS GD STND LOW DIV &gt;= 2107</fullName>
+                <default>false</default>
+                <label>HONORS GD STND LOW DIV &gt;= 2107</label>
+            </value>
+            <value>
+                <fullName>HONORS GD STND UPP DIV &lt; 2107</fullName>
+                <default>false</default>
+                <label>HONORS GD STND UPP DIV &lt; 2107</label>
+            </value>
+            <value>
+                <fullName>HONORS GD STND UPP DIV &gt;= 2107</fullName>
+                <default>false</default>
+                <label>HONORS GD STND UPP DIV &gt;= 2107</label>
+            </value>
+            <value>
+                <fullName>HONORS, PROV-LOWER DIVISION</fullName>
+                <default>false</default>
+                <label>HONORS, PROV-LOWER DIVISION</label>
+            </value>
+            <value>
+                <fullName>HONORS, PROV-UPPER DIVISION</fullName>
+                <default>false</default>
+                <label>HONORS, PROV-UPPER DIVISION</label>
+            </value>
+            <value>
+                <fullName>Huazhong Unv Sci&amp;Tech students (HUST)</fullName>
+                <default>false</default>
+                <label>Huazhong Unv Sci&amp;Tech students (HUST)</label>
+            </value>
+            <value>
+                <fullName>Lake Havasu</fullName>
+                <default>false</default>
+                <label>Lake Havasu</label>
+            </value>
+            <value>
+                <fullName>MLFTC ESP provisional admits</fullName>
+                <default>false</default>
+                <label>MLFTC ESP provisional admits</label>
+            </value>
+            <value>
+                <fullName>National Achievement Semifinalist</fullName>
+                <default>false</default>
+                <label>National Achievement Semifinalist</label>
+            </value>
+            <value>
+                <fullName>National Hispanic Scholar Finalist</fullName>
+                <default>false</default>
+                <label>National Hispanic Scholar Finalist</label>
+            </value>
+            <value>
+                <fullName>National Merit Semifinalist</fullName>
+                <default>false</default>
+                <label>National Merit Semifinalist</label>
+            </value>
+            <value>
+                <fullName>New College GAIN</fullName>
+                <default>false</default>
+                <label>New College GAIN</label>
+            </value>
+            <value>
+                <fullName>Not Admissible recvd CC invite</fullName>
+                <default>false</default>
+                <label>Not Admissible recvd CC invite</label>
+            </value>
+            <value>
+                <fullName>Provisional Admt - NR students</fullName>
+                <default>false</default>
+                <label>Provisional Admt - NR students</label>
+            </value>
+            <value>
+                <fullName>RHHE</fullName>
+                <default>false</default>
+                <label>RHHE</label>
+            </value>
+            <value>
+                <fullName>SDS 2013 - 11 credit hour option</fullName>
+                <default>false</default>
+                <label>SDS 2013 - 11 credit hour option</label>
+            </value>
+            <value>
+                <fullName>SDS 2013 - 4 credit hour option</fullName>
+                <default>false</default>
+                <label>SDS 2013 - 4 credit hour option</label>
+            </value>
+            <value>
+                <fullName>SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar)</fullName>
+                <default>false</default>
+                <label>SDS 2013 Exceptions (Veteran, Athlete, Tribal Scholar)</label>
+            </value>
+            <value>
+                <fullName>SDS 2013 Overall group</fullName>
+                <default>false</default>
+                <label>SDS 2013 Overall group</label>
+            </value>
+            <value>
+                <fullName>Sichun University</fullName>
+                <default>false</default>
+                <label>Sichun University</label>
+            </value>
+            <value>
+                <fullName>Sponsored International App</fullName>
+                <default>false</default>
+                <label>Sponsored International App</label>
+            </value>
+            <value>
+                <fullName>TA Prospect-Signed Agreement</fullName>
+                <default>false</default>
+                <label>TA Prospect-Signed Agreement</label>
+            </value>
+            <value>
+                <fullName>W.P. Carey Provisional</fullName>
+                <default>false</default>
+                <label>W.P. Carey Provisional</label>
+            </value>
+            <value>
+                <fullName>WUE Western Undergrad Exchange</fullName>
+                <default>false</default>
+                <label>WUE Western Undergrad Exchange</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Primary_Source__c</fullName>
+    <description>[manual import] - Examples include: Advertisement, ASU UG, College Fair - Int, College Fair - US, Email, Employee Referral, Event, Partial App, Phone Call, Purchased List, Test Scores, Walk-in, Web Form</description>
+    <externalId>false</externalId>
+    <label>Source Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+                <label>Advertisement</label>
+            </value>
+            <value>
+                <fullName>ASU UG</fullName>
+                <default>false</default>
+                <label>ASU UG</label>
+            </value>
+            <value>
+                <fullName>College Fair - Int</fullName>
+                <default>false</default>
+                <label>College Fair - Int</label>
+            </value>
+            <value>
+                <fullName>College Fair - US</fullName>
+                <default>false</default>
+                <label>College Fair - US</label>
+            </value>
+            <value>
+                <fullName>Email</fullName>
+                <default>false</default>
+                <label>Email</label>
+            </value>
+            <value>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+                <label>Employee Referral</label>
+            </value>
+            <value>
+                <fullName>Event</fullName>
+                <default>false</default>
+                <label>Event</label>
+            </value>
+            <value>
+                <fullName>Partial App</fullName>
+                <default>false</default>
+                <label>Partial App</label>
+            </value>
+            <value>
+                <fullName>Phone Call</fullName>
+                <default>false</default>
+                <label>Phone Call</label>
+            </value>
+            <value>
+                <fullName>Purchased List</fullName>
+                <default>false</default>
+                <label>Purchased List</label>
+            </value>
+            <value>
+                <fullName>Test Scores</fullName>
+                <default>false</default>
+                <label>Test Scores</label>
+            </value>
+            <value>
+                <fullName>Walk-in</fullName>
+                <default>false</default>
+                <label>Walk-in</label>
+            </value>
+            <value>
+                <fullName>Web Form</fullName>
+                <default>false</default>
+                <label>Web Form</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

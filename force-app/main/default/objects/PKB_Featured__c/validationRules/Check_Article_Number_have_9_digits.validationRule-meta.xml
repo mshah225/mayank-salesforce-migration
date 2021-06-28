@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Check_Article_Number_have_9_digits</fullName>
+    <active>true</active>
+    <errorConditionFormula>LEN(Article_Number__c ) &lt; 9</errorConditionFormula>
+    <errorDisplayField>Article_Number__c</errorDisplayField>
+    <errorMessage>Article Number should be 9 digits (eg: 00001000).</errorMessage>
+</ValidationRule>

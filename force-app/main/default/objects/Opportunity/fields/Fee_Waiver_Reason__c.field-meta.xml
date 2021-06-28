@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fee_Waiver_Reason__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>{Peoplesoft] Reason For Fee Waiver;  PS Table = ADM_APPL_DATA, PS Field = SAD_WAIVER_BASIS; description of fee waiver reason join on SAD_FEE_WVR_BAS and return  DESCR</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The reason may be blank when the application fee was waived, some automated processes waive an application fee without posting a reason to the system.</inlineHelpText>
+    <label>Fee Waiver Reason</label>
+    <length>254</length>
+    <required>false</required>
+    <securityClassification>Sensitive</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

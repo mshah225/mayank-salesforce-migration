@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Resources_with_Details</fullName>
+    <columns>NAME</columns>
+    <columns>Success_Pod__c</columns>
+    <columns>Resource__c</columns>
+    <columns>IsActive__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>Role__c</columns>
+    <columns>RECORDTYPE</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Resources with Details</label>
+</ListView>

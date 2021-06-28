@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Applicant_Services_UG_NAS_Other</fullName>
+    <booleanFilter>1 AND 2 AND 3 AND 4 and 5 AND (6  OR 7 OR 8 OR 9 OR 10)</booleanFilter>
+    <columns>CAP__c</columns>
+    <columns>Case_Owner__c</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Opportunity_Location__c</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>Needs_Attention__c</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Applicant Services - Undergraduate</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>notContain</operation>
+        <value>INTL</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>notEqual</operation>
+        <value>Decline/Cancel,Deferment,Major Change,Home School Student</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>notEqual</operation>
+        <value>Transfer Credit Inquiry,Transfer Pathways,Transcript - Status,Transcript - GED</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>CASES.SUBJECT</field>
+        <operation>contains</operation>
+        <value>INTL,International,Letter,Reset</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>contains</operation>
+        <value>GRAD</value>
+    </filters>
+    <filters>
+        <field>Student_Visa__c</field>
+        <operation>contains</operation>
+        <value>J,A,T,E,L,F</value>
+    </filters>
+    <filters>
+        <field>Total_Attachments__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>1</value>
+    </filters>
+    <label>AS Applicant Services UG - NAS Other*</label>
+    <queue>Admission_Services_Undergrad_Case</queue>
+    <sharedTo>
+        <group>AS_Additional_Applicant_Services_Case</group>
+        <group>AS_Applicant_Services_Graduate_Case</group>
+        <group>AS_Applicant_Services_UG_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

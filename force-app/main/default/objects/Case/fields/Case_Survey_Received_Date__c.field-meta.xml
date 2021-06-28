@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Survey_Received_Date__c</fullName>
+    <description>The date and time a survey was submitted by the Contact listed on this Case.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The date and time a survey was submitted by the Contact listed on this Case.</inlineHelpText>
+    <label>Case Survey Received Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

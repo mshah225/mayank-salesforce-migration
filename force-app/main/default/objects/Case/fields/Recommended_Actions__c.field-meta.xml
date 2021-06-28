@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recommended_Actions__c</fullName>
+    <externalId>false</externalId>
+    <label>Recommended Action(s)</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>address financial issues</fullName>
+                <default>false</default>
+                <label>address financial issues</label>
+            </value>
+            <value>
+                <fullName>adjust course balance</fullName>
+                <default>false</default>
+                <label>adjust course balance</label>
+            </value>
+            <value>
+                <fullName>advised about progression issues</fullName>
+                <default>false</default>
+                <label>advised about progression issues</label>
+            </value>
+            <value>
+                <fullName>career counseling</fullName>
+                <default>false</default>
+                <label>career counseling</label>
+            </value>
+            <value>
+                <fullName>correct schedule - other</fullName>
+                <default>false</default>
+                <label>correct schedule - other</label>
+            </value>
+            <value>
+                <fullName>correct schedule - to be on track</fullName>
+                <default>false</default>
+                <label>correct schedule - to be on track</label>
+            </value>
+            <value>
+                <fullName>declare or change major</fullName>
+                <default>false</default>
+                <label>declare or change major</label>
+            </value>
+            <value>
+                <fullName>non­financial collegiate issues</fullName>
+                <default>false</default>
+                <label>non­financial collegiate issues</label>
+            </value>
+            <value>
+                <fullName>other</fullName>
+                <default>false</default>
+                <label>other</label>
+            </value>
+            <value>
+                <fullName>register for classes</fullName>
+                <default>false</default>
+                <label>register for classes</label>
+            </value>
+            <value>
+                <fullName>see instructor</fullName>
+                <default>false</default>
+                <label>see instructor</label>
+            </value>
+            <value>
+                <fullName>seek academic advising</fullName>
+                <default>false</default>
+                <label>seek academic advising</label>
+            </value>
+            <value>
+                <fullName>seek academic coaching</fullName>
+                <default>false</default>
+                <label>seek academic coaching</label>
+            </value>
+            <value>
+                <fullName>seek departmental or faculty guidance</fullName>
+                <default>false</default>
+                <label>seek departmental or faculty guidance</label>
+            </value>
+            <value>
+                <fullName>seek SAILS</fullName>
+                <default>false</default>
+                <label>seek SAILS</label>
+            </value>
+            <value>
+                <fullName>seek engagement opportunities</fullName>
+                <default>false</default>
+                <label>seek engagement opportunities</label>
+            </value>
+            <value>
+                <fullName>seek first-year success coaching</fullName>
+                <default>false</default>
+                <label>seek first-year success coaching</label>
+            </value>
+            <value>
+                <fullName>seek medical professional</fullName>
+                <default>false</default>
+                <label>seek medical professional</label>
+            </value>
+            <value>
+                <fullName>seek professional counseling</fullName>
+                <default>false</default>
+                <label>seek professional counseling</label>
+            </value>
+            <value>
+                <fullName>seek tutoring</fullName>
+                <default>false</default>
+                <label>seek tutoring</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

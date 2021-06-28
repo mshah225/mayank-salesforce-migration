@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trans_Path_Agreement_Type__c</fullName>
+    <description>[Peoplesoft] - Examples include: MAPP, TAG, RBSN, GPA</description>
+    <externalId>false</externalId>
+    <label>TP: Agreement Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>MAPP</fullName>
+                <default>false</default>
+                <label>MAPP</label>
+            </value>
+            <value>
+                <fullName>TAG</fullName>
+                <default>false</default>
+                <label>TAG</label>
+            </value>
+            <value>
+                <fullName>RBSN</fullName>
+                <default>false</default>
+                <label>RBSN</label>
+            </value>
+            <value>
+                <fullName>GPA</fullName>
+                <default>false</default>
+                <label>GPA</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

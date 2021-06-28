@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Create_Campaign_Member__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Should this engagement create a Campaign Member in the specified Campaign afterwards?</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Should this engagement create a Campaign Member in the specified Campaign afterwards?</inlineHelpText>
+    <label>Create Campaign Member?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

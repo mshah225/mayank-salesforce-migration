@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Plans</fullName>
+    <columns>NAME</columns>
+    <columns>Degree_Search_Name__c</columns>
+    <columns>Plan_Code__c</columns>
+    <columns>Organization__c</columns>
+    <columns>eAdvisor_Organization__c</columns>
+    <columns>Program__c</columns>
+    <columns>Diploma_Description__c</columns>
+    <columns>Degree__c</columns>
+    <columns>Plan_URL__c</columns>
+    <columns>Available_in_Degree_Search__c</columns>
+    <columns>ASU_Online__c</columns>
+    <columns>Plan_Effective_Date__c</columns>
+    <columns>Plan_Status__c</columns>
+    <columns>Plan_Type__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Plans</label>
+    <sharedTo>
+        <group>QA_Testing_Group</group>
+        <role>ES_Enrollment_Services</role>
+        <role>ES_Enrollment_Services_Communication</role>
+        <role>UTO_University_Technology_Office</role>
+    </sharedTo>
+</ListView>

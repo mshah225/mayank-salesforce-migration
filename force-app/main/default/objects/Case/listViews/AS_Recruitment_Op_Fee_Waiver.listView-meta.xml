@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Recruitment_Op_Fee_Waiver</fullName>
+    <columns>CAP__c</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Opportunity_Location__c</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>Needs_Attention__c</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>notEqual</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>Processing_Status__c</field>
+        <operation>equals</operation>
+        <value>Received - Needs to Apply/Re-Apply</value>
+    </filters>
+    <filters>
+        <field>Opportunity_Type__c</field>
+        <operation>equals</operation>
+        <value>First Time Freshman</value>
+    </filters>
+    <filters>
+        <field>Opportunity_Stage__c</field>
+        <operation>contains</operation>
+        <value>Applicant,Admit</value>
+    </filters>
+    <label>AS Recruitment Op - Fee Waiver</label>
+    <queue>Admission_Services_Undergrad_Case</queue>
+    <sharedTo>
+        <group>Business_Operations_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

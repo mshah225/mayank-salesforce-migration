@@ -1,5 +1,5 @@
 @isTest
-private class Test_CorporateRelationsController {
+private class NewCorporateRelationsControllerTest {
     private static Campaign testCampaign;
     private static Campaign testChildCampaign;
     private static Account testAccount;

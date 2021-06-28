@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Organization_ID__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>[??] - Organization for External ID</description>
+    <externalId>true</externalId>
+    <label>External Organization ID</label>
+    <length>11</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

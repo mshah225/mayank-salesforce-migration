@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Student Type indicates International Student, Transfer Student and Barrett Honors student. This option is available to Family Portal Student record with ASU Student enrollment status.</description>
+    <externalId>false</externalId>
+    <label>Student Type</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Family_Portal_Student_Types</valueSetName>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

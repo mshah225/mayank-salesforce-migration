@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Functional_Group__c</fullName>
+    <description>[??] - Functional Group that is associated with this Case Assignment. Ensure that the value used here exists in Case "Functional Group" Picklist, and that the spelling is identical.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the Functional Group that is associated with this Case Assignment. Ensure that the value used here exists in Case "Functional Group" Picklist, and that the spelling is identical.</inlineHelpText>
+    <label>Functional Group</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

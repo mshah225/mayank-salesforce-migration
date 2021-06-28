@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Functional_Group__c</fullName>
+    <description>When creating a new case, Functional Group should be your own group. To transfer this case, click on the Change link in the Case Owner field and select a queue.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>When creating a new case, Functional Group should be your own group. To transfer this case, click on the Change link in the Case Owner field and select a queue.</inlineHelpText>
+    <label>Functional Group</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Academic Partnerships</fullName>
+                <default>false</default>
+                <label>Academic Partnerships</label>
+            </value>
+            <value>
+                <fullName>Academic Transfer Credit Solutions</fullName>
+                <default>false</default>
+                <label>Academic Transfer Credit Solutions</label>
+            </value>
+            <value>
+                <fullName>Access ASU Outreach</fullName>
+                <default>false</default>
+                <label>Access ASU Outreach</label>
+            </value>
+            <value>
+                <fullName>Admission Services</fullName>
+                <default>false</default>
+                <label>Admission Services</label>
+            </value>
+            <value>
+                <fullName>American Indian Student Support Services</fullName>
+                <default>false</default>
+                <label>American Indian Student Support Services</label>
+            </value>
+            <value>
+                <fullName>ASU Advisor Outreach</fullName>
+                <default>false</default>
+                <label>ASU Advisor Outreach</label>
+            </value>
+            <value>
+                <fullName>ASU Coach Outreach</fullName>
+                <default>false</default>
+                <label>ASU Coach Outreach</label>
+            </value>
+            <value>
+                <fullName>ASU Colleges at Lake Havasu</fullName>
+                <default>false</default>
+                <label>ASU Colleges at Lake Havasu</label>
+            </value>
+            <value>
+                <fullName>ASU Family Programs</fullName>
+                <default>false</default>
+                <label>ASU Family Programs</label>
+            </value>
+            <value>
+                <fullName>ASU Local</fullName>
+                <default>false</default>
+                <label>ASU Local</label>
+            </value>
+            <value>
+                <fullName>ASU New Student Programs</fullName>
+                <default>false</default>
+                <label>ASU New Student Programs</label>
+            </value>
+            <value>
+                <fullName>ASU Online</fullName>
+                <default>false</default>
+                <label>ASU Online</label>
+            </value>
+            <value>
+                <fullName>ASU Salesforce Support</fullName>
+                <default>false</default>
+                <label>ASU Salesforce Support</label>
+            </value>
+            <value>
+                <fullName>ASU-USA Pathways</fullName>
+                <default>false</default>
+                <label>ASU-USA Pathways</label>
+            </value>
+            <value>
+                <fullName>ASU Wellness</fullName>
+                <default>false</default>
+                <label>ASU Wellness</label>
+            </value>
+            <value>
+                <fullName>Biosafety</fullName>
+                <default>false</default>
+                <label>Biosafety</label>
+            </value>
+            <value>
+                <fullName>Business</fullName>
+                <default>false</default>
+                <label>Business</label>
+            </value>
+            <value>
+                <fullName>Career Services</fullName>
+                <default>false</default>
+                <label>Career Services</label>
+            </value>
+            <value>
+                <fullName>Changemaker Central</fullName>
+                <default>false</default>
+                <label>Changemaker Central</label>
+            </value>
+            <value>
+                <fullName>College of ASU - Training</fullName>
+                <default>false</default>
+                <label>College of ASU - Training</label>
+            </value>
+            <value>
+                <fullName>College of Global Futures</fullName>
+                <default>false</default>
+                <label>College of Global Futures</label>
+            </value>
+            <value>
+                <fullName>Curricular Activities and Actions</fullName>
+                <default>false</default>
+                <label>Curricular Activities and Actions</label>
+            </value>
+            <value>
+                <fullName>Dean of Students</fullName>
+                <default>false</default>
+                <label>Dean of Students</label>
+            </value>
+            <value>
+                <fullName>Department of ASU - Training</fullName>
+                <default>false</default>
+                <label>Department of ASU - Training</label>
+            </value>
+            <value>
+                <fullName>Design and the Arts</fullName>
+                <default>false</default>
+                <label>Design and the Arts</label>
+            </value>
+            <value>
+                <fullName>Disability Resource Center</fullName>
+                <default>false</default>
+                <label>Disability Resource Center</label>
+            </value>
+            <value>
+                <fullName>DNASU Plasmid Repository</fullName>
+                <default>false</default>
+                <label>DNASU Plasmid Repository</label>
+            </value>
+            <value>
+                <fullName>Education</fullName>
+                <default>false</default>
+                <label>Education</label>
+            </value>
+            <value>
+                <fullName>Educational Outreach and Student Services</fullName>
+                <default>false</default>
+                <label>Educational Outreach and Student Services</label>
+            </value>
+            <value>
+                <fullName>Engineering</fullName>
+                <default>false</default>
+                <label>Engineering</label>
+            </value>
+            <value>
+                <fullName>Engineering - CIDSE</fullName>
+                <default>false</default>
+                <label>Engineering - CIDSE</label>
+            </value>
+            <value>
+                <fullName>Engineering - ECEE</fullName>
+                <default>false</default>
+                <label>Engineering - ECEE</label>
+            </value>
+            <value>
+                <fullName>Engineering - GOEE</fullName>
+                <default>false</default>
+                <label>Engineering - GOEE</label>
+            </value>
+            <value>
+                <fullName>Engineering IT</fullName>
+                <default>false</default>
+                <label>Engineering IT</label>
+            </value>
+            <value>
+                <fullName>Engineering - Polytechnic</fullName>
+                <default>false</default>
+                <label>Engineering - Polytechnic</label>
+            </value>
+            <value>
+                <fullName>Engineering - SBHSE</fullName>
+                <default>false</default>
+                <label>Engineering - SBHSE</label>
+            </value>
+            <value>
+                <fullName>Engineering - SEMTE</fullName>
+                <default>false</default>
+                <label>Engineering - SEMTE</label>
+            </value>
+            <value>
+                <fullName>Engineering - SSEBE</fullName>
+                <default>false</default>
+                <label>Engineering - SSEBE</label>
+            </value>
+            <value>
+                <fullName>Enrollment Analysis</fullName>
+                <default>false</default>
+                <label>Enrollment Analysis</label>
+            </value>
+            <value>
+                <fullName>Enrollment Services ISD</fullName>
+                <default>false</default>
+                <label>Enrollment Services ISD</label>
+            </value>
+            <value>
+                <fullName>Enterprise Marketing Hub</fullName>
+                <default>false</default>
+                <label>Enterprise Marketing Hub</label>
+            </value>
+            <value>
+                <fullName>EOSS - Access ASU</fullName>
+                <default>false</default>
+                <label>EOSS - Access ASU</label>
+            </value>
+            <value>
+                <fullName>ESM Online</fullName>
+                <default>false</default>
+                <label>ESM Online</label>
+            </value>
+            <value>
+                <fullName>Explore</fullName>
+                <default>false</default>
+                <label>Explore</label>
+            </value>
+            <value>
+                <fullName>External Unit</fullName>
+                <default>false</default>
+                <label>External Unit</label>
+            </value>
+            <value>
+                <fullName>Financial Aid</fullName>
+                <default>false</default>
+                <label>Financial Aid</label>
+            </value>
+            <value>
+                <fullName>First in the World Grant</fullName>
+                <default>false</default>
+                <label>First in the World Grant</label>
+            </value>
+            <value>
+                <fullName>First Year Success Center</fullName>
+                <default>false</default>
+                <label>First Year Success Center</label>
+            </value>
+            <value>
+                <fullName>Fraternity &amp; Sorority Life</fullName>
+                <default>false</default>
+                <label>Fraternity &amp; Sorority Life</label>
+            </value>
+            <value>
+                <fullName>Graduate College</fullName>
+                <default>false</default>
+                <label>Graduate College</label>
+            </value>
+            <value>
+                <fullName>Health Solutions</fullName>
+                <default>false</default>
+                <label>Health Solutions</label>
+            </value>
+            <value>
+                <fullName>Help Desk</fullName>
+                <default>false</default>
+                <label>Help Desk</label>
+            </value>
+            <value>
+                <fullName>Honors</fullName>
+                <default>false</default>
+                <label>Honors</label>
+            </value>
+            <value>
+                <fullName>Identity Management</fullName>
+                <default>false</default>
+                <label>Identity Management</label>
+            </value>
+            <value>
+                <fullName>Information Technology Support Hub</fullName>
+                <default>false</default>
+                <label>Information Technology Support Hub</label>
+            </value>
+            <value>
+                <fullName>Integrative Sciences and Arts</fullName>
+                <default>false</default>
+                <label>Integrative Sciences and Arts</label>
+            </value>
+            <value>
+                <fullName>International Initiatives Graduate Education</fullName>
+                <default>false</default>
+                <label>International Initiatives Graduate Education</label>
+            </value>
+            <value>
+                <fullName>International Student Engagement</fullName>
+                <default>false</default>
+                <label>International Student Engagement</label>
+            </value>
+            <value>
+                <fullName>International Students and Scholars Center</fullName>
+                <default>false</default>
+                <label>International Students and Scholars Center</label>
+            </value>
+            <value>
+                <fullName>Interplanetary Initiatives</fullName>
+                <default>false</default>
+                <label>Interplanetary Initiatives</label>
+            </value>
+            <value>
+                <fullName>ITCSS Library Services</fullName>
+                <default>false</default>
+                <label>ITCSS Library Services</label>
+            </value>
+            <value>
+                <fullName>Journalism</fullName>
+                <default>false</default>
+                <label>Journalism</label>
+            </value>
+            <value>
+                <fullName>Letters and Sciences</fullName>
+                <default>false</default>
+                <label>Letters and Sciences</label>
+            </value>
+            <value>
+                <fullName>Library Services</fullName>
+                <default>false</default>
+                <label>Library Services</label>
+            </value>
+            <value>
+                <fullName>Blackboard UTO</fullName>
+                <default>false</default>
+                <label>LMS Support</label>
+            </value>
+            <value>
+                <fullName>MasterCard Foundation Scholars Program</fullName>
+                <default>false</default>
+                <label>MasterCard Foundation Scholars Program</label>
+            </value>
+            <value>
+                <fullName>MU Information Desk</fullName>
+                <default>false</default>
+                <label>MU Information Desk</label>
+            </value>
+            <value>
+                <fullName>New College</fullName>
+                <default>false</default>
+                <label>New College</label>
+            </value>
+            <value>
+                <fullName>Nursing and Health Innovation</fullName>
+                <default>false</default>
+                <label>Nursing and Health Innovation</label>
+            </value>
+            <value>
+                <fullName>Office of the President</fullName>
+                <default>false</default>
+                <label>Office of the President</label>
+            </value>
+            <value>
+                <fullName>Office of the University Provost</fullName>
+                <default>false</default>
+                <label>Office of the University Provost</label>
+            </value>
+            <value>
+                <fullName>Opportunities for Youth</fullName>
+                <default>false</default>
+                <label>Opportunities for Youth</label>
+            </value>
+            <value>
+                <fullName>Parking and Transit Services</fullName>
+                <default>false</default>
+                <label>Parking and Transit Services</label>
+            </value>
+            <value>
+                <fullName>Pat Tillman Veterans Center</fullName>
+                <default>false</default>
+                <label>Pat Tillman Veterans Center</label>
+            </value>
+            <value>
+                <fullName>Canon (Print Anywhere)</fullName>
+                <default>false</default>
+                <label>Print Anywhere Tier 2</label>
+            </value>
+            <value>
+                <fullName>Psychology Research Advancement</fullName>
+                <default>false</default>
+                <label>Psychology Research Advancement</label>
+            </value>
+            <value>
+                <fullName>Public Service &amp; Community Solutions</fullName>
+                <default>false</default>
+                <label>Public Service &amp; Community Solutions</label>
+            </value>
+            <value>
+                <fullName>Public Service Academy</fullName>
+                <default>false</default>
+                <label>Public Service Academy</label>
+            </value>
+            <value>
+                <fullName>Registrar</fullName>
+                <default>false</default>
+                <label>Registrar</label>
+            </value>
+            <value>
+                <fullName>School for the Future of Innovation in Society</fullName>
+                <default>false</default>
+                <label>School for the Future of Innovation in Society</label>
+            </value>
+            <value>
+                <fullName>Strategic Initiatives</fullName>
+                <default>false</default>
+                <label>Strategic Initiatives</label>
+            </value>
+            <value>
+                <fullName>Student &amp; Cultural Engagement</fullName>
+                <default>false</default>
+                <label>Student &amp; Cultural Engagement</label>
+            </value>
+            <value>
+                <fullName>Student Business Services</fullName>
+                <default>false</default>
+                <label>Student Business Services</label>
+            </value>
+            <value>
+                <fullName>Student Engagement</fullName>
+                <default>false</default>
+                <label>Student Engagement</label>
+            </value>
+            <value>
+                <fullName>Student Government</fullName>
+                <default>false</default>
+                <label>Student Government</label>
+            </value>
+            <value>
+                <fullName>Student Success Innovations</fullName>
+                <default>false</default>
+                <label>Student Success Innovations</label>
+            </value>
+            <value>
+                <fullName>Study Abroad</fullName>
+                <default>false</default>
+                <label>Study Abroad</label>
+            </value>
+            <value>
+                <fullName>Success Courses</fullName>
+                <default>false</default>
+                <label>Success Courses</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Athletics</fullName>
+                <default>false</default>
+                <label>Sun Devil Athletics</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Card Services</fullName>
+                <default>false</default>
+                <label>Sun Devil Card Services</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Dining</fullName>
+                <default>false</default>
+                <label>Sun Devil Dining</label>
+            </value>
+            <value>
+                <fullName>Sun Devil Fitness</fullName>
+                <default>false</default>
+                <label>Sun Devil Fitness</label>
+            </value>
+            <value>
+                <fullName>Sustainability</fullName>
+                <default>false</default>
+                <label>Sustainability</label>
+            </value>
+            <value>
+                <fullName>CLAS - Air Force ROTC</fullName>
+                <default>false</default>
+                <label>TC - Air Force ROTC</label>
+            </value>
+            <value>
+                <fullName>CLAS - AIS</fullName>
+                <default>false</default>
+                <label>TC - AIS</label>
+            </value>
+            <value>
+                <fullName>CLAS - Army ROTC</fullName>
+                <default>false</default>
+                <label>TC - Army ROTC</label>
+            </value>
+            <value>
+                <fullName>CLAS - English</fullName>
+                <default>false</default>
+                <label>TC - English</label>
+            </value>
+            <value>
+                <fullName>CLAS - HDSHC</fullName>
+                <default>false</default>
+                <label>TC - HDSHC</label>
+            </value>
+            <value>
+                <fullName>CLAS - ISSR</fullName>
+                <default>false</default>
+                <label>TC - ISSR</label>
+            </value>
+            <value>
+                <fullName>CLAS - Navy ROTC</fullName>
+                <default>false</default>
+                <label>TC - Navy ROTC</label>
+            </value>
+            <value>
+                <fullName>CLAS - Physics</fullName>
+                <default>false</default>
+                <label>TC - Physics</label>
+            </value>
+            <value>
+                <fullName>CLAS - Psychology</fullName>
+                <default>false</default>
+                <label>TC - Psychology</label>
+            </value>
+            <value>
+                <fullName>CLAS - SCETL</fullName>
+                <default>false</default>
+                <label>TC - SCETL</label>
+            </value>
+            <value>
+                <fullName>CLAS - SESE</fullName>
+                <default>false</default>
+                <label>TC - SESE</label>
+            </value>
+            <value>
+                <fullName>CLAS - SGSUP</fullName>
+                <default>false</default>
+                <label>TC - SGSUP</label>
+            </value>
+            <value>
+                <fullName>CLAS - SHESC</fullName>
+                <default>false</default>
+                <label>TC - SHESC</label>
+            </value>
+            <value>
+                <fullName>CLAS - SHPRS</fullName>
+                <default>false</default>
+                <label>TC - SHPRS</label>
+            </value>
+            <value>
+                <fullName>CLAS - SILC</fullName>
+                <default>false</default>
+                <label>TC - SILC</label>
+            </value>
+            <value>
+                <fullName>CLAS - SMS</fullName>
+                <default>false</default>
+                <label>TC - SMS</label>
+            </value>
+            <value>
+                <fullName>CLAS - SOLS</fullName>
+                <default>false</default>
+                <label>TC - SOLS</label>
+            </value>
+            <value>
+                <fullName>CLAS - SOLS Academic Integrity</fullName>
+                <default>false</default>
+                <label>TC - SOLS Academic Integrity</label>
+            </value>
+            <value>
+                <fullName>CLAS - SOLS Facilities</fullName>
+                <default>false</default>
+                <label>TC - SOLS Facilities</label>
+            </value>
+            <value>
+                <fullName>CLAS - SoMSS</fullName>
+                <default>false</default>
+                <label>TC - SoMSS</label>
+            </value>
+            <value>
+                <fullName>CLAS - SPGS</fullName>
+                <default>false</default>
+                <label>TC - SPGS</label>
+            </value>
+            <value>
+                <fullName>CLAS - SST</fullName>
+                <default>false</default>
+                <label>TC - SST</label>
+            </value>
+            <value>
+                <fullName>CLAS - STS</fullName>
+                <default>false</default>
+                <label>TC - STS</label>
+            </value>
+            <value>
+                <fullName>CLAS - The Sanford School</fullName>
+                <default>false</default>
+                <label>TC - The Sanford School</label>
+            </value>
+            <value>
+                <fullName>Tech Studio</fullName>
+                <default>false</default>
+                <label>Tech Studio</label>
+            </value>
+            <value>
+                <fullName>Liberal Arts and Sciences</fullName>
+                <default>false</default>
+                <label>The College</label>
+            </value>
+            <value>
+                <fullName>The College - Interplanetary Initiatives</fullName>
+                <default>false</default>
+                <label>The College - Interplanetary Initiatives</label>
+            </value>
+            <value>
+                <fullName>Thunderbird</fullName>
+                <default>false</default>
+                <label>Thunderbird</label>
+            </value>
+            <value>
+                <fullName>TRIO</fullName>
+                <default>false</default>
+                <label>TRIO</label>
+            </value>
+            <value>
+                <fullName>Universal Learner Courses</fullName>
+                <default>false</default>
+                <label>Universal Learner Courses</label>
+            </value>
+            <value>
+                <fullName>University Academic Success Programs</fullName>
+                <default>false</default>
+                <label>University Academic Success Programs</label>
+            </value>
+            <value>
+                <fullName>University Events &amp; Protocol</fullName>
+                <default>false</default>
+                <label>University Events &amp; Protocol</label>
+            </value>
+            <value>
+                <fullName>University Housing</fullName>
+                <default>false</default>
+                <label>University Housing</label>
+            </value>
+            <value>
+                <fullName>W. P. Carey Tech Services</fullName>
+                <default>false</default>
+                <label>W. P. Carey Tech Services</label>
+            </value>
+            <value>
+                <fullName>Watts Bridging Success</fullName>
+                <default>false</default>
+                <label>Watts Bridging Success</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Reason_Administratively_Closed</fullName>
+    <active>false</active>
+    <description>When case status is 'Closed: Administratively Resolved (No Outreach)', the Reason_Administratively_Closed must be fill out.</description>
+    <errorConditionFormula>AND(
+RecordType.Id ='012d00000021xGK',
+ISPICKVAL(Status, 'Closed: Administratively Resolved (No Outreach)'),
+ISBLANK( Reason_Administratively_Closed__c )
+)</errorConditionFormula>
+    <errorDisplayField>Reason_Administratively_Closed__c</errorDisplayField>
+    <errorMessage>Please enter a reason why the case was closed with the status 'Closed: Administratively Resolved (No Outreach)'.</errorMessage>
+</ValidationRule>

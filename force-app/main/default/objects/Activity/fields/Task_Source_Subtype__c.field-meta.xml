@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Task_Source_Subtype__c</fullName>
+    <externalId>false</externalId>
+    <label>Task Source Subtype</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Degree Search</fullName>
+                <default>false</default>
+                <label>Degree Search</label>
+            </value>
+            <value>
+                <fullName>Graduate Education</fullName>
+                <default>false</default>
+                <label>Graduate Education</label>
+            </value>
+            <value>
+                <fullName>Health Solutions</fullName>
+                <default>false</default>
+                <label>Health Solutions</label>
+            </value>
+            <value>
+                <fullName>MaryLouFulton Teachers College</fullName>
+                <default>false</default>
+                <label>MaryLouFulton Teachers College</label>
+            </value>
+            <value>
+                <fullName>ASU Online</fullName>
+                <default>false</default>
+                <label>ASU Online</label>
+            </value>
+            <value>
+                <fullName>USA Today</fullName>
+                <default>false</default>
+                <label>USA Today</label>
+            </value>
+            <value>
+                <fullName>Graduate College</fullName>
+                <default>false</default>
+                <label>Graduate College</label>
+            </value>
+            <value>
+                <fullName>ASU Online Rover</fullName>
+                <default>false</default>
+                <label>ASU Online Rover</label>
+            </value>
+            <value>
+                <fullName>Request Info</fullName>
+                <default>false</default>
+                <label>Request Info</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

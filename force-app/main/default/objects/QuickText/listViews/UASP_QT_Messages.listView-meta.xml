@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UASP_QT_Messages</fullName>
+    <columns>Owner_Display__c</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Category</field>
+        <operation>equals</operation>
+        <value>University Academic Success Programs</value>
+    </filters>
+    <label>University Academic Success Prg PQT Msgs</label>
+    <sharedTo>
+        <group>UASP_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

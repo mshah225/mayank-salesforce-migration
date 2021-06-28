@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CC_Sub_Category__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup to the Case Classification Sub-Category field</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Lookup to the Case Classification Sub-Category field</inlineHelpText>
+    <label>Case Sub-Category</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Case_Classification__c.Active__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </filterItems>
+        <filterItems>
+            <field>Case_Classification__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Sub Category</value>
+        </filterItems>
+        <filterItems>
+            <field>Case_Classification__c.Parent__c</field>
+            <operation>equals</operation>
+            <valueField>$Source.CC_Category__c</valueField>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Case_Classification__c</referenceTo>
+    <relationshipLabel>CAR (Sub-Category)</relationshipLabel>
+    <relationshipName>Case_Assignment_Rules2</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

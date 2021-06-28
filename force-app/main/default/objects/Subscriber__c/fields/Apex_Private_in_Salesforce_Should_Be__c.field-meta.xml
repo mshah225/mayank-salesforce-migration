@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Apex_Private_in_Salesforce_Should_Be__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Subscription__r.Subscriber_Private_in_Salesforce__c, "True", "False")</formula>
+    <inlineHelpText>For the Apex code that enforces the Subscriber security model, this field displays how the "Private in Salesforce" field should be set.</inlineHelpText>
+    <label>Apex: Private in Salesforce Should Be</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Undergraduate_GPA_Scale__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[import] - Undergraduate GPA scale for the lead</description>
+    <externalId>false</externalId>
+    <label>Undergraduate GPA Scale</label>
+    <referenceTo>GPA_Scale__c</referenceTo>
+    <relationshipLabel>Leads</relationshipLabel>
+    <relationshipName>Leads_UGGPAscale</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

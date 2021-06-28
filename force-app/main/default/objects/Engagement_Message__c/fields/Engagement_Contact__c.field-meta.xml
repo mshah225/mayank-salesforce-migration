@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Engagement_Contact__c</fullName>
+    <externalId>false</externalId>
+    <label>Engagement Contact</label>
+    <referenceTo>Engagement_Contact__c</referenceTo>
+    <relationshipLabel>Engagement Messages</relationshipLabel>
+    <relationshipName>Engagement_Messages</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

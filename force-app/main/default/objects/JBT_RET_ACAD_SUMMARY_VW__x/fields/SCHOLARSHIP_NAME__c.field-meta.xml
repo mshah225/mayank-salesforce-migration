@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SCHOLARSHIP_NAME__c</fullName>
+    <description>Data sourced from PS_ASU_FA_P_AWD_P.SCHOLARSHIP_NAME</description>
+    <externalDeveloperName>SCHOLARSHIP_NAME</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Awarded Scholarships</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

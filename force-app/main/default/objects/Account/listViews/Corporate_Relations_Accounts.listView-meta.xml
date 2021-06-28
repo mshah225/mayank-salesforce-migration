@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Corporate_Relations_Accounts</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Research_Centers_and_Consortiums__c</columns>
+    <columns>ACCOUNT.INDUSTRY</columns>
+    <columns>ACCOUNT.TYPE</columns>
+    <columns>ACCOUNT.ADDRESS1_CITY</columns>
+    <columns>ACCOUNT.ADDRESS1_STATE_CODE</columns>
+    <columns>ACCOUNT.ADDRESS1_COUNTRY_CODE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ACCOUNT.TYPE</field>
+        <operation>notEqual</operation>
+        <value>Institution</value>
+    </filters>
+    <filters>
+        <field>ACCOUNT.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Account.External_Mastered_Org,Account.SF_Mastered_Org</value>
+    </filters>
+    <label>Corporate Relations Accounts</label>
+    <sharedTo>
+        <group>Corporate_Relations</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

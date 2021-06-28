@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All1</fullName>
+    <columns>Contact__c</columns>
+    <columns>NAME</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>CREATEDBY_USER.ALIAS</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>First_Name__c</columns>
+    <columns>Middle_Name__c</columns>
+    <columns>Last_Name__c</columns>
+    <columns>Email__c</columns>
+    <columns>Street__c</columns>
+    <columns>State__c</columns>
+    <columns>Zip_Code__c</columns>
+    <columns>Hash_ID__c</columns>
+    <columns>ASURITE_ID__c</columns>
+    <columns>EMPLID__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

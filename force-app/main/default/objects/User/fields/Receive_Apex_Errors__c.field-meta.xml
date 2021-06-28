@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Receive_Apex_Errors__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Used by the error logger to determine who should receive backup emails.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Used by the error logger to determine who should receive backup emails.</inlineHelpText>
+    <label>Receive Apex Errors</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

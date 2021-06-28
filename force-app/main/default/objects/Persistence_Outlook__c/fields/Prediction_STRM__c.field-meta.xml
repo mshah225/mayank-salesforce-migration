@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prediction_STRM__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>PREDICTION_STRM</description>
+    <externalId>false</externalId>
+    <label>Prediction Term</label>
+    <referenceTo>Term__c</referenceTo>
+    <relationshipLabel>Persistence Outlooks</relationshipLabel>
+    <relationshipName>Persistence_Outlooks</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

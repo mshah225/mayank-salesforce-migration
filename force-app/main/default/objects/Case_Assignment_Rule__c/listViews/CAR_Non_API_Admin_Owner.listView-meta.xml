@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CAR_Non_API_Admin_Owner</fullName>
+    <columns>NAME</columns>
+    <columns>Functional_Group__c</columns>
+    <columns>Category__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>OWNER.FIRST_NAME</columns>
+    <columns>OWNER.LAST_NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>OWNER.ALIAS</field>
+        <operation>notEqual</operation>
+        <value>sfadmin</value>
+    </filters>
+    <label>CAR - Non API Admin Owner</label>
+    <sharedTo>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

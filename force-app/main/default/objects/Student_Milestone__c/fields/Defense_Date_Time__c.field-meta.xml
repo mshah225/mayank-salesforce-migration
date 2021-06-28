@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Defense_Date_Time__c</fullName>
+    <businessOwnerGroup>Data_Owner_AA_Academic_Advising</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>(PeopleSoft) PS_ASU_AA_POS_DFNS.ASU_AA_DEFENSE_DT ||  PS_ASU_AA_POS_DFNS.ASU_AA_DEFENSE_TM.
+Visible on the Graduate Student Profile tab; Access granted via PS security role 'Student Profile'.</description>
+    <externalId>false</externalId>
+    <label>Defense Date Time</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>I_20_Sent_Date__c</fullName>
+    <description>[Peoplesoft] - Date I-20 was mailed to the admitted student</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Date I-20 was mailed to the admitted student</inlineHelpText>
+    <label>I-20 Sent Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

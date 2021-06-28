@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Multi_Language_Enabled__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>This checkbox indicates whether the multi-language capability is enabled for this knowledge base. Among other things, this checkbox will affect how the Article URLs are constructed in the PKB.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This checkbox indicates whether the multi-language capability is enabled for this knowledge base. Among other things, this checkbox will affect how the Article URLs are constructed in the PKB.</inlineHelpText>
+    <label>Multi-Language Enabled?</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

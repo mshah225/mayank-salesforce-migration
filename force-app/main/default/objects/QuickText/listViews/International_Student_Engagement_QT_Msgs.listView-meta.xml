@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>International_Student_Engagement_QT_Msgs</fullName>
+    <columns>Owner_Display__c</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Category</field>
+        <operation>equals</operation>
+        <value>International Student Engagement</value>
+    </filters>
+    <label>International Student Engagement QT Msgs</label>
+    <sharedTo>
+        <group>Additional_Intl_Std_Enagement_Case</group>
+        <group>International_Student_Engagement_Case</group>
+        <role>S_Service</role>
+        <role>UTO_University_Technology_Office</role>
+        <roleAndSubordinatesInternal>SCI_Student_Centric_Initiatives_Manager</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

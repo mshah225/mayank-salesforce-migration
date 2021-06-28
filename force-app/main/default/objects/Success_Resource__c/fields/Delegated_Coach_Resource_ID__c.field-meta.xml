@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Delegated_Coach_Resource_ID__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>This field is used to help manage coverage for a coach that is no longer with the Success Center until they can be replaced. This field is sourced by users choosing Success Resource Id names</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Used to help manage coverage for a coach that is no longer with the Success Center until they can be replaced</inlineHelpText>
+    <label>Delegated Coach Resource ID</label>
+    <referenceTo>Success_Resource__c</referenceTo>
+    <relationshipLabel>Success Resources</relationshipLabel>
+    <relationshipName>Success_Resources</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

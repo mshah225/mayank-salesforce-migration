@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Intended_Recipient__c</fullName>
+    <description>The email address of the intended recipient of an inbound email message.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The email address of the intended recipient of an inbound email message.</inlineHelpText>
+    <label>Intended Recipient</label>
+    <length>128</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

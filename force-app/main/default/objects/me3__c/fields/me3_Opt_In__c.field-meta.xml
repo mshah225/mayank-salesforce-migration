@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>me3_Opt_In__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>HS_STUDENT_BIO_DEMO.EMAIL_AGREE</description>
+    <externalId>false</externalId>
+    <label>me3 Opt In</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MC_Educational_Outreach_Student_Service_Subscription</fullName>
+    <filterScope>Queue</filterScope>
+    <label>MC: Educational Outreach Student Service</label>
+    <queue>MC_Educational_Outreach_Student_Service</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

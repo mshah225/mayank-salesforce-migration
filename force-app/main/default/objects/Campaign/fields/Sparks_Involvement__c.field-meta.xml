@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sparks_Involvement__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Identifies if the event has SPARKS involvement. This is used by EOSS Event record type only.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Check indicates that the event is SPARKS related.</inlineHelpText>
+    <label>Sparks Involvement</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

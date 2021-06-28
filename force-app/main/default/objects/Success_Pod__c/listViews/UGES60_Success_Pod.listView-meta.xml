@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UGES60_Success_Pod</fullName>
+    <filterScope>Queue</filterScope>
+    <label>UGES60</label>
+    <queue>UGES60</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

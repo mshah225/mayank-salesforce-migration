@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Converstion Process</fullName>
+    <description>Used to manage picklist for status during the conversion process</description>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Inactive</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Open</fullName>
+        <default>true</default>
+    </values>
+    <values>
+        <fullName>Open - Converted</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Prospect</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

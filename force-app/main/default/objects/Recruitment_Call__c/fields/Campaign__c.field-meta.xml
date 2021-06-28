@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campaign__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Lookup field to be able to select the appropriate associated campaign for the recruitment call.</description>
+    <externalId>false</externalId>
+    <label>Campaign</label>
+    <lookupFilter>
+        <active>false</active>
+        <filterItems>
+            <field>Campaign.RecordType.Name</field>
+            <operation>equals</operation>
+            <value>Calling</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Campaign</referenceTo>
+    <relationshipLabel>Recruitment Calls</relationshipLabel>
+    <relationshipName>Recruitment_Calls</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

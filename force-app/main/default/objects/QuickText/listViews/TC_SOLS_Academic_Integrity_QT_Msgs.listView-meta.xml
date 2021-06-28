@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TC_SOLS_Academic_Integrity_QT_Msgs</fullName>
+    <columns>Owner_Display__c</columns>
+    <columns>Category</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Name</columns>
+    <columns>Message</columns>
+    <columns>CreatedDate</columns>
+    <columns>LastModifiedDate</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Category</field>
+        <operation>equals</operation>
+        <value>TC - SOLS Academic Integrity</value>
+    </filters>
+    <label>TC - SOLS Academic Integrity QT Msgs</label>
+    <sharedTo>
+        <group>CLAS_SOLS_Academic_Integrity_Case</group>
+        <group>UTO_Administration</group>
+        <role>SS_Secured_Service</role>
+    </sharedTo>
+</ListView>

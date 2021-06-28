@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Student_Presented_Risk_for__c</fullName>
+    <description>Picklist appears when student is returning is populated</description>
+    <externalId>false</externalId>
+    <label>Student Presented Risk for:</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Academic</fullName>
+                <default>false</default>
+                <label>Academic</label>
+            </value>
+            <value>
+                <fullName>Compassionate Withdrawal</fullName>
+                <default>false</default>
+                <label>Compassionate Withdrawal</label>
+            </value>
+            <value>
+                <fullName>Family</fullName>
+                <default>false</default>
+                <label>Family</label>
+            </value>
+            <value>
+                <fullName>Financial</fullName>
+                <default>false</default>
+                <label>Financial</label>
+            </value>
+            <value>
+                <fullName>Health</fullName>
+                <default>false</default>
+                <label>Health</label>
+            </value>
+            <value>
+                <fullName>Job Opportunity</fullName>
+                <default>false</default>
+                <label>Job Opportunity</label>
+            </value>
+            <value>
+                <fullName>Judicial Affairs</fullName>
+                <default>false</default>
+                <label>Judicial Affairs</label>
+            </value>
+            <value>
+                <fullName>Medical Withdrawal</fullName>
+                <default>false</default>
+                <label>Medical Withdrawal</label>
+            </value>
+            <value>
+                <fullName>Social Engagement</fullName>
+                <default>false</default>
+                <label>Social Engagement</label>
+            </value>
+            <value>
+                <fullName>None</fullName>
+                <default>false</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Compassionate W/D</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Compassionate W/D</label>
+            </value>
+            <value>
+                <fullName>Medical W/D</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Medical W/D</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

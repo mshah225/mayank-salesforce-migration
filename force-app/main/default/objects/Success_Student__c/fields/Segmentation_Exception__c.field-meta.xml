@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Segmentation_Exception__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Used by EdPlus Success Center in order to prevent reassignment (in stored procedure calculations). This field prevents reassignment to another coach. Success Coach Leads and Chuck Hechel (Success Center Project Manager) will primarily populate this field</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Check this box to prevent this student from being reassigned to another Success Coach based on the student's segmentation.</inlineHelpText>
+    <label>Segmentation Exception</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MCategory_Group_2__c</fullName>
+    <description>Group name that should be displayed in filters section of the PKB mobile page. The field named Root Category 1 must have a value that is a category in this group.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Group name that should be displayed in filters section of the PKB mobile page. The field named Root Category 1 must have a value that is a category in this group.</inlineHelpText>
+    <label>Category Group 2</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

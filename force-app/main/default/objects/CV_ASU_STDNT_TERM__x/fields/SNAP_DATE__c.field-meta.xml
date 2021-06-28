@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SNAP_DATE__c</fullName>
+    <description>Date of the score on this row (rows added daily, although scores may not change)</description>
+    <externalDeveloperName>SNAP_DATE</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Snap Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

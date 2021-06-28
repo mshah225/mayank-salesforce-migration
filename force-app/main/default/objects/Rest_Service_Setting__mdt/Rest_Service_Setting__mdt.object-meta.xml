@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Contains the base uri and credentials required for their API.</description>
+    <label>Rest Service Setting</label>
+    <pluralLabel>Rest Service Settings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

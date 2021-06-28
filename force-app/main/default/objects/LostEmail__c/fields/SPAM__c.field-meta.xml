@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SPAM__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If this field is marked as TRUE, the script will ignore the record and not create a Case.</description>
+    <externalId>false</externalId>
+    <label>SPAM</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

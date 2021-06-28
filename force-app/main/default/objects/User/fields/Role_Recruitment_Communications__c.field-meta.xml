@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_Recruitment_Communications__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>PeopleSoft security role = ASU_FC_SF CO Recruit Comm</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Users will receive the ASU Marketing User profile for this role.</inlineHelpText>
+    <label>Recruitment Communications</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

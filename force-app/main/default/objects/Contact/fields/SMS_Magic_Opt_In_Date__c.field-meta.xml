@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SMS_Magic_Opt_In_Date__c</fullName>
+    <description>This is populated when the SMS Magic permission to text is marked TRUE</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Date when the SMS Magic permission to text is marked TRUE</inlineHelpText>
+    <label>SMS Magic Opt In Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

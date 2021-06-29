@@ -99,4 +99,5 @@ jobs:
                   commit-message: 'Metadata cleanup'
                   title: '[BOT] METADATA CLEANUP AFTER DEPLOYMENT'
                   body: Cleaning up unnecessary metadata directories after deployment to main
+                  reviewers: mgilardi, jdsanch8
                   branch: mdc

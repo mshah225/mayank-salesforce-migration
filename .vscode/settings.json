@@ -56,7 +56,7 @@
             "name": "Aliusito CI",
             "description": "A script to safely update all branches from the upstream",
             "icon": "code",
-            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito.sh"],
+            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito.sh", "sleep 120", "exit"],
             "recycle": true,
             "open": true,
             "focus": true
@@ -65,7 +65,12 @@
             "name": "Developer Setup",
             "description": "A script to initialize or refresh a developer's setup",
             "icon": "code",
-            "commands": ["[ -d 'bin/developer-setup' ] && cd bin/developer-setup", "./developer_setup.sh"],
+            "commands": [
+                "[ -d 'bin/developer-setup' ] && cd bin/developer-setup",
+                "./developer_setup.sh",
+                "sleep 30",
+                "pkill Code"
+            ],
             "recycle": true,
             "open": true,
             "focus": true

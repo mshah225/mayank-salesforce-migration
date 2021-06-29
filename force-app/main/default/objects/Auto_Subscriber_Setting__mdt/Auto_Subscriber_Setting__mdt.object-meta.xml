@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Contains objects to enable and disable various auto subscribe filters.</description>
-    <label>Auto Subscriber Setting</label>
-    <pluralLabel>Auto Subscriber Settings</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

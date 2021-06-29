@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Require_Queue_Ownership_IF_Private_in_Sf</fullName>
-    <active>true</active>
-    <description>A record must be owned by a Queue if the related Subscriber or IER records are to be set to Private, because a Queue is the mechanism for giving access to these records for the staff that should be able to see it.</description>
-    <errorConditionFormula>LEFT(OwnerId,3) &lt;&gt; "00G" &amp;&amp;  OR(Subscriber_Private_in_Salesforce__c, IER_Private_in_Salesforce__c)</errorConditionFormula>
-    <errorMessage>A record must be owned by a Queue if the Subscriber or IER records are set to Private. If you do not have access to a team Queue, contact your Salesforce administrator to help with setting up a Queue that will allow your team access to private records.</errorMessage>
-</ValidationRule>

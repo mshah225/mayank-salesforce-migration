@@ -96,8 +96,8 @@ jobs:
             - name: Create pull request
               uses: peter-evans/create-pull-request@v3
               with:
-                  commit-message: 'Metadata cleanup'
-                  title: '[BOT] METADATA CLEANUP AFTER DEPLOYMENT'
-                  body: Cleaning up unnecessary metadata directories after deployment to main
+                  commit-message: 'Metadata cleanup after deployment'
+                  title: 'GITHUB-ACTIONS[BOT]: METADATA CLEANUP'
+                  body: 'Clean up, clean up, everybody everywhere. Clean up, clean up, everybody do your share.'
                   reviewers: mgilardi, jdsanch8
                   branch: mdc

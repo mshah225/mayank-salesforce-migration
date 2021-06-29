@@ -311,6 +311,8 @@ function execute_changes() {
         print_typed_text "    -- ABORTED --" && echo
         print_typed_text "    $abortedMergeText" && echo && echo
     fi
+
+    print_typed_text "Closing terminal instance in two minutes." && echo
 }
 
 #########################################################

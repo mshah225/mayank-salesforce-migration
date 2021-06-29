@@ -1,0 +1,102 @@
+name: Metadata Cleanup
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+
+jobs:
+    metadata-cleanup:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: Remove 'applications' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/applications
+            - name: Remove 'customMetadata' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/customMetadata
+            - name: Remove 'connectedApps' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/connectedApps
+            - name: Remove 'dataSources' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/dataSources
+            - name: Remove 'emailservices' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/emailservices
+            - name: Remove 'flexipages' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/flexipages
+            - name: Remove 'globalValueSets' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/globalValueSets
+            - name: Remove 'groups' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/groups
+            - name: Remove 'labels' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/labels
+            - name: Remove 'layouts' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/layouts
+            - name: Remove 'liveChatAgentConfigs' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/liveChatAgentConfigs
+            - name: Remove 'liveChatDeployments' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/liveChatDeployments
+            - name: Remove 'namedCredentials' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/namedCredentials
+            - name: Remove 'objects' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/objects
+            - name: Remove 'quickActions' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/quickActions
+            - name: Remove 'remoteSiteSettings' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/remoteSiteSettings
+            - name: Remove 'samlssoconfigs' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/samlssoconfigs
+            - name: Remove 'settings' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/settings
+            - name: Remove 'tabs' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/tabs
+            - name: Remove 'weblinks' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/weblinks
+            - name: Create pull request
+              uses: peter-evans/create-pull-request@v3
+              with:
+                  commit-message: 'Metadata cleanup'
+                  title: '[BOT] METADATA CLEANUP AFTER DEPLOYMENT'
+                  body: Cleaning up unnecessary metadata directories after deployment to main
+                  branch: mdc

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customSettingsType>List</customSettingsType>
-    <description>The My ASU View As Url to call the web service at. Note that this needs a matching Remote Site set up in the org as well.</description>
-    <enableFeeds>false</enableFeeds>
-    <label>View As Url</label>
-    <visibility>Public</visibility>
-</CustomObject>

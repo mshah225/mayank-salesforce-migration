@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Require_Emails</fullName>
-    <active>true</active>
-    <description>There must be at least one email address to alert.</description>
-    <errorConditionFormula>ISBLANK(Email_Addresses__c)</errorConditionFormula>
-    <errorDisplayField>Email_Addresses__c</errorDisplayField>
-    <errorMessage>There must be at least one email address to alert.</errorMessage>
-</ValidationRule>

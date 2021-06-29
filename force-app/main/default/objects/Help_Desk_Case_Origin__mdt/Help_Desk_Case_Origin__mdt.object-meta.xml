@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Used to hold Case Origin values to display on the Help Desk Visual Force page.</description>
-    <label>Help Desk Case Origin</label>
-    <pluralLabel>Help Desk Case Origins</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customSettingsType>List</customSettingsType>
-    <description>Custom object that displays service center maintenance messages</description>
-    <enableFeeds>false</enableFeeds>
-    <label>Service Center Maintenance</label>
-    <visibility>Public</visibility>
-</CustomObject>

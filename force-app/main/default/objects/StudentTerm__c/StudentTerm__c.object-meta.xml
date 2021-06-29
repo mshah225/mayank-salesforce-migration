@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customSettingsType>Hierarchy</customSettingsType>
-    <description>Contains the previous, current, and future term.</description>
-    <enableFeeds>false</enableFeeds>
-    <label>StudentTerm</label>
-    <visibility>Public</visibility>
-</CustomObject>

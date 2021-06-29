@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Data entry page to create a Contact, Undergraduate Prospect Opportunity, Case, and Campaign Member</description>
-    <label>New Undergrad Prospect</label>
-    <mobileReady>false</mobileReady>
-    <motif>Custom3: Sun</motif>
-    <page>UndergradNewProspect</page>
-</CustomTab>

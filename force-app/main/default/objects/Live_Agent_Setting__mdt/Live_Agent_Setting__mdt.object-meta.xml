@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Stored settings for Live Agent.</description>
-    <label>Live Agent Setting</label>
-    <pluralLabel>Live Agent Settings</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

@@ -7,9 +7,9 @@
             "tooltip": "A script to parse out SF metadata security settings"
         },
         {
-            "text": "$(terminal) Aliusito CI",
+            "text": "$(terminal) Aliusito Fork Sync",
             "command": "terminals.runTerminalByName",
-            "arguments": ["Aliusito CI"],
+            "arguments": ["Aliusito Fork Sync"],
             "tooltip": "A script to safely update all branches from the upstream"
         },
         {
@@ -56,7 +56,7 @@
             "focus": true
         },
         {
-            "name": "Aliusito CI",
+            "name": "Aliusito Fork Sync",
             "description": "A script to safely update all branches from the upstream",
             "icon": "code",
             "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito.sh", "sleep 120", "exit"],

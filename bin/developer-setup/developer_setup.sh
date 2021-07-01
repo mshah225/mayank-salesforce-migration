@@ -26,17 +26,34 @@ start_spinner &
 SPIN_PID=$!
 trap "kill -9 $SPIN_PID" $(seq 0 15)
 
-# Developer setup tasks to complete
+# Ensure that ASU is set as a remote
 git remote add ASU https://github.com/ASU/crm-salesforce-enterprise &>/dev/null
+
+# Keep Homebrew up-to-date
+if [ "$(uname)" == "Darwin" ]; then
+    brew update &>/dev/null
+    brew upgrade &>/dev/null
+fi
+
+# Keep npm up-to-date
+npm update &>/dev/null
+npm install &>/dev/null
+npm install -g sfdx-cli &>/dev/null
 npm install --save-dev --save-exact prettier prettier-plugin-apex &>/dev/null
 npm config set prefix /usr/local &>/dev/null
 npm install -g -D -E prettier prettier-plugin-apex &>/dev/null
-code --install-extension salesforce.salesforcedx-vscode &>/dev/null
-code --install-extension dbaeumer.vscode-eslint &>/dev/null
-code --install-extension esbenp.prettier-vscode &>/dev/null
-code --install-extension fabiospampinato.vscode-commands &>/dev/null
-code --install-extension fabiospampinato.vscode-terminals &>/dev/null
-code --install-extension ms-python.python &>/dev/null
+npm install eslint @babel/core @babel/eslint-parser @lwc/eslint-plugin-lwc --save-dev
+npm install --save-dev @salesforce/eslint-plugin-aura
+npm uninstall husky
+npm install -D husky@4
+
+# Force Visual Studio Code to install or update the extensions
+code --install-extension salesforce.salesforcedx-vscode --force &>/dev/null
+code --install-extension dbaeumer.vscode-eslint --force &>/dev/null
+code --install-extension esbenp.prettier-vscode --force &>/dev/null
+code --install-extension fabiospampinato.vscode-commands --force &>/dev/null
+code --install-extension fabiospampinato.vscode-terminals --force &>/dev/null
+code --install-extension ms-python.python --force &>/dev/null
 
 echo " ██████ ██       ██████  ███████ ██ ███    ██  ██████      ██ ███    ██     ██████   ██████      ███████ ███████  ██████  ██████  ███    ██ ██████  ███████    "
 echo "██      ██      ██    ██ ██      ██ ████   ██ ██           ██ ████   ██          ██ ██  ████     ██      ██      ██      ██    ██ ████   ██ ██   ██ ██         "

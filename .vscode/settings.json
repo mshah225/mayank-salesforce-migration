@@ -20,6 +20,9 @@
         }
     ],
     "editor.formatOnSave": true,
+    "files.associations": {
+        "*.json": "jsonc"
+    },
     "prettier.configPath": ".prettierrc",
     "prettier.ignorePath": ".prettierignore",
     "prettier.printWidth": 120,

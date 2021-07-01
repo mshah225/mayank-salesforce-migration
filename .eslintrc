@@ -20,10 +20,10 @@
         {
             "files": ["**/lwc/**/*.js"],
             "rules": {
-                "@lwc/lwc/no-deprecated": "error",
-                "@lwc/lwc/valid-api": "error",
-                "@lwc/lwc/no-document-query": "error",
-                "@lwc/lwc/no-leading-uppercase-api-name": "error",
+                "@lwc/lwc/no-deprecated": "warn",
+                "@lwc/lwc/valid-api": "warn",
+                "@lwc/lwc/no-document-query": "warn",
+                "@lwc/lwc/no-leading-uppercase-api-name": "warn",
                 "@lwc/lwc/consistent-component-name": "warn",
                 "no-unused-vars": "warn"
             }

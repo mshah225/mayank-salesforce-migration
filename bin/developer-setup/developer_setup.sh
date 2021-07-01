@@ -47,7 +47,7 @@ npm list | grep @babel/core &>/dev/null || npm install --save-dev @babel/core &>
 npm list | grep @babel/eslint-parser &>/dev/null || npm install --save-dev @babel/eslint-parser &>/dev/null
 npm list | grep @lwc/eslint-plugin-lwc &>/dev/null || npm install --save-dev @lwc/eslint-plugin-lwc &>/dev/null
 npm list | grep @salesforce/eslint-plugin-aura &>/dev/null || npm install --save-dev @salesforce/eslint-plugin-aura &>/dev/null
-npm list | grep husky@4 &>/dev/null && [ $? -eq 0 ] && npm uninstall husky &>/dev/null && npm install -D husky@4 &>/dev/null || npm install -D husky@4 &>/dev/null
+npm list | grep husky &>/dev/null && [ $? -eq 0 ] && npm uninstall husky &>/dev/null && npm install -D husky@4 &>/dev/null || npm install -D husky@4 &>/dev/null
 npm update &>/dev/null
 
 # Force Visual Studio Code to install or update the extensions

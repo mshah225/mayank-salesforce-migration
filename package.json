@@ -17,8 +17,8 @@
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\""
     },
     "devDependencies": {
-        "@babel/core": "^7.13.16",
-        "@babel/eslint-parser": "^7.13.14",
+        "@babel/core": "^7.14.6",
+        "@babel/eslint-parser": "^7.14.7",
         "@lwc/eslint-plugin-lwc": "^1.0.1",
         "@prettier/plugin-xml": "^0.12.0",
         "@salesforce/eslint-config-lwc": "^0.11.0",

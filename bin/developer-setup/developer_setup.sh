@@ -36,16 +36,19 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 # Keep npm up-to-date
-npm update &>/dev/null
-npm install &>/dev/null
-npm install -g sfdx-cli &>/dev/null
-npm install --save-dev --save-exact prettier prettier-plugin-apex &>/dev/null
 npm config set prefix /usr/local &>/dev/null
-npm install -g -D -E prettier prettier-plugin-apex &>/dev/null
-npm install eslint @babel/core @babel/eslint-parser @lwc/eslint-plugin-lwc --save-dev &>/dev/null
-npm install --save-dev @salesforce/eslint-plugin-aura &>/dev/null
-npm uninstall husky &>/dev/null
-npm install -D husky@4 &>/dev/null
+npm list -g | grep sfdx-cli &>/dev/null || npm install -g sfdx-cli &>/dev/null
+npm list | grep prettier &>/dev/null || npm install --save-dev --save-exact prettier &>/dev/null
+npm list | grep prettier-plugin-apex &>/dev/null || npm install --save-dev --save-exact prettier-plugin-apex &>/dev/null
+npm list -g | grep prettier &>/dev/null || npm install -g -D -E prettier &>/dev/null
+npm list -g | grep prettier-plugin-apex &>/dev/null || npm install -g -D -E prettier-plugin-apex &>/dev/null
+npm list | grep eslint &>/dev/null || npm install --save-dev eslint &>/dev/null
+npm list | grep @babel/core &>/dev/null || npm install --save-dev @babel/core &>/dev/null
+npm list | grep @babel/eslint-parser &>/dev/null || npm install --save-dev @babel/eslint-parser &>/dev/null
+npm list | grep @lwc/eslint-plugin-lwc &>/dev/null || npm install --save-dev @lwc/eslint-plugin-lwc &>/dev/null
+npm list | grep @salesforce/eslint-plugin-aura &>/dev/null || npm install --save-dev @salesforce/eslint-plugin-aura &>/dev/null
+npm list | grep husky@4 &>/dev/null && [ $? -eq 0 ] && npm uninstall husky &>/dev/null && npm install -D husky@4 &>/dev/null || npm install -D husky@4 &>/dev/null
+npm update &>/dev/null
 
 # Force Visual Studio Code to install or update the extensions
 code --install-extension salesforce.salesforcedx-vscode --force &>/dev/null

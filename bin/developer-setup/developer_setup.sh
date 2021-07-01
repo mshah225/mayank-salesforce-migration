@@ -42,10 +42,10 @@ npm install -g sfdx-cli &>/dev/null
 npm install --save-dev --save-exact prettier prettier-plugin-apex &>/dev/null
 npm config set prefix /usr/local &>/dev/null
 npm install -g -D -E prettier prettier-plugin-apex &>/dev/null
-npm install eslint @babel/core @babel/eslint-parser @lwc/eslint-plugin-lwc --save-dev
-npm install --save-dev @salesforce/eslint-plugin-aura
-npm uninstall husky
-npm install -D husky@4
+npm install eslint @babel/core @babel/eslint-parser @lwc/eslint-plugin-lwc --save-dev &>/dev/null
+npm install --save-dev @salesforce/eslint-plugin-aura &>/dev/null
+npm uninstall husky &>/dev/null
+npm install -D husky@4 &>/dev/null
 
 # Force Visual Studio Code to install or update the extensions
 code --install-extension salesforce.salesforcedx-vscode --force &>/dev/null

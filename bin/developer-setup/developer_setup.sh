@@ -38,10 +38,10 @@ fi
 # Keep npm up-to-date
 npm config set prefix /usr/local &>/dev/null
 npm list -g | grep sfdx-cli &>/dev/null || npm install -g sfdx-cli &>/dev/null
-npm list | grep prettier &>/dev/null || npm install --save-dev --save-exact prettier &>/dev/null
-npm list | grep prettier-plugin-apex &>/dev/null || npm install --save-dev --save-exact prettier-plugin-apex &>/dev/null
 npm list -g | grep prettier &>/dev/null || npm install -g -D -E prettier &>/dev/null
 npm list -g | grep prettier-plugin-apex &>/dev/null || npm install -g -D -E prettier-plugin-apex &>/dev/null
+npm list | grep prettier &>/dev/null || npm install --save-dev --save-exact prettier &>/dev/null
+npm list | grep prettier-plugin-apex &>/dev/null || npm install --save-dev --save-exact prettier-plugin-apex &>/dev/null
 npm list | grep eslint &>/dev/null || npm install --save-dev eslint &>/dev/null
 npm list | grep @babel/core &>/dev/null || npm install --save-dev @babel/core &>/dev/null
 npm list | grep @babel/eslint-parser &>/dev/null || npm install --save-dev @babel/eslint-parser &>/dev/null

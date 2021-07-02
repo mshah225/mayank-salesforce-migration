@@ -39,6 +39,15 @@ global with sharing class StudentProfileController {
     public string futureTermName { get; set; }
     public String subPlanString { get; set; }
     public Map<String, String> termToName { get; set; }
+    public List<String> generalMessages { get; set; }
+    public List<String> classesMessages { get; set; }
+    public List<String> financesMessages { get; set; }
+    public List<String> commentsMessages { get; set; }
+    public List<String> careerDevelopmentMessages { get; set; }
+    public List<String> undergraduateAcademicsMessages { get; set; }
+    public List<String> undergraduateIndicatorsMessages { get; set; }
+    public List<String> graduateAcademicsMessages { get; set; }
+    public List<String> graduateIndicatorsMessages { get; set; }
 
     public Student_Program_Plan__c ugStudentProgram {
         get {
@@ -93,6 +102,7 @@ global with sharing class StudentProfileController {
 
     public void init() {
         if (urlParamsExistAndAreValid) {
+            setStudentProfileMessages();
             setContactRecord();
             setDeceased();
             setMilestones();
@@ -260,6 +270,47 @@ global with sharing class StudentProfileController {
             } else if (term.PeopleSoft_Code__c == futureTermPeoplesoftCode) {
                 futureTermName = term.Name;
             }
+        }
+    }
+
+    public void setStudentProfileMessages () {
+        generalMessages = new List<String>();
+        classesMessages = new List<String>();
+        financesMessages = new List<String>();
+        commentsMessages = new List<String>();
+        careerDevelopmentMessages = new List<String>(); 
+        undergraduateAcademicsMessages = new List<String>();
+        undergraduateIndicatorsMessages = new List<String>();
+        graduateAcademicsMessages = new List<String>();
+        graduateIndicatorsMessages = new List<String>();
+        
+        List<Student_Profile_Message__mdt> messages = [
+            SELECT Message_to_Display__c, Student_Profile_Tab__c 
+            FROM Student_Profile_Message__mdt 
+            WHERE Is_Active__c = true
+        ]; 
+        
+        for (Student_Profile_Message__mdt message : messages) {
+            if (message.Student_Profile_Tab__c == 'General') {
+                generalMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Classes') {
+                classesMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Finances') {
+                financesMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Comments') {
+                commentsMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Career Development') {
+                careerDevelopmentMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Undergraduate Academics') {
+                undergraduateAcademicsMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Undergraduate Indicators') {
+                undergraduateIndicatorsMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Graduate Academics') {
+                graduateAcademicsMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Graduate Indicators') {
+                graduateIndicatorsMessages.add(message.Message_to_Display__c);
+            }
+             
         }
     }
 

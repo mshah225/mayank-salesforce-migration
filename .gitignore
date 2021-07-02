@@ -38,3 +38,4 @@ $RECYCLE.BIN/
 .env
 .vim-force.com/
 scripts/
+package-lock.json

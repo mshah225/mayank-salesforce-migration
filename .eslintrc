@@ -1,0 +1,54 @@
+{
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true
+        },
+        "requireConfigFile": false,
+        "babelOptions": {
+            "parserOpts": {
+                "plugins": ["classProperties", ["decorators", {"decoratorsBeforeExport": false}]]
+            }
+        }
+    },
+    "plugins": ["@lwc/eslint-plugin-lwc", "@salesforce/eslint-plugin-aura"],
+    "extends": ["plugin:@salesforce/eslint-plugin-aura/recommended", "plugin:@salesforce/eslint-plugin-aura/locker"],
+    "rules": {},
+    "overrides": [
+        {
+            "files": ["**/lwc/**/*.js"],
+            "rules": {
+                "@lwc/lwc/no-deprecated": "warn",
+                "@lwc/lwc/valid-api": "warn",
+                "@lwc/lwc/no-document-query": "warn",
+                "@lwc/lwc/no-leading-uppercase-api-name": "warn",
+                "@lwc/lwc/consistent-component-name": "warn",
+                "no-unused-vars": "warn"
+            }
+        },
+        {
+            "files": ["**/aura/**/*.js"],
+            "rules": {
+                "@salesforce/aura/ecma-intrinsics": "warn",
+                "vars-on-top": "off",
+                "no-undef": "off",
+                "no-unused-expressions": "off",
+                "no-unused-vars": "off",
+                "no-console": "off",
+                "eqeqeq": "warn",
+                "no-alert": "off",
+                "no-else-return": "warn",
+                "radix": "off",
+                "compat/compat": "off",
+                "no-shadow": "off",
+                "no-redeclare": "warn",
+                "no-useless-concat": "off",
+                "no-use-before-define": "warn",
+                "guard-for-in": "warn",
+                "no-prototype-builtins": "warn"
+            }
+        }
+    ]
+}

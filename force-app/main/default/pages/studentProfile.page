@@ -216,6 +216,14 @@
             .alignTop {
                 vertical-align: top;
             }
+
+            .alert {
+                margin-top: 20px;
+                color: white;
+                font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+                font-size: 14px;
+                background: #9F2B50;
+            }
         </style>
     </head>
 
@@ -662,6 +670,11 @@
                     <!-- Tab panes -->
                     <div class="tab-content responsive">
                         <div role="tabpanel" class="tab-pane active" id="general">
+                            <apex:repeat value="{!generalMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <div class="page-header-smaller">
                                     <h4>
@@ -972,6 +985,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="classes">
+                            <apex:repeat value="{!classesMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <!-- TODO: Figure out WHICH semester to show here -->
                                 <div class="row">
@@ -1033,6 +1051,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="finances">
+                            <apex:repeat value="{!financesMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <div class="row">
                                     <div class="col-sm-12">
@@ -1165,6 +1188,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="comments">
+                            <apex:repeat value="{!commentsMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <br />
                                 <div class="btn btn-default btn-adjust">
@@ -1235,6 +1263,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="careerdevelopment">
+                            <apex:repeat value="{!careerDevelopmentMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail" id="careerdevtab">
                                 <div class="page-header-smaller">
                                     <h4>
@@ -1510,6 +1543,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="ugAcademics">
+                            <apex:repeat value="{!undergraduateAcademicsMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="page-header-smaller">
@@ -1802,6 +1840,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="ugIndicators">
+                            <apex:repeat value="{!undergraduateIndicatorsMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <div class="page-header-smaller">
                                     <h4>
@@ -1972,6 +2015,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="Gacademics">
+                            <apex:repeat value="{!graduateAcademicsMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <div class="page-header-smaller">
                                     <h4>
@@ -2566,6 +2614,11 @@
                         </div>
 
                         <div role="tabpanel" class="tab-pane" id="GIndicators">
+                            <apex:repeat value="{!graduateIndicatorsMessages}" var="message">
+                                <div class="alert">
+                                    {!message}
+                                </div>
+                            </apex:repeat>
                             <apex:pageBlock mode="maindetail">
                                 <div class="page-header-smaller">
                                     <h4>

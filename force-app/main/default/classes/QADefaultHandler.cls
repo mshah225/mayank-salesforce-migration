@@ -57,7 +57,7 @@ global class QADefaultHandler implements QuickAction.QuickActionDefaultsHandler 
                 }
             }
 
-            if (em.CcAddress == result || result == null) {
+            if (em.CcAddress == result) {
                 em.CcAddress = null;
             }
 

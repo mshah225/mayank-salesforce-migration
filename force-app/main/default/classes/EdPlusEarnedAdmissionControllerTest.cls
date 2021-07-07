@@ -1,10 +1,5 @@
-/*****************************************
- * File: EdPlusEALAApplicationsControllerTest
- * Author: Carl Hussey, ASU
- * Description: Unit Tests for EdPlusEALAApplicationsControllerTest .cls
- ******************************************/
 @isTest
-public class EdPlusEALAApplicationsControllerTest {
+public class EdPlusEarnedAdmissionControllerTest {
     /**
      * Extend our Query class to mock our external data
      */
@@ -54,7 +49,7 @@ public class EdPlusEALAApplicationsControllerTest {
         Test.startTest();
 
         // Instantiate the controller, which will get the Aggregated Task and Event Details
-        EdPlusEALAApplicationsController controller = new EdPlusEALAApplicationsController(stdController);
+        EdPlusEarnedAdmissionController controller = new EdPlusEarnedAdmissionController(stdController);
 
         // There should be 5 records total
         System.assertEquals(5, controller.applications.size());
@@ -98,7 +93,7 @@ public class EdPlusEALAApplicationsControllerTest {
         Test.startTest();
 
         // Instantiate the controller, which will get the Aggregated Task and Event Details
-        EdPlusEALAApplicationsController controller = new EdPlusEALAApplicationsController(stdController);
+        EdPlusEarnedAdmissionController controller = new EdPlusEarnedAdmissionController(stdController);
 
         controller.trackedAction = 'Viewed Record 123';
         controller.relatedRecordId = 'ABC123';

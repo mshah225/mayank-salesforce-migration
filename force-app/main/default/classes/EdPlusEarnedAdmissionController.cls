@@ -1,17 +1,11 @@
-/**
- * File Name: EdPlusEALAApplicationsController
- * Description: EALA Applications from EdPlus
- * Author: Carl Hussey
- * Created: 05/05/2020
- */
-public with sharing class EdPlusEALAApplicationsController {
+public with sharing class EdPlusEarnedAdmissionController {
     private Contact theContact { get; set; }
     public String parentId { get; set; }
     public String trackedAction { get; set; }
     public String relatedRecordId { get; set; }
     public List<EA_Learner_Application__x> applications { get; set; }
 
-    public EdPlusEALAApplicationsController(ApexPages.StandardController stdController) {
+    public EdPlusEarnedAdmissionController(ApexPages.StandardController stdController) {
         this.theContact = (Contact) stdController.getRecord();
         this.parentId = theContact.Id;
 
@@ -36,9 +30,6 @@ public with sharing class EdPlusEALAApplicationsController {
         );
     }
 
-    /**
-     * Track usage
-     */
     public void trackUsage() {
         EdPlusUtilities.trackUsage(userInfo.getUserId(), this.trackedAction, this.relatedRecordId);
     }

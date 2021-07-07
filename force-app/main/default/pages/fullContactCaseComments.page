@@ -1,0 +1,4 @@
+<apex:page id="fullContactCaseComments" standardController="Contact" extensions="FullCaseCommentsController" sideBar="false"
+    showHeader="false" tabStyle="Contact">
+    <c:fullCaseCommentsHistory caseComments="{!comments}" />
+</apex:page>

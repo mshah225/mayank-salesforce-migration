@@ -1,5 +1,0 @@
-<apex:page standardController="User" >
-    <flow:interview name="testProfileClone">
-    <apex:param name="varRunningUserId" value="{!$User.Id}"/> 
-    </flow:interview>
-</apex:page>

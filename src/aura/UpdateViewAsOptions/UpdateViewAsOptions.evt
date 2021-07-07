@@ -1,3 +1,0 @@
-<aura:event type="APPLICATION" description="UpdateViewAsOptions">
-    <aura:attribute name="viewAsOptions" type="List"/>
-</aura:event>

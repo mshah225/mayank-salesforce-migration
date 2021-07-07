@@ -1,0 +1,6 @@
+<apex:page controller="ObjectScrambleInitiatorController">
+    <apex:form>
+        <apex:outputLabel value="{!response}"></apex:outputLabel>
+        <apex:commandButton action="{!verifyNoProcessRunningAndStart}" value="Start Scramble Process" />
+    </apex:form>
+</apex:page>

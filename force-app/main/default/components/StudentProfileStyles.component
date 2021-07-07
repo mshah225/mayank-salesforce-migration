@@ -1,0 +1,552 @@
+<apex:component id="StudentProfileStyles">
+    <style>
+        * {
+            font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        }
+
+        .fa {
+            font-family: FontAwesome !important;
+        }
+
+        h2 {
+            font-size: 26px !important;
+        }
+
+        h3 {
+            font-size: 20px !important;
+        }
+
+        h4 {
+            font-size: 16px !important;
+        }
+
+        body {
+            background-color: #f2f2f2;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        a,
+        a:hover {
+            color: #9f2b50;
+        }
+
+        img.img-responsive.intro {
+            border-radius: 4px;
+            border: solid 2px #fff;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .mainTabHeader {
+            /* Adjust for tabbable view in coach portal */
+            display: {
+                !IF($CurrentPage.parameters.tabbable=='true', 'none;', 'initial;')
+            }
+        }
+
+        .headerBackground {
+            background-color: #fed039;
+            height: 150px;
+            height: 70px;
+            margin-bottom: -76px;
+        }
+
+        .mainCont {
+            max-width: 1200px;
+            margin: auto;
+            /* Adjust for tabbable view in coach portal */
+            padding: {
+                !IF($CurrentPage.parameters.tabbable=='true',
+                '0px 20px 20px 20px;;',
+                '24px 20px 20px 20px;')
+            }
+        }
+
+
+        .tab-content {
+            padding: 0px 20px 20px 20px;
+            /* SFE-6494 */
+            font-size: 10pt;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .rich-tabpanel-content {
+            border: none;
+        }
+
+        .rich-tab-bottom-line {
+            border: none;
+        }
+
+        .mainTab {
+            padding-top: 40px;
+            /*background-color: #fed039;*/
+            padding: 20px;
+        }
+
+        .mainTabActive {
+            padding: 12px 50px 12px 50px;
+            color: #6e7d83;
+            border-top: solid 4px #9f2b50;
+            background: none;
+            font-size: 14pt;
+            background-color: #f2f2f2;
+        }
+
+        .subTabs td.rich-tab-bottom-line {
+            border-bottom: solid 1px #c7c7c7 !important;
+        }
+
+        .nav-tabs {
+            border-bottom: none;
+            display: flex;
+        }
+
+        .nav-tabs>li {
+            margin-right: -0.25rem;
+            width: 100%;
+            text-align: center;
+            margin-left: 0;
+        }
+
+        .nav-tabs>li.active>a,
+        .nav-tabs>li.active>a:hover,
+        .nav-tabs>li.active>a:focus {
+            padding: 14px 25px 13px 25px;
+            color: #6e7d83;
+            border-top: solid 3px #9f2b50;
+            background: none;
+            font-size: 16px;
+            background-color: #fff;
+            max-width: 150px;
+            cursor: pointer;
+            border-top-right-radius: 0px;
+            border-top-left-radius: 0px;
+        }
+
+        .nav-tabs>li>a,
+        .nav-tabs>li>a:hover,
+        .nav>li>a:hover,
+        .nav>li>a:focus {
+            padding: 16px 25px 12px 25px;
+            color: #6e7d83;
+            height: 55px;
+            border: solid 1px #c7c7c7;
+            background: none;
+            font-size: 16px;
+            background-color: #fafafa;
+            max-width: 150px;
+            cursor: pointer;
+            border-top-right-radius: 0px;
+            border-top-left-radius: 0px;
+        }
+
+        a.accordion-toggle {
+            display: block;
+            padding: 10px 15px;
+            font-size: 14pt;
+            border-radius: 0px;
+            color: #303038;
+            font-weight: 400;
+        }
+
+        a.accordion-toggle:focus,
+        a.accordion-toggle:hover {
+            text-decoration: none;
+        }
+
+        a.accordion-toggle.collapsed {
+            background-color: #fff;
+            border-top: none;
+        }
+
+        div.panel-heading {
+            padding: 0;
+        }
+
+        div.panel.panel-default {
+            margin-bottom: 15px;
+        }
+
+        .panel-body {
+            padding: 0px 15px 15px 15px;
+        }
+
+        .panel-default>.panel-heading {
+            background-color: #fff;
+        }
+
+        .panel-group .panel-heading+.panel-collapse .panel-body {
+            border-top: 2px solid #ddd;
+        }
+
+        td.tabAdjusted {
+            padding: 1px 2px 2px 2px;
+        }
+
+        td.tabAdjusted .apexp {
+            padding: 10px;
+        }
+
+        .sideBox {
+            background-color: #fff;
+            padding: 15px;
+            font-size: 11pt;
+            max-height: 350px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        .sideBox>.row.sideHeader {
+            margin-bottom: 10px;
+        }
+
+        .sideBox h3 {
+            margin-top: 0px;
+            color: #9f2b50;
+        }
+
+        .sideBoxMoreLink {
+            font-weight: normal;
+            font-size: 14pt;
+            margin-top: 5px;
+        }
+
+        .sideBox a {
+            color: #9f2b50;
+            font-size: 11pt;
+        }
+
+        .sideBox a:hover,
+        .sideBox a:focus {
+            text-decoration: underline;
+            color: #9f2b50;
+            font-size: 11pt;
+        }
+
+        .sideBoxTable {
+            border-bottom: solid 2px #fff;
+            width: 100%;
+        }
+
+        .sideBoxTableHeader {
+            font-size: 11pt;
+            color: #6c7c82;
+            background-color: #fff;
+            border-top: none !important;
+            border-bottom: solid 2px #6c7c82;
+        }
+
+        .sideBoxTableRow {
+            font-size: 11pt;
+            border-bottom: 1px solid #e9eaec;
+        }
+
+        ​ .sideBoxTableRow td {
+            font-size: 11pt;
+        }
+
+        .table-borderless tbody tr td,
+        .table-borderless tbody tr th,
+        .table-borderless thead tr th {
+            border: none;
+        }
+
+        .asu-detail-table {
+            border: solid 1px lightgrey;
+            border-top: solid 3px #666;
+        }
+
+        .page-header-smaller {
+            margin: 0px 0px 10px 0px;
+            color: #9f2b50;
+            border-bottom: 2px solid #9f2b50;
+        }
+
+        .page-header-smaller h4 {
+            cursor: pointer;
+        }
+
+        /*.tableAdjust {*/
+
+        /*width: 100%;*/
+
+        /*}*/
+
+        /*.tableAdjust td {*/
+
+        /*vertical-align: top;*/
+
+        /*font-size: 11pt;*/
+
+        /*padding: 6px;*/
+
+        /*}*/
+
+        /*.tableAdjust th {*/
+
+        /*font-size: 11pt;*/
+
+        /*border-bottom: solid 3px #777;*/
+
+        /*padding: 5px;*/
+
+        /*}*/
+
+        /*.tableAdjust tr:nth-child(even) {*/
+
+        /*background-color: #f5f6f8;*/
+
+        /*border-top: solid 1px #eedeee;*/
+
+        /*border-bottom: solid 1px #eedeee;*/
+
+        /*}*/
+
+        /*.tableAdjust tr td:nth-child(1) {*/
+
+        /*font-weight: 400;*/
+
+        /*}*/
+
+        .table {
+            /* SFE-6494 */
+            font-size: 10pt !important;
+        }
+
+        .table>thead>tr>th {
+            border-bottom: 2px solid #333 !important;
+        }
+
+        .btn.btn-default.btn-adjust a:hover,
+        .btn.btn-default.btn-adjust a:focus {
+            text-decoration: none;
+            color: #9f2b50 !important;
+        }
+
+        .comments-panel {
+            padding: 0px;
+            /* SFE-6494 */
+            font-size: 10pt;
+        }
+
+        .comments-panel>hr {
+            border-top: 1px solid #ddd !important;
+        }
+
+        .comments-header {
+            width: 100%;
+            padding: 0px 10px 0px 0px;
+        }
+
+        .comments-header .fa {
+            margin: 1px;
+        }
+
+        .comments-header h4,
+        .comments-header {
+            display: inline-block;
+            color: #9f2b50;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            /* SFE-6494 */
+            font-size: 10pt !important;
+        }
+
+        .comments-header-date {
+            color: #353535 !important;
+            /* SFE-6494 */
+            font-size: 10pt;
+        }
+
+        .comments-main-comment {
+            padding: 2px 0px 2px 0px;
+        }
+
+        .comments-nested {
+            padding: 25px 0px 5px 50px;
+            border-top: solid 1px #c7c7c7;
+        }
+
+        .comments-hr {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        #ps_advising_notes_section,
+        #ps_comments_section {
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+        .program-indicator-count {
+            background: #fed039;
+        }
+
+        .accelerated-indicator {
+            background: #00A3E0;
+        }
+
+        .program-indicator-count,
+        .accelerated-indicator {
+            padding: 1px 5px;
+            color: #fff;
+            font-size: 14px;
+            border-radius: 2px;
+            margin: 0 3px;
+            display: inline-block;
+        }
+
+        @media screen and (max-width: 1170px) {
+            .mainCont {
+                padding: 24px 35px 20px 35px !important;
+            }
+        }
+
+        @media screen and (max-width: 767px) {
+            h2.intro {
+                font-size: 18pt !important;
+            }
+
+            h4.intro {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                font-weight: 400;
+            }
+
+            img.intro {
+                margin-right: auto;
+                margin-left: auto;
+                max-width: 170px !important;
+                border: solid 2px #fff;
+                border-radius: 4px;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, .125);
+            }
+
+            div.row.intro {
+                margin-top: -65px;
+            }
+
+            div.col-sm-4.intro {
+                max-width: inherit !important;
+            }
+
+            .panel-body {
+                /* SFE-6494 */
+                font-size: 10pt !important;
+            }
+
+            .mainTabActive {
+                display: none;
+            }
+
+            .mainCont {
+                padding: 76px 10px 20px 10px !important;
+            }
+
+            td.rich-tab-bottom-line.mainTabHeader {
+                display: none;
+            }
+
+            .sideBox h3 {
+                font-size: 14pt !important;
+            }
+
+            a.sideBoxMoreLink.pull-right {
+                float: left !important;
+            }
+
+            .btn.btn-default.btn-adjust {
+                margin-top: 10px;
+            }
+
+            .mainCont {
+                padding: 76px 0px 20px 0px;
+            }
+
+            #ps_advising_notes_section,
+            #ps_comments_section {
+                max-height: 100%;
+                overflow-y: visible;
+            }
+
+            .table-responsive {
+                max-width: 80vw;
+            }
+        }
+
+        /* Styling for tables in between devices */
+
+        /*@media screen and (max-width: 605px) {*/
+
+        /*.table-responsive {*/
+
+        /*max-width: 450px;*/
+
+        /*}*/
+
+        /*}*/
+
+        @media screen and (max-width: 540px) {
+            .smallHidden {
+                display: none !important;
+            }
+
+            .rich-tabpanel-content {
+                padding: 0px 20px 0px 20px;
+            }
+
+            /*.table-responsive {*/
+            /*max-width: 320px;*/
+            /*}*/
+        }
+
+        /* Styling for tables in between devices */
+
+        /*@media screen and (max-width: 392px) {*/
+
+        /*.table-responsive {*/
+
+        /*max-width: 280px;*/
+
+        /*}*/
+
+        /*}*/
+
+        @media screen and (max-width: 320px) {
+            h2.intro {
+                font-size: 16pt !important;
+            }
+
+            h4.intro {
+                font-size: 12pt !important;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+
+            .sideBoxTableRow,
+            .sideBoxTableHeader,
+            .tableAdjust tr td,
+            /* SFE-6494 */
+            .table {
+                font-size: 10pt !important;
+            }
+
+            a.accordion-toggle,
+            .sideBox h3 {
+                font-size: 12pt !important;
+            }
+
+            .rich-tabpanel-content {
+                padding: 0px 15px 0px 15px;
+            }
+
+            /*.table-responsive {*/
+            /*max-width: 256px;*/
+            /*}*/
+        }
+    </style>
+</apex:component>

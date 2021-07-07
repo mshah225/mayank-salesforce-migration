@@ -1,0 +1,15 @@
+<apex:component>
+    <apex:attribute name="alerts" description="The alert to be displayed" type="customAlert[]" />
+    <apex:repeat value="{!alerts}" var="alert" rendered="{!NOT(ISBLANK(alerts))}">
+        <div class="alert alert-block {!if(alert.severity = 'CONFIRM', 'alert-success', IF(alert.severity = 'INFO', 'alert-info', IF(alert.severity = 'WARNING', 'alert-warning', 'alert-danger')))}"
+            style="border-radius: 4px !important">
+            <a class="close" href="#" data-dismiss="alert">x</a>
+            <p style="margin: 0px !important">&nbsp;</p>
+            <p style="margin: 0px !important">
+                <strong>{!if(alert.severity = 'CONFIRM', 'Success', IF(alert.severity = 'INFO', 'Info', IF(alert.severity = 'WARNING',
+                    'Warning', 'Danger')))}!</strong>
+                {!alert.message}
+            </p>
+        </div>
+    </apex:repeat>
+</apex:component>

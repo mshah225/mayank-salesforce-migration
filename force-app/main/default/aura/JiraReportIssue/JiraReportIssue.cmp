@@ -1,0 +1,99 @@
+<aura:component
+    controller="JiraReportIssueController"
+    implements="forceCommunity:availableForAllPageTypes"
+    access="global"
+>
+    <aura:attribute name="type" type="String" access="public" />
+    <aura:attribute name="questionOne" type="String" access="public" />
+    <aura:attribute name="questionTwo" type="String" access="public" />
+    <aura:attribute name="questionThree" type="String" access="public" />
+
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="link" type="String" />
+    <aura:attribute name="displayLink" type="Boolean" default="false" />
+    <aura:attribute name="title" type="String" />
+    <aura:attribute name="answerOne" type="String" />
+    <aura:attribute name="answerTwo" type="String" />
+    <aura:attribute name="answerThree" type="String" />
+    <aura:attribute name="watchers" type="String" />
+    <aura:attribute name="requestForm" type="String" />
+
+    <html>
+        <body>
+            <h1>
+                <center>{!v.type}</center>
+            </h1>
+            <h3 style="color: DarkOrange">
+                <center>{!v.message}</center>
+            </h3>
+            <h3
+                style="color: blue; border-bottom: 0px !important; text-decoration: underline"
+                class="slds-text-link_faux slds-align_absolute-center"
+                onclick="{!c.navigateToIssue}"
+                rendered="{!v.displayLink}"
+            >
+                {!v.link}
+            </h3>
+
+            <form class="slds-form--stacked">
+                <lightning:textarea
+                    aura:id="descriptionResponse"
+                    label="Summary of the issue (Title): "
+                    value="{!v.title}"
+                    maxlength="254"
+                    required="true"
+                />
+                <p class="fieldDescription">FIELD LIMIT: This field must be less than 255 characters.</p>
+
+                <lightning:textarea
+                    aura:id="questionOneResponse"
+                    label="{!v.questionOne}"
+                    value="{!v.answerOne}"
+                    maxlength="3000"
+                    required="true"
+                />
+                <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
+                <lightning:textarea
+                    aura:id="questionTwoResponse"
+                    label="{!v.questionTwo}"
+                    value="{!v.answerTwo}"
+                    maxlength="3000"
+                    required="true"
+                />
+                <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
+                <lightning:textarea
+                    aura:id="questionThreeResponse"
+                    label="{!v.questionThree}"
+                    value="{!v.answerThree}"
+                    maxlength="3000"
+                    required="true"
+                />
+                <p class="fieldDescription">FIELD LIMIT: This field must be less than 3000 characters.</p>
+                <a
+                    target="_blank"
+                    href="https://docs.google.com/document/d/1V4rHxTw0vCAz7tAV-7mq0ht6TVqYjK7i_9q73ZWb-W0/edit?usp=sharing"
+                    >Development Request Template</a
+                >
+                <label></label>
+                <lightning:textarea
+                    label="Please include the link to your shared document with your request details. A template for your request details is above."
+                    value="{!v.requestForm}"
+                />
+                <lightning:textarea label="Watchers for the ticket: " value="{!v.watchers}" />
+                <p class="fieldDescription">
+                    Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with
+                    a comma.
+                </p>
+
+                <lightning:button
+                    aura:id="submitButton"
+                    disabled="false"
+                    label="Submit"
+                    class="RED"
+                    variant="brand"
+                    onclick="{!c.submitIssueForm}"
+                />
+            </form>
+        </body>
+    </html>
+</aura:component>

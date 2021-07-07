@@ -1,0 +1,67 @@
+<apex:page showHeader="false" controller="NonAuthenticatedLiveAgentLandingPage">
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_337, '/bootstrap_337/js/bootstrap.min.js')}" />
+    <title>ASU |Live Chat Support</title>
+
+    <link rel="icon" href="https://www.asu.edu/sites/all/themes/asu_home/favicon.ico" />
+    <c:ASUWebStandards />
+    <c:asu_responsive_header_section />
+    <c:SCHeader />
+
+    <apex:stylesheet value="{! URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
+
+    <body>
+        <div id="online">
+            <div style="
+                    margin-top: 50px;
+                    margin-left: 5%;
+                    font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;
+                ">
+                Please wait while we redirect your chat! If the chat window doesn't appear, please click the link below!
+            </div>
+            <div style="margin-top: 50px; margin-left: 5%">
+                <a id="liveagent_button_online" class="btn btn-primary btn-lg" style="cursor: pointer" onclick="liveagent.startChat(chatButtonId);">Chat Now!</a>
+            </div>
+        </div>
+        <div id="offline">
+            <div style="
+                    margin-top: 50px;
+                    margin-left: 5%;
+                    font-family: Roboto, Helvetica Neue, Helvetica, Arial, sans-serif !important;
+                ">
+                {!agentOfflineMessage}
+            </div>
+            <div style="margin-top: 50px; margin-left: 5%">
+                <a id="liveagent_button_offline" class="btn btn-primary btn-lg" style="cursor: pointer">Offline</a>
+            </div>
+        </div>
+        <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js"></script>
+        <script type="text/javascript">
+            var orgId = '{!orgId}';
+            var chatDeploymentId = '{!chatDeploymentId}';
+            var chatButtonId = '{!chatButtonId}';
+            var chatEndpoint = '{!chatEndpoint}';
+
+            if (!window._laq) {
+                window._laq = [];
+            }
+            window._laq.push(function () {
+                liveagent.showWhenOnline(chatButtonId, document.getElementById('online'));
+                liveagent.showWhenOffline(chatButtonId, document.getElementById('offline'));
+            });
+
+            function initLiveAgent(_callback) {
+                liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+                _callback();
+            }
+
+            function startChat() {
+                setTimeout(function () {
+                    document.getElementById('liveagent_button_online').click();
+                }, 1000);
+            }
+
+            initLiveAgent(() => startChat());
+        </script>
+    </body>
+    <c:SCFooter />
+</apex:page>

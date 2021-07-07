@@ -1,0 +1,11 @@
+<apex:page cache="false" standardStylesheets="false" showHeader="false" sidebar="false" controller="pkb_Controller" language="{!$CurrentPage.parameters.l}"
+    applyBodyTag="false" applyHtmlTag="false">
+
+    <head>
+        <meta name="google-site-verification" content="jon2u6Y1VRHzLJt8_IeWiiahg3ZeTZ9l0fPoxRiwfkc" />
+    </head>
+    <!-- this empty page simply invokes the PKB site template and gives us a page to set the Site homepage to -->
+    <apex:composition template="pkb_Template_ASU">
+        <apex:define name="body"></apex:define>
+    </apex:composition>
+</apex:page>

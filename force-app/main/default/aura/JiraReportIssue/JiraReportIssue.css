@@ -1,0 +1,16 @@
+.THIS .RED {
+    background-color: rgb(131, 9, 9);
+}
+
+.THIS .li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+.THIS .fieldDescription {
+    color: grey;
+}
+
+.THIS .slds-form-element__label {
+    font-size: 24px !important;
+}

@@ -1,4 +1,0 @@
-<aura:event type="COMPONENT">
-    <aura:attribute name="status" type="String"/>
-    <aura:attribute name="issueKey" type="String"/>
-</aura:event>

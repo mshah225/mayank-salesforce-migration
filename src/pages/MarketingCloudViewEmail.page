@@ -1,7 +1,0 @@
-<apex:page standardController="et4ae5__IndividualEmailResult__c" 
-        extensions="MarketingCloudViewEmailController" 
-        action="{!viewEmailAndStoreLink}">
-    <apex:pageblock >
-       <apex:pageMessages id="showMessage"></apex:pageMessages>
-    </apex:pageblock>
-</apex:page>

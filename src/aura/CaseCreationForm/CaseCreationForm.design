@@ -1,8 +1,0 @@
-<design:component>
-    <design:attribute name="caseAssignmentRule" label="Name of Case Assignment Rule"/>
-    <design:attribute name="formName" label="Name of Form"/>
-    <design:attribute name="usingDefaultSubject" label = "Are you using a default Subject?"/>
-    <design:attribute name="defaultSubject" label="Default Subject"/>
-    <design:attribute name="usingDefaultDescription" label = "Are you using a default Description?"/>
-    <design:attribute name="defaultDescription" label="Default Description"/>
-</design:component>

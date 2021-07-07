@@ -1,0 +1,5 @@
+<apex:page standardcontroller="Contact" contentType="text/csv#Communication History.csv" language="en-US" extensions="CommunicationHistoryController">Email Name, Subject, Sent By, Delivery Status, Sent Date/Time, Open Date/Time, Unique Clicks
+    <apex:repeat value="{!filteredMessages}" var="message">
+        {!message.name},{!message.subject},{!message.sender},{!message.deliveryStatus},{!message.timeSent},{!message.timeOpened},{!message.uniqueClicks}
+    </apex:repeat>
+</apex:page>

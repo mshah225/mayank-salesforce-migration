@@ -1,0 +1,945 @@
+<apex:page standardController="Contact" extensions="CampaignMemberManagementController" sidebar="false" showHeader="false"
+    docType="HTML-5.0">
+
+    <head>
+        <style>
+            body {
+                padding: 15px;
+            }
+
+            form {
+                font-size: 9pt;
+            }
+
+            .btn {
+                transition: background-color 0.5s ease;
+                background: #a30046 !important;
+                color: #fff !important;
+                border: none !important;
+                padding: 8px 15px 8px 15px !important;
+                font-weight: 400 !important;
+                border-radius: 3px !important;
+                min-width: 70px;
+            }
+
+            .btn:hover {
+                background: #d23153 !important;
+                color: #fff !important;
+            }
+
+            .activeTab,
+            .activeSubTab,
+            .inactiveTab,
+            .inactiveSubTab {
+                transition: all 0.15s ease;
+                background-image: none;
+                padding: 8px 35px 8px 35px;
+                font-size: 10pt;
+                border: none !important;
+            }
+
+            .activeSubTab,
+            .inactiveSubTab {
+                font-size: 9pt !important;
+                padding: 5px 25px 5px 25px;
+            }
+
+            .inactiveSubTab {
+                height: 15px !important;
+            }
+
+            .activeTab,
+            .activeSubTab {
+                background-color: #a30046;
+                color: #fff !important;
+                height: 16px;
+            }
+
+            .inactiveTab,
+            .inactiveSubTab {
+                background-color: #e2e2e2;
+                color: #000 !important;
+            }
+
+            .inactiveTab:hover,
+            .inactiveSubTab:hover {
+                background-color: #d23153;
+                color: #fff !important;
+            }
+
+            table.list tr td {
+                padding: 10px !important;
+            }
+
+            .rich-tabpanel .subTab table {
+                border: none !important;
+            }
+
+            .rich-tabpanel-content {
+                background-color: #fafafa !important;
+            }
+
+            .pbHeader .pbTitle h2,
+            .pbHeader .pbTitle h3 {
+                white-space: nowrap;
+            }
+
+            .linkBtn {
+                transition: all 0.5s ease;
+                padding: 5px 8px 5px 8px;
+                background-color: #990033 !important;
+                color: #fff !important;
+                text-decoration: none !important;
+                border-radius: 2px;
+            }
+
+            .linkBtn:hover {
+                background-color: #a30046 !important;
+                padding: 5px 8px 5px 8px;
+                color: #fff !important;
+                text-decoration: none !important;
+                border-radius: 2px;
+            }
+
+            .editBtn {
+                transition: all 0.5s ease;
+                padding: 5px 8px 5px 8px;
+                background-color: #f0f0f0 !important;
+                color: #000 !important;
+                text-decoration: none !important;
+                border-radius: 2px;
+                border: solid 1px #ccc;
+                margin-left: 10px;
+            }
+
+            .editBtn:hover {
+                background-color: #fcfcfc !important;
+                padding: 5px 8px 5px 8px;
+                color: #000 !important;
+                text-decoration: none !important;
+                border-radius: 2px;
+                border: solid 1px #ccc;
+            }
+
+            .contactTab .secondaryPalette,
+            .individualPalette .contactBlock .secondaryPalette {
+                border-top-color: #353535 !important;
+            }
+
+            .none {
+                display: none !important;
+            }
+
+            .bigCols {
+                padding: 15px !important;
+            }
+
+            .remCols {
+                padding: 12px !important;
+            }
+
+            .crTable {
+                background-color: white !important;
+                padding: 5px;
+                width: 100%;
+            }
+        </style>
+
+        <apex:includeScript value="/support/console/32.0/integration.js" />
+        <script type="text/javascript">
+            var primaryTabId;
+
+            function openViewTab(recid, recname) {
+                if (!sforce.console.isInConsole()) {
+                    window.parent.location.replace('/' + recid);
+                } else {
+                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                        primaryTabId = result.id;
+                        sforce.console.openSubtab(result.id, recid, true, recname, null);
+                    });
+                }
+            }
+
+            function openNewViewTab(recid, recname) {
+                if (!sforce.console.isInConsole()) {
+                    window.open('/' + recid, '_blank');
+                } else {
+                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                        primaryTabId = result.id;
+                        sforce.console.openSubtab(result.id, recid, true, recname, null);
+                    });
+                }
+            }
+
+            function refreshPrimaryTab() {
+                if (!sforce.console.isInConsole()) {
+                    window.top.location = '/{!contactId}';
+                } else {
+                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                        primaryTabId = result.id;
+                        sforce.console.refreshPrimaryTabById(primaryTabId);
+                    });
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <apex:tabPanel switchType="client" value="{!renderedTab}" id="theTabPanel" activeTabClass="activeTab" inactiveTabClass="inactiveTab"
+            width="100%">
+            <apex:tab label="Events" name="event" id="eventTab">
+                <apex:tabPanel switchType="client" selectedTab="assignedEvents" id="theTabPanel2" tabClass="activeSubTab" styleClass="subTab"
+                    inactiveTabClass="inactiveSubTab" width="100%">
+                    <apex:tab label="Assigned Events" name="assignedEvents" id="assignedEvents">
+                        <apex:form id="viewEvents">
+                            <apex:outputPanel id="eventListBlock" layout="block" style="overflow:auto;height:295px">
+                                <apex:outputText rendered="{!IF(eventList.size < 1,true,false)}">
+                                    <span style="font-size:10pt;position:absolute;padding:15px;">No events found for this Campaign Member</span>
+                                </apex:outputText>
+                                <apex:pageBlock rendered="{!IF(eventList.size > 0,true,false)}">
+                                    <apex:pageBlockTable id="eventList" value="{!eventList}" var="el" cellpadding="7px" width="100%">
+                                        <apex:column headerValue="Actions">
+                                            <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!el.Id}','{!el.Campaign.Name}');">
+                                                View
+                                            </apex:outputLink>
+
+                                            <apex:outputLink styleClass="editBtn" value="#" onclick="openViewTab('{!el.Id}/e', '{!el.Campaign.Name}');" rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                                                Edit
+                                            </apex:outputLink>
+                                        </apex:column>
+                                        <apex:column headerValue="Event Name" value="{!el.Campaign.Name}" />
+                                        <apex:column headerValue="Type" value="{!el.Campaign.Type}" />
+                                        <apex:column headerValue="Department / College" value="{!el.Campaign.Requested__c}" />
+                                        <apex:column headervalue="Event Start" value="{!el.Campaign.Event_Start_Date__c}" />
+                                        <apex:column headervalue="Status" value="{!el.Status}" />
+                                        <apex:column headerValue="Status Updated" value="{!el.Last_Member_Status_Change__c}" />
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+
+                    <apex:tab label="New Registration" name="newRegTab" id="newRegTab">
+                        <apex:form id="browseEvents">
+                            <apex:outputPanel layout="block" style="overflow:auto;height:295px;">
+                                <apex:outputLabel for="eventSearchInput">
+                                    <b>Search for Events:</b>
+                                </apex:outputLabel>
+
+                                <br/>
+                                <apex:pageMessages id="eventErrors" />
+                                <br/>
+
+                                <apex:inputText id="eventSearchInput" value="{!eSearchString}" html-placeholder="Enter search terms" style="width:250px;padding:5px;"
+                                    onkeypress="return noenter(event,'{!$Component.searchSubmit}');" />
+
+                                <apex:commandLink id="searchSubmit" value="Search" style="text-decoration:none;
+                                                                  margin-left:5px;" styleClass="btn" action="{!doEventSearch}"
+                                    status="actStatusEvent" reRender="eventList,eventPanel,eventErrors" />
+
+                                <apex:actionStatus id="actStatusEvent">
+                                    <apex:facet name="start">
+                                        <img src="/img/loading.gif" style="margin-top:5px;margin-left:-95px;
+                                             position:absolute;" />
+                                    </apex:facet>
+                                </apex:actionStatus>
+
+                                <br/>
+                                <br/>
+
+                                <span>
+                                    <apex:outputLabel for="deptCollList" value="Department/College:" />
+                                    <apex:selectList id="deptCollList" size="1" value="{!deptColl}" style="margin-left:5px;">
+                                        <apex:selectOptions value="{!departmentsColleges}" />
+                                    </apex:selectList>
+                                </span>
+
+                                <span style="margin-left:10px;">
+                                    <apex:outputLabel for="camLocation" value="Location:" />
+                                    <apex:inputField id="camLocation" value="{!tempCampaign.Campus_Location__c}" style="margin-left:5px;" />
+                                </span>
+
+                                <span style="margin-left:10px;">
+                                    <apex:outputLabel for="camStart" value="Event Start Date:" />
+                                    <apex:input id="camStart" value="{!camStartDate}" type="date" style="margin-left:5px;" />
+                                </span>
+
+                                <br />
+                                <br />
+
+                                <apex:outputText id="eventHelpText">
+                                    <i>Search by Name, Type, or Category</i>
+                                </apex:outputText>
+
+                                <br/>
+                                <br/>
+
+                                <apex:outputPanel id="eventPanel">
+                                    <apex:pageBlock rendered="{!IF(eSearchString != null
+                                            && !eventDeets,true,false)}">
+                                        <apex:pageBlockTable id="eventList" value="{!eventSearchResults}" var="el" cellpadding="7" width="100%" rendered="{!IF(eventSearchResults.size > 0,true,false)}">
+                                            <apex:column headerValue="Action">
+                                                <apex:commandLink styleClass="linkBtn" value="Add" status="actStatusEvent" rerender="eventPanel">
+                                                    <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}" />
+                                                    <apex:param name="selectedEventName" value="{!el.Name}" assignTo="{!selectedEventName}" />
+                                                    <apex:param name="eventDeets" value="true" assignTo="{!eventDeets}" />
+                                                </apex:commandLink>
+                                            </apex:column>
+
+                                            <apex:column headerValue="Name" value="{!el.Name}" />
+                                            <apex:column headerValue="Start Date" value="{!el.Event_Start_Date__c}" />
+                                            <apex:column headerValue="Start Time" value="{!el.Event_Start_Time__c}" />
+                                            <apex:column headerValue="Location" value="{!el.Event_Location__c}" />
+                                            <apex:column headerValue="Campus" value="{!el.Campus_Location__c}" />
+                                            <apex:column headerValue="Department/College" value="{!el.Requested__c}" />
+                                        </apex:pageBlockTable>
+
+                                        <apex:outputPanel rendered="{!IF(eventSearchResults.size == 0,true,false)}">
+                                            No Campaigns found for
+                                            <b>{!eSearchString}</b>.
+                                        </apex:outputPanel>
+                                    </apex:pageBlock>
+
+                                    <apex:pageBlock rendered="{!IF(eSearchString != null
+                                            && eventDeets,true,false)}">
+                                        <h3>
+                                            Please select a status for this Campaign Member, for Campaign: {!selectedEventName}.
+                                        </h3>
+
+                                        <br />
+                                        <apex:pageMessages id="deetsErrors" />
+                                        <br />
+
+                                        <apex:outputPanel id="statusSelect">
+                                            <apex:outputLabel for="camStatus" value="Status:" rendered="{!IF(elId != null,true,false)}" />
+                                            <br />
+                                            <apex:selectList id="camStatus" rendered="{!IF(elId != null,true,false)}" value="{!camMemEvent.Status}" size="1">
+                                                <apex:selectOptions value="{!selectedEventCamMemStatuses}" />
+                                            </apex:selectList>
+                                        </apex:outputPanel>
+
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+
+                                        <apex:commandLink styleClass="editBtn" value="Back" style="margin-left:0px;" status="actStatusEvent" rerender="eventPanel">
+                                            <apex:param name="eventDeets" value="false" assignTo="{!eventDeets}" />
+                                        </apex:commandLink>
+
+                                        <apex:commandLink styleClass="linkBtn" style="margin-left:5px;" action="{!addToEvent}" value="Save" status="addStatus" reRender="eventPanel,theTabPanel2,
+                                                          deetsErrors" />
+
+                                        <apex:actionStatus id="addStatus">
+                                            <apex:facet name="start">
+                                                <img src="/img/loading.gif" style="margin-left:5px;position:absolute;" />
+                                            </apex:facet>
+                                        </apex:actionStatus>
+
+                                        <br />
+                                        <br />
+                                    </apex:pageBlock>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+                </apex:tabPanel>
+            </apex:tab>
+
+            <apex:tab label="Corporate Relations" name="crTab" id="crTab" rendered="{!crProfile || admin}">
+                <apex:tabPanel id="CRTabPanel" switchType="client" selectedTab="{!$Component.viewAffiliations}" tabClass="activeTab" activeTabClass="activeSubTab"
+                    inactiveTabClass="inactiveSubTab">
+                    <apex:tab id="viewAffiliations" name="viewAffiliations" label="View Affiliations" style="background-color:#f0f0f0;">
+                        <apex:form style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
+                            <apex:pageBlock title="Campaigns this Contact is associated with.">
+                                <apex:outputText rendered="{!activeCRCamMapEmpty}">
+                                    No Campaigns found for {!contact.Name}
+                                </apex:outputText>
+
+                                <apex:actionStatus id="removeStatus">
+                                    <apex:facet name="start">
+                                        <img src="/img/loading.gif" style="margin-top:-35px;margin-left:300px;position:absolute;" />
+                                    </apex:facet>
+                                </apex:actionStatus>
+
+                                <!-- Note, due to the fact that we are working with child objects that are related
+                                 through their parents (campaings), mapping them together is unique.
+                                 We use a map<string, List<CampaignMember>>. The "null" key of the map
+                                 contains campaign members whose campaigns have no parents (the parent campaig members).
+                                 The subsequent keys map the parent campaign (by name) to a list of campaign members for all child
+                                 campaigns of the parent campaign.
+                                 
+                                 Lost yet? Yes? Good..
+                                 
+                                 We display the parent campaign by looping through the null key to get the campaign
+                                 member, and then displaying that campaign member's campaign's name
+                                 
+                                 Then, we get the list whose key matches this campaign's name.
+                                 
+                                 Lastly, we loop through the list of campaign members for the child campaings and
+                                 display their campaign names.
+                            -->
+                                <apex:outputPanel rendered="{!NOT(activeCRCamMapEmpty)}">
+                                    <table class="crTable list">
+                                        <apex:repeat value="{!activeCRCamMap[null]}" var="pcm">
+                                            <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
+                                                <!-- Note the events on the <tr> element are provided by SF.
+                                             These events were taken from the page block table tag to
+                                             match default sf functionality -->
+                                                <tr style="padding-top:10px;padding-bottom:10px;" class="dataRow" onmouseover="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}"
+                                                    onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">
+                                                    <td>
+                                                        <h4>
+                                                            <apex:outputText value="{!pcm.Campaign.Name}" />
+                                                        </h4>
+                                                        <apex:actionRegion>
+                                                            <apex:commandLink styleClass="linkBtn" style="margin-left:10px;" value="Remove" reRender="CRTabPanel" status="removeStatus"
+                                                                action="{!inActivateCM}">
+                                                                <apex:param name="inActivateParentButton" value="{!pcm.Id}" assignTo="{!inActivateCMId}" />
+                                                            </apex:commandLink>
+                                                        </apex:actionRegion>
+                                                    </td>
+                                                </tr>
+                                            </apex:outputPanel>
+                                            <!-- activeCRCamPMapKeys exists because VF has no way to check if a map has a key and will throw
+                                         Visualforce exceptions if the map doesn't contain the key -->
+                                            <apex:outputPanel layout="none" rendered="{!CONTAINS(activeCRCamPMapKeys, pcm.campaign.Name)}">
+                                                <apex:repeat value="{!activeCRCamMap[pcm.campaign.Name]}" var="cm" rendered="{!NOT(ISBLANK(activeCRCamMap[pcm.campaign.Name]))}">
+                                                    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(pcm))}">
+                                                        <tr style="padding-top:10px;padding-bottom:10px;" class="dataRow" onmouseover="if (window.hiOn){hiOn(this);}" onmouseout="if (window.hiOff){hiOff(this);}"
+                                                            onblur="if (window.hiOff){hiOff(this);}" onfocus="if (window.hiOn){hiOn(this);}">
+                                                            <td>
+                                                                <span style="margin-left:20px;" />
+
+                                                                <apex:outputText value="{!cm.Campaign.name}" style="margin-left:15px;" />
+
+                                                                <apex:actionRegion>
+                                                                    <apex:commandLink styleClass="linkBtn" style="margin-left:10px;" value="Remove" status="removeStatus" action="{!inActivateCM}">
+                                                                        <apex:param name="inActivateParentButton" value="{!cm.Id}" assignTo="{!inActivateCMId}" />
+                                                                    </apex:commandLink>
+                                                                </apex:actionRegion>
+                                                            </td>
+                                                        </tr>
+                                                    </apex:outputPanel>
+                                                </apex:repeat>
+                                            </apex:outputPanel>
+                                        </apex:repeat>
+                                    </table>
+                                </apex:outputPanel>
+                                <br/>
+                            </apex:pageBlock>
+                        </apex:form>
+                    </apex:tab>
+
+                    <apex:tab id="addAffiliation" name="addAffiliation" label="Add an Affiliation" style="background-color:#f0f0f0;">
+                        <apex:form id="searchForm" style="font-size:9pt;overflow:auto;height:295px;max-width:1100px;">
+                            <apex:outputPanel id="leftPanel" style="font-size:9pt;float:left;width:49.5%;">
+                                <apex:outputPanel id="searchPanel">
+                                    <apex:pageBlock id="searchBlock">
+                                        <b style="font-size:11pt">
+                                            Search for a Cohort Campaign to add to the Contact
+                                        </b>
+
+                                        <br/>
+                                        <apex:pageMessages id="camErrors" />
+                                        <br/>
+
+                                        <apex:inputText id="camSearchInput" value="{!searchString}" html-placeholder="Enter search terms" style="width:250px;padding:5px;"
+                                            onkeypress="return noenter(event,'{!$Component.camSubmitInt}');" />
+
+                                        <apex:commandLink id="camSubmitInt" value="Search" style="text-decoration:none;
+                                                                  margin-left:5px;" styleClass="btn" action="{!parentCampaignSearch}"
+                                            status="camSearchStatus" reRender="parentResultsPanel,
+                                                      childResultsPanel,selectedPC,camErrors" />
+
+                                        <apex:actionStatus id="camSearchStatus">
+                                            <apex:facet name="start">
+                                                <img src="/img/loading.gif" style="margin-top:5px;margin-left:-100px;
+                                             position:absolute;" />
+                                            </apex:facet>
+                                        </apex:actionStatus>
+
+                                        <br />
+                                        <br />
+                                    </apex:pageBlock>
+                                </apex:outputPanel>
+
+                                <apex:outputPanel id="parentResultsPanel">
+                                    <apex:pageBlock rendered="{!IF(searchString != null
+                                        || selectedParentCampaignName != null,true,false)}">
+                                        <apex:outputText rendered="{!IF(parentCampaigns.size != 0 &&
+                                            selectedParentCampaignName == null,true,false)}">
+                                            <b style="font-size:11pt;">
+                                                Parent Campaign Results - Select a Campaign
+                                            </b>
+                                            <br />
+                                            <br />
+                                        </apex:outputText>
+
+                                        <apex:outputText rendered="{!IF(parentCampaigns.size == 0
+                                            && searchString != null,true,false)}">
+                                            <br /> No Campaigns found for '{!searchString}'
+                                            <br />
+                                            <br />
+                                        </apex:outputText>
+
+                                        <apex:outputText rendered="{!IF(selectedParentCampaignName != null,true,false)}">
+                                            <b style="font-size:11pt;">
+                                                Selected Parent Campaign: {!selectedParentCampaignName}
+                                            </b>
+
+                                            <br />
+                                            <br />
+
+                                            <span style="padding:10px;">
+                                                Would you like to&nbsp;
+                                                <apex:commandLink action="{!save}" value="Add" styleClass="linkBtn" status="camSearchStatus" reRender="CRTabPanel,searchForm"
+                                                /> just the Parent Campaign?
+
+                                            </span>
+
+                                            <br />
+                                            <br />
+                                        </apex:outputText>
+
+                                        <apex:pageBlockTable id="parentResultsTable" value="{!parentCampaigns}" var="pc" cellspacing="0" headerClass="none" columnClasses="remCols"
+                                            rendered="{!IF(parentCampaigns.size > 0
+                                                                 && selectedParentCampaignName ==
+                                                                 null,true,false)}">
+                                            <apex:column width="50px">
+                                                <apex:actionRegion>
+                                                    <apex:commandLink value="Select" action="{!assignToParentCampaign}" styleClass="linkBtn" reRender="searchInput,parentResultsPanel,childResultsPanel"
+                                                        status="camSearchStatus">
+                                                        <apex:param name="selectedParentCampaign" value="{!pc.Id}" assignTo="{!selectedParentCampaign}" />
+                                                        <apex:param name="selectedParentCampaignName" value="{!pc.Name}" assignTo="{!selectedParentCampaignName}" />
+                                                    </apex:commandLink>
+                                                </apex:actionRegion>
+                                            </apex:column>
+
+                                            <apex:column value="{!pc.Name}" />
+                                        </apex:pageBlockTable>
+                                    </apex:pageBlock>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+
+                            <apex:outputPanel id="childResultsPanel" style="float:right;width:49.5%;">
+                                <apex:pageBlock rendered="{!IF(childCampaigns != null,true,false)}">
+                                    <apex:outputText>
+                                        <b style="font-size:11pt;">
+                                            Campaigns for {!selectedParentCampaignName}
+                                        </b>
+                                        <br/>
+                                        <br/>
+                                    </apex:outputText>
+
+                                    <apex:outputText rendered="{!IF(fixedChildCampaigns.size == 0,true,false)}">
+                                        <br/> No Child Campaigns for {!selectedParentCampaignName} or this user is already a member
+                                        of all child Campaigns.
+                                        <br/>
+                                        <br/>
+                                    </apex:outputText>
+
+                                    <apex:pageBlockTable id="childResultsTable" value="{!fixedChildCampaigns}" var="chc" cellspacing="0" headerClass="none" columnClasses="remCols"
+                                        rendered="{!IF(fixedChildCampaigns.size != 0,true,false)}">
+                                        <apex:column width="50px">
+                                            <apex:actionRegion>
+                                                <apex:commandLink styleClass="linkBtn" value="Select" action="{!assignToChildCampaign}" reRender="CRTabPanel,searchForm"
+                                                    status="camSearchStatus">
+                                                    <apex:param name="selectedChildCampaign" value="{!chc.Id}" assignTo="{!selectedChildCampaign}" />
+                                                    <apex:param name="selectedChildCampaignName" value="{!chc.Name}" assignTo="{!selectedChildCampaignName}" />
+                                                </apex:commandLink>
+                                            </apex:actionRegion>
+                                        </apex:column>
+
+                                        <apex:column value="{!chc.Name}" />
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+                </apex:tabPanel>
+            </apex:tab>
+
+            <apex:tab label="Interests" name="interests" id="interestTab">
+                <apex:tabPanel switchType="client" selectedTab="assignedInterest" id="theTabPanel3" tabClass="activeSubTab" styleClass="subTab"
+                    inactiveTabClass="inactiveSubTab" width="100%">
+                    <apex:tab label="Assigned Interests" name="assignedInterests" id="assignedInterests">
+                        <apex:form id="viewInterests">
+                            <apex:outputPanel layout="block" style="overflow:auto;height:295px;">
+                                <apex:outputText rendered="{!IF(interestList.size < 1,true,false)}">
+                                    <span style="font-size:10pt;position:absolute;padding:15px;">No interests found for this Campaign Member</span>
+                                </apex:outputText>
+                                <apex:pageBlock rendered="{!IF(interestList.size > 0,true,false)}">
+                                    <apex:pageBlockTable id="interestList" value="{!interestList}" var="i" cellpadding="7" width="100%">
+                                        <apex:column headerValue="Actions">
+                                            <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!i.Id}','{!i.Campaign.Name}');">
+                                                View
+                                            </apex:outputLink>
+
+                                            <apex:outputLink styleClass="editBtn" value="#" onclick="openViewTab('{!i.Id}/e','{!i.Campaign.Name}');" rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                                                Edit
+                                            </apex:outputLink>
+                                        </apex:column>
+
+                                        <apex:column headerValue="Interest Name" value="{!i.Campaign.Name}" />
+                                        <apex:column headerValue="Type" value="{!i.Campaign.Type}" />
+                                        <apex:column headerValue="Department / College" value="{!i.Campaign.Requested__c}" />
+                                        <apex:column headervalue="Interest PS Major" value="{!i.Campaign.Interest_PeopleSoft_Major__c}" />
+                                        <apex:column headervalue="Status" value="{!i.Status}" />
+                                        <apex:column headerValue="Status Updated" value="{!i.Last_Member_Status_Change__c}" />
+                                    </apex:pageBlockTable>
+                                </apex:PageBlock>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+
+                    <apex:tab label="New Interest" name="newInterest" id="newInterest" rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                        <apex:form id="browseInterests" style="display:initial;">
+                            <apex:outputPanel layout="block" style="overflow:auto;height:295px;" id="interestBlock">
+                                <apex:outputLabel for="interestSearchInput">
+                                    <b>Search Interests:</b>
+                                </apex:outputLabel>
+
+                                <br/>
+                                <apex:pageMessages id="intErrors" />
+                                <br/>
+
+                                <apex:inputText id="intSearchInput" value="{!iSearchString}" html-placeholder="Enter search terms" style="width:250px;padding:5px;"
+                                    onkeypress="return noenter(event,'{!$Component.searchSubmitInt}');" />
+
+                                <apex:commandLink id="searchSubmitInt" value="Search" style="text-decoration:none;
+                                                              margin-left:5px;" styleClass="btn" action="{!doInterestSearch}"
+                                    status="intSearchStatus" reRender="interestList,interestPanel,intErrors" />
+
+                                <apex:actionStatus id="intSearchStatus">
+                                    <apex:facet name="start">
+                                        <img src="/img/loading.gif" style="margin-top:5px;margin-left:-95px;
+                                         position:absolute;" />
+                                    </apex:facet>
+                                </apex:actionStatus>
+
+                                <br/>
+                                <br/>
+
+                                <apex:outputText id="interestHelpText">
+                                    <i>Search by Name or Type</i>
+                                </apex:outputText>
+
+                                <br/>
+                                <br/>
+
+                                <apex:outputPanel id="interestPanel">
+                                    <apex:pageBlock rendered="{!IF(iSearchString != null,true,false)}">
+                                        <apex:pageBlockTable id="interestList" value="{!interestSearchResults}" var="i" cellpadding="7" width="100%" rendered="{!IF(interestSearchResults.size > 0,true,false)}">
+                                            <apex:column headerValue="Add Interest">
+                                                <apex:commandLink styleClass="linkBtn" value="Select" action="{!addInterest}" status="intSearchStatus" rerender="theTabPanel3,interestPanel">
+                                                    <apex:param name="intId" value="{!i.Id}" assignTo="{!intId}" />
+                                                </apex:commandLink>
+                                            </apex:column>
+
+                                            <apex:column headerValue="Name" value="{!i.Name}" />
+                                            <apex:column headerValue="Type" value="{!i.Type}" />
+                                            <apex:column headerValue="External ID" value="{!i.Campaign_External_ID__c}" />
+                                        </apex:pageBlockTable>
+
+                                        <apex:outputPanel rendered="{!IF(interestSearchResults.size == 0,true,false)}">
+                                            No Campaigns found for
+                                            <b>{!iSearchString}</b>.
+                                        </apex:outputPanel>
+                                    </apex:pageBlock>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+                </apex:tabPanel>
+            </apex:tab>
+
+            <apex:tab label="Scholarships" name="Scholarships" id="ScholarshipsTab">
+                <apex:form id="viewScholarships">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                        <apex:pageBlock title="Scholarships">
+                            <apex:pageBlockTable id="scholarList" value="{!scholarList}" var="s" cellpadding="7" width="100%" rendered="{!IF(scholarList.size > 0,true,false)}">
+                                <apex:column headerValue="Actions">
+                                    <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!s.Id}','{!s.Campaign.Name}');">
+                                        View
+                                    </apex:outputLink>
+
+                                    <apex:outputLink styleClass="editBtn" value="#" onclick="openViewTab('{!s.Id}/e','{!s.Campaign.Name}');" rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                                        Edit
+                                    </apex:outputLink>
+                                </apex:column>
+
+                                <apex:column headerValue="Scholarship Name" value="{!s.Campaign.Name}" />
+                                <apex:column headerValue="Type" value="{!s.Campaign.Type}" />
+                                <apex:column headerValue="Amount" value="{!s.Amount__c}" />
+                                <apex:column headervalue="Award Date" value="{!s.Award_Date__c}" />
+                                <apex:column headervalue="Letter Date" value="{!s.Letter_Date__c}" />
+                                <apex:column headervalue="Status" value="{!s.Status}" />
+                                <apex:column headerValue="Status Updated" value="{!s.Last_Member_Status_Change__c}" />
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!IF(scholarList.size == 0,true,false)}">
+                                No Scholarship Campaigns found for this Campaign Member.
+                            </apex:outputText>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:tab>
+
+            <apex:tab label="Cohorts" name="Cohorts" id="cohortsTab">
+                <apex:form id="viewCohorts">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                        <apex:pageBlock title="Cohorts">
+                            <apex:pageBlockTable id="cohortList" value="{!cohortList}" var="c" cellpadding="7" width="100%" rendered="{!IF(cohortList.size > 0,true,false)}">
+                                <apex:column headerValue="Actions">
+                                    <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!c.Id}','{!c.Campaign.Name}');">
+                                        View
+                                    </apex:outputLink>
+                                </apex:column>
+
+                                <apex:column headerValue="Campaign Name" value="{!c.Campaign.Name}" />
+                                <apex:column headerValue="Type" value="{!c.Campaign.Type}" />
+                                <apex:column headerValue="Department / College" value="{!c.Campaign.Requested__c}" />
+                                <apex:column headervalue="Status" value="{!c.Status}" />
+                                <apex:column headerValue="Status Updated" value="{!c.Last_Member_Status_Change__c}" />
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!IF(cohortList.size == 0,true,false)}">
+                                No Cohort Campaigns found for this Campaign Member.
+                            </apex:outputText>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:tab>
+
+            <apex:tab label="Other Sources" name="otherSources" id="otherSourcesTab">
+                <apex:form id="viewOtherSources">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                        <apex:pageBlock title="Other Sources">
+                            <apex:pageBlockTable id="cohortList" value="{!oSourceList}" var="o" cellpadding="7" width="100%" rendered="{!IF(oSourceList.size > 0,true,false)}">
+                                <apex:column headerValue="Actions">
+                                    <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!o.Id}','{!o.Campaign.Name}');">
+                                        View
+                                    </apex:outputLink>
+                                </apex:column>
+
+                                <apex:column headerValue="Campaign Name" value="{!o.Campaign.Name}" />
+                                <apex:column headerValue="Type" value="{!o.Campaign.Type}" />
+                                <apex:column headerValue="Department / College" value="{!o.Campaign.Requested__c}" />
+                                <apex:column headervalue="Status" value="{!o.Status}" />
+                                <apex:column headerValue="Status Updated" value="{!o.Last_Member_Status_Change__c}" />
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!IF(oSourceList.size == 0,true,false)}">
+                                No Other Source Campaigns found for this Campaign Member.
+                            </apex:outputText>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:tab>
+
+            <apex:tab label="Marketing/Communication" name="markComm" id="markCommTab">
+                <apex:tabPanel switchType="client" selectedTab="marketingCampaigns" id="theTabPanel4" tabClass="activeSubTab" styleClass="subTab"
+                    inactiveTabClass="inactiveSubTab" width="100%">
+                    <apex:tab label="Campaigns" name="marketingCampaigns" id="marketingCampaigns">
+                        <apex:form id="viewMarkComm">
+                            <apex:outputPanel layout="block" style="overflow:auto;height:295px;">
+                                <apex:pageBlock title="Marketing/Communication">
+                                    <apex:pageBlockTable id="cohortList" value="{!markCommList}" var="m" cellpadding="7" width="100%" rendered="{!IF(markCommList.size > 0,true,false)}">
+                                        <apex:column headerValue="Actions">
+                                            <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!m.Id}','{!m.Campaign.Name}');">
+                                                View
+                                            </apex:outputLink>
+                                        </apex:column>
+
+                                        <apex:column headerValue="Campaign Name" value="{!m.Campaign.Name}" />
+                                        <apex:column headerValue="Type" value="{!m.Campaign.Type}" />
+                                        <apex:column headerValue="Department / College" value="{!m.Campaign.Requested__c}" />
+                                        <apex:column headervalue="Status" value="{!m.Status}" />
+                                        <apex:column headerValue="Status Updated" value="{!m.Last_Member_Status_Change__c}" />
+                                    </apex:pageBlockTable>
+
+                                    <apex:outputText rendered="{!IF(markCommList.size == 0,true,false)}">
+                                        No Marketing or Communications Campaigns found for this Campaign Member.
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+                    <apex:tab label="Communications" name="marketingCommunications" id="marketingCommunications">
+                        <apex:form id="viewCommunications">
+                            <apex:outputPanel layout="block" style="overflow:auto;height:295px;">
+                                <apex:pageBlock title="Communications">
+                                    <apex:pageBlockSection id="communicationFilter" columns="1">
+                                        <!-- Filters start here -->
+                                        <apex:outputPanel rendered="{!IF(allMessageList.size > 0,true,false)}">
+                                            <apex:outputText>Filter By: </apex:outputText>
+                                            <apex:selectList styleClass="indent" value="{!commFilterType}" size="1">
+                                                <apex:selectOptions value="{!commFilterOptions}" />
+                                            </apex:selectList>
+
+                                            <apex:outputLabel styleClass="indent">Start:&nbsp;</apex:outputLabel>
+                                            <apex:input type="date" value="{!commFilterStartDate}" />
+
+                                            <apex:outputLabel styleClass="indent">End:&nbsp;</apex:outputLabel>
+                                            <apex:input type="date" value="{!commFilterEndDate}" />
+
+                                            <apex:commandLink id="searchButton" style="text-decoration:none; margin-left:5px;" styleClass="btn" reRender="communicationList,noCommsMsg">
+                                                Search
+                                            </apex:commandLink>
+                                            <apex:commandLink styleClass="indent" style="margin-left: 20px" id="clearFilterLink" reRender="communicationFilter,communicationList"
+                                                action="{!clearCommFilter}">
+                                                Reset
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                        <!-- Filters end here -->
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockTable id="communicationList" value="{!filteredMessageList}" var="message" cellpadding="7" width="100%" rendered="{!IF(allMessageList.size > 0,true,false)}">
+                                        <!-- Email Name -->
+                                        <apex:column>
+                                            <apex:facet name="header">Email Name</apex:facet>
+                                            <apex:outputText>
+                                                <a href="/{!message.Id}" target="_blank">{!message.name}</a>
+                                            </apex:outputText>
+                                        </apex:column>
+
+                                        <!-- Subject -->
+                                        <apex:column>
+                                            <apex:facet name="header">Subject</apex:facet>
+                                            <apex:outputText value="{!message.subject}" />
+                                        </apex:column>
+
+                                        <!-- Sent By -->
+                                        <apex:column>
+                                            <apex:facet name="header">Sent By</apex:facet>
+                                            <apex:outputText value="{!message.sender}" />
+                                        </apex:column>
+
+                                        <!-- Delivery Status -->
+                                        <apex:column>
+                                            <apex:facet name="header">Delivery Status</apex:facet>
+                                            <apex:outputText value="{!message.deliveryStatus}" />
+                                        </apex:column>
+
+                                        <!-- Sent Date/Time -->
+                                        <apex:column>
+                                            <apex:facet name="header">Sent Date/Time</apex:facet>
+                                            <apex:outputText value=" {!message.timeSent}" />
+                                        </apex:column>
+
+                                        <!-- Open Date/Time -->
+                                        <apex:column>
+                                            <apex:facet name="header">Open Date/Time</apex:facet>
+                                            <apex:outputText value=" {!message.timeOpened}" />
+                                        </apex:column>
+
+                                        <!-- Unique Clicks -->
+                                        <apex:column>
+                                            <apex:facet name="header">Unique Clicks</apex:facet>
+                                            <apex:outputText value="{!message.uniqueClicks}" />
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <apex:outputText id="noCommsMsg" rendered="{!IF(allMessageList.size == 0,true,false)}">
+                                        No Communications Found
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:tab>
+                </apex:tabPanel>
+            </apex:tab>
+
+            <apex:tab label="Partnered Courses" name="partCourse" id="partCourseTab">
+                <apex:form id="viewPartCourse">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                        <apex:pageBlock title="Partnered Courses">
+                            <apex:pageBlockTable id="partCourseList" value="{!partCourseList}" var="pc" cellpadding="7" width="100%" rendered="{!IF(partCourseList.size > 0,true,false)}">
+                                <apex:column headerValue="Actions">
+                                    <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!pc.Id}','{!pc.Campaign.Name}');">
+                                        View
+                                    </apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="Campaign Name" value="{!pc.Campaign.Name}" />
+                                <apex:column headerValue="Type" value="{!pc.Campaign.Type}" />
+                                <apex:column headerValue="Start Date" value="{!pc.Campaign.StartDate}" />
+                                <apex:column headervalue="End Date" value="{!pc.Campaign.EndDate}" />
+                                <apex:column headerValue="Member Enrollment Date" value="{!pc.edX_Enrollment_Date__c}" />
+                                <apex:column headerValue="edX Active Enrollment" value="{!pc.edX_Active_Enrollment__c}" />
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!IF(partCourseList.size == 0,true,false)}">
+                                No Partnered Course Campaigns found for this Campaign Member.
+                            </apex:outputText>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:tab>
+
+            <!-- NEW for Marketing Cloud project-->
+            <apex:tab label="Subscriptions" name="Subscriptions" id="subscriptionsTab">
+                <apex:form id="viewSubscriptions">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:335px;">
+                        <apex:pageBlock title="Subscriptions">
+                            <apex:pageblockButtons location="top">
+                                <!--apex:commandButton styleClass="editBtn" value="New" onclick="openNewViewTab('a1z/e','New Subscriber');" -->
+                                <apex:outputLink styleClass="editBtn" value="#" onclick="openNewViewTab('a27/e?CF00N0W000008yjhW={!contact.Name}&CF00N0W000008yjhW_lkid={!contactId}','New Subscriber');">
+                                    New
+                                </apex:outputLink>
+
+                            </apex:pageblockButtons>
+
+                            <apex:pageBlockTable id="subscriptionList" value="{!subscriberList}" var="s" cellpadding="7" width="100%" rendered="{!IF(subscriberList.size > 0,true,false)}">
+                                <apex:column headerValue="Actions">
+                                    <apex:outputLink styleClass="linkBtn" value="#" onclick="openViewTab('{!s.Id}','{!s.Subscription__r.Name}');">
+                                        View
+                                    </apex:outputLink>
+
+                                    <apex:outputLink styleClass="editBtn" value="#" onclick="openViewTab('{!s.Id}/e','{!s.Subscription__r.Name}');" rendered="{!IF(NOT(crProfile) || admin,true,false)}">
+                                        Edit
+                                    </apex:outputLink>
+                                </apex:column>
+
+                                <apex:column headerValue="Subscription Name" value="{!s.Subscription__r.Name}" />
+                                <apex:column headerValue="Subscription Type" value="{!s.Subscription__r.Subscription_Type__c}" />
+                                <apex:column headerValue="Business Unit" value="{!s.Subscription__r.Business_Unit__r.Name}" />
+                                <apex:column headerValue="Status" value="{!s.Subscriber_Status__c}" />
+                                <apex:column headerValue="Last Subscribed Date" value="{!s.Last_Subscribed_Date__c}" />
+                                <apex:column headerValue="Last Unsubscribed Date" value="{!s.Last_Unsubscribed_Date__c}" />
+                            </apex:pageBlockTable>
+
+                            <apex:outputText rendered="{!IF(subscriberList.size == 0,true,false)}">
+                                No Subscriptions found.
+                            </apex:outputText>
+                        </apex:pageBlock>
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:tab>
+
+        </apex:tabPanel>
+
+        <script>
+            function noenter(ev, element) {
+                if (window.event) {
+                    ev = window.event;
+                }
+
+                var keyCode;
+
+                if (ev.keyCode) {
+                    keyCode = ev.keyCode;
+                } else {
+                    keyCode = ev.charCode;
+                }
+
+                if (keyCode == 13) {
+                    var ele = document.getElementById(element);
+                    ele.click();
+
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        </script>
+    </body>
+</apex:page>

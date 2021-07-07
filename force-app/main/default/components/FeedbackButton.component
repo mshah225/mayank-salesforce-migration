@@ -1,0 +1,17 @@
+<apex:component layout="none">
+    <apex:attribute name="carName" description="The name of the page the feedback button is on." type="String" required="true"
+    />
+    <apex:attribute name="miscInformation" description="Any additional information that should be submitted with the case" type="String"
+    />
+    <apex:attribute name="contactId" description="If provided, contact will not be detected automatically." type="String" />
+    <apex:attribute name="retURL" description="URL Used for breadcomes." type="String" />
+    <apex:attribute name="classes" description="Additional classes for custom styling" type="String" />
+
+    <c:FeedbackButtonStyles />
+
+    <a href="./dynamicfeedback?carName={!carName}{!IF(NOT(ISBLANK(miscInformation)),'&misc=' & miscInformation,'')}{!IF(NOT(ISBLANK(contactId)),'&contactId=' & contactId,'')}{!IF(NOT(ISBLANK(retURL)),'&retURL=' & retURL,'')}"
+        class="{!classes} feedback-button" target="_blank">
+        <i class="fa fa-comment feedback-button-fa" />
+        <span class="feedback-button-text">Feedback</span>
+    </a>
+</apex:component>

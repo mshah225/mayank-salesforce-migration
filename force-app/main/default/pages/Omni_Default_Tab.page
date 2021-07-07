@@ -1,0 +1,25 @@
+<apex:page>
+    <apex:includeLightning />
+    <apex:includeScript value="/support/console/49.0/integration.js" />
+    <div id="lightning" />
+    <script type="text/javascript">
+        (function () {
+            console.log('Inside vf');
+            sforce.console.addEventListener(sforce.console.ConsoleEvent.PRESENCE.WORK_ACCEPTED, function (result) {
+                console.log('Accepted work item: ', result);
+                var chk = 0;
+                if (result.message === 'SFORCE_PRESENCE:WORK_ACCEPTED') {
+                    chk = 1;
+                }
+                sforce.console.onFocusedSubtab(function (focusResult) {
+                    console.log('result : ', focusResult);
+                    var objId = focusResult.objectId;
+                    if (objId.startsWith('a') && chk == 1) {
+                        sforce.console.closeTab(focusResult.id);
+                        chk = 0;
+                    }
+                });
+            });
+        })();
+    </script>
+</apex:page>

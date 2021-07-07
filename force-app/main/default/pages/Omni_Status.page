@@ -1,0 +1,11 @@
+<apex:page>
+    <apex:includeLightning />
+
+    <div id="lightning" />
+
+    <script>
+        $Lightning.use('c:OmniChannelStatusApp', function () {
+            $Lightning.createComponent('c:omniChannelStatus', { label: 'Press Me!' }, 'lightning', function (cmp) { });
+        });
+    </script>
+</apex:page>

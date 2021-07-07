@@ -1,0 +1,28 @@
+<aura:component>
+    <ltng:require
+        styles="/resource/jquery_ui/themes/base/jquery-ui.css"
+        scripts="{!join(',', $Resource.jQuery_3_1_1, $Resource.jquery_ui+'/ui/jquery-ui.js')}"
+    />
+    <aura:attribute name="fromDate" type="Date" default="" />
+    <aura:attribute name="toDate" type="Date" default="" />
+    <aura:handler name="change" value="{!v.fromDate}" action="{!c.handleResetForm}" />
+    <aura:handler name="change" value="{!v.toDate}" action="{!c.handleResetForm}" />
+
+    <div class="slds-col slds-size_1-of-5">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="from">From:</label>
+            <div class="slds-form-element__control">
+                <input class="slds-input" type="text" id="from" name="from" placeholder="MM/DD/YYYY" />
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-col slds-size_1-of-5">
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="to">To:</label>
+            <div class="slds-form-element__control">
+                <input class="slds-input slds-col" type="text" id="to" name="to" placeholder="MM/DD/YYYY" />
+            </div>
+        </div>
+    </div>
+</aura:component>

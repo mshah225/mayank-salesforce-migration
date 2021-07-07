@@ -1,5 +1,0 @@
-<apex:page contentType="text/plain" showHeader="false">
-User-Agent: * 
-Disallow: /SubscriptionCenter
-Disallow: /asuchat
-</apex:page>

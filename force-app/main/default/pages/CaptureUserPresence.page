@@ -1,0 +1,44 @@
+<apex:page Controller="UserPresenceController">
+    <apex:includeLightning />
+    <apex:includeScript value="/support/console/49.0/integration.js" />
+    <apex:form id="frm">
+        <apex:pageBlock id="main">
+            <apex:pageMessages escape="false"></apex:pageMessages>
+            <apex:outputLabel value="{!$Label.Is_Available_On_OmniChannel}" />
+            <br />
+            <apex:inputCheckbox Id="isAvailable" label="Online on Omni Channel" value="{!ooo}" />
+            <br />
+            <br />
+            <br />
+            <apex:outputLabel value="Out Of Office Message" />
+            <br />
+            <apex:inputTextarea label="Out of Office Message" cols="40" rows="6" value="{!oooMessage}" />
+            <br />
+            <br />
+            <br />
+            <br />
+            <apex:commandButton title="Save" value=" Save " action="{!saveOOOM}" rerender="main" onclick="setBackgound()" />
+        </apex:pageBlock>
+    </apex:form>
+    <script type="text/javascript">
+        // var previousOnload = window.onload;
+        window.onload = function () {
+            var isAvailable = document.getElementById('{!$Component.frm.main.isAvailable}').checked;
+            console.log(isAvailable);
+            if (!isAvailable) {
+                sforce.console.setCustomConsoleComponentButtonStyle('background:red;');
+            } else {
+                sforce.console.setCustomConsoleComponentButtonStyle('background:inherit;');
+            }
+        };
+
+        function setBackgound() {
+            var isAvailable = document.getElementById('{!$Component.frm.main.isAvailable}').checked;
+            if (isAvailable) {
+                sforce.console.setCustomConsoleComponentButtonStyle('background:inherit;');
+            } else {
+                sforce.console.setCustomConsoleComponentButtonStyle('background:red;');
+            }
+        }
+    </script>
+</apex:page>

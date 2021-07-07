@@ -1,0 +1,393 @@
+<apex:component id="CivitasPersistenceData" controller="CivitasPersistenceController">
+    <!-- Gradient Styles -->
+    <style>
+        html,
+        body,
+        #chart_div {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #chart_div svg>g>rect {
+            fill: url(#fx) !important;
+            fill-opacity: 1 !important;
+        }
+
+        /* Lightest color (top of gradient) */
+
+        #fx stop:nth-child(1) {
+            stop-color: rgb(229, 232, 236);
+        }
+
+        #fx stop:nth-child(2) {
+            stop-color: rgb(229, 232, 236);
+        }
+
+        #fx stop:nth-child(3) {
+            stop-color: rgb(229, 232, 236);
+        }
+
+        /* Darkest color (bottom of gradient) */
+
+        #fx stop:nth-child(4) {
+            stop-color: rgb(229, 232, 236);
+        }
+
+        .left {
+            float: left;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        #level,
+        #lastUpdated,
+        #change,
+        #levelChangeDate {
+            display: block;
+            line-height: 18px;
+        }
+
+        .persistenceFeedbackButton {
+            position: relative;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            margin: 0px;
+            padding-left: 12px;
+            padding-right: 12px;
+            padding-top: 6px;
+            padding-bottom: 4px;
+            color: white;
+            background-color: RGB(140, 29, 64);
+            transition: all 0.25s ease-in-out 0s;
+            word-wrap: break-word;
+            font-size: 10px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .persistenceFeedbackButton img {
+            transition: all 0.25s ease-in-out 0s;
+            -moz-transition: all 0.25s ease-in-out 0s;
+            -webkit-transition: all 0.25s ease-in-out 0s;
+            -o-transition: all 0.25s ease-in-out 0s;
+            -ms-transition: all 0.25s ease-in-out 0s;
+        }
+
+        .persistenceFeedbackButton:hover {
+            color: white;
+            text-decoration: none;
+            background-color: #d23153;
+        }
+
+        .persistenceFeedbackButton:hover img {
+            -ms-filter: 'progid:DXImageTransform.Microsoft.Alpha(Opacity=95)';
+            filter: alpha(opacity=95);
+            opacity: 0.95;
+        }
+
+        .persistenceFeedbackButton:focus {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+
+    <!-- Google JavaScript API -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+
+    <script>
+        google.charts.load('current', { packages: ['corechart', 'line'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        jQuery(document).ready(function () {
+            document.getElementById("chart_div").innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+            jQuery('[data-toggle="tooltip"]').tooltip()
+        });
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
+
+        function drawChart() {
+            var feedback = document.getElementById('FeedbackButton');
+            feedback.style.display = 'block';
+
+            result = {!civitasDataInJson
+        }
+        if (result == null || result.length <= 0 || result[0].name == 'Rejected') {
+            document.getElementById("errorMessage").innerHTML =
+                "Persistence Outlook Level data is not available.";
+            document.getElementById("chart_div").innerHTML = "";
+            document.getElementById("leftID").float = "none";
+            return;
+        }
+
+        var legendLabel = document.getElementById('persistenceLegend');
+        legendLabel.style.display = 'block';
+        jQuery('#FeedbackButton').attr('href', './persistencefeedback?misc=' + result[0].name + '(' + result[0].empl + ') Persistence Outlook Level ' + result[result.length - 1].outlookLevel + '&contactId=' + result[0].contactId);
+        document.getElementById("level").innerHTML = '<b>Level: </b>' + result[result.length - 1].levelDesc;
+        document.getElementById("lastUpdated").innerHTML = '<b>Last Updated: </b>' + result[result.length - 1].fullDate + '<br />';
+
+        var changeDirection = result[result.length - 1].direction;
+        if (changeDirection == 1) {
+            changeDirection = 'Up';
+        } else if (changeDirection == 0) {
+            changeDirection = 'No Change';
+        } else if (changeDirection == -1) {
+            changeDirection = 'Down';
+        } else {
+            changeDirection = 'N/A';
+        }
+        if (changeDirection != 'N/A') {
+            document.getElementById("change").innerHTML = '<b>Change: </b> ' + changeDirection;
+            document.getElementById("levelChangeDate").innerHTML = '<b>Level Change Date: </b>' + result[result.length - 1].fullDate;
+        } else {
+            document.getElementById("change").innerHTML = '<b>Change: </b> N/A';
+            document.getElementById("levelChangeDate").innerHTML += '<b>Level Change Date: </b> N/A';
+        }
+
+        var container = document.getElementById('chart_div');
+        var data = new google.visualization.DataTable();
+        var pointStyle = 'point {size: 3.5; stroke-color: black; visible: true;}';
+
+        data.addColumn('number', 'Snap Date');
+        data.addColumn('number', 'Dummy');
+        data.addColumn('number', 'Outlook');
+        data.addColumn({
+            type: 'string',
+            role: 'style'
+        });
+        data.addColumn({
+            type: 'string',
+            role: 'tooltip'
+        });
+
+        data.addRows([
+            [result[0].day, null, result[0].outlookLevel, null, result[0].dayDate + '\nOutlook: ' + result[0].levelDesc]
+        ]);
+
+        for (var i = 1; i < result.length; i++) {
+            data.addRows([
+                [result[i].day, null, result[i].outlookLevel, null, result[i].dayDate + '\nOutlook: ' + result[i].levelDesc]
+            ]);
+        }
+
+        data.addRows([
+            [result[result.length - 1].day, null, result[result.length - 1].outlookLevel, pointStyle, result[result.length - 1].dayDate + '\nOutlook: ' + result[result.length - 1].levelDesc]
+        ]);
+
+        var options = {
+            backgroundColor: {
+                fill: 'white'
+            },
+            chartArea: {
+                backgroundColor: {
+                    fill: 'dddddd'
+                }
+            },
+            colors: ['#000'],
+            hAxis: {
+                baselineColor: 'white',
+                gridlines: {
+                    color: '#fff'
+                },
+                showTextEvery: 1,
+                title: result[0].termInfo + ' ' + result[0].year,
+                titleTextStyle: {
+                    bold: true,
+                    italic: false,
+                    fontSize: 14
+                },
+                textStyle: {
+                    fontSize: 14
+                }
+            },
+            legend: {
+                position: 'none'
+            },
+            series: {
+                0: {
+                    targetAxisIndex: 0,
+                    visibleInLegend: false,
+                    pointSize: 0,
+                    lineWidth: 0
+                },
+                1: {
+                    targetAxisIndex: 1
+                }
+            },
+            vAxes: {
+                0: {
+                    textPosition: 'none'
+                },
+            },
+            vAxis: {
+                baselineColor: '#ccc',
+                gridlines: {
+                    color: '#fff'
+                },
+                maxValue: 11.5,
+                textStyle: {
+                    fontSize: 11
+                },
+                ticks: [
+                    { v: 0.0, f: '' },
+                    { v: 1.0, f: '' },
+                    { v: 2.0, f: '' },
+                    { v: 3.0, f: '' },
+                    { v: 4.0, f: '' },
+                    { v: 5.0, f: '' },
+                    { v: 6.0, f: '' },
+                    { v: 7.0, f: '' },
+                    { v: 8.0, f: '' },
+                    { v: 9.0, f: '' },
+                    { v: 10.0, f: '' },
+                ],
+            },
+            chartArea: {
+                width: 350,
+                right: 0
+            },
+            width: 400,
+            height: 250
+        };
+
+        var months = [];
+        for (var i = 0; i < result[0].allMonths.length; i++) {
+            months.push({
+                v: (i * 30),
+                f: result[0].allMonths[i]
+            });
+        }
+        months.push({
+            v: (i * 30),
+            f: ''
+        });
+        options['hAxis']['ticks'] = months;
+
+        if (result[0].year != result[result.length - 1].year) {
+            options['hAxis']['title'] += '-' + result[result.length - 1].year;
+        }
+
+        var chart = new google.visualization.LineChart(
+            document.getElementById('chart_div')
+        );
+
+        var createSVG = function (n, a, b) {
+            var xmlns = "http://www.w3.org/2000/svg",
+                e = document.createElementNS(xmlns, n);
+
+            for (var k in a) {
+                e.setAttributeNS(null, k, a[k]);
+            }
+
+            for (var k in b) {
+                e.setAttribute(k, b[k]);
+            }
+
+            return e;
+        };
+
+        google.visualization.events.addListener(chart, 'ready', function () {
+            var gradient = createSVG('linearGradient', {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 1
+            }, {
+                id: 'fx'
+            });
+
+            document.getElementById('chart_div').querySelector('svg > defs').appendChild(gradient);
+
+            gradient.appendChild(createSVG('stop', {
+                offset: '0%'
+            }));
+            gradient.appendChild(createSVG('stop', {
+                offset: '33%'
+            }));
+            gradient.appendChild(createSVG('stop', {
+                offset: '67%'
+            }));
+            gradient.appendChild(createSVG('stop', {
+                offset: '100%'
+            }));
+        });
+
+        chart.draw(data, options);
+        var latestOutlook = result[result.length - 1].outlookLevel;
+        switch (latestOutlook) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                document.getElementById("meter").src = "{!URLFOR($Resource.PersistenceChart, '/icon-1.png')}";
+                break;
+            case 4:
+            case 5:
+                document.getElementById("meter").src = "{!URLFOR($Resource.PersistenceChart, '/icon-2.png')}";
+                break;
+            case 6:
+                document.getElementById("meter").src = "{!URLFOR($Resource.PersistenceChart, '/icon-3.png')}";
+                break;
+            case 7:
+                document.getElementById("meter").src = "{!URLFOR($Resource.PersistenceChart, '/icon-4.png')}";
+                break;
+            case 8:
+            case 9:
+            case 10:
+                document.getElementById("meter").src = "{!URLFOR($Resource.PersistenceChart, 'icon-5.png')}";
+                break;
+        }
+        }
+    </script>
+    <div>
+        <table class="table table-striped">
+            <tr>
+                <th width="275px;">Persistence Outlook Level</th>
+                <th>Persistence Outlook History</th>
+            </tr>
+        </table>
+        <div id="errorMessage" style="margin-left: 20px; margin-top: 30px"></div>
+        <div id="leftID" class="left" style="float: left; height: 150px; margin-left: 20px; margin-top: 30px; margin-bottom: 25px">
+            <div id="Spinner"></div>
+            <img id="meter" style="margin-bottom: 15px" />
+            <span id="level"></span>
+            <span id="lastUpdated" style="margin-bottom: 18px"></span>
+            <span id="change"></span>
+            <span id="levelChangeDate"></span>
+            <div style="margin-top: 15px">
+                <a href="./persistencefeedback?misc={!getInfo}" class="persistenceFeedbackButton & browser" target="_blank" id="FeedbackButton">
+                    <i class="fa fa-comment"></i> Persistence Outlook Feedback
+                </a>
+            </div>
+        </div>
+        <div style="float: left">
+            <div class="right" style="float: left; z-index: -1; margin-top: -20px">
+                <div id="chart_div" style="height: 200px; width: 400px"></div>
+            </div>
+            <div id="persistenceLegend" style="float: left; margin-top: 42px; margin-left: 10px; display: none; margin-top: 25px">
+                <apex:image url="{!$Resource.PersistenceLegend}" width="75" height="158" />
+            </div>
+        </div>
+    </div>
+</apex:component>

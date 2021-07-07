@@ -1,0 +1,59 @@
+<!-- @author: aesanch2 -->
+<apex:page standardController="Opportunity" recordSetvar="unused" extensions="UpdateOpportunityOwnerController" id="page">
+    <apex:form id="wizard">
+        <apex:sectionHeader title="Update Opportunity Owner" />
+
+        <apex:pageBlock id="page1" title="Confirm Records and Select New Owner" mode="edit" rendered="{!page==1}">
+            <apex:pagemessages escape="false" />
+            <apex:pageBlockSection id="step1" title="Step 1. Confirm records to be updated">
+                <apex:pageBlockTable var="a" value="{!selected}">
+                    <apex:column value="{!a.Name}" />
+                    <apex:column value="{!a.Account.Name}" />
+                    <apex:column value="{!a.CloseDate}" />
+                    <apex:column value="{!a.Owner.Name}" />
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="step2" title="Step 2. Select the New Owner">
+                <apex:inputField label="New Owner" value="{!Opportunity.OwnerId}">
+                    <apex:actionSupport event="onchange" action="{!selectOwner}" />
+                </apex:inputField>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!cancel}" value="Cancel" />
+                <apex:commandButton action="{!confirmOwner}" value="Continue" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:pageBlock id="page2" title="Confirm New Owner and Update" mode="edit" rendered="{!page==2}">
+            <apex:pagemessages escape="false" />
+            <apex:pageBlockSection id="step3" title="Step 3. Confirm New Records and New Owner">
+                <apex:pageBlockTable var="a" value="{!selected}">
+                    <apex:column value="{!a.Name}" />
+                    <apex:column value="{!a.Account.Name}" />
+                    <apex:column value="{!a.CloseDate}" />
+                    <apex:column value="{!Opportunity.OwnerId}" />
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!page1}" value="Previous" />
+                <apex:commandButton action="{!cancel}" value="Cancel" />
+                <apex:commandButton action="{!submitUpdate}" value="Update" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+
+        <apex:pageBlock id="page3" title="Results" mode="edit" rendered="{!page==3}">
+            <apex:pagemessages escape="false" />
+            <apex:pageBlockSection id="step3" title="Step 4. Review Results">
+                <apex:pageBlockTable var="a" value="{!selected}">
+                    <apex:column value="{!a.Name}" />
+                    <apex:column value="{!a.Account.Name}" />
+                    <apex:column value="{!a.CloseDate}" />
+                    <apex:column value="{!Opportunity.OwnerId}" />
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons>
+                <apex:commandButton action="{!cancel}" value="Done" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

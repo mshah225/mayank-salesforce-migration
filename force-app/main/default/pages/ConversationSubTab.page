@@ -1,0 +1,32 @@
+<apex:page showHeader="true">
+    <apex:includeLightning rendered="true" />
+    <div id="lightning" />
+    <script>
+        var recordId = '{!JSENCODE($CurrentPage.parameters.id)}';
+        var embededContext = '{!JSENCODE($CurrentPage.parameters.embededContext)}';
+        var uiContext = '{!JSENCODE($CurrentPage.parameters.uiContext)}';
+        if (
+            embededContext !== 'detail' &&
+            embededContext !== 'tab' &&
+            embededContext !== 'activity' &&
+            embededContext !== 'home'
+        ) {
+            embededContext = 'detail';
+        }
+        if (uiContext !== 'sf1' && uiContext !== 'lightning' && uiContext !== 'classic') {
+            uiContext = '';
+        }
+        $Lightning.use('smagicinteract:ConversationsApp', function () {
+            $Lightning.createComponent(
+                'smagicinteract:conversations',
+                {
+                    recordId: recordId,
+                    embedContext: embededContext,
+                    uiContext: uiContext,
+                },
+                'lightning',
+                function (cmp) { }
+            );
+        });
+    </script>
+</apex:page>

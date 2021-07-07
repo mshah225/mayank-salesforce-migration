@@ -1,0 +1,72 @@
+<apex:component controller="ASUBrandController">
+    <apex:attribute name="firstName" description="The contacts first name" type="String" />
+    <apex:attribute name="lastName" description="The contacts last name" type="String" />
+    <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean" />
+    <apex:attribute name="stopViewAsUrl" description="The Url to stop viewing as" type="String" />
+    <apex:attribute name="viewAsUrl" description="The Url to start or change view as" type="String" />
+    <apex:attribute name="emplId" description="The contacts Employee/Affiliate Id" type="String" />
+    <apex:attribute name="menuLinks" description="The provided menu links" type="Link[]" />
+    <apex:attribute name="showNavBar" description="If true, the main menu will be shown on the page" type="boolean" default="true"
+    />
+
+    <c:ASUBrandMenuStyles />
+
+    <div id="myasu-tabs-wrapper">
+        <apex:outputPanel rendered="{!showNavBar}">
+            <div class="navbar navbar-default" style="max-height:57px;">
+                <div id="myasu-tabs" class="myasu-cont">
+                    <nav class="navbar-links" role="navigation" aria-label="MyASU">
+                        <apex:outputPanel rendered="{!IF(ISNULL(menuLinks) || ISBLANK(menuLinks), false, true)}" layout="none">
+                            <apex:repeat value="{!menuLinks}" var="link" id="linkRepeater">
+                                <apex:outputPanel rendered="{!IF(link.name != 'Service Center' && link.name != 'Help', true, false)}">
+                                    <span class="tab">
+                                        <apex:outputLink styleClass="tracking" value="{!link.url}" rendered="{!IF(link.name == 'Home', true, false) || IF(link.name == 'Student Home', true, false)}">
+                                            <span class="fa fa-home" title="Home"></span>
+                                        </apex:outputLink>
+                                        <apex:outputLink styleClass="tracking" value="{!link.url}" rendered="{!IF(link.name != 'Home' && link.name != 'Student Home', true, false)}">
+                                            {!link.name}
+                                        </apex:outputLink>
+                                    </span>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(link.name == 'Service Center' || link.name == 'Help', true, false)}">
+                                    <span class="selected tab">
+                                        <apex:outputLink styleClass="tracking" value="{!link.url}" rendered="{!IF(link.name != 'Home' && link.name != 'Student Home', true, false)}">
+                                            Help
+                                        </apex:outputLink>
+                                    </span>
+                                </apex:outputPanel>
+                            </apex:repeat>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!AND(firstName != null, lastName != null)}">
+                            <div class="asu-brand-menu-user pull-right" style="max-height: 57px; line-height: 1.44; margin-top: 0.4em">
+                                <span style="display: block">
+                                    {!firstName} {!lastName}
+                                    <apex:outputPanel rendered="{!viewingAs}"> ({!emplId})</apex:outputPanel>
+                                </span>
+                                <span style="display: block">
+                                    <apex:outputPanel rendered="{!viewingAs}">
+                                        <div class="dropdown asu-brand-menu-view-as-dropdown pull-right">
+                                            <button class="btn btn-blue asu-brand-menu-view-as-button dropdown-toggle" type="button" id="asu-brand-menu-view-as" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                View As
+                                                <span class="caret"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right asu-brand-menu-view-as-dropdown-menu" aria-labelledby="asu-brand-menu-view-as">
+                                                <a class="dropdown-item viewAsLink asu-brand-menu-view-as-change" href="{!viewAsUrl}">
+                                                    <i class="fa fa-eye" /> View as someone else
+                                                </a>
+                                                <a class="dropdown-item viewAsLink asu-brand-menu-view-as-logout" href="{!stopViewAsUrl}">
+                                                    <i class="fa fa-sign-out" /> Logout as {!firstName} {!lastName}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </span>
+                            </div>
+                        </apex:outputPanel>
+                    </nav>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </div>
+</apex:component>

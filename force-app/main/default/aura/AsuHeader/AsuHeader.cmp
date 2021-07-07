@@ -1,0 +1,48 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <div id="headCSSWrap">
+        <div id="asu_hdr" class="asu_hdr_white myasu-cont">
+            <div id="asu_mobile_hdr">
+                <div id="asu_logo">
+                    <a href="https://www.asu.edu/" target="_top" title="Arizona State University">
+                        <img
+                            alt="Arizona State University"
+                            title="Arizona State University"
+                            src="https://www.asu.edu/asuthemes/4.8/assets/full_logo.png"
+                            height="36"
+                            width="200"
+                    /></a>
+                </div>
+
+                <img
+                    alt="Arizona State University"
+                    title="Arizona State University"
+                    id="asu_print_logo"
+                    src="https://www.asu.edu/asuthemes/4.0-rsp.1/images/logos/asu_logo_mobile_white.png"
+                />
+            </div>
+
+            <div class="closed" id="asu_mobile_menu">
+                <div id="asu_nav_wrapper">
+                    <div id="asu_nav_menu">
+                        <h2 class="hidden">Menu</h2>
+                        <div id="asu_universal_nav">
+                            <ul>
+                                <li><a href="https://www.asu.edu/" target="_top">ASU Home</a></li>
+                                <li><a href="https://my.asu.edu/" target="_top">My ASU</a></li>
+                                <li>
+                                    <a
+                                        href="https://www.asu.edu/contactasu/"
+                                        target="_top"
+                                        title="Directory, Index and other info"
+                                        >Directory</a
+                                    >
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</aura:component>

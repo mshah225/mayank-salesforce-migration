@@ -1,45 +1,41 @@
-#Ignore all IDE specific files
-salesforce.schema
-.project
-/Referenced Packages/
-/.settings/
-/.idea/
-/IlluminatedCloud/
-/config/
-/debug/
-/deploy/
-/build/
-*.sublime-project
-*.sublime-settings
-*.sublime-workspace
-*.iml
-.DS_Store
+# This file is used for Git repositories to specify intentionally untracked files that Git should ignore.
+# If you are not using git, you can delete this file. For more information see: https://git-scm.com/docs/gitignore
+# For useful gitignore templates see: https://github.com/github/gitignore
+
+# Salesforce cache
+.sfdx/
+.localdevserver/
+
+# LWC VSCode autocomplete
+**/lwc/jsconfig.json
+
+# LWC Jest coverage reports
+coverage/
+
+# Logs
+logs
 *.log
-.bash_aliases
-.bash_logout
-.bashrc
-.c9/
-.cache/
-.config/
-.force/
-.gem/
-.gemrc
-.gitconfig
-.gnupg/
-.heroku/
-.hgignore
-.hgrc
-.local/
-.npmrc
-.nvm/
-.profile
-.profileE
-.ssh/
-workspace/
-/src/package.xml
-workspace
-.codeintel/
-/src/staticresources
-src/lwc/jsconfig.json
-src/package-lock.json
-src/package.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+
+# Eslint cache
+.eslintcache
+
+# MacOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Local environment variables
+.env
+.vim-force.com/
+scripts/
+package-lock.json

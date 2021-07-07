@@ -1,0 +1,160 @@
+<apex:page controller="SearchUsers" docType="html-5.0" sideBar="false">
+
+    <head>
+        <style>
+            .even>td,
+            .odds>td {
+                padding: 10px !important;
+                font-size: 10pt;
+            }
+
+            .odds td a:hover,
+            .even td a:hover {
+                color: #990033 !important;
+            }
+
+            .myBtn {
+                background: #990033 !important;
+                color: #fff !important;
+                border: none !important;
+                padding: 6px !important;
+                font-weight: 400 !important;
+                border-radius: 0px !important;
+            }
+
+            .myBtn:hover {
+                background: #8a002e !important;
+            }
+
+            .tablesorter-blue {
+                border-bottom: solid 1px #cdcdcd;
+            }
+
+            .tablesorter-blue th,
+            .tablesorter-blue thead td {
+                color: #000 !important;
+                background-color: #d2d2d2 !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <apex:form style="padding: 10px">
+            <apex:pageBlock mode="maindetail">
+                <h1 style="font-size: 16pt; font-weight: 400">Search for Users</h1>
+
+                <br />
+                <br />
+
+                <apex:inputText id="searchBox" value="{!searchString}" style="border-radius: 2px; width: 100%; max-width: 400px; height: 20px"
+                    html-placeholder="Enter search here" styleClass="form-control" />
+                <apex:commandButton action="{!search}" reRender="userTable,pageErrors" status="actStatusId" oncomplete="tableSort()" value="Search"
+                    id="submitButton" styleClass="myBtn" />
+
+                <apex:actionStatus id="actStatusId" onstop="tableSort()">
+                    <apex:facet name="start">
+                        <img src="/img/loading.gif" style="margin-bottom: -4px" />
+                    </apex:facet>
+                </apex:actionStatus>
+
+                <br />
+                <br />
+
+                <apex:pageMessages id="pageErrors" />
+
+                <br />
+
+                <i> Search for User Id, Name, Profile Name, EmplId, ASURITE Id, Alias, Federation Id </i>
+
+                <apex:outputPanel id="userTable">
+                    <apex:pageBlockSection id="userPageBlock" collapsible="false" columns="1">
+                        <apex:outputPanel rendered="{!IF(uList.size > 0
+                            && searchString != '',true,false)}">
+                            <br />
+                            <br />
+                            <h3 style="font-size: 12pt; font-weight: 400">Results Found for
+                                <b>{!searchString}</b>.</h3>
+
+                            <apex:dataTable value="{!uList}" var="u" id="list" width="100%" cellPadding="5" rowClasses="even,odds">
+                                <apex:column headerValue="User">
+                                    <apex:outputLink styleClass="nameLink" value="/{!u.Id}?noredirect=1" target="_blank">
+                                        {!u.FirstName} {!u.LastName}
+                                    </apex:outputLink>
+                                </apex:column>
+
+                                <apex:column headerValue="Username">
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.Username))}">
+                                        {!u.Username}
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!ISNULL(u.Username)}"> -- </apex:outputText>
+                                </apex:column>
+
+                                <apex:column headerValue="Alias">
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.Alias))}" value="{!u.Alias}" />
+                                    <apex:outputText rendered="{!ISNULL(u.Alias)}">--</apex:outputText>
+                                </apex:column>
+
+                                <apex:column headerValue="Employee Id">
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.EmplId__c))}">
+                                        {!u.EmplId__c}
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!ISNULL(u.EmplId__c)}"> -- </apex:outputText>
+                                </apex:column>
+
+                                <apex:column headerValue="Contact Name">
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.Contact.Name))}">
+                                        {!u.Contact.Name}
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!ISNULL(u.Contact.Name)}"> -- </apex:outputText>
+                                </apex:column>
+
+                                <apex:column headerValue="ASURITE Id">
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.Contact.ASURite_ID__c))}">
+                                        {!u.Contact.ASURite_ID__c}
+                                    </apex:outputText>
+
+                                    <apex:outputText rendered="{!ISNULL(u.Contact.ASURite_ID__c)}">
+                                        --
+                                    </apex:outputText>
+                                </apex:column>
+
+                                <apex:column headerValue="User Id" value="{!u.Id}" />
+
+                                <apex:column headerValue="Federation Id">
+                                    <apex:outputText rendered="{!NOT(ISNULL(u.FederationIdentifier))}" value="{!u.FederationIdentifier}" />
+
+                                    <apex:outputText rendered="{!ISNULL(u.FederationIdentifier)}"> -- </apex:outputText>
+                                </apex:column>
+
+                                <apex:column headerValue="Profile" value="{!u.Profile.Name}" />
+
+                                <apex:column headerValue="Active?" value="{!u.isActive}" />
+                            </apex:dataTable>
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{!IF(uList.size == 0
+                            && searchString != '',true,false)}">
+                            <br />
+                            <br /> No results found for
+                            <b>{!searchString}</b>.
+                        </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:outputPanel>
+            </apex:pageBlock>
+        </apex:form>
+
+        <apex:includeScript value="{!$Resource.jQuery_1_11_1_Min}" />
+        <apex:includeScript value="{!$Resource.tablesorter_min_js}" />
+        <apex:stylesheet value="{!$Resource.Theme_Blue_css}" />
+
+        <script>
+            window.$j = jQuery.noConflict();
+
+            $j(document).ready(tableSort());
+
+            function tableSort() {
+                $j("[id$='list']").tablesorter({ theme: 'blue', dateFormat: 'dd/mm/yyyy' });
+            }
+        </script>
+    </body>
+</apex:page>

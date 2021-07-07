@@ -1,0 +1,6 @@
+<apex:page controller="AllPublishedArticlesController" showHeader="false" sideBar="false" readOnly="true">
+    <apex:repeat value="{!completeListOfArticles}" var="article">
+        <apex:outputLink value="{!article.url}">{!article.articleName}</apex:outputLink>
+        <br />
+    </apex:repeat>
+</apex:page>

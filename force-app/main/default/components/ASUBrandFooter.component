@@ -1,0 +1,50 @@
+<apex:component>
+    <br />
+    <br />
+    <div id="innovation-footer">
+        <div id="innovation-bar">
+            <div class="innovation-top">
+                <div class="innovation-status">
+                    <a href="https://www.asu.edu/rankings">
+                        <span>ASU is No.1 in the U.S. for innovation</span>
+                    </a>
+                </div>
+                <div class="innovation-hidden">
+                    <a href="https://www.asu.edu/rankings">
+                        <img src="//www.asu.edu/asuthemes/4.9/assets/ASU-number-1-innovation-best-colleges.png" alt="Best Colleges U.S. News Most Innovative 2020"
+                        />
+                    </a>
+                </div>
+            </div>
+        </div>
+        <nav id="asu_footer" role="navigation" aria-label="Footer">
+            <ul class="default myasu-cont">
+                <li class="innovation-mobile-only">
+                    <a href="https://my.asu.edu/">My ASU</a>
+                </li>
+                <li>
+                    <a href="https://www.asu.edu/copyright/">Copyright and Trademark</a>
+                </li>
+                <li>
+                    <a href="https://www.asu.edu/accessibility/">Accessibility</a>
+                </li>
+                <li>
+                    <a href="https://www.asu.edu/privacy/">Privacy</a>
+                </li>
+                <li>
+                    <a href="https://www.asu.edu/tou/">Terms of Use</a>
+                </li>
+                <li>
+                    <a href="https://www.asu.edu/asujobs">Jobs</a>
+                </li>
+                <li>
+                    <a href="https://www.asu.edu/emergency/">Emergency</a>
+                </li>
+                <li class="no-border">
+                    <a href="https://www.asu.edu/contactasu/">Contact ASU</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <c:ASUBrandFooterResources />
+</apex:component>

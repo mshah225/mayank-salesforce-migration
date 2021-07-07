@@ -1,0 +1,67 @@
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
+    action="{!init}" cache="true" extensions="MyASUHelpPaginationController,ASUBrandController">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+
+    <head>
+        <title>My ASU | Help | View All Articles</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <c:GoogleTagManager />
+        <c:GoogleAnalytics />
+        <c:MyASUHelpStyles />
+    </head>
+
+    <c:GoogleTagManagerBody />
+
+    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
+    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
+        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
+
+    <div id="asu-content-container" class="myasu-help-region myasu-help-region-full-width">
+        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
+        <div class="container myasu-help-region">
+            <ol class="breadcrumb">
+                <li class="active">Home</li>
+                <li class="active">
+                    <a href="/">Help</a>
+                </li>
+                <li class="active">View All Articles</li>
+            </ol>
+            <div class="row">
+                <div class="col-md-12">
+                    <c:MyASUHelpFAQ EmbedLocation="viewAllArticles" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="bgWrapper">
+                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <c:ASUBrandFooter />
+    <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
+
+    <script>
+        function checkNumbers() {
+            var pageSize = '{!pageSize}';
+            var aCount = document.getElementById('{!$Component.theSearchResults}').getElementsByTagName('a').length;
+            console.log('aCount: ' + aCount);
+            console.log('pageSize: ' + pageSize);
+            if (aCount < pageSize) {
+                console.log('In if');
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtn}').style.display = 'none';
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtnDisabled}').style.display =
+                    'block';
+            } else {
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtn}').style.display =
+                    'initial';
+                document.getElementById('{!$Component.theSearchResults.searchResults.nextBtnDisabled}').style.display =
+                    'none';
+            }
+        }
+    </script>
+</apex:page>

@@ -1,0 +1,43 @@
+<apex:component>
+    <div class="family-portal-sidebar">
+        <img width="100%" src="{!URLFOR($Resource.Family_Portal_Sidebar_Image)}" alt="ASU family at graduation signing pitchforks with their hands"
+        />
+        <div class="well">
+            <p class="lead">
+                <strong>Have Questions?</strong>
+            </p>
+            <div class="family-portal-sidebar-contact-info">
+                <div class="row">
+                    <div class="col-sm-1 family-portal-bootstrap-vertical-center">
+                        <i class="fa fa-caret-right" />
+                    </div>
+                    <div class="col-sm-7 family-portal-bootstrap-vertical-center">
+                        <strong>
+                            <a href="mailto:asufamily@asu.edu" target="_blank">asufamily@asu.edu</a>
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1 family-portal-bootstrap-vertical-center">
+                        <i class="fa fa-caret-right" />
+                    </div>
+                    <div class="col-sm-7 family-portal-bootstrap-vertical-center">
+                        <strong>
+                            <a href="tel:4809652880" target="_blank">(480) 965-2880</a>
+                        </strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1 family-portal-bootstrap-vertical-center">
+                        <i class="fa fa-caret-right" />
+                    </div>
+                    <div class="col-sm-7 family-portal-bootstrap-vertical-center">
+                        <strong>
+                            <a href="https://family.asu.edu" target="_blank">family.asu.edu</a>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:component>

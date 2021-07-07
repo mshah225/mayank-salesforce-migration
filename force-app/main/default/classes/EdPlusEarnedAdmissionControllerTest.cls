@@ -38,7 +38,7 @@ public class EdPlusEarnedAdmissionControllerTest {
         Id testContactId = testContact.Id;
 
         // Set the necessary parameters on the page
-        PageReference pg = Page.EdPlusEALAApplications;
+        PageReference pg = Page.EdPlusEarnedAdmission;
         Test.setCurrentPage(pg);
         ApexPages.currentPage().getParameters().put('id', testContactId);
 
@@ -82,7 +82,7 @@ public class EdPlusEarnedAdmissionControllerTest {
         Id testContactId = testContact.Id;
 
         // Set the necessary parameters on the page
-        PageReference pg = Page.EdPlusEALAApplications;
+        PageReference pg = Page.EdPlusEarnedAdmission;
         Test.setCurrentPage(pg);
         ApexPages.currentPage().getParameters().put('id', testContactId);
 

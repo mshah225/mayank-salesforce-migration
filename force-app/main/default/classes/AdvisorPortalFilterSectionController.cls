@@ -43,6 +43,23 @@ public class AdvisorPortalFilterSectionController {
     }
 
     /**
+     * Gets active picklist values for the Campus.
+     *     
+     *
+     * @return picklistValuesByLabel, a Map of picklist values by their labels.
+     */
+    @AuraEnabled
+    public static Map<String, String> getCampusValues() {
+        Map<String, String> picklistValuesByLabel = new Map<String, String>();
+        List<Location__c> campusLocations = [SELECT Name FROM Location__c ORDER BY Name];
+        for (Location__c campus : campusLocations) {
+            picklistValuesByLabel.put(campus.Name, campus.Name);
+        }
+
+        return picklistValuesByLabel;
+    }
+
+    /**
      * Gets active Custom Metadata Case Status values to display on the filter section in the Advisor Portal.
      *
      * @return caseStatusValuesByLabel, a Map of Advisor_Portal_Case_Status__mdt record values by label.

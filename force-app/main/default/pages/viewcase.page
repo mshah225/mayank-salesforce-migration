@@ -260,7 +260,8 @@
                                             <div class="panel-body">
                                                 <apex:inputTextarea value="{!caseReply}" id="replyText" rows="5" cols="98" style="max-width: 100%; max-height: 100%" />
                                                 <span> Upload New Attachments (max size 25MB) </span>
-                                                <apex:inputFile fileName="{!replyCaseAttachment.name}" id="replyFile" value="{!replyCaseAttachment.Body}" />
+                                                <apex:inputFile fileName="{!replyCaseAttachment.name}" styleClass="d-block" id="replyFile" value="{!replyCaseAttachment.Body}"
+                                                />
                                                 <div class="mt-2">
                                                     <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md" />
                                                 </div>

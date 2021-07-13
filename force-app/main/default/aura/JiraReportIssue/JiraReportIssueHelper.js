@@ -15,21 +15,27 @@
         var type = component.get('v.type');
 
         var problemDescription =
-            '*' + questionOne + '*' +
+            '*' +
+            questionOne +
+            '*' +
             '\\n' +
             answerOne +
             '\\n\\n' +
-            '*' + questionTwo + '*' +
+            '*' +
+            questionTwo +
+            '*' +
             '\\n' +
             answerTwo +
             '\\n\\n' +
-            '*' + questionThree + '*' +
+            '*' +
+            questionThree +
+            '*' +
             '\\n' +
             answerThree +
             '\\n\\n';
 
         if (requestForm != undefined) {
-            problemDescription += 'Request Form: ' + '\\n' + requestForm + '\\n';
+            problemDescription += '*Request Form:*' + '\\n' + requestForm + '\\n\\n';
         }
 
         var action = component.get('c.callout');

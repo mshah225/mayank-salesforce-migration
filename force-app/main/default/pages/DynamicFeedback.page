@@ -56,8 +56,8 @@
                             <apex:inputTextarea id="caseFeedbackComments" value="{!caseDescription}" styleClass="form-textarea form-control" cols="60"
                                 rows="5" />
                         </div>
-                        <apex:commandLink value="Submit" action="{!submit}" styleClass="btn btn-maroon btn-md mt-1 mb-1" reRender="alerts,feedbackForm"
-                        />
+                        <apex:commandLink value="Submit" action="{!submit}" onclick="event.target.classList.add('disabled')" oncomplete="event.target.classList.remove('disabled')"
+                            styleClass="btn btn-maroon btn-md mt-1 mb-1" reRender="alerts,feedbackForm" />
                     </apex:form>
                 </div>
             </div>

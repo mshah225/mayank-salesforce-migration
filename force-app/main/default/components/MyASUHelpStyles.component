@@ -75,6 +75,16 @@
             white-space: pre-line;
         }
 
+        .messageTable {
+            width: 100%;
+            max-width: 1170px;
+            margin: auto !important;
+        }
+
+        .messageTable h4 {
+            color: black !important;
+        }
+
         /** viewAllArticles styles - need some custom for pagination buttons */
 
         .myasu-help-scope .page-number {

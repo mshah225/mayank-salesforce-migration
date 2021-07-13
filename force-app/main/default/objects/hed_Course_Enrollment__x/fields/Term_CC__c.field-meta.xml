@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Term_CC__c</fullName>
+    <externalDeveloperName>Term_CC__c</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Term_CC</label>
+    <length>255</length>
+    <readOnlyProxy>true</readOnlyProxy>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

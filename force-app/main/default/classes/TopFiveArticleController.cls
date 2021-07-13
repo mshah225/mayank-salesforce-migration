@@ -8,9 +8,16 @@ global class TopFiveArticleController {
 
     @HttpGet
     global static List<ArticleInfo> getTopFiveArticles() {
-        string urlPrefix = 'http://utocomm-uto.cs10.force.com/pkb/articles/FAQ/';
-        //string urlPrefix = 'http://asu.secure.force.com/kb/articles/FAQ/';
-        //string urlPrefix = getPkbSiteUrl();
+        string urlPrefix = '';
+        string urlBase = '';
+        string sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
+        string sandboxName = UserInfo.getUserName().substringAfterLast('.');
+        if (isSandbox()) {
+            urlBase = sandboxName + '-asu';
+            urlPrefix = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/articles/FAQ/';
+        } else {
+            urlPrefix = 'https://asu.secure.force.com/kb/articles/FAQ/';
+        }
         List<KnowledgeArticleViewStat> articleViewStatList = [
             SELECT Id, ParentId
             FROM KnowledgeArticleViewStat
@@ -146,9 +153,13 @@ global class TopFiveArticleController {
     }
 
     global static string getArticleUrl(KnowledgeArticleVersion kav) {
-        string urlPrefix;
+        string urlPrefix = '';
+        string urlBase = '';
+        string sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
+        string sandboxName = UserInfo.getUserName().substringAfterLast('.');
         if (isSandbox()) {
-            urlPrefix = 'http://utocomm-uto.cs10.force.com/pkb/articles/';
+            urlBase = sandboxName + '-asu';
+            urlPrefix = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/articles/';
         } else {
             urlPrefix = 'https://asu.secure.force.com/kb/articles/';
         }
@@ -170,13 +181,16 @@ global class TopFiveArticleController {
     }
 
     global static string getMoreArticlesUrl(string dcGroup, string dataCategory) {
-        string url;
+        string url = '';
+        string urlBase = '';
+        string sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
+        string sandboxName = UserInfo.getUserName().substringAfterLast('.');
         if (isSandbox()) {
-            url = 'http://utocomm-uto.cs10.force.com/pkb/pkb_Home?l=en_US&c=';
+            urlBase = sandboxName + '-asu';
+            url = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/pkb_Home?l=en_US&c=';
         } else {
             url = 'https://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
         }
-
         url += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c', '');
 
         return url;

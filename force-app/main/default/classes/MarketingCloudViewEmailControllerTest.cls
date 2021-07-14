@@ -23,9 +23,7 @@ public with sharing class MarketingCloudViewEmailControllerTest {
             Name = 'dataext',
             ClientId__c = MarketingCloudEmailLinkMockCallout.CLIENT_ID,
             ClientSecret__c = MarketingCloudEmailLinkMockCallout.CLIENT_SECRET,
-            Endpoint__c = 'TEST_ENDPOINT',
-            AccountId__c = 'TEST_ACCOUNT_ID',
-            Token_Endpoint__c = 'TEST_TOKEN_ENDPOINT'
+            Endpoint__c = 'TEST_ENDPOINT'
         );
         insert config;
     }

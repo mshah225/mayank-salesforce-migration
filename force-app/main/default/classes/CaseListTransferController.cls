@@ -1,7 +1,9 @@
 public class CaseListTransferController {
+    @TestVisible
     private final List<Case> cs;
     private Boolean isUserPageLoaded;
     private Boolean isCARPageLoaded;
+    @TestVisible
     private List<User> asUsersToAdd;
     private Set<Id> asRoleIds;
     private Set<Id> uberRoleIds;

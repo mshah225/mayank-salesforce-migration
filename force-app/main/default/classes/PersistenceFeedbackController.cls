@@ -1,6 +1,7 @@
 public without sharing class PersistenceFeedbackController {
     private Boolean debug = false; // Debug mode flag
     private String caseContactId; // The Id of the contact to associate the case to
+    @TestVisible
     private Boolean URLParamsExistAndAreValid; // Determines if the required URL parameters were provided and are valid
     private Boolean useLoggedInContact = false; // Determines if we should attempt to automatically detect the contact for the case
     private Feedback_Cars__c settings; // List of cached car Ids for assigning the feedback case

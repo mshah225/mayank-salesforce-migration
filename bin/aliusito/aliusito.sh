@@ -234,8 +234,16 @@ function execute_changes() {
                     fi
                 fi
             else
+                # Attempt to pull from ASU:main to keep branch up-to-date if there are no conflicts
+                git pull --no-edit ASU main &>/dev/null
+                if [ $? -eq 0 ]; then
+                    git push origin $branch &>/dev/null
+                else
+                    git merge --abort &>/dev/null
+                fi
+
                 if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch does not exist in upstream"
+                    echo "--> $branch does not exist in upstream, attempting to pull non-destructive changes from ASU:main"
                 fi
             fi
 

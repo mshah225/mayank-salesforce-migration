@@ -3,7 +3,7 @@ public class MarketingCloudEmailLinkMockCallout implements HttpCalloutMock {
     private HttpRequest request;
     public static final String CLIENT_ID = 'testClientId';
     public static final String CLIENT_SECRET = 'testClientSecret';
-    public static final String VIEW_EMAIL_URL = 'http://view.testreply.asu.edu/?qs=testDocumentId';
+    public static String VIEW_EMAIL_URL = 'http://view.testreply.asu.edu/?qs=testDocumentId';
 
     public HttpResponse respond(HttpRequest request) {
         this.request = request;

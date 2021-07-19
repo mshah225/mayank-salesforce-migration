@@ -11,6 +11,7 @@ public without sharing class ContactUploadSearcher {
     private Set<String> postalCodeSet = new Set<String>();
     private Map<String, Contact_Upload_Detail__c> firstLastPhoneToOriginalDetail = new Map<String, Contact_Upload_Detail__c>();
     private Set<String> phoneSet = new Set<String>();
+    @TestVisible
     private List<Contact> matchedContacts;
     private List<Contact_Upload_Detail__c> unmatchedDetails = new List<Contact_Upload_Detail__c>();
     private Map<Contact_Upload_Detail__c, Contact> unmappedDetailToContact = new Map<Contact_Upload_Detail__c, Contact>();
@@ -64,6 +65,7 @@ public without sharing class ContactUploadSearcher {
         }
     }
 
+    @TestVisible
     private void mapFirstLastBirthdateAndPostalIfPresent(Contact_Upload_Detail__c detail) {
         if (
             !String.isBlank(detail.First_Name__c) &&
@@ -86,6 +88,7 @@ public without sharing class ContactUploadSearcher {
         }
     }
 
+    @TestVisible
     private void mapFirstLastAndPhoneIfPresent(Contact_Upload_Detail__c detail) {
         if (
             !String.isBlank(detail.First_Name__c) &&

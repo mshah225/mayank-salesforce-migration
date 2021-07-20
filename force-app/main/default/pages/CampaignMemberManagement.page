@@ -145,7 +145,7 @@
             }
         </style>
 
-        <apex:includeScript value="/support/console/32.0/integration.js" />
+        <apex:includeScript value="/support/console/50.0/integration.js" />
         <script type="text/javascript">
             var primaryTabId;
 
@@ -153,9 +153,9 @@
                 if (!sforce.console.isInConsole()) {
                     window.parent.location.replace('/' + recid);
                 } else {
-                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                    sforce.console.getFocusedPrimaryTabId(function (result) {
                         primaryTabId = result.id;
-                        sforce.console.openSubtab(result.id, recid, true, recname, null);
+                        sforce.console.openSubtab(primaryTabId, '/'+ recid, true, recname, null, null);
                     });
                 }
             }
@@ -164,9 +164,9 @@
                 if (!sforce.console.isInConsole()) {
                     window.open('/' + recid, '_blank');
                 } else {
-                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                    sforce.console.getFocusedPrimaryTabId(function (result) {
                         primaryTabId = result.id;
-                        sforce.console.openSubtab(result.id, recid, true, recname, null);
+                        sforce.console.openSubtab(result.id, '/'+recid, true, recname, null, null);
                     });
                 }
             }

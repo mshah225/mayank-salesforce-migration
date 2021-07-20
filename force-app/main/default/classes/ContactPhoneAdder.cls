@@ -24,5 +24,6 @@ public class ContactPhoneAdder implements ObjectScramble {
 
     private void addPhoneNumber() {
         contactToScramble.HomePhone = contactToScramble.Phone;
+        contactToScramble.HomePhone = contactToScramble.HomePhone.replaceAll(',', '/');
     }
 }

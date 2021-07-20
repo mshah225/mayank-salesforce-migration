@@ -146,6 +146,10 @@ public class CivitasPersistenceController {
             }
             if (trm.Snap_Date__c >= startDate && trm.Snap_Date__c <= endDate) {
                 if (trm.Snap_Date__c > startDate && startSemesterData != null) {
+                    /** [UNUSED] This never runs? (Found while writing test code)
+                     * startSemesterData is null UNLESS trm.Snap_Date__c < startDate
+                     * But for trm.Snap_Date__c must be greater than startDate as well.
+                     */
                     Date tempStart = startDate;
                     while (tempStart < trm.Snap_Date__c) {
                         civitasData.add(
@@ -253,6 +257,7 @@ public class CivitasPersistenceController {
         return civitasData;
     }
 
+    @TestVisible
     private static String monthToText(Integer month) {
         if (month == 1) {
             return 'Jan';

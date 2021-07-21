@@ -1,5 +1,5 @@
 <apex:page controller="HelpDeskController" sidebar="false" id="mypage" docType="html-5.0">
-    <apex:includeScript value="/support/console/35.0/integration.js" />
+    <apex:includeScript value="/support/console/50.0/integration.js" />
     <script type="text/javascript">
         // Set the tab title in the Console
         function defaultTabTitle() {

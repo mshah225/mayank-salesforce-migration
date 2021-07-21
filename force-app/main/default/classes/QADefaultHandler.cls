@@ -9,17 +9,16 @@ global class QADefaultHandler implements QuickAction.QuickActionDefaultsHandler 
         List<String> vars = new List<String>();
 
         // Check if the quick action is the standard Case Feed send email action
-        for (Integer x = 0; x < defaults.size(); x++) {
+        for (Integer i = 0; i < defaults.size(); i++) {
             if (
-                defaults.get(x) instanceof QuickAction.SendEmailQuickActionDefaults &&
-                defaults.get(x).getTargetSObject().getSObjectType() == EmailMessage.sObjectType &&
-                ((defaults.get(x).getActionName().equals('Case.Email') && 
-                  defaults.get(x).getActionType().equals('Email')) || 
-                 ((defaults.get(x).getActionName().equals('Case.New_Send_Email') && 
-                   defaults.get(x).getActionType().equals('SendEmail'))))
-
+                defaults.get(i) instanceof QuickAction.SendEmailQuickActionDefaults &&
+                defaults.get(i).getTargetSObject().getSObjectType() == EmailMessage.sObjectType &&
+                ((defaults.get(i).getActionName().equals('Case.Email') &&
+                defaults.get(i).getActionType().equals('Email')) ||
+                (defaults.get(i).getActionName().equals('Case.New_Send_Email') &&
+                defaults.get(i).getActionType().equals('SendEmail')))
             ) {
-                sendEmailDefaults = (QuickAction.SendEmailQuickActionDefaults) defaults.get(x);
+                sendEmailDefaults = (QuickAction.SendEmailQuickActionDefaults) defaults.get(i);
                 break;
             }
         }

@@ -17,10 +17,19 @@
 
     <apex:includeScript value="/support/console/38.0/integration.js" />
     <script type="text/javascript">
+        function isLightningExperienceOrSalesforce1() {
+            return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
         function openCaseSubTab(theCaseId, caseNumber) {
-            sforce.console.getEnclosingPrimaryTabId(function (result) {
-                sforce.console.openSubtab(result.id, '/' + theCaseId, true, caseNumber, null);
-            });
+            if (isLightningExperienceOrSalesforce1()) {
+                var message = "/lightning/r/Case/" + theCaseId + "/view";
+                parent.postMessage(message, '*');
+            } else {
+                sforce.console.getEnclosingPrimaryTabId(function (result) {
+                    sforce.console.openSubtab(result.id, '/' + theCaseId, true, caseNumber, null);
+                });
+            }
         }
     </script>
 </apex:component>

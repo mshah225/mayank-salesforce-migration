@@ -319,12 +319,6 @@
 
                             <tr>
                                 <td>
-                                    <!--a href="/{!theContact.Id}" target="_blank"-->
-                                    <a href="#" onclick="openNewSubtab('/{!theContact.Id}','Details');return false">
-                                        Salesforce Contact
-                                    </a>
-                                </td>
-                                <td>
                                     <a href="https://webapp4.asu.edu/uachieve/student/search.html" target="_blank">
                                         DARS
                                     </a>

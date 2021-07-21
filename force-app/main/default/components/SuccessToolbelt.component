@@ -1,12 +1,24 @@
 <apex:component id="SuccessToolbelt">
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_303, '/dist/css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <apex:stylesheet value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.css') }" />
 
     <script type="text/javascript">
+
+        function isLightningExperienceOrSalesforce1() {
+            return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
         function openRecodingTab() {
-            sforce.console.openPrimaryTab(null, '/apex/successRecoding', true, 'Student Success Recoding', null, null);
+            if (isLightningExperienceOrSalesforce1()) {
+                var message = "/apex/successRecoding";
+                parent.postMessage(message, '*');
+            } else {
+                sforce.console.openPrimaryTab(
+                    null, '/apex/successRecoding', true, 'Student Success Recoding', null, null
+                );
+            }
         }
     </script>
 
-    <a href="#" class="btn btn-default asu-primary" onclick="openRecodingTab();"> Student Recoding </a>
+    <a href="#" class="btn btn-default btn-md asu-primary" onclick="openRecodingTab();"> Student Recoding </a>
 </apex:component>

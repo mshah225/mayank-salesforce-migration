@@ -2,6 +2,7 @@ public class ObjectScrambleService {
     private ObjectTypes objectType;
     public enum ObjectTypes {
         CONTACT,
+        CONTACT_NO_PHONE,
         EDPLUS_CASE,
         LEAD,
         CONVERTED_LEAD,
@@ -22,6 +23,10 @@ public class ObjectScrambleService {
                     'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
                     'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
                     'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact';
+            }
+            when CONTACT_NO_PHONE {
+                queryToReturn = 
+                    'SELECT Id, HomePhone, Phone FROM Contact WHERE HomePhone = null AND Phone != null';
             }
             when EDPLUS_CASE {
                 queryToReturn = 'SELECT Id FROM Case WHERE LastModifiedDate >= 2020-03-01T00:00:00Z AND (CC_Functional_Group__c = \'a240W000001jHG6\' OR CC_Functional_Group__c = \'a240W000001jHH0\' OR CC_Functional_Group__c = \'a240W000001jHG9\'  OR CC_Functional_Group__c = \'a240W000001jHG8\' OR CC_Functional_Group__c = \'a240W000001jHGB\' OR  CC_Functional_Group__c = \'a240W000001jHHr\')';
@@ -56,6 +61,9 @@ public class ObjectScrambleService {
             when CONTACT {
                 objectScrambler = new ContactScrambler((Contact) objectToScramble);
             }
+            when CONTACT_NO_PHONE {
+                objectScrambler = new ContactPhoneAdder((Contact) objectToScramble);
+            }
             when EDPLUS_CASE {
                 objectScrambler = new CaseScrambler((Case) objectToScramble);
             }
@@ -86,6 +94,9 @@ public class ObjectScrambleService {
                 header =
                     'Id,Birthdate,Email,Corporate_Relations_Email__c,EPO_Email__c,ASU_Email__c,Last_Case_Email_Used__c,Lead_Email__c,' +
                     'Lead_Secondary_Email__c,me3hs_User_ID__c,Parent_Email__c,Personal_Email__c,silverpop__Silverpop_RecipientID__c\n';
+            }
+            when CONTACT_NO_PHONE {
+                header = 'Id,HomePhone\n';
             }
             when EDPLUS_CASE {
                 header = 'Id,Ed_Plus_Org_Viewable__c\n';

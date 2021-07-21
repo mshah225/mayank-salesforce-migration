@@ -78,9 +78,9 @@
                 <!-- Email Name -->
                 <apex:column>
                     <apex:facet name="header">Email Name</apex:facet>
-                    <apex:outputText>
-                        <a href="/{!message.Id}" target="_blank">{!message.name}</a>
-                    </apex:outputText>
+                    <apex:outputLink value="javascript:;" onClick="openLink('{!message.Id}', '{!message.name}')">
+                        {!message.name}
+                    </apex:outputLink>
                 </apex:column>
 
                 <!-- Subject -->
@@ -125,11 +125,27 @@
             </apex:outputPanel>
         </apex:pageBlock>
 
+        <apex:includeScript value="/support/console/38.0/integration.js" />
         <script>
             // Invoke client-side sorting
             $(document).ready(function () {
                 $('table').tablesorter();
             });
+
+            function isLightningExperienceOrSalesforce1() {
+                return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+            }
+
+            function openLink(messageId, messageName) {
+                if (isLightningExperienceOrSalesforce1()) {
+                    var message = "/lightning/r/et4ae5__IndividualEmailResult__c/" + messageId + "/view";
+                    parent.postMessage(message, '*');
+                } else {
+                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                        sforce.console.openPrimaryTab(null, '/' + messageId, true, messageName);
+                    });
+                }
+            }
         </script>
     </body>
 </apex:page>

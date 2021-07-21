@@ -85,6 +85,10 @@ jobs:
               uses: JesseTG/rm@v1.0.2
               with:
                   path: force-app/main/default/settings
+            - name: Remove 'staticresources' directory
+              uses: JesseTG/rm@v1.0.2
+              with:
+                  path: force-app/main/default/staticresources
             - name: Remove 'tabs' directory
               uses: JesseTG/rm@v1.0.2
               with:

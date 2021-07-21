@@ -246,7 +246,8 @@
                 <br />
 
                 <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page2}" status="statusGif" />&nbsp;&nbsp;&nbsp;
-                <a href="/apex/successRecoding" class="btn btn-default">Cancel and Start Over</a>&nbsp;&nbsp;&nbsp;
+                <apex:commandButton styleClass="btn btn-default" value="Cancel and Start Over" action="{!page1Reset}" rerender="mainForm"
+                    status="statusGif" />&nbsp;&nbsp;&nbsp;
                 <apex:commandButton styleClass="btn btn-success" value="Confirm and Transfer" action="{!transferStudents}" status="statusGif"
                 />
             </apex:outputPanel>
@@ -257,7 +258,8 @@
                 <br />
                 <br />
 
-                <a href="/apex/successRecoding" class="btn btn-default">Start Over</a>&nbsp;&nbsp;&nbsp;
+                <apex:commandButton styleClass="btn btn-default" value="Start Over" action="{!page1Reset}" rerender="mainForm" status="statusGif"
+                />&nbsp;&nbsp;&nbsp;
                 <apex:commandButton value="Transfer more from {!selectedCoachName}" rendered="{!coachPath}" action="{!findCoachStudents}"
                     styleClass="btn btn-primary" reRender="mainForm" status="statusGif" />
             </apex:outputPanel>

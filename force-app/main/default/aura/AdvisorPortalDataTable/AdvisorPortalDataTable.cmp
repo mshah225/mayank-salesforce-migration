@@ -174,7 +174,7 @@
 
                     <lightning:accordionSection
                         name="{!contactWrapper.portalContact.Name}"
-                        label="{!contactWrapper.portalContact.LastName + ', ' + contactWrapper.portalContact.FirstName}"
+                        label="{!contactWrapper.portalContact.LastName + ', ' + contactWrapper.portalContact.Preferred_First_Name__c}"
                     >
                         <aura:set attribute="actions">
                             <span class="slds-p-horizontal_xx-small">&#124;</span>

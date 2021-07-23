@@ -4,7 +4,7 @@
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
 
     <head>
-        <title>{!theContact.FirstName}'s Student Profile</title>
+        <title>{!theContact.Preferred_First_Name__c}'s Student Profile</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <!-- Latest compiled and minified CSS -->
@@ -248,7 +248,7 @@
                                 <span class="headerTextColor"> {!contactName} </span>
                             </h2>
                             <h2 style="margin-top: 0px" class="intro">
-                                <span style="color: #9f2b50"> {!theContact.FirstName} {!theContact.LastName} </span>
+                                <span style="color: #9f2b50"> {!theContact.Preferred_Full_Name__c} </span>
                                 <apex:outputPanel rendered="{!deceased != ''}">
                                     <span style="font-size: 12pt; margin-left: 20px"> {!deceased} </span>
                                 </apex:outputPanel>
@@ -492,7 +492,7 @@
                                 </apex:dataTable>
 
                                 <apex:outputText rendered="{!openCases.size == 0}">
-                                    No active/open cases found for {!theContact.FirstName}.
+                                    No active/open cases found for {!theContact.Preferred_First_Name__c}.
                                 </apex:outputText>
                             </div>
                         </div>
@@ -547,7 +547,7 @@
                                         </div>
                                     </apex:outputPanel>
                                     <apex:outputText rendered="{!serviceIndicators.size == 0}">
-                                        No service holds found for {!theContact.FirstName}.
+                                        No service holds found for {!theContact.Preferred_First_Name__c}.
                                     </apex:outputText>
                                 </div>
                             </div>
@@ -596,7 +596,7 @@
                                 </apex:dataTable>
 
                                 <apex:outputText rendered="{!sGroupList.size == 0}">
-                                    No Student Groups found for {!theContact.FirstName}
+                                    No Student Groups found for {!theContact.Preferred_First_Name__c}
                                 </apex:outputText>
                             </div>
                         </div>
@@ -686,6 +686,10 @@
                                     <apex:outputPanel id="generalContact">
                                         <div class="col-sm-6">
                                             <table class="table table-striped asu-detail-table">
+                                                <tr>
+                                                    <th>Primary Name</th>
+                                                    <td> {!theContact.FirstName} {!theContact.LastName} </td>
+                                                </tr>
                                                 <tr>
                                                     <th>Address</th>
                                                     <td>
@@ -2359,7 +2363,7 @@
                                                         Name
                                                     </div>
                                                     <div style="display:{!IF(gradProgram.gradCommittees.size > 0, 'none', 'block')}">
-                                                        There are no Faculty Committee Members for {!theContact.Name}.
+                                                        There are no Faculty Committee Members for {!theContact.Preferred_Full_Name__c}.
                                                     </div>
                                                 </th>
                                                 <th class="gradTD innerHeaders" style="width: 20%">
@@ -2435,7 +2439,7 @@
                                                         Name
                                                     </div>
                                                     <div style="display:{!IF(gradProgram.gradAdvisors.size > 0, 'none', 'block')}">
-                                                        There are no Staff Advisors for {!theContact.Name}.
+                                                        There are no Staff Advisors for {!theContact.Preferred_Full_Name__c}.
                                                     </div>
                                                 </th>
                                             </tr>
@@ -2738,7 +2742,7 @@
         function setTabTitle() {
             //Set the current tab's title
             if (sforce.console.isInConsole() || window.location.href.includes('FrameOrigin')) {
-                sforce.console.setTabTitle("{!theContact.FirstName}'s Student Profile");
+                sforce.console.setTabTitle("{!theContact.Preferred_First_Name__c}'s Student Profile");
                 inConsole = true;
             }
         }

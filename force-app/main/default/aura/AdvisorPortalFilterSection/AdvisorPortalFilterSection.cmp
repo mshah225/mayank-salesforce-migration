@@ -67,7 +67,10 @@
     />
 
     <aura:renderIf isTrue="{!v.isFilterSectionShown}">
-        <div aura:id="filterSection" class="slds-card slds-p-around_small slds-m-vertical_x-small slds-form_horizontal">
+        <div
+            aura:id="filterSection"
+            class="slds-card slds-var-p-around_small slds-var-m-vertical_x-small slds-form_horizontal"
+        >
             <div class="slds-grid slds-wrap slds-gutters_x-small">
                 <span
                     onkeypress="{!c.returnKeyPressed}"
@@ -78,8 +81,9 @@
                         type="text"
                         name="StudentField"
                         value="{!v.Student}"
-                        label="Student: "
+                        label="Student†: "
                         onblur="{!c.applyFilters}"
+                        title="Uses preferred name"
                     />
                 </span>
                 <c:ComboBoxMultiSelect
@@ -167,7 +171,7 @@
                         <legend class="slds-form-element__legend slds-form-element__label">Created Date</legend>
                         <div class="slds-form-element__control">
                             <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -177,7 +181,7 @@
                                         onchange="{!c.validateDates}"
                                     />
                                 </div>
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -197,7 +201,7 @@
                         <legend class="slds-form-element__legend slds-form-element__label">Follow Up Date</legend>
                         <div class="slds-form-element__control">
                             <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -207,7 +211,7 @@
                                         onchange="{!c.validateDates}"
                                     />
                                 </div>
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -229,7 +233,7 @@
                         </legend>
                         <div class="slds-form-element__control">
                             <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -239,7 +243,7 @@
                                         onchange="{!c.validateDates}"
                                     />
                                 </div>
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -264,10 +268,12 @@
                     onclick="{!c.applyFilters}"
                 />
             </div>
+
+            <div class="slds-var-m-top_medium slds-text-body_small">† Uses preferred name</div>
         </div>
     </aura:renderIf>
 
-    <span class="slds-m-vertical_x-small" aria-label="Case Filter Buttons">
+    <span class="slds-var-m-vertical_x-small" aria-label="Case Filter Buttons">
         <lightning:buttonGroup>
             <lightning:buttonStateful
                 aura:id="allCasesFilter"

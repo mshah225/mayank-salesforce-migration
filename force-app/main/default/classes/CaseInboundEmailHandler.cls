@@ -283,7 +283,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 EmailTransformer transformer = new EmailTransformer();
-                String cleanFromAddress = transformer.trimReplyFromSuffix(email.fromAddress);
+                String cleanFromAddress = transformer.cleanEmailAddress(email.fromAddress);
                 Contact[] contacts = [
                     SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
                     FROM Contact
@@ -664,7 +664,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         theEmail.FromName = email.fromName;
         // Clean from address (Remove @reply.asu.edu)
         EmailTransformer cleanFromTransformer = new EmailTransformer();
-        theEmail.FromAddress = cleanFromTransformer.trimReplyFromSuffix(email.fromAddress);
+        theEmail.FromAddress = cleanFromTransformer.cleanEmailAddress(email.fromAddress);
 
         /* **** CC */
         if (email.ccAddresses != null) {

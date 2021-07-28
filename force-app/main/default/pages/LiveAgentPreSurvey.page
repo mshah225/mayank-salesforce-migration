@@ -79,8 +79,8 @@
                         <input type="submit" style="height: 15% !important; font-size: 4vh !important" value="Chat Now" id="prechat_submit" onclick="setName()"
                             class="btn btn-primary btn-lg" />
                     </div>
-                    <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js"></script>
-                    <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/32.0/prechat.js"></script>
+                    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js"></script>
+                    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/32.0/prechat.js"></script>
                     <script type="text/javascript">
                         var orgId = '{!orgId}';
                         var chatDeploymentId = '{!chatDeploymentId}';

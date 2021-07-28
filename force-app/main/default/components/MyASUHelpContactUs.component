@@ -4,7 +4,7 @@
     <apex:attribute name="RoverPhone" description="Boolean to display the Rover (starbucks) phone number" type="Boolean" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js" />
+    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js" />
     <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';

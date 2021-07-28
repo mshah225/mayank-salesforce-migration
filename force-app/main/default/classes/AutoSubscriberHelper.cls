@@ -1,6 +1,7 @@
 public with sharing class AutoSubscriberHelper {
     String typeOfObject;
     public Map<Auto_Subscriber_Setting__mdt, List<String>> settingToSubscription;
+    @TestVisible
     Map<Id, List<Subscriber__c>> contactToSubscriber;
     public static Map<Id, String> campaignToRecordTypeName;
     public static Map<Id, String> contactToCareer;

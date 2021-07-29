@@ -16,7 +16,6 @@
 
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
-    <div id="ASUBrandHeaderSpacer"></div>
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />

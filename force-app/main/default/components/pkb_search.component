@@ -26,41 +26,37 @@
 
     <div style="clear: both"></div>
 
-    <form class="form" id="searchAskForm">
-        <div style="float: left">
-            <div id="searchAskInputContainer">
-                <textarea onfocus="clearPrompt(this);" onblur="restorePrompt(this); buildSearchHref();" onkeypress="checkForEnter(event, this);"
-                    title="{!pkbCon.searchPrompt}" tabindex="1" type="text" name="inputboxform" class="{!IF(pkbCon.enteredSearchQuery == pkbCon.searchPrompt, 'default', '')}"
-                    id="searchAskInput" style="height: 36px">
-{!pkbCon.enteredSearchQuery}</textarea
+    <form class="form">
+        <div class="row">
+            <div class="col-9 font-size-12">
+                <textarea onblur="restorePrompt(this); buildSearchHref();" onkeypress="checkForEnter(event, this);" placeholder="{!pkbCon.searchPrompt}"
+                    title="{!pkbCon.searchPrompt}" tabindex="1" type="text" name="inputboxform" class="w-100" id="searchAskInput"></textarea
                 >
+                
                 <a
                     href="#"
-                    id="resetButton"
-                    style="display: inline"
-                    class="reset"
                     onclick="resetPrompt($$('#' +SEARCH_TEXT_ID)[0]); return false;"
-                    >{!$Label.PKB2_Reset_Search}</a
+                    class="search-reset-icon"
+                    ><i class="fa fa-lg fa-times-circle " aria-label="{!$Label.PKB2_Reset_Search}"></i></a
                 >
             </div>
-        </div>
 
-        <div style="float: left">
-            <a href="#" id="searchAskButton" tabindex="2" class="action" onclick="searchButtonClicked(); return false;">
-                <span title="{!pkbCon.buttonPrompt}" class="tip">{!pkbCon.buttonPrompt}</span>
-            </a>
+            <div class="col-3">
+                <a href="#" class="btn btn-md btn-maroon" id="searchAskButton" tabindex="2" onclick="searchButtonClicked(); return false;">
+                    <span title="{!pkbCon.buttonPrompt}">{!pkbCon.buttonPrompt}</span>
+                </a>
+            </div>
         </div>
     </form>
-    <div style="margin-top: 10px">&nbsp;</div>
-    <div id="backbuttoncontainer">
-        <apex:outputPanel layout="block" rendered="{!showBackLinks}" id="backbutton" style="margin-bottom: 5px">
+    <div>
+        <apex:outputPanel layout="block" rendered="{!showBackLinks}" styleClass="my-1">
             <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
-                <a class="relatedLink" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}"
+                <a  href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}"
                     >&lt; {!$Label.PKB2_Back_To_Results}</a
                 >
             </apex:outputText>
             <apex:outputText rendered="{!NOT(pkbCon.displaySearchResultsLink)}">
-                <a class="relatedLink" href="{!$Site.CurrentSiteUrl}">&lt; {!$Label.PKB2_Back_To_Search_Page}</a>
+                <a  href="{!$Site.CurrentSiteUrl}">&lt; {!$Label.PKB2_Back_To_Search_Page}</a>
             </apex:outputText>
         </apex:outputPanel>
     </div>

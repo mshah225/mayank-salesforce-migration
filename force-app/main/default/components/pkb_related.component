@@ -14,7 +14,7 @@
                 <apex:variable var="articleURL" value="{!$Site.CurrentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!a.urlName}"
                 />
                 <apex:outputPanel layout="block" rendered="{!(LEFT(pkbCon.theArticle.Id, 15) != LEFT(a.Id, 15))}" style="margin-bottom: 5px">
-                    <a class="relatedLink" href="{!articleURL}/?{!params}">{!a.Title}</a>
+                    <a href="{!articleURL}/?{!params}">{!a.Title}</a>
                 </apex:outputPanel>
             </knowledge:articleList>
         </apex:outputPanel>

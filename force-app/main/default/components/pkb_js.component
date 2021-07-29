@@ -138,6 +138,9 @@
 
     // detects the pressing of the enter key while the search box is in focus and performs the search
     function checkForEnter(e, o) {
+      if (o.value != null && o.value != '') {
+        o.classList.remove('default');
+      }
       if (e.keyCode == 13) {
         currSearch = jQuery.trim(o.value);
         buildSearchHref();
@@ -182,19 +185,9 @@
     // restores the search prompt if the search box is empty, otherwise copies the search query to the global var
     function restorePrompt(e) {
       if (e.value == "" || e.value == null) {
-        e.value = searchPrompt;
-        currSearch = searchPrompt;
-        e.className = "default";
+        e.classList.add("default");
       } else {
         currSearch = jQuery.trim(e.value);
-      }
-    }
-
-    // clears the search box of the prompt text when a user clicks on it unless the prompt is being displayed
-    function clearPrompt(e) {
-      if (e.value == searchPrompt) {
-        e.value = "";
-        e.className = "";
       }
     }
 
@@ -202,7 +195,7 @@
     function resetPrompt(e) {
       currSearch = "";
       e.value = "";
-      e.className = "";
+      e.classList.add("default");
     }
 
     function validSearchQuery() {
@@ -365,8 +358,7 @@
     $$('#' + SEARCH_TEXT_ID).ready(function () {
       var o = $$('#' + SEARCH_TEXT_ID)[0];
       if (currSearch == "") {
-        o.value = searchPrompt;
-        o.className = "default";
+        o.classList.add("default");
       }
     });
 

@@ -54,6 +54,7 @@
             width: calc(100% - 30px);
             min-width: 353px;
             border: #ddd 1px solid;
+            background-color: white;
         }
 
         .summaryTitle {
@@ -102,9 +103,9 @@
                 <apex:outputPanel id="rerenderModal">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <!-- Modal Title should be set by JS -->
-                            <h4 class="summary-modal-title">{!Subject}</h4>
+                            <h4 class="modal-title summary-modal-title">{!Subject}</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 
                         <div class="modal-body">
@@ -118,7 +119,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
+                            <button type="button" class="btn btn-default btn-md asu-secondary" data-dismiss="modal">
                                 Close
                             </button>
                         </div>

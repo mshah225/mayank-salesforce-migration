@@ -54,7 +54,6 @@ public with sharing class TopFiveArticleControllerAKBTest {
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
 
-        // req.requestURI = 'https://cs9.salesforce.com/services/apexrest/v.9/member/me/results/today';
         req.requestURI = System.URL.getSalesforceBaseUrl() + '/services/apexrest/TopFiveArticlesAKB';
         req.httpMethod = 'GET';
         RestContext.request = req;

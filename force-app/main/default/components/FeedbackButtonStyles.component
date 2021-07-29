@@ -8,10 +8,12 @@
             padding-right: 0.6em !important;
             padding-top: 0.4em !important;
             padding-bottom: 0.4em !important;
+            font-size: small !important;
         }
 
         .feedback-button-text {
             font-weight: 400 !important;
+            font-size: small !important;
         }
     </style>
 </apex:component>

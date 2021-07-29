@@ -2,7 +2,7 @@
     <apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
 
     <apex:outputPanel layout="block" styleClass="border-bottom" rendered="{!pkbCon.displayNarrow}">
-        <h2 class="border-bottom mb-0 h6 font-weight-bold">{!$Label.PKB2_Narrow_Search}</h2>
+        <h2 class="d-block w-100 border-bottom mb-0 h6 font-weight-bold">{!$Label.PKB2_Narrow_Search}</h2>
 
         <apex:outputPanel layout="block" styleClass="py-1 font-size-12" rendered="{!pkbCon.displayCategory1}">
             <c:pkb_categoryselect catNum="1" catGroup="{!pkbCon.categoryGroup1}" catGroupLabel="{!pkbCon.categoryLabel1}" rootCat="{!pkbCon.rootCategory1}"

@@ -216,12 +216,6 @@
             font-size: 11px;
         }
 
-        div.searchDrillr {
-            font-size: 11px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
         div#contactUs {
             font-size: 110%;
             margin-left: auto;

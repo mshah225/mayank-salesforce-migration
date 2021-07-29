@@ -10,8 +10,7 @@
         <apex:outputPanel layout="block" id="feedbackYesNoContainer">
             <apex:actionFunction name="refreshYesNo" rerender="feedbackYesNoContainer" status="feedbackYesNoStatus" />
 
-            <h2 class="section">{!$Label.PKB2_Feedback}</h2>
-            <div style="height: 5px">&nbsp;</div>
+            <h2 class="d-block w-100 border-bottom mb-1 h6 font-weight-bold">{!$Label.PKB2_Feedback}</h2>
 
             <div id="feedback">
                 <apex:outputText rendered="{!NOT(pkbCon.feedbackRecorded)}">

@@ -8,11 +8,11 @@
     <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
     <noscript> Note: This page requires JavaScript to run correctly. </noscript>
 
-    <div class="articleViewIcons">
+    <div>
         <c:pkb_articleicons pkbCon="{!pkbCon}" />
     </div>
 
-    <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" style="margin-bottom: 5px">
+    <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" class="mb-1">
         <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
             <a href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}">&lt; {!$Label.PKB2_Back_To_Results}</a>
         </apex:outputText>
@@ -21,9 +21,9 @@
         </apex:outputText>
     </apex:outputPanel>
 
-    <div style="width: 100%" id="articleContainer">
+    <div class="w-100">
         <apex:insert name="body" />
-        <apex:outputPanel layout="block" style="margin-top: 20px; margin-bottom: 20px" rendered="{!NOT(pkbCon.isSite)}">
+        <apex:outputPanel layout="block" class="my-3" rendered="{!NOT(pkbCon.isSite)}">
             <i>Viewing the PKB from a normal salesforce url (instead of through a Sites url) is for testing purposes only. No
                 article content will render on this page, but all other PKB functionality can be tested.</i>
         </apex:outputPanel>

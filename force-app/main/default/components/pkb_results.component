@@ -12,7 +12,7 @@
         <apex:outputPanel layout="block" id="results">
             <div>
                 <apex:outputText rendered="{!showHeaderInfo}">
-                    <h2 class="border-bottom mb-0 h6 font-weight-bold">{!$Label.PKB2_Search_Results}</h2>
+                    <h2 class="d-block w-100 border-bottom mb-0 h6 font-weight-bold">{!$Label.PKB2_Search_Results}</h2>
                     <div class="float-right" id="resultsRssLink">
                         <a href="{!$Page.pkb_RSS}?{!pkbCon.allSearchParams}" target="_blank" title="{!$Label.PKB2_Subscribe_Feed_Results}">
                             <apex:image url="{!URLFOR($Resource.pkb_icons, 'rss.png')}" />

@@ -51,7 +51,7 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled
     public static Map<String, String> getCampusValues() {
         Map<String, String> picklistValuesByLabel = new Map<String, String>();
-        List<Location__c> campusLocations = [SELECT Name FROM Location__c ORDER BY Name];
+        List<Location__c> campusLocations = [SELECT Name FROM Location__c ORDER BY CreatedDate, Name];
         for (Location__c campus : campusLocations) {
             picklistValuesByLabel.put(campus.Name, campus.Name);
         }

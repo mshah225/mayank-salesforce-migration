@@ -60,8 +60,10 @@
             <div class="myasu-help-region-header">Contact Us</div>
             <div class="myasu-help-region-contact-us-content myasu-help-region-content-section">
                 <p>
-                    We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
-                    chat session, or call to talk now.
+                    We are available 24/7, 365 days a year to help you. You can contact us by email, start a chat, or call to talk now.
+                    <br />
+                    <br /> If you call, pre-authenticate through the telephone menu and
+                    <a href="https://studentlife.asu.edu/content/duo-multifactor-authentication-update-sun-devils-2021">DUO</a> for faster, more secure service.
                 </p>
                 <hr />
                 <div class="myasu-help-region-contact-us-accordion-container">

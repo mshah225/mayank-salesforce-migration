@@ -20,7 +20,8 @@
     <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
     <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
-    <div id="ASUBrandAlertWrapper" class="no-slds-scope" role="alert"></div>
+    <div id="ASUBrandAlertWrapper" class="no-slds-scope" style="{!IF($Label.MyASU_Help_Alert_Status == 'true', '', 'display:none')}"
+        role="alert"></div>
 
     <c:GoogleTagManagerBody />
     <div role="main">

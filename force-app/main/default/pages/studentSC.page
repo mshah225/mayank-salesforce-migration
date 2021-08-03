@@ -20,6 +20,7 @@
     <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
     <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
+    <div id="ASUBrandAlertWrapper" class="no-slds-scope" role="alert"></div>
 
     <c:GoogleTagManagerBody />
     <div role="main">
@@ -112,6 +113,11 @@
                     },
                     "ASUBrandViewAsWrapper"
                 );
+                $Lightning.createComponent(
+                    "c:asuBrandAlert",
+                    {},
+                    "ASUBrandAlertWrapper"
+                );
                 // Hide errors that appear randomly from LWC
                 const observer = new MutationObserver(function (mutations) {
                     const errorDiv = document.querySelector('#auraErrorMessage');
@@ -124,7 +130,6 @@
 
             }
         );
-
     </script>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

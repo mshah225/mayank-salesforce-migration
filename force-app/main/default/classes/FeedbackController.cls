@@ -23,7 +23,7 @@ public with sharing class FeedbackController {
         }
 
         try {
-            Queue = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'];
+            Queue = [SELECT Id FROM Group WHERE Name = 'Student Success Innovations (Case)' AND Type = 'Queue'];
             c.OwnerId = Queue.Id;
             c.Subject = 'My ASU Help Tab Feedback';
             c.Description = comments;
@@ -41,7 +41,7 @@ public with sharing class FeedbackController {
                 WHERE
                     RecordType.Name = 'Functional Group'
                     AND Active__c = TRUE
-                    AND Name = 'Student-Centric Initiatives'
+                    AND Name = 'Student Success Innovations'
                     AND Parent__c = NULL
                 LIMIT 1
             ]

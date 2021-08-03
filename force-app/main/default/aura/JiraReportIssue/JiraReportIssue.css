@@ -9,8 +9,14 @@
 
 .THIS .fieldDescription {
     color: grey;
+    font-size: 0.9rem;
 }
 
 .THIS .slds-form-element__label {
     font-size: 24px !important;
+}
+
+.THIS h1 {
+    font-weight: normal !important;
+    font-size: 3rem !important;
 }

@@ -1,332 +1,87 @@
 <apex:component>
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_337, 'bootstrap_337/css/bootstrap.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.ASU_Web_Standards, 'ASU_Web_Standards.css')}" />
     <style>
-        [class*=f-],
-        [class^=f-] {
-            speak: unset;
-            font-style: unset;
-            font-weight: unset;
-            font-variant: unset;
-            text-transform: unset;
-            -webkit-font-smoothing: unset;
-            -moz-osx-font-smoothing: unset;
+        .family-portal-scope .bg-f5f5f5 {
+            background-color: #f5f5f5;
         }
 
-        p,
-        select,
-        input,
-        textarea,
-        .lead {
-            font-weight: 400 !important;
+        .family-portal-scope a {
+            text-decoration: none;
         }
 
-        .bPageBlock .detailList .error {
-            border: 2px solid #c00 !important;
+        .family-portal-scope label {
+            font-size: 1rem !important;
         }
 
-        .col-sm-1.family-portal-bootstrap-vertical-center {
-            padding-left: 0;
-            text-align: center;
+        .family-portal-scope a:hover:not(.btn) {
+            text-decoration: underline;
+            color: #d23153 !important;
         }
 
-        .family-portal-1-body p {
-            font-weight: 500 !important;
+        .family-portal-scope h1 {
+            font-size: 30px;
+            font-weight: normal;
         }
 
-        .family-portal-1-container table>tbody>tr:nth-child(2n+1),
-        .family-portal-2-container table>tbody>tr:nth-child(2n+1),
-        .family-portal-3-container table>tbody>tr:nth-child(2n+1),
-        .family-portal-5-container table>tbody>tr:nth-child(2n+1) {
-            background-color: unset !important;
+        .family-portal-scope h2 {
+            font-size: 24px;
+            font-weight: normal;
         }
 
-        .family-portal-1-container,
-        .family-portal-2-container,
-        .family-portal-3-container,
-        .family-portal-4-container,
-        .family-portal-5-container {
-            display: inline-block !important;
+        .family-portal-scope .assistiveText {
+            display: none;
         }
 
-        .family-portal-1-forgot-password {
-            font-size: .75em;
-            font-weight: 600;
-            margin-top: 1em;
-            text-align: right;
+        /** Family Portal Step 2 */
+
+        .family-portal-scope .family-portal-2-table-wrapper input,
+        .family-portal-scope .family-portal-2-table-wrapper select {
+            height: max-content;
         }
 
-        .family-portal-1-header h2,
-        .family-portal-5-header h2 {
-            font-size: 30px !important;
+        .family-portal-scope .requiredInput input {
+            width: calc(100% + 1.6rem);
+            margin-left: -0.8rem;
         }
 
-        .family-portal-2-container {
+        .family-portal-scope .requiredInput .error {
+            border: 2px solid #c00;
+        }
+
+        /** Family Portal Step 3 */
+
+        .family-portal-scope .family-portal-3-table label {
+            padding-left: 5px;
+        }
+
+        /** Family Portal Step 4 */
+
+        .family-portal-scope .family-portal-4-table-wrapper>table {
             width: 100%;
         }
 
-        .family-portal-2-container .pbSubsection .assistiveText,
-        .family-portal-3-container .pbSubsection .assistiveText,
-        .family-portal-4-container .pbSubsection .assistiveText {
-            display: none !important;
+        .family-portal-scope .family-portal-4-table-wrapper>table>tbody>tr:nth-of-type(odd) {
+            background-color: #f5f5f5;
         }
 
-        .family-portal-2-container .family-portal-2-field-required {
-            vertical-align: text-bottom;
-            color: red;
+        .family-portal-scope .family-portal-4-table-wrapper>table>tbody>tr {
+            border-top: 1px solid #dee2e6;
         }
 
-        .family-portal-2-container .pbSubsection table td,
-        .family-portal-2-container .pbSubsection table th,
-        .family-portal-3-container .pbSubsection table td,
-        .family-portal-3-container .pbSubsection table th,
-        .family-portal-4-container .pbSubsection table td,
-        .family-portal-4-container .pbSubsection table th {
-            border: 0 !important;
+        .family-portal-scope .family-portal-4-table-wrapper>table>tbody>tr>td {
+            padding: .5rem;
         }
 
-        .family-portal-2-container .pbSubsection table td input,
-        .family-portal-2-container .pbSubsection table td select {
-            width: 100%;
-        }
-
-        .family-portal-2-container .pbSubsection table td span {
-            font-weight: 400;
-        }
-
-        .family-portal-3-container .multiSelectPicklistCell>a {
-            border-bottom: none !important;
-            font-size: 2em !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistCell>a:first-child:after {
-            content: '\2B95' !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistCell>a:hover {
-            color: #D23178 !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistCell>a:last-child:after {
-            content: '\2B05' !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistCell>a:link {
-            color: #8C1D40 !important;
-            text-decoration: none !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistCell img {
-            display: none !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistRow {
-            text-align: center !important;
-        }
-
-        .family-portal-3-container .multiSelectPicklistRow select {
-            width: 9em !important !important;
-        }
-
-        .family-portal-3-container table>tbody>tr>td {
-            border-top: unset !important;
-        }
-
-        .family-portal-3-container .pbBody td>label,
-        .family-portal-4-container .pbBody td>label {
-            display: unset;
-        }
-
-        .family-portal-3-container input[type=checkbox],
-        .family-portal-4-container input[type=checkbox] {
-            vertical-align: middle;
-            height: 19px;
-            margin-top: 0;
-        }
-
-        .family-portal-4-container table table,
-        .family-portal-4-container table table>tbody>tr:nth-child(2n+1) {
-            background-color: transparent;
-
-        }
-
-        .family-portal-4-container table table>tbody>tr>td {
-            padding-top: 0;
-            padding-bottom: 0;
-            border-top: 0;
-        }
-
-        .family-portal-4-academic-college-input select {
-            max-width: 200px;
-        }
-
-        .family-portal-4-no-students-text {
-            font-weight: 400;
-            margin-bottom: 1em;
-        }
-
-        .family-portal-4-student-field-input {
-            margin-bottom: 1em !important;
-            width: 100%;
-        }
-
-        .family-portal-4-student-field-label {
-            display: block;
-            font-weight: bold;
-        }
-
-        .family-portal-4-student-remove-button {
-            border-bottom: none !important;
-            text-decoration: none !important;
-            padding-right: 1em;
-        }
-
-        .family-portal-4-student-remove-button-column {
-            vertical-align: middle;
-            text-align: center;
-        }
-
-        .family-portal-5-header {
-            margin-top: 3em !important;
-            text-align: center !important;
-        }
-
-        .family-portal-body-container {
-            margin: auto;
-            max-width: 1170px;
-        }
-
-        .family-portal-body-margin {
-            margin-bottom: 2em;
-        }
-
-        .family-portal-bootstrap-vertical-center {
-            display: inline-block;
-            float: none;
-            vertical-align: middle;
-        }
-
-        .family-portal-double-button {
-            display: inline-block !important;
-            text-align: center !important;
-            width: 49% !important;
-        }
-
-        .family-portal-double-button-container {
-            text-align: center !important;
-        }
-
-        .family-portal-page-title,
-        .mainTitle {
-            margin-left: 1em !important;
-        }
-
-        .family-portal-progress-container {
-            margin-bottom: 3em;
-        }
-
-        .family-portal-progress-bar {
-            width: 100% !important;
-            max-width: 1170px !important;
-            margin: auto !important;
-            line-height: unset !important;
-            font-family: unset !important;
-        }
-
-        .family-portal-progress-bar-title {
-            font-weight: 700;
-        }
-
-        .family-portal-sidebar {
-            margin-bottom: 3em;
-        }
-
-        .family-portal-sidebar .well {
-            margin-top: 2em !important;
-            padding-left: 2em !important;
-            padding-right: 2em !important;
-        }
-
-        .family-portal-sidebar .well .lead {
-            margin-bottom: 0;
-        }
-
-        .family-portal-sidebar-contact-info {
-            max-width: 400px;
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .family-portal-sidebar-contact-info .fa-caret-right {
-            vertical-align: middle;
-        }
-
-        .family-portal-sidebar-contact-info div.row:not(:first-child) {
-            margin-top: .5em;
-        }
-
-        .family-portal-slds-progress-bar {
+        .family-portal-scope .family-portal-4-table-wrapper .student-type-wrapper tbody {
             display: block;
         }
 
-        .mainTitle {
-            font-size: 1.5em !important;
+        .family-portal-scope .family-portal-4-table-wrapper .student-type-wrapper tr {
+            float: left;
         }
 
-        .slds-scope .slds-gutters .slds-col {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-
-        .slds-scope .slds-progress-bar__value_success {
-            background: #8C1D40 !important;
-        }
-
-        @media only screen and (max-width: 553px) {
-            .col-sm-1.family-portal-bootstrap-vertical-center {
-                padding-right: 0;
-            }
-            .col-sm-7.family-portal-bootstrap-vertical-center a {
-                min-width: unset !important;
-            }
-            .family-portal-bootstrap-vertical-center {
-                padding-left: 0;
-            }
-        }
-
-        @media only screen and (max-width: 768px) {
-            .family-portal-2-container .pbSubsection table td,
-            .family-portal-2-container .pbSubsection table th {
-                display: block;
-                padding: 0;
-            }
-            .family-portal-2-container .pbSubsection table td {
-                margin-bottom: 1em;
-            }
-        }
-
-        @media only screen and (max-width: 990px) {
-            .col-sm-7.family-portal-bootstrap-vertical-center a {
-                display: inline-block;
-                margin-left: 1em;
-                margin-right: 2em;
-                min-width: 200px;
-            }
-            .family-portal-3-checkbox-option {
-                width: 100%;
-            }
-            .family-portal-double-button {
-                display: block !important;
-                width: 100% !important;
-            }
-        }
-
-        @media only screen and (max-width: 1190px) {
-            .family-portal-body-container {
-                margin-left: 2em;
-                margin-right: 2em;
-            }
+        .family-portal-scope .family-portal-4-table-wrapper .student-type-wrapper label {
+            padding-left: 5px;
         }
     </style>
 </apex:component>

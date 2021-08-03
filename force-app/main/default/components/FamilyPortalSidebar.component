@@ -2,36 +2,36 @@
     <div class="family-portal-sidebar">
         <img width="100%" src="{!URLFOR($Resource.Family_Portal_Sidebar_Image)}" alt="ASU family at graduation signing pitchforks with their hands"
         />
-        <div class="well">
+        <div class="well border rounded bg-f5f5f5 p-3 mt-2">
             <p class="lead">
                 <strong>Have Questions?</strong>
             </p>
-            <div class="family-portal-sidebar-contact-info">
+            <div>
                 <div class="row">
-                    <div class="col-sm-1 family-portal-bootstrap-vertical-center">
+                    <div class="d-inline-block">
                         <i class="fa fa-caret-right" />
                     </div>
-                    <div class="col-sm-7 family-portal-bootstrap-vertical-center">
+                    <div class="d-inline-block ml-1">
                         <strong>
                             <a href="mailto:asufamily@asu.edu" target="_blank">asufamily@asu.edu</a>
                         </strong>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-1 family-portal-bootstrap-vertical-center">
+                    <div class="d-inline-block">
                         <i class="fa fa-caret-right" />
                     </div>
-                    <div class="col-sm-7 family-portal-bootstrap-vertical-center">
+                    <div class="d-inline-block ml-1">
                         <strong>
                             <a href="tel:4809652880" target="_blank">(480) 965-2880</a>
                         </strong>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-1 family-portal-bootstrap-vertical-center">
+                    <div class="d-inline-block">
                         <i class="fa fa-caret-right" />
                     </div>
-                    <div class="col-sm-7 family-portal-bootstrap-vertical-center">
+                    <div class="d-inline-block ml-1">
                         <strong>
                             <a href="https://family.asu.edu" target="_blank">family.asu.edu</a>
                         </strong>

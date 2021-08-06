@@ -18,8 +18,6 @@
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
-
-        function
     </script>
 
     <div class="border myasu-help-scope">

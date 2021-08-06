@@ -149,7 +149,7 @@
                                                 <apex:inputTextarea styleClass="w-100" id="myasu-help-region-suggest-article" required="true" value="{!suggestedArticleDescription}"
                                                 />
                                             </apex:pageBlock>
-                                            <apex:commandLink value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-maroon btn-md mt-1" />
+                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-maroon btn-md mt-1" />
                                         </apex:pageBlock>
                                     </apex:form>
                                 </div>

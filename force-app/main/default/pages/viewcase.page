@@ -141,6 +141,9 @@
     <c:MyASUHelpPageNotifications />
     <apex:pageMessages id="message" />
 
+    <apex:outputPanel id="alerts">
+        <c:customAlerts alerts="{!alertHandler.alerts}" />
+    </apex:outputPanel>
     <div role="main">
         <div class="container myasu-help-scope">
 

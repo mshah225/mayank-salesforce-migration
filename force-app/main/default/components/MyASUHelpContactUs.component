@@ -18,6 +18,8 @@
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+
+        function
     </script>
 
     <div class="border myasu-help-scope">
@@ -53,9 +55,7 @@
                                     <apex:inputField id="myasu-help-contact-us-email-message" styleClass="w-100" value="{!newCase.Description}" required="true"
                                         label="" />
                                     <div>
-                                        <apex:commandLink styleClass="btn btn-maroon btn-md mt-1" action="{!submitCase}">
-                                            Submit
-                                        </apex:commandLink>
+                                        <apex:commandButton value="Submit" styleClass="btn btn-maroon btn-md mt-1" action="{!submitCase}"/>
                                     </div>
                                 </apex:form>
                             </div>

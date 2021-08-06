@@ -166,6 +166,14 @@ public without sharing class FeedbackButtonController {
             }
             return null;
         } catch (Exception e) {
+            if (!(e instanceof dynamicFeedbackException)) {
+                alertHandler.newAlert(
+                    customAlert.FATAL,
+                    'Unexpected error. Our support team has been notified of this error. ' +
+                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                );
+            }
+
             List<String> vars = new List<String>();
 
             vars.add(ErrorLogger.convertStringToJSON('carName', carName));

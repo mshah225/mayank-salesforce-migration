@@ -3,5 +3,31 @@
     <!-- 2. Add 'slds-scope' class to desired SLDS-based container -->
     <script>
         document.body.className = document.body.className.replace("slds-scope", "");
+
+        jQuery(window).on('load', function () {
+            jQuery('.no-slds-scope').removeClass('slds-scope');
+        });
+
+        jQuery(window).on('beforeunload', function () {
+            jQuery('.no-slds-scope').removeClass('slds-scope');
+        });
+
+        setTimeout(
+            function () {
+                jQuery('.no-slds-scope').removeClass('slds-scope');
+            }, 1000
+        );
+
+        window.sldsRemoveGlobalStylesMaxTries = 10;
+        if (window.sldsRemoveGlobalStylesInterval === undefined) {
+            window.sldsRemoveGlobalStylesInterval = setInterval(
+                () => {
+                    jQuery('.no-slds-scope').removeClass('slds-scope');
+                    if (--window.sldsRemoveGlobalStylesMaxTries <= 0) {
+                        clearInterval(window.sldsRemoveGlobalStylesInterval);
+                    }
+                },
+                1000);
+        }
     </script>
 </apex:component>

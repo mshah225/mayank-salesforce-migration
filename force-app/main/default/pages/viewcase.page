@@ -141,9 +141,6 @@
     <c:MyASUHelpPageNotifications />
     <apex:pageMessages id="message" />
 
-    <apex:outputPanel id="alerts">
-        <c:customAlerts alerts="{!alertHandler.alerts}" />
-    </apex:outputPanel>
     <div role="main">
         <div class="container myasu-help-scope">
 
@@ -157,6 +154,9 @@
                     <li class="breadcrumb-item active">{!caseDetails.Subject}</li>
                 </ol>
             </nav>
+            <apex:outputPanel id="alerts">
+                <c:customAlerts alerts="{!alertHandler.alerts}" />
+            </apex:outputPanel>
             <div class="row">
                 <div class="col-lg-7 mb-4">
                     <div class="border myasu-help-scope">

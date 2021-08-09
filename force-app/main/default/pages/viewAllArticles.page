@@ -21,8 +21,6 @@
 
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
-    <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" />
-
     <div role="main">
         <div class="container myasu-help-scope">
             <nav aria-label="breadcrumbs">

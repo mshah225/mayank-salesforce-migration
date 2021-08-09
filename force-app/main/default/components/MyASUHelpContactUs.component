@@ -24,8 +24,10 @@
         <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Contact Us</h2>
         <div>
             <p class="p-2 border-bottom mb-0">
-                We are available 24/7, 365 days a year to help you. You can contact us via email for a response within 48 hours, start a
-                chat session, or call to talk now.
+                We are available 24/7, 365 days a year to help you. You can contact us by email, start a chat, or call to talk now.
+                <br />
+                <br /> If you call, pre-authenticate through the telephone menu and
+                <a href="https://studentlife.asu.edu/content/duo-multifactor-authentication-update-sun-devils-2021">DUO</a> for faster, more secure service.
             </p>
             <div>
                 <div class="accordion" id="accordion">

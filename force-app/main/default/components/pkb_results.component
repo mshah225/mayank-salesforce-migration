@@ -10,16 +10,16 @@
 
     <apex:form>
         <apex:outputPanel layout="block" id="results">
-            <div>
+            <div class="font-size-std">
                 <apex:outputText rendered="{!showHeaderInfo}">
                     <h2 class="d-block w-100 border-bottom mb-0 h6 font-weight-bold">{!$Label.PKB2_Search_Results}</h2>
                     <div class="float-right" id="resultsRssLink">
-                        <a href="{!$Page.pkb_RSS}?{!pkbCon.allSearchParams}" target="_blank" title="{!$Label.PKB2_Subscribe_Feed_Results}">
+                        <a class="no-underline" href="{!$Page.pkb_RSS}?{!pkbCon.allSearchParams}" target="_blank" title="{!$Label.PKB2_Subscribe_Feed_Results}">
                             <apex:image url="{!URLFOR($Resource.pkb_icons, 'rss.png')}" />
                         </a>
                     </div>
 
-                    <h3 class="font-size-12 font-weight-nordmal">
+                    <h3 class="font-weight-normal font-size-std">
                         {!$Label.PKB2_You_Searched_For}:
                         <i>{!pkbCon.urlSearchQuery}</i>
                         <apex:outputText escape="false" rendered="{!NOT(ISBLANK(pkbCon.selectedCategory))}">
@@ -58,7 +58,7 @@
                     </div>
                 </knowledge:articleList>
 
-                <apex:outputPanel layout="block" rendered="{!(noResultsFound == 'true') && (NOT(pkbCon.displayContactUs))}" style="margin-top: 10px">
+                <apex:outputPanel layout="block" rendered="{!(noResultsFound == 'true') && (NOT(pkbCon.displayContactUs))}" styleClass="py-1">
                     {!$Label.PKB2_No_Results}
                     <span>&nbsp;If you need further assistance, please
                         <a href="https://contact.asu.edu/">contact ASU</a>.</span>

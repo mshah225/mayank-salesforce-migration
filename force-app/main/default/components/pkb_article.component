@@ -30,7 +30,7 @@
   SITE URL: {!pkbCon.currentSiteUrl}<br/>
 -->
 
-    <div class="font-size-12">
+    <div class="font-size-std">
         <apex:outputText escape="false">
             <a class="font-weight-bold text-dark" href="{!articleURL}{!params}">{!title}</a>
         </apex:outputText>

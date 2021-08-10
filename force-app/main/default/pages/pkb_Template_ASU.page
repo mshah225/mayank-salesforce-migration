@@ -26,9 +26,6 @@
         <meta name="viewport" content="target-densitydpi=device-dpi" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <script src="{!$Resource.pkb_jquery_1_6_2}" type="text/javascript" />
-        <script>var jQuery162 = jQuery;</script>
-        <script src="{!$Resource.pkb_jquery_simplemodal_1_4_1}" type="text/javascript" />
         <apex:outputText rendered="{!viewingArticle}">
             <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension,
                                  '')}" />
@@ -42,15 +39,11 @@
             <meta property="description" content="{!pkbCon.theKad.summary}" />
             <link rel="canonical" href="{!articleURL}" />
         </apex:outputText>
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <c:pkb_css_asu />
         <c:pkb_js pkbCon="{!pkbCon}" />
-        <style></style>
         <c:pkb_remove_MyASU />
-
         <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
-        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
-        <script>$ = jQuery.noConflict(true);
-        </script>
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
     </head>
 
@@ -75,7 +68,7 @@
         <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <div class="d-flex flex-row mx-4 my-1 border pkb-scope">
-            <div class="col-4 col-lg-3 bg-lighter border-right">
+            <div class="col-4 col-lg-3 pb-2 bg-lighter border-right">
                 <div id="leftHeader" style="height: 110px">&nbsp;</div>
                 <apex:outputText rendered="{!displayContactUs}">
                     <apex:outputText rendered="{!searchExecuted}">
@@ -92,7 +85,7 @@
                         <br />
                         <apex:outputText rendered="true">
                             <c:pkb_narrow pkbCon="{!pkbCon}" />
-                            <div class="font-size-11 text-muted">
+                            <div class="font-size-sm text-muted">
                                 {!$Label.PKB2_Contact_Us_Link_Prompt}
                                 <br />
                                 <apex:outputLink value="https://contact.asu.edu/">
@@ -166,7 +159,7 @@
 
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter" }]}';
+            let navTreeStr = '{"navbarLinks" : []}';
             let title = '';
             let baseUrl = 'https://webapp4.asu.edu/myasu/student';
             if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
@@ -204,10 +197,8 @@
 
                 }
             );
-
-            jQuery = jQuery162;
-            $ = jQuery162;
         </script>
+        <c:ThemeRemoveGlobalStyles/>
     </body>
 
     </html>

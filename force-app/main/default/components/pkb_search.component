@@ -28,7 +28,7 @@
 
     <form class="form">
         <div class="row">
-            <div class="col-9 font-size-12">
+            <div class="col-9 font-size-std">
                 <textarea onblur="restorePrompt(this); buildSearchHref();" onkeypress="checkForEnter(event, this);" placeholder="{!pkbCon.searchPrompt}"
                     title="{!pkbCon.searchPrompt}" tabindex="1" type="text" name="inputboxform" class="w-100" id="searchAskInput"></textarea
                 >

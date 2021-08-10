@@ -15,7 +15,7 @@
         setTimeout(
             function () {
                 jQuery('.no-slds-scope').removeClass('slds-scope');
-            }, 1000
+            }, 200
         );
 
         window.sldsRemoveGlobalStylesMaxTries = 10;

@@ -13,8 +13,8 @@
                 />
                 <apex:variable var="articleURL" value="{!$Site.CurrentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!a.urlName}"
                 />
-                <apex:outputPanel layout="block" rendered="{!(LEFT(pkbCon.theArticle.Id, 15) != LEFT(a.Id, 15))}" style="margin-bottom: 5px">
-                    <a href="{!articleURL}/?{!params}">{!a.Title}</a>
+                <apex:outputPanel layout="block" rendered="{!(LEFT(pkbCon.theArticle.Id, 15) != LEFT(a.Id, 15))}" styleClass="mt-1 font-size-std">
+                    <a class="text-dark" href="{!articleURL}/?{!params}">{!a.Title}</a>
                 </apex:outputPanel>
             </knowledge:articleList>
         </apex:outputPanel>

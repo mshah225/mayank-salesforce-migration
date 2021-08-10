@@ -4,17 +4,17 @@
     <apex:outputPanel layout="block" styleClass="border-bottom" rendered="{!pkbCon.displayNarrow}">
         <h2 class="d-block w-100 border-bottom mb-0 h6 font-weight-bold">{!$Label.PKB2_Narrow_Search}</h2>
 
-        <apex:outputPanel layout="block" styleClass="py-1 font-size-12" rendered="{!pkbCon.displayCategory1}">
+        <apex:outputPanel layout="block" styleClass="py-1 font-size-std" rendered="{!pkbCon.displayCategory1}">
             <c:pkb_categoryselect catNum="1" catGroup="{!pkbCon.categoryGroup1}" catGroupLabel="{!pkbCon.categoryLabel1}" rootCat="{!pkbCon.rootCategory1}"
             />
         </apex:outputPanel>
 
-        <apex:outputPanel layout="block" styleClass="py-1 font-size-12" rendered="{!pkbCon.displayCategory2}">
+        <apex:outputPanel layout="block" styleClass="py-1 font-size-std" rendered="{!pkbCon.displayCategory2}">
             <c:pkb_categoryselect catNum="2" catGroup="{!pkbCon.categoryGroup2}" catGroupLabel="{!pkbCon.categoryLabel2}" rootCat="{!pkbCon.rootCategory2}"
             />
         </apex:outputPanel>
 
-        <apex:outputPanel layout="block" styleClass="py-1 font-size-12" rendered="{!pkbCon.displayCategory3}">
+        <apex:outputPanel layout="block" styleClass="py-1 font-size-std" rendered="{!pkbCon.displayCategory3}">
             <c:pkb_categoryselect catNum="3" catGroup="{!pkbCon.categoryGroup3}" catGroupLabel="{!pkbCon.categoryLabel3}" rootCat="{!pkbCon.rootCategory3}"
             />
         </apex:outputPanel>

@@ -19,10 +19,13 @@
             font-size: 13px;
         }
 
-        .pkb-scope .search-reset-icon {
+        .pkb-scope a:not(.btn).search-reset-icon,
+        .pkb-scope a:not(.btn).search-reset-icon:hover {
             position: absolute;
             right: 1rem;
             top: 1rem;
+            text-decoration: none;
+            border-bottom-width: 0px;
         }
 
         .pkb-scope a:not(.btn) {

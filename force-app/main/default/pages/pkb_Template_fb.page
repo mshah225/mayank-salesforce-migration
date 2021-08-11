@@ -35,59 +35,57 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
 -->
 
         <!--  HOME PAGE LAYOUT -->
-        <div id="body">
-            <div id="right_column">
-                <apex:form>
-                    <apex:outputPanel layout="block" style="width: 100%; margin-top: 5px" rendered="{!NOT(pkbCon.displayContactUs)}">
-                        <div style="font-weight: bold; font-size: 125%; float: left">
-                            <apex:outputText>
-                                Knowledge Base &nbsp;&#124;&nbsp;
-                                <apex:outputLink value="{!pkbCon.currentSiteUrl}">
-                                    {!$Label.PKB2_Contact_Us}
-                                    <apex:param name="{!pkbCon.contactUsParam}" value="{!pkbCon.contactUsValue}" />
-                                    <apex:param name="{!pkbCon.feedbackSourceParam}" value="{!pkbCon.feedbackContactUs}" />
-                                    <apex:param name="{!pkbCon.languageParam}" value="{!pkbCon.selectedLanguage}" />
-                                </apex:outputLink>
-                            </apex:outputText>
-                        </div>
-                    </apex:outputPanel>
-                </apex:form>
+        <div id="body" class="mx-4 my-1 pkb-scope">
+            <apex:form>
+                <apex:outputPanel layout="block" styleClass="w-100 mt-1" rendered="{!NOT(pkbCon.displayContactUs)}">
+                    <div class="d-block w-100 mb-0 h6 font-weight-bold">
+                        <apex:outputText>
+                            Knowledge Base &nbsp;&#124;&nbsp;
+                            <apex:outputLink value="{!pkbCon.currentSiteUrl}">
+                                {!$Label.PKB2_Contact_Us}
+                                <apex:param name="{!pkbCon.contactUsParam}" value="{!pkbCon.contactUsValue}" />
+                                <apex:param name="{!pkbCon.feedbackSourceParam}" value="{!pkbCon.feedbackContactUs}" />
+                                <apex:param name="{!pkbCon.languageParam}" value="{!pkbCon.selectedLanguage}" />
+                            </apex:outputLink>
+                        </apex:outputText>
+                    </div>
+                </apex:outputPanel>
+            </apex:form>
 
-                <div id="rightHeader" style="height: 106px">
-                    <c:pkb_search pkbCon="{!pkbCon}" showBackLinks="{!AND(facebook, viewingArticle)}" />
-                </div>
-                <apex:outputText rendered="{!displayContactUs}">
-                    <apex:outputText rendered="{!searchExecuted}">
-                        <div id="immediateHelp" style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px">
-                            {!$Label.PKB2_Answers_Might_Help}
-                        </div>
-                    </apex:outputText>
-                </apex:outputText>
-                <apex:outputText rendered="{!AND(NOT(displayContactUs), NOT(viewingArticle))}">
-                    <div id="rightSubHeader" style="height: 106px">
-                        <c:pkb_narrow pkbCon="{!pkbCon}" />
+            <div>
+                <c:pkb_search pkbCon="{!pkbCon}" showBackLinks="{!AND(facebook, viewingArticle)}" dirVertical="true" />
+            </div>
+            <apex:outputText rendered="{!displayContactUs}">
+                <apex:outputText rendered="{!searchExecuted}">
+                    <div id="immediateHelp" style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px">
+                        {!$Label.PKB2_Answers_Might_Help}
                     </div>
                 </apex:outputText>
-                <div id="right_content">
-                    <apex:outputText rendered="{!NOT(displayContactUs)}">
-                        <apex:outputText rendered="{!NOT(viewingArticle)}">
-                            <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
-                            <c:pkb_popular pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
-                            <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
-                        </apex:outputText>
-
-                        <apex:outputText rendered="{!viewingArticle}">
-                            <div id="articleView">
-                                <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
-                            </div>
-                        </apex:outputText>
-                    </apex:outputText>
-
-                    <apex:outputText rendered="{!displayContactUs}">
-                        <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
-                        <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
-                    </apex:outputText>
+            </apex:outputText>
+            <apex:outputText rendered="{!AND(NOT(displayContactUs), NOT(viewingArticle))}">
+                <div>
+                    <c:pkb_narrow pkbCon="{!pkbCon}" dirVertical="true" />
                 </div>
+            </apex:outputText>
+            <div>
+                <apex:outputText rendered="{!NOT(displayContactUs)}">
+                    <apex:outputText rendered="{!NOT(viewingArticle)}">
+                        <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
+                        <c:pkb_popular pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
+                        <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
+                    </apex:outputText>
+
+                    <apex:outputText rendered="{!viewingArticle}">
+                        <div>
+                            <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
+                        </div>
+                    </apex:outputText>
+                </apex:outputText>
+
+                <apex:outputText rendered="{!displayContactUs}">
+                    <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
+                    <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
+                </apex:outputText>
             </div>
 
             <div style="clear: both"></div>

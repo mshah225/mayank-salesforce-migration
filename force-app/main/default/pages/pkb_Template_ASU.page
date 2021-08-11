@@ -69,10 +69,10 @@
 
         <div class="d-flex flex-row mx-4 my-1 border pkb-scope">
             <div class="col-4 col-lg-3 pb-2 bg-lighter border-right">
-                <div id="leftHeader" style="height: 110px">&nbsp;</div>
+                <div style="height: 110px">&nbsp;</div>
                 <apex:outputText rendered="{!displayContactUs}">
                     <apex:outputText rendered="{!searchExecuted}">
-                        <div id="immediateHelp" style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px">
+                        <div id="immediateHelp" class="font-weight-bold pt-1 text-right font-size-std">
                             {!$Label.PKB2_Answers_Might_Help}
                         </div>
                     </apex:outputText>
@@ -112,7 +112,7 @@
                             <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
                         </apex:outputText>
                         <apex:outputText rendered="{!viewingArticle}">
-                            <div id="articleView">
+                            <div>
                                 <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
                             </div>
                         </apex:outputText>
@@ -120,7 +120,6 @@
 
                     <apex:outputText rendered="{!displayContactUs}">
                         <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
-
                         <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
                     </apex:outputText>
                 </div>

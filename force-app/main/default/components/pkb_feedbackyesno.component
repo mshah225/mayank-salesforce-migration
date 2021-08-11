@@ -36,48 +36,47 @@
     </apex:form>
 
     <!-- FEEDBACK (this starts as hidden, then is placed in the overlay when "No" is clicked in the article feedback) -->
-    <apex:form id="feedbackForm">
-        <apex:inputHidden value="{!pkbCon.feedbackComments}" id="feedbackComments" />
-
-        <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <apex:outputPanel styleClass="modal-content" layout="block" id="feedbackResponse">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="feedbackModalTitle">{!$Label.PKB2_Feedback_Appreciated}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body font-size-std">
-                        <p class="d-block">{!$Label.PKB2_More_Useful}</p>
-                        <textarea id="feedbackTextArea" class="w-100" onkeyup="return countChars(event, this);" onblur="copyComments();"></textarea>
-                        <div class="text-center mt-1">
-                            {!$Label.PKB2_Feedback_Characters_Remaining}:
-                            <span id="charsRemaining">255</span>
+    <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog" aria-label="Provide Feedback" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="dialog">
+            <apex:outputPanel layout="block" id="feedbackModalRerenderSection" styleClass="modal-content">
+                <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!NOT(pkbCon.feedbackRecorded)}">
+                    <apex:form id="feedbackForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title m-0" id="feedbackModalTitle">{!$Label.PKB2_Feedback_Appreciated}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <apex:commandButton action="{!pkbCon.recordArticleFeedback}" value="{!$Label.PKB2_Submit}" onclick="copyComments();" rerender="feedbackResponse"
-                            status="feedbackStatus" styleClass="btn btn-light btn-sm mr-1" />
-                        <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">{!$Label.PKB2_Cancel}</button>
-
-                        <apex:actionStatus id="feedbackStatus">
-                            <apex:facet name="start">
-                                <apex:image value="{!$Resource.pkb_loadingdots}" /></apex:facet>
-                            <apex:facet name="stop"></apex:facet>
-                        </apex:actionStatus>
-                    </div>
+                        <div class="modal-body text-center">
+                            <p>{!$Label.PKB2_More_Useful}</p>
+                            <apex:inputTextarea id="feedbackTextArea" styleClass="w-100" onkeydown="return countChars(event, this);" value="{!pkbCon.feedbackComments}"
+                            />
+                            <span> {!$Label.PKB2_Feedback_Characters_Remaining}:
+                                <span id="charsRemaining">255</span>
+                            </span>
+                        </div>
+                        <div class="modal-footer flex-row-reverse">
+                            <apex:actionStatus id="feedbackStatus">
+                                <apex:facet name="start">
+                                    <apex:image value="{!$Resource.pkb_loadingdots}" /></apex:facet>
+                                <apex:facet name="stop"></apex:facet>
+                            </apex:actionStatus>
+                            <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Close</button>
+                            <apex:commandButton action="{!pkbCon.recordArticleFeedback}" value="{!$Label.PKB2_Submit}" rerender="feedbackModalRerenderSection"
+                                status="feedbackStatus" styleClass="btn btn-light btn-sm" />
+                        </div>
+                    </apex:form>
                 </apex:outputPanel>
 
-                <apex:outputPanel styleClass="modal-content" rendered="{!pkbCon.feedbackRecorded}" layout="block">
-                    <div class="modal-body font-size-std">
+                <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!pkbCon.feedbackRecorded}">
+                    <div class="modal-body text-center">
                         <p>{!$Label.PKB2_Thanks_For_Feedback}</p>
                         <p>
-                            <a href="#" onclick="toggleFeedbackYesNoButtons(false); refreshYesNo(); return false;" data-dismiss="modal">{!$Label.PKB2_Close_Window}</a>
+                            <a href="#" data-dismiss="modal" onclick="toggleFeedbackYesNoButtons(false); refreshYesNo(); return false;">{!$Label.PKB2_Close_Window}</a>
                         </p>
                     </div>
                 </apex:outputPanel>
-            </div>
+            </apex:outputPanel>
         </div>
-    </apex:form>
+    </div>
 </apex:component>

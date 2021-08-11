@@ -1,6 +1,7 @@
 <apex:component allowDML="true">
   <apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
 
+  <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
   <script type="text/javascript">
 
 
@@ -45,7 +46,6 @@
     var FEEDBACK_NO_BUTTON = 'feedbackNoButton';
     var FEEDBACK_DIALOG_ID = 'feedbackModal';
     var FEEDBACK_COMMENTS_ID = 'feedbackComments';
-    var FEEDBACK_TEXT_ID = 'feedbackTextArea';
     var CHARS_REMAINING_ID = 'charsRemaining';
     var FEATURED_ARTICLES_ID = 'featuredArticles';
     var IMMEDIATE_HELP_ID = 'immediateHelp';
@@ -229,13 +229,6 @@
       $$('#' + FEEDBACK_DIALOG_ID).modal({ backdrop: true, focus: true, show: true });
     }
 
-    function copyComments() {
-      var o = $$('[id$=' + FEEDBACK_COMMENTS_ID + ']');
-      var p = $$('#' + FEEDBACK_TEXT_ID);
-
-      if (o.length && p.length) o[0].value = p[0].value;
-    }
-
     function toggleFeedbackYesNoButtons(isEnabled) {
       var yes = $$('[id$=' + FEEDBACK_YES_BUTTON + ']')[0];
       var no = $$('[id$=' + FEEDBACK_NO_BUTTON + ']')[0];
@@ -253,15 +246,12 @@
     }
 
     function closeModal() {
-      $ = jQuery.noConflict();
-      $("#" + CHARS_REMAINING_ID).innerHTML = 255;
-      $("#" + FEEDBACK_DIALOG_ID)
+      document.getElementById(CHARS_REMAINING_ID).innerHTML = 255;
+      $$("#" + FEEDBACK_DIALOG_ID)
         .find("textarea")
         .val('')
         .end();
     }
-    $ = jQuery.noConflict();
-    $("#" + FEEDBACK_DIALOG_ID).on("hidden.bs.modal", closeModal);
 
     function countChars(event, o) {
       var maxChars = 255;
@@ -359,6 +349,7 @@
 
     $$('#' + FEEDBACK_DIALOG_ID).ready(function () {
       if (openDialogWhenReady) showFeedbackDialog();
+      $$("#" + FEEDBACK_DIALOG_ID).on("hidden.bs.modal", closeModal);
     });
 
     $$('#' + SEARCH_TEXT_ID).ready(function () {

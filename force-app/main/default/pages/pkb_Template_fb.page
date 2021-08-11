@@ -6,8 +6,6 @@
         <c:pkb_fb_css />
         <c:pkb_js pkbCon="{!pkbCon}" />
         <title>{!pageTitle}</title>
-        <apex:includeScript value="{!$Resource.pkb_jquery_1_6_2}" />
-        <apex:includeScript value="{!$Resource.pkb_jquery_simplemodal_1_4_1}" />
         <apex:outputText rendered="{!viewingArticle}">
             <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}" />
             <apex:variable var="articleURL" value="{!pkbCon.currentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}"

@@ -45,13 +45,15 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
 
         <!--  HOME PAGE LAYOUT -->
 
-        <div id="header">
-            <span style="margin-left: 5px">
-                <apex:outputLink value="{!pkbCon.currentSiteUrl}">
-                    <apex:image value="{!$Resource.pkb_logo}" />
-                    <apex:param name="{!pkbCon.languageParam}" value="{!pkbcon.selectedLanguage}" />
-                </apex:outputLink>
-            </span>
+        <div class="pkb-scope">
+            <div id="header">
+                <span style="margin-left: 5px">
+                    <apex:outputLink value="{!pkbCon.currentSiteUrl}">
+                        <apex:image value="{!$Resource.pkb_logo}" />
+                        <apex:param name="{!pkbCon.languageParam}" value="{!pkbcon.selectedLanguage}" />
+                    </apex:outputLink>
+                </span>
+            </div>
         </div>
 
         <div id="body" class="d-flex flex-row mx-4 my-1 border pkb-scope">
@@ -121,7 +123,7 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
             <apex:outputPanel styleClass="pkbPoweredBySFDC" style="float: right">
                 <a href="http://www.salesforce.com/crm/customer-service-support/">
                     <apex:image value="{!$Resource.pkb_footer}" alt="Customer Service Software" />
-                    <apex:outputPanel styleClass="pkbPoweredBySFDCText">salesforce.com</apex:outputPanel>
+                    <apex:outputPanel styleClass="d-none">salesforce.com</apex:outputPanel>
                 </a>
             </apex:outputPanel>
         </div>

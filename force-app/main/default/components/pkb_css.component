@@ -3,6 +3,10 @@
     <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
 
     <style type="text/css">
+        .pkb-scope #header {
+            background-color: #0589ad;
+        }
+
         .pkb-scope .bg-lighter {
             background-color: #fafbfb !important;
         }

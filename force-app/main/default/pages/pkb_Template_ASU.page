@@ -68,7 +68,7 @@
         <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
         <div class="d-flex flex-row mx-4 my-1 border pkb-scope">
-            <div class="col-4 col-lg-3 pb-2 bg-lighter border-right">
+            <div class="col-4 col-lg-3 py-2 bg-lighter border-right">
                 <div style="height: 110px">&nbsp;</div>
                 <apex:outputText rendered="{!displayContactUs}">
                     <apex:outputText rendered="{!searchExecuted}">
@@ -97,7 +97,7 @@
                 </apex:outputText>
             </div>
 
-            <div class="col-8 col-lg-9">
+            <div class="col-8 col-lg-9 py-2">
                 <div class="mb-2">
                     <c:pkb_search pkbCon="{!pkbCon}" />
                 </div>

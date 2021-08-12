@@ -30,7 +30,7 @@
                 </apex:outputText>
 
                 <apex:outputPanel layout="block" styleClass="recommendedArticles" rendered="{!(pkbCon.foundRecommended) && (pkbCon.currPage == 1)}">
-                    <apex:repeat var="a" value="{!pkbCon.recommendedKads}">
+                    <apex:repeat var="a" value="{!pkbCon.featuredKads}">
                         <div class="py-1">
                             <c:pkb_article pkbCon="{!pkbCon}" aid="{!a.id}" title="{!a.title}" summary="{!a.summary}" urlName="{!a.urlName}" articleTypeName="{!a.articleTypeName}"
                                 articleTypeLabel="{!a.articleTypeLabel}" lastModifiedDate="{!a.lastModifiedDate}" firstPublishedDate="{!a.firstPublishedDate}"
@@ -38,7 +38,7 @@
                             <apex:variable var="noResultsFound" value="false" />
                         </div>
                     </apex:repeat>
-                    <div class="rec">{!$Label.PKB2_Recommended}</div>
+                    <div class="text-right">{!$Label.PKB2_Recommended}</div>
                 </apex:outputPanel>
 
                 <knowledge:articleList articleVar="a" pageSize="{!pkbCon.articlesPerPage}" categories="{!pkbCon.selectedCategory}" hasMoreVar="more"

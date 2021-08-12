@@ -5,6 +5,7 @@
     <head>
         <c:pkb_fb_css />
         <c:pkb_js pkbCon="{!pkbCon}" />
+        <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
         <title>{!pageTitle}</title>
         <apex:outputText rendered="{!viewingArticle}">
             <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}" />

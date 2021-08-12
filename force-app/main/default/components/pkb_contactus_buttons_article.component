@@ -4,12 +4,13 @@
     <apex:form id="contactYesNoForm">
         <apex:actionFunction name="refreshContactUs" rerender="contactYesNoForm" status="contactUsYesNoStatus" />
 
-        <div style="height: 30px; margin-top: 15px; text-align: center">
+        <div class="mt-2 text-center font-size-std">
             <apex:outputText rendered="{!pkbCon.searchExecuted && NOT(pkbCon.caseCreated)}">
-                <span style="color: #ee6426; font-weight: bold; font-size: 110%">{!$Label.PKB2_Still_Have_Question}</span>&nbsp;
-                <apex:commandButton id="contactUsYesButton" value="{!$Label.PKB2_Yes_Submit_Question}" onclick="showFeedbackDialog(); return false;"
-                />&nbsp;
-                <apex:commandButton id="contactUsNoButton" value="{!$Label.PKB2_No_Found_Answer}" action="{!pkbCon.contactUsDeferral}" /> &nbsp;
+                <span class="text-warning font-weight-bold">{!$Label.PKB2_Still_Have_Question}</span>&nbsp;
+                <apex:commandButton styleClass="btn btn-light btn-sm font-weight-normal" id="contactUsYesButton" value="{!$Label.PKB2_Yes_Submit_Question}"
+                    onclick="showFeedbackDialog(); return false;" />&nbsp;
+                <apex:commandButton styleClass="btn btn-light btn-sm font-weight-normal" id="contactUsNoButton" value="{!$Label.PKB2_No_Found_Answer}"
+                    action="{!pkbCon.contactUsDeferral}" /> &nbsp;
             </apex:outputText>
 
             <apex:actionStatus id="contactUsYesNoStatus">
@@ -19,70 +20,72 @@
             </apex:actionStatus>
 
             <apex:outputText rendered="{!pkbCon.searchExecuted && pkbCon.caseCreated}">
-                <span style="color: #ee6426; font-weight: bold; font-size: 110%">{!$Label.PKB2_Request_Submitted}</span>
+                <span class="text-warning font-weight-bold">{!$Label.PKB2_Request_Submitted}</span>
             </apex:outputText>
         </div>
     </apex:form>
 
-    <apex:outputText rendered="{!pkbCon.searchExecuted}">
-        <div id="feedbackDialog">
-            <apex:form id="contactUsForm">
-                <apex:outputPanel layout="block" id="contactUsContainer">
-                    <apex:outputText rendered="{!NOT(pkbCon.caseCreated)}">
-                        <div style="margin-top: 15px; text-align: center">
-                            <p>{!$Label.PKB2_Complete_Request}:</p>
+    <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog" aria-label="Provide Feedback" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="dialog">
+            <apex:outputPanel layout="block" id="contactUsRerenderSection" styleClass="modal-content">
+                <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!NOT(pkbCon.caseCreated)}">
+                    <apex:form id="contactUsForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title m-0" id="feedbackModalTitle">{!$Label.PKB2_Complete_Request}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                        <div class="modal-body">
+                            <apex:outputPanel id="createCaseErrorMsg" layout="block" styleClass="text-center font-size-std font-weight-bold text-danger"
+                                rendered="{!pkbCon.caseCreateError}">
+                                {!pkbCon.createCaseErrorMsg}
+                            </apex:outputPanel>
 
-                        <div style="width: 85%; margin-left: auto; margin-right: auto">
-                            <div style="height: 3em">
-                                <apex:outputPanel id="createCaseErrorMsg" layout="block" style="color: red; font-weight: bold" rendered="{!pkbCon.caseCreateError}">
-                                    {!pkbCon.createCaseErrorMsg}
-                                </apex:outputPanel>
-                            </div>
-
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td class="label">
+                            <div class="d-table w-100">
+                                <div class="d-table-row">
+                                    <div class="d-table-cell w-25">
                                         <apex:outputLabel value="{!$Label.PKB2_First_Name}:" for="firstName" />
-                                    </td>
-                                    <td class="field">
-                                        <apex:inputText value="{!pkbCon.theCud.firstName}" id="firstName" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="label">
+                                    </div>
+                                    <div class="d-table-cell">
+                                        <apex:inputText styleClass="w-100" value="{!pkbCon.theCud.firstName}" id="firstName" />
+                                    </div>
+                                </div>
+                                <div class="d-table-row">
+                                    <div class="d-table-cell w-25">
                                         <apex:outputLabel value="{!$Label.PKB2_Last_Name}:" for="lastName" />
-                                    </td>
-                                    <td class="field">
-                                        <apex:inputText value="{!pkbCon.theCud.lastName}" id="lastName" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="label">
+                                    </div>
+                                    <div class="d-table-cell">
+                                        <apex:inputText styleClass="w-100" value="{!pkbCon.theCud.lastName}" id="lastName" />
+                                    </div>
+                                </div>
+                                <div class="d-table-row">
+                                    <div class="d-table-cell w-25">
                                         <apex:outputLabel value="{!$Label.PKB2_Email}:" for="email" />
-                                    </td>
-                                    <td class="field">
-                                        <apex:inputText value="{!pkbCon.theCud.email}" id="email" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="label">
+                                    </div>
+                                    <div class="d-table-cell">
+                                        <apex:inputText styleClass="w-100" value="{!pkbCon.theCud.email}" id="email" />
+                                    </div>
+                                </div>
+                                <div class="d-table-row">
+                                    <div class="d-table-cell w-25">
                                         <apex:outputLabel value="{!$Label.PKB2_Request_Type}:" for="reqType" />
-                                    </td>
-                                    <td class="field">
-                                        <apex:selectList value="{!pkbCon.theCud.reqType}" multiSelect="false" size="1">
+                                    </div>
+                                    <div class="d-table-cell">
+                                        <apex:selectList styleClass="w-100" value="{!pkbCon.theCud.reqType}" multiSelect="false" size="1">
                                             <apex:selectOptions value="{!pkbCon.caseTypeOptions}" />
                                         </apex:selectList>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <div style="height: 30px; margin-top: 15px; text-align: center">
-                                <apex:commandButton value="{!$Label.PKB2_Submit}" rerender="contactUsContainer" action="{!pkbCon.createCase}" status="contactUsStatus"
-                                    onclick="clearCaseErrorMsg();" />&nbsp;
-                                <apex:commandButton value="{!$Label.PKB2_Cancel}" onclick="closeModal(); return false;" />
-                                <br />
-                                <br />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer flex-column">
+                            <div class="d-flex justify-content-center">
+                                <apex:commandButton action="{!pkbCon.createCase}" value="{!$Label.PKB2_Submit}" rerender="contactUsRerenderSection" status="contactUsStatus"
+                                    styleClass="btn btn-light btn-sm mr-1" onclick="clearCaseErrorMsg()" />
+                                <button type="button" class="btn btn-light btn-sm ml-1" data-dismiss="modal">{!$Label.PKB2_Cancel}</button>
+                            </div>
+                            <div class="d-flex justify-content-center">
                                 <apex:actionStatus id="contactUsStatus">
                                     <apex:facet name="start">
                                         <apex:image value="{!$Resource.pkb_loadingdots}" /></apex:facet>
@@ -90,20 +93,20 @@
                                 </apex:actionStatus>
                             </div>
                         </div>
-                    </apex:outputText>
-
-                    <apex:outputText rendered="{!pkbCon.caseCreated}">
-                        <div style="text-align: center; margin-top: 100px">
-                            <p>{!$Label.PKB2_Request_Submitted}</p>
-                            <p>
-                                <a href="#" onclick="toggleContactYesNoButtons(false); refreshContactUs(); closeModal(); return false;">{!$Label.PKB2_Close_Window}</a>
-                            </p>
-                        </div>
-                    </apex:outputText>
+                    </apex:form>
                 </apex:outputPanel>
-            </apex:form>
+
+                <apex:outputPanel layout="block" rendered="{!pkbCon.caseCreated}">
+                    <div class="modal-body text-center">
+                        <p>{!$Label.PKB2_Request_Submitted}</p>
+                        <p>
+                            <a href="#" data-dismiss="modal" onclick="toggleContactYesNoButtons(false); refreshContactUs(); return false;">{!$Label.PKB2_Close_Window}</a>
+                        </p>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
         </div>
-    </apex:outputText>
+    </div>
 
     <apex:outputText rendered="{!pkbCon.viewingArticle}">
         <div id="articleView">

@@ -30,10 +30,7 @@ private class CampaignMemberManagementControllerTest {
         insert tempe;
 
         // Add the Contact to the Campaigns
-        List<CampaignMember> camMemList = CampaignMemberService.createTestCampaignMembers(
-            testContact.Id,
-            camListWithIds
-        );
+        List<CampaignMember> camMemList = createTestCampaignMembers(testContact.Id, camListWithIds);
         insert camMemList;
 
         // Create some test Campaigns the contact is not currently a part of for searching
@@ -133,7 +130,7 @@ private class CampaignMemberManagementControllerTest {
             camsToAddToContact.add(camsToAddStatuses[i]);
         }
 
-        crCamMemsToInsert = CampaignMemberService.createTestCampaignMembers(testContact.Id, camsToAddToContact);
+        crCamMemsToInsert = createTestCampaignMembers(testContact.Id, camsToAddToContact);
         insert crCamMemsToInsert;
 
         // Add test Subscription records
@@ -196,7 +193,7 @@ private class CampaignMemberManagementControllerTest {
         eventCam.Campus_Location__c = tempe.Id;
         eventCam.Event_Start_Date__c = date.newinstance(2016, 3, 28);
 
-        Id[] fixedSearchResults = new List<Id>(2);
+        Id[] fixedSearchResults = new Id[2];
         fixedSearchResults[0] = eventCam.Id;
         fixedSearchResults[1] = intCam.Id;
         Test.setFixedSearchResults(fixedSearchResults);
@@ -404,5 +401,27 @@ private class CampaignMemberManagementControllerTest {
         cm.clearCommFilter();
         System.assert(cm.commFilterStartDate == null);
         System.assertEquals(cm.getFilteredMessageList().size(), 5);
+    }
+
+    /**
+     * Create a test list of CampaignMembers for the provided Contact Id
+     * @param The Id of the Contact to create CampaignMembers for
+     * @param A list of Campaigns to add the Contact to
+     * @return A list of CampaignMembers for the provided Contact Id to insert
+     */
+    private static List<CampaignMember> createTestCampaignMembers(Id contactId, List<Campaign> camList) {
+        List<CampaignMember> camMems = new List<CampaignMember>();
+
+        for (Campaign cam : camList) {
+            CampaignMember tempCamMem = new CampaignMember(CampaignId = cam.Id, ContactId = contactId, Status = 'Sent');
+
+            if (cam.RecordType.Name == 'Corporate Relations') {
+                tempCamMem.Status = 'Active';
+            }
+
+            camMems.add(tempCamMem);
+        }
+
+        return camMems;
     }
 }

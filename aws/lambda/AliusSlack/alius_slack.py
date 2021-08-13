@@ -74,7 +74,7 @@ def lambda_handler(event, context):
                                             "type": "section",
                                             "text": {
                                                 "type": "mrkdwn",
-                                                "text": "*Description*\n" + pull.body + "\n\n" + pull.html_url
+                                                "text": "*Description*\n" + str(pull.body) + "\n\n" + str(pull.html_url)
                                             }
                                         }
                                     ]

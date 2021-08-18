@@ -1,26 +1,15 @@
 <template>
-    <div class="slds-p-around_medium lgc-bg" style="background-color: #0085e2; color: #ffffff">
-        <div class="flex-container" style="max-width: 1200px; margin: auto">
-            <div class="flex-item-left">
-                <strong>VIEW AS MODE (READ ONLY)</strong>
-            </div>
-            <div class="flex-item-right">
-                <span style="margin-right: 0.5em">
-                    <strong>{firstName} {lastName} ({emplId})</strong>
-                </span>
-                <lightning-button-menu alternative-text="Show view as menu" menu-alignment="right" icon-size="small">
-                    <lightning-menu-item
-                        href={viewAsUrl}
-                        icon-name="action:preview"
-                        label="View as someone else"
-                    ></lightning-menu-item>
-                    <lightning-menu-item
-                        href={stopViewAsUrl}
-                        icon-name="utility:logout"
-                        label={stopViewAsUrlText}
-                    ></lightning-menu-item>
-                </lightning-button-menu>
-            </div>
+    <div class="d-flex flex-lg-row flex-column">
+        <div class="col-12 col-lg-6 text-lg-left text-center">
+            <h5 class="m-0 p-0 h5">VIEW AS MODE (READ ONLY)</h5>
+        </div>
+        <div class="col-12 col-lg-6 text-lg-right text-center">
+            <a href={viewAsUrl} class="btn btn-sm btn-light mx-1">
+                View as someone else <i class="fa fa-sm fa-eye"></i>
+            </a>
+            <a href={stopViewAsUrl} class="btn btn-sm btn-light mx-1">
+                {stopViewAsUrlText} <i class="fa fa-sm fa-sign-out"></i>
+            </a>
         </div>
     </div>
 </template>

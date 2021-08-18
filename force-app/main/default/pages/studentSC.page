@@ -19,7 +19,6 @@
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
-    <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
     <div id="ASUBrandAlertWrapper" class="no-slds-scope" style="{!IF($Label.MyASU_Help_Alert_Status == 'true', '', 'display:none')}"
         role="alert"></div>
 
@@ -94,25 +93,21 @@
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    { title, baseUrl, navTreeStr },
+                    {
+                        title, baseUrl, navTreeStr,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(
                     "c:asuBrandFooter",
                     {},
                     "ASUBrandFooterWrapper"
-                );
-                $Lightning.createComponent(
-                    "c:asuBrandViewAs",
-                    {
-                        firstName: '{!firstName}',
-                        lastName: '{!lastName}',
-                        viewingAs: '{!viewingAs}',
-                        emplId: '{!emplId}',
-                        stopViewAsUrl: '{!stopViewAsUrl}',
-                        viewAsUrl: '{!viewAsUrl}'
-                    },
-                    "ASUBrandViewAsWrapper"
                 );
                 $Lightning.createComponent(
                     "c:asuBrandAlert",

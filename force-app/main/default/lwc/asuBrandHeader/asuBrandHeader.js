@@ -7,9 +7,17 @@ export default class AsuBrandHeader extends LightningElement {
     @api title;
     @api baseUrl;
     @api navTreeStr;
+    @api buttons = [];
     @api noAutoSpacer = false;
     oldStyle = false;
     oldStyleSelectedTab = null;
+
+    @api viewingAs = false;
+    @api viewAsFirstName;
+    @api viewAsLastName;
+    @api viewAsEmplId;
+    @api viewAsViewAsUrl;
+    @api viewAsStopViewAsUrl;
 
     connectedCallback() {
         const params = new URLSearchParams(window.location.search);
@@ -55,6 +63,17 @@ export default class AsuBrandHeader extends LightningElement {
             }
         }
     }
+    viewAsToggle() {
+        let obj = this.template.querySelector('.viewAsHeader');
+        if (obj.classList.contains('d-none')) {
+            obj.classList.add('d-block');
+            obj.classList.remove('d-none');
+        } else {
+            obj.classList.add('d-none');
+            obj.classList.remove('d-block');
+        }
+    }
+
     renderedCallback() {
         loadScript(this, jQuery).then(() => {
             $.getScript(
@@ -70,6 +89,7 @@ export default class AsuBrandHeader extends LightningElement {
             );
         });
     }
+
     generateHeader() {
         const idSelector = this.template.querySelector('.headerContainer').id;
         const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
@@ -79,26 +99,43 @@ export default class AsuBrandHeader extends LightningElement {
         // logoutLink (need to set custom for SF here)
         // loginLink (need to set custom for sites that don't have users already logged in, like Family Portal)
 
+        // Always have these props
+        let props = {
+            navTree: navTree,
+            title: this.title,
+            baseUrl: this.baseUrl,
+        };
+
+        // Add button for view as toggle
+        if (this.viewingAs) {
+            this.buttons = [
+                {
+                    text:
+                        'Viewing as ' +
+                        this.viewAsFirstName +
+                        ' ' +
+                        this.viewAsLastName +
+                        ' (' +
+                        this.viewAsEmplId +
+                        ')',
+                    color: 'maroon',
+                    href:
+                        "javascript:document.querySelector('c-asu-brand-header').shadowRoot.querySelector('#" +
+                        this.template.querySelector('.viewAsJsBinding').id +
+                        "').querySelector('.viewAsToggle').click()",
+                },
+            ];
+
+            props.buttons = this.buttons;
+        }
+
         getFirstName()
             .then((name) => {
-                const props = {
-                    loggedIn: true,
-                    userName: name,
-                    navTree: navTree,
-                    title: this.title,
-                    baseUrl: this.baseUrl,
-                };
-
-                componentsLibrary.initHeader(props, idSelector, false, this.template);
-                this.setupSpacerResizing();
+                props.loggedIn = true;
+                props.userName = name;
             })
-            .catch(() => {
-                const props = {
-                    navTree: navTree,
-                    title: this.title,
-                    baseUrl: this.baseUrl,
-                };
-
+            .catch(() => {})
+            .finally(() => {
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
                 this.setupSpacerResizing();
             });

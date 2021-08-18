@@ -1,4 +1,17 @@
 <template>
     <div id="headerSpacer" class="headerSpacer"></div>
     <div id="headerContainer" class="headerContainer" lwc:dom="manual"></div>
+    <div id="viewAsJsBinding" class="viewAsJsBinding">
+        <div class="viewAsToggle" onclick={viewAsToggle}></div>
+    </div>
+    <div id="viewAsHeader" class="viewAsHeader border-bottom pt-1 mb-2 pb-2 d-none">
+        <c-asu-brand-view-as
+            first-name={viewAsFirstName}
+            last-name={viewAsLastName}
+            viewing-as={viewingAs}
+            empl-id={viewAsEmplId}
+            stop-view-as-url={viewAsStopViewAsUrl}
+            view-as-url={viewAsViewAsUrl}
+        ></c-asu-brand-view-as>
+    </div>
 </template>

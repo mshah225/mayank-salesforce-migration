@@ -534,7 +534,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.') + 1).toLowerCase()
                     )
                 ) {
-                    if (tAttachment.body.length() > 5000000) {
+                    if (tAttachment.body.length() > 100000000) {
                         successfulAttachment = false;
                         badTextAttachments.add(tAttachment);
                     } else {
@@ -564,7 +564,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.') + 1).toLowerCase()
                     )
                 ) {
-                    if (bAttachment.body.size() > 5000000) {
+                    if (bAttachment.body.size() > 100000000) {
                         successfulAttachment = false;
                         badBinaryAttachments.add(bAttachment);
                     } else {
@@ -600,7 +600,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
 
-        if (attachmentSize > 25000000) {
+        if (attachmentSize > 100000000) {
             successfulAttachment = false;
         } else {
             insert allEmailAttachments;

@@ -28,16 +28,6 @@ export default class AsuBrandAlert extends LightningElement {
         loadStyle(this, font_awesome + '/Font_Awesome_4_7_0/css/font-awesome.min.css');
     }
 
-    @api
-    addTest() {
-        this.addAlert(
-            'WARNING',
-            '',
-            'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now.',
-            'https://students.asu.edu/contact/financialaid'
-        );
-    }
-
     closeAlert(event) {
         let keyToRemove;
         let checkForKey = event.target;

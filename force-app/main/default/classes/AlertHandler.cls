@@ -31,10 +31,26 @@ public class AlertHandler {
      * </p>
      *
      * @param String The severity of the alert (should use ApexPages.severity strings)
+     * @param String The title to be displayed
+     * @param String The message to be displayed
+     * @param String The link to be appended to the alert
+     */
+    public void newAlert(String severity, String title, String message, String link) {
+        newAlert(new customAlert(severity, title, message, link));
+    }
+
+    /**
+     * Add a new alert to the alerts list
+     *
+     * <p>
+     * Override to reduce amount of code required to add new alerts.
+     * </p>
+     *
+     * @param String The severity of the alert (should use ApexPages.severity strings)
      * @param String The message to be displayed
      */
     public void newAlert(String severity, String message) {
-        newAlert(new customAlert(severity, message));
+        newAlert(severity, null, message, null);
     }
 
     /**

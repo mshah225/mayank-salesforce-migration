@@ -57,6 +57,11 @@ export default class AsuBrandAlert extends LightningElement {
     }
 
     @api
+    clearAlerts() {
+        this.alertList = [];
+    }
+
+    @api
     addAlert(severity, title, message, link) {
         let newAlert = {
             id: '',
@@ -67,7 +72,7 @@ export default class AsuBrandAlert extends LightningElement {
             iconTitle: '',
             classList: 'alert',
             link: link,
-            linkNotNull: link != null,
+            linkNotNull: link != null && link !== '',
         };
         newAlert.id = '' + this.counter++;
 
@@ -86,11 +91,10 @@ export default class AsuBrandAlert extends LightningElement {
         } else if (severity === 'FATAL') {
             newAlert.icon += ' fa-exclamation-triangle';
             newAlert.iconTitle = 'Error';
-            newAlert.classList = ' alert-danger';
+            newAlert.classList += ' alert-danger';
         } else {
             newAlert.icon += ' fa-question-circle';
             newAlert.iconTitle = title;
-            newAlert.classList = ' alert-question';
         }
 
         this.alertList.push(newAlert);

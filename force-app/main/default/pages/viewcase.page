@@ -17,6 +17,7 @@
 
 
         <script>
+            // Depends on having customAlerts component on page - since that provides the visualforceAddCustomAlert and visualforceClearCustomAlerts functions
             var $j = jQuery.noConflict();
             function validateReply() {
                 var filePresent = false;
@@ -42,14 +43,14 @@
                     return true;
                 }
             } else {
-                document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
+                visualforceAddCustomAlert('FATAL', 'Error! ', 'Please add a reply or an attachment', '');
             }
             return false;
             }
 
             function validateFile() {
                 var errorPresent = false;
-                document.getElementById('errorDiv').innerHTML = '';
+                visualforceClearCustomAlerts();
                 $j('input[type=file]').each(function () {
                     fileName = this.files[0].name;
                     fileSize = this.files[0].size / 1000000;
@@ -57,18 +58,11 @@
                     var fileExtensionArray = fileName.split('.');
                     var fileExtension = '.' + fileExtensionArray[fileExtensionArray.length - 1];
                     if (validFileTypes.indexOf(fileExtension.toLowerCase()) == -1) {
-                        document.getElementById('errorDiv').innerHTML =
-                            'Error: This attachment is not an acceptable file type.\n' +
-                            'The following attachment types are allowed:\n' +
-                            'Microsoft Word (.doc or .docx)\n' +
-                            'Microsoft Excel (.xls or .xlsx)\n' +
-                            'Image (.jpg, .jpeg, .gif, .png)\n' +
-                            'Adobe PDF (.pdf)\n' +
-                            'Text (.txt).\n';
+                        visualforceAddCustomAlert('FATAL', 'Error! ', 'This attachment is not an acceptable file type. The following attachment types are allowed: Microsoft Word (.doc or .docx), Microsoft Excel (.xls or .xlsx), Image (.jpg, .jpeg, .gif, .png), Adobe PDF (.pdf), Text (.txt).', '');
                         errorPresent = true;
                     }
                     if (fileSize > 25) {
-                        document.getElementById('errorDiv').innerHTML += 'The attachment exceeds the file size limit of 25 MB\n';
+                        visualforceAddCustomAlert('FATAL', 'Error! ', 'The attachment exceeds the file size limit of 25 MB', '');
                         errorPresent = true;
                     }
                 });
@@ -139,7 +133,6 @@
     <c:GoogleTagManagerBody />
 
     <c:MyASUHelpPageNotifications />
-    <apex:pageMessages id="message" />
 
     <div class="px-5">
         <apex:outputPanel id="alerts" styleClass="w-100">
@@ -269,7 +262,8 @@
                                                 <apex:inputFile fileName="{!replyCaseAttachment.name}" styleClass="d-block" id="replyFile" value="{!replyCaseAttachment.Body}"
                                                 />
                                                 <div class="mt-2">
-                                                    <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md" />
+                                                    <apex:commandLink onclick="return validateReply();" action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md"
+                                                    />
                                                 </div>
                                                 <br />
                                                 <div class="errorMsg" id="errorDiv" />

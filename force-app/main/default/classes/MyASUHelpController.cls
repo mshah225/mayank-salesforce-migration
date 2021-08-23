@@ -6,6 +6,7 @@ public with sharing class MyASUHelpController {
     private Date today;
     private Term__c termcAC;
     private Term__c termcB;
+    public AlertHandler alertHandler { get; set; } // Use the custom alerting component
     private MyASUHelpViewAsService viewAsService;
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
@@ -74,6 +75,16 @@ public with sharing class MyASUHelpController {
         viewingAs = false;
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
+        alertHandler = new AlertHandler();
+
+        if (Label.MyASU_Help_Alert_Status == 'true') {
+            alertHandler.newAlert(
+                customAlert.WARNING,
+                ' ',
+                'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now. ',
+                'https://students.asu.edu/contact/financialaid'
+            );
+        }
     }
 
     private void setLiveAgentSettings() {

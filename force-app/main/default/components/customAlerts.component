@@ -1,25 +1,46 @@
 <apex:component>
     <apex:attribute name="alerts" description="The alert to be displayed" type="customAlert[]" />
 
-    <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
-    <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+    <script> let allAlertsJS = []; </script>
 
     <apex:repeat value="{!alerts}" var="alert" rendered="{!NOT(ISBLANK(alerts))}">
-        <div class="alert {!if(alert.severity = 'CONFIRM', 'alert-success', IF(alert.severity = 'INFO', 'alert-info', IF(alert.severity = 'WARNING', 'alert-warning', 'alert-danger')))}"
-            role="alert">
-            <div class="alert-icon">
-                <span title="{!if(alert.severity = 'CONFIRM', 'Success', IF(alert.severity = 'INFO', 'Information', IF(alert.severity = 'WARNING', 'Alert', 'Error')))}"
-                    class="fa fa-icon {!if(alert.severity = 'CONFIRM', 'fa-check-circle', IF(alert.severity = 'INFO', 'fa-info-circle', IF(alert.severity = 'WARNING', 'fa-bell', 'fa-exclamation-triangle')))}"
-                    style="font-size:40px;"></span>
-            </div>
-            <div class="alert-content">
-                <strong>{!if(alert.severity = 'CONFIRM', 'Success', IF(alert.severity = 'INFO', 'Info', IF(alert.severity = 'WARNING',
-                    'Warning', 'Danger')))}!</strong>
-                {!alert.message}
-            </div>
-            <div class="alert-close">
-                <button type="button" class="btn btn-circle btn-circle-alt-white close" aria-label="Close" onclick="event.target.parentNode.parentNode.style.display='none';">x</button>
-            </div>
-        </div>
+        <script>
+            allAlertsJS.push({
+                severity: "{!alert.severity}",
+                title: "{!if(alert.severity = 'CONFIRM', 'Success! ', IF(alert.severity = 'INFO', 'Information! ', IF(alert.severity = 'WARNING', 'Alert! ', 'Error! ')))}",
+                message: "{!alert.message}"
+            });
+        </script>
     </apex:repeat>
+
+    <div id="ASUBrandAlertWrapper"> </div>
+
+    <script>
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandAlert",
+                    {},
+                    "ASUBrandAlertWrapper",
+                    function (cmp) {
+                        for (let i = 0; i < allAlertsJS.length; i++) {
+                            cmp.addAlert(allAlertsJS[i].severity, allAlertsJS[i].title, allAlertsJS[i].message, null);
+                        }
+                    }
+                );
+
+                // Hide errors that appear randomly from LWC
+                const observer = new MutationObserver(function (mutations) {
+                    const errorDiv = document.querySelector('#auraErrorMessage');
+                    if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                        console.error(errorDiv.innerText);
+                        errorDiv.innerHTML = '';
+                    }
+                });
+                observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+            }
+        );
+
+    </script>
 </apex:component>

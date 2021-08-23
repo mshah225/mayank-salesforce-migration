@@ -20,8 +20,7 @@
     <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
     <div id="ASUBrandViewAsWrapper" style="{!IF(viewingAs, '', 'display:none')}" />
-    <div id="ASUBrandAlertWrapper" class="no-slds-scope" style="{!IF($Label.MyASU_Help_Alert_Status == 'true', '', 'display:none')}"
-        role="alert"></div>
+    <div id="ASUBrandAlertWrapper" class="no-slds-scope" role="alert"></div>
 
     <c:GoogleTagManagerBody />
     <div role="main">
@@ -117,17 +116,23 @@
                 $Lightning.createComponent(
                     "c:asuBrandAlert",
                     {},
-                    "ASUBrandAlertWrapper"
-                );
-                // Hide errors that appear randomly from LWC
-                const observer = new MutationObserver(function (mutations) {
-                    const errorDiv = document.querySelector('#auraErrorMessage');
-                    if (errorDiv != null && errorDiv.innerHTML.length > 0) {
-                        console.error(errorDiv.innerText);
-                        errorDiv.innerHTML = '';
-                    }
-                });
-                observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+                    "ASUBrandAlertWrapper",
+                    function (cmp) {
+                        if ({!IF($Label.MyASU_Help_Alert_Status == 'true', true, false)
+                    }){
+                    cmp.addAlert('WARNING', '', 'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now ', 'https://students.asu.edu/contact/financialaid');
+                }
+            }
+        );
+        // Hide errors that appear randomly from LWC
+        const observer = new MutationObserver(function (mutations) {
+            const errorDiv = document.querySelector('#auraErrorMessage');
+            if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                console.error(errorDiv.innerText);
+                errorDiv.innerHTML = '';
+            }
+        });
+        observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
 
             }
         );

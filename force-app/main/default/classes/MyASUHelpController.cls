@@ -51,7 +51,6 @@ public with sharing class MyASUHelpController {
     public MyASUHelpController() {
         setSiteTitleInformation();
         instantiateControllerVariables();
-        loadConsistentAlerts();
         setLiveAgentSettings();
 
         checkForViewAs();
@@ -77,12 +76,14 @@ public with sharing class MyASUHelpController {
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
         alertHandler = new AlertHandler();
+        loadStudentSCAlerts(); // Do before standard alerts to appear above standard alerts
+        alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
     }
 
-    private void loadConsistentAlerts() {
-        if (ApexPages.currentPage() == Page.studentSC) {
+    private void loadStudentSCAlerts() {
+        if (ApexPages.currentPage().getUrl().toLowerCase().contains(Page.studentSC.getUrl().toLowerCase())) {
             // Only loaded on studentSC page
-            if (mMessage != null) {
+            if (getmMessage() != null) {
                 alertHandler.newAlert(customAlert.WARNING, ' ', mMessage, '');
             }
 
@@ -94,40 +95,6 @@ public with sharing class MyASUHelpController {
                     'https://students.asu.edu/contact/financialaid'
                 );
             }
-        }
-
-        if (ApexPages.currentPage().getParameters().get('Feedback') == 'yes') {
-            alertHandler.newAlert(
-                customAlert.CONFIRM,
-                'Thank you for your feedback. ',
-                'Your feedback helps ASU make the Knowledge Base better.',
-                ''
-            );
-        }
-
-        if (ApexPages.currentPage().getParameters().get('Confirm') == 'newcase') {
-            alertHandler.newAlert(
-                customAlert.CONFIRM,
-                'Your request has been submitted. ',
-                'We are working on responding to you as soon as possible. A member of the ASU team will contact you if additional information is needed to answer your request. Please check back here, in the My ASU Service Center, to track the status of your request.',
-                ''
-            );
-        } else if (ApexPages.currentPage().getParameters().get('Confirm') == 'feedback') {
-            alertHandler.newAlert(
-                customAlert.CONFIRM,
-                'Thank you for your feedback about the My ASU Service Center!',
-                '',
-                ''
-            );
-        }
-
-        if (ApexPages.currentPage().getParameters().get('Suggest') == 'yes') {
-            alertHandler.newAlert(
-                customAlert.CONFIRM,
-                'Thank you for suggesting an article! ',
-                'Your suggestions help ASU make the Knowledge Base better.',
-                ''
-            );
         }
     }
 

@@ -151,4 +151,36 @@ public class AlertHandler {
 
         return false;
     }
+
+    // Note that ApexPages.currentPage().getParameters() seems to be a case-insenstive mapping (Feedback and feedback both return the same value)
+    public void loadStandardAlertsFromMap(Map<String, String> paramMap) {
+        if (paramMap.get('feedback') == 'yes') {
+            this.newAlert(
+                customAlert.CONFIRM,
+                'Thank you for your feedback. ',
+                'Your feedback helps ASU make the Knowledge Base better.',
+                ''
+            );
+        }
+
+        if (paramMap.get('confirm') == 'newcase') {
+            this.newAlert(
+                customAlert.CONFIRM,
+                'Your request has been submitted. ',
+                'We are working on responding to you as soon as possible. A member of the ASU team will contact you if additional information is needed to answer your request. Please check back here, in the My ASU Service Center, to track the status of your request.',
+                ''
+            );
+        } else if (paramMap.get('confirm') == 'feedback') {
+            this.newAlert(customAlert.CONFIRM, 'Thank you for your feedback about the My ASU Service Center!', '', '');
+        }
+
+        if (paramMap.get('suggest') == 'yes') {
+            this.newAlert(
+                customAlert.CONFIRM,
+                'Thank you for suggesting an article! ',
+                'Your suggestions help ASU make the Knowledge Base better.',
+                ''
+            );
+        }
+    }
 }

@@ -51,6 +51,7 @@ public with sharing class MyASUHelpController {
     public MyASUHelpController() {
         setSiteTitleInformation();
         instantiateControllerVariables();
+        loadConsistentAlerts();
         setLiveAgentSettings();
 
         checkForViewAs();
@@ -76,13 +77,56 @@ public with sharing class MyASUHelpController {
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
         alertHandler = new AlertHandler();
+    }
 
-        if (Label.MyASU_Help_Alert_Status == 'true') {
+    private void loadConsistentAlerts() {
+        if (ApexPages.currentPage() == Page.studentSC) {
+            // Only loaded on studentSC page
+            if (mMessage != null) {
+                alertHandler.newAlert(customAlert.WARNING, ' ', mMessage, '');
+            }
+
+            if (Label.MyASU_Help_Alert_Status == 'true') {
+                alertHandler.newAlert(
+                    customAlert.WARNING,
+                    ' ',
+                    'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now. ',
+                    'https://students.asu.edu/contact/financialaid'
+                );
+            }
+        }
+
+        if (ApexPages.currentPage().getParameters().get('Feedback') == 'yes') {
             alertHandler.newAlert(
-                customAlert.WARNING,
-                ' ',
-                'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now. ',
-                'https://students.asu.edu/contact/financialaid'
+                customAlert.CONFIRM,
+                'Thank you for your feedback. ',
+                'Your feedback helps ASU make the Knowledge Base better.',
+                ''
+            );
+        }
+
+        if (ApexPages.currentPage().getParameters().get('Confirm') == 'newcase') {
+            alertHandler.newAlert(
+                customAlert.CONFIRM,
+                'Your request has been submitted. ',
+                'We are working on responding to you as soon as possible. A member of the ASU team will contact you if additional information is needed to answer your request. Please check back here, in the My ASU Service Center, to track the status of your request.',
+                ''
+            );
+        } else if (ApexPages.currentPage().getParameters().get('Confirm') == 'feedback') {
+            alertHandler.newAlert(
+                customAlert.CONFIRM,
+                'Thank you for your feedback about the My ASU Service Center!',
+                '',
+                ''
+            );
+        }
+
+        if (ApexPages.currentPage().getParameters().get('Suggest') == 'yes') {
+            alertHandler.newAlert(
+                customAlert.CONFIRM,
+                'Thank you for suggesting an article! ',
+                'Your suggestions help ASU make the Knowledge Base better.',
+                ''
             );
         }
     }
@@ -386,7 +430,7 @@ public with sharing class MyASUHelpController {
         }
     }
 
-    public String getmMessage() {
+    private String getmMessage() {
         List<Service_Center_Maintenance__c> scmList = [
             SELECT Message__c, Start_Time__c, End_Time__c
             FROM Service_Center_Maintenance__c

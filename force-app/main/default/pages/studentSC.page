@@ -32,7 +32,6 @@
                 </div>
             </div>
         </div>
-        <c:MyASUHelpPageNotifications maintenanceString="{!mMessage}" />
         <div class="container myasu-help-scope">
             <div class="row">
                 <div class="col-lg-7 mb-4">

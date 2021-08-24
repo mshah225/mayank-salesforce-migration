@@ -1,10 +1,10 @@
 <template>
     <div id="headerSpacer" class="headerSpacer"></div>
     <div id="headerContainer" class="headerContainer" lwc:dom="manual"></div>
-    <div id="viewAsJsBinding" class="viewAsJsBinding">
+    <div id="jsBinding" class="jsBinding">
         <div class="viewAsToggle" onclick={viewAsToggle}></div>
     </div>
-    <div id="viewAsHeader" class="viewAsHeader border-bottom pt-1 mb-2 pb-2 d-none">
+    <div id="viewAsWrapper" class="viewAsWrapper p-1 d-none">
         <c-asu-brand-view-as
             first-name={viewAsFirstName}
             last-name={viewAsLastName}

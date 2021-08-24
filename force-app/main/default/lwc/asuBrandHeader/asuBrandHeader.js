@@ -20,6 +20,7 @@ export default class AsuBrandHeader extends LightningElement {
     @api viewAsStopViewAsUrl;
 
     connectedCallback() {
+        this.viewingAs = true;
         const params = new URLSearchParams(window.location.search);
 
         // Precedence: @api defined > URL param > default value
@@ -64,7 +65,7 @@ export default class AsuBrandHeader extends LightningElement {
         }
     }
     viewAsToggle() {
-        let obj = this.template.querySelector('.viewAsHeader');
+        let obj = this.template.querySelector('.viewAsWrapper');
         if (obj.classList.contains('d-none')) {
             obj.classList.add('d-block');
             obj.classList.remove('d-none');
@@ -121,7 +122,7 @@ export default class AsuBrandHeader extends LightningElement {
                     color: 'maroon',
                     href:
                         "javascript:document.querySelector('c-asu-brand-header').shadowRoot.querySelector('#" +
-                        this.template.querySelector('.viewAsJsBinding').id +
+                        this.template.querySelector('.jsBinding').id +
                         "').querySelector('.viewAsToggle').click()",
                 },
             ];
@@ -138,6 +139,7 @@ export default class AsuBrandHeader extends LightningElement {
             .finally(() => {
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
                 this.setupSpacerResizing();
+                this.attachViewAsSection();
             });
     }
     convertStrToNavTreeObj(navTreeStr) {
@@ -222,5 +224,8 @@ export default class AsuBrandHeader extends LightningElement {
                 }, 100);
             });
         }
+    }
+    attachViewAsSection() {
+        this.template.querySelector('header').appendChild(this.template.querySelector('.viewAsWrapper'));
     }
 }

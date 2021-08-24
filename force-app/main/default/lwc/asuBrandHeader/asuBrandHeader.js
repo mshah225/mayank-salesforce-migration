@@ -20,7 +20,6 @@ export default class AsuBrandHeader extends LightningElement {
     @api viewAsStopViewAsUrl;
 
     connectedCallback() {
-        this.viewingAs = true;
         const params = new URLSearchParams(window.location.search);
 
         // Precedence: @api defined > URL param > default value

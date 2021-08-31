@@ -8,10 +8,6 @@
     <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
     <noscript> Note: This page requires JavaScript to run correctly. </noscript>
 
-    <div class="float-right">
-        <c:pkb_articleicons pkbCon="{!pkbCon}" />
-    </div>
-
     <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" styleClass="mb-1 font-size-std">
         <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
             <a class="text-dark" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}">&lt; {!$Label.PKB2_Back_To_Results}</a>

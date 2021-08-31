@@ -29,7 +29,7 @@
 
     <form class="form">
         <div class="row">
-            <div class="font-size-std {!IF(dirVertical, 'col-12', 'col-9')} d-flex">
+            <div class="font-size-std col-12 {!IF(dirVertical, '', 'col-lg-9')} d-flex">
                 <span class="font-weight-bold h6 {!IF(dirVertical, 'd-inline invisible', 'd-none')} ">Knowledge Base&nbsp;&nbsp;</span>
                 <div class="flex-grow-1">
                     <textarea onblur="restorePrompt(this); buildSearchHref();" onkeypress="checkForEnter(event, this);" placeholder="{!pkbCon.searchPrompt}"
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="{!IF(dirVertical, 'col-12 text-right pt-2', 'col-3')}">
+            <div class="col-12 text-center mt-1 {!IF(dirVertical, 'text-right pt-2', 'col-lg-3  text-lg-left mt-lg-0')}">
                 <a href="#" class="btn btn-md btn-maroon" id="searchAskButton" tabindex="2" onclick="searchButtonClicked(); return false;">
                     <span title="{!pkbCon.buttonPrompt}">{!pkbCon.buttonPrompt}</span>
                 </a>

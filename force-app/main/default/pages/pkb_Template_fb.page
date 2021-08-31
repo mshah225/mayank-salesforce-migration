@@ -11,6 +11,8 @@
             <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}" />
             <apex:variable var="articleURL" value="{!pkbCon.currentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}"
             />
+            <meta name="viewport" content="width=device-width, initial-scale=.5, minimum-scale=.5, maximum-scale=.5, target-densitydpi=device-dpi"
+            />
             <meta property="og:title" content="{!pkbCon.theKad.title}" />
             <meta property="og:type" content="article" />
             <meta property="og:url" content="{!articleURL}" />

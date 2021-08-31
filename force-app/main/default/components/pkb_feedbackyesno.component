@@ -43,7 +43,7 @@
                     <apex:form id="feedbackForm">
                         <div class="modal-header">
                             <h5 class="modal-title m-0" id="feedbackModalTitle">{!$Label.PKB2_Feedback_Appreciated}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" style="background:unset" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>

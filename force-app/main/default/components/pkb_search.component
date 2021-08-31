@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="col-12 text-center mt-1 {!IF(dirVertical, 'text-right pt-2', 'col-lg-3  text-lg-left mt-lg-0')}">
+            <div class="col-12 mt-1 {!IF(dirVertical, 'text-right pt-2', 'col-lg-3 text-center text-lg-left mt-lg-0')}">
                 <a href="#" class="btn btn-md btn-maroon" id="searchAskButton" tabindex="2" onclick="searchButtonClicked(); return false;">
                     <span title="{!pkbCon.buttonPrompt}">{!pkbCon.buttonPrompt}</span>
                 </a>

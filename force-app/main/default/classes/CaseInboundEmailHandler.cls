@@ -589,7 +589,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
         List<Attachment> allEmailAttachments = new List<Attachment>();
         boolean successfulAttachment = true;
-        //Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
         String[] validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
 

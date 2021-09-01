@@ -640,7 +640,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         allEmailAttachments.add(attachment);
                     }
 
-                    if (bAttachment.headers != null) {
+                    if (bAttachment.headers != null && email.htmlBody != null) {
                         for (Integer i = 0; i < bAttachment.headers.size(); i++) {
                             String headerValue = bAttachment.headers[i].value;
                             String headerName = bAttachment.headers[i].name;

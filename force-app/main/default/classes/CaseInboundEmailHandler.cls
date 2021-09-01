@@ -56,7 +56,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     lName = email.fromname.substring(email.fromname.indexOf(' '));
                 }
             } else {
-                fname = '';
+                fname = email.fromAddress;
                 lname = email.fromAddress;
             }
 
@@ -285,7 +285,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 EmailTransformer transformer = new EmailTransformer();
                 String cleanFromAddress = transformer.trimReplyFromSuffix(email.fromAddress);
                 Contact[] contacts = [
-                    SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
+                    SELECT
+                        Id,
+                        FirstName,
+                        LastName,
+                        Name,
+                        AccountId,
+                        Email,
+                        Last_Case_Email_Used__c,
+                        Preferred_First_Name__c,
+                        Preferred_Full_Name__c
                     FROM Contact
                     WHERE
                         Email = :cleanFromAddress
@@ -378,7 +387,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     insert c;
 
                     Contact insertedContact = [
-                        SELECT Id, AccountId, FirstName, LastName, Email, RecordTypeId, Last_Case_Email_Used__c
+                        SELECT
+                            Id,
+                            AccountId,
+                            FirstName,
+                            LastName,
+                            Email,
+                            RecordTypeId,
+                            Last_Case_Email_Used__c,
+                            Preferred_First_Name__c,
+                            Preferred_Full_Name__c
                         FROM Contact
                         WHERE Id = :c.Id
                     ];
@@ -443,7 +461,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             } else {
                 // Grab the contact record from the existing case
                 List<Contact> caseContact = [
-                    SELECT Id, FirstName, LastName, Name, AccountId, Email, Last_Case_Email_Used__c
+                    SELECT
+                        Id,
+                        FirstName,
+                        LastName,
+                        Name,
+                        AccountId,
+                        Email,
+                        Last_Case_Email_Used__c,
+                        Preferred_First_Name__c,
+                        Preferred_Full_Name__c
                     FROM Contact
                     WHERE Id = :theCase.ContactId
                 ];
@@ -458,6 +485,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 (email.textAttachments != null && email.textAttachments.size() > 0) ||
                 (email.binaryAttachments != null &&
                 email.binaryAttachments.size() > 0);
+
+            // Check attachment sizes and notify
+            if (hasAttachments) {
+                checkAttachmentSize(email);
+            }
 
             if (
                 success &&
@@ -491,6 +523,49 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         return result;
     }
 
+    // Log lostEmail if we exceed attachment specs
+    private void checkAttachmentSize(Messaging.InboundEmail email) {
+        Long attachmentCombinedSize = 0;
+        Long attachmentThreshold = 25000000; // 25MB;
+        Boolean exceededSingleLimit = false;
+        Boolean exceededCombinedLimit = false;
+
+        // Binary attachments
+        if (email.binaryAttachments != null && email.binaryAttachments.size() > 0) {
+            for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
+                Long attSize = bAttachment.body.size();
+                attachmentCombinedSize += attSize;
+
+                // If this file exceeded our threshold for a single file, flag it
+                if (attSize > attachmentThreshold) {
+                    exceededSingleLimit = true;
+                }
+            }
+        }
+        // Text attachments
+        if (email.textAttachments != null && email.textAttachments.size() > 0) {
+            for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
+                Long attSize = tAttachment.body.length();
+                attachmentCombinedSize += attSize;
+
+                // If this file exceeded our threshold for a single file, flag it
+                if (attSize > attachmentThreshold) {
+                    exceededSingleLimit = true;
+                }
+            }
+        }
+
+        // Check if the combined attachment limit has been exceeded
+        if (attachmentCombinedSize > attachmentThreshold) {
+            exceededCombinedLimit = true;
+        }
+
+        // Create a lost email to track
+        if (exceededCombinedLimit || exceededCombinedLimit) {
+            generateLostEmail(email, theCase, 'File(s) size greater than 25MB');
+        }
+    }
+
     // Overload to support previous implementation
     private boolean handleAttachments(Case theCase, Contact theContact, Messaging.InboundEmail email) {
         boolean successfulAttachment = handleAttachments(theCase, email);
@@ -514,7 +589,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
         List<Attachment> allEmailAttachments = new List<Attachment>();
         boolean successfulAttachment = true;
-        Long attachmentSize = 0;
+        //Long attachmentSize = 0;
         Set<String> validFileExtensionSet = new Set<String>();
         String[] validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
 
@@ -526,26 +601,19 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         if (email.textAttachments != null && email.textAttachments.size() > 0) {
             for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
-                attachmentSize += tAttachment.body.length();
-
                 if (
                     validFileExtensionSet.isEmpty() ||
                     validFileExtensionSet.contains(
                         tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.') + 1).toLowerCase()
                     )
                 ) {
-                    if (tAttachment.body.length() > 100000000) {
-                        successfulAttachment = false;
-                        badTextAttachments.add(tAttachment);
-                    } else {
-                        Attachment attachment = new Attachment();
-                        attachment.Name = tAttachment.fileName;
-                        attachment.Body = Blob.valueOf(tAttachment.body);
-                        attachment.ParentId = parentObject.Id;
-                        if (!tAttachment.fileName.toLowerCase().contains('.p7s')) {
-                            neutralEmail = false;
-                            allEmailAttachments.add(attachment);
-                        }
+                    Attachment attachment = new Attachment();
+                    attachment.Name = tAttachment.fileName;
+                    attachment.Body = Blob.valueOf(tAttachment.body);
+                    attachment.ParentId = parentObject.Id;
+                    if (!tAttachment.fileName.toLowerCase().contains('.p7s')) {
+                        neutralEmail = false;
+                        allEmailAttachments.add(attachment);
                     }
                 } else if (!validFileExtensionSet.isEmpty()) {
                     successfulAttachment = false;
@@ -556,40 +624,33 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         if (email.binaryAttachments != null && email.binaryAttachments.size() > 0) {
             for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
-                attachmentSize += bAttachment.body.size();
-
                 if (
                     validFileExtensionSet.isEmpty() ||
                     validFileExtensionSet.contains(
                         bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.') + 1).toLowerCase()
                     )
                 ) {
-                    if (bAttachment.body.size() > 100000000) {
-                        successfulAttachment = false;
-                        badBinaryAttachments.add(bAttachment);
-                    } else {
-                        Attachment attachment = new Attachment();
-                        attachment.Name = bAttachment.fileName;
-                        attachment.Body = bAttachment.body;
-                        attachment.ContentType = bAttachment.mimeTypeSubType;
-                        attachment.ParentId = parentObject.Id;
-                        if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
-                            neutralEmail = false;
-                            allEmailAttachments.add(attachment);
-                        }
+                    Attachment attachment = new Attachment();
+                    attachment.Name = bAttachment.fileName;
+                    attachment.Body = bAttachment.body;
+                    attachment.ContentType = bAttachment.mimeTypeSubType;
+                    attachment.ParentId = parentObject.Id;
+                    if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
+                        neutralEmail = false;
+                        allEmailAttachments.add(attachment);
+                    }
 
-                        if (bAttachment.headers != null) {
-                            for (Integer i = 0; i < bAttachment.headers.size(); i++) {
-                                String headerValue = bAttachment.headers[i].value;
-                                String headerName = bAttachment.headers[i].name;
-                                if (
-                                    headerValue.startsWith('ii') ||
-                                    headerValue.startsWith('< image') ||
-                                    headerName.equals('Content-ID')
-                                ) {
-                                    headerValue = headerValue.replaceAll('<', '').replaceAll('>', '');
-                                    cidToAttachmentMap.put(headerValue, attachment);
-                                }
+                    if (bAttachment.headers != null) {
+                        for (Integer i = 0; i < bAttachment.headers.size(); i++) {
+                            String headerValue = bAttachment.headers[i].value;
+                            String headerName = bAttachment.headers[i].name;
+                            if (
+                                headerValue.startsWith('ii') ||
+                                headerValue.startsWith('< image') ||
+                                headerName.equals('Content-ID')
+                            ) {
+                                headerValue = headerValue.replaceAll('<', '').replaceAll('>', '');
+                                cidToAttachmentMap.put(headerValue, attachment);
                             }
                         }
                     }
@@ -600,17 +661,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
 
-        if (attachmentSize > 100000000) {
-            successfulAttachment = false;
-        } else {
-            insert allEmailAttachments;
+        insert allEmailAttachments;
 
-            // change any cid links to new url
-            for (String headerValue : cidToAttachmentMap.keySet()) {
-                String refLink =
-                    '/servlet/../servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
-                email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
-            }
+        // change any cid links to new url
+        for (String headerValue : cidToAttachmentMap.keySet()) {
+            String refLink = '/servlet/../servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
+            email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
         }
 
         return successfulAttachment;
@@ -1164,20 +1220,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         EmailTemplate et = [SELECT Id, Subject, HtmlValue, Body FROM EmailTemplate WHERE id = :emailTemplateId LIMIT 1];
         String failedAttachments = '';
         for (Messaging.Inboundemail.BinaryAttachment bAttachment : badBinaryAttachments) {
-            failedAttachments +=
-                'File Name: ' +
-                bAttachment.fileName +
-                '    File Size: ' +
-                bAttachment.body.size() / 1000.00 +
-                ' kB\n';
+            failedAttachments += 'File Name: ' + bAttachment.fileName;
         }
         for (Messaging.Inboundemail.TextAttachment tAttachment : badTextAttachments) {
-            failedAttachments +=
-                'File Name: ' +
-                tAttachment.fileName +
-                '    File Size: ' +
-                tAttachment.body.length() / 1000.00 +
-                ' kB\n';
+            failedAttachments += 'File Name: ' + tAttachment.fileName;
         }
         String htmlAttachments = failedAttachments.replace('\n', '<br />');
         String subject = et.Subject;
@@ -1185,13 +1231,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         subject += emailCase.CaseNumber;
 
         String htmlBody = et.HtmlValue;
-        htmlBody = htmlBody.replace('{!Contact.FirstName}', emailContact.FirstName);
+        htmlBody = htmlBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);
         htmlBody = htmlBody.replace('{!Contact.LastName}', emailContact.LastName);
         htmlBody = htmlBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c);
         htmlBody = htmlBody.replace('{!failedAttachmentsList}', htmlAttachments);
 
         String plainBody = et.Body;
-        plainBody = plainBody.replace('{!Contact.FirstName}', emailContact.FirstName);
+        plainBody = plainBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);
         plainBody = plainBody.replace('{!Contact.LastName}', emailContact.LastName);
         plainBody = plainBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c);
         plainBody = plainBody.replace('{!failedAttachmentsList}', failedAttachments);
@@ -1200,7 +1246,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         mail.setSubject(subject);
         mail.setHtmlBody(htmlBody);
         mail.setPlainTextBody(plainBody);
-        //mail.setTemplateId(emailTemplateId);
 
         if (emailCase != null) {
             mail.setWhatId(emailCase.Id);

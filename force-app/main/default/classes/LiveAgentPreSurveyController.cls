@@ -12,6 +12,7 @@ public class LiveAgentPreSurveyController {
     public String chatDeploymentId { get; set; }
     public String chatButtonId { get; set; }
     public String chatEndpoint { get; set; }
+    public String scriptEndpointUrl { get; set; }
     public Live_Agent_Button__c buttonConfig { get; set; }
 
     public LiveAgentPreSurveyController() {
@@ -35,6 +36,7 @@ public class LiveAgentPreSurveyController {
         chatDeploymentId = buttonConfig.Chat_Deployment__c;
         chatButtonId = buttonConfig.Chat_Button_Id__c;
         chatEndpoint = buttonConfig.Chat_Endpoint__c;
+        scriptEndpointUrl = chatEndpoint.replace('https://d', 'https://c').replace('/chat', '');
     }
 
     private void setCaseDetails() {

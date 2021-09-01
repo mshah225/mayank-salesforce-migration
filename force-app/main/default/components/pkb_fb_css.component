@@ -2,11 +2,6 @@
     <c:pkb_css_shared />
 
     <style type="text/css">
-        body {
-            --fb-main: #3b5998;
-            --fb-secondary: #537cd3;
-        }
-
         .pkb-scope a:not(.btn).search-reset-icon,
         .pkb-scope a:not(.btn).search-reset-icon:hover {
             color: #3b5998 !important;

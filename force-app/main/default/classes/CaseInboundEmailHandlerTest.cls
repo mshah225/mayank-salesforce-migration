@@ -194,8 +194,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         EmailTemplate e2;
         System.runAs(new User(Id = Userinfo.getUserId())) {
-            String htmlBody = 'Body in HTML: {!Contact.FirstName}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
-            String textBody = 'Body in text: {!Contact.FirstName}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
+            String htmlBody = 'Body in HTML: {!Contact.Preferred_First_Name__c}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
+            String textBody = 'Body in text: {!Contact.Preferred_First_Name__c}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
             e2 = new EmailTemplate(
                 developerName = 'test2',
                 TemplateType = 'Text',

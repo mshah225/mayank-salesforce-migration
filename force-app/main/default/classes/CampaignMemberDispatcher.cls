@@ -17,30 +17,30 @@ public class CampaignMemberDispatcher implements IDispatch {
     }
 
     public void beforeInsert() {
-        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
         cms.beforeInsert();
     }
     public void beforeUpdate() {
-        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
         cms.beforeUpdate();
     }
     public void beforeDelete() {
-        CampaignMemberHandler cms = new CampaignMemberHandler(oldList, oldMap);
+        CampaignMemberService cms = new CampaignMemberService(oldList, oldMap);
         cms.beforeDelete();
     }
     public void afterInsert() {
-        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
         cms.afterInsert();
 
         AutoSubscriberService autoSubService = new AutoSubscriberService(newList, 'CampaignMember');
         autoSubService.processCampaignMemberRecords();
     }
     public void afterUpdate() {
-        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
         cms.afterUpdate();
     }
     public void afterDelete() {
-        CampaignMemberHandler cms = new CampaignMemberHandler(oldList, oldMap);
+        CampaignMemberService cms = new CampaignMemberService(oldList, oldMap);
         cms.afterDelete();
     }
     public void afterUndelete() {

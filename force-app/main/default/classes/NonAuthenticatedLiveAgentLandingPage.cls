@@ -4,6 +4,7 @@ public class NonAuthenticatedLiveAgentLandingPage {
     public String chatDeploymentId { get; set; }
     public String chatButtonId { get; set; }
     public String chatEndpoint { get; set; }
+    public String scriptEndpointUrl { get; set; }
     public String agentOfflineMessage { get; set; }
 
     public NonAuthenticatedLiveAgentLandingPage() {
@@ -12,6 +13,7 @@ public class NonAuthenticatedLiveAgentLandingPage {
         chatDeploymentId = nonAuthenticatedButton.Chat_Deployment__c;
         chatButtonId = nonAuthenticatedButton.Chat_Button_Id__c;
         chatEndpoint = nonAuthenticatedButton.Chat_Endpoint__c;
+        scriptEndpointUrl = chatEndpoint.replace('https://d', 'https://c').replace('/chat', '');
         setAgentOfflineMessage();
     }
 

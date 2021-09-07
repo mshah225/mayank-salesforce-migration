@@ -9,7 +9,7 @@ public without sharing class CampaignMemberService {
     private static Set<CampaignMember> externalMemberstoMarkPrimary = new Set<CampaignMember>();
     private static Map<Id, Opportunity> opportunitiesToUpdate = new Map<Id, Opportunity>();
     private static List<Lead> leadsToUpdate = new List<Lead>();
-    private static Boolean ranCampaignMembersUpdatePrimary = false;
+    public static Boolean ranCampaignMembersUpdatePrimary = false;
 
     private Set<Id> contactIdsInTrigger = new Set<Id>();
     private Set<Id> leadIdsInTrigger = new Set<Id>();
@@ -49,114 +49,6 @@ public without sharing class CampaignMemberService {
     public CampaignMemberService(List<CampaignMember> members, Map<Id, CampaignMember> oldMemberMap) {
         affectedCampaignMembers = members;
         oldAffectedCampaignMembersMap = oldMemberMap;
-    }
-
-    public void beforeInsert() {
-        if (!ranCampaignMembersUpdatePrimary) {
-            updateLastMemberStatusChange();
-            processingBefore();
-            addInTriggerToContactAndLeadMap();
-            if (!campaignMembersByContact.isEmpty()) {
-                processContacts();
-            }
-            if (!campaignMembersByLead.isEmpty()) {
-                processLeads();
-            }
-        }
-
-        for (CampaignMember member : affectedCampaignMembers) {
-            if (membersToMarkNotPrimary.contains(member)) {
-                member.Is_Primary_Interest__c = false;
-            }
-            if (membersToMarkPrimary.contains(member)) {
-                member.Is_Primary_Interest__c = true;
-            }
-            if (member.ContactId != null) {
-                Opportunity opportunity = opportunitiesByContact.get(member.ContactId);
-                if (opportunity != null) {
-                    member.Opportunity__c = opportunity.Id;
-                }
-            }
-        }
-    }
-
-    public void afterInsert() {
-        Set<Id> memberIdsInTrigger = new Set<Id>();
-        for (CampaignMember member : affectedCampaignMembers) {
-            memberIdsInTrigger.add(member.Id);
-        }
-        assignNationalMeritFlag(memberIdsInTrigger);
-        List<CampaignMember> campaignMembersToUpdate = setPrimaryInterestOnCampaignMembers();
-        updateOpportunities();
-        updateLeads();
-        updateCampaignMembers(campaignMembersToUpdate);
-        clearDataAfter();
-    }
-
-    public void beforeUpdate() {
-        if (!ranCampaignMembersUpdatePrimary) {
-            updateLastMemberStatusChange();
-            processingBefore();
-            addInTriggerToContactAndLeadMap();
-            if (!campaignMembersByContact.isEmpty()) {
-                processContacts();
-            }
-            if (!campaignMembersByLead.isEmpty()) {
-                processLeads();
-            }
-        }
-
-        for (CampaignMember member : affectedCampaignMembers) {
-            CampaignMember oldMember = oldAffectedCampaignMembersMap.get(member.Id);
-            if (oldMember.Status != 'No Longer Interested' && member.Status == 'No Longer Interested') {
-                member.Is_Primary_Interest__c = false;
-            }
-            if (membersToMarkNotPrimary.contains(member)) {
-                member.Is_Primary_Interest__c = false;
-            }
-            if (membersToMarkPrimary.contains(member)) {
-                member.Is_Primary_Interest__c = true;
-            }
-        }
-    }
-
-    public void afterUpdate() {
-        Set<Id> memberIdsInTrigger = new Set<Id>();
-        for (CampaignMember member : affectedCampaignMembers) {
-            memberIdsInTrigger.add(member.Id);
-        }
-        assignNationalMeritFlag(memberIdsInTrigger);
-        List<CampaignMember> campaignMembersToUpdate = setPrimaryInterestOnCampaignMembers();
-        updateOpportunities();
-        updateLeads();
-        updateCampaignMembers(campaignMembersToUpdate);
-        clearDataAfter();
-    }
-
-    public void beforeDelete() {
-        if (!ranCampaignMembersUpdatePrimary) {
-            processingBefore();
-
-            if (!campaignMembersByContact.isEmpty()) {
-                processContacts();
-            }
-            if (!campaignMembersByLead.isEmpty()) {
-                processLeads();
-            }
-        }
-    }
-
-    public void afterDelete() {
-        Set<Id> memberIdsInTrigger = new Set<Id>();
-        for (CampaignMember member : affectedCampaignMembers) {
-            memberIdsInTrigger.add(member.Id);
-        }
-        assignNationalMeritFlag(memberIdsInTrigger);
-        List<CampaignMember> campaignMembersToUpdate = setPrimaryInterestOnCampaignMembers();
-        updateOpportunities();
-        updateLeads();
-        updateCampaignMembers(campaignMembersToUpdate);
-        clearDataAfter();
     }
 
     /**
@@ -204,7 +96,7 @@ public without sharing class CampaignMemberService {
         }
     }
 
-    private void updateLastMemberStatusChange() {
+    public void updateLastMemberStatusChange() {
         //Deal with updating the Last Member Status Change
         for (CampaignMember member : affectedCampaignMembers) {
             if (oldAffectedCampaignMembersMap != null && oldAffectedCampaignMembersMap.containsKey(member.Id)) {
@@ -304,7 +196,7 @@ public without sharing class CampaignMemberService {
     //We now have the CMs attached to all affected Contacts / Leads queued up
     //We need to go through each Contact / Lead, and reset the primary for each set of CMs
     //Reset the primary for the Contacts
-    private void processContacts() {
+    public void processContacts() {
         List<Opportunity> opportunitiesInTrigger = [
             SELECT Id, Contact__c, National_Merit_Semifinalist__c, Primary_Interest__c
             FROM Opportunity
@@ -389,7 +281,7 @@ public without sharing class CampaignMemberService {
         }
     }
 
-    private void processLeads() {
+    public void processLeads() {
         Map<Id, Lead> leadsInTrigger = new Map<Id, Lead>(
             [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIdsInTrigger]
         );
@@ -463,7 +355,37 @@ public without sharing class CampaignMemberService {
         }
     }
 
-    private void addInTriggerToContactAndLeadMap() {
+    public void markAffectedMembersPrimaryAndOpportunties() {
+        for (CampaignMember member : affectedCampaignMembers) {
+            if (oldAffectedCampaignMembersMap != null && oldAffectedCampaignMembersMap.containsKey(member.Id)) {
+                CampaignMember oldMember = oldAffectedCampaignMembersMap.get(member.Id);
+                if (oldMember.Status != 'No Longer Interested' && member.Status == 'No Longer Interested')
+                    member.Is_Primary_Interest__c = false;
+            }
+
+            if (membersToMarkNotPrimary.contains(member))
+                member.Is_Primary_Interest__c = false;
+
+            if (membersToMarkPrimary.contains(member))
+                member.Is_Primary_Interest__c = true;
+
+            if (member.ContactId != null) {
+                Opportunity opportunity = opportunitiesByContact.get(member.ContactId);
+                if (opportunity != null)
+                    member.Opportunity__c = opportunity.Id;
+            }
+        }
+    }
+
+    public Boolean isMembersByContactsEmpty() {
+        return campaignMembersByContact.isEmpty();
+    }
+
+    public Boolean isMembersByLeadsEmpty() {
+        return campaignMembersByLead.isEmpty();
+    }
+
+    public void addInTriggerToContactAndLeadMap() {
         for (CampaignMember member : membersInTriggerWithContacts) {
             if (
                 ACCEPTABLE_MAJORS.contains(member.Campaign_Type__c) &&
@@ -488,7 +410,7 @@ public without sharing class CampaignMemberService {
         }
     }
 
-    private void assignNationalMeritFlag(Set<Id> memberIdsInTrigger) {
+    public void assignNationalMeritFlag(Set<Id> memberIdsInTrigger) {
         for (CampaignMember nationalMeritCampaignMember : getNationalMeritCampaignMembers(memberIdsInTrigger)) {
             Opportunity nationalMeritOpportunity = opportunitiesByContact.get(nationalMeritCampaignMember.ContactId);
             setOpportunityAsNationMerit(nationalMeritOpportunity);
@@ -518,7 +440,7 @@ public without sharing class CampaignMemberService {
         }
     }
 
-    private List<CampaignMember> setPrimaryInterestOnCampaignMembers() {
+    public List<CampaignMember> setPrimaryInterestOnCampaignMembers() {
         List<CampaignMember> campaignMembersToUpdate = new List<CampaignMember>();
         for (CampaignMember member : externalMemberstoMarkNotPrimary) {
             if (member.Is_Primary_Interest__c != false) {
@@ -537,7 +459,7 @@ public without sharing class CampaignMemberService {
         return campaignMembersToUpdate;
     }
 
-    private void updateOpportunities() {
+    public void updateOpportunities() {
         if (!opportunitiesToUpdate.isEmpty()) {
             List<Opportunity> oppsToUpdateList = new List<Opportunity>();
             oppsToUpdateList.addAll(opportunitiesToUpdate.values());
@@ -545,20 +467,20 @@ public without sharing class CampaignMemberService {
         }
     }
 
-    private void updateLeads() {
+    public void updateLeads() {
         if (!leadsToUpdate.isEmpty()) {
             update leadsToUpdate;
         }
     }
 
-    private void updateCampaignMembers(List<CampaignMember> campaignMembersToUpdate) {
+    public void updateCampaignMembers(List<CampaignMember> campaignMembersToUpdate) {
         if (!campaignMembersToUpdate.isEmpty()) {
             ranCampaignMembersUpdatePrimary = true;
             update campaignMembersToUpdate;
         }
     }
 
-    private void clearDataAfter() {
+    public void clearDataAfter() {
         externalMemberstoMarkPrimary = new Set<CampaignMember>();
         externalMemberstoMarkNotPrimary = new Set<CampaignMember>();
         opportunitiesToUpdate = new Map<Id, Opportunity>();

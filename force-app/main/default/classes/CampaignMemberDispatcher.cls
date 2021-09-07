@@ -17,181 +17,31 @@ public class CampaignMemberDispatcher implements IDispatch {
     }
 
     public void beforeInsert() {
-        CampaignMemberService.RelationWrapper wrapper = CampaignMemberService.getRelationships(newList);
-        CampaignMemberService.populateLastMemberStatusChange(wrapper.originalCampaignMembersMap.values(), oldMap);
-        CampaignMemberService.populateCampaignSecurities(
-            wrapper.touchedCampaigns,
-            wrapper.campaignIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet()
-        );
-        wrapper = CampaignMemberService.filterToProperCampaignMembers(wrapper);
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryContactWrapper = CampaignMemberService.processContacts(
-            wrapper.contactIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.contactIdToOpportunitiesMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryLeadWrapper = CampaignMemberService.processLeads(
-            wrapper.leadIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.leadIdToLeadMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryComboWrapper = new CampaignMemberService.MarkPrimaryWrapper(
-            new List<CampaignMemberService.MarkPrimaryWrapper>{ markPrimaryContactWrapper, markPrimaryLeadWrapper }
-        );
-        CampaignMemberService.populatePrimaryOrNot(
-            wrapper.originalCampaignMembersMap.values(),
-            oldMap,
-            markPrimaryComboWrapper.membersToMarkPrimaryIds,
-            markPrimaryComboWrapper.membersToMarkNotPrimaryIds
-        );
-        CampaignMemberService.populateMemberOpportunities(
-            wrapper.originalCampaignMembersMap.values(),
-            wrapper.contactIdToOpportunitiesMap
-        );
+        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        cms.beforeInsert();
     }
     public void beforeUpdate() {
-        CampaignMemberService.RelationWrapper wrapper = CampaignMemberService.getRelationships(newList);
-        CampaignMemberService.populateLastMemberStatusChange(wrapper.originalCampaignMembersMap.values(), oldMap);
-        CampaignMemberService.populateCampaignSecurities(
-            wrapper.touchedCampaigns,
-            wrapper.campaignIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet()
-        );
-        wrapper = CampaignMemberService.filterToProperCampaignMembers(wrapper);
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryContactWrapper = CampaignMemberService.processContacts(
-            wrapper.contactIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.contactIdToOpportunitiesMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryLeadWrapper = CampaignMemberService.processLeads(
-            wrapper.leadIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.leadIdToLeadMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryComboWrapper = new CampaignMemberService.MarkPrimaryWrapper(
-            new List<CampaignMemberService.MarkPrimaryWrapper>{ markPrimaryContactWrapper, markPrimaryLeadWrapper }
-        );
-        CampaignMemberService.populatePrimaryOrNot(
-            wrapper.originalCampaignMembersMap.values(),
-            oldMap,
-            markPrimaryComboWrapper.membersToMarkPrimaryIds,
-            markPrimaryComboWrapper.membersToMarkNotPrimaryIds
-        );
+        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        cms.beforeUpdate();
     }
     public void beforeDelete() {
-        CampaignMemberService.RelationWrapper wrapper = CampaignMemberService.getRelationships(oldList);
-        CampaignMemberService.populateLastMemberStatusChange(wrapper.originalCampaignMembersMap.values(), oldMap);
-        CampaignMemberService.populateCampaignSecurities(
-            wrapper.touchedCampaigns,
-            wrapper.campaignIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet()
-        );
-        CampaignMemberService.processContacts(
-            wrapper.contactIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.contactIdToOpportunitiesMap
-        );
-        CampaignMemberService.processLeads(
-            wrapper.leadIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.leadIdToLeadMap
-        );
+        CampaignMemberHandler cms = new CampaignMemberHandler(oldList, oldMap);
+        cms.beforeDelete();
     }
     public void afterInsert() {
-        CampaignMemberService.RelationWrapper wrapper = CampaignMemberService.getRelationships(newList);
-        CampaignMemberService.populateLastMemberStatusChange(wrapper.originalCampaignMembersMap.values(), oldMap);
-        CampaignMemberService.populateCampaignSecurities(
-            wrapper.touchedCampaigns,
-            wrapper.campaignIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet()
-        );
-        wrapper = CampaignMemberService.filterToProperCampaignMembers(wrapper);
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryContactWrapper = CampaignMemberService.processContacts(
-            wrapper.contactIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.contactIdToOpportunitiesMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryLeadWrapper = CampaignMemberService.processLeads(
-            wrapper.leadIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.leadIdToLeadMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryComboWrapper = new CampaignMemberService.MarkPrimaryWrapper(
-            new List<CampaignMemberService.MarkPrimaryWrapper>{ markPrimaryContactWrapper, markPrimaryLeadWrapper }
-        );
-        CampaignMemberService.populatePrimaryOrNot(
-            wrapper.originalCampaignMembersMap.values(),
-            oldMap,
-            markPrimaryComboWrapper.relatedMembersToMarkPrimaryIds,
-            markPrimaryComboWrapper.relatedMembersToMarkNotPrimaryIds
-        );
-        CampaignMemberService.updateRelatedRecords(wrapper);
+        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        cms.afterInsert();
 
-        AutoSubscriberService autoSubService = new AutoSubscriberService(
-            wrapper.originalCampaignMembersMap.values(),
-            'CampaignMember'
-        );
+        AutoSubscriberService autoSubService = new AutoSubscriberService(newList, 'CampaignMember');
         autoSubService.processCampaignMemberRecords();
     }
     public void afterUpdate() {
-        CampaignMemberService.RelationWrapper wrapper = CampaignMemberService.getRelationships(newList);
-        CampaignMemberService.populateLastMemberStatusChange(wrapper.originalCampaignMembersMap.values(), oldMap);
-        CampaignMemberService.populateCampaignSecurities(
-            wrapper.touchedCampaigns,
-            wrapper.campaignIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet()
-        );
-        wrapper = CampaignMemberService.filterToProperCampaignMembers(wrapper);
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryContactWrapper = CampaignMemberService.processContacts(
-            wrapper.contactIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.contactIdToOpportunitiesMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryLeadWrapper = CampaignMemberService.processLeads(
-            wrapper.leadIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.leadIdToLeadMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryComboWrapper = new CampaignMemberService.MarkPrimaryWrapper(
-            new List<CampaignMemberService.MarkPrimaryWrapper>{ markPrimaryContactWrapper, markPrimaryLeadWrapper }
-        );
-        CampaignMemberService.populatePrimaryOrNot(
-            wrapper.originalCampaignMembersMap.values(),
-            oldMap,
-            markPrimaryComboWrapper.relatedMembersToMarkPrimaryIds,
-            markPrimaryComboWrapper.relatedMembersToMarkNotPrimaryIds
-        );
-        CampaignMemberService.updateRelatedRecords(wrapper);
+        CampaignMemberHandler cms = new CampaignMemberHandler(newList, oldMap);
+        cms.afterUpdate();
     }
     public void afterDelete() {
-        CampaignMemberService.RelationWrapper wrapper = CampaignMemberService.getRelationships(oldList);
-        CampaignMemberService.populateLastMemberStatusChange(wrapper.originalCampaignMembersMap.values(), oldMap);
-        CampaignMemberService.populateCampaignSecurities(
-            wrapper.touchedCampaigns,
-            wrapper.campaignIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet()
-        );
-        wrapper = CampaignMemberService.filterToProperCampaignMembers(wrapper);
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryContactWrapper = CampaignMemberService.processContacts(
-            wrapper.contactIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.contactIdToOpportunitiesMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryLeadWrapper = CampaignMemberService.processLeads(
-            wrapper.leadIdToCampaginMembers,
-            wrapper.originalCampaignMembersMap.keySet(),
-            wrapper.leadIdToLeadMap
-        );
-        CampaignMemberService.MarkPrimaryWrapper markPrimaryComboWrapper = new CampaignMemberService.MarkPrimaryWrapper(
-            new List<CampaignMemberService.MarkPrimaryWrapper>{ markPrimaryContactWrapper, markPrimaryLeadWrapper }
-        );
-        CampaignMemberService.populatePrimaryOrNot(
-            wrapper.originalCampaignMembersMap.values(),
-            oldMap,
-            markPrimaryComboWrapper.relatedMembersToMarkPrimaryIds,
-            markPrimaryComboWrapper.relatedMembersToMarkNotPrimaryIds
-        );
-        CampaignMemberService.updateRelatedRecords(wrapper);
+        CampaignMemberHandler cms = new CampaignMemberHandler(oldList, oldMap);
+        cms.afterDelete();
     }
     public void afterUndelete() {
     }

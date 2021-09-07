@@ -1,4 +1,4 @@
-public without sharing class CampaignMemberHandler extends AbstractTriggerHandler {
+public without sharing class CampaignMemberHandler {
     private Map<Id, List<CampaignMember>> campaignMembersByContact = new Map<Id, List<CampaignMember>>();
     private Map<Id, List<CampaignMember>> campaignMembersByLead = new Map<Id, List<CampaignMember>>();
     private static Map<Id, Opportunity> opportunitiesByContact = new Map<Id, Opportunity>();
@@ -24,6 +24,7 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         WHERE Name = 'Unsubscribe Profile' OR Name = 'System Administrator'
     ];
     private List<CampaignMember> affectedCampaignMembers;
+    private Map<Id, CampaignMember> oldAffectedCampaignMembersMap;
     private Set<CampaignMember> setOfAffectedMembers;
 
     private static final Set<String> NATIONAL_MERIT_CAMPAIGN_NAMES = new Set<String>{
@@ -45,17 +46,25 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         'Degree Search by Interest'
     };
 
-    public CampaignMemberHandler() {
+    public CampaignMemberHandler(List<CampaignMember> members, Map<Id, CampaignMember> oldMemberMap) {
+        affectedCampaignMembers = members;
+        oldAffectedCampaignMembersMap = oldMemberMap;
     }
 
-    public override void beforeInsert() {
-        System.debug('CARL');
+    public void beforeInsert() {
         if (!ranCampaignMembersUpdatePrimary) {
-            affectedCampaignMembers = Trigger.new;
+            updateLastMemberStatusChange();
             processingBefore();
+            addInTriggerToContactAndLeadMap();
+            if (!campaignMembersByContact.isEmpty()) {
+                processContacts();
+            }
+            if (!campaignMembersByLead.isEmpty()) {
+                processLeads();
+            }
         }
 
-        for (CampaignMember member : (List<CampaignMember>) Trigger.new) {
+        for (CampaignMember member : affectedCampaignMembers) {
             if (membersToMarkNotPrimary.contains(member)) {
                 member.Is_Primary_Interest__c = false;
             }
@@ -71,26 +80,34 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         }
     }
 
-    public override void afterInsert() {
-        Set<Id> memberIdsInTrigger = Trigger.newMap.keySet();
+    public void afterInsert() {
+        Set<Id> memberIdsInTrigger = new Set<Id>();
+        for (CampaignMember member : affectedCampaignMembers) {
+            memberIdsInTrigger.add(member.Id);
+        }
         assignNationalMeritFlag(memberIdsInTrigger);
         List<CampaignMember> campaignMembersToUpdate = setPrimaryInterestOnCampaignMembers();
         updateOpportunities();
         updateLeads();
         updateCampaignMembers(campaignMembersToUpdate);
-        AutoSubscriberService autoSubService = new AutoSubscriberService(Trigger.New, 'CampaignMember');
-        autoSubService.processCampaignMemberRecords();
         clearDataAfter();
     }
 
-    public override void beforeUpdate() {
+    public void beforeUpdate() {
         if (!ranCampaignMembersUpdatePrimary) {
-            affectedCampaignMembers = Trigger.new;
+            updateLastMemberStatusChange();
             processingBefore();
+            addInTriggerToContactAndLeadMap();
+            if (!campaignMembersByContact.isEmpty()) {
+                processContacts();
+            }
+            if (!campaignMembersByLead.isEmpty()) {
+                processLeads();
+            }
         }
 
-        for (CampaignMember oldMember : (List<CampaignMember>) Trigger.old) {
-            CampaignMember member = (CampaignMember) Trigger.newMap.get(oldMember.Id);
+        for (CampaignMember member : affectedCampaignMembers) {
+            CampaignMember oldMember = oldAffectedCampaignMembersMap.get(member.Id);
             if (oldMember.Status != 'No Longer Interested' && member.Status == 'No Longer Interested') {
                 member.Is_Primary_Interest__c = false;
             }
@@ -103,8 +120,11 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         }
     }
 
-    public override void afterUpdate() {
-        Set<Id> memberIdsInTrigger = Trigger.newMap.keySet();
+    public void afterUpdate() {
+        Set<Id> memberIdsInTrigger = new Set<Id>();
+        for (CampaignMember member : affectedCampaignMembers) {
+            memberIdsInTrigger.add(member.Id);
+        }
         assignNationalMeritFlag(memberIdsInTrigger);
         List<CampaignMember> campaignMembersToUpdate = setPrimaryInterestOnCampaignMembers();
         updateOpportunities();
@@ -113,15 +133,24 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         clearDataAfter();
     }
 
-    public override void beforeDelete() {
+    public void beforeDelete() {
         if (!ranCampaignMembersUpdatePrimary) {
-            affectedCampaignMembers = Trigger.old;
             processingBefore();
+
+            if (!campaignMembersByContact.isEmpty()) {
+                processContacts();
+            }
+            if (!campaignMembersByLead.isEmpty()) {
+                processLeads();
+            }
         }
     }
 
-    public override void afterDelete() {
-        Set<Id> memberIdsInTrigger = Trigger.oldMap.keySet();
+    public void afterDelete() {
+        Set<Id> memberIdsInTrigger = new Set<Id>();
+        for (CampaignMember member : affectedCampaignMembers) {
+            memberIdsInTrigger.add(member.Id);
+        }
         assignNationalMeritFlag(memberIdsInTrigger);
         List<CampaignMember> campaignMembersToUpdate = setPrimaryInterestOnCampaignMembers();
         updateOpportunities();
@@ -144,12 +173,6 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
         checkSecurityOnCampaign();
         getRelatedCampaignMembers();
         setOfAffectedMembers = new Set<CampaignMember>(affectedCampaignMembers);
-        if (!campaignMembersByContact.isEmpty()) {
-            processContacts();
-        }
-        if (!campaignMembersByLead.isEmpty()) {
-            processLeads();
-        }
     }
 
     private void organizeDataBefore(CampaignMember member) {
@@ -179,16 +202,20 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
                 campaignMembersByLead.put(member.LeadId, new List<CampaignMember>());
             }
         }
+    }
 
+    private void updateLastMemberStatusChange() {
         //Deal with updating the Last Member Status Change
-        if (Trigger.isInsert) {
-            if (member.Last_Member_Status_Change__c == null) {
-                member.Last_Member_Status_Change__c = Datetime.now();
-            }
-        } else if (Trigger.isUpdate) {
-            CampaignMember oldMember = (CampaignMember) Trigger.oldMap.get(member.Id);
-            if (oldMember.Status != member.Status) {
-                member.Last_Member_Status_Change__c = Datetime.now();
+        for (CampaignMember member : affectedCampaignMembers) {
+            if (oldAffectedCampaignMembersMap != null && oldAffectedCampaignMembersMap.containsKey(member.Id)) {
+                CampaignMember oldMember = oldAffectedCampaignMembersMap.get(member.Id);
+                if (oldMember.Status != member.Status) {
+                    member.Last_Member_Status_Change__c = Datetime.now();
+                }
+            } else {
+                if (member.Last_Member_Status_Change__c == null) {
+                    member.Last_Member_Status_Change__c = Datetime.now();
+                }
             }
         }
     }
@@ -278,24 +305,6 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
     //We need to go through each Contact / Lead, and reset the primary for each set of CMs
     //Reset the primary for the Contacts
     private void processContacts() {
-        if (Trigger.isInsert || Trigger.isUpdate) {
-            for (CampaignMember member : membersInTriggerWithContacts) {
-                if (
-                    ACCEPTABLE_MAJORS.contains(member.Campaign_Type__c) &&
-                    campaignRecordTypesById.get(member.CampaignId) == 'Interest' &&
-                    member.Status != 'No Longer Interested'
-                ) {
-                    if (campaignMembersByContact.containsKey(member.ContactId)) {
-                        campaignMembersByContact.get(member.ContactId).add(member);
-                    } else {
-                        List<CampaignMember> newList = new List<CampaignMember>();
-                        newList.add(member);
-                        campaignMembersByContact.put(member.ContactId, newList);
-                    }
-                }
-            }
-        }
-
         List<Opportunity> opportunitiesInTrigger = [
             SELECT Id, Contact__c, National_Merit_Semifinalist__c, Primary_Interest__c
             FROM Opportunity
@@ -381,24 +390,6 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
     }
 
     private void processLeads() {
-        if (Trigger.isInsert || Trigger.isUpdate) {
-            for (CampaignMember member : membersInTriggerWithLeads) {
-                if (
-                    ACCEPTABLE_MAJORS.contains(member.Campaign_Type__c) &&
-                    campaignRecordTypesById.get(member.CampaignId) == 'Interest' &&
-                    member.Status != 'No Longer Interested'
-                ) {
-                    if (campaignMembersByLead.containsKey(member.LeadId)) {
-                        campaignMembersByLead.get(member.LeadId).add(member);
-                    } else {
-                        List<CampaignMember> membersForLead = new List<CampaignMember>();
-                        membersForLead.add(member);
-                        campaignMembersByLead.put(member.LeadId, membersForLead);
-                    }
-                }
-            }
-        }
-
         Map<Id, Lead> leadsInTrigger = new Map<Id, Lead>(
             [SELECT Id, Primary_Interest__c FROM Lead WHERE Id IN :leadIdsInTrigger]
         );
@@ -468,6 +459,31 @@ public without sharing class CampaignMemberHandler extends AbstractTriggerHandle
                     leadToUpdate.Primary_Interest__c = null;
                     leadsToUpdate.add(leadToUpdate);
                 }
+            }
+        }
+    }
+
+    private void addInTriggerToContactAndLeadMap() {
+        for (CampaignMember member : membersInTriggerWithContacts) {
+            if (
+                ACCEPTABLE_MAJORS.contains(member.Campaign_Type__c) &&
+                campaignRecordTypesById.get(member.CampaignId) == 'Interest' &&
+                member.Status != 'No Longer Interested'
+            )
+                if (!campaignMembersByContact.containsKey(member.ContactId))
+                    campaignMembersByContact.put(member.ContactId, new List<CampaignMember>());
+            campaignMembersByContact.get(member.ContactId).add(member);
+        }
+
+        for (CampaignMember member : membersInTriggerWithLeads) {
+            if (
+                ACCEPTABLE_MAJORS.contains(member.Campaign_Type__c) &&
+                campaignRecordTypesById.get(member.CampaignId) == 'Interest' &&
+                member.Status != 'No Longer Interested'
+            ) {
+                if (!campaignMembersByLead.containsKey(member.LeadId))
+                    campaignMembersByLead.put(member.LeadId, new List<CampaignMember>());
+                campaignMembersByLead.get(member.LeadId).add(member);
             }
         }
     }

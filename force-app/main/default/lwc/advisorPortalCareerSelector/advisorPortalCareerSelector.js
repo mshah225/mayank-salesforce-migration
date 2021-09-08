@@ -9,8 +9,12 @@ export default class AdvisorPortalCareerSelector extends LightningElement {
     value = 'UGRD';
 
     updateViewCasesFor(event) {
-        console.log(this.value);
         this.value = event.detail.value;
-        console.log(this.value);
+
+        this.dispatchEvent(
+            new CustomEvent('togglegradonly', {
+                detail: {gradOnly: this.value === 'GRD'},
+            })
+        );
     }
 }

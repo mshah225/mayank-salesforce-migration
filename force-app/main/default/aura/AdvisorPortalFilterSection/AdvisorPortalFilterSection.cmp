@@ -1,6 +1,7 @@
 <aura:component controller="AdvisorPortalFilterSectionController">
     <aura:attribute name="Filter" type="AdvisorPortalFilter" />
     <aura:attribute name="SelectedViewAsUserOptions" type="List" />
+    <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
     <aura:attribute name="UserIds" type="List" />
     <aura:attribute name="Student" type="String" default="" />
     <aura:attribute name="Campus" type="String" default="" />
@@ -47,6 +48,7 @@
     <aura:attribute name="isFilterSectionShown" type="Boolean" default="true" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.SelectedViewAsUserOptions}" action="{!c.viewAsUsersHasChanged}" />
+    <aura:handler name="change" value="{!v.GraduateStudentsOnly}" action="{!c.graduateStudentsOnlyHasChanged}" />
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
     <aura:method name="forceApplyFilters" action="{!c.applyFilters}"></aura:method>

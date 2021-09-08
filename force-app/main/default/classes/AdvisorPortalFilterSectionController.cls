@@ -350,6 +350,7 @@ public class AdvisorPortalFilterSectionController {
         if (!String.isBlank(filter.persistenceToDate)) {
             queryString += ' AND Change_Date__c <= ' + filter.persistenceToDate;
         }
+
         if (!String.isBlank(filter.studentString)) {
             queryString += ' AND ( Contact.Preferred_Full_Name__c = \'' + filter.studentString;
             queryString += '\' OR Contact.Name = \'' + filter.studentString;
@@ -571,7 +572,8 @@ public class AdvisorPortalFilterSectionController {
             !String.isBlank(filter.academicLevel) ||
             !String.isBlank(filter.campus) ||
             !String.isBlank(filter.residency) ||
-            !String.isBlank(filter.major)
+            !String.isBlank(filter.major) ||
+            filter.gradStudentsOnly != null
         ) {
             Set<Id> filteredContactIds = new Set<Id>();
             String queryString =
@@ -602,6 +604,13 @@ public class AdvisorPortalFilterSectionController {
                     '%\' OR Plan_Code__c LIKE \'%' +
                     filter.major +
                     '%\' )';
+            }
+
+            if (filter.gradStudentsOnly != null) {
+                if (filter.gradStudentsOnly)
+                    queryString += ' AND Career__c = \'Graduate\'';
+                else
+                    queryString += ' AND Career__c != \'Graduate\'';
             }
 
             queryString += ' GROUP BY Contact__c LIMIT 2000';

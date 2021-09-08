@@ -100,4 +100,8 @@
 
         helper.applyFilters(component, component.get('v.AllCasesState'));
     },
+
+    graduateStudentsOnlyHasChanged: function (component, event, helper) {
+        helper.applyFilters(component, component.get('v.AllCasesState'));
+    },
 });

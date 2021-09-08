@@ -18,4 +18,9 @@
     updateAllUserOptions: function (component, event, helper) {
         component.set('v.AllUserOptions', event.getParam('allUserOptions'));
     },
+    updateGraduateStudentsOnly: function (component, event, helper) {
+        const detail = event.getParams('detail');
+        if (component.get('v.GraduateStudentsOnly') !== detail.gradOnly)
+            component.set('v.GraduateStudentsOnly', detail.gradOnly);
+    },
 });

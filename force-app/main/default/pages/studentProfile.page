@@ -1938,7 +1938,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>eAdvisor</th>
-                                                    <td id="sr_eadvisor"></td>
+                                                    <td id="sr_eadvisor">{!eAdvisorStatus}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
@@ -3088,7 +3088,6 @@
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
                                 document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
                                 document.getElementById('sr_ci_index').innerHTML = result.CI_INDEX_INDICATOR__c;
-                                document.getElementById('sr_eadvisor').innerHTML = result.EADVISOR_INDICATOR__c;
                                 document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_probation').innerHTML = result.PROBATION_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =

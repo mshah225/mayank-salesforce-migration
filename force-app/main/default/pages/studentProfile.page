@@ -1616,7 +1616,7 @@
                                                     <tr>
                                                         <th>eAdvisor Status</th>
                                                         <td id="ugap_eadvisor_status">
-                                                            {!IF(ISBLANK(ugStudentProgram.eAdvisor__c), '--', ugStudentProgram.eAdvisor__c)}
+                                                            {!eAdvisorStatus}
                                                         </td>
                                                     </tr>
                                                     <tr>

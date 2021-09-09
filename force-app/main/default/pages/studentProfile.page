@@ -1122,7 +1122,7 @@
                                                                 </apex:outputText>
                                                             </td>
                                                             <td style="display: none">
-                                                                {!financialSummary.AID_YEAR__c}
+                                                                {!financialSummary.Aid_Year__c}
                                                             </td>
                                                         </tr>
                                                     </apex:repeat>

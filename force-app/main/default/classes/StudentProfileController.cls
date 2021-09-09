@@ -846,11 +846,6 @@ global with sharing class StudentProfileController {
     }
 
     private void seteAdvisorStatus() {
-        if (theContact.E_Advisor__c == true) {
-            eAdvisorStatus = 'Off Track for Graduation';
-            return;
-        }
-
         for (Student_Program_Plan__c spp : ugProgramPlans) {
             if (spp.eAdvisor__c == 'Off Track for Graduation') {
                 eAdvisorStatus = 'Off Track for Graduation';

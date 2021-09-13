@@ -6,6 +6,7 @@
     <aura:attribute name="AllUserOptions" type="List" />
     <aura:attribute name="SelectedUserOptions" type="List" />
     <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
+    <aura:attribute name="DefaultFilter" type="AdvisorPortalFilter" />
     <aura:attribute name="CaseContactWrappers" type="List" />
     <aura:handler
         name="incrementProcessingCounterEvent"
@@ -66,8 +67,12 @@
                 <c:advisorPortalCareerSelector
                     class="slds-col slds-size_1-of-1"
                     ontogglegradonly="{!c.updateGraduateStudentsOnly}"
+                    defaultFilter="{!v.DefaultFilter}"
                 />
-                <c:advisorPortalSaveFilters class="slds-col slds-size_1-of-1" />
+                <c:advisorPortalSaveFilters
+                    class="slds-col slds-size_1-of-1"
+                    onsetdefaultfilter="{!c.setDefaultFilter}"
+                />
             </div>
         </div>
     </div>
@@ -75,6 +80,7 @@
         aura:id="filterSectionAuraElement"
         SelectedViewAsUserOptions="{!v.SelectedUserOptions}"
         GraduateStudentsOnly="{!v.GraduateStudentsOnly}"
+        DefaultFilter="{!v.DefaultFilter}"
     />
 
     <c:AdvisorPortalDataTable

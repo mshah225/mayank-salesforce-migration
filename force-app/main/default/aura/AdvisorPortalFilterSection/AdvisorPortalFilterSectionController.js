@@ -104,4 +104,57 @@
     graduateStudentsOnlyHasChanged: function (component, event, helper) {
         helper.applyFilters(component, component.get('v.AllCasesState'));
     },
+
+    loadDefaultFilter: function (component, event, helper) {
+        if (!component.get('v.HasLoadedDefaultFilter')) {
+            component.set('v.HasLoadedDefaultFilter', true);
+
+            const defaultFilter = component.get('v.DefaultFilter');
+
+            if (defaultFilter.caseCategory !== null && defaultFilter.caseCategory !== '')
+                component.set('v.CaseCategory', defaultFilter.caseCategory);
+            if (defaultFilter.caseSubject !== null && defaultFilter.caseSubject !== '')
+                component.set('v.CaseSubject', defaultFilter.caseSubject);
+            if (defaultFilter.caseStatus !== null && defaultFilter.caseStatus !== '')
+                component.set('v.CaseStatus', defaultFilter.caseStatus);
+            if (defaultFilter.caseCount !== null && defaultFilter.caseCount !== '')
+                component.set('v.CaseCount', defaultFilter.caseCount);
+            if (defaultFilter.allCasesState !== null && defaultFilter.allCasesState !== '')
+                component.set('v.AllCasesState', defaultFilter.allCasesState);
+            if (defaultFilter.watchlistCasesState !== null && defaultFilter.watchlistCasesState !== '')
+                component.set('v.WatchlistCasesState', defaultFilter.watchlistCasesState);
+            if (defaultFilter.proactiveCasesState !== null && defaultFilter.proactiveCasesState !== '')
+                component.set('v.ProactiveCasesState', defaultFilter.proactiveCasesState);
+            if (defaultFilter.gradStudentsOnly !== null && defaultFilter.gradStudentsOnly !== '')
+                component.set('v.GraduateStudentsOnly', defaultFilter.gradStudentsOnly);
+            if (defaultFilter.outlookScore !== null && defaultFilter.outlookScore !== '')
+                component.set('v.OutlookScore', defaultFilter.outlookScore);
+            if (defaultFilter.outlookChange !== null && defaultFilter.outlookChange !== '')
+                component.set('v.OutlookChange', defaultFilter.outlookChange);
+            if (defaultFilter.createdFromDate !== null && defaultFilter.createdFromDate !== '')
+                component.set('v.CreatedFromDate', defaultFilter.createdFromDate);
+            if (defaultFilter.createdToDate !== null && defaultFilter.createdToDate !== '')
+                component.set('v.CreatedToDate', defaultFilter.createdToDate);
+            if (defaultFilter.followUpFromDate !== null && defaultFilter.followUpFromDate !== '')
+                component.set('v.FollowUpFromDate', defaultFilter.followUpFromDate);
+            if (defaultFilter.followUpToDate !== null && defaultFilter.followUpToDate !== '')
+                component.set('v.FollowUpToDate', defaultFilter.followUpToDate);
+            if (defaultFilter.persistenceFromDate !== null && defaultFilter.persistenceFromDate !== '')
+                component.set('v.PersistenceFromDate', defaultFilter.persistenceFromDate);
+            if (defaultFilter.persistenceToDate !== null && defaultFilter.persistenceToDate !== '')
+                component.set('v.PersistenceToDate', defaultFilter.persistenceToDate);
+            if (defaultFilter.studentGroupCode !== null && defaultFilter.studentGroupCode !== '')
+                component.set('v.StudentGroup', defaultFilter.studentGroupCode);
+            if (defaultFilter.academicLevel !== null && defaultFilter.academicLevel !== '')
+                component.set('v.AcademicLevel', defaultFilter.academicLevel);
+            if (defaultFilter.campus !== null && defaultFilter.campus !== '')
+                component.set('v.Campus', defaultFilter.campus);
+            if (defaultFilter.major !== null && defaultFilter.major !== '')
+                component.set('v.Major', defaultFilter.major);
+            if (defaultFilter.residency !== null && defaultFilter.residency !== '')
+                component.set('v.Residency', defaultFilter.residency);
+
+            helper.applyFilters(component, component.get('v.AllCasesState'));
+        }
+    },
 });

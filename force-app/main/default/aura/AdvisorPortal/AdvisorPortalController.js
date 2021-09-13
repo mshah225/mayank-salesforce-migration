@@ -23,4 +23,10 @@
         if (component.get('v.GraduateStudentsOnly') !== detail.gradOnly)
             component.set('v.GraduateStudentsOnly', detail.gradOnly);
     },
+    setDefaultFilter: function (component, event, helper) {
+        const detail = event.getParams('detail');
+
+        if (JSON.stringify(component.get('v.DefaultFilter')) !== detail.filter)
+            component.set('v.DefaultFilter', JSON.parse(detail.filter));
+    },
 });

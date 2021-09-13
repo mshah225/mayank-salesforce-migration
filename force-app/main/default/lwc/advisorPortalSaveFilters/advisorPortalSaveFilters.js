@@ -6,6 +6,9 @@ import setDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.
 import clearDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.clearDefaultFilter';
 
 export default class AdvisorPortalSaveFilters extends LightningElement {
+    saveButtons = [];
+    resetButtons = [];
+
     connectedCallback() {
         getDefaultFilter()
             .then((val) => {
@@ -34,5 +37,55 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
 
     resetSavedFilters() {
         clearDefaultFilter();
+    }
+
+    openSaveModal() {
+        const modalSelector = 'c-simple-modal.save-modal';
+
+        if (this.saveButtons.length === 0) {
+            // add buttons for save modal
+            this.saveButtons = [
+                {
+                    label: 'Cancel',
+                    callback: () => {
+                        this.template.querySelector(modalSelector).closeModal();
+                    },
+                    classes: 'slds-button slds-button_neutral',
+                },
+                {
+                    label: 'Save',
+                    callback: () => {
+                        this.saveFilters();
+                        this.template.querySelector(modalSelector).closeModal();
+                    },
+                    classes: 'slds-button slds-button_brand',
+                },
+            ];
+        }
+        this.template.querySelector(modalSelector).openModal();
+    }
+    openResetModal() {
+        const modalSelector = 'c-simple-modal.reset-modal';
+        if (this.resetButtons.length === 0) {
+            // add buttons for reset modal
+            this.resetButtons = [
+                {
+                    label: 'Cancel',
+                    callback: () => {
+                        this.template.querySelector(modalSelector).closeModal();
+                    },
+                    classes: 'slds-button slds-button_neutral',
+                },
+                {
+                    label: 'Clear Filters',
+                    callback: () => {
+                        this.resetSavedFilters();
+                        this.template.querySelector(modalSelector).closeModal();
+                    },
+                    classes: 'slds-button slds-button_brand',
+                },
+            ];
+        }
+        this.template.querySelector(modalSelector).openModal();
     }
 }

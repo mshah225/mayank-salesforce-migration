@@ -4,14 +4,27 @@
             variant="brand"
             label="Save Filters"
             title="Save Filters"
-            onclick={saveFilters}
+            onclick={openSaveModal}
             class="slds-var-m-right_xx-small"
         ></lightning-button>
         <lightning-button
             variant="neutral"
             label="Reset Saved Filters"
             title="Reset Saved Filters"
-            onclick={resetSavedFilters}
+            onclick={openResetModal}
         ></lightning-button>
+
+        <c-simple-modal
+            class="save-modal"
+            title="Save Filters?"
+            description="Save your current selection as your default filter?"
+            buttons={saveButtons}
+        ></c-simple-modal>
+        <c-simple-modal
+            class="reset-modal"
+            title="Delete Saved Filters?"
+            description="Remove any default filter?"
+            buttons={resetButtons}
+        ></c-simple-modal>
     </div>
 </template>

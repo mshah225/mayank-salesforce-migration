@@ -1,7 +1,9 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-console */
 import {LightningElement} from 'lwc';
 import getDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.getDefaultFilter';
 import setDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.setDefaultFilter';
+import clearDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.clearDefaultFilter';
 
 export default class AdvisorPortalSaveFilters extends LightningElement {
     connectedCallback() {
@@ -19,8 +21,18 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     }
 
     saveFilters() {
-        this.dispatchEvent(new CustomEvent('requestfilter'));
+        this.dispatchEvent(
+            new CustomEvent('requestcurrentfilter', {
+                detail: {
+                    callback: (filter) => {
+                        setDefaultFilter({filter});
+                    },
+                },
+            })
+        );
     }
 
-    resetSavedFilters() {}
+    resetSavedFilters() {
+        clearDefaultFilter();
+    }
 }

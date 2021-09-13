@@ -26,7 +26,12 @@ public inherited sharing class AdvisorPortalFilterSavingService {
         return filter;
     }
 
-    @AuraEnabled(cacheable=true)
-    public static void setDefaultFilter() {
+    @AuraEnabled
+    public static void setDefaultFilter(AdvisorPortalFilter filter) {
+        insert new Case(subject = 'abc', description = '' + filter);
+    }
+
+    @AuraEnabled
+    public static void clearDefaultFilter() {
     }
 }

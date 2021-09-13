@@ -157,4 +157,53 @@
             helper.applyFilters(component, component.get('v.AllCasesState'));
         }
     },
+
+    getFilter: function (component, event, helper) {
+        const currentFilter = {sobjectType: 'AdvisorPortalFilter'};
+
+        if (component.get('v.CaseCategory') !== null && component.get('v.CaseCategory') !== '')
+            currentFilter.caseCategory = component.get('v.CaseCategory');
+        if (component.get('v.CaseSubject') !== null && component.get('v.CaseSubject') !== '')
+            currentFilter.caseSubject = component.get('v.CaseSubject');
+        if (component.get('v.CaseStatus') !== null && component.get('v.CaseStatus') !== '')
+            currentFilter.caseStatus = component.get('v.CaseStatus');
+        if (component.get('v.CaseCount') !== null && component.get('v.CaseCount') !== '')
+            currentFilter.caseCount = component.get('v.CaseCount');
+        if (component.get('v.AllCasesState') !== null && component.get('v.AllCasesState') !== '')
+            currentFilter.allCasesState = component.get('v.AllCasesState');
+        if (component.get('v.WatchlistCasesState') !== null && component.get('v.WatchlistCasesState') !== '')
+            currentFilter.watchlistCasesState = component.get('v.WatchlistCasesState');
+        if (component.get('v.ProactiveCasesState') !== null && component.get('v.ProactiveCasesState') !== '')
+            currentFilter.proactiveCasesState = component.get('v.ProactiveCasesState');
+        if (component.get('v.GraduateStudentsOnly') !== null && component.get('v.GraduateStudentsOnly') !== '')
+            currentFilter.gradStudentsOnly = component.get('v.GraduateStudentsOnly');
+        if (component.get('v.OutlookScore') !== null && component.get('v.OutlookScore') !== '')
+            currentFilter.outlookScore = component.get('v.OutlookScore');
+        if (component.get('v.OutlookChange') !== null && component.get('v.OutlookChange') !== '')
+            currentFilter.outlookChange = component.get('v.OutlookChange');
+        if (component.get('v.CreatedFromDate') !== null && component.get('v.CreatedFromDate') !== '')
+            currentFilter.createdFromDate = component.get('v.CreatedFromDate');
+        if (component.get('v.CreatedToDate') !== null && component.get('v.CreatedToDate') !== '')
+            currentFilter.createdToDate = component.get('v.CreatedToDate');
+        if (component.get('v.FollowUpFromDate') !== null && component.get('v.FollowUpFromDate') !== '')
+            currentFilter.followUpFromDate = component.get('v.FollowUpFromDate');
+        if (component.get('v.FollowUpToDate') !== null && component.get('v.FollowUpToDate') !== '')
+            currentFilter.followUpToDate = component.get('v.FollowUpToDate');
+        if (component.get('v.PersistenceFromDate') !== null && component.get('v.PersistenceFromDate') !== '')
+            currentFilter.persistenceFromDate = component.get('v.PersistenceFromDate');
+        if (component.get('v.PersistenceToDate') !== null && component.get('v.PersistenceToDate') !== '')
+            currentFilter.persistenceToDate = component.get('v.PersistenceToDate');
+        if (component.get('v.StudentGroup') !== null && component.get('v.StudentGroup') !== '')
+            currentFilter.studentGroupCode = component.get('v.StudentGroup');
+        if (component.get('v.AcademicLevel') !== null && component.get('v.AcademicLevel') !== '')
+            currentFilter.academicLevel = component.get('v.AcademicLevel');
+        if (component.get('v.Campus') !== null && component.get('v.Campus') !== '')
+            currentFilter.campus = component.get('v.Campus');
+        if (component.get('v.Major') !== null && component.get('v.Major') !== '')
+            currentFilter.major = component.get('v.Major');
+        if (component.get('v.Residency') !== null && component.get('v.Residency') !== '')
+            currentFilter.residency = component.get('v.Residency');
+
+        event.getParam('arguments').callback(currentFilter);
+    },
 });

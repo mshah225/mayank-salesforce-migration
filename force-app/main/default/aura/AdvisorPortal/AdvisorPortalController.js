@@ -29,4 +29,8 @@
         if (JSON.stringify(component.get('v.DefaultFilter')) !== detail.filter)
             component.set('v.DefaultFilter', JSON.parse(detail.filter));
     },
+    getCurrentFilter: function (component, event, helper) {
+        const detail = event.getParams('detail');
+        component.find('filterSectionAuraElement').getCurrentFilter(detail.callback);
+    },
 });

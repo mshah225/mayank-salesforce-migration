@@ -55,6 +55,9 @@
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
     <aura:method name="forceApplyFilters" action="{!c.applyFilters}"></aura:method>
+    <aura:method name="getCurrentFilter" action="{!c.getFilter}">
+        <aura:attribute name="callback" type="Function" />
+    </aura:method>
 
     <aura:registerEvent name="incrementProcessingCounterEvent" type="c:IncrementProcessingCounterEvent" />
     <aura:registerEvent name="decrementProcessingCounterEvent" type="c:DecrementProcessingCounterEvent" />

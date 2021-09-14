@@ -1,7 +1,9 @@
 <aura:component controller="AdvisorPortalFilterSectionController">
+    <!-- HasLoaded variables used to prevent loading twice (once for when users are set and once after default filter) -->
     <aura:attribute name="DefaultFilter" type="AdvisorPortalFilter" />
-    <aura:attribute name="HasLoadedDefaultFilter" type="Boolean" default="False" />
+    <aura:attribute name="HasLoadedDefaultFilter" type="Boolean" default="false" />
     <aura:attribute name="SelectedViewAsUserOptions" type="List" />
+    <aura:attribute name="HasLoadedSelectedViewAsUserOptions" type="Boolean" default="false" />
     <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
     <aura:attribute name="UserIds" type="List" />
     <aura:attribute name="Student" type="String" default="" />

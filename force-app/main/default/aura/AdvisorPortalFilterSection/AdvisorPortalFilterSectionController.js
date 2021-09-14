@@ -68,6 +68,7 @@
 
     viewAsUsersHasChanged: function (component, event, helper) {
         let userIds = component.get('v.SelectedViewAsUserOptions').map((option) => option.value);
+        component.set('v.HasLoadedSelectedViewAsUserOptions', true);
         component.set('v.UserIds', userIds);
 
         let caseSubjectPicklistAction = component.get('c.getCaseSubjectPicklistValues');
@@ -98,7 +99,9 @@
         });
         $A.enqueueAction(caseClassificationPicklistAction);
 
-        helper.applyFilters(component, component.get('v.AllCasesState'));
+        if (component.get('v.HasLoadedDefaultFilter')) {
+            helper.applyFilters(component, component.get('v.AllCasesState'));
+        }
     },
 
     graduateStudentsOnlyHasChanged: function (component, event, helper) {
@@ -154,7 +157,9 @@
             if (defaultFilter.residency !== null && defaultFilter.residency !== '')
                 component.set('v.Residency', defaultFilter.residency);
 
-            helper.applyFilters(component, component.get('v.AllCasesState'));
+            if (component.get('v.HasLoadedSelectedViewAsUserOptions')) {
+                helper.applyFilters(component, component.get('v.AllCasesState'));
+            }
         }
     },
 

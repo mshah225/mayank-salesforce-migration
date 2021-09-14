@@ -1,0 +1,30 @@
+<template>
+    <div class="slds-notify_container slds-hide fadeOutTransition slds-is-fixed slds-align_absolute-center">
+        <div class={_classList} role="status">
+            <span class="slds-assistive-text">{_variant}</span>
+            <span class="slds-var-m-right_small slds-no-flex slds-align-top">
+                <lightning-icon
+                    icon-name={_icon}
+                    variant="inverse"
+                    alternative-text={_variant}
+                    size="large"
+                    title={_variant}
+                ></lightning-icon>
+            </span>
+            <div class="slds-notify__content">
+                <h2 class="slds-text-heading_small"><label>{_title}</label></h2>
+                <p>{_body}</p>
+            </div>
+            <div class="slds-notify__close">
+                <lightning-button-icon
+                    icon-name="utility:close"
+                    variant="bare-inverse"
+                    alternative-text="Close"
+                    size="large"
+                    title="Close"
+                    onclick={closeToast}
+                ></lightning-button-icon>
+            </div>
+        </div>
+    </div>
+</template>

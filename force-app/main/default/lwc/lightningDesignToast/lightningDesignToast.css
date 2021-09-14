@@ -1,4 +1,4 @@
-.fadeInTransition {
+:host .fadeInTransition {
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;
     -moz-animation: fadeIn ease 2s;
@@ -96,8 +96,4 @@
     100% {
         opacity: 0;
     }
-}
-
-.displayNone {
-    display: none;
 }

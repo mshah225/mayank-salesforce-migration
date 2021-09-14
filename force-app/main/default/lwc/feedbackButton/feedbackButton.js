@@ -59,6 +59,6 @@ export default class FeedbackButton extends LightningElement {
     }
 
     makeToast(type, title, body) {
-        this.template.querySelector('c-simple-toast').fireParams(title, body, type, 15000);
+        this.template.querySelector('c-lightning-design-toast').fireParams(title, body, type, 15000);
     }
 }

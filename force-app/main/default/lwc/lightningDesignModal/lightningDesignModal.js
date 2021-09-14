@@ -1,6 +1,6 @@
 import {LightningElement, api} from 'lwc';
 
-export default class SimpleModal extends LightningElement {
+export default class LightningDesignModal extends LightningElement {
     @api title = 'Basic modal';
     @api description = 'Modal body';
     @api buttons = [];

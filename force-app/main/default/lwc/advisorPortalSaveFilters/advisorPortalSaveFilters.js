@@ -40,7 +40,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     }
 
     openSaveModal() {
-        const modalSelector = 'c-simple-modal.save-modal';
+        const modalSelector = 'c-lightning-design-modal.save-modal';
 
         if (this.saveButtons.length === 0) {
             // add buttons for save modal
@@ -65,7 +65,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         this.template.querySelector(modalSelector).openModal();
     }
     openResetModal() {
-        const modalSelector = 'c-simple-modal.reset-modal';
+        const modalSelector = 'c-lightning-design-modal.reset-modal';
         if (this.resetButtons.length === 0) {
             // add buttons for reset modal
             this.resetButtons = [

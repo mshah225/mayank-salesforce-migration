@@ -1,3 +1,13 @@
+:host .loadingSpinnerWrapper {
+    position: relative;
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+}
+:host .loadingSpinnerWrapper lightning-spinner {
+    background-color: unset;
+}
+
 :host .fadeInTransition {
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;

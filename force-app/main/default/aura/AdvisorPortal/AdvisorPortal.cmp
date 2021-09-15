@@ -73,6 +73,8 @@
                     class="slds-col slds-size_1-of-1"
                     onsetdefaultfilter="{!c.setDefaultFilter}"
                     onrequestcurrentfilter="{!c.getCurrentFilter}"
+                    onincrementprocessingcounterevent="{!c.callsIncrementProcessingCounter}"
+                    ondecrementprocessingcounterevent="{!c.callsDecrementProcessingCounter}"
                 />
             </div>
         </div>

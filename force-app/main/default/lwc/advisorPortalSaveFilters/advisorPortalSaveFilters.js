@@ -10,6 +10,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     resetButtons = [];
 
     connectedCallback() {
+        this.incrementProcessingCounter();
         getDefaultFilter()
             .then((val) => {
                 this.dispatchEvent(
@@ -20,6 +21,9 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             })
             .catch((err) => {
                 console.log(err);
+            })
+            .finally(() => {
+                this.decrementProcessingCounter();
             });
     }
 
@@ -28,7 +32,17 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             new CustomEvent('requestcurrentfilter', {
                 detail: {
                     callback: (filter) => {
-                        setDefaultFilter({filter});
+                        this.makeToast('loading', '', '');
+                        setDefaultFilter({filter})
+                            .then(() => {
+                                this.makeToast('success', 'Success', 'Filters saved as default.');
+                            })
+                            .catch((err) => {
+                                this.makeToast('error', 'Error', 'Error when saving filters.');
+                            })
+                            .finally(() => {
+                                this.template.querySelector('c-lightning-design-modal.save-modal').closeModal();
+                            });
                     },
                 },
             })
@@ -36,7 +50,17 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     }
 
     resetSavedFilters() {
-        clearDefaultFilter();
+        this.makeToast('loading', '', '');
+        clearDefaultFilter()
+            .then(() => {
+                this.makeToast('success', 'Success', 'Default filter cleared.');
+            })
+            .catch((err) => {
+                this.makeToast('error', 'Error', 'Error when clearing filters.');
+            })
+            .finally(() => {
+                this.template.querySelector('c-lightning-design-modal.reset-modal').closeModal();
+            });
     }
 
     openSaveModal() {
@@ -56,7 +80,6 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                     label: 'Save',
                     callback: () => {
                         this.saveFilters();
-                        this.template.querySelector(modalSelector).closeModal();
                     },
                     classes: 'slds-button slds-button_brand',
                 },
@@ -80,12 +103,22 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                     label: 'Clear Filters',
                     callback: () => {
                         this.resetSavedFilters();
-                        this.template.querySelector(modalSelector).closeModal();
                     },
                     classes: 'slds-button slds-button_brand',
                 },
             ];
         }
         this.template.querySelector(modalSelector).openModal();
+    }
+
+    makeToast(type, title, body) {
+        this.template.querySelector('c-lightning-design-toast').fireParams(title, body, type, 5000);
+    }
+
+    incrementProcessingCounter() {
+        this.dispatchEvent(new CustomEvent('incrementprocessingcounterevent'));
+    }
+    decrementProcessingCounter() {
+        this.dispatchEvent(new CustomEvent('decrementprocessingcounterevent'));
     }
 }

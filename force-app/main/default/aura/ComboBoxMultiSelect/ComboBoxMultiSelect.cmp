@@ -1,12 +1,11 @@
 <aura:component description="ComboBoxMultiSelect">
     <aura:attribute name="value" type="String" />
     <aura:attribute name="options" type="List" />
-    <aura:attribute name="selectedOptions" type="List" />
-    <aura:attribute name="selectedOptionsCount" type="Integer" />
     <aura:attribute name="label" type="String" />
     <aura:attribute name="class" type="String" />
     <aura:attribute name="placeholder" type="String" default="--Select--" />
     <aura:attribute name="required" type="Boolean" default="false" />
+    <aura:attribute name="innerChangeLock" type="Boolean" default="false" />
     <aura:attribute
         name="variant"
         type="String"
@@ -15,6 +14,8 @@
     />
     <aura:method name="resetMultiSelect" action="{!c.clearOptions}" access="PUBLIC" />
     <aura:handler name="change" value="{!v.options}" action="{!c.resetOptions}" />
+    <!-- Extract values from value and mark those options as selected -->
+    <aura:handler name="change" value="{!v.value}" action="{!c.selectOptionsInValue}" />
 
     <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5">
         <div class="slds-form-element" style="padding: 0 !important">
@@ -67,18 +68,25 @@
                                         role="presentation"
                                         class="slds-listbox__item"
                                         onmousedown="{!c.toggleOption}"
-                                        data-optionId="{!join(';', option.label, option.value)}"
+                                        data-value="{!option.value}"
                                         aria-label="{!option.label}"
                                     >
                                         <div
-                                            class="lds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                            class="
+                                                lds-media
+                                                slds-listbox__option slds-listbox__option_plain
+                                                slds-media_small
+                                            "
                                             role="option"
                                             aria-selected="{!if(option.isSelected, 'true', 'false')}"
                                         >
                                             <span class="slds-media__figure slds-listbox__option-icon">
                                                 <aura:if isTrue="{!option.isSelected}">
                                                     <span
-                                                        class="slds-icon_container slds-icon-utility-check slds-current-color"
+                                                        class="
+                                                            slds-icon_container
+                                                            slds-icon-utility-check slds-current-color
+                                                        "
                                                     >
                                                         <lightning:icon
                                                             class="icn slds-icon-text-default"

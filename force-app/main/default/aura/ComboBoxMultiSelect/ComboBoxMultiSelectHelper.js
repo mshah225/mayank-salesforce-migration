@@ -1,6 +1,12 @@
 ({
     setCountSelected: function (component) {
-        let countSelected = component.get('v.selectedOptions').length;
+        const value = component.get('v.value');
+
+        let countSelected = 0;
+        // count number of semicolons
+        if (value.length > 0) {
+            countSelected = value.length - value.replaceAll(';', '').length + 1;
+        }
 
         if (countSelected === 1) {
             component.find('multi-select-combobox').set('v.placeholder', countSelected + ' option selected');

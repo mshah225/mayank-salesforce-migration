@@ -1,0 +1,32 @@
+<template>
+    <div class="slds-card slds-var-p-around_small slds-var-m-bottom_x-small light-blue-background">
+        <lightning-button
+            variant="brand"
+            label="Save Filters"
+            title="Save Filters"
+            onclick={openSaveModal}
+            class="slds-var-m-right_xx-small"
+        ></lightning-button>
+        <lightning-button
+            variant="neutral"
+            label="Reset Saved Filters"
+            title="Reset Saved Filters"
+            onclick={openResetModal}
+        ></lightning-button>
+
+        <c-lightning-design-toast></c-lightning-design-toast>
+
+        <c-lightning-design-modal
+            class="save-modal"
+            title="Save Filters?"
+            description="Save your current selection as your default filter?"
+            buttons={saveButtons}
+        ></c-lightning-design-modal>
+        <c-lightning-design-modal
+            class="reset-modal"
+            title="Delete Saved Filters?"
+            description="Remove any default filter?"
+            buttons={resetButtons}
+        ></c-lightning-design-modal>
+    </div>
+</template>

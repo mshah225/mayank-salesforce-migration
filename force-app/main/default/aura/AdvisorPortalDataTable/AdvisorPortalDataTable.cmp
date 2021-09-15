@@ -1,6 +1,7 @@
 <aura:component access="public">
     <aura:attribute name="Contacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="ViewAsOptions" type="List" />
+    <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
     <aura:attribute name="ContactsDisplayed" type="AdvisorPortalContact[]" />
     <aura:attribute name="AllSections" type="List" />
     <aura:attribute name="OpenSections" type="List" />
@@ -26,14 +27,14 @@
     <ltng:require scripts="/support/console/45.0/integration.js" />
 
     <aura:if isTrue="{!not(empty(v.ContactsDisplayed))}">
-        <div class="slds-grid slds-m-top_x-small">
-            <span class="slds-show_inline slds-m-right_xx-small">
+        <div class="slds-grid slds-var-m-top_x-small">
+            <span class="slds-show_inline slds-var-m-right_xx-small">
                 <c:AdvisorPortalMassTransferModal Contacts="{!v.Contacts}" ViewAsOptions="{!v.ViewAsOptions}" />
             </span>
-            <span class="slds-show_inline slds-m-right_xx-small">
+            <span class="slds-show_inline slds-var-m-right_xx-small">
                 <c:AdvisorPortalMassEmailModal Contacts="{!v.Contacts}" />
             </span>
-            <span class="slds-show_inline slds-m-right_xx-small">
+            <span class="slds-show_inline slds-var-m-right_xx-small">
                 <c:AdvisorPortalMassUpdateModal Contacts="{!v.Contacts}" />
             </span>
             <span class="slds-show_inline">
@@ -46,45 +47,52 @@
             </span>
         </div>
 
-        <div class="slds-p-vertical_x-small">
-            <div class="slds-p-bottom_small">
-                <lightning:icon class="icn outreach-icn" iconName="utility:record" size="x-small" />
-                = Indicates a case that needs attention because it has the status Outreach Required or Customer Replied.
-                <br /><img
-                    src="{!$Resource.PersistenceChart + '/icon-1.png'}"
-                    alt="very low"
-                    title="Very Low"
-                    class="persistence-icon legend slds-m-horizontal_xx-small"
-                />
-                = Very Low
-                <img
-                    src="{!$Resource.PersistenceChart + '/icon-2.png'}"
-                    alt="low"
-                    title="Low"
-                    class="persistence-icon legend slds-m-horizontal_xx-small"
-                />
-                = Low
-                <img
-                    src="{!$Resource.PersistenceChart + '/icon-3.png'}"
-                    alt="moderate"
-                    title="Moderate"
-                    class="persistence-icon legend slds-m-horizontal_xx-small"
-                />
-                = Moderate
-                <img
-                    src="{!$Resource.PersistenceChart + '/icon-4.png'}"
-                    alt="high"
-                    title="High"
-                    class="persistence-icon legend slds-m-horizontal_xx-small"
-                />
-                = High
-                <img
-                    src="{!$Resource.PersistenceChart + '/icon-5.png'}"
-                    alt="very high"
-                    title="Very High"
-                    class="persistence-icon legend slds-m-horizontal_xx-small"
-                />
-                = Very High
+        <div class="slds-var-p-vertical_x-small">
+            <div class="slds-var-p-bottom_small">
+                <div>
+                    <lightning:icon class="icn outreach-icn" iconName="utility:record" size="x-small" />
+                    = Indicates a case that needs attention because it has the status Outreach Required or Customer
+                    Replied.
+                </div>
+                <aura:if isTrue="{!!v.GraduateStudentsOnly}">
+                    <div>
+                        <img
+                            src="{!$Resource.PersistenceChart + '/icon-1.png'}"
+                            alt="very low"
+                            title="Very Low"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Very Low
+                        <img
+                            src="{!$Resource.PersistenceChart + '/icon-2.png'}"
+                            alt="low"
+                            title="Low"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Low
+                        <img
+                            src="{!$Resource.PersistenceChart + '/icon-3.png'}"
+                            alt="moderate"
+                            title="Moderate"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Moderate
+                        <img
+                            src="{!$Resource.PersistenceChart + '/icon-4.png'}"
+                            alt="high"
+                            title="High"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = High
+                        <img
+                            src="{!$Resource.PersistenceChart + '/icon-5.png'}"
+                            alt="very high"
+                            title="Very High"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Very High
+                    </div>
+                </aura:if>
             </div>
             <div class="slds-checkbox_button-group" style="border: none">
                 <lightning:input
@@ -177,14 +185,14 @@
                         label="{!contactWrapper.portalContact.LastName + ', ' + contactWrapper.portalContact.Preferred_First_Name__c}"
                     >
                         <aura:set attribute="actions">
-                            <span class="slds-p-horizontal_xx-small">&#124;</span>
-                            <span class="slds-m-left_xx-small">
+                            <span class="slds-var-p-horizontal_xx-small">&#124;</span>
+                            <span class="slds-var-m-left_xx-small">
                                 {!if(not(empty(contactWrapper.cases)), contactWrapper.cases.length,
                                 0)}&nbsp;{!if(contactWrapper.cases.length == 1, 'case', 'cases')}
                             </span>
                             <aura:if isTrue="{!contactWrapper.isOutreachCustomer}">
                                 <lightning:icon
-                                    class="icn outreach-icn slds-m-horizontal_xx-small"
+                                    class="icn outreach-icn slds-var-m-horizontal_xx-small"
                                     iconName="utility:record"
                                     size="x-small"
                                 />
@@ -199,13 +207,15 @@
                             >
                                 Profile
                             </a>
-                            <c:AdvisorPortalPredictionLevel
-                                predictionLevel="{!contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}"
-                            />
-                            <c:AdvisorPortalOutlookChangeDirection
-                                changeDirection="{!contactWrapper.portalContact.Most_Recent_Outlook_Change_Direction__c}"
-                                changeDate="{!contactWrapper.portalContact.Change_Date__c}"
-                            />
+                            <aura:if isTrue="{!!v.GraduateStudentsOnly}">
+                                <c:AdvisorPortalPredictionLevel
+                                    predictionLevel="{!contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}"
+                                />
+                                <c:AdvisorPortalOutlookChangeDirection
+                                    changeDirection="{!contactWrapper.portalContact.Most_Recent_Outlook_Change_Direction__c}"
+                                    changeDate="{!contactWrapper.portalContact.Change_Date__c}"
+                                />
+                            </aura:if>
                         </aura:set>
 
                         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
@@ -347,7 +357,7 @@
                 />
             </p>
 
-            <div style="width: 70px" class="slds-align_absolute-center slds-p-bottom_medium">
+            <div style="width: 70px" class="slds-align_absolute-center slds-var-p-bottom_medium">
                 <lightning:select value="{!v.PageSize}" onchange="{!c.pageSizeChange}" label="Page Size">
                     <option value="20">20</option>
                     <option value="50">50</option>
@@ -364,6 +374,6 @@
     </aura:if>
 
     <aura:if isTrue="{!empty(v.ContactsDisplayed)}">
-        <div class="slds-p-around_x-large slds-align_absolute-center">No results found.</div>
+        <div class="slds-var-p-around_x-large slds-align_absolute-center">No results found.</div>
     </aura:if>
 </aura:component>

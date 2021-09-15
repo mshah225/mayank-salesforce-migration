@@ -54,6 +54,12 @@ public class AdvisorPortalFilter {
     public Boolean proactiveCasesState { get; set; }
 
     /**
+     * Represents whether a Contact is a grad student or not.
+     */
+    @AuraEnabled
+    public Boolean gradStudentsOnly { get; set; }
+
+    /**
      * Represents a Curr_Cont_Prediction_Level__c value on Case.
      */
     @AuraEnabled

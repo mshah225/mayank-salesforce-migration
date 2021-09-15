@@ -1396,7 +1396,8 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Campus__c = listOfLocations[0].Id,
                 Residency__c = 'Resident',
                 Plan_Type_Text__c = 'MAJ',
-                Plan_Description__c = 'Computer Science'
+                Plan_Description__c = 'Computer Science',
+                Career__c = 'Graduate'
             )
         );
         listOfStudentPrograms.add(
@@ -1406,7 +1407,8 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Campus__c = listOfLocations[1].Id,
                 Residency__c = 'International',
                 Plan_Type_Text__c = 'MAJ',
-                Plan_Description__c = 'Computer Science'
+                Plan_Description__c = 'Computer Science',
+                Career__c = 'Undergraduate'
             )
         );
         listOfStudentPrograms.add(
@@ -1416,7 +1418,8 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Campus__c = listOfLocations[1].Id,
                 Residency__c = 'Resident',
                 Plan_Type_Text__c = 'MAJ',
-                Plan_Description__c = 'Law'
+                Plan_Description__c = 'Law',
+                Career__c = 'Law'
             )
         );
         insert listOfStudentPrograms;
@@ -1430,6 +1433,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
         filter2.major = 'law';
 
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.gradStudentsOnly = true;
+
         // Act
         Test.startTest();
         Set<Id> results1 = AdvisorPortalFilterSectionController.filterStudentPlans(
@@ -1440,14 +1446,14 @@ private class AdvisorPortalFilterSectionControllerTest {
             filter2,
             new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
         );
+        Set<Id> results3 = AdvisorPortalFilterSectionController.filterStudentPlans(
+            filter3,
+            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
+        );
         Test.stopTest();
-
-        System.debug(results1);
-        System.debug(results2);
 
         // Assert
         System.assertEquals(2, results1.size());
-        System.assertEquals(1, results2.size());
         System.assert(
             results1.contains(listOfContacts[0].Id),
             'The first contact should be in the first set of results.'
@@ -1456,6 +1462,8 @@ private class AdvisorPortalFilterSectionControllerTest {
             results1.contains(listOfContacts[1].Id),
             'The second contact should be in the first set of results.'
         );
+
+        System.assertEquals(1, results2.size());
         System.assert(
             !results2.contains(listOfContacts[0].Id),
             'The first contact should not be in the second set of results.'
@@ -1463,6 +1471,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         System.assert(
             results2.contains(listOfContacts[1].Id),
             'The second contact should be in the second set of results.'
+        );
+
+        System.assertEquals(1, results3.size());
+        System.assert(
+            results3.contains(listOfContacts[0].Id),
+            'The first contact should be in the third set of results.'
+        );
+        System.assert(
+            !results3.contains(listOfContacts[1].Id),
+            'The second contact should not be in the third set of results.'
         );
     }
 }

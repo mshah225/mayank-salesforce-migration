@@ -49,7 +49,7 @@
                                     aura:id="top-combobox"
                                     label="Advising Committees"
                                     type="text"
-                                    class="slds-combobox__input"
+                                    class="slds-combobox__input slds-size_1-of-1"
                                     placeholder="Loading..."
                                     value="{!v.FilterValue}"
                                     onclick="{!c.toggleDropdown}"
@@ -81,13 +81,21 @@
                                             <aura:if isTrue="{!option.isHeader}">
                                                 <li role="presentation" class="slds-listbox__item">
                                                     <div
-                                                        class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                        class="
+                                                            slds-media
+                                                            slds-listbox__option slds-listbox__option_plain
+                                                            slds-media_small
+                                                        "
                                                         role="presentation"
                                                     ></div>
                                                 </li>
                                                 <li role="presentation" class="slds-listbox__item">
                                                     <div
-                                                        class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                        class="
+                                                            slds-media
+                                                            slds-listbox__option slds-listbox__option_plain
+                                                            slds-media_small
+                                                        "
                                                         role="presentation"
                                                     >
                                                         <h3 class="slds-listbox__option-header" role="presentation">

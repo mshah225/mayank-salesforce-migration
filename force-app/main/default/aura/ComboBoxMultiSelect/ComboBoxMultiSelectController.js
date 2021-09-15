@@ -13,39 +13,56 @@
 
         if (!$A.util.hasClass(component.find('combobox-drop').getElement(), 'slds-is-open')) {
             helper.setCountSelected(component);
-        } else {
-            component.set('v.value', '');
         }
     },
 
     toggleOption: function (component, event, helper) {
         event.preventDefault();
-        let selectedId = event.currentTarget.getAttribute('data-optionId');
+        const toggleValue = event.currentTarget.getAttribute('data-value').toLowerCase();
+        const value = component.get('v.value').toLowerCase();
 
-        if (selectedId) {
-            let options = component.get('v.options');
-            let selectedOptions = [];
+        let splitValues = [];
+        if (value.length > 0) {
+            splitValues = value.split(';');
+        }
 
-            for (let i = 0, len = options.length; i < len; i++) {
-                if (options[i].label + ';' + options[i].value === selectedId) {
-                    options[i].isSelected = !options[i].isSelected;
+        if (toggleValue) {
+            if (splitValues.includes(toggleValue)) {
+                let indx = splitValues.indexOf(toggleValue);
+                if (indx > -1) {
+                    splitValues.splice(indx, 1);
                 }
-
-                if (options[i].isSelected) {
-                    selectedOptions.push(options[i].value.toLowerCase());
-                }
+            } else {
+                splitValues.push(toggleValue);
             }
 
-            component.set('v.options', options);
-            component.set('v.value', selectedOptions.join(';'));
-            component.set('v.selectedOptions', selectedOptions);
-            helper.setCountSelected(component);
+            component.set('v.value', splitValues.join(';'));
         }
     },
 
-    resetOptions: function (component, event, helper) {
-        component.set('v.selectedOptions', []);
+    selectOptionsInValue: function (component, event, helper) {
+        const options = component.get('v.options');
+        const selectedValues = component.get('v.value').toLowerCase().split(';');
+
+        for (let i = 0, len = options.length; i < len; i++) {
+            if (selectedValues.includes(options[i].value.toLowerCase())) {
+                options[i].isSelected = true;
+            } else {
+                options[i].isSelected = false;
+            }
+        }
+
+        component.set('v.innerChangeLock', true);
+        component.set('v.options', options);
+        component.set('v.innerChangeLock', false);
         helper.setCountSelected(component);
+    },
+
+    resetOptions: function (component, event, helper) {
+        if (!component.get('v.innerChangeLock')) {
+            component.set('v.value', '');
+            helper.setCountSelected(component);
+        }
     },
 
     clearOptions: function (component, event, helper) {
@@ -58,6 +75,5 @@
         component.set('v.options', options);
         component.set('v.value', '');
         component.set('v.placeholder', '--Select--');
-        component.set('v.selectedOptions', []);
     },
 });

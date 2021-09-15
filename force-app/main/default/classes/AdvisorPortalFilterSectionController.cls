@@ -224,18 +224,18 @@ public class AdvisorPortalFilterSectionController {
 
     /**
      * Query for our cases and apply as many filters as possible
-     * Depending on searchByContactInsteadOfUser, use idList as either a list of OwnerId's or Contacts
+     * Depending on searchByContactInsteadOfOwner, use idList as either a list of OwnerId's or Contacts
      *
      * @param idList, a List of User/Queue OR Contact Ids to get cases by
      * @param filter, the AdvisorPortalFilter to use.
-     * @param searchByContactInsteadOfUser, if idList is a list of contact id's
+     * @param searchByContactInsteadOfOwner, if idList is a list of contact id's
      *
      * @return Database.query(queryString), the result of that query
      */
     private static List<Case> queryForCasesWithContactData(
         List<Id> idList,
         AdvisorPortalFilter filter,
-        Boolean searchByContactInsteadOfUser
+        Boolean searchByContactInsteadOfOwner
     ) {
         String queryString =
             '' +
@@ -289,7 +289,7 @@ public class AdvisorPortalFilterSectionController {
             queryString += ' AND Status IN :statuses';
         }
 
-        if (searchByContactInsteadOfUser) {
+        if (searchByContactInsteadOfOwner) {
             queryString += ' AND ContactId IN :idList';
         } else {
             queryString += ' AND OwnerId IN :idList';
@@ -350,6 +350,7 @@ public class AdvisorPortalFilterSectionController {
         if (!String.isBlank(filter.persistenceToDate)) {
             queryString += ' AND Change_Date__c <= ' + filter.persistenceToDate;
         }
+
         if (!String.isBlank(filter.studentString)) {
             queryString += ' AND ( Contact.Preferred_Full_Name__c = \'' + filter.studentString;
             queryString += '\' OR Contact.Name = \'' + filter.studentString;
@@ -571,7 +572,8 @@ public class AdvisorPortalFilterSectionController {
             !String.isBlank(filter.academicLevel) ||
             !String.isBlank(filter.campus) ||
             !String.isBlank(filter.residency) ||
-            !String.isBlank(filter.major)
+            !String.isBlank(filter.major) ||
+            filter.gradStudentsOnly != null
         ) {
             Set<Id> filteredContactIds = new Set<Id>();
             String queryString =
@@ -602,6 +604,13 @@ public class AdvisorPortalFilterSectionController {
                     '%\' OR Plan_Code__c LIKE \'%' +
                     filter.major +
                     '%\' )';
+            }
+
+            if (filter.gradStudentsOnly != null) {
+                if (filter.gradStudentsOnly)
+                    queryString += ' AND Career__c = \'Graduate\'';
+                else
+                    queryString += ' AND Career__c != \'Graduate\'';
             }
 
             queryString += ' GROUP BY Contact__c LIMIT 2000';

@@ -5,6 +5,8 @@
     <aura:attribute name="processingCounter" type="Integer" default="0" />
     <aura:attribute name="AllUserOptions" type="List" />
     <aura:attribute name="SelectedUserOptions" type="List" />
+    <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
+    <aura:attribute name="DefaultFilter" type="AdvisorPortalFilter" />
     <aura:attribute name="CaseContactWrappers" type="List" />
     <aura:handler
         name="incrementProcessingCounterEvent"
@@ -56,11 +58,37 @@
             ></c:feedbackButton>
         </div>
     </div>
-    <c:AdvisorPortalTopLevelFilter />
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small">
+        <div class="slds-col slds-max-large-size_1-of-1">
+            <c:AdvisorPortalTopLevelFilter />
+        </div>
+        <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
+            <div class="slds-grid slds-grid_vertical">
+                <c:advisorPortalCareerSelector
+                    class="slds-col slds-size_1-of-1"
+                    ontogglegradonly="{!c.updateGraduateStudentsOnly}"
+                    defaultFilter="{!v.DefaultFilter}"
+                />
+                <c:advisorPortalSaveFilters
+                    class="slds-col slds-size_1-of-1"
+                    onsetdefaultfilter="{!c.setDefaultFilter}"
+                    onrequestcurrentfilter="{!c.getCurrentFilter}"
+                    onincrementprocessingcounterevent="{!c.callsIncrementProcessingCounter}"
+                    ondecrementprocessingcounterevent="{!c.callsDecrementProcessingCounter}"
+                />
+            </div>
+        </div>
+    </div>
     <c:AdvisorPortalFilterSection
         aura:id="filterSectionAuraElement"
         SelectedViewAsUserOptions="{!v.SelectedUserOptions}"
+        GraduateStudentsOnly="{!v.GraduateStudentsOnly}"
+        DefaultFilter="{!v.DefaultFilter}"
     />
 
-    <c:AdvisorPortalDataTable Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" />
+    <c:AdvisorPortalDataTable
+        Contacts="{!v.FilteredContacts}"
+        ViewAsOptions="{!v.AllUserOptions}"
+        GraduateStudentsOnly="{!v.GraduateStudentsOnly}"
+    />
 </aura:component>

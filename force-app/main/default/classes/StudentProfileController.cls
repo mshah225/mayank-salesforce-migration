@@ -38,6 +38,7 @@ global with sharing class StudentProfileController {
     public string futureTerm { get; set; }
     public string futureTermName { get; set; }
     public String subPlanString { get; set; }
+    public String eAdvisorStatus { get; set; }
     public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }
@@ -114,6 +115,7 @@ global with sharing class StudentProfileController {
             setTestScores();
             setFinancials();
             setMe3Results();
+            setAdvisorStatus();
         } else {
             initializeValuesForNullContactId();
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
@@ -841,6 +843,17 @@ global with sharing class StudentProfileController {
             LIMIT 1
         ];
         me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new me3__c());
+    }
+
+    private void setAdvisorStatus() {
+        for (Student_Program_Plan__c spp : ugProgramPlans) {
+            if (spp.eAdvisor__c == 'Off Track for Graduation') {
+                eAdvisorStatus = 'Off Track for Graduation';
+                return;
+            }
+        }
+
+        eAdvisorStatus = 'No Status';
     }
 
     @RemoteAction

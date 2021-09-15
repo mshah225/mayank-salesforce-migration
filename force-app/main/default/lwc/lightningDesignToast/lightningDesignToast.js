@@ -53,11 +53,15 @@ export default class LightningDesignToast extends LightningElement {
             clearTimeout(this._timeoutToClose);
             this._timeoutToClose = null;
         }
-        this._timeoutToClose = setTimeout(() => {
-            if (!this._hide) {
-                this.closeToast();
-            }
-        }, this._duration);
+
+        // Loading toast persists until replaced
+        if (!this._loadingToast) {
+            this._timeoutToClose = setTimeout(() => {
+                if (!this._hide) {
+                    this.closeToast();
+                }
+            }, this._duration);
+        }
     }
     @api fireParams(title, body, variant, duration) {
         this.title = title;

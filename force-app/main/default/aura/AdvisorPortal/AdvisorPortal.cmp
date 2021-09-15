@@ -1,0 +1,66 @@
+<aura:component access="public">
+    <aura:attribute name="ContactsInView" type="AdvisorPortalContact[]" />
+    <aura:attribute name="FilteredContacts" type="AdvisorPortalContact[]" />
+    <aura:attribute name="isProcessing" type="Boolean" default="true" />
+    <aura:attribute name="processingCounter" type="Integer" default="0" />
+    <aura:attribute name="AllUserOptions" type="List" />
+    <aura:attribute name="SelectedUserOptions" type="List" />
+    <aura:attribute name="CaseContactWrappers" type="List" />
+    <aura:handler
+        name="incrementProcessingCounterEvent"
+        event="c:IncrementProcessingCounterEvent"
+        action="{!c.callsIncrementProcessingCounter}"
+    />
+    <aura:handler
+        name="decrementProcessingCounterEvent"
+        event="c:DecrementProcessingCounterEvent"
+        action="{!c.callsDecrementProcessingCounter}"
+    />
+    <aura:handler
+        name="updateViewAsOptionsEvent"
+        event="c:UpdateViewAsOptionsEvent"
+        action="{!c.updateViewAsOptions}"
+    />
+    <aura:handler
+        name="updateAllUserOptionsEvent"
+        event="c:UpdateAllUserOptionsEvent"
+        action="{!c.updateAllUserOptions}"
+    />
+    <aura:handler
+        name="updateCaseContactWrappersEvent"
+        event="c:UpdateCaseContactWrappersEvent"
+        action="{!c.updateCaseContactWrappers}"
+    />
+    <aura:handler
+        name="refreshAdvisorPortalContacts"
+        event="c:RefreshAdvisorPortalContacts"
+        action="{!c.refreshUsersAndCaseContactWrappers}"
+    />
+    <lightning:spinner
+        aura:id="spinner"
+        variant="brand"
+        size="large"
+        class="{!((v.isProcessing) ? '': 'slds-hide')}"
+        style="position: fixed"
+        alternativeText="Loading..."
+    />
+
+    <span class="slds-notify_container slds-is-fixed slds-align_absolute-center">
+        <c:ClassicToast />
+    </span>
+    <div>
+        <div class="feedbackButtonWrapper">
+            <c:feedbackButton
+                carName="Advisor Portal"
+                title="We value your feedback. Do you have a question, issue, or idea to impove the Advisor Portal? Submit it below."
+            ></c:feedbackButton>
+        </div>
+    </div>
+    <c:AdvisorPortalTopLevelFilter />
+    <c:AdvisorPortalFilterSection
+        aura:id="filterSectionAuraElement"
+        SelectedViewAsUserOptions="{!v.SelectedUserOptions}"
+    />
+
+    <c:AdvisorPortalDataTable Contacts="{!v.FilteredContacts}" ViewAsOptions="{!v.AllUserOptions}" />
+</aura:component>

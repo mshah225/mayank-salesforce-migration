@@ -1,0 +1,26 @@
+.THIS .RED {
+    background-color: rgb(131, 9, 9);
+}
+
+.THIS .li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+.THIS .fieldDescription {
+    color: grey;
+    font-size: 0.9rem;
+}
+
+.THIS .slds-form-element__label {
+    font-size: 24px !important;
+}
+
+.THIS .checkbox {
+    display: inline-block;
+    border: 2px solid black;
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    border-radius: 3px;
+}

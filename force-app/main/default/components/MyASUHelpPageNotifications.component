@@ -1,0 +1,90 @@
+<apex:component>
+    <apex:attribute name="maintenanceString" description="The message to be displayed on the SC during maintenance" type="String"
+        default="" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+    <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+
+    <center>
+        <apex:outputPanel rendered="{!IF(maintenanceString != null, true, false)}">
+            <div class="alert alert-warning" role="alert">
+                <div class="alert-icon">
+                    <span title="Alert" class="fa fa-icon fa-bell" style="font-size:40px;"></span>
+                </div>
+                <div class="alert-content">
+                    <apex:outputText value="{!maintenanceString}" />
+                </div>
+                <div class="alert-close">
+                    <button type="button" class="btn btn-circle btn-circle-alt-white close" aria-label="Close" onclick="event.target.parentNode.parentNode.style.display='none';">x</button>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Feedback == 'yes'}">
+            <div class="alert alert-success feedbackConfirm" role="alert">
+                <div class="alert-icon">
+                    <span title="Success" class="fa fa-icon fa-check-circle" style="font-size:40px;"></span>
+                </div>
+                <div class="alert-content">
+                    <p>
+                        <strong>Thank you for your feedback.</strong> Your feedback helps ASU make the Knowledge Base better.
+                    </p>
+                </div>
+                <div class="alert-close">
+                    <button type="button" class="btn btn-circle btn-circle-alt-white close" aria-label="Close" onclick="event.target.parentNode.parentNode.style.display='none';">x</button>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'newcase'}">
+            <div class="alert alert-success caseConfirm" role="alert">
+                <div class="alert-icon">
+                    <span title="Success" class="fa fa-icon fa-check-circle" style="font-size:40px;"></span>
+                </div>
+                <div class="alert-content">
+                    <p>
+                        <strong>Your request has been submitted.</strong> We are working on responding to you as soon as possible.
+                        <br /> A member of the ASU team will contact you if additional information is needed to answer your request.
+                        <br /> Please check back here, in the My ASU Service Center, to track the status of your request.
+                    </p>
+                </div>
+                <div class="alert-close">
+                    <button type="button" class="btn btn-circle btn-circle-alt-white close" aria-label="Close" onclick="event.target.parentNode.parentNode.style.display='none';">x</button>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Confirm == 'feedback'}">
+            <div class="alert alert-success caseConfirm" role="alert">
+                <div class="alert-icon">
+                    <span title="Success" class="fa fa-icon fa-check-circle" style="font-size:40px;"></span>
+                </div>
+                <div class="alert-content">
+                    <p>
+                        <strong>Thank you for your feedback about the My ASU Service Center!</strong>
+                    </p>
+                </div>
+                <div class="alert-close">
+                    <button type="button" class="btn btn-circle btn-circle-alt-white close" aria-label="Close" onclick="event.target.parentNode.parentNode.style.display='none';">x</button>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!$CurrentPage.parameters.Suggest == 'yes'}">
+            <div class="alert alert-success feedbackConfirm" role="alert">
+                <div class="alert-icon">
+                    <span title="Success" class="fa fa-icon fa-check-circle" style="font-size:40px;"></span>
+                </div>
+                <div class="alert-content">
+                    <p>
+                        <strong>Thank you for suggesting an article!</strong> Your suggestions help ASU make the Knowledge Base better.
+                    </p>
+                </div>
+                <div class="alert-close">
+                    <button type="button" class="btn btn-circle btn-circle-alt-white close" aria-label="Close" onclick="event.target.parentNode.parentNode.style.display='none';">x</button>
+                </div>
+            </div>
+
+        </apex:outputPanel>
+    </center>
+</apex:component>

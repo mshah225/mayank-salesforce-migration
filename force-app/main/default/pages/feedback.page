@@ -1,0 +1,126 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MyASUHelpController" cache="true" extensions="FeedbackController">
+    <html>
+
+    <head>
+        <title>My ASU | Help | Feedback</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
+        <style>
+            .feedback-page-scope a:hover:not(.btn),
+            .feedback-page-scope a:hover:not(.btn) i {
+                color: #d23153 !important;
+                text-decoration: underline;
+            }
+
+            .feedback-page-scope .c-text-maroon,
+            .feedback-page-scope a.c-text-maroon:visited,
+            .feedback-page-scope a:visited .c-text-maroon {
+                color: #8c1d40;
+            }
+
+            a {
+                text-decoration: none;
+            }
+        </style>
+    </head>
+
+    <body class="feedback-page-scope">
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
+
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
+
+        <main role="main">
+            <div class="container">
+                <nav aria-label="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="c-text-maroon" href="/">Back</a>
+                        </li>
+                        <li class="breadcrumb-item active">Feedback</li>
+                    </ol>
+                </nav>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <apex:form id="feedbackForm" style="max-width: 600px">
+                            <h1 class="lead"> My ASU Service Center Feedback </h1>
+
+                            <p>
+                                ASU values your experience and wants to ensure that you receive quality service. The My ASU Service Center is your personalized
+                                online resource for reporting issues and getting help. How can ASU improve the way we provide
+                                support through the Service Center?
+                            </p>
+                            <br />
+
+                            <apex:outputText value="Feedback Comments:" />
+                            <br />
+                            <apex:inputTextarea id="caseFeedbackComments" value="{!comments}" style="max-width: 100%; border: solid 1px #999; border-radius: 2px"
+                                rows="5" cols="120" required="true" />
+                            <br />
+                            <apex:commandButton value="Submit" action="{!submit}" styleClass="btn btn-maroon btn-md mt-1 mb-2" />
+                        </apex:form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
+        <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
+
+        <script>
+            viewAsLinks();
+
+            function viewAsLinks() {
+                var masqCookie = '{!masqScopeIdCookie}';
+                var viewingAs = '{!viewingAs}';
+                if (masqCookie != '' && viewingAs == 'true') {
+                    $('a').each(function () {
+                        var href = this.href;
+                        if (href.indexOf('force') > -1) {
+                            if (href.indexOf('?') != -1) {
+                                href = href + '&masqScopeIdCookie={!masqScopeIdCookie}';
+                            } else {
+                                href = href + '?masqScopeIdCookie={!masqScopeIdCookie}';
+                            }
+                            $(this).attr('href', href);
+                        }
+                    });
+                }
+            }
+
+            const navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu" }]}';
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        { navTreeStr },
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                    // Hide errors that appear randomly from LWC
+                    const observer = new MutationObserver(function (mutations) {
+                        const errorDiv = document.querySelector('#auraErrorMessage');
+                        if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                            console.error(errorDiv.innerText);
+                            errorDiv.innerHTML = '';
+                        }
+                    });
+                    observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+
+                }
+            );
+        </script>
+    </body>
+
+    </html>
+</apex:page>

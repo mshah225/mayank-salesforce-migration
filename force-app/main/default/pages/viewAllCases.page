@@ -1,0 +1,156 @@
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="ViewAllCasesController"
+    cache="true">
+
+    <head>
+        <title>My ASU | Help | View All Requests</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
+        <c:GoogleTagManager />
+        <c:GoogleAnalytics />
+        <c:MyASUHelpStyles />
+    </head>
+
+    <apex:includeLightning />
+    <c:SLDSRemoveGlobalStyles />
+    <div id="ASUBrandHeaderSpacer"></div>
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
+
+    <c:GoogleTagManagerBody />
+    <div role="main">
+        <div class="container myasu-help-scope">
+
+            <nav aria-label="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item">
+                        <a class="c-text-maroon" href="/">Help</a>
+                    </li>
+                    <li class="breadcrumb-item active">View All Requests</li>
+                </ol>
+            </nav>
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- My Open Cases view -->
+                    <div class="border">
+                        <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Pending Requests</h2>
+                        <div class="p-2">
+                            <p class="{!IF(myCases.size > 0, 'd-block', 'd-none')}">
+                                Click the View button to see a history of your request, including chat and email history.
+                            </p>
+                            <apex:form>
+                                <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="border">
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1 text-truncate" headerValue="Subject" width="50%" value="{!case.Subject}"
+                                        />
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" headerValue="Status" width="30%" value="{!case.Status}"
+                                        />
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" headerValue="Date Opened" width="15%" value="{!case.CreatedDate}"
+                                        />
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" width="5%">
+                                            <apex:commandLink value="View" styleClass="btn btn-light btn-md" action="{!viewCase}">
+                                                <apex:param name="caseId" value="{!case.Id}" />
+                                            </apex:commandLink>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <apex:outputText rendered="{!myCases.size == 0}">
+                                        <p class="m-0">
+                                            You do not currently have any open requests.
+                                        </p>
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:form>
+                        </div>
+                    </div>
+                    <br />
+                    <!-- My Closed Cases view -->
+                    <div class="border">
+                        <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Completed Requests</h2>
+                        <div class="p-2">
+                            <p class="{!IF(allClosedCases.size > 0, 'd-block', 'd-none')}">
+                                Click the View button to see a history of your request, including chat and email history.
+                            </p>
+                            <apex:form>
+                                <apex:pageBlock mode="maindetail">
+                                    <apex:pageBlockTable rendered="{!allClosedCases.size > 0}" value="{!allClosedCases}" var="case" styleClass="border">
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1 text-truncate" headerValue="Subject" width="50%" value="{!case.Subject}"
+                                        />
+
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" headerValue="Status" width="30%" value="{!case.Status}"
+                                        />
+
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" headerValue="Date Closed" width="15%" value="{!case.ClosedDate}"
+                                        />
+
+                                        <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1" width="5%">
+                                            <apex:commandLink value="View" styleClass="btn btn-light btn-md" action="{!viewCase}">
+                                                <apex:param name="caseId" value="{!case.Id}" />
+                                            </apex:commandLink>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <apex:outputText rendered="{!allClosedCases.size == 0}">
+                                        <p class="m-0">
+                                            You do not currently have any completed requests.
+                                        </p>
+                                    </apex:outputText>
+                                </apex:pageBlock>
+                            </apex:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mt-1 mb-1" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
+    <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
+        let title = 'My ASU';
+        let baseUrl = 'https://webapp4.asu.edu/myasu/student';
+        if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
+            navTreeStr = undefined;
+        }
+        if (urlParams.get('title') != null) {
+            title = undefined;
+        }
+        if (urlParams.get('baseUrl') != null) {
+            baseUrl = undefined;
+        }
+
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    { title, baseUrl, navTreeStr },
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+                // Hide errors that appear randomly from LWC
+                const observer = new MutationObserver(function (mutations) {
+                    const errorDiv = document.querySelector('#auraErrorMessage');
+                    if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                        console.error(errorDiv.innerText);
+                        errorDiv.innerHTML = '';
+                    }
+                });
+                observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+
+            }
+        );
+    </script>
+</apex:page>

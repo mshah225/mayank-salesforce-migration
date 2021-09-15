@@ -1,0 +1,35 @@
+<apex:component id="fullCaseCommentsHistory" controller="FullCaseCommentsComponentController">
+    <apex:attribute name="caseComments" type="CaseComment[]" description="The Case Comments List" assignTo="{!comments}" />
+
+    <apex:outputPanel rendered="{!caseComments.size > 0}">
+        <apex:dataTable value="{!caseComments}" var="c" cellSpacing="15">
+            <apex:column headerValue="Created Date" value="{!c.CreatedDate}" style="text-align: left; vertical-align: top" />
+            <apex:column headerValue="Case Subject" style="text-align: left; vertical-align: top">
+                <apex:outputLink value="javascript:;" onclick="openCaseSubTab('{!c.ParentId}', '{!caseNumberMap[c.ParentId]}')">
+                    {!caseSubjectMap[c.ParentId]}
+                </apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Comment" value="{!c.CommentBody}" style="text-align: left; vertical-align: top" />
+        </apex:dataTable>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!caseComments.size == 0}"> No case comments found. </apex:outputPanel>
+
+    <apex:includeScript value="/support/console/38.0/integration.js" />
+    <script type="text/javascript">
+        function isLightningExperienceOrSalesforce1() {
+            return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
+        function openCaseSubTab(theCaseId, caseNumber) {
+            if (isLightningExperienceOrSalesforce1()) {
+                var message = "/lightning/r/Case/" + theCaseId + "/view";
+                parent.postMessage(message, '*');
+            } else {
+                sforce.console.getEnclosingPrimaryTabId(function (result) {
+                    sforce.console.openSubtab(result.id, '/' + theCaseId, true, caseNumber, null);
+                });
+            }
+        }
+    </script>
+</apex:component>

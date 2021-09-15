@@ -1,0 +1,77 @@
+<apex:page docType="html-5.0" controller="CoachPortalMainPageController" standardStylesheets="false" showHeader="false" sidebar="false"
+    id="CoachPortalMainPage">
+
+    <head>
+        <title>Coach Success Portal</title>
+        <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:stylesheet value="{!URLFOR($Resource.advisorCaseListContainerResources, 'advisorCaseListContainer.css')}" />
+    </head>
+    <apex:variable var="SUCCESS_COACH_MANAGER" value="SC Success Coach Manager" />
+    <apex:variable var="SUCCESS_COACH_LEAD" value="SC Success Coach Lead" />
+    <apex:variable var="SYS_ADMIN" value="System Administrator" />
+
+    <apex:pageMessages />
+
+    <c:coachPortalViewAsComponent selectOptions="{!viewAsOptions}" hasViewAs="{!hasViewAs}" mimicId="{!$User.Id}" id="viewAsComponent">
+        <!-- This bit is required in order to pass the mimic ID to the controller of the main page -->
+        <!-- VF Components do not have a built in way to pass data up -->
+        <apex:form>
+            <apex:actionFunction name="setOwnerId" reRender="rerenderMe" status="ASUAjaxStatus">
+                <apex:param name="ownerId" assignTo="{!ownerId}" value="{!mimicId}" />
+            </apex:actionFunction>
+
+            <script>
+                setOwnerId();
+            </script>
+        </apex:form>
+
+        <apex:outputPanel id="rerenderMe">
+            <c:coachPortalSummaryListComponent id="summaryList" aggregateQuery="{!mySummaryListQuery}" owner="{!mimicId}" transferOptions="{!mySubordinateOptions}"
+                proactiveRTID="{!CoachCaseRTID}" rerenderList="{!$Component.viewAsComponent.viewAsComponent.proactiveList}" caseEmailRTID="{!CoachEmailRTID}"
+                isCoaching="true" showSummarySubject="true" showSummaryCount="true" showSummaryFollowupDate="false" showCaseListSelection="true"
+                showCaseListName="true" showCaseListEMPLID="true" showCaseListSubject="true" showCaseListStatus="true" showCaseListFollowupDate="true"
+                showCaseListTermSession="false" showCaseListTimeZone="false" showCaseListTransfer="true" showCaseMassEmail="false"
+                showProactiveCaseCount="false" showReactiveCaseCount="false" showSearch="true" />
+
+            <apex:tabPanel styleClass="buffer" id="tabPanel">
+                <apex:tab label="My Students" switchType="client" styleClass="wsTabContent" id="studentsTab">
+                    <c:showMyCoachingStudents queryString="{!myStudentsQuery}" proactiveRTID="{!CoachCaseRTID}" emailRTID="{!CoachEmailRTID}"
+                        mimicId="{!mimicId}" showProactiveCases="false" showReactiveCases="false" showMassEmail="false" showSelection="false"
+                        showName="true" showEMPLID="true" showSearch="true" />
+                </apex:tab>
+
+                <apex:tab label="My Proactive Cases" switchType="client" styleClass="wsTabContent" id="proactiveTab">
+                    <c:coachPortalShowMyCases id="proactiveList" queryString="{!myProactiveQuery}" transferOptions="{!mySubordinateOptions}"
+                        proactiveRTID="{!CoachCaseRTID}" emailRTID="{!CoachEmailRTID}" showSelection="true" showName="true" showEMPLID="true"
+                        showSubject="true" showStatus="true" showFollowupDate="true" showTransfer="true" showMassEmail="false"
+                        showProactive="false" showReactive="false" showSearch="true" showRefresh="true" showTermSession="true"
+                        showTimeZone="true" />
+                </apex:tab>
+
+                <apex:tab label="Success Tools" switchType="client" styleClass="wsTabContent" id="toolsTab" rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}">
+                    <c:SuccessToolbelt />
+                </apex:tab>
+            </apex:tabPanel>
+        </apex:outputPanel>
+    </c:coachPortalViewAsComponent>
+
+    <div class="row border mx-2 p-1 mt-2 bg-white">
+        <div class="w-100">
+            <c:FeedbackButton carName="Coach Portal" classes="btn asu-primary btn-md text-white" />
+        </div>
+    </div>
+
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+    <script>$ = jQuery.noConflict();</script>
+    <script>
+        // Remove common.css and extended.css since they screw with our buttons
+        $("link.user").each(function () {
+            if (this.href.includes('common.css') || this.href.includes('extended.css'))
+                $(this).attr("disabled", "disabled");
+        });
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
+    <apex:includeScript value="/support/console/38.0/integration.js" />
+    <c:ASUAjaxStatus />
+</apex:page>

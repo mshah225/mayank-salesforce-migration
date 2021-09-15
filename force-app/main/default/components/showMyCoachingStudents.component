@@ -1,0 +1,351 @@
+<apex:component controller="showMyCoachingStudentsController" allowDML="true">
+    <apex:includeLightning />
+    <c:SLDSRemoveGlobalStyles />
+
+    <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudents.js')}" />
+    <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }" />
+    <apex:stylesheet value="{!URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
+
+    <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
+    <apex:attribute name="mimicId" type="Id" description="" assignTo="{!ownerId}" />
+    <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}" />
+    <apex:attribute name="emailRTID" type="Id" description="" assignTo="{!portalEmailRTID}" />
+
+    <apex:attribute name="showSelection" type="boolean" description="" default="false" />
+    <apex:attribute name="showName" type="boolean" description="" default="false" />
+    <apex:attribute name="showEMPLID" type="boolean" description="" default="false" />
+    <apex:attribute name="showMassEmail" type="boolean" description="" default="false" />
+    <apex:attribute name="showProactiveCases" type="boolean" description="" default="false" />
+    <apex:attribute name="showReactiveCases" type="boolean" description="" default="false" />
+    <apex:attribute name="showSearch" type="boolean" description="" default="false" />
+
+    <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
+        <apex:form>
+            <div class="headerFooter">
+                <div class="toolbar">
+                    <apex:outputPanel layout="inline" styleClass="button-group">
+                        <apex:outputLink styleClass="btn btn-default asu-primary btn-md" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
+                            rendered="{! showMassEmail}">Mass Email</apex:outputLink>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
+                        <apex:inputText id="myStudentsInput" value="{!searchString}" html-placeholder="Filter Students" onkeypress="return noenter(event);"
+                            style="
+                                padding: 6px 12px;
+                                vertical-align: middle;
+                                border-radius: 4px;
+                                border: solid 1px #ccc;
+                                font-size: 11pt;
+                                border-top-right-radius: 0;
+                                border-bottom-right-radius: 0;
+                                border-right: none;
+                                margin-right: 0px !important;
+                            " styleClass="form-control" />
+                        <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
+                            oncomplete="focusSearch()" styleClass="input-group-append btn btn-md btn-light m-0 rounded-0">
+                            <span class="fa fa-search" style="font-size: 16px !important" aria-hidden="true"></span>
+                        </apex:commandLink>
+
+                        <script>
+                            function noenter(ev) {
+                                if (window.event) {
+                                    ev = window.event;
+                                }
+
+                                var keyCode;
+                                if (ev.keyCode) {
+                                    keyCode = ev.keyCode;
+                                } else {
+                                    keyCode = ev.charCode;
+                                }
+
+                                if (keyCode == 13) {
+                                    var ele = document.getElementById('{!$Component.searchStudentsBtn}');
+                                    ele.click();
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            }
+
+                            function focusSearch() {
+                                var input = document.getElementById('{!$Component.myStudentsInput}');
+                                input.select();
+                                var tmpStr = input.value;
+                                input.value = '';
+                                input.value = tmpStr;
+                            }
+
+                            focusSearch();
+                        </script>
+
+                        <apex:commandLink action="{!resetMyStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="
+                                color: #555; 
+                                border-radius: 0px; 
+                                border-top-right-radius: 4px; 
+                                border-bottom-right-radius: 4px;" styleClass="input-group-append btn btn-md btn-light m-0">
+                            <span class="fa fa-refresh" style="font-size: 16px !important" aria-hidden="true"></span>
+                        </apex:commandLink>
+                    </apex:outputPanel>
+                </div>
+
+                <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
+                    <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
+                        reRender="rerenderMe" status="ASUAjaxStatus" />
+                    <apex:outputText value="Page Size " />
+                    <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
+                        <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)" status="ASUAjaxStatus" />
+                        <apex:selectOption itemValue="25" itemLabel="25" />
+                        <apex:selectOption itemValue="50" itemLabel="50" />
+                        <apex:selectOption itemValue="100" itemLabel="100" />
+                    </apex:selectList>
+                    <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
+                    <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
+                    <apex:outputText value="{!setCon.ResultSize} Records" />
+                    <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float: right" styleClass="standardLink"
+                        reRender="rerenderMe" status="ASUAjaxStatus" />
+                </apex:outputPanel>
+            </div>
+        </apex:form>
+        <apex:form id="tableForm">
+            <div class="modal fade emailModal" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <!-- Modal Title should be set by JS -->
+                            <h4 class="modal-title summary-modal-title">Mass Email</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <div class="modal-body">
+                            <h5>Select Email Template:</h5>
+                            <apex:inputField value="{!tempEmail.Email_Template_Name__c}" />
+                            <h5>Additional Text:</h5>
+                            <apex:inputField value="{!tempEmail.Additional_Message_Text__c}" style="width: 100%; height: 200px" />
+                        </div>
+
+                        <div class="modal-footer">
+                            <apex:commandLink type="button" action="{!massEmail}" reRender="tableForm" styleClass="btn btn-default btn-md asu-primary"
+                                status="ASUAjaxStatus" value="Send" oncomplete="actionComplete()" onclick="toggleEmailModal(this)"
+                            />
+                            <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <apex:dataTable id="myStudentsTable" value="{!studentList}" var="c" styleClass="ASUTable">
+                <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText" rendered="{! showSelection}">
+                    <apex:inputCheckbox value="{!c.selected}" styleClass="selectBox" onchange="handleSelectAll(this);" />
+                    <apex:facet name="header">
+                        <input type="checkbox" class="selectAll" onchange="checkAll(this);" />
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerValue="Name" value="{!c.obj.Student_Name__c}" rendered="{! showName}" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="studentName" value="Student_Name__c" assignTo="{!sortField}" /> Name&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Student_Name__c'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Student_Name__c'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerValue="EMPLID" rendered="{! showEMPLID}" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="studentEmplid" value="EMPLID__c" assignTo="{!sortField}" /> EMPLID&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'EMPLID__c'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'EMPLID__c'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.EMPLID__c}', 'Profile')"
+                        styleClass="standardLink">
+                        {!c.obj.EMPLID__c}
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Proactive" rendered="{! showProactiveCases}" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    {!caseCountMap[c.obj.Student__c].proactiveCount}
+                </apex:column>
+                <apex:column headerValue="Reactive" rendered="{! showReactiveCases}" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    {!caseCountMap[c.obj.Student__c].reactiveCount}
+                </apex:column>
+                <apex:column headerValue="Action" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')"
+                        title="New Case">
+                        <apex:image value="{!$Resource.RedCase}" style="width: 20px; height: 20px" /> </apex:outputLink>&nbsp;&nbsp;
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'All Cases')"
+                        title="All Cases">
+                        <apex:image value="{!$Resource.RedCaseMulti}" style="width: 20px; height: 20px" />
+                    </apex:outputLink>
+                </apex:column>
+            </apex:dataTable>
+
+            <script>
+                function filterStudentResults(inVal) {
+                    var filter, table, tr, nametd, emplIdtd, studentName, emplId;
+                    filter = inVal.toUpperCase().trim();
+                    table = document.getElementById('{!$Component.myStudentsTable}');
+                    tr = table.getElementsByTagName('tr');
+
+                    for (var i = 0; i < tr.length; i++) {
+                        // We don't want the first td since checkbox
+                        nametd = tr[i].getElementsByTagName('td')[1]; // Student Name
+                        emplIdtd = tr[i].getElementsByTagName('td')[2]; // Student EmplId
+
+                        if (nametd || emplIdtd) {
+                            studentName = nametd.getElementsByTagName('span');
+                            emplId = emplIdtd.getElementsByTagName('a');
+
+                            if (studentName || emplId) {
+                                if (
+                                    studentName[0].innerHTML.toUpperCase().indexOf(filter) > -1 ||
+                                    emplId[0].innerHTML.toUpperCase().indexOf(filter) > -1
+                                ) {
+                                    tr[i].style.display = '';
+                                } else {
+                                    tr[i].style.display = 'none';
+                                }
+                            }
+                        }
+                    }
+                }
+            </script>
+        </apex:form>
+
+        <apex:form>
+            <div class="headerFooter">
+                <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
+                    reRender="rerenderMe" status="ASUAjaxStatus" />
+                <apex:outputText value="Page Size " />
+                <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
+                    <apex:actionSupport event="onchange" reRender="rerenderMe" onsubmit="handlePageSizeField(this)" status="ASUAjaxStatus" />
+                    <apex:selectOption itemValue="25" itemLabel="25" />
+                    <apex:selectOption itemValue="50" itemLabel="50" />
+                    <apex:selectOption itemValue="100" itemLabel="100" />
+                </apex:selectList>
+                <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
+                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of " />
+                <apex:outputText value="{!setCon.ResultSize} Records" />
+                <apex:commandLink action="{!setConNext}" value="Next >>" rendered="{!setCon.HasNext}" style="float: right" styleClass="standardLink"
+                    reRender="rerenderMe" status="ASUAjaxStatus" />
+            </div>
+        </apex:form>
+    </apex:outputPanel>
+
+    <script>
+        var primaryTabId, contactId, emplId, contactName, type;
+
+        function isLightningExperienceOrSalesforce1() {
+            return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
+        function openActionLink(id, name, emplIdIn, buttonType) {
+            contactId = id;
+            contactName = name;
+            emplId = emplIdIn;
+            type = buttonType;
+            var isFound = false;
+
+            if (sforce.console.isInConsole()) {
+                sforce.console.openPrimaryTab(null, './' + contactId, true, contactName, function (result) {
+                    if (result.success) {
+                        if (type == 'Case') {
+                            sforce.console.openSubtab(
+                                result.id,
+                                '/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' +
+                                contactId +
+                                '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach',
+                                true,
+                                'New Case',
+                                null
+                            );
+                        } else if (type == 'Profile') {
+                            sforce.console.openSubtab(
+                                result.id,
+                                '/apex/studentProfile?contactId=' + contactId,
+                                true,
+                                contactName + ' Student Profile',
+                                null
+                            );
+                        } else if (type == 'All Cases') {
+                            sforce.console.openSubtab(
+                                result.id,
+                                '003?rlid=RelatedCaseList&id=' + contactId,
+                                true,
+                                contactName + ' All Cases',
+                                null
+                            );
+                        }
+                    } else {
+                        sforce.console.getPrimaryTabIds(function (primaryTabResult) {
+                            for (x = 0; x < primaryTabResult.ids.length; x++) {
+                                console.log(primaryTabResult.ids[x]);
+                                var parentTabId = primaryTabResult.ids[x];
+                                // Apparently safari doesn't support default parameters. This code is breaking all JS on the page when viewed in safari
+                                sforce.console.getPageInfo(primaryTabResult.ids[x], function (pageInfoResult) {
+                                    if (pageInfoResult.success) {
+                                        var info = JSON.parse(pageInfoResult.pageInfo);
+
+                                        if (info.objectId == contactId.substring(0, 15)) {
+                                            // contactId is 18 digit, ObjectId is 15
+                                            if (type == 'Case') {
+                                                sforce.console.openSubtab(
+                                                    parentTabId,
+                                                    '/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=' +
+                                                    contactId +
+                                                    '&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach',
+                                                    true,
+                                                    'New Case',
+                                                    null
+                                                );
+                                            } else if (type == 'Profile') {
+                                                sforce.console.openSubtab(
+                                                    parentTabId,
+                                                    '/apex/studentProfile?contactId=' + contactId,
+                                                    true,
+                                                    contactName + ' Student Profile',
+                                                    null
+                                                );
+                                            } else if (type == 'All Cases') {
+                                                sforce.console.openSubtab(
+                                                    result.id,
+                                                    '003?rlid=RelatedCaseList&id=' + contactId,
+                                                    true,
+                                                    contactName + ' All Cases',
+                                                    null
+                                                );
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            } else if (isLightningExperienceOrSalesforce1()) {
+                if (type == 'Case') {
+                    var message = "/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=" + contactId + "&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach";
+                    parent.postMessage(message, '*');
+                } else if (type == 'Profile') {
+                    // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
+                    var message = contactId + "/apex/StudentProfile?contactId=" + emplId;
+                    parent.postMessage(message, '*');
+                } else if (type == 'All Cases') {
+                    var message = "/lightning/r/Case/" + contactId + "/related/Cases/view";
+                    parent.postMessage(message, '*');
+                }
+            }
+        }
+    </script>
+</apex:component>

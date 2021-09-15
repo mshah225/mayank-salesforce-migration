@@ -1,0 +1,87 @@
+<apex:component>
+    <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+    <style>
+        .family-portal-scope .bg-f5f5f5 {
+            background-color: #f5f5f5;
+        }
+
+        .family-portal-scope a {
+            text-decoration: none;
+        }
+
+        .family-portal-scope label {
+            font-size: 1rem !important;
+        }
+
+        .family-portal-scope a:hover:not(.btn) {
+            text-decoration: underline;
+            color: #d23153 !important;
+        }
+
+        .family-portal-scope h1 {
+            font-size: 30px;
+            font-weight: normal;
+        }
+
+        .family-portal-scope h2 {
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .family-portal-scope .assistiveText {
+            display: none;
+        }
+
+        /** Family Portal Step 2 */
+
+        .family-portal-scope .family-portal-2-table-wrapper input,
+        .family-portal-scope .family-portal-2-table-wrapper select {
+            height: max-content;
+        }
+
+        .family-portal-scope .requiredInput input {
+            width: calc(100% + 1.6rem);
+            margin-left: -0.8rem;
+        }
+
+        .family-portal-scope .requiredInput .error {
+            border: 2px solid #c00;
+        }
+
+        /** Family Portal Step 3 */
+
+        .family-portal-scope .family-portal-3-table label {
+            padding-left: 5px;
+        }
+
+        /** Family Portal Step 4 */
+
+        .family-portal-scope .family-portal-4-table-wrapper>table {
+            width: 100%;
+        }
+
+        .family-portal-scope .family-portal-4-table-wrapper>table>tbody>tr:nth-of-type(odd) {
+            background-color: #f5f5f5;
+        }
+
+        .family-portal-scope .family-portal-4-table-wrapper>table>tbody>tr {
+            border-top: 1px solid #dee2e6;
+        }
+
+        .family-portal-scope .family-portal-4-table-wrapper>table>tbody>tr>td {
+            padding: .5rem;
+        }
+
+        .family-portal-scope .family-portal-4-table-wrapper .student-type-wrapper tbody {
+            display: block;
+        }
+
+        .family-portal-scope .family-portal-4-table-wrapper .student-type-wrapper tr {
+            float: left;
+        }
+
+        .family-portal-scope .family-portal-4-table-wrapper .student-type-wrapper label {
+            padding-left: 5px;
+        }
+    </style>
+</apex:component>

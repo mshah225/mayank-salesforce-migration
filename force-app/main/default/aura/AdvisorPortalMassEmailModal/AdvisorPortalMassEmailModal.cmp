@@ -1,0 +1,109 @@
+<aura:component controller="AdvisorPortalMassEmailModalController" description="AdvisorPortalMassEmailModal">
+    <aura:attribute name="Contacts" type="AdvisorPortalContact[]" />
+    <aura:attribute name="EmailSubject" type="String" />
+    <aura:attribute name="EmailBody" type="String" />
+    <aura:attribute name="FormError" type="String" />
+    <aura:attribute name="userInfo" type="user" />
+    <aura:attribute name="EmailPreviewSubject" type="String" default="" />
+    <aura:attribute name="sendLabel" type="String" default="Send" />
+    <aura:attribute name="EmailPreviewBody" type="String" default="" />
+    <aura:attribute name="SendEmailsToMap" type="Map" />
+    <aura:handler name="init" value="this" action="{!c.loadUserDetail}" />
+    <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
+
+    <aura:if isTrue="{!not(empty(v.Contacts))}">
+        <lightning:button label="Mass Email" variant="brand" onclick="{!c.toggleMassEmailModal}" />
+
+        <section
+            aura:id="massEmailModal"
+            role="dialog"
+            tabindex="-1"
+            aria-labelledby="massEmailHeading"
+            aria-modal="true"
+            aria-describedby="massEmailBody"
+            class="slds-modal"
+        >
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon
+                        iconName="utility:close"
+                        onclick="{!c.toggleMassEmailModal}"
+                        alternativeText="close"
+                        variant="bare-inverse"
+                        class="slds-modal__close"
+                    />
+                    <h2 id="massEmailHeading" class="slds-text-heading_medium slds-hyphenate">Mass Email</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium" id="massEmailBody">
+                    <lightning:layout multipleRows="true">
+                        <aura:if isTrue="{!not(empty(v.FormError))}">
+                            <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
+                                <ui:message title="Error" severity="error" closable="false">
+                                    {!v.FormError}
+                                </ui:message>
+                            </lightning:layoutItem>
+                        </aura:if>
+
+                        <aura:if isTrue="{!empty(v.EmailPreviewSubject)}">
+                            <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
+                                <lightning:input
+                                    type="text"
+                                    label="Subject"
+                                    value="{!v.EmailSubject}"
+                                    required="true"
+                                />
+                            </lightning:layoutItem>
+
+                            <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
+                                <lightning:textarea
+                                    label="Dear StudentFirstName,"
+                                    value="{!v.EmailBody}"
+                                    class="email-body"
+                                    required="true"
+                                />
+                            </lightning:layoutItem>
+
+                            Sincerely, <br />
+                            {!v.userInfo.Name}
+
+                            <aura:set attribute="else">
+                                <div class="emailPreview">
+                                    <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
+                                        <b>{!v.EmailPreviewSubject}</b>
+                                    </lightning:layoutItem>
+
+                                    <lightning:layoutItem class="slds-p-vertical_xx-small" size="12">
+                                        {!v.EmailPreviewBody}
+                                    </lightning:layoutItem>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </lightning:layout>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <aura:if isTrue="{!empty(v.EmailPreviewSubject)}">
+                        <lightning:button variant="neutral" label="Cancel" onclick="{!c.toggleMassEmailModal}" />
+                        <lightning:button
+                            type="submit"
+                            variant="brand"
+                            label="Preview"
+                            onclick="{!c.massEmailPreview}"
+                        />
+                        <aura:set attribute="else">
+                            <lightning:button variant="neutral" label="Go Back" onclick="{!c.massEmailUnPreview}" />
+                            <lightning:button
+                                type="submit"
+                                variant="brand"
+                                label="{!v.sendLabel}"
+                                onclick="{!c.massEmail}"
+                        /></aura:set>
+                    </aura:if>
+                </footer>
+            </div>
+        </section>
+    </aura:if>
+
+    <div aura:id="modalBackdrop" class="slds-backdrop"></div>
+</aura:component>

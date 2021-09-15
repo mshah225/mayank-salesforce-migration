@@ -1,0 +1,182 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="LiveAgentPostSurveyController">
+
+    <head>
+        <title>ASU | Live Chat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <style>
+            @media screen and (min-width: 600px) {
+                .chat-body-mobile {
+                    font-size: 4vh;
+                }
+
+                #chatTranscript {
+                    max-height: 400px !important;
+                }
+
+                .mobileLogo {
+                    width: 500px;
+                }
+
+                .header-title-mobile {
+                    font-size: 5vh;
+                }
+
+                #saveChat {
+                    margin-top: 1vh !important;
+                }
+            }
+
+            @media screen and (max-width: 600px) {
+                #saveChat {
+                    margin-top: 1vh !important;
+                    margin-left: 12px !important;
+                    background-color: #dbdbdb !important;
+                    color: #2a2a2a !important;
+                    font-size: 12px !important;
+                }
+                .bottomSurvey {
+                    margin-top: 10px !important;
+                    max-width: 3000px !important;
+                    width: 300px !important;
+                    height: 15% !important;
+                    font-size: 4vw !important;
+                }
+
+                #chatTranscript {
+                    max-height: 200px !important;
+                }
+
+                .header-title-mobile {
+                    font-size: 30px;
+                }
+            }
+        </style>
+    </head>
+
+    <h1>
+        <div class="bg-dark w-100 p-1" id="saveChatWrapper">
+            <a class="btn btn-light btn-lg text-dark" id="saveChat" onclick="getTranscript();">Save Chat</a>
+        </div>
+    </h1>
+
+    <apex:image styleClass="mobileLogo ml-2 mt-2" url="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/asu-logo/arizona-state-university-logo.png')}"
+    />
+
+    <br />
+
+    <body style="background-color: #f5f5f5; overflow-x: hidden">
+        <apex:outputPanel styleClass="chat-body-mobile" id="successfulChatBody">
+            <h2 class="header-title-mobile p-2">
+                &nbsp;Previous Conversation
+                <br />
+            </h2>
+            <div id="chatTranscript" class="p-2" style="overflow: auto;">
+                <apex:outputText id="transcript" value="{!$CurrentPage.parameters.transcript}" />
+            </div>
+            <nav class="text-center p-2">
+                <a class="btn btn-maroon btn-lg" onclick="goToSurvey();">Click Here For Survey</a>
+            </nav>
+        </apex:outputPanel>
+        <apex:outputPanel styleClass="chat-body-mobile" id="failedChatBody">
+            <h2 class="header-title-mobile p-2">
+                &nbsp;Unable to Connect to an Agent
+                <br />
+            </h2>
+            <div id="errorMessage" class="chatTranscript p-2" style="overflow: auto; padding: 5px 15px 5px 15px">
+                <apex:outputText value="{!agentOfflineMessage}" />
+            </div>
+        </apex:outputPanel>
+    </body>
+    <script type="text/javascript">
+        var chatTranscript = document.getElementById('j_id0:transcript').innerHTML;
+        if (!chatTranscript || 0 === chatTranscript.length) {
+            document.getElementById('j_id0:successfulChatBody').style.display = 'none';
+            document.getElementById('saveChatWrapper').setAttribute('style', 'display:none !important');
+        } else {
+            document.getElementById('j_id0:failedChatBody').style.display = 'none';
+        }
+        var cleanedString = '{!JSENCODE($CurrentPage.parameters.chatDetails)}';
+        cleanedString = cleanedString
+            .replace(/[\n]/g, '')
+            .replace(/[\r]/g, '')
+            .replace(/[\\]*\'/g, "'");
+        var chatDetails = JSON.parse(cleanedString);
+        var mergeFieldObject = {
+            chat_key: '{!$CurrentPage.parameters.chatKey}',
+            chat_start_time: '{!$CurrentPage.parameters.startTime}',
+            chat_request_time: '{!$CurrentPage.parameters.requestTime}',
+            chat_agent_id: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.userId : '',
+            chat_agent_name: typeof chatDetails.agent !== 'undefined' ? chatDetails.agent.agentName : '',
+            chat_last_visited_page: '{!$CurrentPage.parameters.lastVisitedPage}',
+            chat_disconnected_by: '{!$CurrentPage.parameters.disconnectedBy}',
+        };
+
+        var customDetails = {};
+        if (typeof chatDetails.customDetails !== 'undefined') {
+            customDetails = chatDetails.customDetails.reduce(function (memo, detail) {
+                memo['chat_custom_' + toSnakeCase(detail.label)] = detail.value;
+                return memo;
+            }, {});
+        }
+        Object.assign(mergeFieldObject, customDetails, JSON.parse('{!$CurrentPage.parameters.attachedRecords}'));
+        var mergeFields = [];
+        for (var prop in mergeFieldObject) {
+            mergeFields.push(prop + '=' + mergeFieldObject[prop]);
+        }
+        var element = document.createElement('a');
+        element.setAttribute(
+            'href',
+            'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('j_id0:transcript').innerHTML)
+        );
+        document.body.appendChild(element);
+        var transcript = document.getElementById('j_id0:transcript').innerHTML;
+        document.getElementById('chatTranscript').innerHTML = transcript.replace(/\n/g, '<br/>');
+        createTimestampAndDisconnect();
+
+        function checkTime(i) {
+            return i < 10 ? '0' + i : i;
+        }
+
+        function createTimestampAndDisconnect() {
+            var timeStamp = '(' + new Date().toLocaleTimeString() + ')';
+            if ('{!$CurrentPage.parameters.disconnectedBy}' == 'client') {
+                document.getElementById('chatTranscript').innerHTML += timeStamp + ':You have disconnected this chat';
+            } else {
+                document.getElementById('chatTranscript').innerHTML += timeStamp + ':Chat was disconnected by agent';
+            }
+        }
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        function getTranscript() {
+            var chatBody = document.getElementById('chatTranscript').innerHTML;
+            chatBody = chatBody.replace(/<br\s*[\/]?>/gi, '\n');
+            download('Transcript.txt', chatBody);
+        }
+
+        function goToSurvey() {
+            var parameters = mergeFields == undefined ? '' : mergeFields.join('&');
+            parameters += '&name={!JSENCODE(contactName)}';
+            window.location = '{!postChatSurveyLink}?' + parameters;
+        }
+        function toSnakeCase(str) {
+            return str
+                .trim()
+                .toLowerCase()
+                .replace(/\W/g, '_')
+                .replace(/(^_|_$)/g, '');
+        }
+    </script>
+</apex:page>

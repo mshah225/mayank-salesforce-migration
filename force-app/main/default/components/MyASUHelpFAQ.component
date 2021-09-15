@@ -1,0 +1,229 @@
+<apex:component controller="MyASUHelpController" extensions="MyASUHelpPaginationController">
+    <apex:attribute name="EmbedLocation" description="The location the component is embedded" type="String" />
+
+    <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+    <script>$ = jQuery.noConflict();</script>
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
+
+    <div class="border myasu-help-scope">
+        <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">Frequently Asked Questions</h2>
+        <div id="search_content">
+            <apex:form id="searchForm" styleClass="p-4 bg-maroon">
+                <apex:pageBlock mode="maindetail">
+                    <div>
+                        <center>
+                            <p class="lead d-inline-block text-white">Ask us anything.</p>
+                            <div>
+                                <div class="d-flex justify-content-center" style="height: 2rem;">
+                                    <apex:inputText id="articleTextBoxId" value="{!textToSearch}" styleClass="w-75 h-100 pl-1 border-0" html-placeholder="Type your question here"
+                                        html-pattern=".{2,}" html-type="search" required="true" title="Please enter a minimum of 2 characters"
+                                        maxlength="99" />
+                                    <apex:commandLink styleClass="btn btn-light btn-sm rounded-0" reRender="myasu-help-region-faq-search-results" oncomplete="myASUHelpFAQ()">
+                                        <i class="fa fa-lg fa-search" aria-hidden="true">
+                                            <span class="sr-only">Search</span>
+                                        </i>
+                                    </apex:commandLink>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </apex:pageBlock>
+            </apex:form>
+            <apex:form id="myasu-help-region-faq-search-results" styleClass="p-2">
+                <apex:actionRegion>
+                    <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
+                        <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
+                            <div class="d-none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
+                            <h3 class="lead">Showing all results for '{!textToSearch}'</h3>
+                            <ul class='pt-1 pb-1 revert-blockquote-to-ul'>
+                                <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageNumber="{!currentPageNumber}"
+                                    pageSize="{!IF(textToSearch != '', pageSize, 0)}">
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.id}">
+                                            {!article.title}
+                                        </apex:outputLink>
+                                    </li>
+                                </knowledge:articleList>
+                            </ul>
+                            <script>
+                                // Fix when the <ul> magically converts to a <blockquote>.  Known issue - https://developer.salesforce.com/forums/?id=9060G000000IBvRQAW
+                                const allToConvert = document.querySelectorAll('blockquote.revert-blockquote-to-ul');
+                                for (let i = 0; i < allToConvert.length; i++) {
+                                    const oldBlockquote = allToConvert[i];
+                                    const newUl = document.createElement('ul');
+                                    newUl.innerHTML = oldBlockquote.innerHTML;
+                                    newUl.className = oldBlockquote.className;
+                                    oldBlockquote.replaceWith(newUl);
+                                }
+                            </script>
+                            <div class="d-flex">
+                                <apex:commandLink action="{!previous}" styleClass="btn btn-light btn-sm d-inline-block rounded-0" style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
+                                    reRender="myasu-help-region-faq-search-results-block">
+                                    <i class="fa fa-step-backward" aria-hidden="true" />
+                                </apex:commandLink>
+                                <div class='d-inline-block c-bg-gray c-border-gray text-white page-number'>
+                                    {!currentPageNumber}
+                                </div>
+                                <apex:commandLink action="{!next}" styleClass="btn btn-light btn-sm d-inline-block rounded-0" style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
+                                    reRender="myasu-help-region-faq-search-results-block">
+                                    <i class="fa fa-step-forward" aria-hidden="true" />
+                                </apex:commandLink>
+                            </div>
+                            <a class="c-text-maroon underline d-inline-block mt-1 mb-1" href="/">Back to Frequently Asked Questions</a>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation != 'viewAllArticles')}">
+                            <h3 class="lead">Showing top results for '{!textToSearch}'</h3>
+                            <ul>
+                                <knowledge:articleList articleVar="article" sortBy="mostViewed" keyword="{!textToSearch}" pageSize="{!IF(textToSearch != '',pageSize,0)}">
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.id}">
+                                            {!article.title}
+                                        </apex:outputLink>
+                                    </li>
+                                </knowledge:articleList>
+                                <li>
+                                    <apex:commandLink styleClass="c-text-maroon underline d-inline-block mt-1 mb-1" value="View all results" action="{!viewAllResults}"
+                                    />
+                                </li>
+                            </ul>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!AND(textToSearch == '', !isSearchingWithFunctionalGroup)}">
+                            <h3 class="lead mb-4 mt-0">Browse common questions</h3>
+                            <div>
+                                <h4 class="c-p9rem font-weight-bold mb-2">Finances</h4>
+                                <ul>
+                                    <apex:repeat value="{!topThreeFinancialArticles}" var="article" id="myasu-help-region-common-questions-finances">
+                                        <li>
+                                            <apex:outputLink styleClass="mb-1 d-inline-block c-text-black underline" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:commandLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
+                                        />
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="c-p9rem font-weight-bold mb-2">Technology</h4>
+                                <ul>
+                                    <apex:repeat value="{!topThreeTechnicalArticles}" var="article" id="myasu-help-region-common-questions-technical">
+                                        <li>
+                                            <apex:outputLink styleClass="mb-1 d-inline-block c-text-black underline" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:commandLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="View all technology questions" action="{!getViewAllTechnicalArticlesLink}"
+                                        />
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="c-p9rem font-weight-bold mb-2">Housing</h4>
+                                <ul>
+                                    <apex:repeat value="{!topThreeHousingArticles}" var="article" id="myasu-help-region-common-questions-housing">
+                                        <li>
+                                            <apex:outputLink styleClass="mb-1 d-inline-block c-text-black underline" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:commandLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
+                                        />
+                                    </li>
+                                </ul>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!AND(textToSearch == '', isSearchingWithFunctionalGroup)}">
+                            <apex:outputPanel rendered="{!functionalGroup == 'Financial Aid'}">
+                                <h3 class="lead">Showing all Finance results</h3>
+                                <ul>
+                                    <apex:repeat value="{!allFinancialArticles}" var="article">
+                                        <li>
+                                            <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1" value="/">View all common questions</apex:outputLink>
+                                    </li>
+                                </ul>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!functionalGroup == '%Technical Resources%'}">
+                                <h3 class="lead">Showing all Technology results</h3>
+                                <ul>
+                                    <apex:repeat value="{!allTechnicalArticles}" var="article">
+                                        <li>
+                                            <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1" value="/">View all common questions</apex:outputLink>
+                                    </li>
+                                </ul>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!functionalGroup == 'Housing'}">
+                                <h3 class="lead">Showing all Housing results</h3>
+                                <ul>
+                                    <apex:repeat value="{!allHousingArticles}" var="article">
+                                        <li>
+                                            <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1" value="/authkb?id={!article.KnowledgeArticleId}">{!article.Title}</apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                                    <li>
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1" value="/">View all common questions</apex:outputLink>
+                                    </li>
+                                </ul>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:pageBlock>
+                </apex:actionRegion>
+            </apex:form>
+        </div>
+    </div>
+    <script>
+        myASUHelpFAQ();
+
+        function myASUHelpFAQ() {
+            checkResultsPane();
+        }
+
+        function checkResultsPane() {
+            checkAllResults();
+            checkTopResults();
+        }
+
+        function checkAllResults() {
+            if ($(".myasu-help-region-sub-header:contains('Showing all results for')").length) {
+                if ($('.myasu-help-region-faq-search-results-article-container').length == 0) {
+                    if ($('.myasu-append-no-results-text').length == 0) {
+                        appendNoResultsText();
+                        $('.myasu-help-region-faq-search-results-pagination').hide();
+                    }
+                }
+            }
+        }
+
+        function checkTopResults() {
+            if ($(".myasu-help-region-sub-header:contains('Showing top results for')").length) {
+                if ($('.myasu-help-region-faq-search-results-article-container').length == 0) {
+                    if ($('.myasu-append-no-results-text').length == 0) {
+                        appendNoResultsText();
+                        $('.myasu-help-region-faq-search-results-view-all').hide();
+                    }
+                }
+            }
+        }
+
+        function appendNoResultsText() {
+            $('.myasu-help-region-sub-header').text(function () {
+                return $(this).text().replace('Showing top results', 'No results found');
+            });
+            $('.myasu-help-region-sub-header').text(function () {
+                return $(this).text().replace('Showing all results', 'No results found');
+            });
+            $('.myasu-help-region-sub-header').append(
+                '<p class="myasu-append-no-results-text">Try rewording your search.</p><p class="myasu-append-no-results-text-back"><a href="/">Back to Frequently Asked Questions</a></p>'
+            );
+            $('.myasu-append-no-results-text-back-main').hide();
+        }
+    </script>
+</apex:component>

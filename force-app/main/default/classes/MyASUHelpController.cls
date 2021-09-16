@@ -41,6 +41,7 @@ public with sharing class MyASUHelpController {
     public String orgId { get; set; }
     public String deploymentId { get; set; }
     public String chatEndpoint { get; set; }
+    public String scriptEndpointUrl { get; set; }
     public String financeChatButton { get; set; }
     public String financeDisplayName { get; set; }
     public String studentServicesChatButton { get; set; }
@@ -103,6 +104,7 @@ public with sharing class MyASUHelpController {
         orgId = financeChatLAB.Org_Id__c;
         deploymentId = financeChatLAB.Chat_Deployment__c;
         chatEndpoint = financeChatLAB.Chat_Endpoint__c;
+        scriptEndpointUrl = chatEndpoint.replace('https://d', 'https://c').replace('/chat', '');
         financeChatButton = financeChatLAB.Chat_Button_Id__c;
         financeDisplayName = financeChatLAB.Display_Name__c;
 

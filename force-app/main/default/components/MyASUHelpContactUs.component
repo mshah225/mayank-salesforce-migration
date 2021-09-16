@@ -8,7 +8,7 @@
     <script>$ = jQuery.noConflict();</script>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
 
-    <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js" />
+    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js" />
     <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';

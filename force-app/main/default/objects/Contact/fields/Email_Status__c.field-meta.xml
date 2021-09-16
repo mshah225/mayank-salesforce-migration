@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Status__c</fullName>
+    <businessOwnerGroup>Data_Owner_Admission_Services</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[Peoplesoft] - Field to capture email status response from BriteVerify. Temp = temporary email address. Role = role-based email address.
+[MDM] - Read</description>
+    <externalId>false</externalId>
+    <label>Email Status</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Role</fullName>
+                <default>false</default>
+                <label>Role</label>
+            </value>
+            <value>
+                <fullName>Temp</fullName>
+                <default>false</default>
+                <label>Temp</label>
+            </value>
+            <value>
+                <fullName>Valid</fullName>
+                <default>false</default>
+                <label>Valid</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

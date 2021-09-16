@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>I20_Financial_Documents_Received__c</fullName>
+    <description>[Peoplesoft] - As Financial Documents are received, they are scanned and imported into Application Xtender. From there, data is imported into PeopleSoft and General Materials is updated with receipt information. A job runs to populate the Financial Documents and Financial Doc Date fields with this information.</description>
+    <externalId>false</externalId>
+    <label>Financial Documents Received</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

@@ -209,6 +209,6 @@
         if (component.get('v.Residency') !== null && component.get('v.Residency') !== '')
             currentFilter.residency = component.get('v.Residency');
 
-        event.getParam('arguments').callback(currentFilter);
+        event.getParam('arguments').callback(JSON.stringify(currentFilter));
     },
 });

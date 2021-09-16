@@ -19,7 +19,7 @@
     toggleOption: function (component, event, helper) {
         event.preventDefault();
         const toggleValue = event.currentTarget.getAttribute('data-value').toLowerCase();
-        const value = component.get('v.value').toLowerCase();
+        const value = (component.get('v.value') == null ? '' : component.get('v.value')).toLowerCase();
 
         let splitValues = [];
         if (value.length > 0) {
@@ -42,9 +42,11 @@
 
     selectOptionsInValue: function (component, event, helper) {
         const options = component.get('v.options');
-        const selectedValues = component.get('v.value').toLowerCase().split(';');
+        const selectedValues = (component.get('v.value') == null ? '' : component.get('v.value'))
+            .toLowerCase()
+            .split(';');
 
-        for (let i = 0, len = options.length; i < len; i++) {
+        for (let i = 0, len = options.length; i < len && options[0]; i++) {
             if (selectedValues.includes(options[i].value.toLowerCase())) {
                 options[i].isSelected = true;
             } else {
@@ -60,7 +62,22 @@
 
     resetOptions: function (component, event, helper) {
         if (!component.get('v.innerChangeLock')) {
-            component.set('v.value', '');
+            const options = component.get('v.options');
+            const selectedValues = (component.get('v.value') == null ? '' : component.get('v.value'))
+                .toLowerCase()
+                .split(';');
+            const newValues = [];
+
+            for (let i = 0, len = options.length; i < len && options[0]; i++) {
+                if (selectedValues.includes(options[i].value.toLowerCase())) {
+                    options[i].isSelected = true;
+                    newValues.push(options[i].value);
+                } else {
+                    options[i].isSelected = false;
+                }
+            }
+
+            component.get('v.value', newValues.join(';').toLowerCase());
             helper.setCountSelected(component);
         }
     },

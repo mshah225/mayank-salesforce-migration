@@ -1,5 +1,5 @@
 <aura:component description="ComboBoxMultiSelect">
-    <aura:attribute name="value" type="String" />
+    <aura:attribute name="value" type="String" default="" />
     <aura:attribute name="options" type="List" />
     <aura:attribute name="label" type="String" />
     <aura:attribute name="class" type="String" />

@@ -4,20 +4,20 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ASU Brand Footer Logo URL</shortDescription>
-        <value>https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/design-tokens/assets/img/innovation-lockup/on-gold/200420-GlobalFooter-No1InnovationLockup@2x.png</value>
+        <value>https://cdn.jsdelivr.net/gh/asu-sf/asu-design-system/design-tokens/assets/img/innovation-lockup/on-gold/200420-GlobalFooter-No1InnovationLockup@2x.png</value>
     </labels>
     <labels>
         <fullName>ASU_Brand_Header_Components_Library_URL</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ASU Brand Header Components Library URL</shortDescription>
-        <value>https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js</value>
+        <value>https://cdn.jsdelivr.net/gh/asu-sf/asu-design-system/components-library/dist/components-library.js</value>
     </labels>
     <labels>
         <fullName>ASU_Brand_Header_Vendor_URL</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ASU Brand Header Vendor URL</shortDescription>
-        <value>https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js</value>
+        <value>https://cdn.jsdelivr.net/gh/asu-sf/asu-design-system/components-library/dist/vendor.js</value>
     </labels>
 </CustomLabels>

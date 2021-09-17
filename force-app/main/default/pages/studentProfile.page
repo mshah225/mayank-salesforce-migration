@@ -3089,7 +3089,6 @@
                                 document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
                                 document.getElementById('sr_ci_index').innerHTML = result.CI_INDEX_INDICATOR__c;
                                 document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
-                                document.getElementById('sr_probation').innerHTML = result.PROBATION_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
                                 if (result.PAST_DUE_TIP__c) {

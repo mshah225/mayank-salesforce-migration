@@ -1,0 +1,24 @@
+name: Production Comparison
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - comparison
+
+jobs:
+    metadata-comparison:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: Create pull request
+              uses: peter-evans/create-pull-request@v3
+              with:
+                  commit-message: 'Metadata comparison from SF PROD to GitHub'
+                  title: 'GITHUB-ACTIONS[BOT]: PRODUCTION METADATA COMPARISON'
+                  body: "Comparison is the fastest way to feel unhappy. Luckily, I'm not human, so I'm immune."
+                  reviewers: mgilardi, jdsanch8
+                  branch: comparison
+                  base: main

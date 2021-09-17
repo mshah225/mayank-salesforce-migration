@@ -105,3 +105,4 @@ jobs:
                   body: 'Clean up, clean up, everybody everywhere. Clean up, clean up, everybody do your share.'
                   reviewers: mgilardi, jdsanch8
                   branch: mdc
+                  delete-branch: true

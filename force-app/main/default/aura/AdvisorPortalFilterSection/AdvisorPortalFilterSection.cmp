@@ -50,9 +50,8 @@
         type="List"
         default="[{'label': 'All Students', 'value': 'AllCasesState'}, {'label': 'Proactive Cases', 'value': 'ProactiveCasesState'}, {'label': 'Watchlist Cases', 'value': 'WatchlistCasesState'}]"
     />
-    <aura:attribute name="CaseTypeState" type="String" default="AllCasesState" />
+    <aura:attribute name="CaseTypeState" type="String" default="ProactiveCasesState" />
     <aura:attribute name="isFilterSectionShown" type="Boolean" default="true" />
-    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.SelectedViewAsUserOptions}" action="{!c.viewAsUsersHasChanged}" />
     <aura:handler name="change" value="{!v.GraduateStudentsOnly}" action="{!c.graduateStudentsOnlyHasChanged}" />
     <aura:handler name="change" value="{!v.DefaultFilter}" action="{!c.loadDefaultFilter}" />

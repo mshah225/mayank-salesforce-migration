@@ -78,7 +78,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                     classes: 'slds-button slds-button_neutral',
                 },
                 {
-                    label: 'Save',
+                    label: 'Save my Default Filters',
                     callback: () => {
                         this.saveFilters();
                     },
@@ -101,7 +101,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                     classes: 'slds-button slds-button_neutral',
                 },
                 {
-                    label: 'Clear Filters',
+                    label: 'Reset my Default Filters',
                     callback: () => {
                         this.resetSavedFilters();
                     },

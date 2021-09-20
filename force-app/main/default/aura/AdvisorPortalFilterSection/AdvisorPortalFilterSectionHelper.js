@@ -1,29 +1,81 @@
 ({
+    // Check if all asynchronous attributes have been set
+    isReady: function (component) {
+        return component.get('v.HasLoadedDefaultFilter') && component.get('v.HasLoadedSelectedViewAsUserOptions');
+    },
+
+    loadAsyncs: function (component) {
+        this.getFilterPicklists(component);
+        this.applyFilters(component);
+    },
+
     getFilterPicklists: function (component) {
-        component.getEvent('incrementProcessingCounterEvent').fire();
-        let residencyAction = component.get('c.getPicklistValues');
-        residencyAction.setParams({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'});
-        residencyAction.setCallback(this, function (response) {
-            component.set('v.ResidencyPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
-            component.getEvent('decrementProcessingCounterEvent').fire();
-        });
-        $A.enqueueAction(residencyAction);
+        // Only load once
+        const residencyPicklist = component.get('v.ResidencyPicklistValues');
+        if (residencyPicklist === null || residencyPicklist.length === 0) {
+            component.getEvent('incrementProcessingCounterEvent').fire();
+            let residencyAction = component.get('c.getPicklistValues');
+            residencyAction.setParams({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'});
+            residencyAction.setCallback(this, function (response) {
+                component.set('v.ResidencyPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
+                component.getEvent('decrementProcessingCounterEvent').fire();
+            });
+            $A.enqueueAction(residencyAction);
+        }
 
-        component.getEvent('incrementProcessingCounterEvent').fire();
-        let caseStatusAction = component.get('c.getCaseStatusSettings');
-        caseStatusAction.setCallback(this, function (response) {
-            component.set('v.CaseStatusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
-            component.getEvent('decrementProcessingCounterEvent').fire();
-        });
-        $A.enqueueAction(caseStatusAction);
+        // Only load once
+        const caseStatusPicklist = component.get('v.CaseStatusPicklistValues');
+        if (caseStatusPicklist === null || caseStatusPicklist.length === 0) {
+            component.getEvent('incrementProcessingCounterEvent').fire();
+            let caseStatusAction = component.get('c.getCaseStatusSettings');
+            caseStatusAction.setCallback(this, function (response) {
+                component.set('v.CaseStatusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
+                component.getEvent('decrementProcessingCounterEvent').fire();
+            });
+            $A.enqueueAction(caseStatusAction);
+        }
 
+        // Changes whenever graduate/undergradute toggle changes
         component.getEvent('incrementProcessingCounterEvent').fire();
         let campusOptionsAction = component.get('c.getCampusValues');
+        campusOptionsAction.setParams({filter: this.buildFilter(component)});
         campusOptionsAction.setCallback(this, function (response) {
             component.set('v.CampusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
             component.getEvent('decrementProcessingCounterEvent').fire();
         });
         $A.enqueueAction(campusOptionsAction);
+
+        // Changes whenever UserIds dropdown selection changes
+        const userIds = component.get('v.UserIds');
+        if (userIds != null && userIds.length > 0) {
+            let caseSubjectPicklistAction = component.get('c.getCaseSubjectPicklistValues');
+            caseSubjectPicklistAction.setParams({viewAsOptions: userIds});
+            caseSubjectPicklistAction.setCallback(this, function (response) {
+                if (response && response.getReturnValue()) {
+                    component.set(
+                        'v.CaseSubjectPicklistValues',
+                        this.buildPicklistOptionsArray(response.getReturnValue())
+                    );
+                } else {
+                    console.log(response.getError());
+                }
+            });
+            $A.enqueueAction(caseSubjectPicklistAction);
+
+            let caseClassificationPicklistAction = component.get('c.getCaseClassificationPicklistValues');
+            caseClassificationPicklistAction.setParams({viewAsOptions: userIds});
+            caseClassificationPicklistAction.setCallback(this, function (response) {
+                if (response && response.getReturnValue()) {
+                    component.set(
+                        'v.CaseCategoryPicklistValues',
+                        this.buildPicklistOptionsArray(response.getReturnValue())
+                    );
+                } else {
+                    console.log(response.getError());
+                }
+            });
+            $A.enqueueAction(caseClassificationPicklistAction);
+        }
     },
 
     buildPicklistOptionsArray: function (optionsMap) {
@@ -88,7 +140,8 @@
             campus: component.get('v.Campus'),
             residency: component.get('v.Residency'),
             major: component.get('v.Major'),
-            gradStudentsOnly: component.get('v.GraduateStudentsOnly'),
+            gradStudentsOnly:
+                component.get('v.GraduateStudentsOnly') != null ? component.get('v.GraduateStudentsOnly') : false,
         };
     },
 

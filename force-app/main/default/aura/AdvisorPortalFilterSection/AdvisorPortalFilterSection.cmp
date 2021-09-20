@@ -1,6 +1,6 @@
 <aura:component controller="AdvisorPortalFilterSectionController">
     <!-- HasLoaded variables used to prevent loading twice (once for when users are set and once after default filter) -->
-    <aura:attribute name="DefaultFilter" type="AdvisorPortalFilter" />
+    <aura:attribute name="DefaultFilter" type="Object" />
     <aura:attribute name="HasLoadedDefaultFilter" type="Boolean" default="false" />
     <aura:attribute name="SelectedViewAsUserOptions" type="List" />
     <aura:attribute name="HasLoadedSelectedViewAsUserOptions" type="Boolean" default="false" />
@@ -45,9 +45,12 @@
     <aura:attribute name="PersistenceFromDate" type="String" default="" />
     <aura:attribute name="PersistenceToDate" type="String" default="" />
     <aura:attribute name="FilterToggleState" type="Boolean" default="true" />
-    <aura:attribute name="WatchlistCasesState" type="Boolean" default="false" />
-    <aura:attribute name="ProactiveCasesState" type="Boolean" default="true" />
-    <aura:attribute name="AllCasesState" type="Boolean" default="false" />
+    <aura:attribute
+        name="CaseTypeOptions"
+        type="List"
+        default="[{'label': 'All Students', 'value': 'AllCasesState'}, {'label': 'Proactive Cases', 'value': 'ProactiveCasesState'}, {'label': 'Watchlist Cases', 'value': 'WatchlistCasesState'}]"
+    />
+    <aura:attribute name="CaseTypeState" type="String" default="AllCasesState" />
     <aura:attribute name="isFilterSectionShown" type="Boolean" default="true" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:handler name="change" value="{!v.SelectedViewAsUserOptions}" action="{!c.viewAsUsersHasChanged}" />
@@ -77,7 +80,10 @@
     />
 
     <aura:renderIf isTrue="{!v.isFilterSectionShown}">
-        <div aura:id="filterSection" class="slds-card slds-p-around_small slds-m-vertical_x-small slds-form_horizontal">
+        <div
+            aura:id="filterSection"
+            class="slds-card slds-var-p-around_small slds-var-m-vertical_x-small slds-form_horizontal"
+        >
             <div class="slds-grid slds-wrap slds-gutters_x-small">
                 <span
                     onkeypress="{!c.returnKeyPressed}"
@@ -177,7 +183,7 @@
                         <legend class="slds-form-element__legend slds-form-element__label">Created Date</legend>
                         <div class="slds-form-element__control">
                             <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -187,7 +193,7 @@
                                         onchange="{!c.validateDates}"
                                     />
                                 </div>
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -207,7 +213,7 @@
                         <legend class="slds-form-element__legend slds-form-element__label">Follow Up Date</legend>
                         <div class="slds-form-element__control">
                             <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -217,7 +223,7 @@
                                         onchange="{!c.validateDates}"
                                     />
                                 </div>
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -239,7 +245,7 @@
                         </legend>
                         <div class="slds-form-element__control">
                             <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"
@@ -277,35 +283,14 @@
         </div>
     </aura:renderIf>
 
-    <span class="slds-m-vertical_x-small" aria-label="Case Filter Buttons">
-        <lightning:buttonGroup>
-            <lightning:buttonStateful
-                aura:id="allCasesFilter"
-                labelWhenOff="All Students"
-                labelWhenOn="All Students"
-                variant="neutral"
-                iconNameWhenOn="utility:check"
-                state="{!v.AllCasesState}"
-                onclick="{!c.handleAllCasesState}"
-            />
-            <lightning:buttonStateful
-                aura:id="proactiveFilter"
-                labelWhenOff="Proactive Cases"
-                labelWhenOn="Proactive Cases"
-                variant="brand"
-                iconNameWhenOn="utility:check"
-                state="{!v.ProactiveCasesState}"
-                onclick="{!c.handleProactiveCasesState}"
-            />
-            <lightning:buttonStateful
-                aura:id="watchlistFilter"
-                labelWhenOff="Watchlist Cases"
-                labelWhenOn="Watchlist Cases"
-                variant="neutral"
-                iconNameWhenOn="utility:check"
-                state="{!v.WatchlistCasesState}"
-                onclick="{!c.handleWatchlistCasesState}"
-            />
-        </lightning:buttonGroup>
+    <span class="slds-var-m-vertical_x-small" aria-label="Case Filter Buttons">
+        <lightning:radioGroup
+            name="radioButtonGroup"
+            label=""
+            options="{!v.CaseTypeOptions}"
+            value="{!v.CaseTypeState}"
+            onchange="{!c.toggleCaseTypeState}"
+            type="button"
+        />
     </span>
 </aura:component>

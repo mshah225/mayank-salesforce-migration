@@ -1,11 +1,11 @@
 <aura:component description="ComboBoxMultiSelect">
-    <aura:attribute name="value" type="String" />
+    <aura:attribute name="value" type="String" default="" />
     <aura:attribute name="options" type="List" />
     <aura:attribute name="label" type="String" />
     <aura:attribute name="class" type="String" />
     <aura:attribute name="placeholder" type="String" default="--Select--" />
     <aura:attribute name="required" type="Boolean" default="false" />
-    <aura:attribute name="innerChangeLock" type="Boolean" default="false" />
+    <aura:attribute name="innerChangeLock" type="Integer" default="0" />
     <aura:attribute
         name="variant"
         type="String"

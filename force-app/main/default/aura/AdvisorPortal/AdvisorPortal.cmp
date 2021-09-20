@@ -6,7 +6,7 @@
     <aura:attribute name="AllUserOptions" type="List" />
     <aura:attribute name="SelectedUserOptions" type="List" />
     <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
-    <aura:attribute name="DefaultFilter" type="AdvisorPortalFilter" />
+    <aura:attribute name="DefaultFilter" type="Object" />
     <aura:attribute name="CaseContactWrappers" type="List" />
     <aura:handler
         name="incrementProcessingCounterEvent"

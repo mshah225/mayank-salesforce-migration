@@ -1,6 +1,6 @@
 ({
     setCountSelected: function (component) {
-        const value = component.get('v.value');
+        const value = component.get('v.value') == null ? '' : component.get('v.value');
 
         let countSelected = 0;
         // count number of semicolons

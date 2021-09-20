@@ -15,7 +15,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             .then((val) => {
                 this.dispatchEvent(
                     new CustomEvent('setdefaultfilter', {
-                        detail: {filter: JSON.stringify(val)},
+                        detail: {filter: val},
                     })
                 );
             })
@@ -31,13 +31,14 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         this.dispatchEvent(
             new CustomEvent('requestcurrentfilter', {
                 detail: {
-                    callback: (filter) => {
+                    callback: (json) => {
                         this.makeToast('loading', '', '');
-                        setDefaultFilter({filter})
+                        setDefaultFilter({json})
                             .then(() => {
                                 this.makeToast('success', 'Success', 'Filters saved as default.');
                             })
                             .catch((err) => {
+                                console.log(err);
                                 this.makeToast('error', 'Error', 'Error when saving filters.');
                             })
                             .finally(() => {

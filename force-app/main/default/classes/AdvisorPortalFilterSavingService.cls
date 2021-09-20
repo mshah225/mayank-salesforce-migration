@@ -1,37 +1,47 @@
 public inherited sharing class AdvisorPortalFilterSavingService {
     @AuraEnabled(cacheable=true)
-    public static AdvisorPortalFilter getDefaultFilter() {
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.campus = 'Tempe';
-        filter.major = 'Comp Sci';
-        filter.residency = 'International';
-        filter.caseStatus = 'In Progress;Email Sent';
-        filter.caseSubject = 'Example 2';
-        filter.academicLevel = 'Freshman;Junior';
-        filter.caseCategory = '';
-        filter.studentGroupCode = '';
-        filter.outlookScore = 'Very Low';
-        filter.outlookChange = 'Up';
-        filter.caseCount = 3;
-        filter.createdFromDate = '';
-        filter.createdToDate = '';
-        filter.followUpFromDate = '';
-        filter.followUpToDate = '';
-        filter.persistenceFromDate = '';
-        filter.persistenceToDate = '';
-        filter.watchlistCasesState = false;
-        filter.proactiveCasesState = true;
-        filter.allCasesState = false;
-        filter.gradStudentsOnly = true;
-        return filter;
+    public static String getDefaultFilter() {
+        String json = [
+            SELECT Default_Filter__c
+            FROM Success_Resource__c
+            WHERE Resource__c = :UserInfo.getUserId() AND IsActive__c = TRUE
+            LIMIT 1
+        ]
+        .Default_Filter__c;
+        return json;
     }
 
     @AuraEnabled
-    public static void setDefaultFilter(AdvisorPortalFilter filter) {
-        insert new Case(subject = 'abc', description = '' + filter);
+    public static void setDefaultFilter(String json) {
+        if (json.length() > 2048) {
+            throw new AdvisorPortalFilterSavingException('Filter too large. Try selecting fewer filters');
+        }
+        List<Success_Resource__c> activeResources = [
+            SELECT Id, Default_Filter__c
+            FROM Success_Resource__c
+            WHERE Resource__c = :UserInfo.getUserId() AND IsActive__c = TRUE
+        ];
+        for (Success_Resource__c sr : activeResources) {
+            sr.Default_Filter__c = json;
+        }
+        if (!activeResources.isEmpty())
+            update activeResources;
     }
 
     @AuraEnabled
     public static void clearDefaultFilter() {
+        List<Success_Resource__c> activeResources = [
+            SELECT Id, Default_Filter__c
+            FROM Success_Resource__c
+            WHERE Resource__c = :UserInfo.getUserId() AND IsActive__c = TRUE
+        ];
+        for (Success_Resource__c sr : activeResources) {
+            sr.Default_Filter__c = null;
+        }
+        if (!activeResources.isEmpty())
+            update activeResources;
+    }
+
+    public class AdvisorPortalFilterSavingException extends Exception {
     }
 }

@@ -143,6 +143,15 @@ public class AdvisorPortalFilterSectionController {
         return caseClassificationValuesByLabel;
     }
 
+    @AuraEnabled
+    public static List<AdvisorPortalContact> getFilteredCases(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
+        if (filter.allCasesState) {
+            return getAllContactsAndRespectiveCases(viewAsOptions, filter);
+        } else {
+            return getContactCaseWrappersWithLessQueries(viewAsOptions, filter);
+        }
+    }
+
     /**
      * Filters Contacts and Case wrappers on the Advisor Portal using the supplied view as options and filter.
      *
@@ -151,7 +160,6 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return shortenedAdvisorPortalContactResults, a filtered List of AdvisorPortalContact records (3000 maximum contacts/case wrappers).
      */
-    @AuraEnabled
     public static List<AdvisorPortalContact> getContactCaseWrappersWithLessQueries(
         List<Id> viewAsOptions,
         AdvisorPortalFilter filter
@@ -391,7 +399,6 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return shortenedAdvisorPortalContactResults, a filtered List of AdvisorPortalContact records (3000 maximum contacts/case wrappers).
      */
-    @AuraEnabled
     public static List<AdvisorPortalContact> getAllContactsAndRespectiveCases(
         List<Id> viewAsOptions,
         AdvisorPortalFilter filter

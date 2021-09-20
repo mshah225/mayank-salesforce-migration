@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FTFTF__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>ASU_CENSUS
+.CS__STUDENT_TERM_ENROLLMENT 
+WHERE ASU_FTPT_CODE        = 'F'
+AND ASU_NEW_UG_STATUS_CODE = 'FTF'</description>
+    <externalId>false</externalId>
+    <label>Full Time First Time Freshman</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

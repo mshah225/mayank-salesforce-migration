@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>I20_SEVIS_Released__c</fullName>
+    <description>[Peoplesoft] - Manual entry used to mark the release date for the SEVIS Transfer form. Helps identify population the transfer form hasn't been released by the release date.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Release date for the SEVIS transfer form.</inlineHelpText>
+    <label>SEVIS Released</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

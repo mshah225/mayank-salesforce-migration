@@ -37,23 +37,14 @@
         return optionsList;
     },
 
-    applyFilters: function (component, allStudentsRequested) {
+    applyFilters: function (component) {
         if (!this.validateDateFields(component)) {
             return;
         }
 
         component.getEvent('incrementProcessingCounterEvent').fire();
 
-        let filterAction = null;
-
-        if (!allStudentsRequested) {
-            // Use function that only looks at open cases
-            filterAction = component.get('c.getContactCaseWrappersWithLessQueries');
-        } else {
-            // Use function that looks at all students, even those w/o cases
-            filterAction = component.get('c.getAllContactsAndRespectiveCases');
-        }
-
+        const filterAction = component.get('c.getFilteredCases');
         filterAction.setParams({
             viewAsOptions: component.get('v.UserIds'),
             filter: this.buildFilter(component),
@@ -81,9 +72,9 @@
             caseCategory: component.get('v.CaseCategory'),
             caseSubject: component.get('v.CaseSubject'),
             caseStatus: component.get('v.CaseStatus'),
-            allCasesState: component.get('v.AllCasesState'),
-            watchlistCasesState: component.get('v.WatchlistCasesState'),
-            proactiveCasesState: component.get('v.ProactiveCasesState'),
+            allCasesState: component.get('v.CaseTypeState') === 'AllCasesState',
+            watchlistCasesState: component.get('v.CaseTypeState') === 'WatchlistCasesState',
+            proactiveCasesState: component.get('v.CaseTypeState') === 'ProactiveCasesState',
             outlookScore: component.get('v.OutlookScore'),
             outlookChange: component.get('v.OutlookChange'),
             createdFromDate: component.get('v.CreatedFromDate'),
@@ -102,36 +93,8 @@
         };
     },
 
-    handleToggleFilterButtons: function (component, event, helper, attributeName, elementAuraId) {
-        if (elementAuraId !== 'filtersToggle') {
-            if (elementAuraId === 'allCasesFilter' && component.get('v.AllCasesState') === false) {
-                component.set('v.AllCasesState', true);
-                component.find('allCasesFilter').set('v.variant', 'brand');
-                component.set('v.ProactiveCasesState', false);
-                component.find('proactiveFilter').set('v.variant', 'neutral');
-                component.set('v.WatchlistCasesState', false);
-                component.find('watchlistFilter').set('v.variant', 'neutral');
-            } else if (elementAuraId === 'proactiveFilter' && component.get('v.ProactiveCasesState') === false) {
-                component.set('v.AllCasesState', false);
-                component.find('allCasesFilter').set('v.variant', 'neutral');
-                component.set('v.ProactiveCasesState', true);
-                component.find('proactiveFilter').set('v.variant', 'brand');
-                component.set('v.WatchlistCasesState', false);
-                component.find('watchlistFilter').set('v.variant', 'neutral');
-            } else if (elementAuraId === 'watchlistFilter' && component.get('v.WatchlistCasesState') === false) {
-                component.set('v.AllCasesState', false);
-                component.find('allCasesFilter').set('v.variant', 'neutral');
-                component.set('v.ProactiveCasesState', false);
-                component.find('proactiveFilter').set('v.variant', 'neutral');
-                component.set('v.WatchlistCasesState', true);
-                component.find('watchlistFilter').set('v.variant', 'brand');
-            }
-
-            this.applyFilters(component, component.get('v.AllCasesState'));
-        } else {
-            component.set('v.' + attributeName, !component.get('v.' + attributeName));
-            component.find(elementAuraId).set('v.variant', component.get('v.' + attributeName) ? 'brand' : 'neutral');
-        }
+    isViewingAllCases: function (component) {
+        return component.get('v.CaseTypeState') === 'AllCasesState';
     },
 
     validateDateFields: function (component) {

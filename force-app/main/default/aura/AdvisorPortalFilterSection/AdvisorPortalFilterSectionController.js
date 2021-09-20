@@ -9,7 +9,7 @@
     },
 
     applyFilters: function (component, event, helper) {
-        helper.applyFilters(component, component.get('v.AllCasesState'));
+        helper.applyFilters(component);
     },
 
     clearFilters: function (component, event, helper) {
@@ -31,35 +31,22 @@
         component.set('v.FollowUpToDate', '');
         component.set('v.PersistenceFromDate', '');
         component.set('v.PersistenceToDate', '');
-        component.set('v.AllCasesState', false);
-        component.find('allCasesFilter').set('v.variant', 'neutral');
-        component.set('v.ProactiveCasesState', true);
-        component.find('proactiveFilter').set('v.variant', 'brand');
-        component.set('v.WatchlistCasesState', false);
-        component.find('watchlistFilter').set('v.variant', 'neutral');
-        helper.applyFilters(component, component.get('v.AllCasesState'));
+        component.set('v.CaseTypeState', 'ProactiveCasesState');
+        helper.applyFilters(component);
     },
 
     refreshView: function (component, event, helper) {
-        helper.applyFilters(component, component.get('v.AllCasesState'));
+        helper.applyFilters(component);
     },
 
     returnKeyPressed: function (component, event, helper) {
         if (event.which === 13) {
-            helper.applyFilters(component, component.get('v.AllCasesState'));
+            helper.applyFilters(component);
         }
     },
 
-    handleAllCasesState: function (component, event, helper) {
-        helper.handleToggleFilterButtons(component, event, helper, '', 'allCasesFilter');
-    },
-
-    handleProactiveCasesState: function (component, event, helper) {
-        helper.handleToggleFilterButtons(component, event, helper, '', 'proactiveFilter');
-    },
-
-    handleWatchlistCasesState: function (component, event, helper) {
-        helper.handleToggleFilterButtons(component, event, helper, '', 'watchlistFilter');
+    toggleCaseTypeState: function (component, event, helper) {
+        helper.applyFilters(component);
     },
 
     validateDates: function (component, event, helper) {
@@ -100,12 +87,12 @@
         $A.enqueueAction(caseClassificationPicklistAction);
 
         if (component.get('v.HasLoadedDefaultFilter')) {
-            helper.applyFilters(component, component.get('v.AllCasesState'));
+            helper.applyFilters(component);
         }
     },
 
     graduateStudentsOnlyHasChanged: function (component, event, helper) {
-        helper.applyFilters(component, component.get('v.AllCasesState'));
+        helper.applyFilters(component);
     },
 
     loadDefaultFilter: function (component, event, helper) {
@@ -122,12 +109,8 @@
                 component.set('v.CaseStatus', defaultFilter.caseStatus);
             if (defaultFilter.caseCount !== null && defaultFilter.caseCount !== '')
                 component.set('v.CaseCount', defaultFilter.caseCount);
-            if (defaultFilter.allCasesState !== null && defaultFilter.allCasesState !== '')
-                component.set('v.AllCasesState', defaultFilter.allCasesState);
-            if (defaultFilter.watchlistCasesState !== null && defaultFilter.watchlistCasesState !== '')
-                component.set('v.WatchlistCasesState', defaultFilter.watchlistCasesState);
-            if (defaultFilter.proactiveCasesState !== null && defaultFilter.proactiveCasesState !== '')
-                component.set('v.ProactiveCasesState', defaultFilter.proactiveCasesState);
+            if (defaultFilter.caseTypeState !== null && defaultFilter.caseTypeState !== '')
+                component.set('v.CaseTypeState', defaultFilter.caseTypeState);
             if (defaultFilter.gradStudentsOnly !== null && defaultFilter.gradStudentsOnly !== '')
                 component.set('v.GraduateStudentsOnly', defaultFilter.gradStudentsOnly);
             if (defaultFilter.outlookScore !== null && defaultFilter.outlookScore !== '')
@@ -158,13 +141,13 @@
                 component.set('v.Residency', defaultFilter.residency);
 
             if (component.get('v.HasLoadedSelectedViewAsUserOptions')) {
-                helper.applyFilters(component, component.get('v.AllCasesState'));
+                helper.applyFilters(component);
             }
         }
     },
 
     getFilter: function (component, event, helper) {
-        const currentFilter = {sobjectType: 'AdvisorPortalFilter'};
+        const currentFilter = {};
 
         if (component.get('v.CaseCategory') !== null && component.get('v.CaseCategory') !== '')
             currentFilter.caseCategory = component.get('v.CaseCategory');
@@ -174,12 +157,8 @@
             currentFilter.caseStatus = component.get('v.CaseStatus');
         if (component.get('v.CaseCount') !== null && component.get('v.CaseCount') !== '')
             currentFilter.caseCount = component.get('v.CaseCount');
-        if (component.get('v.AllCasesState') !== null && component.get('v.AllCasesState') !== '')
-            currentFilter.allCasesState = component.get('v.AllCasesState');
-        if (component.get('v.WatchlistCasesState') !== null && component.get('v.WatchlistCasesState') !== '')
-            currentFilter.watchlistCasesState = component.get('v.WatchlistCasesState');
-        if (component.get('v.ProactiveCasesState') !== null && component.get('v.ProactiveCasesState') !== '')
-            currentFilter.proactiveCasesState = component.get('v.ProactiveCasesState');
+        if (component.get('v.CaseTypeState') !== null && component.get('v.CaseTypeState') !== '')
+            currentFilter.caseTypeState = component.get('v.CaseTypeState');
         if (component.get('v.GraduateStudentsOnly') !== null && component.get('v.GraduateStudentsOnly') !== '')
             currentFilter.gradStudentsOnly = component.get('v.GraduateStudentsOnly');
         if (component.get('v.OutlookScore') !== null && component.get('v.OutlookScore') !== '')

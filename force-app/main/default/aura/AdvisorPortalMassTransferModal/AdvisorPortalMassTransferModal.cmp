@@ -30,6 +30,8 @@
                         alternativeText="close"
                         variant="bare-inverse"
                         class="slds-modal__close"
+                        size="large"
+                        title="Close"
                     />
                     <h2 id="massTransferHeading" class="slds-text-heading_medium slds-hyphenate">Mass Transfer</h2>
                 </header>
@@ -58,7 +60,10 @@
                                     aria-controls="transferToDropdownList"
                                 >
                                     <div
-                                        class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                        class="
+                                            slds-combobox__form-element
+                                            slds-input-has-icon slds-input-has-icon_right
+                                        "
                                         role="none"
                                     >
                                         <lightning:input
@@ -73,7 +78,11 @@
                                             readonly="true"
                                         />
                                         <span
-                                            class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default"
+                                            class="
+                                                slds-icon
+                                                slds-input__icon slds-input__icon_right
+                                                slds-icon-text-default
+                                            "
                                         >
                                             <lightning:icon
                                                 class="icn slds-icon-text-default pointer"
@@ -99,13 +108,21 @@
                                                 <aura:if isTrue="{!option.isHeader}">
                                                     <li role="presentation" class="slds-listbox__item">
                                                         <div
-                                                            class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                            class="
+                                                                slds-media
+                                                                slds-listbox__option slds-listbox__option_plain
+                                                                slds-media_small
+                                                            "
                                                             role="presentation"
                                                         ></div>
                                                     </li>
                                                     <li role="presentation" class="slds-listbox__item">
                                                         <div
-                                                            class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                            class="
+                                                                slds-media
+                                                                slds-listbox__option slds-listbox__option_plain
+                                                                slds-media_small
+                                                            "
                                                             role="presentation"
                                                         >
                                                             <h3 class="slds-listbox__option-header" role="presentation">
@@ -122,7 +139,11 @@
                                                             aria-label="{!option.label}"
                                                         >
                                                             <div
-                                                                class="lds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                                class="
+                                                                    lds-media
+                                                                    slds-listbox__option slds-listbox__option_plain
+                                                                    slds-media_small
+                                                                "
                                                                 role="option"
                                                                 aria-selected="{!if(option.isSelected, 'true', 'false')}"
                                                             >
@@ -131,7 +152,11 @@
                                                                 >
                                                                     <aura:if isTrue="{!option.isSelected}">
                                                                         <span
-                                                                            class="slds-icon_container slds-icon-utility-check slds-current-color"
+                                                                            class="
+                                                                                slds-icon_container
+                                                                                slds-icon-utility-check
+                                                                                slds-current-color
+                                                                            "
                                                                         >
                                                                             <lightning:icon
                                                                                 class="icn slds-icon-text-default"

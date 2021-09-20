@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CAP_Possible__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[Peoplesoft] - Checkbox that Indicates possible CAP student</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates possible CAP student</inlineHelpText>
+    <label>CAP Possible</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

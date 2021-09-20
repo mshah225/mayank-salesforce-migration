@@ -1,8 +1,4 @@
 ({
-    doInit: function (component, event, helper) {
-        helper.getFilterPicklists(component, event);
-    },
-
     toggleFilterListPanel: function (component, event, helper) {
         component.set('v.isFilterSectionShown', !component.get('v.isFilterSectionShown'));
         helper.handleToggleFilterButtons(component, event, helper, 'FilterToggleState', 'filtersToggle');
@@ -58,41 +54,15 @@
         component.set('v.HasLoadedSelectedViewAsUserOptions', true);
         component.set('v.UserIds', userIds);
 
-        let caseSubjectPicklistAction = component.get('c.getCaseSubjectPicklistValues');
-        caseSubjectPicklistAction.setParams({viewAsOptions: userIds});
-        caseSubjectPicklistAction.setCallback(this, function (response) {
-            if (response && response.getReturnValue()) {
-                component.set(
-                    'v.CaseSubjectPicklistValues',
-                    helper.buildPicklistOptionsArray(response.getReturnValue())
-                );
-            } else {
-                console.log(response.getError());
-            }
-        });
-        $A.enqueueAction(caseSubjectPicklistAction);
-
-        let caseClassificationPicklistAction = component.get('c.getCaseClassificationPicklistValues');
-        caseClassificationPicklistAction.setParams({viewAsOptions: userIds});
-        caseClassificationPicklistAction.setCallback(this, function (response) {
-            if (response && response.getReturnValue()) {
-                component.set(
-                    'v.CaseCategoryPicklistValues',
-                    helper.buildPicklistOptionsArray(response.getReturnValue())
-                );
-            } else {
-                console.log(response.getError());
-            }
-        });
-        $A.enqueueAction(caseClassificationPicklistAction);
-
-        if (component.get('v.HasLoadedDefaultFilter')) {
-            helper.applyFilters(component);
+        if (helper.isReady(component)) {
+            helper.loadAsyncs(component);
         }
     },
 
     graduateStudentsOnlyHasChanged: function (component, event, helper) {
-        helper.applyFilters(component);
+        if (helper.isReady(component)) {
+            helper.loadAsyncs(component);
+        }
     },
 
     loadDefaultFilter: function (component, event, helper) {
@@ -140,8 +110,8 @@
             if (defaultFilter.residency !== null && defaultFilter.residency !== '')
                 component.set('v.Residency', defaultFilter.residency);
 
-            if (component.get('v.HasLoadedSelectedViewAsUserOptions')) {
-                helper.applyFilters(component);
+            if (helper.isReady(component)) {
+                helper.loadAsyncs(component);
             }
         }
     },

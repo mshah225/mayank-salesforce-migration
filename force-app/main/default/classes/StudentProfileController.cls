@@ -848,7 +848,7 @@ global with sharing class StudentProfileController {
     }
 
     private void setCIIndex() {
-        List<Opporunity> studentOpp = [
+        List<Opportunity> studentOpp = [
             SELECT CI_Score__c  
             FROM Opportunity 
             WHERE Contact__r.EMPLID__c =: theContact.EMPLID__c AND 
@@ -858,8 +858,8 @@ global with sharing class StudentProfileController {
             ORDER BY CreatedDate
             LIMIT 1
         ];
-
-        if (studentOpp.size() > 0 AND studentOpp[0].CI_Score__c != null) {
+        
+        if (studentOpp.size() > 0 && studentOpp[0].CI_Score__c != null) {
             ciIndex = '' + studentOpp[0].CI_Score__c;
         } else {
             ciIndex = '--'; 

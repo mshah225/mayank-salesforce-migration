@@ -140,7 +140,8 @@
             campus: component.get('v.Campus'),
             residency: component.get('v.Residency'),
             major: component.get('v.Major'),
-            gradStudentsOnly: component.get('v.GraduateStudentsOnly'),
+            gradStudentsOnly:
+                component.get('v.GraduateStudentsOnly') != null ? component.get('v.GraduateStudentsOnly') : false,
         };
     },
 

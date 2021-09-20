@@ -8,7 +8,7 @@ public inherited sharing class AdvisorPortalFilterSavingService {
             LIMIT 1
         ]
         .Default_Filter__c;
-        return json;
+        return json == null ? '{}' : json;
     }
 
     @AuraEnabled

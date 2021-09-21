@@ -27,4 +27,8 @@
 
         helper.decrementProcessingCounter(component);
     },
+    showToast: function (component, title, body, type, duration) {
+        duration = duration == null ? 5000 : duration;
+        component.find('lightningToast').fireParams(title, body, type, duration);
+    },
 });

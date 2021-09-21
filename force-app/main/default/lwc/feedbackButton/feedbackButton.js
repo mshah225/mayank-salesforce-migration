@@ -6,6 +6,7 @@ export default class FeedbackButton extends LightningElement {
     @api carName;
     @api title =
         'We value your feedback. Do you have a question, issue, or idea to improve this service? Submit it below';
+    @api sendToastEvent = false;
     @track hideModal = true;
     @track notHideModal = false;
     @track loading = false;
@@ -32,7 +33,7 @@ export default class FeedbackButton extends LightningElement {
         if (feedback.length > 0) {
             this.loading = true;
             submitFeedback({carName: this.carName, feedbackText: feedback})
-                .then((result) => {
+                .then(() => {
                     this.closeModal();
                     this.template.querySelector('lightning-textarea').value = '';
                     this.makeToast('success', 'Success', 'Feedback successfully submitted');
@@ -59,6 +60,19 @@ export default class FeedbackButton extends LightningElement {
     }
 
     makeToast(type, title, body) {
-        this.template.querySelector('c-lightning-design-toast').fireParams(title, body, type, 15000);
+        if (this.sendToastEvent) {
+            this.dispatchEvent(
+                new CustomEvent('showtoast', {
+                    detail: {
+                        title: title,
+                        message: body,
+                        type: type,
+                        duration: 15000,
+                    },
+                })
+            );
+        } else {
+            this.template.querySelector('c-lightning-design-toast').fireParams(title, body, type, 15000);
+        }
     }
 }

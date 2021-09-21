@@ -254,7 +254,7 @@
                                         onchange="{!c.validateDates}"
                                     />
                                 </div>
-                                <div class="slds-size_1-of-2 slds-p-horizontal_xx-small">
+                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
                                     <lightning:input
                                         class="compound-form-adjust"
                                         type="date"

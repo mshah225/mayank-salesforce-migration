@@ -44,16 +44,28 @@ public class AdvisorPortalFilterSectionController {
 
     /**
      * Gets active picklist values for the Campus.
-     *     
+     * If filter is set, and indicates graduate students only, then only add graduate campuses.
      *
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
     @AuraEnabled
-    public static Map<String, String> getCampusValues() {
+    public static Map<String, String> getCampusValues(AdvisorPortalFilter filter) {
         Map<String, String> picklistValuesByLabel = new Map<String, String>();
-        List<Location__c> campusLocations = [SELECT Name FROM Location__c ORDER BY CreatedDate, Name];
-        for (Location__c campus : campusLocations) {
-            picklistValuesByLabel.put(campus.Name, campus.Name);
+        List<Location__c> campusLocations = [
+            SELECT Name, Graduate_Enabled__c, Location_Code__c
+            FROM Location__c
+            ORDER BY CreatedDate, Name
+        ];
+
+        if (filter != null && filter.gradStudentsOnly) {
+            // Load only some locations for graduate students
+            for (Location__c campus : campusLocations)
+                if (campus.Graduate_Enabled__c)
+                    picklistValuesByLabel.put(campus.Name, campus.Location_Code__c);
+        } else {
+            // Load all locations for undergraduate students
+            for (Location__c campus : campusLocations)
+                picklistValuesByLabel.put(campus.Name, campus.Location_Code__c);
         }
 
         return picklistValuesByLabel;
@@ -613,7 +625,7 @@ public class AdvisorPortalFilterSectionController {
 
             if (!String.isBlank(filter.campus)) {
                 List<String> campuses = filter.campus.split(';');
-                queryString += ' AND Campus__r.Name IN :campuses';
+                queryString += ' AND Campus__r.Location_Code__c IN :campuses';
             }
 
             if (!String.isBlank(filter.residency)) {

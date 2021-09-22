@@ -97,20 +97,20 @@
                         onblur="{!c.applyFilters}"
                     />
                 </span>
-                <c:ComboBoxMultiSelect
+                <c:lightningComboBoxMultiSelect
                     aura:id="campusPicklist"
                     label="Campus:"
                     value="{!v.Campus}"
                     options="{!v.CampusPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <c:ComboBoxMultiSelect
+                ></c:lightningComboBoxMultiSelect>
+                <c:lightningComboBoxMultiSelect
                     aura:id="academicLevelPicklist"
                     label="Academic Level:"
                     value="{!v.AcademicLevel}"
                     options="{!v.AcademicLevelPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
+                ></c:lightningComboBoxMultiSelect>
                 <lightning:input
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
                     type="text"
@@ -125,48 +125,48 @@
                     value="{!v.Major}"
                     label="Major: "
                 />
-                <c:ComboBoxMultiSelect
+                <c:lightningComboBoxMultiSelect
                     aura:id="residencyPicklist"
                     label="Residency:"
                     value="{!v.Residency}"
                     options="{!v.ResidencyPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <c:ComboBoxMultiSelect
+                ></c:lightningComboBoxMultiSelect>
+                <c:lightningComboBoxMultiSelect
                     aura:id="caseStatusPicklist"
                     label="Case Status:"
                     value="{!v.CaseStatus}"
                     options="{!v.CaseStatusPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <c:ComboBoxMultiSelect
+                ></c:lightningComboBoxMultiSelect>
+                <c:lightningComboBoxMultiSelect
                     aura:id="caseCategoryPicklist"
                     label="Case Category:"
                     value="{!v.CaseCategory}"
                     options="{!v.CaseCategoryPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <c:ComboBoxMultiSelect
+                ></c:lightningComboBoxMultiSelect>
+                <c:lightningComboBoxMultiSelect
                     aura:id="caseSubjectPicklist"
                     label="Case Subject:"
                     value="{!v.CaseSubject}"
                     options="{!v.CaseSubjectPicklistValues}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <c:ComboBoxMultiSelect
+                ></c:lightningComboBoxMultiSelect>
+                <c:lightningComboBoxMultiSelect
                     aura:id="outlookScoreOptionsPicklist"
                     label="Outlook Score:"
                     value="{!v.OutlookScore}"
                     options="{!v.OutlookScoreOptions}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
-                <c:ComboBoxMultiSelect
+                ></c:lightningComboBoxMultiSelect>
+                <c:lightningComboBoxMultiSelect
                     aura:id="outlookChangePicklist"
                     label="Outlook Change:"
                     value="{!v.OutlookChange}"
                     options="{!v.OutlookChangeOptions}"
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
-                />
+                ></c:lightningComboBoxMultiSelect>
                 <lightning:input
                     class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5"
                     type="number"

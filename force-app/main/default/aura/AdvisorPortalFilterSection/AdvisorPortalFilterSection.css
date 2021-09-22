@@ -1,11 +1,3 @@
-.THIS.slds-form_horizontal .slds-form-element:not(.slds-is-editing):not(.compound-form-adjust) {
-    padding: 0 8px !important;
-}
-
-.THIS .slds-truncate {
-    max-width: calc(100% - 1.75rem);
-}
-
 .THIS .slds-form-element .compound-form-adjust {
     padding: 0 !important;
 }
@@ -14,11 +6,5 @@
     .THIS label.slds-form-element__label.slds-no-flex {
         height: 30px;
         line-height: 0.875rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .THIS .slds-input-has-icon .slds-input__icon {
-        top: 70% !important;
     }
 }

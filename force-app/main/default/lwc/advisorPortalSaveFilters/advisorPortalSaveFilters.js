@@ -56,7 +56,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             .then(() => {
                 this.makeToast('success', 'Success', 'Default filter cleared.');
             })
-            .catch((err) => {
+            .catch(() => {
                 this.makeToast('error', 'Error', 'Error when clearing filters.');
             })
             .finally(() => {
@@ -113,7 +113,16 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     }
 
     makeToast(type, title, body) {
-        this.template.querySelector('c-lightning-design-toast').fireParams(title, body, type, 5000);
+        this.dispatchEvent(
+            new CustomEvent('showtoast', {
+                detail: {
+                    title: title,
+                    message: body,
+                    type: type,
+                    duration: 5000,
+                },
+            })
+        );
     }
 
     incrementProcessingCounter() {

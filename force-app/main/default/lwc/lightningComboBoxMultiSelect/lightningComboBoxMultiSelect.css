@@ -1,0 +1,4 @@
+:host .focusWrapper:focus .slds-combobox__input {
+    border-color: var(--lwc-colorBorderBrand, #1b96ff);
+    box-shadow: var(--lwc-shadowButtonFocus, 0 0 3px #0176d3);
+}

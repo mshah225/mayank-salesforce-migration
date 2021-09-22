@@ -38,6 +38,7 @@
         event="c:RefreshAdvisorPortalContacts"
         action="{!c.refreshUsersAndCaseContactWrappers}"
     />
+    <aura:handler event="c:ShowClassicToast" action="{!c.showToast}" />
     <lightning:spinner
         aura:id="spinner"
         variant="brand"
@@ -48,13 +49,15 @@
     />
 
     <span class="slds-notify_container slds-is-fixed slds-align_absolute-center">
-        <c:ClassicToast />
+        <c:lightningDesignToast aura:id="lightningToast" />
     </span>
     <div>
         <div class="feedbackButtonWrapper">
             <c:feedbackButton
                 carName="Advisor Portal"
                 title="We value your feedback. Do you have a question, issue, or idea to impove the Advisor Portal? Submit it below."
+                onshowtoast="{!c.showToastLWC}"
+                sendToastEvent="true"
             ></c:feedbackButton>
         </div>
     </div>
@@ -75,6 +78,7 @@
                     onrequestcurrentfilter="{!c.getCurrentFilter}"
                     onincrementprocessingcounterevent="{!c.callsIncrementProcessingCounter}"
                     ondecrementprocessingcounterevent="{!c.callsDecrementProcessingCounter}"
+                    onshowtoast="{!c.showToastLWC}"
                 />
             </div>
         </div>

@@ -33,4 +33,18 @@
         const detail = event.getParams('detail');
         component.find('filterSectionAuraElement').getCurrentFilter(detail.callback);
     },
+
+    showToastLWC: function (component, event, helper) {
+        const detail = event.getParams('detail');
+        helper.showToast(component, detail.title, detail.message, detail.type, detail.duration);
+    },
+
+    showToast: function (component, event, helper) {
+        const title = event.getParam('title');
+        const message = event.getParam('message');
+        const type = event.getParam('type');
+        const duration = event.getParam('duration');
+
+        helper.showToast(component, title, message, type, duration);
+    },
 });

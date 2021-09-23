@@ -1942,7 +1942,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
-                                                    <td id="sr_cum_gpa"></td>
+                                                    <td id="sr_cum_gpa">{!studentProgram.Cum_Gpa__c}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Probation Code</th>
@@ -3088,7 +3088,6 @@
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
                                 document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
                                 document.getElementById('sr_ci_index').innerHTML = result.CI_INDEX_INDICATOR__c;
-                                document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
                                 if (result.PAST_DUE_TIP__c) {

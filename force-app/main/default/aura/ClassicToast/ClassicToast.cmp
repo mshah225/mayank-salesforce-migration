@@ -1,0 +1,71 @@
+<aura:component description="ClassicToast">
+    <aura:attribute name="title" type="String" description="Optional title of the message." />
+    <aura:attribute name="message" type="String" description="The message to display." />
+    <aura:attribute name="type" type="String" default="info" description="'error', 'success', or 'info'" />
+    <aura:attribute
+        name="duration"
+        type="Integer"
+        default="5000"
+        description="How long the message should show on screen, default is 5 seconds."
+    />
+    <aura:attribute name="timer" type="String" />
+    <aura:attribute name="showToast" type="Boolean" default="false" />
+    <aura:handler event="c:ShowClassicToast" action="{!c.handleShowToast}" />
+
+    <aura:if isTrue="{!v.showToast}">
+        <div class="slds-notify_container slds-is-relative slds-align_absolute-center">
+            <div
+                role="status"
+                class="{!'slds-notify slds-notify_toast slds-is-absolute slds-align-top ' + (v.type == 'error' ? 'slds-theme_error' : v.type == 'success' ? 'slds-theme_success' : 'slds-theme_info')}"
+            >
+                <span class="slds-assistive-text"
+                    >{!v.type == 'error' ? 'error' : v.type == 'success' ? 'success' : 'info'}</span
+                >
+                <span
+                    class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top"
+                >
+                    <aura:if isTrue="{!v.type == 'error'}">
+                        <lightning:icon
+                            iconName="utility:error"
+                            alternativeText="error"
+                            size="small"
+                            variant="inverse"
+                        />
+                    </aura:if>
+                    <aura:if isTrue="{!v.type == 'success'}">
+                        <lightning:icon
+                            iconName="utility:success"
+                            alternativeText="success"
+                            size="small"
+                            variant="inverse"
+                        />
+                    </aura:if>
+                    <aura:if isTrue="{!v.type == 'info'}">
+                        <lightning:icon iconName="utility:info" alternativeText="info" size="small" variant="inverse" />
+                    </aura:if>
+                </span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">{!v.title != null ? v.title : v.message}</h2>
+                    <aura:if isTrue="{!v.title != null}">
+                        <p>{!v.message}</p>
+                    </aura:if>
+                </div>
+                <div class="slds-notify__close">
+                    <button
+                        class="slds-button slds-button_icon slds-button_icon-inverse"
+                        title="Close"
+                        onclick="{!c.hideToast}"
+                    >
+                        <lightning:icon
+                            iconName="utility:close"
+                            alternativeText="close"
+                            size="small"
+                            variant="inverse"
+                        />
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

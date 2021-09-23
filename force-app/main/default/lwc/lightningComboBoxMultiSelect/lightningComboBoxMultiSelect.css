@@ -2,3 +2,21 @@
     border-color: var(--lwc-colorBorderBrand, #1b96ff);
     box-shadow: var(--lwc-shadowButtonFocus, 0 0 3px #0176d3);
 }
+
+:host .slds-input_faux {
+    display: inline-block;
+    padding-top: 0;
+    padding-right: var(--sds-c-input-spacing-horizontal-end, var(--lwc-varSpacingHorizontalMedium, spacingMedium));
+    padding-bottom: 0;
+    padding-left: var(--sds-c-input-spacing-horizontal-start, var(--lwc-varSpacingHorizontalSmall, spacingSmall));
+    width: 100%;
+    min-height: calc(1.875rem + (1px * 2));
+    line-height: 1.875rem;
+    border: var(--lwc-borderWidthThin, 1px) solid
+        var(--sds-c-input-color-border, var(--lwc-colorBorderInput, rgb(217, 219, 221)));
+    border-radius: var(--sds-c-input-radius-border, var(--lwc-borderRadiusMedium, 0.25rem));
+    background-color: var(--sds-c-input-color-background, var(--lwc-colorBackgroundInput, rgb(255, 255, 255)));
+    color: var(--sds-c-input-text-color);
+    box-shadow: var(--sds-c-input-shadow);
+    transition: border var(--lwc-durationQuickly, 0.1s) linear, background-color var(--lwc-durationQuickly, 0.1s) linear;
+}

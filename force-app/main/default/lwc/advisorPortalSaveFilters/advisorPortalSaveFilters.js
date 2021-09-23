@@ -21,6 +21,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             })
             .catch((err) => {
                 console.log(err);
+                this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
                 this.decrementProcessingCounter();
@@ -39,7 +40,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                             })
                             .catch((err) => {
                                 console.log(err);
-                                this.makeToast('error', 'Error', 'Error when saving filters.');
+                                this.makeToast('error', 'Error', err.body.message);
                             })
                             .finally(() => {
                                 this.template.querySelector('c-lightning-design-modal.save-modal').closeModal();
@@ -56,8 +57,8 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             .then(() => {
                 this.makeToast('success', 'Success', 'Default filter cleared.');
             })
-            .catch(() => {
-                this.makeToast('error', 'Error', 'Error when clearing filters.');
+            .catch((err) => {
+                this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
                 this.template.querySelector('c-lightning-design-modal.reset-modal').closeModal();

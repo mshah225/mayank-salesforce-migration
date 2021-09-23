@@ -1,13 +1,20 @@
 public inherited sharing class AdvisorPortalFilterSavingService {
     @AuraEnabled(cacheable=true)
     public static String getDefaultFilter() {
-        String json = [
+        String json = null;
+        List<Success_Resource__c> activeResources = [
             SELECT Default_Filter__c
             FROM Success_Resource__c
             WHERE Resource__c = :UserInfo.getUserId() AND IsActive__c = TRUE
-            LIMIT 1
-        ]
-        .Default_Filter__c;
+        ];
+
+        if (!activeResources.isEmpty())
+            json = activeResources[0].Default_Filter__c;
+        else
+            throw new AdvisorPortalFilterSavingException(
+                'This user doesn\'t have a success resource and can\'t use the save filters feature'
+            );
+
         return json == null ? '{}' : json;
     }
 
@@ -26,6 +33,10 @@ public inherited sharing class AdvisorPortalFilterSavingService {
         }
         if (!activeResources.isEmpty())
             update activeResources;
+        else
+            throw new AdvisorPortalFilterSavingException(
+                'This user doesn\'t have a success resource and can\'t use the save filters feature'
+            );
     }
 
     @AuraEnabled
@@ -40,6 +51,10 @@ public inherited sharing class AdvisorPortalFilterSavingService {
         }
         if (!activeResources.isEmpty())
             update activeResources;
+        else
+            throw new AdvisorPortalFilterSavingException(
+                'This user doesn\'t have a success resource and can\'t use the save filters feature'
+            );
     }
 
     public class AdvisorPortalFilterSavingException extends Exception {

@@ -1,25 +1,5 @@
 global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     private Map<String, String> configMap = new Map<String, String>();
-    private List<Messaging.Inboundemail.BinaryAttachment> badBinaryAttachments = new List<Messaging.Inboundemail.BinaryAttachment>();
-    private List<Messaging.Inboundemail.TextAttachment> badTextAttachments = new List<Messaging.Inboundemail.TextAttachment>();
-    private Id queueId;
-    private Id templateId;
-    private Id caseFeedTemplateId;
-    private String functionalGroup;
-    private String categoryName;
-    private String subCategoryName;
-    public Id functionalGroupCC;
-    private Id categoryNameCC;
-    private Id subCategoryNameCC;
-    private String origin;
-    private String campus;
-    private String replyToAddress;
-    private String emailFromName;
-    private Id caseRecordTypeId;
-    private Id fallbackQueueId;
-    private String typeOfAdditionalAssignmentNeeded;
-    private boolean associateCaseToActiveOpportunity;
-    private boolean neutralEmail = true; //Allows attachment, but doesn't save it
     private Email_Logging__c loggingSettings = Email_Logging__c.getValues('Current_Settings');
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
@@ -38,6 +18,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         this.inboundEmail = email;
         Boolean sendAutoReply = false;
         Contact emailContact = new Contact();
+        CaseAssignmentResult caseAssignmentInfo;
 
         try {
             // Retrieves the sender's first and last names
@@ -166,7 +147,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 ccAddressList = email.CcAddresses;
             }
 
-            setCaseAssignmentRule(toAddressList, ccAddressList);
+            caseAssignmentInfo = getCaseAssignmentRule(toAddressList, ccAddressList);
 
             // If this email was sent to multiple addresses, check to be sure we aren't about to create
             // a duplicate case
@@ -189,24 +170,24 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
             //Create a brand new case
             if (this.theCase == null) {
-                if (fallbackQueueId != null) {
-                    if (isUserActive(queueId) == false) {
-                        queueId = fallbackQueueId;
+                if (caseAssignmentInfo.fallbackQueueId != null) {
+                    if (isUserActive(caseAssignmentInfo.queueId) == false) {
+                        caseAssignmentInfo.queueId = caseAssignmentInfo.fallbackQueueId;
                     }
                 }
 
                 sendAutoReply = true;
                 this.theCase = new Case();
 
-                if (caseRecordTypeId != null) {
-                    theCase.RecordTypeId = caseRecordTypeId;
+                if (caseAssignmentInfo.caseRecordTypeId != null) {
+                    theCase.RecordTypeId = caseAssignmentInfo.caseRecordTypeId;
                 }
 
-                theCase.CC_Functional_Group__c = functionalGroupCC;
-                theCase.CC_Category__c = categoryNameCC;
-                theCase.CC_Sub_Category__c = subCategoryNameCC;
+                theCase.CC_Functional_Group__c = caseAssignmentInfo.functionalGroupCC;
+                theCase.CC_Category__c = caseAssignmentInfo.categoryNameCC;
+                theCase.CC_Sub_Category__c = caseAssignmentInfo.subCategoryNameCC;
 
-                theCase.Campus__c = campus;
+                theCase.Campus__c = caseAssignmentInfo.campus;
                 theCase.SuppliedEmail = email.fromAddress;
                 theCase.SuppliedName = fname + ' ' + lname;
                 if (theCase.SuppliedName.length() > 80) {
@@ -215,8 +196,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 theCase.Status = 'New';
                 theCase.Priority = 'Normal';
-                theCase.Case_Feed_Email__c = replyToAddress;
-                theCase.Case_Feed_Email_Template_Id__c = caseFeedTemplateId;
+                theCase.Case_Feed_Email__c = caseAssignmentInfo.replyToAddress;
+                theCase.Case_Feed_Email_Template_Id__c = caseAssignmentInfo.caseFeedTemplateId;
 
                 if (email.headers != null) {
                     extractSourceFromHeaders(email);
@@ -224,14 +205,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 // The Queue ID should be set as long as a Cse Assignment Rule was found; just in case, adding
                 // and else clause to be sure the Owner is not set to null, which would prevent the insert
-                if (queueId != null) {
-                    theCase.OwnerId = queueId;
+                if (caseAssignmentInfo.queueId != null) {
+                    theCase.OwnerId = caseAssignmentInfo.queueId;
                 } else {
                     theCase.OwnerId = UserInfo.getUserId();
                 }
 
-                if (origin != null) {
-                    theCase.Origin__c = origin;
+                if (caseAssignmentInfo.origin != null) {
+                    theCase.Origin__c = caseAssignmentInfo.origin;
                 } else {
                     theCase.Origin__c = 'Email';
                 }
@@ -263,12 +244,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 theCase.Initial_Request_Sent_To_Addresses__c = toAddressConcat;
-                theCase.Type_of_Additional_Assignment_Needed__c = typeOfAdditionalAssignmentNeeded;
+                theCase.Type_of_Additional_Assignment_Needed__c = caseAssignmentInfo.typeOfAdditionalAssignmentNeeded;
 
-                if (associateCaseToActiveOpportunity == null) {
+                if (caseAssignmentInfo.associateCaseToActiveOpportunity == null) {
                     theCase.Associate_Case_to_Active_Opportunity__c = false;
                 } else {
-                    theCase.Associate_Case_to_Active_Opportunity__c = associateCaseToActiveOpportunity;
+                    theCase.Associate_Case_to_Active_Opportunity__c = caseAssignmentInfo.associateCaseToActiveOpportunity;
                 }
 
                 EmailTransformer transformer = new EmailTransformer();
@@ -459,20 +440,22 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
             }
 
-            Boolean success = handleAttachments(theCase, emailContact, email); // must run before createEmailMessage to cleanup cid images
-            createEmailMessage(theCase, email);
+            Boolean successfulAttachments = true;
             Boolean hasAttachments =
                 (email.textAttachments != null && email.textAttachments.size() > 0) ||
                 (email.binaryAttachments != null &&
                 email.binaryAttachments.size() > 0);
-
             // Check attachment sizes and notify
+            AttachmentResult attachmentResponse;
             if (hasAttachments) {
                 checkAttachmentSize(email);
+                attachmentResponse = handleAttachments(theCase, emailContact, email, caseAssignmentInfo); // must run before createEmailMessage to cleanup cid images
             }
 
+            createEmailMessage(theCase, email);
+
             if (
-                success &&
+                (attachmentResponse == null || attachmentResponse.success) &&
                 htmlBodyIsEmpty(email.HtmlBody) &&
                 String.isBlank(removeAllWhitespaces(email.plainTextBody))
             ) {
@@ -480,7 +463,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     this.theCase.Description = '';
                 }
 
-                if (hasAttachments && !neutralEmail) {
+                if (hasAttachments && !attachmentResponse.neutralEmail) {
                     this.theCase.Description += ' Attachment received at ' + Datetime.now().formatLong();
                 } else {
                     this.theCase.Description +=
@@ -492,8 +475,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 update this.theCase;
             }
 
-            if (sendAutoReply && templateId != null) {
-                sendAutoReply(theCase, emailContact, templateId);
+            if (sendAutoReply && caseAssignmentInfo.templateId != null) {
+                sendAutoReply(theCase, emailContact, caseAssignmentInfo.templateId, caseAssignmentInfo);
             }
         } catch (Exception e) {
             // Catch any exceptions and create a lost email.
@@ -546,28 +529,40 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     // Overload to support previous implementation
-    private boolean handleAttachments(Case theCase, Contact theContact, Messaging.InboundEmail email) {
-        boolean successfulAttachment = handleAttachments(theCase, email);
+    private AttachmentResult handleAttachments(
+        Case theCase,
+        Contact theContact,
+        Messaging.InboundEmail email,
+        CaseAssignmentResult caseAssignmentInfo
+    ) {
+        AttachmentResult attachmentResponse = handleAttachments(theCase, email);
 
-        if (!successfulAttachment) {
+        if (!attachmentResponse.success) {
             String attachmentFailureTemplateId = getConfigurationSetting('Rejected Attachment Email Template ID');
 
             if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '') {
-                sendAutoReplyAttachment(theCase, theContact, attachmentFailureTemplateId);
+                sendAutoReplyAttachment(
+                    theCase,
+                    theContact,
+                    attachmentFailureTemplateId,
+                    caseAssignmentInfo,
+                    attachmentResponse
+                );
             }
             if (loggingSettings.Attachment_Logging__c) {
                 generateLostEmail(email, theCase, 'Attachment is invalid');
             }
         }
 
-        return successfulAttachment;
+        return attachmentResponse;
     }
 
     // Save attachments, if any
-    private boolean handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
+    private AttachmentResult handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
         Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
         List<Attachment> allEmailAttachments = new List<Attachment>();
-        boolean successfulAttachment = true;
+        AttachmentResult response = new AttachmentResult();
+        response.success = true;
         List<String> validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
         Set<String> validFileExtensionSet = new Set<String>(validFileExtensionList);
 
@@ -584,12 +579,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     attachment.Body = Blob.valueOf(tAttachment.body);
                     attachment.ParentId = parentObject.Id;
                     if (!tAttachment.fileName.toLowerCase().contains('.p7s')) {
-                        neutralEmail = false;
+                        response.neutralEmail = false;
                         allEmailAttachments.add(attachment);
                     }
                 } else {
-                    successfulAttachment = false;
-                    badTextAttachments.add(tAttachment);
+                    response.success = false;
+                    response.badTextAttachments.add(tAttachment);
                 }
             }
         }
@@ -608,7 +603,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     attachment.ContentType = bAttachment.mimeTypeSubType;
                     attachment.ParentId = parentObject.Id;
                     if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
-                        neutralEmail = false;
+                        response.neutralEmail = false;
                         allEmailAttachments.add(attachment);
                     }
 
@@ -627,8 +622,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         }
                     }
                 } else {
-                    successfulAttachment = false;
-                    badBinaryAttachments.add(bAttachment);
+                    response.success = false;
+                    response.badBinaryAttachments.add(bAttachment);
                 }
             }
         }
@@ -641,7 +636,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
         }
 
-        return successfulAttachment;
+        return response;
     }
 
     @TestVisible
@@ -663,15 +658,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             value = '';
             Boolean seenOne = false;
 
+            List<String> toAddresses = new List<String>();
             for (String to : email.toAddresses) {
-                if (seenOne) {
-                    value += ';\n';
-                }
-
-                to = extractAddress(to);
-                value += to;
-                seenOne = true;
+                toAddresses.add(extractAddress(to));
             }
+            value = String.join(toAddresses, ';\n');
         }
 
         theEmail.ToAddress = limitLength(value, EmailMessage.ToAddress.getDescribe().getLength());
@@ -687,15 +678,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             value = '';
             Boolean seenOne = false;
 
+            List<String> ccAddresses = new List<String>();
             for (String cc : email.ccAddresses) {
-                if (seenOne) {
-                    value += ';\n';
-                }
-
-                cc = extractAddress(cc);
-                value += cc;
-                seenOne = true;
+                ccAddresses.add(extractAddress(cc));
             }
+            value = String.join(ccAddresses, ';\n');
         }
 
         theEmail.CcAddress = limitLength(value, EmailMessage.CcAddress.getDescribe().getLength());
@@ -709,7 +696,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         insert theEmail;
     }
 
-    private void sendAutoReply(Case emailCase, Contact emailContact, String emailTemplateId) {
+    private void sendAutoReply(
+        Case emailCase,
+        Contact emailContact,
+        String emailTemplateId,
+        CaseAssignmentResult caseAssignmentInfo
+    ) {
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         mail.setTargetObjectId(emailContact.Id);
         mail.setTemplateId(emailTemplateId);
@@ -724,12 +716,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         // Find the appropriate OrgWideEmailAddress for this reply
         try {
-            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
+            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :caseAssignmentInfo.replyToAddress];
             mail.setOrgWideEmailAddressId(oweaToUse.Id);
         } catch (Exception e) {
             // Use context user's information if there is no default OrgWideEmailAddress configured
             if (defaultOwea == null) {
-                mail.setSenderDisplayName(emailFromName);
+                mail.setSenderDisplayName(caseAssignmentInfo.emailFromName);
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
             }
@@ -744,16 +736,22 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
     }
 
-    private void sendAutoReplyAttachment(Case emailCase, Contact emailContact, String emailTemplateId) {
+    private void sendAutoReplyAttachment(
+        Case emailCase,
+        Contact emailContact,
+        String emailTemplateId,
+        CaseAssignmentResult caseAssignmentInfo,
+        AttachmentResult attachmentDetails
+    ) {
         emailCase = [SELECT CaseNumber, Id, Thread_Id__c FROM Case WHERE Id = :emailCase.Id];
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         EmailTemplate et = [SELECT Id, Subject, HtmlValue, Body FROM EmailTemplate WHERE id = :emailTemplateId LIMIT 1];
         String failedAttachments = '';
-        for (Messaging.Inboundemail.BinaryAttachment bAttachment : badBinaryAttachments) {
-            failedAttachments += 'File Name: ' + bAttachment.fileName;
+        for (Messaging.Inboundemail.BinaryAttachment bAttachment : attachmentDetails.badBinaryAttachments) {
+            failedAttachments += 'File Name: ' + bAttachment.fileName + '\n';
         }
-        for (Messaging.Inboundemail.TextAttachment tAttachment : badTextAttachments) {
-            failedAttachments += 'File Name: ' + tAttachment.fileName;
+        for (Messaging.Inboundemail.TextAttachment tAttachment : attachmentDetails.badTextAttachments) {
+            failedAttachments += 'File Name: ' + tAttachment.fileName + '\n';
         }
         String htmlAttachments = failedAttachments.replace('\n', '<br />');
         String subject = et.Subject;
@@ -787,12 +785,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         // Find the appropriate OrgWideEmailAddress for this reply
         try {
-            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
+            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :caseAssignmentInfo.replyToAddress];
             mail.setOrgWideEmailAddressId(oweaToUse.Id);
         } catch (Exception e) {
             // Use context user's information if there is no default OrgWideEmailAddress configured
             if (defaultOwea == null) {
-                mail.setSenderDisplayName(emailFromName);
+                mail.setSenderDisplayName(caseAssignmentInfo.emailFromName);
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
             }
@@ -830,7 +828,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
         lostEmail.CarbonCopies__c = carbonCopiesString;
 
-        Boolean attachSuccess = handleAttachments(lostEmail, email);
+        Boolean attachSuccess = handleAttachments(lostEmail, email).success;
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if (!attachSuccess) {
             String attachmentInfo = '\n**********\nCase ID: ' + theCase.Id + '\n\n*****List of Attachments*****\n';
@@ -950,7 +948,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         return null;
     }
 
-    private void setCaseAssignmentRule(String[] toEmailAddresses, String[] ccEmailAddresses) {
+    private CaseAssignmentResult getCaseAssignmentRule(String[] toEmailAddresses, String[] ccEmailAddresses) {
+        CaseAssignmentResult response = new CaseAssignmentResult();
         List<Case_Assignment_Rule__c> assignmentRuleList = new List<Case_Assignment_Rule__c>();
 
         if (toEmailAddresses.size() > 1) {
@@ -1051,50 +1050,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
 
-        if (assignmentRuleList.size() > 0) {
-            categoryNameCC = assignmentRuleList[0].CC_Category__c;
-            subCategoryNameCC = assignmentRuleList[0].CC_Sub_Category__c;
-            campus = assignmentRuleList[0].Campus__c;
-            functionalGroupCC = assignmentRuleList[0].CC_Functional_Group__c;
-            origin = assignmentRuleList[0].Origin__c;
-            queueId = ID.valueOf(assignmentRuleList[0].Queue_ID__c);
-
-            if (
-                assignmentRuleList[0].Email_Template_ID__c != null &&
-                assignmentRuleList[0].Email_Template_ID__c != ''
-            ) {
-                templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
-            }
-
-            if (
-                assignmentRuleList[0].Case_Feed_Email_Template_Id__C != null &&
-                assignmentRuleList[0].Case_Feed_Email_Template_Id__C != ''
-            ) {
-                caseFeedTemplateId = ID.valueOf(assignmentRuleList[0].Case_Feed_Email_Template_Id__c);
-            }
-
-            if (
-                assignmentRuleList[0].Reply_To_Email_Address__c != null &&
-                assignmentRuleList[0].Reply_To_Email_Address__c != ''
-            ) {
-                replyToAddress = assignmentRuleList[0].Reply_To_Email_Address__c;
-            } else {
-                replyToAddress = assignmentRuleList[0].Email_Address__c;
-            }
-
-            emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
-
-            if (assignmentRuleList[0].Case_Record_Type_ID__c != null) {
-                caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
-            }
-
-            if (assignmentRuleList[0].Fallback_Queue_ID__c != null) {
-                fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
-            }
-
-            typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
-            associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;
-        } else {
+        if (assignmentRuleList.isEmpty()) {
             assignmentRuleList = [
                 SELECT
                     Id,
@@ -1119,129 +1075,81 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 WHERE Email_Address__c IN :ccEmailAddresses
                 ORDER BY Priority__c
             ];
-
-            if (assignmentRuleList.size() > 0) {
-                categoryNameCC = assignmentRuleList[0].CC_Category__c;
-                subCategoryNameCC = assignmentRuleList[0].CC_Sub_Category__c;
-                campus = assignmentRuleList[0].Campus__c;
-                functionalGroupCC = assignmentRuleList[0].CC_Functional_Group__c;
-                origin = assignmentRuleList[0].Origin__c;
-                queueId = ID.valueOf(assignmentRuleList[0].Queue_ID__c);
-
-                if (
-                    assignmentRuleList[0].Email_Template_ID__c != null &&
-                    assignmentRuleList[0].Email_Template_ID__c != ''
-                ) {
-                    templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
-                }
-
-                if (
-                    assignmentRuleList[0].Case_Feed_Email_Template_Id__C != null &&
-                    assignmentRuleList[0].Case_Feed_Email_Template_Id__C != ''
-                ) {
-                    caseFeedTemplateId = ID.valueOf(assignmentRuleList[0].Case_Feed_Email_Template_Id__c);
-                }
-
-                if (
-                    assignmentRuleList[0].Reply_To_Email_Address__c != null &&
-                    assignmentRuleList[0].Reply_To_Email_Address__c != ''
-                ) {
-                    replyToAddress = assignmentRuleList[0].Reply_To_Email_Address__c;
-                } else {
-                    replyToAddress = assignmentRuleList[0].Email_Address__c;
-                }
-
-                emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
-
-                if (assignmentRuleList[0].Case_Record_Type_ID__c != null) {
-                    caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
-                }
-
-                if (assignmentRuleList[0].Fallback_Queue_ID__c != null) {
-                    fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
-                }
-
-                typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
-                associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;
-            }
         }
-
-        if (assignmentRuleList.size() == 0) {
-            // Use the Default Email Address
+        if (assignmentRuleList.isEmpty()) {
             String defaultEmailAddress = getConfigurationSetting('Default Org Wide Email Address');
-            Case_Assignment_Rule__c[] assignmentRuleListDefault;
 
-            if (defaultEmailAddress != null && defaultEmailAddress != '') {
-                assignmentRuleListDefault = [
-                    SELECT
-                        Id,
-                        Name,
-                        CC_Category__c,
-                        CC_Sub_Category__c,
-                        Email_Address__c,
-                        Customer_Notice_Email_From_Name__c,
-                        Reply_To_Email_Address__c,
-                        Email_Template_ID__c,
-                        Case_Feed_Email_Template_Id__c,
-                        CC_Functional_Group__c,
-                        Priority__c,
-                        Queue_ID__c,
-                        Case_Record_Type_ID__c,
-                        Fallback_Queue_ID__c,
-                        Type_of_Additional_Assignment_Needed__c,
-                        Associate_Case_To_Active_Opportunity__c,
-                        Origin__c,
-                        Campus__c
-                    FROM Case_Assignment_Rule__c
-                    WHERE Email_Address__c = :defaultEmailAddress
-                ];
-            }
-
-            if (assignmentRuleListDefault != null && assignmentRuleListDefault.size() > 0) {
-                categoryNameCC = assignmentRuleListDefault[0].CC_Category__c;
-                subCategoryNameCC = assignmentRuleListDefault[0].CC_Sub_Category__c;
-                campus = assignmentRuleListDefault[0].Campus__c;
-                functionalGroupCC = assignmentRuleListDefault[0].CC_Functional_Group__c;
-                origin = assignmentRuleListDefault[0].Origin__c;
-                queueId = ID.valueOf(assignmentRuleListDefault[0].Queue_ID__c);
-
-                if (
-                    assignmentRuleListDefault[0].Email_Template_ID__c != null &&
-                    assignmentRuleListDefault[0].Email_Template_ID__c != ''
-                ) {
-                    templateId = ID.valueOf(assignmentRuleListDefault[0].Email_Template_ID__c);
-                }
-
-                if (
-                    assignmentRuleListDefault[0].Case_Feed_Email_Template_Id__C != null &&
-                    assignmentRuleListDefault[0].Case_Feed_Email_Template_Id__C != ''
-                ) {
-                    caseFeedTemplateId = ID.valueOf(assignmentRuleListDefault[0].Case_Feed_Email_Template_Id__c);
-                }
-
-                if (
-                    assignmentRuleListDefault[0].Reply_To_Email_Address__c != null &&
-                    assignmentRuleListDefault[0].Reply_To_Email_Address__c != ''
-                ) {
-                    replyToAddress = assignmentRuleListDefault[0].Reply_To_Email_Address__c;
-                } else {
-                    replyToAddress = assignmentRuleListDefault[0].Email_Address__c;
-                }
-
-                emailFromName = assignmentRuleListDefault[0].Customer_Notice_Email_From_Name__c;
-
-                if (assignmentRuleListDefault[0].Case_Record_Type_ID__c != null) {
-                    caseRecordTypeId = ID.valueOf(assignmentRuleListDefault[0].Case_Record_Type_ID__c);
-                }
-
-                if (assignmentRuleListDefault[0].Fallback_Queue_ID__c != null) {
-                    fallbackQueueId = ID.valueOf(assignmentRuleListDefault[0].Fallback_Queue_ID__c);
-                }
-
-                typeOfAdditionalAssignmentNeeded = assignmentRuleListDefault[0].Type_of_Additional_Assignment_Needed__c;
-                associateCaseToActiveOpportunity = assignmentRuleListDefault[0].Associate_Case_to_Active_Opportunity__c;
-            }
+            assignmentRuleList = [
+                SELECT
+                    Id,
+                    Name,
+                    CC_Category__c,
+                    CC_Sub_Category__c,
+                    Email_Address__c,
+                    Customer_Notice_Email_From_Name__c,
+                    Reply_To_Email_Address__c,
+                    Email_Template_ID__c,
+                    Case_Feed_Email_Template_Id__c,
+                    CC_Functional_Group__c,
+                    Priority__c,
+                    Queue_ID__c,
+                    Case_Record_Type_ID__c,
+                    Fallback_Queue_ID__c,
+                    Type_of_Additional_Assignment_Needed__c,
+                    Associate_Case_To_Active_Opportunity__c,
+                    Origin__c,
+                    Campus__c
+                FROM Case_Assignment_Rule__c
+                WHERE Email_Address__c = :defaultEmailAddress
+            ];
         }
+
+        if (!assignmentRuleList.isEmpty()) {
+            response.categoryNameCC = assignmentRuleList[0].CC_Category__c;
+            response.subCategoryNameCC = assignmentRuleList[0].CC_Sub_Category__c;
+            response.campus = assignmentRuleList[0].Campus__c;
+            response.functionalGroupCC = assignmentRuleList[0].CC_Functional_Group__c;
+            response.origin = assignmentRuleList[0].Origin__c;
+            response.queueId = ID.valueOf(assignmentRuleList[0].Queue_ID__c);
+
+            if (
+                assignmentRuleList[0].Email_Template_ID__c != null &&
+                assignmentRuleList[0].Email_Template_ID__c != ''
+            ) {
+                response.templateId = ID.valueOf(assignmentRuleList[0].Email_Template_ID__c);
+            }
+
+            if (
+                assignmentRuleList[0].Case_Feed_Email_Template_Id__C != null &&
+                assignmentRuleList[0].Case_Feed_Email_Template_Id__C != ''
+            ) {
+                response.caseFeedTemplateId = ID.valueOf(assignmentRuleList[0].Case_Feed_Email_Template_Id__c);
+            }
+
+            if (
+                assignmentRuleList[0].Reply_To_Email_Address__c != null &&
+                assignmentRuleList[0].Reply_To_Email_Address__c != ''
+            ) {
+                response.replyToAddress = assignmentRuleList[0].Reply_To_Email_Address__c;
+            } else {
+                response.replyToAddress = assignmentRuleList[0].Email_Address__c;
+            }
+
+            response.emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
+
+            if (assignmentRuleList[0].Case_Record_Type_ID__c != null) {
+                response.caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
+            }
+
+            if (assignmentRuleList[0].Fallback_Queue_ID__c != null) {
+                response.fallbackQueueId = ID.valueOf(assignmentRuleList[0].Fallback_Queue_ID__c);
+            }
+
+            response.typeOfAdditionalAssignmentNeeded = assignmentRuleList[0].Type_of_Additional_Assignment_Needed__c;
+            response.associateCaseToActiveOpportunity = assignmentRuleList[0].Associate_Case_to_Active_Opportunity__c;
+        }
+
+        return response;
     }
 
     private OrgWideEmailAddress getDefaultOrgWideEmailAddress() {
@@ -1349,5 +1257,29 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         htmlBody = removeAllWhitespaces(htmlBody);
 
         return String.isBlank(htmlBody);
+    }
+
+    private class AttachmentResult {
+        public Boolean success = false;
+        public Boolean neutralEmail = true;
+        public List<Messaging.Inboundemail.BinaryAttachment> badBinaryAttachments = new List<Messaging.Inboundemail.BinaryAttachment>();
+        public List<Messaging.Inboundemail.TextAttachment> badTextAttachments = new List<Messaging.Inboundemail.TextAttachment>();
+    }
+
+    private class CaseAssignmentResult {
+        public Id queueId;
+        public Id templateId;
+        public Id caseFeedTemplateId;
+        public Id functionalGroupCC;
+        public Id categoryNameCC;
+        public Id subCategoryNameCC;
+        public String origin;
+        public String campus;
+        public String replyToAddress;
+        public String emailFromName;
+        public Id caseRecordTypeId;
+        public Id fallbackQueueId;
+        public String typeOfAdditionalAssignmentNeeded;
+        public boolean associateCaseToActiveOpportunity;
     }
 }

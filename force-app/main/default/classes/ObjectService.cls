@@ -44,23 +44,45 @@ public class ObjectService {
      * @return A string of the field names
      */
     public static String objectFieldsToString(String objectName) {
-        String fieldsToString = null;
+        return objectFieldsToString(getObjectFieldMap(objectName));
+    }
 
-        Map<String, SObjectField> objectFieldMap = getObjectFieldMap(objectName);
+    /**
+     * Returns an SObject that contains all the fields of that object
+     * @param sObjectType The type of that object
+     * @param id The id for the queries object
+     * @return an SObject with all its fields
+     */
+    public static SObject queryAllFields(String sObjectType, String id) {
+        String fields = objectFieldsToString(sObjectType);
+        String query = 'SELECT ' + fields + ' FROM ' + sObjectType + ' WHERE Id = :id';
+        List<SObject> results = Database.query(query);
+        if (!results.isEmpty())
+            return results[0];
+        else
+            return null;
+    }
+    public static SObject queryAllFields(String sObjectType, Id id) {
+        return queryAllFields(sObjectType, (String) id);
+    }
 
-        Set<String> fieldSet = objectFieldMap.keySet();
-        for (String s : fieldSet) {
-            SObjectField fieldToken = objectFieldMap.get(s);
-            DescribeFieldResult selectedField = fieldToken.getDescribe();
-
-            if (fieldsToString == null) {
-                fieldsToString = selectedField.getName();
-            } else {
-                fieldsToString = fieldsToString + ', ' + selectedField.getName();
-            }
+    /**
+     * Returns a List of SObjects that contains all the fields of that object
+     * @param sObjectType The type of those objects
+     * @param ids List of ids for the queries objects
+     * @return a List of SObjects with all their fields
+     */
+    public static List<SObject> queryAllFields(String sObjectType, List<String> ids) {
+        String fields = objectFieldsToString(sObjectType);
+        String query = 'SELECT ' + fields + ' FROM ' + sObjectType + ' WHERE Id IN :ids';
+        return Database.query(query);
+    }
+    public static List<SObject> queryAllFields(String sObjectType, List<Id> ids) {
+        List<String> idStrings = new List<String>();
+        for (Id id : ids) {
+            idStrings.add((String) id);
         }
-
-        return fieldsToString;
+        return queryAllFields(sObjectType, idStrings);
     }
 
     /**

@@ -1,6 +1,5 @@
 global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     private Map<String, String> configMap = new Map<String, String>();
-
     private List<Messaging.Inboundemail.BinaryAttachment> badBinaryAttachments = new List<Messaging.Inboundemail.BinaryAttachment>();
     private List<Messaging.Inboundemail.TextAttachment> badTextAttachments = new List<Messaging.Inboundemail.TextAttachment>();
     private Id queueId;
@@ -85,7 +84,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
 
             if (caseId != null) {
-                Case caseSearch = CaseService.getCaseInformation(caseId);
+                Case caseSearch = (Case) ObjectService.queryAllFields('Case', caseId);
 
                 if (caseSearch != null) {
                     Integer iReopenClosedCaseThreshold;

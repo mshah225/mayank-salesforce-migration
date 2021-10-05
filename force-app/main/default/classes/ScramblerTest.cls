@@ -9,6 +9,17 @@ private class ScramblerTest {
     }
 
     @isTest
+    private static void testEmailScrambleDouble() {
+        // This test is simulating what happens if the scrambling process is run twice
+        String testEmail = 'testEmail@test.com';
+        testEmail = Scrambler.scrambleEmailOrUsername(testEmail);
+        testEmail = testEmail.replace('"', ''); // remove added quotes
+        testEmail = Scrambler.scrambleEmailOrUsername(testEmail);
+
+        System.assertEquals('"testEmail@test.com.' + UserInfo.getUserName().substringAfterLast('.') + '"', testEmail);
+    }
+
+    @isTest
     private static void testEmailScrambleNull() {
         String testEmail = null;
         testEmail = Scrambler.scrambleEmailOrUsername(testEmail);

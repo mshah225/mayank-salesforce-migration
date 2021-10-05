@@ -22,17 +22,43 @@ public class ObjectScrambleService {
                 queryToReturn =
                     'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
                     'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
-                    'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact';
+                    'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact WHERE (' +
+                    generateNotLikeSandboxDomainStatement('Email') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Corporate_Relations_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('EPO_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('ASU_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Last_Case_Email_Used__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Lead_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Lead_Secondary_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('me3hs_User_ID__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Parent_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Personal_Email__c') +
+                    ')';
             }
             when CONTACT_NO_PHONE {
-                queryToReturn = 
-                    'SELECT Id, HomePhone, Phone FROM Contact WHERE HomePhone = null AND Phone != null';
+                queryToReturn = 'SELECT Id, HomePhone, Phone FROM Contact WHERE HomePhone = null AND Phone != null';
             }
             when EDPLUS_CASE {
                 queryToReturn = 'SELECT Id FROM Case WHERE LastModifiedDate >= 2020-03-01T00:00:00Z AND (CC_Functional_Group__c = \'a240W000001jHG6\' OR CC_Functional_Group__c = \'a240W000001jHH0\' OR CC_Functional_Group__c = \'a240W000001jHG9\'  OR CC_Functional_Group__c = \'a240W000001jHG8\' OR CC_Functional_Group__c = \'a240W000001jHGB\' OR  CC_Functional_Group__c = \'a240W000001jHHr\')';
             }
             when LEAD {
-                queryToReturn = 'SELECT Id, Date_of_Birth__c, Email, Recruiting_Email__c, Secondary_Email__c FROM LEAD';
+                queryToReturn =
+                    'SELECT Id, Date_of_Birth__c, Email, Recruiting_Email__c, Secondary_Email__c FROM LEAD WHERE (' +
+                    generateNotLikeSandboxDomainStatement('Email') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Recruiting_Email__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Secondary_Email__c') +
+                    ')';
             }
             when CONVERTED_LEAD {
                 queryToReturn = 'SELECT Id FROM LEAD WHERE IsConverted = true';
@@ -41,7 +67,12 @@ public class ObjectScrambleService {
                 queryToReturn = 'SELECT Id FROM ' + System.Label.SilverPopName;
             }
             when CAR {
-                queryToReturn = 'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c';
+                queryToReturn =
+                    'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c WHERE (' +
+                    generateNotLikeSandboxDomainStatement('Email_Address__c') +
+                    ' AND ' +
+                    generateNotLikeSandboxDomainStatement('Reply_To_Email_Address__c') +
+                    ')';
             }
             when USER {
                 Id sysAdminId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1].Id;
@@ -119,5 +150,11 @@ public class ObjectScrambleService {
         }
 
         return header;
+    }
+
+    @TestVisible
+    private static String generateNotLikeSandboxDomainStatement(String fieldName) {
+        String sandboxDomain = UserInfo.getUserName().substringAfterLast('.');
+        return '(NOT ' + fieldName + ' LIKE \'%.' + sandboxDomain + '\')';
     }
 }

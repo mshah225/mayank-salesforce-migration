@@ -1,18 +1,11 @@
 public class Scrambler {
     public static String scrambleEmailOrUsername(String emailOrUsername) {
-        String sandboxDomain = UserInfo.getUserName().substringAfterLast('.');
-
         if (String.isBlank(emailOrUsername)) {
             return '';
         }
 
-        if (emailOrUsername.substringAfterLast('.') == sandboxDomain) {
-            // No changes needed
-        } else {
-            emailOrUsername += '.' + sandboxDomain;
-        }
+        emailOrUsername += '.' + UserInfo.getUserName().substringAfterLast('.');
         emailOrUsername = '"' + emailOrUsername.replace('"', '\'') + '"';
-
         return emailOrUsername;
     }
 

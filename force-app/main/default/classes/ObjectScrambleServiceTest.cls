@@ -7,7 +7,27 @@ private class ObjectScrambleServiceTest {
         System.assertEquals(
             'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
             'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
-            'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact',
+            'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact WHERE (' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Email') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Corporate_Relations_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('EPO_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('ASU_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Last_Case_Email_Used__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Lead_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Lead_Secondary_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('me3hs_User_ID__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Parent_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Personal_Email__c') +
+            ')',
             scrambleService.getQueryFromObject()
         );
     }
@@ -38,7 +58,13 @@ private class ObjectScrambleServiceTest {
         ObjectScrambleService scrambleService = new ObjectScrambleService(ObjectScrambleService.ObjectTypes.LEAD);
 
         System.assertEquals(
-            'SELECT Id, Date_of_Birth__c, Email, Recruiting_Email__c, Secondary_Email__c FROM LEAD',
+            'SELECT Id, Date_of_Birth__c, Email, Recruiting_Email__c, Secondary_Email__c FROM LEAD WHERE (' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Email') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Recruiting_Email__c') +
+            ' AND ' +
+            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Secondary_Email__c') +
+            ')',
             scrambleService.getQueryFromObject()
         );
     }

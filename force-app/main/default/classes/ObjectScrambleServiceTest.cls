@@ -123,4 +123,15 @@ private class ObjectScrambleServiceTest {
         System.assertEquals(null, scrambleService.getObjectHeader());
         System.assertEquals(null, scrambleService.getQueryFromObject());
     }
+
+    @isTest
+    private static void testNotLikeSandboxStatement() {
+        String fieldName = 'Email';
+        String sandboxDomain = UserInfo.getUserName().substringAfterLast('.');
+        String expectedNotLikeStatement = '(NOT ' + fieldName + ' LIKE \'%.' + sandboxDomain + '\')';
+
+        String actualNotLikeStatement = ObjectScrambleService.generateNotLikeSandboxDomainStatement(fieldName);
+
+        System.assertEquals(expectedNotLikeStatement, actualNotLikeStatement);
+    }
 }

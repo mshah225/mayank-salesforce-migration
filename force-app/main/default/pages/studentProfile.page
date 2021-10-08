@@ -3086,8 +3086,6 @@
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + response.totalSize;
                                 document.getElementById('sr_ci_index').innerHTML = result.CI_INDEX_INDICATOR__c;
                                 document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
@@ -3295,6 +3293,9 @@
 
                                 html += '</tbody>';
 
+                                
+                                document.getElementById('sr_asr').innerHTML =
+                                    "<span style='color:red'>" + response.totalSize;
                                 document.getElementById('sr_asr_info_table').innerHTML = html;
                                 document.getElementById('sr_asr_info_tr').style.display = 'table-row';
 

@@ -833,9 +833,9 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}">
+                                                        <th>
                                                             Financial Need Level
-                                                            <i class="fa fa-question-circle"></i>
+                                                            <i class="fa fa-question-circle" title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}"></i>
                                                         </th>
                                                         <td>
                                                             {!IF(ISBLANK(financialAidPackage.EFC_Range__c), '--', financialAidPackage.EFC_Range__c)}

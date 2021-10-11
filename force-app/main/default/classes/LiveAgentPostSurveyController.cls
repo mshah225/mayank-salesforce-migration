@@ -49,17 +49,19 @@ public without sharing class LiveAgentPostSurveyController {
     private void getContact() {
         // Default contact name
         contactName = 'Visitor';
+        String contactId;
+        String caseId;
 
         // Params
         String parameterList = ApexPages.currentPage().getParameters().get('attachedRecords');
-        Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(parameterList);
-
-        // Search
-        String contactId = (String) m.get('ContactId');
-        String caseId = (String) m.get('CaseId');
+        if (parameterList != null) {
+            Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(parameterList);
+            contactId = (String) m.get('ContactId');
+            caseId = (String) m.get('CaseId');
+        }
 
         // If no contactId in the params, try getting it from the case
-        if (contactId == null) {
+        if (contactId == null && caseId != null) {
             Case chatCase = [SELECT ContactId FROM Case WHERE Id = :caseId LIMIT 1];
             contactId = chatCase.ContactId;
         }

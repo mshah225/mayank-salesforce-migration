@@ -4,4 +4,9 @@
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <label>Conversation Organization</label>
+    <packageVersions>
+        <majorNumber>1</majorNumber>
+        <minorNumber>60</minorNumber>
+        <namespace>smagicinteract</namespace>
+    </packageVersions>
 </ApexPage>

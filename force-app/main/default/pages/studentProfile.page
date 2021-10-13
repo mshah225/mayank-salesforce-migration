@@ -319,6 +319,12 @@
 
                             <tr>
                                 <td>
+                                    <!--a href="/{!theContact.Id}" target="_blank"-->
+                                    <a href="#" onclick="openNewSubtab('/{!theContact.Id}','Details');return false">
+                                        Salesforce Contact
+                                    </a>
+                                </td>
+                                <td>
                                     <a href="https://webapp4.asu.edu/uachieve/student/search.html" target="_blank">
                                         DARS
                                     </a>
@@ -827,9 +833,9 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}">
+                                                        <th>
                                                             Financial Need Level
-                                                            <i class="fa fa-question-circle"></i>
+                                                            <i class="fa fa-question-circle" title="{!$ObjectType.Financial_Aid_Package__c.Fields.EFC_Range__c.inlineHelpText}"></i>
                                                         </th>
                                                         <td>
                                                             {!IF(ISBLANK(financialAidPackage.EFC_Range__c), '--', financialAidPackage.EFC_Range__c)}
@@ -1116,7 +1122,7 @@
                                                                 </apex:outputText>
                                                             </td>
                                                             <td style="display: none">
-                                                                {!financialSummary.AID_YEAR__c}
+                                                                {!financialSummary.Aid_Year__c}
                                                             </td>
                                                         </tr>
                                                     </apex:repeat>
@@ -1616,7 +1622,7 @@
                                                     <tr>
                                                         <th>eAdvisor Status</th>
                                                         <td id="ugap_eadvisor_status">
-                                                            {!IF(ISBLANK(ugStudentProgram.eAdvisor__c), '--', ugStudentProgram.eAdvisor__c)}
+                                                            {!eAdvisorStatus}
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1932,7 +1938,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>eAdvisor</th>
-                                                    <td id="sr_eadvisor"></td>
+                                                    <td id="sr_eadvisor">{!eAdvisorStatus}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
@@ -1940,7 +1946,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Probation Code</th>
-                                                    <td id="sr_probation"></td>
+                                                    <td id="sr_probation">{!theContact.Probation_Indicator__c}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Enrolled in Next Term</th>
@@ -3061,7 +3067,7 @@
                     'SELECT ASR_INDICATOR__c, CI_INDEX_INDICATOR__c, ' +
                     'CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, EMPLID__c, ' +
                     'ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, FINANCIAL_HOLD__c, ' +
-                    'Id, NEXT_TERM_ENROLLED__c, PROBATION_INDICATOR__c, ' +
+                    'Id, NEXT_TERM_ENROLLED__c, ' +
                     'STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c, ' +
                     'PAST_DUE_TIP__c, TERM_MYASU_USAGE__c ' +
                     'FROM ASU_STDNT_RETENTION__x ' +
@@ -3082,9 +3088,7 @@
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
                                 document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
                                 document.getElementById('sr_ci_index').innerHTML = result.CI_INDEX_INDICATOR__c;
-                                document.getElementById('sr_eadvisor').innerHTML = result.EADVISOR_INDICATOR__c;
                                 document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
-                                document.getElementById('sr_probation').innerHTML = result.PROBATION_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
                                 if (result.PAST_DUE_TIP__c) {

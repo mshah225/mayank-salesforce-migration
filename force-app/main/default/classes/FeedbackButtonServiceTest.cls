@@ -79,7 +79,7 @@ private with sharing class FeedbackButtonServiceTest {
             System.assert(false, 'Should have thrown an error and not reached this line');
         } catch (FeedbackButtonService.LWCFeedbackException e) {
             System.assertEquals(
-                'Feedback must contain some text. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.',
+                'Feedback must contain some text. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).',
                 e.getMessage()
             );
         }
@@ -95,7 +95,7 @@ private with sharing class FeedbackButtonServiceTest {
             System.assert(false, 'Should have thrown an error and not reached this line');
         } catch (FeedbackButtonService.LWCFeedbackException e) {
             System.assertEquals(
-                'Invalid carName parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.',
+                'Invalid carName parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).',
                 e.getMessage()
             );
         }
@@ -108,7 +108,7 @@ private with sharing class FeedbackButtonServiceTest {
             System.assert(false, 'Should have thrown an error and not reached this line');
         } catch (FeedbackButtonService.LWCFeedbackException e) {
             System.assertEquals(
-                'Invalid contactId parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.',
+                'Invalid contactId parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).',
                 e.getMessage()
             );
         }

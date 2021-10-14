@@ -153,7 +153,7 @@
                             <div class="panel-heading position-relative" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
-                                    <span class="c-text-black">Call 1-855-ASU-5080</span>
+                                    <span class="c-text-black">Call 1-855-ASU-5080 (1-855-278-5080)</span>
                                 </h3>
                             </div>
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>
@@ -163,7 +163,7 @@
                             <div class="panel-heading position-relative" data-toggle="collapse" data-target="#myasu-help-contact-us-phone-link">
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
-                                    <span class="c-text-black">Call 1-844-ASU-6693</span>
+                                    <span class="c-text-black">Call 1-844-ASU-6693 (1-855-278-5080)</span>
                                 </h3>
                             </div>
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>

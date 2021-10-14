@@ -196,26 +196,27 @@
                                 {!contactWrapper.portalContact.LastName + ', ' +
                                 contactWrapper.portalContact.Preferred_First_Name__c}
                             </span>
-                            <span class="slds-p-horizontal_xx-small">&#124;</span>
-                            <span class="slds-m-left_xx-small">
+                            <span class="slds-var-p-horizontal_xx-small">&#124;</span>
+                            <span class="slds-var-m-left_xx-small">
                                 {!if(not(empty(contactWrapper.cases)), contactWrapper.cases.length,
                                 0)}&nbsp;{!if(contactWrapper.cases.length == 1, 'case', 'cases')}
                             </span>
                             <aura:if isTrue="{!contactWrapper.isOutreachCustomer}">
                                 <lightning:icon
-                                    class="icn outreach-icn slds-m-horizontal_xx-small"
+                                    class="icn outreach-icn slds-var-m-horizontal_xx-small"
                                     iconName="utility:record"
                                     size="x-small"
                                 />
                             </aura:if>
-
-                            <c:AdvisorPortalPredictionLevel
-                                predictionLevel="{!contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}"
-                            />
-                            <c:AdvisorPortalOutlookChangeDirection
-                                changeDirection="{!contactWrapper.portalContact.Most_Recent_Outlook_Change_Direction__c}"
-                                changeDate="{!contactWrapper.portalContact.Change_Date__c}"
-                            />
+                            <aura:if isTrue="{!!v.GraduateStudentsOnly}">
+                                <c:AdvisorPortalPredictionLevel
+                                    predictionLevel="{!contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}"
+                                />
+                                <c:AdvisorPortalOutlookChangeDirection
+                                    changeDirection="{!contactWrapper.portalContact.Most_Recent_Outlook_Change_Direction__c}"
+                                    changeDate="{!contactWrapper.portalContact.Change_Date__c}"
+                                />
+                            </aura:if>
                         </aura:set>
 
                         <table class="slds-table slds-table_cell-buffer slds-table_bordered">

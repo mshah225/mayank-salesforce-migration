@@ -10,7 +10,7 @@
             src="{!$Resource.PersistenceChart + v.imageURL}"
             alt="{!v.alt}"
             title="{!v.title}"
-            class="persistence-icon slds-m-horizontal_xx-small"
+            class="persistence-icon slds-var-m-horizontal_xx-small"
         />
     </aura:if>
 </aura:component>

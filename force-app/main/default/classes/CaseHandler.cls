@@ -595,7 +595,6 @@ public without sharing class CaseHandler implements ITrigger {
                 caseRecord.RecordTypeId == RT_ASU_ADMISSION_SERVICE &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
-                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Disability Resource Center') &&
                 (caseRecord.CC_Category__c == null ||
                 (mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
                 !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&

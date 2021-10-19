@@ -53,4 +53,39 @@ private class SubscriberTriggerTest {
             );
         }
     }
+
+    @isTest
+    private static void test() {
+        String res;
+        List<Subscriber__c> l = new List<Subscriber__c>();
+        List<Id> subscriberIds = new List<Id>();
+
+        List<Subscription__c> subscriptions = TestDataFactory.createTestSubscriptions(1);
+        insert subscriptions;
+
+        Contact con = new Contact(FirstName = 'Joe', LastName = 'Smith', Phone = '415.555.1212');
+        List<Contact> conList = new List<Contact>{ con };
+        insert con;
+        List<Subscriber__c> subCon = TestDataFactory.createTestSubscribers(conList, subscriptions);
+        insert subCon;
+        List<Subscriber__c> subc = [SELECT Name FROM Subscriber__c WHERE Contact__c = :con.Id];
+
+        List<Contact> contacts = ContactService.createTestContacts(5);
+        insert contacts;
+
+        List<Subscriber__c> subscribers = TestDataFactory.createTestSubscribers(contacts, subscriptions);
+        for (Subscriber__c sub : subscribers) {
+            subscriberIds.add(sub.Id);
+            sub.HashSubscriberID__c = null;
+        }
+        insert subscribers;
+
+        Test.startTest();
+        res = SubscriberService.subscriberFieldsToString();
+        l = SubscriberService.getSubscribers(con.Id);
+        SubscriberService.setHashIdNotFuture(subscriberIds);
+        Test.stopTest();
+
+        System.assertEquals(l.size(), subc.size());
+    }
 }

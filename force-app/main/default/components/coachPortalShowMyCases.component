@@ -29,7 +29,7 @@
     <apex:attribute name="showTimeZone" type="boolean" description="" default="false" />
 
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form>
+        <apex:form >
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
@@ -384,7 +384,7 @@
                 </div>
             </div>
         </apex:form>
-        <apex:form>
+        <apex:form >
             <div class="headerFooter">
                 <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
                     reRender="rerenderMe" status="ASUAjaxStatus" />

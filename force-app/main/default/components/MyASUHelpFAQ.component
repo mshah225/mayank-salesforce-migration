@@ -31,7 +31,7 @@
                 </apex:pageBlock>
             </apex:form>
             <apex:form id="myasu-help-region-faq-search-results" styleClass="p-2">
-                <apex:actionRegion>
+                <apex:actionRegion >
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
                             <div class="d-none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>

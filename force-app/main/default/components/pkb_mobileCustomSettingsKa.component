@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component >
     <script type="text/javascript">
         //Logic to handle Knowledge Articles Layout selection for PKB Mobile
 

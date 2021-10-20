@@ -171,7 +171,7 @@
                                     <strong>Duo Authentication</strong>
                                 </div>
                             </apex:pageBlockButtons>
-                            <apex:outputPanel>
+                            <apex:outputPanel >
                                 <apex:pageMessage severity="warning" title="Duo Authentication" summary="The Caller did not complete DUO Authentication."
                                     rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}" />
                                 <apex:pageMessage severity="warning" title="Duo Authentication" summary="Phone Number was not provided, so an authentication check was not made."
@@ -252,7 +252,7 @@
                                         <apex:outputText id="detailLink"> Select a contact </apex:outputText>
                                     </apex:pageBlockSectionItem>
 
-                                    <apex:pageBlockSectionItem>
+                                    <apex:pageBlockSectionItem >
                                         <apex:outputLabel for="snLink" value="Service Now" />
 
                                         <apex:outputLink id="snLink" target="_blank" onclick="openPage('https://asu.service-now.com/navpage.do'); return false;"
@@ -424,9 +424,9 @@
 
                                         <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
-                                        <apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem >
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
-                                            <apex:actionRegion>
+                                            <apex:actionRegion >
                                                 <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
                                                     size="1">
                                                     <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:pageSection:categorySectionItem:categoryOptions, mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions"
@@ -440,7 +440,7 @@
 
                                         <apex:pageBlockSectionItem id="categorySectionItem">
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
-                                            <apex:actionRegion>
+                                            <apex:actionRegion >
                                                 <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
                                                     <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions, mypage:myform:case:pageSection:descriptionBox"
                                                     />
@@ -451,7 +451,7 @@
 
                                         <apex:pageBlockSectionItem id="subCategorySectionItem">
                                             <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
-                                            <apex:actionRegion>
+                                            <apex:actionRegion >
                                                 <apex:selectList id="subCategoryOptions" label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
                                                     <apex:selectOptions value="{!ccPicklist.subCategoryOptions}" />
                                                 </apex:selectList>
@@ -462,7 +462,7 @@
                                             <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
                                         </apex:inputField>
 
-                                        <apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem >
                                             <apex:outputLabel for="originSelect" value="Origin" />
                                             <apex:selectList id="originSelect" value="{!mycase.Origin__c}" size="1">
                                                 <apex:selectOptions value="{!originOptions}" />
@@ -561,7 +561,7 @@
                                     </apex:commandLink>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="First Name" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="firstName" assignTo="{!sortField}" />
@@ -571,7 +571,7 @@
                                     <apex:outputField value="{!contact.firstName}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Last Name" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="lastName" assignTo="{!sortField}" />
@@ -581,7 +581,7 @@
                                     <apex:outputField value="{!contact.lastName}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Phone" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="Phone" assignTo="{!sortField}" />
@@ -591,7 +591,7 @@
                                     <apex:outputField value="{!contact.Phone}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Help Desk Provided Phone" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="Help_Desk_Provided_Phone__c" assignTo="{!sortField}" />
@@ -601,7 +601,7 @@
                                     <apex:outputField value="{!contact.Help_Desk_Provided_Phone__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Birthdate" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="birthdate" assignTo="{!sortField}" />
@@ -611,7 +611,7 @@
                                     <apex:outputField value="{!contact.Birthdate}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="ASURITE" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="ASURite_ID__c" assignTo="{!sortField}" />
@@ -621,7 +621,7 @@
                                     <apex:outputField value="{!contact.ASURite_ID__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="EMPLID" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="EMPLID__c" assignTo="{!sortField}" />
@@ -631,7 +631,7 @@
                                     <apex:outputField value="{!contact.EMPLID__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Directory Email" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="ASU_Email__c" assignTo="{!sortField}" />
@@ -640,7 +640,7 @@
                                     <apex:outputField value="{!contact.ASU_Email__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="Personal Email" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="Personal_Email__c" assignTo="{!sortField}" />
@@ -650,7 +650,7 @@
                                     <apex:outputField value="{!contact.Personal_Email__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="CAP" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="CAP__c" assignTo="{!sortField}" />
@@ -660,7 +660,7 @@
                                     <apex:outputField value="{!contact.CAP__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:commandLink value="FERPA Hold" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="FERPA" assignTo="{!sortField}" />
@@ -708,7 +708,7 @@
                                         </apex:commandLink>
                                     </apex:column>
 
-                                    <apex:column>
+                                    <apex:column >
                                         <apex:commandLink action="{!articleDetails}" rerender="results" status="knowStatus1" style="font-weight: bold">
                                             <apex:param name="selectedKnowledgeArticleId" value="{!af.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}" />
                                             <apex:param name="isAttached" value="true" assignTo="{!isAttached}" /> {!af.Title}

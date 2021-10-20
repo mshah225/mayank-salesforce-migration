@@ -21,14 +21,14 @@
     </script>
     <apex:pageBlock title="All Attachments">
         <apex:pageBlockButtons location="top">
-            <apex:form>
+            <apex:form >
                 <input class="btn" type="button" value="Attach File" onClick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"
                 />
                 <input value="Download Attachments" class="btn" name="download_attachment" title="Download Attachments" type="button" onclick="openIntegration('{!baseUrlForAttachmentIntegration}/apex/CaseAttachmentList?scontrolCaching=1&id={!Case.Id}', 'height=600,location=no,resizable=yes,toolbar=no,status=no,menubar=no,scrollbars=1', 1)"
                 />
             </apex:form>
         </apex:pageBlockButtons>
-        <apex:form>
+        <apex:form >
             <apex:pageBlockTable value="{!allAttachmentsOnCaseAndCaseParent}" var="eachAttachment">
                 <apex:column headerValue="Action" width="80px" styleClass="actionColumn">
                     <a href="#" onClick="openTab('{!eachAttachment.Id}/e', 'Attached File')">Edit</a>

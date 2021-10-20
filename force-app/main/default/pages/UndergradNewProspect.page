@@ -94,7 +94,7 @@
     <body id="contentBody" class="content">
         <apex:form id="underGradForm">
             <apex:pageBlock title="ASU New Undergraduate Prospect Entry Form" id="undergradBlock">
-                <apex:pageBlockButtons>
+                <apex:pageBlockButtons >
                     <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus" />
                     <apex:actionStatus id="saveStatus">
                         <apex:facet name="start">
@@ -114,7 +114,7 @@
                     <apex:inputField value="{!contact.Email}" required="true" id="email" label="Email" type="email" />
                     <apex:inputField value="{!contact.Phone}" id="phone" type="tel" />
                     <apex:inputField value="{!contact.MobilePhone}" id="mobilephone" label="Mobile Phone" type="tel" />
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
                         <apex:outputLabel for="smsTextCheck">SMS Permission</apex:outputLabel>
                         <apex:inputCheckbox id="smsTextCheck" value="{!smsText}" />
                     </apex:pageBlockSectionItem>
@@ -175,7 +175,7 @@
                                             <br />
                                         </td>
                                         <td style="padding-left: 20px; border-left: solid 1px #ccc; width: 80%">
-                                            <apex:outputText>
+                                            <apex:outputText >
                                                 <b>Notes (Optional):</b>
                                             </apex:outputText>
                                             <br />
@@ -198,7 +198,7 @@
 
                         <apex:tab label="Event" name="event" id="eventTab">
                             <apex:outputPanel layout="block" style="overflow: hidden; height: 260px">
-                                <apex:actionRegion>
+                                <apex:actionRegion >
                                     <table style="width: 100%">
                                         <tr>
                                             <td style="padding-right: 20px; width: 20%">
@@ -242,7 +242,7 @@
                                                     <br />
                                                     <apex:outputPanel id="eventPanel">
                                                         <apex:dataTable id="eventList" value="{!eventList}" var="el" width="100%" cellpadding="8" rowClasses="even,odds" rendered="{!IF(eventSearchString != null,true,false)}">
-                                                            <apex:column>
+                                                            <apex:column >
                                                                 <apex:commandLink value="Select" reRender="elIdInput" status="actStatusEvent1">
                                                                     <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}" />
                                                                     <apex:param name="eventName" value="{!el.Name}" assignTo="{!eventName}" />
@@ -266,7 +266,7 @@
                 </apex:pageBlockSection>
 
                 <apex:pageBlockSection id="interestBlock" title="Interests (Optional)" columns="1">
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <h1>Interest - Select a type, and then an interest:</h1>
                         <br />
                         <br />

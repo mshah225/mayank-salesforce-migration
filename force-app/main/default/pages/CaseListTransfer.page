@@ -136,7 +136,7 @@
                     <i>Will you be transferring the cases to a User, Department or are you Releasing Ownership?</i>
                 </p>
                 <br />
-                <apex:form>
+                <apex:form >
                     <apex:actionFunction name="goBack2" action="{!goBack}" />
                     <apex:commandLink action="{!page2}" styleClass="caseBtn" style="margin-right: 20px; display: inline-block; width: 90px; text-align: center">
                         <i class="fa fa-user-plus"></i>
@@ -171,7 +171,7 @@
             </apex:outputPanel>
 
             <apex:outputPanel id="userPage" rendered="{!IF(page = 2,true,false)}">
-                <apex:form>
+                <apex:form >
                     <apex:actionFunction name="goBack2" action="{!goBack}" />
                     <i>Select a User to Transfer the Case to:</i>
                     <br />
@@ -303,7 +303,7 @@
                 </table>
                 <hr />
                 <br />
-                <apex:form>
+                <apex:form >
                     <apex:actionFunction name="goBack2" action="{!goBack}" />
                     <a class="regBtn" href="#" onclick="goBack2()" target="_self">
                         <i class="fa fa-chevron-circle-left"></i>
@@ -335,7 +335,7 @@
                         &nbsp;&nbsp;&nbsp;Go Back
                     </apex:commandLink>
 
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:commandLink action="{!transferCase}" styleClass="caseBtn">
                             <i class="fa fa-exchange"></i>
                             &nbsp;&nbsp;&nbsp;Transfer Cases
@@ -347,7 +347,7 @@
                 Successfully Transferred Case(s) to {!selectedGroupName}.
                 <hr />
                 <br />
-                <apex:form>
+                <apex:form >
                     <apex:actionFunction name="goToSource" action="{!goBack}" />
                     <a class="regBtn" href="#" onclick="goToSource()" target="_self">
                         <i class="fa fa-chevron-circle-left"></i>

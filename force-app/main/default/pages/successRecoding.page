@@ -35,7 +35,7 @@
             Student Coach Transfer
             <apex:actionStatus id="statusGif">
                 <apex:facet name="start">
-                    <apex:outputPanel>
+                    <apex:outputPanel >
                         <img src="/img/loading32.gif" width="20px" />
                     </apex:outputPanel>
                 </apex:facet>
@@ -105,7 +105,7 @@
                         <h4>Coach Search Results</h4>
                         <div class="table-responsive" style="max-height: 600px; overflow: auto">
                             <apex:dataTable value="{!resourceResults}" var="rr" cellPadding="15" styleClass="table-striped">
-                                <apex:column>
+                                <apex:column >
                                     <apex:outputPanel rendered="{!selectedStudents.size == 0}">
                                         <apex:commandLink value="Select" action="{!findCoachStudents}" styleClass="btn btn-primary" status="statusGif" rerender="mainForm">
                                             <apex:param name="selectedCoachId" value="{!rr.Id}" assignTo="{!selectedCoachId}" />
@@ -123,7 +123,7 @@
                                 <apex:column headerValue="ASURITE" value="{!rr.Alias}" />
                                 <apex:column headerValue="Name" value="{!rr.Name}" />
                                 <apex:column headerValue="Email">
-                                    <apex:outputText>{!rr.Email}</apex:outputText>
+                                    <apex:outputText >{!rr.Email}</apex:outputText>
                                 </apex:column>
                             </apex:dataTable>
                         </div>
@@ -160,7 +160,7 @@
                         <h4>Select Students To Transfer</h4>
                         <div class="table-responsive" style="max-height: 600px; overflow: auto">
                             <apex:dataTable id="studentResultsTable" value="{!studentsResults}" var="sr" cellPadding="15" styleClass="table-striped">
-                                <apex:column>
+                                <apex:column >
                                     <apex:facet name="header">
                                         <apex:inputCheckbox value="{!allStudentsChecked}">
                                             <apex:actionSupport event="onclick" action="{!checkAllStudents}" rerender="studentResultsTable" status="statusGif" />
@@ -298,7 +298,7 @@
                         <h4>Student Search Results</h4>
                         <div class="table-responsive" style="max-height: 600px; overflow: auto">
                             <apex:dataTable id="studentsTable" value="{!contactResults}" var="c" cellPadding="15" styleClass="table-striped">
-                                <apex:column>
+                                <apex:column >
                                     <apex:commandLink value="Select" action="{!selectContactAndFindSuccessStudent}" styleClass="btn btn-primary" status="statusGif"
                                         rerender="mainForm">
                                         <apex:param name="selectedContactId" value="{!c.Id}" assignTo="{!selectedContactId}" />

@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component >
     <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean" />
     <apex:attribute name="masqScopeIdCookie" description="Cookie" type="String" />
     <script>

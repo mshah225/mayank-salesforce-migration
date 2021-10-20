@@ -1,4 +1,4 @@
-<apex:page>
+<apex:page >
     <apex:includeLightning />
     <apex:includeScript value="/support/console/49.0/integration.js" />
     <div id="lightning" />

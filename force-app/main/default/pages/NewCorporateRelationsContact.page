@@ -1,12 +1,12 @@
 <apex:page showHeader="true" sidebar="true" controller="NewCorporateRelationsContactController">
-    <apex:form>
+    <apex:form >
         <apex:actionFunction name="checkClick" action="{!click}" reRender="accountHelpPanel" />
     </apex:form>
 
     <apex:form id="CRForm">
         <apex:pageBlock id="page1" title="New Corporate Relations Contact" rendered="{!page == 1}">
             <apex:pageMessages />
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Continue" action="{!validateContact}" />
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="Contact Information">
@@ -39,7 +39,7 @@
 
         <apex:pageBlock id="page2" title="Corporate Relations for Contact: {!contact.FirstName} {!contact.LastName}" rendered="{!page == 2}">
             <apex:pageMessages />
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Save" action="{!save}" status="addPageStatus" />
                 <apex:commandButton value="Save & New" action="{!saveAndNew}" status="addPageStatus" />
                 <apex:commandButton value="Add Relationship & Campaign" action="{!addPage}" status="addPageStatus" />
@@ -55,9 +55,9 @@
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="Relationship Information">
                 <apex:inputField value="{!relationship.Title__c}" />
-                <apex:PageBlockSectionItem>
+                <apex:PageBlockSectionItem >
                     <apex:outputLabel value="Department Affiliation" />
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:selectList value="{!selectedParentId}" label="Department Affiliation" multiselect="false" size="1" style="margin-left:4px;">
                             <span style="border-right:solid 3px #cc0000;position:absolute;height:18px;" />
                             <apex:selectOptions value="{!campaignOptions}" />
@@ -71,7 +71,7 @@
                         </apex:actionStatus>
                     </apex:actionRegion>
                 </apex:pageBlockSectionItem>
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                     <apex:outputLabel for="accountField" value="Account" />
                     <apex:inputField id="accountField" value="{!relationship.Account__c}" required="true" />
                 </apex:pageBlockSectionItem>
@@ -81,7 +81,7 @@
                 </apex:selectList>
                 <apex:outputPanel id="accountHelpPanel">
                     <apex:outputPanel rendered="{!clickedAccount}">
-                        <apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
                             <apex:outputLabel value="" for="accountHelp" />
                             <apex:outputText id="accountHelp">
                                 <i style="padding-left:20%;">Can't find the correct Account? You can&nbsp;
@@ -113,7 +113,7 @@
 
         <apex:pageBlock id="page3" title="Create a new Account" rendered="{!page == 3}">
             <apex:pageMessages />
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Save" action="{!insertAccount}" />
                 <apex:commandButton value="Back" action="{!cancelAccount}" immediate="true" />
             </apex:pageBlockButtons>
@@ -135,7 +135,7 @@
 
         <apex:pageBlock id="page4" title="Add a new Relationship for {!contact.FirstName} {!contact.LastName}" rendered="{!page == 4}">
             <apex:pageMessages />
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Save" action="{!insertRelationship}" />
                 <apex:commandButton value="Save & New" action="{!relationshipSaveAndNew}" />
                 <apex:commandButton value="Cancel" action="{!cancelAndSaveRelationship}" immediate="true" />
@@ -146,12 +146,12 @@
                     <span style="border-right:solid 3px #cc0000;position:absolute;height:18px;" />
                     <apex:selectOptions value="{!relTypeOptions}" />
                 </apex:selectList>
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                     <apex:outputLabel for="accountField" value="Account" />
                     <apex:inputField id="accountField" value="{!relationship.Account__c}" required="true" />
                 </apex:pageBlockSectionItem>
                 <apex:inputField value="{!relationship.Relationship_Start_Date__c}" />
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                     <apex:outputLabel value="" for="accountHelp" />
                     <apex:outputText id="accountHelp">
                         <i style="margin-left:-70px;">Can't find the correct Account? You can&nbsp;
@@ -163,15 +163,15 @@
 
         <apex:pageBlock id="page5" title="Add a new Campaign for {!contact.Firstname} {!contact.LastName}" rendered="{!page == 5}">
             <apex:pageMessages />
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Save" action="{!insertCampaignMember}" />
                 <apex:commandButton value="Save & New" action="{!campaignMemberSaveAndNew}" />
                 <apex:commandButton value="Cancel" action="{!cancelAndSaveCampaignMember}" immediate="true" />
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="Campaign Information">
-                <apex:PageBlockSectionItem>
+                <apex:PageBlockSectionItem >
                     <apex:outputLabel value="Department Affiliation" />
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:selectList value="{!selectedParentId}" label="Department Affiliation" multiselect="false" size="1" style="margin-left:4px;">
                             <span style="border-right:solid 3px #cc0000;position:absolute;height:18px;" />
                             <apex:selectOptions value="{!campaignOptions}" />
@@ -194,7 +194,7 @@
 
         <apex:pageBlock id="page6" title="Create a new Account" rendered="{!page == 6}">
             <apex:pageMessages />
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons >
                 <apex:commandButton value="Save" action="{!insertAccount}" />
                 <apex:commandButton value="Back" action="{!backToRelationship}" immediate="true" />
             </apex:pageBlockButtons>

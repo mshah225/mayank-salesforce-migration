@@ -232,7 +232,7 @@
             <div class="row intro">
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom: 20px">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">
-                        <apex:form >
+                        <apex:form id="alius-format">
                             <div id="sunDevilImgDiv" style="{!IF(urlParamsExistAndAreValid, 'display:block', 'display:none')}">
                                 <img id="studentPhotoImg2" src=" {!if(ISBLANK(suncardPhotoURL), URLFOR($Resource.blankAvatar), suncardPhotoURL)}" alt="suncard photo"
                                     class="img-responsive intro" style="max-width: 200px; width: 100%" />
@@ -442,7 +442,7 @@
 
             <div class="customErrorBox" style="{!IF(urlParamsExistAndAreValid, 'display: none', 'display:block')}">
                 <apex:outputPanel styleClass="customErrorMessage">
-                    <apex:pageMessages ></apex:pageMessages>
+                    <apex:pageMessages id="alius-format"></apex:pageMessages>
                 </apex:outputPanel>
             </div>
 

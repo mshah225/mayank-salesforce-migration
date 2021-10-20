@@ -1,4 +1,4 @@
-<apex:component >
+<apex:component id="alius-format">
     <apex:attribute name="maintenanceString" description="The message to be displayed on the SC during maintenance" type="String"
         default="" />
 

@@ -116,7 +116,7 @@
 
                     <apex:inputField value="{!contact.Birthdate}" id="birthdate" type="date" style="width: 130px" tabOrderHint="4" />
 
-                    <apex:pageBlockSectionItem >
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel for="smsTextCheck">SMS Permission</apex:outputLabel>
 
                         <apex:inputCheckbox id="smsTextCheck" value="{!smsText}" />
@@ -145,10 +145,10 @@
 
             <apex:pageBlock id="opportunity_info">
                 <apex:pageBlockSection title="Career Selection" collapsible="false" columns="2">
-                    <apex:pageBlockSectionItem >
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel for="careerList">Select Career</apex:outputLabel>
 
-                        <apex:actionRegion >
+                        <apex:actionRegion id="alius-format">
                             <apex:selectList id="careerList" value="{!career}" size="1" multiselect="false">
                                 <apex:selectOptions value="{!careers}" id="career" />
                                 <apex:actionSupport event="onchange" rerender="opportunity_info, msgs" status="careerEvent" />
@@ -178,9 +178,9 @@
                     <apex:inputField label="Previous Institution" value="{!previousEducation.Account__c}" id="previous_education_account" tabOrderHint="105"
                     />
 
-                    <apex:pageBlockSectionItem >
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel value="Interest: " for="asuLocationIntList" />
-                        <apex:actionRegion >
+                        <apex:actionRegion id="alius-format">
                             <apex:selectList id="interestPickList" value="{!pickSelection}" size="1">
                                 <apex:selectOption itemValue="--Select--" />
                                 <apex:selectOption itemValue="ASU Location" />
@@ -225,7 +225,7 @@
                 <apex:pageBlockSection id="grad_opportunity_info" rendered="{!career == 'graduate' || career == 'law'}" title="Graduate Opportunity Information"
                     collapsible="false" columns="1">
                     <apex:pageBlockSection columns="2">
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem id="alius-format">
                             <apex:outputLabel for="degreetype">Type</apex:outputLabel>
 
                             <apex:inputField value="{!opportunity.Type}" id="degreetype" required="true" taborderhint="200" />
@@ -233,10 +233,10 @@
                     </apex:pageBlockSection>
 
                     <apex:pageBlockSection columns="2" id="college_section">
-                        <apex:pageBlockSectionItem >
+                        <apex:pageBlockSectionItem id="alius-format">
                             <apex:outputLabel for="collegeList">College</apex:outputLabel>
 
-                            <apex:actionRegion >
+                            <apex:actionRegion id="alius-format">
                                 <div class="requiredBlock" style="background-color: #c00; height: 18px; width: 3px; float: left"></div>
 
                                 <apex:selectList id="collegeList" value="{!collegeSelected}" size="1" required="true" tabindex="201">
@@ -299,7 +299,7 @@
 
                                             <apex:outputPanel id="wrapper">
                                                 <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
-                                                <apex:actionRegion >
+                                                <apex:actionRegion id="alius-format">
                                                     <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
                                                         size="1">
                                                         <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper" />
@@ -310,7 +310,7 @@
                                                 <br />
 
                                                 <apex:outputLabel value="Case Category" for="categoryOptions" />
-                                                <apex:actionRegion >
+                                                <apex:actionRegion id="alius-format">
                                                     <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
                                                         <apex:actionSupport event="onchange" action="{!ccPicklist.updateSubCategories}" rerender="wrapper" />
                                                         <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
@@ -319,7 +319,7 @@
                                                 <br />
                                                 <br />
                                                 <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
-                                                <apex:actionRegion >
+                                                <apex:actionRegion id="alius-format">
                                                     <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
                                                         <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}" />
                                                     </apex:selectList>
@@ -330,7 +330,7 @@
                                         </td>
 
                                         <td style="padding-left: 20px; border-left: solid 1px #ccc; width: 80%">
-                                            <apex:outputText >
+                                            <apex:outputText id="alius-format">
                                                 <b>Notes</b>
                                             </apex:outputText>
                                             <br />
@@ -351,7 +351,7 @@
 
                         <apex:tab label="Event" name="event" id="eventTab">
                             <apex:outputPanel id="eventSearchPanel" layout="block" style="overflow: hidden; height: 260px">
-                                <apex:actionRegion >
+                                <apex:actionRegion id="alius-format">
                                     <table style="width: 100%">
                                         <tr>
                                             <td style="padding-right: 20px; width: 15%">
@@ -430,7 +430,7 @@
                                                     <apex:outputPanel id="eventPanel">
                                                         <apex:dataTable id="eventList" value="{!eventList}" var="el" width="100%" cellpadding="8" rowClasses="even,odds" rendered="{!IF(eventList.size
                                                                             > 0, true, false)}">
-                                                            <apex:column >
+                                                            <apex:column id="alius-format">
                                                                 <apex:commandLink value="Select" reRender="elIdInput,msgs,statusSelect" status="actStatusEvent">
                                                                     <apex:param name="elId" value="{!el.Id}" assignTo="{!elId}" />
                                                                     <apex:param name="eventName" value="{!el.Name}" assignTo="{!eventName}" />
@@ -468,7 +468,7 @@
                 </apex:pageBlockSection>
             </apex:pageBlock>
 
-            <apex:pageBlock >
+            <apex:pageBlock id="alius-format">
                 <apex:commandButton styleClass="button" action="{!savePage}" value="Save" status="saveStatus" />
 
                 <apex:commandButton styleClass="button" action="{!saveAndNew}" value="Save and New" status="saveStatus" />

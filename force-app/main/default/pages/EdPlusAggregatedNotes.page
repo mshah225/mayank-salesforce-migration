@@ -23,10 +23,10 @@
     <body>
         <apex:outputPanel layout="block" style="width: 100%; height: 100%; max-height: 220px">
             <apex:pageBlock id="TaskList" title="Tasks">
-                <apex:pageBlockSection >
+                <apex:pageBlockSection id="alius-format">
                     <!-- Filters start here -->
-                    <apex:form >
-                        <apex:outputText >Filter By:</apex:outputText>
+                    <apex:form id="alius-format">
+                        <apex:outputText id="alius-format">Filter By:</apex:outputText>
                         <apex:selectList styleClass="indent" value="{!filterType}" size="1">
                             <apex:selectOptions value="{!filterOptions}" />
                         </apex:selectList>
@@ -127,7 +127,7 @@
             });
         </script>
         <!-- Used to submitted usage data -->
-        <apex:form >
+        <apex:form id="alius-format">
             <apex:actionFunction name="trackUsage" action="{!trackUsage}" reRender="fakseresults">
                 <apex:param name="val_action" value="" assignTo="{! trackedAction }" />
                 <apex:param name="val_relatedRecordId" value="" assignTo="{! relatedRecordId }" />

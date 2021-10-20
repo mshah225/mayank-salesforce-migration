@@ -1,5 +1,5 @@
 <apex:page controller="ObjectScrambleInitiatorController">
-    <apex:form >
+    <apex:form id="alius-format">
         <apex:outputLabel value="{!response}"></apex:outputLabel>
         <apex:commandButton action="{!verifyNoProcessRunningAndStart}" value="Start Scramble Process" />
     </apex:form>

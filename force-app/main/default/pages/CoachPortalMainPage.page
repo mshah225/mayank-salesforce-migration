@@ -16,7 +16,7 @@
     <c:coachPortalViewAsComponent selectOptions="{!viewAsOptions}" hasViewAs="{!hasViewAs}" mimicId="{!$User.Id}" id="viewAsComponent">
         <!-- This bit is required in order to pass the mimic ID to the controller of the main page -->
         <!-- VF Components do not have a built in way to pass data up -->
-        <apex:form >
+        <apex:form id="alius-format">
             <apex:actionFunction name="setOwnerId" reRender="rerenderMe" status="ASUAjaxStatus">
                 <apex:param name="ownerId" assignTo="{!ownerId}" value="{!mimicId}" />
             </apex:actionFunction>

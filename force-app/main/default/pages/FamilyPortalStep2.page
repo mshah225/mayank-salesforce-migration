@@ -40,7 +40,7 @@
     </apex:form>
 
     <div class="family-portal-scope" role="main">
-        <apex:form >
+        <apex:form id="alius-format">
             <div id="accessible-body">
                 <div class="family-portal-2-container container mt-3 mb-5 mw-100 pl-4 pr-4">
                     <div class="row">

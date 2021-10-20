@@ -1,4 +1,4 @@
-<apex:component id="testidbleh">
+<apex:component id="alius-format">
     <style>
         .detailList a {
             color: #990033 !important;

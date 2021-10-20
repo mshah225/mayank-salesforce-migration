@@ -135,8 +135,8 @@ public with sharing class HelpDeskController {
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
         ccPicklist = new CaseClassificationPicklistService();
-        setCallerID();
         loadQueryConfig();
+        setCallerID();
         isPageLoaded = true;
     }
 

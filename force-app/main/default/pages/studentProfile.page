@@ -1934,7 +1934,7 @@
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
                                                     <th>CI Index</th>
-                                                    <td id="sr_ci_index"></td>
+                                                    <td id="sr_ci_index">{!ciIndex}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>eAdvisor</th>
@@ -3087,7 +3087,6 @@
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
                                 document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
-                                document.getElementById('sr_ci_index').innerHTML = result.CI_INDEX_INDICATOR__c;
                                 document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;

@@ -193,6 +193,7 @@ global with sharing class StudentProfileController {
             SELECT Checklist_Code__c, Checklist_Item_Code__c
             FROM Checklist_Item__c
             WHERE Administrative_Function__c = 'FINA'
+            AND Contact__c = :theContact.Id
         ];
 
         if (finAidChecklist.size() > 0) {

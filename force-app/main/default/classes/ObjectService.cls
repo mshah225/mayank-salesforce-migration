@@ -129,6 +129,35 @@ public class ObjectService {
         }
     }
 
+    /**
+     * Get the map of the active picklist values from the picklist field of some object
+     * this maps the label of each entry to it's respective value (repeated labels would cause issues)
+     */
+    public static Map<String, String> getPicklistChoicesMap(String objectName, String field) {
+        Map<String, String> labelToValue = new Map<String, String>();
+        Schema.DescribeSobjectResult describeObject = Schema.describeSObjects(new List<String>{ objectName })[0];
+        List<Schema.PicklistEntry> picklistOptions = describeObject.fields.getMap()
+            .get(field)
+            .getDescribe()
+            .getPicklistValues();
+        for (Schema.PicklistEntry picklistItem : picklistOptions) {
+            if (picklistItem.isActive())
+                labelToValue.put(picklistItem.getLabel(), picklistItem.getValue());
+        }
+        return labelToValue;
+    }
+    /**
+     * Get the list of SelectOptions of the active picklist values from the picklist field of some object
+     */
+    public static List<SelectOption> getPicklistChoicesSelectList(String objectName, String field) {
+        List<SelectOption> optionsToReturn = new List<SelectOption>();
+        Map<String, String> labelToValue = getPicklistChoicesMap(objectName, field);
+        for (String label : labelToValue.keySet()) {
+            optionsToReturn.add(new SelectOption(labelToValue.get(label), label));
+        }
+        return optionsToReturn;
+    }
+
     public class ObjectServiceException extends Exception {
     }
 }

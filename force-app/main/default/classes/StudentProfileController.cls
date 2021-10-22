@@ -40,6 +40,7 @@ global with sharing class StudentProfileController {
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
+    public Checklist_Item__c finanicalAidChecklist { get; set; }
     public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }
@@ -49,7 +50,7 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateAcademicsMessages { get; set; }
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
-    public List<String> graduateIndicatorsMessages { get; set; }
+    public List<String> graduateIndicatorsMessages { get; set; }    
 
     public Student_Program_Plan__c ugStudentProgram {
         get {
@@ -118,6 +119,7 @@ global with sharing class StudentProfileController {
             setMe3Results();
             setAdvisorStatus();
             setCIIndex();
+            setFinancialAidChecklist();
         } else {
             initializeValuesForNullContactId();
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
@@ -185,6 +187,19 @@ global with sharing class StudentProfileController {
 
         if (theContact == null || theContact.EMPLID__c == null) {
             throw new StudentProfileException('Contact missing EMPLId');
+        }
+    }
+
+    private void setFinancialAidChecklist() {
+        List<Checklist_Item__c> finAidChecklist = [
+            SELECT Checklist_Code__c, Checklist_Item_Code__c
+            FROM Checklist_Item__c
+            WHERE Administrative_Function__c = 'FINA'
+            AND Contact__c = :theContact.Id
+        ];
+
+        if (finAidChecklist.size() > 0) {
+            finanicalAidChecklist = finAidChecklist[0];
         }
     }
 

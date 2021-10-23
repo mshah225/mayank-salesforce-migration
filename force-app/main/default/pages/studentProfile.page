@@ -1962,7 +1962,12 @@
                                                         Past Due TIP
                                                         <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
-                                                    <td id="sr_past_due_tip">{!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}</td>
+                                                    <td id="sr_past_due_tip">
+                                                        {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--',studentAccount.Past_Due_Tip__c)}
+                                                        <apex:outputText value="{0, number, currency}">
+                                                            <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
+                                                        </apex:outputText>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Financial Hold</th>
@@ -2670,7 +2675,10 @@
                                                         <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="gr_pastDueTip">
-                                                        {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
+                                                        {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--',studentAccount.Past_Due_Tip__c)}
+                                                        <apex:outputText value="{0, number, currency}">
+                                                            <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
+                                                        </apex:outputText>
                                                     </td>
                                                 </tr>
                                                 <tr>

@@ -38,9 +38,10 @@
     <!-- FEEDBACK (this starts as hidden, then is placed in the overlay when "No" is clicked in the article feedback) -->
     <div id="feedbackModal" class="modal fade" tabindex="-1" role="dialog" aria-label="Provide Feedback" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="dialog">
-            <apex:outputPanel layout="block" id="feedbackModalRerenderSection" styleClass="modal-content">
-                <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!NOT(pkbCon.feedbackRecorded)}">
-                    <apex:form id="feedbackForm">
+            <apex:form id="feedbackForm">
+                <!-- apex:form should NOT be a child of the rerender section - if it is, then stuff can break -->
+                <apex:outputPanel layout="block" id="feedbackModalRerenderSection" styleClass="modal-content">
+                    <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!NOT(pkbCon.feedbackRecorded)}">
                         <div class="modal-header">
                             <h5 class="modal-title m-0" id="feedbackModalTitle">{!$Label.PKB2_Feedback_Appreciated}</h5>
                             <button type="button" class="close" style="background:unset" data-dismiss="modal" aria-label="Close">
@@ -65,18 +66,18 @@
                             <apex:commandButton action="{!pkbCon.recordArticleFeedback}" value="{!$Label.PKB2_Submit}" rerender="feedbackModalRerenderSection"
                                 status="feedbackStatus" styleClass="btn btn-light btn-sm" />
                         </div>
-                    </apex:form>
-                </apex:outputPanel>
+                    </apex:outputPanel>
 
-                <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!pkbCon.feedbackRecorded}">
-                    <div class="modal-body text-center">
-                        <p>{!$Label.PKB2_Thanks_For_Feedback}</p>
-                        <p>
-                            <a href="#" data-dismiss="modal" onclick="toggleFeedbackYesNoButtons(false); refreshYesNo(); return false;">{!$Label.PKB2_Close_Window}</a>
-                        </p>
-                    </div>
+                    <apex:outputPanel layout="block" styleClass="mt-1" rendered="{!pkbCon.feedbackRecorded}">
+                        <div class="modal-body text-center">
+                            <p>{!$Label.PKB2_Thanks_For_Feedback}</p>
+                            <p>
+                                <a href="#" data-dismiss="modal" onclick="toggleFeedbackYesNoButtons(false); refreshYesNo(); return false;">{!$Label.PKB2_Close_Window}</a>
+                            </p>
+                        </div>
+                    </apex:outputPanel>
                 </apex:outputPanel>
-            </apex:outputPanel>
+            </apex:form>
         </div>
     </div>
 </apex:component>

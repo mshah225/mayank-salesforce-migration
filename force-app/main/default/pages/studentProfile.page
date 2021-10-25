@@ -1942,7 +1942,12 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
-                                                    <td id="sr_cum_gpa">{!studentProgram.Cum_Gpa__c}</td>
+                                                    <td id="sr_cum_gpa">
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank">
+                                                            <c:sp_GPA gpa="{!studentProgram.Cum_Gpa__c}" />
+                                                        </a>
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Probation Code</th>

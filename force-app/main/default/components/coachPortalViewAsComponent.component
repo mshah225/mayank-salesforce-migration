@@ -31,7 +31,7 @@
     </apex:form>
 
     <apex:outputPanel id="componentContent">
-        <apex:componentBody>
+        <apex:componentBody id="alius-format">
             <apex:variable var="mimicId" value="{!viewAsId}" />
         </apex:componentBody>
     </apex:outputPanel>

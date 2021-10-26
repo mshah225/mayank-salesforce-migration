@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component id="alius-format">
     <!-- 1. Insert component immediately after <apex:slds /> tag -->
     <!-- 2. Add 'slds-scope' class to desired SLDS-based container -->
     <script>

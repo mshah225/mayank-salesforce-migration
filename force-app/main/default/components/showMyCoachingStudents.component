@@ -20,7 +20,7 @@
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
 
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form>
+        <apex:form id="alius-format">
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
@@ -223,7 +223,7 @@
             </script>
         </apex:form>
 
-        <apex:form>
+        <apex:form id="alius-format">
             <div class="headerFooter">
                 <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
                     reRender="rerenderMe" status="ASUAjaxStatus" />

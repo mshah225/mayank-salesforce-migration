@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component id="alius-format">
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
     <style>
         .family-portal-scope .bg-f5f5f5 {

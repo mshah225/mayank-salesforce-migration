@@ -5,7 +5,7 @@
 
     <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
 
-    <apex:form>
+    <apex:form id="alius-format">
         <apex:outputPanel layout="block" style="width: 100%; margin-top: 5px">
             <div style="font-weight: bold; font-size: 125%; float: left">
                 <apex:outputText rendered="{!pkbCon.displayContactUs}">

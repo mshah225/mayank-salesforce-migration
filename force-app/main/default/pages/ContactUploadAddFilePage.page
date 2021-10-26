@@ -1,5 +1,5 @@
 <apex:page showHeader="true" sidebar="true" standardController="Contact_Upload__c" extensions="ContactUploadAddFileExtension">
-    <apex:pageBlock>
+    <apex:pageBlock id="alius-format">
         <apex:outputPanel rendered="{!attachmentList.size > 0}">
             <apex:pageBlockTable value="{!attachmentList}" var="attachment">
                 <apex:column headerValue="">
@@ -18,16 +18,16 @@
         <apex:outputPanel rendered="{!attachmentList.size == 0}">
             <apex:form enctype="multipart/form-data">
                 <apex:pageBlockSection showHeader="false" columns="1" rendered="{!NOT(modeSelected)}">
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel value="Mode" for="mode" />
-                        <apex:outputPanel>
+                        <apex:outputPanel id="alius-format">
                             <apex:commandButton action="{!contactUploadButton}" value="Upload Subscribers" />
                             <apex:commandButton style="margin-left: 25px" action="{!contactMatcherButton}" value="Match Contacts" />
                         </apex:outputPanel>
                     </apex:pageBlockSectionItem>
                 </apex:pageBlockSection>
                 <apex:pageBlockSection showHeader="false" columns="1" id="block1" rendered="{!modeSelected}">
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel value="The Selected Mode is: " for="selectedItem" />
                         <apex:outputText value="{0}">
                             <apex:param value="{!contactModeSelected}" />
@@ -45,15 +45,15 @@
                             <apex:selectOptions value="{!subscriptionStatusOptions}" />
                         </apex:selectList>
                     </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel value="File" for="file" />
                         <apex:inputFile value="{!newAttachment.body}" filename="{!newAttachment.name}" id="file" required="true" />
                     </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel value="File Description" for="description" />
                         <apex:inputTextarea value="{!newAttachment.description}" id="description" />
                     </apex:pageBlockSectionItem>
-                    <apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="alius-format">
                         <apex:outputLabel value="" />
                         <apex:commandButton action="{!upload}" value="Upload and Process File" style="height: 30px; width: 135px; text-align: center"
                             id="submit" onclick="return confirm('Please confirm that you want to process this file, creating Contact and Subscriber records.');"

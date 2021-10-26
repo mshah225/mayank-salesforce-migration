@@ -41,7 +41,7 @@
                             <p class="{!IF(myCases.size > 0, 'd-block', 'd-none')}">
                                 Click the View button to see a history of your request, including chat and email history.
                             </p>
-                            <apex:form>
+                            <apex:form id="alius-format">
                                 <apex:pageBlock mode="maindetail">
                                     <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="border">
                                         <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1 text-truncate" headerValue="Subject" width="50%" value="{!case.Subject}"
@@ -73,7 +73,7 @@
                             <p class="{!IF(allClosedCases.size > 0, 'd-block', 'd-none')}">
                                 Click the View button to see a history of your request, including chat and email history.
                             </p>
-                            <apex:form>
+                            <apex:form id="alius-format">
                                 <apex:pageBlock mode="maindetail">
                                     <apex:pageBlockTable rendered="{!allClosedCases.size > 0}" value="{!allClosedCases}" var="case" styleClass="border">
                                         <apex:column headerClass="bg-f5f5f5 p-1" styleClass="border-top p-1 text-truncate" headerValue="Subject" width="50%" value="{!case.Subject}"

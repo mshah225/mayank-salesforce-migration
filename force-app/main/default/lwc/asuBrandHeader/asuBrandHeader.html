@@ -1,17 +1,18 @@
 <template>
-    <div id="headerSpacer" class="headerSpacer"></div>
-    <div id="headerContainer" class="headerContainer" lwc:dom="manual"></div>
-    <div id="jsBinding" class="jsBinding">
-        <div class="viewAsToggle" onclick={viewAsToggle}></div>
-    </div>
-    <div id="viewAsWrapper" class="viewAsWrapper p-1 d-none">
-        <c-asu-brand-view-as
-            first-name={viewAsFirstName}
-            last-name={viewAsLastName}
-            viewing-as={viewingAs}
-            empl-id={viewAsEmplId}
-            stop-view-as-url={viewAsStopViewAsUrl}
-            view-as-url={viewAsViewAsUrl}
-        ></c-asu-brand-view-as>
+    <div class="top-level-wrapper">
+        <div id="header-spacer" class="header-spacer"></div>
+        <div id="header-container" class="header-container" lwc:dom="manual"></div>
+        <template if:true={viewingAs}>
+            <div class="view-as-container w-100">
+                <div class="view-as">
+                    <div class="font-weight-bold">{viewAsFirstName} {viewAsLastName} ({viewAsEmplId})</div>
+                    <div>
+                        <a class="btn btn-sm bg-light" href={viewAsViewAsUrl}>Change View As</a>
+                        &nbsp;
+                        <a class="btn btn-sm bg-light" href={viewAsStopViewAsUrl}>Stop View As</a>
+                    </div>
+                </div>
+            </div>
+        </template>
     </div>
 </template>

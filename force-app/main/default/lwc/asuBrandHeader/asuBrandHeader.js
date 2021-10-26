@@ -1,5 +1,6 @@
 import {LightningElement, api} from 'lwc';
-import {loadScript} from 'lightning/platformResourceLoader';
+import {loadScript, loadStyle} from 'lightning/platformResourceLoader';
+import bootstrap_4_asu from '@salesforce/resourceUrl/bootstrap_4_asu';
 import jQuery from '@salesforce/resourceUrl/jQuery_3_1_1';
 import getFirstName from '@salesforce/apex/ASUBrandUtilities.getFirstName';
 
@@ -9,6 +10,7 @@ export default class AsuBrandHeader extends LightningElement {
     @api navTreeStr;
     @api buttons = [];
     @api noAutoSpacer = false;
+    @api stationary = false;
     oldStyle = false;
     oldStyleSelectedTab = null;
 
@@ -20,6 +22,8 @@ export default class AsuBrandHeader extends LightningElement {
     @api viewAsStopViewAsUrl;
 
     connectedCallback() {
+        loadStyle(this, bootstrap_4_asu + '/dist/css/bootstrap-asu.min.css');
+
         const params = new URLSearchParams(window.location.search);
 
         // Precedence: @api defined > URL param > default value
@@ -63,18 +67,15 @@ export default class AsuBrandHeader extends LightningElement {
             }
         }
     }
-    viewAsToggle() {
-        let obj = this.template.querySelector('.viewAsWrapper');
-        if (obj.classList.contains('d-none')) {
-            obj.classList.add('d-block');
-            obj.classList.remove('d-none');
-        } else {
-            obj.classList.add('d-none');
-            obj.classList.remove('d-block');
-        }
-    }
 
     renderedCallback() {
+        if (this.stationary) {
+            this.template.querySelector('.top-level-wrapper').classList.add('force-relative-header');
+        }
+        if (this.viewingAs) {
+            this.template.querySelector('.top-level-wrapper').classList.add('view-as-enabled');
+        }
+
         loadScript(this, jQuery).then(() => {
             $.getScript(
                 'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js',
@@ -91,7 +92,7 @@ export default class AsuBrandHeader extends LightningElement {
     }
 
     generateHeader() {
-        const idSelector = this.template.querySelector('.headerContainer').id;
+        const idSelector = this.template.querySelector('.header-container').id;
         const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
 
         // Additional header params to investigate:
@@ -106,27 +107,16 @@ export default class AsuBrandHeader extends LightningElement {
             baseUrl: this.baseUrl,
         };
 
-        // Add button for view as toggle
+        // Add section for view as
         if (this.viewingAs) {
-            this.buttons = [
-                {
-                    text:
-                        'Viewing as ' +
-                        this.viewAsFirstName +
-                        ' ' +
-                        this.viewAsLastName +
-                        ' (' +
-                        this.viewAsEmplId +
-                        ')',
-                    color: 'maroon',
-                    href:
-                        "javascript:document.querySelector('c-asu-brand-header').shadowRoot.querySelector('#" +
-                        this.template.querySelector('.jsBinding').id +
-                        "').querySelector('.viewAsToggle').click()",
-                },
-            ];
-
-            props.buttons = this.buttons;
+            props.navTree.push({
+                text: 'View As Student',
+                href: this.viewAsViewAsUrl,
+            });
+            props.navTree.push({
+                text: 'Stop Viewing As: ' + this.viewAsFirstName,
+                href: this.viewAsStopViewAsUrl,
+            });
         }
 
         getFirstName()
@@ -138,25 +128,14 @@ export default class AsuBrandHeader extends LightningElement {
             .finally(() => {
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
                 this.setupSpacerResizing();
-                this.attachViewAsSection();
             });
     }
     convertStrToNavTreeObj(navTreeStr) {
         const json = JSON.parse(navTreeStr);
         const entries = json['navbarLinks'];
-        let newStyle = true;
         let listOfLinks = [];
 
         if (entries) {
-            // Determine if using old link format
-            for (let i = 0; i < entries.length; i++) {
-                let entry = entries[i];
-                if (entry['text'] === undefined) {
-                    newStyle = false;
-                    break;
-                }
-            }
-
             if (!this.oldStyle) {
                 listOfLinks = entries;
             } else {
@@ -186,7 +165,7 @@ export default class AsuBrandHeader extends LightningElement {
     }
 
     resizeIt() {
-        this.template.querySelector('.headerSpacer').style.height =
+        this.template.querySelector('.header-spacer').style.height =
             this.template.querySelector('header').clientHeight + 10 + 'px';
     }
     setupSpacerResizing() {
@@ -216,15 +195,12 @@ export default class AsuBrandHeader extends LightningElement {
                     }, 100);
                 }
             });
-            this.template.querySelector('.headerContainer').addEventListener('click', () => {
+            this.template.querySelector('.header-container').addEventListener('click', () => {
                 // only run near the top of the page
                 window.setTimeout(() => {
                     this.resizeIt();
                 }, 100);
             });
         }
-    }
-    attachViewAsSection() {
-        this.template.querySelector('header').appendChild(this.template.querySelector('.viewAsWrapper'));
     }
 }

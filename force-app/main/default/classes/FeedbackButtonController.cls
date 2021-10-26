@@ -47,7 +47,7 @@ public without sharing class FeedbackButtonController {
                     alertHandler.newAlert(
                         customAlert.FATAL,
                         'Invalid carName parameter. Our support team has been notified of this error. ' +
-                        'If you require immediate assistance please call 1-855-ASU-5080.'
+                        'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                     );
 
                     throw new dynamicFeedbackException('Error: Invalid carName parameter');
@@ -56,7 +56,7 @@ public without sharing class FeedbackButtonController {
                 alertHandler.newAlert(
                     customAlert.FATAL,
                     'carName parameter not provided. Our support team has been notified of this error. ' +
-                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
 
                 throw new dynamicFeedbackException('carName parameter not provided');
@@ -101,7 +101,7 @@ public without sharing class FeedbackButtonController {
                 alertHandler.newAlert(
                     customAlert.FATAL,
                     'Form submission after initialization error. Our support team has been notified of this error. ' +
-                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
 
                 throw new dynamicFeedbackException('Error: Form submission after initialization error');
@@ -170,7 +170,7 @@ public without sharing class FeedbackButtonController {
                 alertHandler.newAlert(
                     customAlert.FATAL,
                     'Unexpected error. Our support team has been notified of this error. ' +
-                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
             }
 

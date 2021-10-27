@@ -392,7 +392,7 @@
                                                         <h4>
                                                             <apex:outputText value="{!pcm.Campaign.Name}" />
                                                         </h4>
-                                                        <apex:actionRegion id="alius-format">
+                                                        <apex:actionRegion id="alius-format11">
                                                             <apex:commandLink styleClass="linkBtn" style="margin-left:10px;" value="Remove" reRender="CRTabPanel" status="removeStatus"
                                                                 action="{!inActivateCM}">
                                                                 <apex:param name="inActivateParentButton" value="{!pcm.Id}" assignTo="{!inActivateCMId}" />
@@ -413,7 +413,7 @@
 
                                                                 <apex:outputText value="{!cm.Campaign.name}" style="margin-left:15px;" />
 
-                                                                <apex:actionRegion id="alius-format">
+                                                                <apex:actionRegion id="alius-format12">
                                                                     <apex:commandLink styleClass="linkBtn" style="margin-left:10px;" value="Remove" status="removeStatus" action="{!inActivateCM}">
                                                                         <apex:param name="inActivateParentButton" value="{!cm.Id}" assignTo="{!inActivateCMId}" />
                                                                     </apex:commandLink>
@@ -507,7 +507,7 @@
                                                                  && selectedParentCampaignName ==
                                                                  null,true,false)}">
                                             <apex:column width="50px">
-                                                <apex:actionRegion id="alius-format">
+                                                <apex:actionRegion id="alius-format13">
                                                     <apex:commandLink value="Select" action="{!assignToParentCampaign}" styleClass="linkBtn" reRender="searchInput,parentResultsPanel,childResultsPanel"
                                                         status="camSearchStatus">
                                                         <apex:param name="selectedParentCampaign" value="{!pc.Id}" assignTo="{!selectedParentCampaign}" />
@@ -524,7 +524,7 @@
 
                             <apex:outputPanel id="childResultsPanel" style="float:right;width:49.5%;">
                                 <apex:pageBlock rendered="{!IF(childCampaigns != null,true,false)}">
-                                    <apex:outputText id="alius-format">
+                                    <apex:outputText id="alius-format14">
                                         <b style="font-size:11pt;">
                                             Campaigns for {!selectedParentCampaignName}
                                         </b>
@@ -542,7 +542,7 @@
                                     <apex:pageBlockTable id="childResultsTable" value="{!fixedChildCampaigns}" var="chc" cellspacing="0" headerClass="none" columnClasses="remCols"
                                         rendered="{!IF(fixedChildCampaigns.size != 0,true,false)}">
                                         <apex:column width="50px">
-                                            <apex:actionRegion id="alius-format">
+                                            <apex:actionRegion id="alius-format15">
                                                 <apex:commandLink styleClass="linkBtn" value="Select" action="{!assignToChildCampaign}" reRender="CRTabPanel,searchForm"
                                                     status="camSearchStatus">
                                                     <apex:param name="selectedChildCampaign" value="{!chc.Id}" assignTo="{!selectedChildCampaign}" />
@@ -773,7 +773,7 @@
                                     <apex:pageBlockSection id="communicationFilter" columns="1">
                                         <!-- Filters start here -->
                                         <apex:outputPanel rendered="{!IF(allMessageList.size > 0,true,false)}">
-                                            <apex:outputText id="alius-format">Filter By: </apex:outputText>
+                                            <apex:outputText id="alius-format16">Filter By: </apex:outputText>
                                             <apex:selectList styleClass="indent" value="{!commFilterType}" size="1">
                                                 <apex:selectOptions value="{!commFilterOptions}" />
                                             </apex:selectList>
@@ -796,45 +796,45 @@
                                     </apex:pageBlockSection>
                                     <apex:pageBlockTable id="communicationList" value="{!filteredMessageList}" var="message" cellpadding="7" width="100%" rendered="{!IF(allMessageList.size > 0,true,false)}">
                                         <!-- Email Name -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format17">
                                             <apex:facet name="header">Email Name</apex:facet>
-                                            <apex:outputText id="alius-format">
+                                            <apex:outputText id="alius-format18">
                                                 <a href="/{!message.Id}" target="_blank">{!message.name}</a>
                                             </apex:outputText>
                                         </apex:column>
 
                                         <!-- Subject -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format19">
                                             <apex:facet name="header">Subject</apex:facet>
                                             <apex:outputText value="{!message.subject}" />
                                         </apex:column>
 
                                         <!-- Sent By -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format110">
                                             <apex:facet name="header">Sent By</apex:facet>
                                             <apex:outputText value="{!message.sender}" />
                                         </apex:column>
 
                                         <!-- Delivery Status -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format111">
                                             <apex:facet name="header">Delivery Status</apex:facet>
                                             <apex:outputText value="{!message.deliveryStatus}" />
                                         </apex:column>
 
                                         <!-- Sent Date/Time -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format112">
                                             <apex:facet name="header">Sent Date/Time</apex:facet>
                                             <apex:outputText value=" {!message.timeSent}" />
                                         </apex:column>
 
                                         <!-- Open Date/Time -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format113">
                                             <apex:facet name="header">Open Date/Time</apex:facet>
                                             <apex:outputText value=" {!message.timeOpened}" />
                                         </apex:column>
 
                                         <!-- Unique Clicks -->
-                                        <apex:column id="alius-format">
+                                        <apex:column id="alius-format114">
                                             <apex:facet name="header">Unique Clicks</apex:facet>
                                             <apex:outputText value="{!message.uniqueClicks}" />
                                         </apex:column>

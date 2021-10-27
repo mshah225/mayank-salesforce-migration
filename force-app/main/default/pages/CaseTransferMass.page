@@ -148,7 +148,7 @@
                     <i>You will be transferring the case(s) to a User</i>
                 </p>
                 <br />
-                <apex:form id="alius-format">
+                <apex:form id="alius-format130">
                     <apex:commandLink action="{!page2}" styleClass="caseBtn" style="margin-right: 20px; display: inline-block; width: 90px; text-align: center">
                         <i class="fa fa-user-plus"></i>
                         &nbsp;&nbsp;&nbsp;User
@@ -178,7 +178,7 @@
             </apex:outputPanel>
 
             <apex:outputPanel id="userPage" rendered="{!IF(page = 2,true,false)}">
-                <apex:form id="alius-format">
+                <apex:form id="alius-format131">
                     <i>Select a User to Transfer the Case to:</i>
                     <br />
                     <br />
@@ -308,7 +308,7 @@
                 </table>
                 <hr />
                 <br />
-                <apex:form id="alius-format">
+                <apex:form id="alius-format132">
                     <apex:commandLink action="{!page1}" styleClass="regBtn">
                         <i class="fa fa-chevron-circle-left"></i>&nbsp;&nbsp;&nbsp;Go Back
                     </apex:commandLink>
@@ -338,7 +338,7 @@
                         &nbsp;&nbsp;&nbsp;Go Back
                     </apex:commandLink>
 
-                    <apex:actionRegion id="alius-format">
+                    <apex:actionRegion id="alius-format133">
                         <apex:commandLink action="{!transferCase}" styleClass="caseBtn">
                             <i class="fa fa-exchange"></i>
                             &nbsp;&nbsp;&nbsp;Transfer Cases

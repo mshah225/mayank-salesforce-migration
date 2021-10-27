@@ -1,4 +1,4 @@
-<apex:page id="alius-format">
+<apex:page id="alius-format1135">
     <apex:includeLightning />
 
     <div id="lightning" />

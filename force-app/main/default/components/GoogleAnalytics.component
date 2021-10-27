@@ -1,4 +1,4 @@
-<apex:component id="alius-format">
+<apex:component id="alius-format95">
     <!-- Google Analytics -->
     <script>
         var $j = jQuery.noConflict();

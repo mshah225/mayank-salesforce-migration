@@ -39,36 +39,36 @@
             background-color: rgb(241, 241, 241);
         }
     </style>
-    <apex:form id="alius-format">
+    <apex:form id="alius-format197">
         <apex:pageblock title="IDHelper">
             <apex:pageBlockButtons location="top">
                 <apex:commandButton action="{!clearCache}" value="Clear Cache" reRender="IDHelperStats" status="ASUAjaxStatus" />
                 <apex:commandButton action="{!rebuildCache}" value="Rebuild Cache" reRender="IDHelperStats" status="ASUAjaxStatus" />
             </apex:pageBlockButtons>
-            <apex:tabPanel id="alius-format">
+            <apex:tabPanel id="alius-format198">
                 <apex:tab title="Stats" label="Stats">
                     <apex:pageBlockSection id="IDHelperStats">
-                        <apex:pageBlockSectionItem id="alius-format">
+                        <apex:pageBlockSectionItem id="alius-format199">
                             <apex:outputLabel for="profileIdsCount">Number of Profiles</apex:outputLabel>
                             <apex:outputText id="profileIdsCount">{!ProfileIdsRecordCount}</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem id="alius-format">
+                        <apex:pageBlockSectionItem id="alius-format1100">
                             <apex:outputLabel for="recordTypeIdsCount">Number of Record Types</apex:outputLabel>
                             <apex:outputText id="recordTypeIdsCount">{!RecordTypeIdsRecordCount}</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem id="alius-format">
+                        <apex:pageBlockSectionItem id="alius-format1101">
                             <apex:outputLabel for="profileIdsSize">Size of Profiles</apex:outputLabel>
                             <apex:outputText id="profileIdsSize">{!profileIdRecordSizeInBytes} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem id="alius-format">
+                        <apex:pageBlockSectionItem id="alius-format1102">
                             <apex:outputLabel for="recordTypeIdsSize">Size of Record Types</apex:outputLabel>
                             <apex:outputText id="recordTypeIdsSize">{!recordTypeIdRecordSizeInBytes} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem id="alius-format">
+                        <apex:pageBlockSectionItem id="alius-format1103">
                             <apex:outputLabel for="totalProfileIdsSize">Total Size Of Profile_Ids__c</apex:outputLabel>
                             <apex:outputText id="totalProfileIdsSize">{!profileIdRecordSizeInBytes*ProfileIdsRecordCount} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
-                        <apex:pageBlockSectionItem id="alius-format">
+                        <apex:pageBlockSectionItem id="alius-format1104">
                             <apex:outputLabel for="totalRecordTypeIdsSize">Total Size of Record_Type_Ids__c</apex:outputLabel>
                             <apex:outputText id="totalRecordTypeIdsSize">{!recordTypeIdRecordSizeInBytes*RecordTypeIdsRecordCount} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>

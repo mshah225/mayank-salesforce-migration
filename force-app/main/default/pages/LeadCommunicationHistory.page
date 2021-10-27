@@ -51,11 +51,11 @@
     </head>
 
     <body>
-        <apex:pageBlock id="alius-format">
-            <apex:pageBlockSection id="alius-format">
+        <apex:pageBlock id="alius-format1105">
+            <apex:pageBlockSection id="alius-format1106">
                 <!-- Filters start here -->
-                <apex:form id="alius-format">
-                    <apex:outputText id="alius-format">Filter By: </apex:outputText>
+                <apex:form id="alius-format1107">
+                    <apex:outputText id="alius-format1108">Filter By: </apex:outputText>
                     <apex:selectList styleClass="indent" value="{!filterType}" size="1">
                         <apex:selectOptions value="{!filterOptions}" />
                     </apex:selectList>
@@ -76,45 +76,45 @@
 
             <apex:pageBlockTable value="{!filteredMessages}" var="message">
                 <!-- Email Name -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1109">
                     <apex:facet name="header">Email Name</apex:facet>
-                    <apex:outputText id="alius-format">
+                    <apex:outputText id="alius-format1110">
                         <a href="/{!message.Id}" target="_blank">{!message.name}</a>
                     </apex:outputText>
                 </apex:column>
 
                 <!-- Subject -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1111">
                     <apex:facet name="header">Subject</apex:facet>
                     <apex:outputText value="{!message.subject}" />
                 </apex:column>
 
                 <!-- Sent By -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1112">
                     <apex:facet name="header">Sent By</apex:facet>
                     <apex:outputText value="{!message.sender}" />
                 </apex:column>
 
                 <!-- Delivery Status -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1113">
                     <apex:facet name="header">Delivery Status</apex:facet>
                     <apex:outputText value="{!message.deliveryStatus}" />
                 </apex:column>
 
                 <!-- Sent Date/Time -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1114">
                     <apex:facet name="header">Sent Date/Time</apex:facet>
                     <apex:outputText value="{!message.timeSent}" />
                 </apex:column>
 
                 <!-- Open Date/Time -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1115">
                     <apex:facet name="header">Open Date/Time</apex:facet>
                     <apex:outputText value="{!message.timeOpened}" />
                 </apex:column>
 
                 <!-- Unique Clicks -->
-                <apex:column id="alius-format">
+                <apex:column id="alius-format1116">
                     <apex:facet name="header">Unique Clicks</apex:facet>
                     <apex:outputText value="{!message.uniqueClicks}" />
                 </apex:column>

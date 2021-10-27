@@ -98,13 +98,13 @@
     <apex:variable var="langDisplayValue" value="{!IF(PKB__c.Multi_Language_Enabled__c, 'block', 'none')}" />
 
     <body>
-        <apex:form id="alius-format">
+        <apex:form id="alius-format1174">
             <apex:pageBlock id="thePage" title="PKB Settings" mode="edit">
                 <!--  empty rendering for standard controller purposes -->
                 <apex:outputField value="{!PKB__c.Selected_Languages__c}" rendered="false" />
 
                 <apex:pageBlockSection showHeader="false" collapsible="false" rendered="{!settingsExist}" columns="1">
-                    <apex:pageBlockSectionItem id="alius-format">
+                    <apex:pageBlockSectionItem id="alius-format1175">
                         <apex:outputPanel layout="block" style="padding-top: 5px; text-align: left">{!$Label.PKB2_Select_Settings}</apex:outputPanel>
                         <apex:outputPanel layout="block" style="margin-left: -80px">
                             <apex:selectList value="{!selectedSettings}" size="1" multiSelect="false" onchange="selectingSettings(this);">
@@ -125,7 +125,7 @@
                 <br />
 
                 <apex:pageBlockSection showHeader="false" collapsible="false" rendered="{!NOT(settingsExist) && NOT(creatingSettings)}" columns="1">
-                    <apex:pageBlockSectionItem id="alius-format">
+                    <apex:pageBlockSectionItem id="alius-format1176">
                         <apex:outputPanel layout="block"></apex:outputPanel>
                         <apex:outputPanel layout="block">
                             {!$Label.PKB2_No_Settings_Yet}
@@ -176,7 +176,7 @@
                         <!-- Common Setup, Name,Facebook,Languages,popular arts per page, related arts per page, create account/contact -->
                         <div id="commonSetup">
                             <apex:pageBlockSection showHeader="false" collapsible="false" columns="1">
-                                <apex:pageBlockSectionItem id="alius-format">
+                                <apex:pageBlockSectionItem id="alius-format1177">
                                     <apex:outputLabel for="Name" value="Name" />
                                     <apex:outputPanel layout="block">
                                         <span class="sApiNameContainer">
@@ -263,7 +263,7 @@
 
                                 <apex:inputField value="{!PKB__c.Add_Case_Id__c}" styleClass="cti_integration" />
 
-                                <apex:pageBlockSectionItem id="alius-format">
+                                <apex:pageBlockSectionItem id="alius-format1178">
                                     <apex:outputLabel styleClass="cti_section" value="{!$ObjectType.PKB__c.Fields.CTI_configuration__c.Label}" />
                                     <apex:outputPanel id="cti_keys" layout="block" styleClass="cti_section">
                                         <div>
@@ -302,7 +302,7 @@
                 </apex:outputPanel>
 
                 <apex:pageBlockSection showHeader="false" collapsible="false" columns="1">
-                    <apex:pageBlockSectionItem id="alius-format">
+                    <apex:pageBlockSectionItem id="alius-format1179">
                         <apex:outputPanel layout="block"></apex:outputPanel>
                         <apex:outputPanel layout="block"> </apex:outputPanel>
                     </apex:pageBlockSectionItem>

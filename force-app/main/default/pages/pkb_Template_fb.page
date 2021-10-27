@@ -37,10 +37,10 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
         <!--  HOME PAGE LAYOUT -->
         <div id="body">
             <div id="right_column">
-                <apex:form id="alius-format">
+                <apex:form id="alius-format1180">
                     <apex:outputPanel layout="block" style="width: 100%; margin-top: 5px" rendered="{!NOT(pkbCon.displayContactUs)}">
                         <div style="font-weight: bold; font-size: 125%; float: left">
-                            <apex:outputText id="alius-format">
+                            <apex:outputText id="alius-format1181">
                                 Knowledge Base &nbsp;&#124;&nbsp;
                                 <apex:outputLink value="{!pkbCon.currentSiteUrl}">
                                     {!$Label.PKB2_Contact_Us}

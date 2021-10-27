@@ -1,5 +1,5 @@
 <apex:page controller="PickListDescController" contentType="application/xml" showHeader="false" sidebar="false" standardStylesheets="false">
-    <apex:form id="alius-format">
+    <apex:form id="alius-format1136">
         <apex:inputField value="{!sobj[pickListFieldName]}" />
     </apex:form>
 </apex:page>

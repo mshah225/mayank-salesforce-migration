@@ -1,6 +1,6 @@
 <apex:page controller="omnichannelController">
     <apex:form id="changeDescription">
-        <apex:pageBlock id="alius-format">
+        <apex:pageBlock id="alius-format1141">
             <apex:inputTextarea id="textInput" value="{!outOfOfficeMessage}" />
             <p />
         </apex:pageBlock>

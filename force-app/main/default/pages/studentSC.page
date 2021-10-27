@@ -50,29 +50,6 @@
     <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
     <script>
-        var widthToPush;
-        var viewAsLinkWidth = realWidth($('.asu-brand-menu-view-as-change'));
-        var logoutAsLinkWidth = realWidth($('.asu-brand-menu-view-as-logout'));
-
-        if (viewAsLinkWidth > logoutAsLinkWidth) {
-            widthToPush = viewAsLinkWidth;
-        } else if (viewAsLinkWidth < logoutAsLinkWidth) {
-            widthToPush = logoutAsLinkWidth;
-        } else {
-            widthToPush = logoutAsLinkWidth;
-        }
-
-        $('.asu-brand-menu-view-as-dropdown-menu').width(widthToPush + 2);
-
-        function realWidth(obj) {
-            var clone = obj.clone();
-            clone.css('visibility', 'hidden');
-            $('body').append(clone);
-            var width = clone.outerWidth();
-            clone.remove();
-            return width;
-        }
-
         // Load LWCs
         const urlParams = new URLSearchParams(window.location.search);
         let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
@@ -95,6 +72,7 @@
                     "c:asuBrandHeader",
                     {
                         title, baseUrl, navTreeStr,
+                        stationary: true,
                         viewingAs: '{!viewingAs}',
                         viewAsFirstName: '{!firstName}',
                         viewAsLastName: '{!lastName}',

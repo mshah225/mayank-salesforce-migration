@@ -49,7 +49,7 @@ public with sharing class ViewCaseController {
         if (String.isEmpty(caseId)) {
             return false;
         }
-        Case caseOnPage = [SELECT ClosedDate FROM Case WHERE Id = :caseId];
+        Case caseOnPage = getCaseDetails();
         if (caseOnPage.ClosedDate == null) {
             return false;
         }

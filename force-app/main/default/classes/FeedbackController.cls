@@ -1,5 +1,6 @@
 public with sharing class FeedbackController {
     private MyASUHelpController sc;
+    private static Boolean debug = true; // Debug mode flag
 
     public Case c { get; set; }
     public Contact feedbackContact { get; set; }
@@ -61,6 +62,15 @@ public with sharing class FeedbackController {
             c.Visible_by_Contact__c = false;
             insert c;
         } catch (Exception e) {
+            List<String> vars = new List<String>();
+            if (queue != null)
+                vars.add(ErrorLogger.convertSObjectToJSON('queue', queue));
+            if (comments != null)
+                vars.add(ErrorLogger.convertStringToJSON('comments', comments));
+            if (feedbackContact != null)
+                vars.add(ErrorLogger.convertSObjectToJSON('feedbackContact', feedbackContact));
+
+            ErrorLogger.log(e, vars, debug);
         }
 
         PageReference submit = new PageReference('/studentSC?Confirm=feedback');

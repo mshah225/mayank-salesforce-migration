@@ -76,9 +76,8 @@ public with sharing class ViewCaseController {
             showCaseAttachments = true;
         }
 
-        if (allCaseAttachmentsFormattedTime == null) {
-            allCaseAttachmentsFormattedTime = new List<AttachmentWithFormattedDateTime>();
-        }
+        allCaseAttachmentsFormattedTime = new List<AttachmentWithFormattedDateTime>();
+
         for (Attachment a : allCaseAttachments) {
             AttachmentWithFormattedDateTime awfdt = new AttachmentWithFormattedDateTime();
             awfdt.Id = a.Id;

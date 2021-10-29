@@ -1897,7 +1897,7 @@
                                                     <tr>
                                                         <th>Academic Status Report</th>
                                                         <td id="sr_asr">
-                                                            <div id="sr_asr_errors" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>
+                                                            <div id="sr_asr_errors" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></div>
                                                         </td>
                                                     </tr>
                                                     <tr id="sr_asr_info_tr" style="display: none">

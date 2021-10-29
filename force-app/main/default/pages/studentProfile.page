@@ -4800,12 +4800,10 @@
             document.getElementById('psTransferWorkErrors').innerHTML =
                 "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
             var transferQuery =
-                'SELECT COURSE__c, DisplayUrl, ECREDIT__c, EMPLID__c, ExternalId, GPAHRS__c, ' +
-                'GPAPTS__c, GRADE__c, Id, INSTITUTION__c, RCREDIT__c, TERM__c, TITLE__c, ' +
-                'TOPIC__c ' +
-                'FROM JBT_RET_CLASS_XFER__x ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                'ORDER BY COURSE__c, TERM__c';
+                'SELECT ASU_Course__c, Course_Taken__c, Date_Posted__c, Grade__c, Grade_Points_per_Unit__c, Term__r.PeopleSoft_Code__c, Units_Taken__c, Units_Transferred__c, Name ' +
+                'FROM Transfer_Credit__c ' +
+                "WHERE Contact__r.EMPLID__c = '{!theContact.EMPLID__c}' " +
+                'ORDER BY ASU_Course__c, Term__r.PeopleSoft_Code__c';
             var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
             conn.query(
                 transferQuery,
@@ -4827,14 +4825,12 @@
                                 '<tr style="cursor:pointer">' +
                                 '<th onclick="sortTransferOnClick(\'Term\')">Term</th>' +
                                 '<th onclick="sortTransferOnClick(\'Institution\')">Institution</th>' +
-                                '<th onclick="sortTransferOnClick(\'Course\')">Course</th>' +
-                                '<th onclick="sortTransferOnClick(\'Title\')">Title</th>' +
-                                '<th onclick="sortTransferOnClick(\'Topic\')">Topic</th>' +
+                                '<th onclick="sortTransferOnClick(\'Course Taken\')">Course Taken</th>' +
+                                '<th onclick="sortTransferOnClick(\'ASU Course\')">ASU Course</th>' +
                                 '<th onclick="sortTransferOnClick(\'Grade\')">Grade</th>' +
-                                '<th onclick="sortTransferOnClick(\'RCredit\')">R Credit</th>' +
-                                '<th onclick="sortTransferOnClick(\'ECredit\')">E Credit</th>' +
-                                '<th onclick="sortTransferOnClick(\'Hours\')">GPA Hours</th>' +
-                                '<th onclick="sortTransferOnClick(\'Points\')">GPA Points</th>' +
+                                '<th onclick="sortTransferOnClick(\'Grade Points per Unit\')">Grade Points per Unit</th>' +
+                                '<th onclick="sortTransferOnClick(\'Units Taken\')">Units Taken</th>' +
+                                '<th onclick="sortTransferOnClick(\'Units Transferred\')">Units Transferred</th>' +
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';
@@ -4844,34 +4840,28 @@
                                     '' +
                                     '<tr>' +
                                     '<td>' +
-                                    result[i].TERM__c +
+                                    result[i].Term__r.PeopleSoft_Code__c +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].INSTITUTION__c +
+                                    result[i].Name +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].COURSE__c +
+                                    result[i].Course_Taken__c +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].TITLE__c +
+                                    result[i].ASU_Course__c +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].TOPIC__c +
+                                    result[i].Grade__c +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].GRADE__c +
+                                    result[i].Grade_Points_per_Unit__c +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].RCREDIT__c +
+                                    result[i].Units_Taken__c +
                                     '</td>' +
                                     '<td>' +
-                                    result[i].ECREDIT__c +
-                                    '</td>' +
-                                    '<td>' +
-                                    result[i].GPAHRS__c +
-                                    '</td>' +
-                                    '<td>' +
-                                    result[i].GPAPTS__c +
+                                    result[i].Units_Transferred__c +
                                     '</td>' +
                                     '</tr>';
                             }

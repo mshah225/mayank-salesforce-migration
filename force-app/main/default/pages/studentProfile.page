@@ -1159,7 +1159,7 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>
-                                                            Past Due TIP
+                                                            Past Due Balance
                                                             <i class="fa fa-question-circle" title="Tuition Installment Plan" data-placement="right"></i>
                                                         </th>
                                                         <td id="account_balance_past_due_tip">
@@ -1959,7 +1959,7 @@
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
                                                     <th>
-                                                        Past Due TIP
+                                                        Past Due Balance
                                                         <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="sr_past_due_tip">
@@ -2671,7 +2671,7 @@
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
                                                     <th>
-                                                        Past Due Tip
+                                                        Past Due Balance
                                                         <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="gr_pastDueTip">

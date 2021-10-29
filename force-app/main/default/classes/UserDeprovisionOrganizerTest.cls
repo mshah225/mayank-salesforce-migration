@@ -398,6 +398,83 @@ public class UserDeprovisionOrganizerTest {
     }
 
     @isTest
+    public static void checkStopEarly() {
+        List<User> usersToDeprovision;
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+
+        Id standardProfile = IDHelper.getProfileId('Standard User');
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Deprovision_User_Configuration__c deproConfig = new Deprovision_User_Configuration__c(
+                Name = 'ProfileToIgnore',
+                Id__c = standardProfile,
+                Name__c = ''
+            );
+            insert deproConfig;
+        }
+
+        Integer counter = 0;
+        List<PermissionSetAssignment> psas = new List<PermissionSetAssignment>();
+        for (User user : [
+            SELECT Id, ProfileId
+            FROM User
+            WHERE FirstName LIKE 'userDepro.testUser%'
+            ORDER BY FirstName ASC
+        ]) {
+            counter++;
+            if (counter < 2) {
+                // Test stopping for profile matches
+                newUsers.add(new User(Id = user.Id, ProfileId = user.ProfileId, Deprovision_User__c = true));
+            } else if (counter < 3) {
+                // Stop on admin/developer checkboxes
+                newUsers.add(
+                    new User(Id = user.Id, Role_Administrator_Developer__c = true, Deprovision_User__c = true)
+                );
+            } else {
+                // Stop on Delegated Admin users
+                psas.add(new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = '0PSd0000000qzf4GAA'));
+                newUsers.add(new User(Id = user.Id, Deprovision_User__c = true));
+            }
+            user.Deprovision_User__c = false;
+            oldUsersMap.put(user.Id, user);
+        }
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert psas;
+        }
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            Test.startTest();
+            deprovisionOrganizer.deprovisionUsersAfterUpdate();
+            Test.stopTest();
+        }
+
+        usersToDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id IN :oldUsersMap.keySet()];
+
+        for (User user : usersToDeprovision) {
+            System.debug(user.Processing_Notes__c);
+            Boolean properException = false;
+            if (user.Processing_Notes__c.contains('Profile matched to')) {
+                properException = true;
+            } else if (
+                user.Processing_Notes__c.contains(
+                    'Detected SF Developer or Admin based on PeopleSoft Roles Administrator/Developer'
+                )
+            ) {
+                properException = true;
+            } else if (user.Processing_Notes__c.contains('Detected Delegated Administrator')) {
+                properException = true;
+            }
+            System.assert(properException, 'Error was of incorrect type');
+        }
+    }
+
+    @isTest
     public static void checkDeleteSobjectRecordsSuccess() {
         Map<Id, User> oldUsersMap = new Map<Id, User>();
         List<User> newUsers = new List<User>();
@@ -489,5 +566,36 @@ public class UserDeprovisionOrganizerTest {
             WHERE Subject LIKE '%DatabaseErrorException%'
         ];
         System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
+    }
+
+    @isTest
+    private static void testExtractingInvalidCustomSetting() {
+        User user = [
+            SELECT Id, ProfileId
+            FROM User
+            WHERE FirstName LIKE 'userDepro.testUser%'
+            ORDER BY FirstName ASC
+            LIMIT 1
+        ];
+        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = new Map<String, Deprovision_User_Configuration__c>();
+        deprovisionUserConfiguration.put(
+            'KeyName',
+            new Deprovision_User_Configuration__c(Name = 'KeyName', Name__c = 'ContactId')
+        );
+
+        Test.startTest();
+        UserDeprovisioner userDepro = new UserDeprovisioner(deprovisionUserConfiguration, user);
+        String suspectedResponsibleSetting = userDepro.whichSettingDetailIsResponsible(
+            'Invalid field ContactId for User'
+        );
+        String suspectedResponsibleSetting2 = userDepro.whichSettingDetailIsResponsible('');
+        String suspectedResponsibleSetting3 = userDepro.whichSettingDetailIsResponsible(
+            'Invalid field UnextractableField__c for User'
+        );
+        Test.stopTest();
+
+        System.assertEquals('KeyName', suspectedResponsibleSetting);
+        System.assertEquals('', suspectedResponsibleSetting2);
+        System.assertEquals('', suspectedResponsibleSetting3);
     }
 }

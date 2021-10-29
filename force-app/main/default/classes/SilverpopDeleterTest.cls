@@ -8,7 +8,11 @@ public with sharing class SilverpopDeleterTest {
 
     @isTest
     private static void testScramble() {
-        Silverpop__Silverpop_Email_Campaign_Link__c sp = [SELECT Id FROM Silverpop__Silverpop_Email_Campaign_Link__c LIMIT 1];
+        Silverpop__Silverpop_Email_Campaign_Link__c sp = [
+            SELECT Id
+            FROM Silverpop__Silverpop_Email_Campaign_Link__c
+            LIMIT 1
+        ];
 
         Test.startTest();
         SilverpopDeleter deleter = new SilverpopDeleter(sp);
@@ -20,7 +24,11 @@ public with sharing class SilverpopDeleterTest {
 
     @isTest
     private static void testToString() {
-        Silverpop__Silverpop_Email_Campaign_Link__c sp = [SELECT Id FROM Silverpop__Silverpop_Email_Campaign_Link__c LIMIT 1];
+        Silverpop__Silverpop_Email_Campaign_Link__c sp = [
+            SELECT Id
+            FROM Silverpop__Silverpop_Email_Campaign_Link__c
+            LIMIT 1
+        ];
 
         Test.startTest();
         SilverpopDeleter deleter = new SilverpopDeleter(sp);

@@ -4,9 +4,16 @@ private class JiraWebserviceCalloutTest {
     private static void createNewIssue() {
         Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
         Test.startTest();
-        String key = JIRAWebserviceCallout.createNewIssue('Summary', 'description', 'addUsers', 'Bug');
+        String key1 = JIRAWebserviceCallout.createNewIssue('Summary', 'description', 'addUsers', 'Bug');
+        String key2 = JIRAWebserviceCallout.createNewIssue(
+            'Summary',
+            'description',
+            'addUsers',
+            'New Development Request'
+        );
         Test.stopTest();
-        System.assertEquals('TEST', key);
+        System.assertEquals('TEST', key1);
+        System.assertEquals('TEST', key2);
     }
 
     @isTest
@@ -59,5 +66,20 @@ private class JiraWebserviceCalloutTest {
         Map<String, Object> mapOfIssues = (Map<String, Object>) JSON.deserializeUntyped(issues);
         Integer numberOfIssues = (Integer) mapOfIssues.get('total');
         System.assertEquals(5, numberOfIssues);
+    }
+
+    @isTest
+    private static void testAllStatuses() {
+        System.assertEquals('131', JIRAWebserviceCallout.getStatusKey('Open'));
+        System.assertEquals('81', JIRAWebserviceCallout.getStatusKey('In Testing'));
+        System.assertEquals('91', JIRAWebserviceCallout.getStatusKey('Technical Review'));
+        System.assertEquals('11', JIRAWebserviceCallout.getStatusKey('New Development Request'));
+        System.assertEquals('3', JIRAWebserviceCallout.getStatusKey('New'));
+        System.assertEquals('4', JIRAWebserviceCallout.getStatusKey('Working'));
+        System.assertEquals('2', JIRAWebserviceCallout.getStatusKey('Closed'));
+        System.assertEquals('5', JIRAWebserviceCallout.getStatusKey('Escalated'));
+        System.assertEquals('351', JIRAWebserviceCallout.getStatusKey('Ready For Work'));
+        System.assertEquals('111', JIRAWebserviceCallout.getStatusKey('Done'));
+        System.assertEquals('11', JIRAWebserviceCallout.getStatusKey('DefaultCode'));
     }
 }

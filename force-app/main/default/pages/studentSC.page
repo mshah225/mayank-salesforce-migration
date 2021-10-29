@@ -36,7 +36,7 @@
                         <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
                     </div>
                     <div class="mb-4">
-                        <c:MyASUHelpMyRequests/>
+                        <c:MyASUHelpMyRequests />
                     </div>
                 </div>
             </div>

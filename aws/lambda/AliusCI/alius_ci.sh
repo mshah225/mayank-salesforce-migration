@@ -42,5 +42,5 @@ function handler() {
         abortedBranchText="$abortedBranchText- $value\n"
     done
 
-    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":dopepineapple: Finished an Alius CI run","emoji":true}},{"type":"section","fields":[{"type":"mrkdwn","text":":canvas-check: *merges:* '"$cleanMergeCount"'"},{"type":"mrkdwn","text":":x: *merges:* '"$abortedMergeCount"'"}]},{"type":"section","fields":[{"type":"mrkdwn","text":"'"$cleanBranchText"'"},{"type":"mrkdwn","text":"'"$abortedBranchText"'"}]},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":partywizardasu: Finished an Alius CI run","emoji":true}},{"type":"section","fields":[{"type":"mrkdwn","text":":canvas-check: *merges:* '"$cleanMergeCount"'"},{"type":"mrkdwn","text":":x: *merges:* '"$abortedMergeCount"'"}]},{"type":"section","fields":[{"type":"mrkdwn","text":"'"$cleanBranchText"'"},{"type":"mrkdwn","text":"'"$abortedBranchText"'"}]},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 }

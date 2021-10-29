@@ -1,4 +1,4 @@
-name: Metadata Cleanup
+name: Production Metadata Cleanup
 
 on:
     workflow_dispatch:

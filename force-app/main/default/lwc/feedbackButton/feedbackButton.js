@@ -41,11 +41,11 @@ export default class FeedbackButton extends LightningElement {
                     let errorMsg = error.body.message;
                     if (
                         !errorMsg.includes(
-                            'Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080'
+                            'Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080)'
                         )
                     ) {
                         errorMsg +=
-                            '. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080';
+                            '. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080)';
                     }
 
                     this.makeToast('error', 'Error', errorMsg);

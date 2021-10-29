@@ -3237,7 +3237,8 @@
                     function (err, response) {
                         if (err) {
                             errorHtml += err;
-                            document.getElementById('sr_asr_errors').innerHTML = errorHtml;
+                            document.getElementById('sr_asr_errors').className = '';
+                            document.getElementById('sr_asr_errors').innerHTML = 'An Error has occured trying to load the data for this object';
                         } else {
                             if (!response.totalSize == 0) {
                                 result = response.records;

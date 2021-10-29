@@ -8,7 +8,7 @@
 
     <body>
         <apex:outputPanel layout="block" style="width: 100%; height: 100%; max-height: 220px">
-            <apex:form>
+            <apex:form id="alius-format159">
                 <apex:pageBlock id="applicationList" title="EA Learner Applications">
                     <apex:outputPanel layout="block" style="overflow: auto; width: 100%; height: 100%; max-height: 250px" id="applicationresults">
                         <apex:pageBlockTable value="{!applications}" var="f" rendered="{!applications.size > 0}">
@@ -96,7 +96,7 @@
             });
         </script>
         <!-- Used to submitted usage data -->
-        <apex:form>
+        <apex:form id="alius-format160">
             <apex:actionFunction name="trackUsage" action="{!trackUsage}" reRender="fakseresults">
                 <apex:param name="val_action" value="" assignTo="{! trackedAction }" />
                 <apex:param name="val_relatedRecordId" value="" assignTo="{! relatedRecordId }" />

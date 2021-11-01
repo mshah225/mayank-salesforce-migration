@@ -1228,7 +1228,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         for (Messaging.Inboundemail.TextAttachment tAttachment : badTextAttachments) {
             failedAttachments += 'File Name: ' + tAttachment.fileName + '\n';
         }
-        String failedAttachmentsHtml = failedAttachments.replace('\n', '<br />');
         String subject = et.Subject;
         subject = subject.substring(0, subject.indexOf('{'));
         subject += emailCase.CaseNumber;
@@ -1237,7 +1236,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         htmlBody = htmlBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);
         htmlBody = htmlBody.replace('{!Contact.LastName}', emailContact.LastName);
         htmlBody = htmlBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c);
-        htmlBody = htmlBody.replace('{!failedAttachmentsList}', failedAttachmentsHtml);
+        htmlBody = htmlBody.replace('{!failedAttachmentsList}', failedAttachments.replace('\n', '<br />'));
 
         String plainBody = et.Body;
         plainBody = plainBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);

@@ -3415,13 +3415,13 @@
                     "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
                 var transcriptQuery =
-                    'SELECT EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c, ' +
-                    'ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c, ' +
-                    'POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c, ' +
-                    'DisplayURL, ExternalId, Id ' +
-                    'FROM JBT_RET_TRANSCRIPT_SENT_VW__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC';
+                    'SELECT Address1__c, Address2__c, Address3__c, ' +
+                    'Address4__c, City__c, Country__c, Send_To_Name__c, ' +
+                    'Postal__c, State__c, Status__c, Request_Or_Sent_Date__c, ' +
+                    'Id ' +
+                    'FROM Transcript_Sent__c ' +
+                    "WHERE Contact__c = '{!theContact}' " +
+                    'ORDER BY Request_Or_Sent_Date__c DESC, Send_To_Name__c DESC';
                 conn.query(
                     transcriptQuery,
                     function (err, response) {
@@ -3449,7 +3449,7 @@
                                     '<tbody>';
                                 var result = response.records;
                                 for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].REQUEST_OR_SENT_DATE__c;
+                                    var utcSeconds = result[i].Request_Or_Sent_Date__c;
                                     var sentDate = new Date(utcSeconds);
                                     sentDate =
                                         sentDate.getUTCMonth() +
@@ -3459,13 +3459,13 @@
                                         '/' +
                                         sentDate.getUTCFullYear();
 
-                                    var status = result[i].STATUS__c;
+                                    var status = result[i].Status__c;
                                     var recipient = new Array(
-                                        result[i].SEND_TO_NAME__c,
-                                        result[i].ADDRESS1__c,
-                                        result[i].ADDRESS2__c,
-                                        result[i].ADDRESS3__c,
-                                        result[i].ADDRESS4__c
+                                        result[i].Send_To_Name__c,
+                                        result[i].Address1__c,
+                                        result[i].Address2__c,
+                                        result[i].Address3__c,
+                                        result[i].Address4__c
                                     );
 
                                     html +=
@@ -3490,14 +3490,14 @@
 
                                     html +=
                                         "<li class='transcriptAddress'>" +
-                                        result[i].CITY__c +
+                                        result[i].City__c +
                                         ', ' +
-                                        result[i].STATE__c +
+                                        result[i].State__c +
                                         ' ' +
-                                        result[i].POSTAL__c +
+                                        result[i].Postal__c +
                                         '</li>' +
                                         "<li class='transcriptAddress'> " +
-                                        result[i].COUNTRY__c +
+                                        result[i].Country__c +
                                         '</li>' +
                                         '</td>' +
                                         '</tr>';
@@ -3725,7 +3725,7 @@
 
                                             for (var i = 0; i < result.length; i++) {
                                                 var dateStamp = new Date(result[i].note.CREATDTTM__c);
-                                                var commentDate = new Date((dateStamp).toLocaleString("en-US", {timeZone: "Etc/GMT"})); 
+                                                var commentDate = new Date((dateStamp).toLocaleString("en-US", { timeZone: "Etc/GMT" }));
                                                 commentDate =
                                                     commentDate.getMonth() +
                                                     1 +
@@ -3733,7 +3733,7 @@
                                                     commentDate.getDate() +
                                                     '/' +
                                                     commentDate.getFullYear();
-                                                html += 
+                                                html +=
                                                     '<tr>' +
                                                     '<td>' +
                                                     (result[i].advUserId == undefined
@@ -3748,7 +3748,7 @@
                                                     '</td> <td>' + result[i].note.Academic_Program__r.Name + '</td>' +
                                                     '</tr>' +
                                                     '<tr>' +
-                                                    '<td colspan="4">' + result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />')  + '</td>' +
+                                                    '<td colspan="4">' + result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</td>' +
                                                     '</tr>';
                                             }
                                             html += '</table>';

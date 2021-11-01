@@ -356,7 +356,7 @@ public with sharing class ViewCaseController {
             } else {
                 alertHandler.newAlert(
                     customAlert.FATAL,
-                    'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080.'
+                    'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
                 );
             }
         }
@@ -372,7 +372,7 @@ public with sharing class ViewCaseController {
             } else {
                 alertHandler.newAlert(
                     customAlert.FATAL,
-                    'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080.'
+                    'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
                 );
             }
         }

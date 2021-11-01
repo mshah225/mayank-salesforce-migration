@@ -310,7 +310,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 ];
 
                 if (contacts.size() > 1) {
-                    Contact[] filteredContacts;
+                    List<Contact> filteredContacts = new List<Contact>();
 
                     for (Contact c : contacts) {
                         if (

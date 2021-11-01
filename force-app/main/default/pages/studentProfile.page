@@ -3512,7 +3512,9 @@
                                 transcriptsLoaded = true;
                             } else {
                                 document.getElementById('ps_transcript').innerHTML = 'No transcripts found.';
+                                document.getElementById('ps_transcript').style.display = 'initial';
                                 document.getElementById('gr_psTranscript').innerHTML = 'No transcripts found.';
+                                document.getElementById('gr_psTranscript').style.display = 'initial';
                                 transcriptsLoaded = true;
                             }
                         }

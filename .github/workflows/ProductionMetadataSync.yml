@@ -12,6 +12,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
               with:
+                  ref: main
                   fetch-depth: 0
             - name: Create pull request
               uses: peter-evans/create-pull-request@v3
@@ -20,6 +21,4 @@ jobs:
                   title: 'GITHUB-ACTIONS[BOT]: PRODUCTION METADATA SYNC'
                   body: "Comparison is the fastest way to feel unhappy. Luckily, I'm not human, so I'm immune to your biological ailments."
                   reviewers: mgilardi, jdsanch8
-                  base: main
-                  branch: sync-bot
-                  delete-branch: true
+                  branch: sync

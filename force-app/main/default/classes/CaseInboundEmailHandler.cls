@@ -405,6 +405,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     emailContact = insertedContact;
                 }
 
+                // Set the case subject before trying to find a recent case in case there is an exception
                 if (this.theCase.Subject == null || this.theCase.Subject == '') {
                     this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
                 }
@@ -428,9 +429,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     }
 
                     String currentCaseSubject = theCase.Subject;
-                    String currentCaseDescription = theCase.Description;
-                    currentCaseDescription = currentCaseDescription.trim();
-
+                    String currentCaseDescription = theCase.Description.trim();
                     Boolean hasAttachments =
                         (email.textAttachments != null && email.textAttachments.size() > 0) ||
                         (email.binaryAttachments != null &&

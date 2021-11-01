@@ -461,6 +461,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     }
                 } catch (QueryException e) {
                 }
+
+                if (this.theCase.Subject == null || this.theCase.Subject == '') {
+                    this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
+                }
                 insert this.theCase;
             } else {
                 // Grab the contact record from the existing case

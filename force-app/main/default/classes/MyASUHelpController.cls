@@ -23,7 +23,6 @@ public with sharing class MyASUHelpController {
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String mMessage;
 
     public String functionalGroup { get; set; }
     public Boolean isSearchingWithFunctionalGroup { get; set; }
@@ -82,10 +81,21 @@ public with sharing class MyASUHelpController {
     }
 
     private void loadStudentSCAlerts() {
+        // Only loaded on studentSC page
         if (ApexPages.currentPage().getUrl().toLowerCase().contains(Page.studentSC.getUrl().toLowerCase())) {
-            // Only loaded on studentSC page
-            if (getmMessage() != null) {
-                alertHandler.newAlert(customAlert.WARNING, ' ', mMessage, '');
+            List<Service_Center_Maintenance__c> scmList = [
+                SELECT Message__c, Start_Time__c, End_Time__c
+                FROM Service_Center_Maintenance__c
+                WHERE Displayed__c = TRUE
+            ];
+            if (scmList.size() > 0) {
+                if (
+                    (scmList[0].Start_Time__c <= System.now() && scmList[0].End_Time__c >= System.now()) ||
+                    (scmList[0].Start_Time__c == null &&
+                    scmList[0].End_Time__c == null)
+                ) {
+                    alertHandler.newAlert(customAlert.WARNING, ' ', scmList[0].Message__c, '');
+                }
             }
 
             if (Label.MyASU_Help_Alert_Status == 'true') {
@@ -397,26 +407,6 @@ public with sharing class MyASUHelpController {
         } else {
             return true;
         }
-    }
-
-    private String getmMessage() {
-        List<Service_Center_Maintenance__c> scmList = [
-            SELECT Message__c, Start_Time__c, End_Time__c
-            FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = TRUE
-        ];
-
-        if (scmList.size() > 0) {
-            if (
-                (scmList[0].Start_Time__c <= System.now() && scmList[0].End_Time__c >= System.now()) ||
-                (scmList[0].Start_Time__c == null &&
-                scmList[0].End_Time__c == null)
-            ) {
-                mMessage = scmList[0].Message__c;
-            }
-        }
-
-        return mMessage;
     }
 
     public List<Case> getMyCases() {

@@ -1223,12 +1223,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         EmailTemplate et = [SELECT Id, Subject, HtmlValue, Body FROM EmailTemplate WHERE id = :emailTemplateId LIMIT 1];
         String failedAttachments = '';
         for (Messaging.Inboundemail.BinaryAttachment bAttachment : badBinaryAttachments) {
-            failedAttachments += 'File Name: ' + bAttachment.fileName;
+            failedAttachments += 'File Name: ' + bAttachment.fileName + '\n';
         }
         for (Messaging.Inboundemail.TextAttachment tAttachment : badTextAttachments) {
-            failedAttachments += 'File Name: ' + tAttachment.fileName;
+            failedAttachments += 'File Name: ' + tAttachment.fileName + '\n';
         }
-        String htmlAttachments = failedAttachments.replace('\n', '<br />');
+        String failedAttachmentsHtml = failedAttachments.replace('\n', '<br />');
         String subject = et.Subject;
         subject = subject.substring(0, subject.indexOf('{'));
         subject += emailCase.CaseNumber;
@@ -1237,7 +1237,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         htmlBody = htmlBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);
         htmlBody = htmlBody.replace('{!Contact.LastName}', emailContact.LastName);
         htmlBody = htmlBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c);
-        htmlBody = htmlBody.replace('{!failedAttachmentsList}', htmlAttachments);
+        htmlBody = htmlBody.replace('{!failedAttachmentsList}', failedAttachmentsHtml);
 
         String plainBody = et.Body;
         plainBody = plainBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);

@@ -283,7 +283,7 @@
                                             data-parent="#accordion-case-details">
                                             <div class="panel-body">
                                                 <apex:outputPanel rendered="{!showCaseAttachments}">
-                                                    <apex:pageBlock>
+                                                    <apex:pageBlock id="alius-format1191">
                                                         <apex:pageBlockTable styleClass="border w-100" value="{!allCaseAttachmentsFormattedTime}" var="eachAttachment" columns="2">
                                                             <apex:column headerValue="Name" headerClass="bg-f5f5f5 border-bottom p-1" styleClass="p-1">
                                                                 <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color: #990033" target="_blank">{!eachAttachment.Name}</apex:outputLink>

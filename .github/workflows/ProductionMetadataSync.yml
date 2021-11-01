@@ -1,0 +1,24 @@
+name: Production Metadata Sync
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - sync
+
+jobs:
+    production-metadata-sync:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  ref: main
+                  fetch-depth: 0
+            - name: Create pull request
+              uses: peter-evans/create-pull-request@v3
+              with:
+                  commit-message: 'Metadata sync from SF PROD to GitHub'
+                  title: 'GITHUB-ACTIONS[BOT]: PRODUCTION METADATA SYNC'
+                  body: "Comparison is the fastest way to feel unhappy. Luckily, I'm not human, so I'm immune to your biological ailments."
+                  reviewers: mgilardi, jdsanch8
+                  branch: sync

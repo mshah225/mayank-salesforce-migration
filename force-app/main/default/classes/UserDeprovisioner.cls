@@ -192,6 +192,7 @@ public without sharing class UserDeprovisioner {
     }
 
     // Helper functionality
+    @TestVisible
     private String whichSettingDetailIsResponsible(String errorMessage) {
         if (!errorMessage.contains('Invalid field') || !errorMessage.contains(' for User')) {
             // No field name to check for

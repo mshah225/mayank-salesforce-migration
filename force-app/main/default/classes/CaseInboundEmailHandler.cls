@@ -405,6 +405,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     emailContact = insertedContact;
                 }
 
+                if (this.theCase.Subject == null || this.theCase.Subject == '') {
+                    this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
+                }
+
                 // Check to make sure we are not about to spawn an auto reply loop
                 try {
                     recentCase = [
@@ -423,15 +427,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         recentCase.Description = '';
                     }
 
+                    String currentCaseSubject = theCase.Subject;
                     String currentCaseDescription = theCase.Description;
                     currentCaseDescription = currentCaseDescription.trim();
-
-                    String currentCaseSubject = theCase.Subject;
-                    if (currentCaseSubject == null || currentCaseSubject == '') {
-                        currentCaseSubject = 'Email Received From: ' + email.fromAddress;
-                    }
-                    currentCaseSubject = currentCaseSubject.trim();
-                    theCase.Subject = currentCaseSubject;
 
                     Boolean hasAttachments =
                         (email.textAttachments != null && email.textAttachments.size() > 0) ||
@@ -462,9 +460,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 } catch (QueryException e) {
                 }
 
-                if (this.theCase.Subject == null || this.theCase.Subject == '') {
-                    this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
-                }
                 insert this.theCase;
             } else {
                 // Grab the contact record from the existing case

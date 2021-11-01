@@ -428,8 +428,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         recentCase.Description = '';
                     }
 
-                    String currentCaseSubject = theCase.Subject;
-                    String currentCaseDescription = theCase.Description.trim();
                     Boolean hasAttachments =
                         (email.textAttachments != null && email.textAttachments.size() > 0) ||
                         (email.binaryAttachments != null &&
@@ -437,21 +435,21 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if (
-                        recentCase.Description.equals(currentCaseDescription) &&
+                        recentCase.Description.equals(theCase.Description.trim()) &&
                         recentCase.OwnerId == theCase.OwnerID &&
                         !hasAttachments
                     ) {
-                        Integer currentCasePos = currentCaseSubject.indexOf('Case Number');
+                        Integer currentCasePos = theCase.Subject.indexOf('Case Number');
                         Integer prevCasePos = recentCase.Subject.indexOf('Case Number');
                         if (currentCasePos >= 0 && prevCasePos >= 0) {
                             if (
-                                currentCaseSubject.substring(0, currentCasePos)
+                                theCase.Subject.substring(0, currentCasePos)
                                     .equals(recentCase.Subject.substring(0, prevCasePos))
                             ) {
                                 return result;
                             }
                         } else {
-                            if (recentCase.Subject.equals(currentCaseSubject)) {
+                            if (recentCase.Subject.equals(theCase.Subject)) {
                                 return result;
                             }
                         }

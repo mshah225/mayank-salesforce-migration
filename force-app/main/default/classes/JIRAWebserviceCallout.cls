@@ -134,9 +134,9 @@ global class JIRAWebserviceCallout {
         Http http = new Http();
 
         String endPoint =
-            'callout:Jira_Base_URL/rest/api/2/search?jql=assignee%3D' +
+            'callout:Jira_Base_URL/rest/api/2/search?jql=assignee%3D%27' +
             asurite +
-            '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+            '%40asu.edu%27%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);
@@ -161,11 +161,11 @@ global class JIRAWebserviceCallout {
         Http http = new Http();
 
         String endPoint =
-            'callout:Jira_Base_URL/rest/api/2/search?jql=watcher%20%3D%20' +
+            'callout:Jira_Base_URL/rest/api/2/search?jql=watcher%20%3D%20%27' +
             asurite +
-            '%20AND%20(assignee%20%3D%20NULL%20OR%20assignee%20!%3D%20' +
+            '%40asu.edu%27%20AND%20(assignee%20%3D%20NULL%20OR%20assignee%20!%3D%20%27' +
             asurite +
-            ')%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
+            '%40asu.edu%27)%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
             setHeader(req);

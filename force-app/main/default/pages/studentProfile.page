@@ -1604,8 +1604,8 @@
                                                     <tr>
                                                         <th>Cumulative GPA</th>
                                                         <td id="ugap_gpa">
-                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                                <c:sp_GPA gpa="{!ugStudentProgram.Cum_GPA__c}" />
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">                                                            
+                                                                <c:sp_GPA gpa="{!IF((ugStudentProgram.Tot_Cumulative__c = 0), '', ugStudentProgram.Cum_GPA__c)}" />
                                                             </a>
                                                             <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                         </td>
@@ -1944,7 +1944,7 @@
                                                     <th>Cumulative GPA</th>
                                                     <td id="sr_cum_gpa">
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                            <c:sp_GPA gpa="{!studentProgram.Cum_Gpa__c}" />
+                                                            <c:sp_GPA gpa="{!IF((ugStudentProgram.Tot_Cumulative__c = 0), '', ugStudentProgram.Cum_GPA__c)}" />
                                                         </a>
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                     </td>
@@ -2705,7 +2705,7 @@
                                                     <th>Cumulative GPA</th>
                                                     <td id="gr_cumulativeGPA">
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                            <c:sp_GPA gpa="{!gradStudentProgram.Cum_GPA__c}" />
+                                                            <c:sp_GPA gpa="{!IF((gradStudentProgram.Tot_Cumulative__c = 0), '', gradStudentProgram.Cum_GPA__c)}" />
                                                         </a>
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                     </td>

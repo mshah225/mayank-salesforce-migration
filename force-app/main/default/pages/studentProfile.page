@@ -4803,7 +4803,7 @@
                 'SELECT ASU_Course__c, Course_Taken__c, Date_Posted__c, Grade__c, Grade_Points_per_Unit__c, Term__r.PeopleSoft_Code__c, Units_Taken__c, Units_Transferred__c, Name ' +
                 'FROM Transfer_Credit__c ' +
                 "WHERE Contact__r.EMPLID__c = '{!theContact.EMPLID__c}' " +
-                'ORDER BY ASU_Course__c, Term__r.PeopleSoft_Code__c';
+                'ORDER BY Term__r.PeopleSoft_Code__c, ASU_Course__c';
             var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
             conn.query(
                 transferQuery,
@@ -4823,14 +4823,14 @@
                                 "<table class='table table-striped table-bordered'> " +
                                 '<thead>' +
                                 '<tr style="cursor:pointer">' +
-                                '<th onclick="sortTransferOnClick(\'Term\')">Term</th>' +
-                                '<th onclick="sortTransferOnClick(\'Institution\')">Institution</th>' +
-                                '<th onclick="sortTransferOnClick(\'Course Taken\')">Course Taken</th>' +
-                                '<th onclick="sortTransferOnClick(\'ASU Course\')">ASU Course</th>' +
-                                '<th onclick="sortTransferOnClick(\'Grade\')">Grade</th>' +
-                                '<th onclick="sortTransferOnClick(\'Grade Points per Unit\')">Grade Points per Unit</th>' +
-                                '<th onclick="sortTransferOnClick(\'Units Taken\')">Units Taken</th>' +
-                                '<th onclick="sortTransferOnClick(\'Units Transferred\')">Units Transferred</th>' +
+                                '<th>Term</th>' +
+                                '<th>Institution</th>' +
+                                '<th>Course Taken</th>' +
+                                '<th>ASU Course</th>' +
+                                '<th>Grade</th>' +
+                                '<th>Grade Points per Unit</th>' +
+                                '<th>Units Taken</th>' +
+                                '<th>Units Transferred</th>' +
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>';

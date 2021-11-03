@@ -459,12 +459,20 @@ global with sharing class StudentProfileController {
 
     private void setGPA () {
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            if (gppw.gradProgramPlan.Primary_Flag__c && gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
+                gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
+                break;
+            }
             if (gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
                 gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
             }
         }
 
         for (Student_Program_Plan__c ugpp : ugProgramPlans) {
+            if (ugpp.Primary_Flag__c && ugpp.Tot_Cumulative__c > 0) {
+                undergradGPA = ugpp.Cum_GPA__c;
+                break;
+            }
             if (ugpp.Tot_Cumulative__c > 0) {
                 undergradGPA = ugpp.Cum_GPA__c;
             }

@@ -39,8 +39,8 @@ global with sharing class StudentProfileController {
     public string futureTermName { get; set; }
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
-    public String undergradGPA {get; set; }
-    public String gradGPA {get; set; }
+    public Decimal undergradGPA {get; set; }
+    public Decimal gradGPA {get; set; }
     public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }

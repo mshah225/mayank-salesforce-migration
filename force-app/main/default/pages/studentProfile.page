@@ -1896,7 +1896,9 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Academic Status Report</th>
-                                                        <td id="sr_asr"></td>
+                                                        <td id="sr_asr">
+                                                            <div id="sr_asr_errors" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></div>
+                                                        </td>
                                                     </tr>
                                                     <tr id="sr_asr_info_tr" style="display: none">
                                                         <th colspan="2">
@@ -3086,7 +3088,6 @@
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
-                                document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
                                 document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
@@ -3223,29 +3224,6 @@
                     { buffer: false, escape: true, timeout: 120000 }
                 );
 
-                var asrIndicatorQuery =
-                    'SELECT CLASSCOUNT__c ' +
-                    'FROM PS_ASU_SR_INDASR_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}'  " +
-                    'LIMIT 1';
-                conn.query(
-                    asrIndicatorQuery,
-                    function (err, response) {
-                        if (err) {
-                            errorHtml += err;
-                        } else {
-                            if (!response.totalSize == 0) {
-                                var result = response.records[0];
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + result.CLASSCOUNT__c;
-                                ('</span>');
-                            }
-                        }
-                    },
-                    { buffer: false, escape: true, timeout: 120000 }
-                );
-
                 var asrInformationQuery =
                     'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
                     'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
@@ -3258,6 +3236,8 @@
                     function (err, response) {
                         if (err) {
                             errorHtml += err;
+                            document.getElementById('sr_asr_errors').className = '';
+                            document.getElementById('sr_asr_errors').innerHTML = 'An Error has occured trying to load the data for this object';
                         } else {
                             if (!response.totalSize == 0) {
                                 result = response.records;
@@ -3316,6 +3296,9 @@
 
                                 html += '</tbody>';
 
+                                document.getElementById('sr_asr_errors').innerHTML = '';
+                                document.getElementById('sr_asr').innerHTML =
+                                    "<span style='color:red'>" + response.totalSize;
                                 document.getElementById('sr_asr_info_table').innerHTML = html;
                                 document.getElementById('sr_asr_info_tr').style.display = 'table-row';
 

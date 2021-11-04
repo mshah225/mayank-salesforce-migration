@@ -1604,8 +1604,8 @@
                                                     <tr>
                                                         <th>Cumulative GPA</th>
                                                         <td id="ugap_gpa">
-                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                                <c:sp_GPA gpa="{!ugStudentProgram.Cum_GPA__c}" />
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">                                                            
+                                                                <c:sp_GPA gpa="{!undergradGPA}" />
                                                             </a>
                                                             <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                         </td>
@@ -1944,7 +1944,12 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
-                                                    <td id="sr_cum_gpa"></td>
+                                                    <td id="sr_cum_gpa">
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank">
+                                                            <c:sp_GPA gpa="{!undergradGPA}" />
+                                                        </a>
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Probation Code</th>
@@ -2710,7 +2715,7 @@
                                                     <th>Cumulative GPA</th>
                                                     <td id="gr_cumulativeGPA">
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                            <c:sp_GPA gpa="{!gradStudentProgram.Cum_GPA__c}" />
+                                                            <c:sp_GPA gpa="{!gradGPA}" />
                                                         </a>
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                     </td>
@@ -3096,7 +3101,6 @@
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
-                                document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
                                 document.getElementById('sr_financial_hold').innerHTML = result.FINANCIAL_HOLD__c;

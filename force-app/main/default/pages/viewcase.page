@@ -60,6 +60,9 @@
                     if (validFileTypes.indexOf(fileExtension.toLowerCase()) == -1) {
                         visualforceAddCustomAlert('FATAL', 'Error! ', 'This attachment is not an acceptable file type. The following attachment types are allowed: Microsoft Word (.doc or .docx), Microsoft Excel (.xls or .xlsx), Image (.jpg, .jpeg, .gif, .png), Adobe PDF (.pdf), Text (.txt).', '');
                         errorPresent = true;
+                    } else if (fileSize > 25) {
+                        visualforceAddCustomAlert('FATAL', 'Error! ', 'The attachment exceeds the file size limit of 25 MB.', '');
+                        errorPresent = true;
                     }
                 });
 
@@ -254,7 +257,7 @@
                                         <div id="myasu-help-case-reply" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingReply" data-parent="#accordion-case-details">
                                             <div class="panel-body">
                                                 <apex:inputTextarea value="{!caseReply}" id="replyText" rows="5" cols="98" style="max-width: 100%; max-height: 100%" />
-                                                <span> Upload New Attachments </span>
+                                                <span> Upload New Attachments (max size 25MB) </span>
                                                 <apex:inputFile fileName="{!replyCaseAttachment.name}" styleClass="d-block" id="replyFile" value="{!replyCaseAttachment.Body}"
                                                 />
                                                 <div class="mt-2">

@@ -1160,7 +1160,6 @@
                                                     <tr>
                                                         <th>
                                                             Past Due Balance
-                                                            <i class="fa fa-question-circle" title="Tuition Installment Plan" data-placement="right"></i>
                                                         </th>
                                                         <td id="account_balance_past_due_tip">
                                                             {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
@@ -1967,7 +1966,6 @@
                                                 <tr>
                                                     <th>
                                                         Past Due Balance
-                                                        <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="sr_past_due_tip">
                                                         {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
@@ -2679,7 +2677,6 @@
                                                 <tr>
                                                     <th>
                                                         Past Due Balance
-                                                        <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
                                                     </th>
                                                     <td id="gr_pastDueTip">
                                                         {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--', '')}

@@ -1159,8 +1159,7 @@
                                                 <table class="table table-striped">
                                                     <tr>
                                                         <th>
-                                                            Past Due TIP
-                                                            <i class="fa fa-question-circle" title="Tuition Installment Plan" data-placement="right"></i>
+                                                            Past Due Balance
                                                         </th>
                                                         <td id="account_balance_past_due_tip">
                                                             {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
@@ -1604,8 +1603,8 @@
                                                     <tr>
                                                         <th>Cumulative GPA</th>
                                                         <td id="ugap_gpa">
-                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                                <c:sp_GPA gpa="{!ugStudentProgram.Cum_GPA__c}" />
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">                                                            
+                                                                <c:sp_GPA gpa="{!undergradGPA}" />
                                                             </a>
                                                             <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                         </td>
@@ -1896,7 +1895,9 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Academic Status Report</th>
-                                                        <td id="sr_asr"></td>
+                                                        <td id="sr_asr">
+                                                            <div id="sr_asr_errors" class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></div>
+                                                        </td>
                                                     </tr>
                                                     <tr id="sr_asr_info_tr" style="display: none">
                                                         <th colspan="2">
@@ -1942,7 +1943,12 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Cumulative GPA</th>
-                                                    <td id="sr_cum_gpa"></td>
+                                                    <td id="sr_cum_gpa">
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank">
+                                                            <c:sp_GPA gpa="{!undergradGPA}" />
+                                                        </a>
+                                                        <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Probation Code</th>
@@ -1959,10 +1965,14 @@
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
                                                     <th>
-                                                        Past Due TIP
-                                                        <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
+                                                        Past Due Balance
                                                     </th>
-                                                    <td id="sr_past_due_tip"></td>
+                                                    <td id="sr_past_due_tip">
+                                                        {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
+                                                        <apex:outputText value="{0, number, currency}">
+                                                            <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
+                                                        </apex:outputText>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Financial Hold</th>
@@ -2666,11 +2676,13 @@
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
                                                     <th>
-                                                        Past Due Tip
-                                                        <i class="fa fa-question-circle" title="Tuition Installment Plan"></i>
+                                                        Past Due Balance
                                                     </th>
                                                     <td id="gr_pastDueTip">
-                                                        {!IF(ISBLANK(theContact.Past_Due_Tip__c), '--', theContact.Past_Due_Tip__c)}
+                                                        {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--', '')}
+                                                        <apex:outputText value="{0, number, currency}">
+                                                            <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
+                                                        </apex:outputText>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -2700,7 +2712,7 @@
                                                     <th>Cumulative GPA</th>
                                                     <td id="gr_cumulativeGPA">
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank">
-                                                            <c:sp_GPA gpa="{!gradStudentProgram.Cum_GPA__c}" />
+                                                            <c:sp_GPA gpa="{!gradGPA}" />
                                                         </a>
                                                         <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
                                                     </td>
@@ -3069,7 +3081,7 @@
                     'ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, FINANCIAL_HOLD__c, ' +
                     'Id, NEXT_TERM_ENROLLED__c, ' +
                     'STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c, ' +
-                    'PAST_DUE_TIP__c, TERM_MYASU_USAGE__c ' +
+                    'TERM_MYASU_USAGE__c ' +
                     'FROM ASU_STDNT_RETENTION__x ' +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
                 var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
@@ -3086,19 +3098,8 @@
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
                                 document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
-                                document.getElementById('sr_asr').innerHTML = result.ASR_INDICATOR__c;
-                                document.getElementById('sr_cum_gpa').innerHTML = result.CUM_GPA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
-                                if (result.PAST_DUE_TIP__c) {
-                                    document.getElementById('sr_past_due_tip').innerHTML =
-                                        "<span style='color:red'>" +
-                                        '$' +
-                                        result.PAST_DUE_TIP__c.toFixed(2) +
-                                        '</span>';
-                                } else {
-                                    document.getElementById('sr_past_due_tip').innerHTML = '--';
-                                }
                                 document.getElementById('sr_financial_hold').innerHTML = result.FINANCIAL_HOLD__c;
                                 document.getElementById('sr_term_myasu_usage').innerHTML = Math.floor(
                                     result.TERM_MYASU_USAGE__c
@@ -3223,29 +3224,6 @@
                     { buffer: false, escape: true, timeout: 120000 }
                 );
 
-                var asrIndicatorQuery =
-                    'SELECT CLASSCOUNT__c ' +
-                    'FROM PS_ASU_SR_INDASR_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}'  " +
-                    'LIMIT 1';
-                conn.query(
-                    asrIndicatorQuery,
-                    function (err, response) {
-                        if (err) {
-                            errorHtml += err;
-                        } else {
-                            if (!response.totalSize == 0) {
-                                var result = response.records[0];
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + result.CLASSCOUNT__c;
-                                ('</span>');
-                            }
-                        }
-                    },
-                    { buffer: false, escape: true, timeout: 120000 }
-                );
-
                 var asrInformationQuery =
                     'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
                     'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
@@ -3258,6 +3236,8 @@
                     function (err, response) {
                         if (err) {
                             errorHtml += err;
+                            document.getElementById('sr_asr_errors').className = '';
+                            document.getElementById('sr_asr_errors').innerHTML = 'An Error has occured trying to load the data for this object';
                         } else {
                             if (!response.totalSize == 0) {
                                 result = response.records;
@@ -3316,6 +3296,9 @@
 
                                 html += '</tbody>';
 
+                                document.getElementById('sr_asr_errors').innerHTML = '';
+                                document.getElementById('sr_asr').innerHTML =
+                                    "<span style='color:red'>" + response.totalSize;
                                 document.getElementById('sr_asr_info_table').innerHTML = html;
                                 document.getElementById('sr_asr_info_tr').style.display = 'table-row';
 
@@ -3531,7 +3514,7 @@
                     'SELECT ASR_INDICATOR__c, AVG_MYASU_COHORT__c, CI_INDEX_INDICATOR__c, ' +
                     'CREATED_EW_DTTM__c, CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, ' +
                     'EMPLID__c, ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, ' +
-                    'FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, PAST_DUE_TIP__c, ' +
+                    'FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, ' +
                     'PROBATION_INDICATOR__c, SNP_WEEK__c, STRM__c, TERM_MYASU_USAGE__c, ' +
                     'TRANSCRIPTS_SENT_COUNT__c ' +
                     'FROM ASU_STDNT_RETENTION_SNP__x ' +
@@ -3619,9 +3602,6 @@
                                     )
                                         totIndicators++;
 
-                                    if (typeof result[i].PAST_DUE_TIP__c == 'number' && result[i].PAST_DUE_TIP__c != 0)
-                                        result[i].PAST_DUE_TIP__c = '$' + result[i].PAST_DUE_TIP__c;
-
                                     html +=
                                         '' +
                                         '<tr>' +
@@ -3659,7 +3639,7 @@
                                         result[i].TRANSCRIPTS_SENT_COUNT__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].PAST_DUE_TIP__c +
+                                        "{!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}" +
                                         '</td>' +
                                         '<td>' +
                                         result[i].FINANCIAL_HOLD__c +
@@ -3725,7 +3705,7 @@
 
                                             for (var i = 0; i < result.length; i++) {
                                                 var dateStamp = new Date(result[i].note.CREATDTTM__c);
-                                                var commentDate = new Date((dateStamp).toLocaleString("en-US", {timeZone: "Etc/GMT"})); 
+                                                var commentDate = new Date((dateStamp).toLocaleString("en-US", { timeZone: "Etc/GMT" }));
                                                 commentDate =
                                                     commentDate.getMonth() +
                                                     1 +
@@ -3733,7 +3713,7 @@
                                                     commentDate.getDate() +
                                                     '/' +
                                                     commentDate.getFullYear();
-                                                html += 
+                                                html +=
                                                     '<tr>' +
                                                     '<td>' +
                                                     (result[i].advUserId == undefined
@@ -3748,7 +3728,7 @@
                                                     '</td> <td>' + result[i].note.Academic_Program__r.Name + '</td>' +
                                                     '</tr>' +
                                                     '<tr>' +
-                                                    '<td colspan="4">' + result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />')  + '</td>' +
+                                                    '<td colspan="4">' + result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') + '</td>' +
                                                     '</tr>';
                                             }
                                             html += '</table>';

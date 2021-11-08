@@ -427,7 +427,7 @@
 
                                         <apex:inputField value="{!mycase.Affiliation__c}" />
 
-                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
+                                        <apex:inputField value="{!mycase.Case_Term__c}" />
 
                                         <apex:pageBlockSectionItem id="alius-format180">
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
@@ -441,7 +441,7 @@
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:inputField value="{!mycase.Reason_for_Escalation__c}" />
+                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
                                         <apex:pageBlockSectionItem id="categorySectionItem">
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
@@ -454,6 +454,12 @@
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
+                                        <apex:inputField value="{!mycase.Reason_for_Escalation__c}" />
+
+                                        <apex:inputField value="{!mycase.Status}">
+                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
+                                        </apex:inputField>
+
                                         <apex:pageBlockSectionItem id="subCategorySectionItem">
                                             <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
                                             <apex:actionRegion id="alius-format183">
@@ -463,9 +469,7 @@
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:inputField value="{!mycase.Status}">
-                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
-                                        </apex:inputField>
+                                        <br/>
 
                                         <apex:pageBlockSectionItem id="alius-format184">
                                             <apex:outputLabel for="originSelect" value="Origin" />

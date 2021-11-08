@@ -44,9 +44,9 @@ public class LeadScrambler implements ObjectScramble {
     }
 
     private void scrambleEmails() {
-        leadToScramble.email = Scrambler.scrambleEmailOrUsername(leadToScramble.email);
-        leadToScramble.Recruiting_Email__c = Scrambler.scrambleEmailOrUsername(leadToScramble.Recruiting_Email__c);
-        leadToScramble.Secondary_Email__c = Scrambler.scrambleEmailOrUsername(leadToScramble.Secondary_Email__c);
+        leadToScramble.email = Scrambler.carefullyScrambleEmailOrUsername(leadToScramble.email);
+        leadToScramble.Recruiting_Email__c = Scrambler.carefullyScrambleEmailOrUsername(leadToScramble.Recruiting_Email__c);
+        leadToScramble.Secondary_Email__c = Scrambler.carefullyScrambleEmailOrUsername(leadToScramble.Secondary_Email__c);
     }
 
     private void scrambleBirthdate() {

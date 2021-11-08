@@ -22,27 +22,8 @@ public class ObjectScrambleService {
                 queryToReturn =
                     'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
                     'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
-                    'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact WHERE (' +
-                    generateNotLikeSandboxDomainStatement('Email') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Corporate_Relations_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('EPO_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('ASU_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Last_Case_Email_Used__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Lead_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Lead_Secondary_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('me3hs_User_ID__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Parent_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Personal_Email__c') +
-                    ')';
+                    'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact WHERE ' +
+                    generateNotLikeSandboxDomainStatement('Email');
             }
             when CONTACT_NO_PHONE {
                 queryToReturn = 'SELECT Id, HomePhone, Phone FROM Contact WHERE HomePhone = null AND Phone != null';
@@ -52,13 +33,8 @@ public class ObjectScrambleService {
             }
             when LEAD {
                 queryToReturn =
-                    'SELECT Id, Date_of_Birth__c, Email, Recruiting_Email__c, Secondary_Email__c FROM LEAD WHERE (' +
-                    generateNotLikeSandboxDomainStatement('Email') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Recruiting_Email__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Secondary_Email__c') +
-                    ')';
+                    'SELECT Id, Date_of_Birth__c, Email, Recruiting_Email__c, Secondary_Email__c FROM LEAD WHERE ' +
+                    generateNotLikeSandboxDomainStatement('Email');
             }
             when CONVERTED_LEAD {
                 queryToReturn = 'SELECT Id FROM LEAD WHERE IsConverted = true';
@@ -154,7 +130,7 @@ public class ObjectScrambleService {
 
     @TestVisible
     private static String generateNotLikeSandboxDomainStatement(String fieldName) {
-        String sandboxDomain = UserInfo.getUserName().substringAfterLast('.');
+        String sandboxDomain = Scrambler.getSandboxDomain();
         return '(NOT ' + fieldName + ' LIKE \'%.' + sandboxDomain + '\')';
     }
 }

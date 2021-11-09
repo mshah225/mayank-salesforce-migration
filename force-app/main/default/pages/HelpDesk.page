@@ -166,8 +166,8 @@
                         <apex:pageBlock title="{!IF(isContactSet, 'Contact Details', 'Contact Search')}" id="criteria">
                             <apex:pageBlockButtons id="duoAuthStatus" location="top">
                                 <div style="text-align: right;">
-                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}"/>
-                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}"/>
+                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}" />
+                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}" />
                                     <strong>Duo Authentication</strong>
                                 </div>
                             </apex:pageBlockButtons>
@@ -382,7 +382,7 @@
 
                                     <apex:column value="{!case.Ca.Subject}" />
 
-                                    <apex:column headerValue="Description" value="{!case.shortDescr}" title="{!case.fullDescr}" />
+                                    <apex:column headerValue="Description" value="{!case.shortDescr}" />
 
                                     <apex:column value="{!case.Ca.ClosedDate}" />
                                 </apex:pageBlockTable>

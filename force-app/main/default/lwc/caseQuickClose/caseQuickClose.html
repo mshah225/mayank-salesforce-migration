@@ -1,0 +1,73 @@
+<template>
+    <lightning-card>
+        <h3 slot="title">
+            <lightning-icon icon-name="standard:case" size="small"></lightning-icon>
+            &nbsp;&nbsp;Case Quick Close
+        </h3>
+
+        <p class="slds-p-horizontal_small">
+            <!-- Case Close Button -->
+            <lightning-button
+                variant="brand"
+                label="Close Case"
+                onclick={showForm}
+                if:true={isCloseButtonShown}
+            ></lightning-button>
+
+            <!-- Spinner -->
+            <template if:true={showSpinner}>
+                <br /><br />
+                <div class="slds-spinner_container">
+                    <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading...</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+                <br /><br />
+            </template>
+
+            <!-- On Show -->
+            <template if:true={isFormShown}>
+                <lightning-record-edit-form
+                    object-api-name="Case"
+                    onsuccess={handleSuccess}
+                    record-id={recordId}
+                    onsubmit={handleSubmit}
+                    onload={handleOnFormLoad}
+                    onerror={handleOnFormError}
+                >
+                    <lightning-messages></lightning-messages>
+                    <span data-id="recordFields">
+                        <!-- Status Dropdown Override -->
+                        <lightning-combobox
+                            name="status"
+                            label="Status"
+                            placeholder="Select Status"
+                            value={currentCaseStatus}
+                            options={caseStatusOptions}
+                            onchange={handleStatusOnChange}
+                            data-id="statusDropdown"
+                        ></lightning-combobox>
+                        <!-- /Status Dropdown Override -->
+                        <!-- For Each Input Field -->
+                        <template for:each={inputFieldAPIs} for:item="item">
+                            <lightning-input-field field-name={item} name={item} key={item} id={item}>
+                            </lightning-input-field>
+                        </template>
+                    </span>
+                    <!-- Action Buttons -->
+                    <div class="slds-align_absolute-center" if:true={hasLoaded}>
+                        <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button
+                        >&nbsp;
+                        <lightning-button label="Submit" type="submit" variant="brand"></lightning-button>
+                    </div>
+                    <!-- /Action Buttons -->
+                </lightning-record-edit-form>
+            </template>
+            <!-- /On Show -->
+        </p>
+    </lightning-card>
+</template>

@@ -44,11 +44,8 @@ public class ObjectScrambleService {
             }
             when CAR {
                 queryToReturn =
-                    'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c WHERE (' +
-                    generateNotLikeSandboxDomainStatement('Email_Address__c') +
-                    ' AND ' +
-                    generateNotLikeSandboxDomainStatement('Reply_To_Email_Address__c') +
-                    ')';
+                    'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c WHERE ' +
+                    generateNotLikeSandboxDomainStatement('Email_Address__c');
             }
             when USER {
                 Id sysAdminId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1].Id;

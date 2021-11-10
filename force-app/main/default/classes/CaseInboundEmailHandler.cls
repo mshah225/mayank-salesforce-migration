@@ -568,17 +568,16 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         if (email.textAttachments != null && email.textAttachments.size() > 0) {
             for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
+                String fileName = tAttachment.fileName.trim(); //trim whitespace
                 if (
                     validFileExtensionSet.isEmpty() ||
-                    validFileExtensionSet.contains(
-                        tAttachment.fileName.substring(tAttachment.fileName.lastIndexOf('.') + 1).toLowerCase()
-                    )
+                    validFileExtensionSet.contains(fileName.substringAfterLast('.').toLowerCase())
                 ) {
                     Attachment attachment = new Attachment();
-                    attachment.Name = tAttachment.fileName;
+                    attachment.Name = fileName;
                     attachment.Body = Blob.valueOf(tAttachment.body);
                     attachment.ParentId = parentObject.Id;
-                    if (!tAttachment.fileName.toLowerCase().contains('.p7s')) {
+                    if (!fileName.toLowerCase().contains('.p7s')) {
                         response.neutralEmail = false;
                         allEmailAttachments.add(attachment);
                     }
@@ -591,18 +590,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         if (email.binaryAttachments != null && email.binaryAttachments.size() > 0) {
             for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
+                String fileName = bAttachment.fileName.trim(); //trim whitespace
                 if (
                     validFileExtensionSet.isEmpty() ||
-                    validFileExtensionSet.contains(
-                        bAttachment.fileName.substring(bAttachment.fileName.lastIndexOf('.') + 1).toLowerCase()
-                    )
+                    validFileExtensionSet.contains(fileName.substringAfterLast('.').toLowerCase())
                 ) {
                     Attachment attachment = new Attachment();
-                    attachment.Name = bAttachment.fileName;
+                    attachment.Name = fileName;
                     attachment.Body = bAttachment.body;
                     attachment.ContentType = bAttachment.mimeTypeSubType;
                     attachment.ParentId = parentObject.Id;
-                    if (!bAttachment.fileName.toLowerCase().contains('.p7s')) {
+                    if (!fileName.toLowerCase().contains('.p7s')) {
                         response.neutralEmail = false;
                         allEmailAttachments.add(attachment);
                     }

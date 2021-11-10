@@ -194,6 +194,7 @@ global class JIRAWebserviceCallout {
         req.setBody(body);
     }
 
+    @TestVisible
     private static String getStatusKey(String statusName) {
         String statusKey;
         switch on statusName {

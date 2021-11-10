@@ -49,7 +49,7 @@
                             <p>
                                 Please click on the button below to visit ASU's Subscription Center and manage your subscriptions. If you're unable to access
                                 the Subscription Center or need immediate assistance, please call
-                                <a class="c-text-maroon" href="tel:1-855-278-5080">1-855-ASU-5080</a>.
+                                <a class="c-text-maroon" href="tel:1-855-278-5080">1-855-ASU-5080 (1-855-278-5080)</a>.
                             </p>
                         </apex:outputPanel>
                     </div>

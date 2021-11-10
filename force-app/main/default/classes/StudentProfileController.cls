@@ -39,6 +39,9 @@ global with sharing class StudentProfileController {
     public string futureTermName { get; set; }
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
+    public String ciIndex { get; set; }
+    public Decimal undergradGPA {get; set; }
+    public Decimal gradGPA {get; set; }
     public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }
@@ -116,6 +119,7 @@ global with sharing class StudentProfileController {
             setFinancials();
             setMe3Results();
             setAdvisorStatus();
+            setCIIndex();
         } else {
             initializeValuesForNullContactId();
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
@@ -451,6 +455,30 @@ global with sharing class StudentProfileController {
         }
 
         setSubplanString();
+
+        setGPA();
+    }
+
+    private void setGPA () {
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            if (gppw.gradProgramPlan.Primary_Flag__c && gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
+                gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
+                break;
+            }
+            if (gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
+                gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
+            }
+        }
+
+        for (Student_Program_Plan__c ugpp : ugProgramPlans) {
+            if (ugpp.Primary_Flag__c && ugpp.Tot_Cumulative__c > 0) {
+                undergradGPA = ugpp.Cum_GPA__c;
+                break;
+            }
+            if (ugpp.Tot_Cumulative__c > 0) {
+                undergradGPA = ugpp.Cum_GPA__c;
+            }
+        }
     }
 
     private void setTermMap(List<String> terms) {
@@ -843,6 +871,25 @@ global with sharing class StudentProfileController {
             LIMIT 1
         ];
         me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new me3__c());
+    }
+
+    private void setCIIndex() {
+        List<Opportunity> studentOpp = [
+            SELECT CI_Score__c  
+            FROM Opportunity 
+            WHERE Contact__r.EMPLID__c =: theContact.EMPLID__c AND 
+            Career__c = 'Undergraduate' AND 
+            Application_Number__c != '' AND 
+            RecordType.Name = 'Undergraduate Application'
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
+        
+        if (studentOpp.size() > 0 && studentOpp[0].CI_Score__c != null) {
+            ciIndex = '' + studentOpp[0].CI_Score__c;
+        } else {
+            ciIndex = '--'; 
+        }
     }
 
     private void setAdvisorStatus() {

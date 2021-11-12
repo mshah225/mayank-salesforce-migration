@@ -13,7 +13,6 @@ public with sharing class FieldSetHelper {
             returnMap.put('FIELD_LIST',JSON.serialize(lstFSMember));
             returnMap.put('OBJECT_LABEL', sObj?.getSObjectType()?.getDescribe()?.getLabel());
 
-            System.debug(JSON.serialize(returnMap));
             return JSON.serialize(returnMap);
         }                                                                 
         return null;

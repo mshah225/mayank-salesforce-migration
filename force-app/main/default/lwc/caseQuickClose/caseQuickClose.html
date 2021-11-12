@@ -2,20 +2,20 @@
     <lightning-card>
         <h3 slot="title">
             <lightning-icon icon-name="standard:case" size="small"></lightning-icon>
-            &nbsp;&nbsp;Case Quick Close
+            &nbsp;&nbsp;{lwcComponentName}
         </h3>
 
         <p class="slds-p-horizontal_small">
             <!-- Case Close Button -->
             <lightning-button
-                variant="brand"
-                label="Close Case"
-                onclick={showForm}
-                if:true={isCloseButtonShown}
+                variant={lwcCloseButtonVariant}
+                label={lwcCloseButtonLabel}
+                onclick={handleOnCaseCloseButton}
+                if:true={isButtonVisible}
             ></lightning-button>
 
-            <!-- Spinner -->
-            <template if:true={showSpinner}>
+            <!-- Loading -->
+            <template if:true={loading}>
                 <br /><br />
                 <div class="slds-spinner_container">
                     <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
@@ -29,45 +29,62 @@
                 <br /><br />
             </template>
 
-            <!-- On Show -->
-            <template if:true={isFormShown}>
-                <lightning-record-edit-form
-                    object-api-name="Case"
-                    onsuccess={handleSuccess}
-                    record-id={recordId}
-                    onsubmit={handleSubmit}
-                    onload={handleOnFormLoad}
-                    onerror={handleOnFormError}
-                >
-                    <lightning-messages></lightning-messages>
-                    <span data-id="recordFields">
+            <!-- On Form Visible -->
+            <template if:true={formVisible}>
+                <!-- Has Global Error -->
+                <template if:false={hasError}>
+                    <!-- Record Edit Form -->
+                    <lightning-record-edit-form
+                        object-api-name="Case"
+                        onsuccess={handleOnCaseCloseSuccess}
+                        record-id={recordId}
+                        onsubmit={handleOnSubmit}
+                        onload={handleOnFormLoad}
+                        onerror={handleOnFormError}
+                    >
+                        <lightning-messages></lightning-messages>
+
                         <!-- Status Dropdown Override -->
                         <lightning-combobox
                             name="status"
                             label="Status"
                             placeholder="Select Status"
                             value={currentCaseStatus}
-                            options={caseStatusOptions}
-                            onchange={handleStatusOnChange}
+                            options={statusOptions}
+                            onchange={handleOnStatusChange}
                             data-id="statusDropdown"
                         ></lightning-combobox>
-                        <!-- /Status Dropdown Override -->
+
                         <!-- For Each Input Field -->
-                        <template for:each={inputFieldAPIs} for:item="item">
+                        <template for:each={inputFields} for:item="item">
                             <lightning-input-field field-name={item} name={item} key={item} id={item}>
                             </lightning-input-field>
                         </template>
-                    </span>
-                    <!-- Action Buttons -->
-                    <div class="slds-align_absolute-center" if:true={hasLoaded}>
-                        <lightning-button label="Cancel" variant="neutral" onclick={handleCancel}></lightning-button
-                        >&nbsp;
-                        <lightning-button label="Submit" type="submit" variant="brand"></lightning-button>
+
+                        <!-- Action Buttons -->
+                        <div class="slds-align_absolute-center" if:true={formVisible}>
+                            <lightning-button
+                                label="Cancel"
+                                variant="neutral"
+                                onclick={handleOnCancel}
+                            ></lightning-button
+                            >&nbsp;
+                            <lightning-button
+                                label={lwcRecordSubmitButtonLabel}
+                                type="submit"
+                                variant={lwcRecordSubmitButtonVariant}
+                            ></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </template>
+                <!-- Error Message -->
+                <template if:true={hasError}>
+                    <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <h2>{errorMessage}</h2>
                     </div>
-                    <!-- /Action Buttons -->
-                </lightning-record-edit-form>
+                </template>
             </template>
-            <!-- /On Show -->
         </p>
     </lightning-card>
 </template>

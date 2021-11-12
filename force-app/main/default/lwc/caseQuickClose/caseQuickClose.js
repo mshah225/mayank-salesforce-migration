@@ -1,126 +1,170 @@
 import {LightningElement, api, wire} from 'lwc';
-import {getRecord} from 'lightning/uiRecordApi';
+import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
-import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import getFieldsFromFieldSet from '@salesforce/apex/FieldSetHelper.getFieldsFromFieldSet';
+
+// Fields
+import SUBJECT_FIELD from '@salesforce/schema/Case.Subject';
+import DESCRIPTION_FIELD from '@salesforce/schema/Case.Description';
+import RECORD_TYPE_DEVELOPER_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
+import STATUS_FIELD from '@salesforce/schema/Case.Status';
+
+// Vars
 const FIELDSET_PREFIX = 'CQC_RT_';
-const FIELDS = [
-    'Case.RecordTypeId',
-    'Case.Subject',
-    'Case.Description',
-    'Case.RecordType.DeveloperName',
-    'Case.Status',
-];
 
 export default class CaseQuickClose extends LightningElement {
     @api recordId;
+    // Configuration exposed for lightning builder
+    @api componentName = 'Case Quick Close';
+    @api closeButtonLabel = 'Close Case';
+    @api closeButtonVariant = 'brand';
+    @api recordSubmitButtonLabel = 'Submit';
+    @api recordSubmitButtonVariant = 'brand';
+    // Configuration exposed for lightning builder
     record;
-    recordType;
-    statusOptions;
-
-    // UI
-    showSpinner = false;
-    isFormShown = false;
-    isCloseButtonShown = true;
-    hasLoaded = false;
-
-    statusOptions;
+    casesStatusOptions;
+    isLoading = false;
+    isFormVisible = false;
+    isButtonVisible = true;
+    errorDetail = '';
     selectedStatus;
-    inputFieldAPIs = [];
+    inputFields = [];
     currentStatusPositionIndex;
 
-    /**
-     * Get the current record to access the record type data
-     */
-    @wire(getRecord, {recordId: '$recordId', fields: FIELDS})
-    getCurrentRecord({error, data}) {
+    // Case Record
+    @wire(getRecord, {
+        recordId: '$recordId',
+        fields: [SUBJECT_FIELD, DESCRIPTION_FIELD, RECORD_TYPE_DEVELOPER_NAME_FIELD, STATUS_FIELD],
+    })
+    wiredCase({error, data}) {
+        if (error) {
+            this.record = undefined;
+            this.handleGlobalError(error);
+        }
         if (data) {
-            let result = JSON.parse(JSON.stringify(data));
-            this.record = result;
-            this.recordType = result.fields.RecordType;
+            this.record = data;
+        }
+    }
+
+    // Case Status Options
+    @wire(getPicklistValues, {
+        recordTypeId: '$record.recordTypeId',
+        fieldApiName: STATUS_FIELD,
+    })
+    wiredStatusOptions({error, data}) {
+        if (error) {
+            this.caseStatusOptions = undefined;
+            this.handleGlobalError(error);
+        }
+        if (data) {
+            this.caseStatusOptions = this.buildStatusOptions(data);
             this.loadFieldset();
-        } else if (error) {
-            let result = JSON.parse(JSON.stringify(error));
-            console.log('error: ', result);
         }
     }
 
-    /**
-     * Get the current record to access the record type data
-     */
-    @wire(getPicklistValues, {recordTypeId: '$record.recordTypeId', fieldApiName: STATUS_FIELD})
-    statusValues({error, data}) {
-        if (data) {
-            let result = JSON.parse(JSON.stringify(data));
-            this.createStatusOptions(result);
-        } else if (error) {
-            let result = JSON.parse(JSON.stringify(error));
-            console.log('error: ', result);
-        }
+    // Component Name (Card Title)
+    get lwcComponentName() {
+        return this.componentName;
     }
 
-    /**
-     * Return a list of status options
-     */
-    get caseStatusOptions() {
-        return this.statusOptions;
+    // Button Label
+    get lwcCloseButtonLabel() {
+        return this.closeButtonLabel;
     }
 
-    /**
-     * Get the current status of this case
-     */
+    // Button Variant
+    get lwcCloseButtonVariant() {
+        return this.closeButtonVariant;
+    }
+
+    // Submit Button Label
+    get lwcRecordSubmitButtonLabel() {
+        return this.recordSubmitButtonLabel;
+    }
+
+    // Submit Button Variant
+    get lwcRecordSubmitButtonVariant() {
+        return this.recordSubmitButtonVariant;
+    }
+
+    // Case Status (Current)
     get currentCaseStatus() {
-        return this.record.fields.Status.value;
+        return getFieldValue(this.record.data, STATUS_FIELD);
     }
 
-    /**
-     * Get the fieldset name to lookup
-     */
-    fieldSetNameHelper() {
-        let currentRecordType = this.recordType.value.fields.DeveloperName.value;
-        currentRecordType = currentRecordType.replace(/ /g, '_');
-        return FIELDSET_PREFIX + currentRecordType;
+    // Case Status Options (Type = Closed)
+    get statusOptions() {
+        return this.caseStatusOptions;
     }
 
-    /**
-     * Create our options for the status dropdown
-     * @param {*} statusData
-     */
-    createStatusOptions(statusData) {
-        let closed = statusData.values.filter((s) => s.attributes.closed === true);
-        // Create our options
-        this.statusOptions = closed.map((element) => {
-            return {
-                label: element.label,
-                value: element.value,
-            };
-        });
+    // Loading Indicator
+    get loading() {
+        return this.isLoading;
+    }
+    set loading(status) {
+        this.isLoading = status;
     }
 
-    /**
-     * Load the record edit form using the fields in the fieldset
-     */
+    // Form Visibility
+    get formVisible() {
+        return this.isFormVisible;
+    }
+    set formVisible(isVisible) {
+        this.isFormVisible = isVisible;
+    }
+
+    // Button Visibility
+    get buttonVisible() {
+        return this.isButtonVisible;
+    }
+    set buttonVisible(visible) {
+        this.isButtonVisible = visible;
+    }
+
+    // Error
+    get hasError() {
+        return this.errorDetail ? true : false;
+    }
+
+    // Error Message
+    get errorMessage() {
+        return this.errorDetail;
+    }
+    set errorMessage(detail) {
+        this.errorDetail = detail;
+    }
+
+    // Build Status Options Array
+    buildStatusOptions(options) {
+        return options.values
+            .filter((s) => s.attributes.closed === true)
+            .map((element) => {
+                return {
+                    label: element.label,
+                    value: element.value,
+                };
+            });
+    }
+
+    // Load Fieldset
     loadFieldset() {
         // Vars
-        let fieldSetName = this.fieldSetNameHelper();
+        const recordTypeDeveloperName = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD);
+        const fieldSetName = FIELDSET_PREFIX + recordTypeDeveloperName.replace(/ /g, '_');
+        let items = [];
+        let result;
 
-        // Fetch the fields using fieldset
+        // Get Fields
         getFieldsFromFieldSet({fieldSetName: fieldSetName})
             .then((data) => {
-                // Hold all of our fields
-                let items = [];
-                // Get the entire map
-                let objStr = JSON.parse(data);
-                // Get the list of fields, its a reverse order to extract from map
-                let listOfFields = JSON.parse(Object.values(objStr)[1]);
-                // Prepare items array using field api names
+                // Vars
+                let objStr = JSON.parse(data),
+                    listOfFields = JSON.parse(Object.values(objStr)[1]);
 
                 // Store the index position of our status field defined in the fieldset
-                // We will be replacing this field, so we need to know where to re-insert it
                 listOfFields.map((element, index) => {
-                    let result;
-                    if (element.label === 'Status') {
+                    if (element.fieldPath === 'Status') {
                         this.currentStatusPositionIndex = index;
                     } else {
                         result = items.push(element.fieldPath);
@@ -128,51 +172,41 @@ export default class CaseQuickClose extends LightningElement {
                     return result;
                 });
 
-                this.inputFieldAPIs = items;
-                this.error = undefined;
+                // Error Check
+                if (!items.includes('Status')) {
+                    this.loading = false;
+                    throw new Error('No status field defined in fieldset.');
+                }
+                this.inputFields = items;
             })
             .catch((error) => {
-                this.error = error;
-                console.log('error', error);
+                this.handleGlobalError(error);
             });
     }
 
-    /**
-     * Show form on button click
-     */
-    showForm() {
-        this.isCloseButtonShown = false;
-        this.showSpinner = true;
+    // Show Record Edit Form
+    handleOnCaseCloseButton() {
+        this.buttonVisible = false;
+        this.loading = true;
         setTimeout(() => {
-            this.isFormShown = true;
+            this.formVisible = true;
         }, 1200);
     }
 
-    /**
-     * Reset our form
-     */
-    resetForm() {
-        this.showSpinner = false;
-        this.isFormShown = false;
-        this.isCloseButtonShown = true;
-    }
-
-    /**
-     * Override the submit method to modify data prior to submission
-     */
-    handleSubmit(event) {
-        // Prevent submitting the form so we can override
+    // Override Submit
+    handleOnSubmit(event) {
         event.preventDefault();
-        this.showSpinner = true;
+        this.loading = true;
 
         // Vars
         let fields = event.detail.fields;
         fields.Status = this.selectedStatus;
 
-        // If the selected status is Closed: Spam, modify some case data
+        // Custom Status Logic
         if (fields.Status === 'Closed: SPAM') {
-            let currentSubject = this.record.fields.Subject.value;
-            let currentDescription = this.record.fields.Description.value;
+            // Vars
+            let currentSubject = getFieldValue(this.record.data, SUBJECT_FIELD);
+            let currentDescription = getFieldValue(this.record.data, DESCRIPTION_FIELD);
 
             // Modify case details
             if (!currentSubject.startsWith('SPAM:')) {
@@ -182,16 +216,12 @@ export default class CaseQuickClose extends LightningElement {
                 fields.Description = 'SPAM: ' + currentDescription;
             }
         }
-
-        // Submit the form
+        // Submit
         this.template.querySelector('lightning-record-edit-form').submit(fields);
     }
 
-    /**
-     * On success, show a toast event and notify parent component
-     * @param {*} event
-     */
-    handleSuccess(event) {
+    // Success
+    handleOnCaseCloseSuccess(event) {
         const evt = new ShowToastEvent({
             title: 'Case Closed',
             message: 'Record ID: ' + event.detail.id,
@@ -201,33 +231,35 @@ export default class CaseQuickClose extends LightningElement {
         this.resetForm();
     }
 
-    /**
-     * On record edit form load
-     */
+    // Reset
+    handleResetForm() {
+        this.loading = false;
+        this.formVisible = false;
+        this.buttonVisible = true;
+    }
+
+    // Form Loaded
     handleOnFormLoad() {
-        this.showSpinner = false;
-        this.hasLoaded = true;
+        this.loading = false;
     }
 
-    /**
-     * On record edit form error
-     */
+    // Form Error
     handleOnFormError() {
-        this.showSpinner = false;
+        this.loading = false;
     }
 
-    /**
-     * On cancel edit
-     */
-    handleCancel() {
-        this.resetForm();
+    // Cancel Form
+    handleOnCancel() {
+        this.handleResetForm();
     }
 
-    /**
-     * Handle case status change
-     * @param {*} event
-     */
-    handleStatusOnChange(event) {
+    // Status Change
+    handleOnStatusChange(event) {
         this.selectedStatus = event.detail.value;
+    }
+
+    // Global Error
+    handleGlobalError(error) {
+        this.errorMessage = error;
     }
 }

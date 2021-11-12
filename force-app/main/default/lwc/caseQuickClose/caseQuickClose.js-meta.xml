@@ -13,7 +13,7 @@
             <property label="Button Label" name="closeButtonLabel" type="String" default="Close Case" />
             <property label="Button Variant" name="closeButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
             <property label="Submit Button Label" name="recordSubmitButtonLabel" type="String" default="Submit" />
-            <property label="Button Variant" name="recordSubmitButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
+            <property label="Submit Button Variant" name="recordSubmitButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
             <objects>
                 <object>Case</object>
             </objects>

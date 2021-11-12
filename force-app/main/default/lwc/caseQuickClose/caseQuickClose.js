@@ -1,3 +1,10 @@
+/**
+ * Author: Created by Carl Hussey
+ * Date: 11/11/2021
+ * Description:
+ *  To use, create a fieldset on Case with an API name in the following format:
+ *  CQC_RT_RECORD_TYPE_API_NAME (Examples: CQC_RT_ASU_Service, CQC_RT_ASU_Advisor_Outreach)
+ */
 import {LightningElement, api, wire} from 'lwc';
 import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
@@ -15,13 +22,11 @@ const FIELDSET_PREFIX = 'CQC_RT_';
 
 export default class CaseQuickClose extends LightningElement {
     @api recordId;
-    // Configuration exposed for lightning builder
     @api componentName = 'Case Quick Close';
     @api closeButtonLabel = 'Close Case';
     @api closeButtonVariant = 'brand';
     @api recordSubmitButtonLabel = 'Submit';
     @api recordSubmitButtonVariant = 'brand';
-    // Configuration exposed for lightning builder
     record;
     casesStatusOptions;
     isLoading = false;
@@ -90,7 +95,7 @@ export default class CaseQuickClose extends LightningElement {
 
     // Case Status (Current)
     get currentCaseStatus() {
-        return getFieldValue(this.record.data, STATUS_FIELD);
+        return getFieldValue(this.record, STATUS_FIELD);
     }
 
     // Case Status Options (Type = Closed)
@@ -154,6 +159,7 @@ export default class CaseQuickClose extends LightningElement {
         const fieldSetName = FIELDSET_PREFIX + recordTypeDeveloperName.replace(/ /g, '_');
         let items = [];
         let result;
+        let hasStatusField = false;
 
         // Get Fields
         getFieldsFromFieldSet({fieldSetName: fieldSetName})
@@ -162,10 +168,16 @@ export default class CaseQuickClose extends LightningElement {
                 let objStr = JSON.parse(data),
                     listOfFields = JSON.parse(Object.values(objStr)[1]);
 
+                // Error Check
+                if (listOfFields == null) {
+                    throw new Error(`Unable to find Field Set with API name "${fieldSetName}"`);
+                }
+
                 // Store the index position of our status field defined in the fieldset
                 listOfFields.map((element, index) => {
                     if (element.fieldPath === 'Status') {
                         this.currentStatusPositionIndex = index;
+                        hasStatusField = true;
                     } else {
                         result = items.push(element.fieldPath);
                     }
@@ -173,9 +185,13 @@ export default class CaseQuickClose extends LightningElement {
                 });
 
                 // Error Check
-                if (!items.includes('Status')) {
-                    this.loading = false;
-                    throw new Error('No status field defined in fieldset.');
+                if (items.length === 0) {
+                    throw new Error('No fields found in fieldset.');
+                }
+                if (!hasStatusField) {
+                    throw new Error(
+                        'No Status field defined in fieldset. Please add the Case Status Field to the Field Set.'
+                    );
                 }
                 this.inputFields = items;
             })
@@ -186,8 +202,8 @@ export default class CaseQuickClose extends LightningElement {
 
     // Show Record Edit Form
     handleOnCaseCloseButton() {
-        this.buttonVisible = false;
         this.loading = true;
+        this.buttonVisible = false;
         setTimeout(() => {
             this.formVisible = true;
         }, 1200);

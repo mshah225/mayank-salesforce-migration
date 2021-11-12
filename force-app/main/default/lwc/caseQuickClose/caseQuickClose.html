@@ -6,33 +6,33 @@
         </h3>
 
         <p class="slds-p-horizontal_small">
-            <!-- Case Close Button -->
-            <lightning-button
-                variant={lwcCloseButtonVariant}
-                label={lwcCloseButtonLabel}
-                onclick={handleOnCaseCloseButton}
-                if:true={isButtonVisible}
-            ></lightning-button>
+            <!-- Has Global Error -->
+            <template if:false={hasError}>
+                <!-- Case Close Button -->
+                <lightning-button
+                    variant={lwcCloseButtonVariant}
+                    label={lwcCloseButtonLabel}
+                    onclick={handleOnCaseCloseButton}
+                    if:true={isButtonVisible}
+                ></lightning-button>
 
-            <!-- Loading -->
-            <template if:true={loading}>
-                <br /><br />
-                <div class="slds-spinner_container">
-                    <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
-                        <span class="slds-assistive-text">Loading...</span>
-                        <div class="slds-spinner__dot-a"></div>
-                        <div class="slds-spinner__dot-b"></div>
-                        <br />
-                        <br />
+                <!-- Loading -->
+                <template if:true={loading}>
+                    <br /><br />
+                    <div class="slds-spinner_container">
+                        <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading...</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                            <br />
+                            <br />
+                        </div>
                     </div>
-                </div>
-                <br /><br />
-            </template>
+                    <br /><br />
+                </template>
 
-            <!-- On Form Visible -->
-            <template if:true={formVisible}>
-                <!-- Has Global Error -->
-                <template if:false={hasError}>
+                <!-- On Form Visible -->
+                <template if:true={formVisible}>
                     <!-- Record Edit Form -->
                     <lightning-record-edit-form
                         object-api-name="Case"
@@ -77,13 +77,13 @@
                         </div>
                     </lightning-record-edit-form>
                 </template>
-                <!-- Error Message -->
-                <template if:true={hasError}>
-                    <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
-                        <span class="slds-assistive-text">error</span>
-                        <h2>{errorMessage}</h2>
-                    </div>
-                </template>
+            </template>
+            <!-- Error Message -->
+            <template if:true={hasError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>{errorMessage}</h2>
+                </div>
             </template>
         </p>
     </lightning-card>

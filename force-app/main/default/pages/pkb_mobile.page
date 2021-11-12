@@ -1,4 +1,4 @@
-<apex:page>
+<apex:page >
     <!-- Unused page.  We can't delete it since pkb_Home, pkb_Template, and a
     few other existing pages think it is a dependency (even though they don't 
     reference it). -->

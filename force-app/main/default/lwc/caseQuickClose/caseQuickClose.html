@@ -44,19 +44,25 @@
                     >
                         <lightning-messages></lightning-messages>
 
+                        <!-- For Each Input Field (BEFORE Status) -->
+                        <template for:each={inputFieldsBefore} for:item="item">
+                            <lightning-input-field field-name={item} name={item} key={item} id={item}>
+                            </lightning-input-field>
+                        </template>
+
                         <!-- Status Dropdown Override -->
                         <lightning-combobox
                             name="status"
-                            label="Status"
-                            placeholder="Select Status"
+                            label={statusInputLabel}
+                            placeholder={statusInputPlaceholder}
                             value={currentCaseStatus}
                             options={statusOptions}
                             onchange={handleOnStatusChange}
-                            data-id="statusDropdown"
+                            class="customStatusBox"
                         ></lightning-combobox>
 
-                        <!-- For Each Input Field -->
-                        <template for:each={inputFields} for:item="item">
+                        <!-- For Each Input Field (AFTER Status) -->
+                        <template for:each={inputFieldsAfter} for:item="item">
                             <lightning-input-field field-name={item} name={item} key={item} id={item}>
                             </lightning-input-field>
                         </template>

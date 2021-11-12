@@ -34,8 +34,9 @@ export default class CaseQuickClose extends LightningElement {
     isButtonVisible = true;
     errorDetail = '';
     selectedStatus;
-    inputFields = [];
-    currentStatusPositionIndex;
+    inputFieldsBefore = [];
+    inputFieldsAfter = [];
+    statusFieldLabel;
 
     // Case Record
     @wire(getRecord, {
@@ -140,6 +141,14 @@ export default class CaseQuickClose extends LightningElement {
         this.errorDetail = detail;
     }
 
+    // Label of the status field we are re-creating
+    get statusInputLabel() {
+        return this.statusFieldLabel;
+    }
+    get statusInputPlaceholder() {
+        return 'Select ' + this.statusFieldLabel;
+    }
+
     // Build Status Options Array
     buildStatusOptions(options) {
         return options.values
@@ -157,9 +166,9 @@ export default class CaseQuickClose extends LightningElement {
         // Vars
         const recordTypeDeveloperName = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD);
         const fieldSetName = FIELDSET_PREFIX + recordTypeDeveloperName.replace(/ /g, '_');
-        let items = [];
-        let result;
         let hasStatusField = false;
+        let before = [];
+        let after = [];
 
         // Get Fields
         getFieldsFromFieldSet({fieldSetName: fieldSetName})
@@ -173,19 +182,28 @@ export default class CaseQuickClose extends LightningElement {
                     throw new Error(`Unable to find Field Set with API name "${fieldSetName}"`);
                 }
 
-                // Store the index position of our status field defined in the fieldset
-                listOfFields.map((element, index) => {
-                    if (element.fieldPath === 'Status') {
-                        this.currentStatusPositionIndex = index;
-                        hasStatusField = true;
+                // Map list of fields from APEX response
+                listOfFields.map((element) => {
+                    /*
+                        If the current field is not Status and we have not yet encountered the Status field,
+                        add the field to the Before Array. If we have encountered Status field, we add this field
+                        to the After array.
+                    */
+                    if (element.fieldPath !== 'Status') {
+                        if (!hasStatusField) {
+                            before.push(element.fieldPath);
+                        } else {
+                            after.push(element.fieldPath);
+                        }
                     } else {
-                        result = items.push(element.fieldPath);
+                        hasStatusField = true;
+                        this.statusFieldLabel = element.label;
                     }
-                    return result;
+                    return null;
                 });
 
                 // Error Check
-                if (items.length === 0) {
+                if (before.length === 0 && after.length === 0) {
                     throw new Error('No fields found in fieldset.');
                 }
                 if (!hasStatusField) {
@@ -193,7 +211,8 @@ export default class CaseQuickClose extends LightningElement {
                         'No Status field defined in fieldset. Please add the Case Status Field to the Field Set.'
                     );
                 }
-                this.inputFields = items;
+                this.inputFieldsBefore = before;
+                this.inputFieldsAfter = after;
             })
             .catch((error) => {
                 this.handleGlobalError(error);
@@ -221,8 +240,8 @@ export default class CaseQuickClose extends LightningElement {
         // Custom Status Logic
         if (fields.Status === 'Closed: SPAM') {
             // Vars
-            let currentSubject = getFieldValue(this.record.data, SUBJECT_FIELD);
-            let currentDescription = getFieldValue(this.record.data, DESCRIPTION_FIELD);
+            const currentSubject = getFieldValue(this.record.data, SUBJECT_FIELD);
+            const currentDescription = getFieldValue(this.record.data, DESCRIPTION_FIELD);
 
             // Modify case details
             if (!currentSubject.startsWith('SPAM:')) {
@@ -252,6 +271,7 @@ export default class CaseQuickClose extends LightningElement {
         this.loading = false;
         this.formVisible = false;
         this.buttonVisible = true;
+        this.errorMessage = '';
     }
 
     // Form Loaded

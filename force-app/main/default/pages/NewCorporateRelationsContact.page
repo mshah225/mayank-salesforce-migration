@@ -23,8 +23,8 @@
                 <apex:inputField value="{!contact.Phone}" />
                 <apex:inputField value="{!contact.Suffix__c}" />
                 <apex:inputField value="{!contact.Work_Phone__c}" />
-                <apex:inputField value="{!contact.Email}" label="Organization Relations Email" required="true" />
-                <apex:inputField value="{!contact.Organization_Relations_Secondary_Email__c}" />
+                <apex:inputField value="{!contact.Email}" label="Org Rel Email" required="true" />
+                <apex:inputField value="{!contact.Organization_Relations_Secondary_Email__c}" label="Org Rel Secondary Email" />
                 <apex:inputField value="{!contact.LinkedIn__c}" />
                 <apex:inputField value="{!contact.Birthdate}" />
                 <apex:inputField value="{!contact.Marital_Status__c}" />

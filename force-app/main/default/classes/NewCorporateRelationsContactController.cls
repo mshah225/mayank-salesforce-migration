@@ -126,24 +126,6 @@ public class NewCorporateRelationsContactController {
         }
     }
 
-    public void validateContact() {
-        Integer hasMailingCode = contact.MailingPostalCode == null ? 0 : 1;
-        Integer hasPhone = contact.Phone == null ? 0 : 1;
-
-        Integer result = hasMailingCode + hasPhone;
-        if (result >= 1) {
-            page2();
-        } else {
-            ApexPages.addmessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code.'
-                )
-            );
-            return;
-        }
-    }
-
     public PageReference page2() {
         page = 2;
 

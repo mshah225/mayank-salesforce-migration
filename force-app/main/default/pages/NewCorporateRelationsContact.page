@@ -7,7 +7,7 @@
         <apex:pageBlock id="page1" title="New Corporate Relations Contact" rendered="{!page == 1}">
             <apex:pageMessages />
             <apex:pageBlockButtons id="alius-format1119">
-                <apex:commandButton value="Continue" action="{!validateContact}" />
+                <apex:commandButton value="Continue" />
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="Contact Information">
                 <i>You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one

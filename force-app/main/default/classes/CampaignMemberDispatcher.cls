@@ -1,4 +1,4 @@
-public class CampaignMemberDispatcher implements IDispatch {
+public class CampaignMemberDispatcher implements TriggerDispatcherInterface {
     private List<CampaignMember> newList;
     private Map<Id, CampaignMember> newMap;
     private List<CampaignMember> oldList;

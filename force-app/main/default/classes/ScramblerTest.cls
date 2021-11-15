@@ -11,12 +11,13 @@ private class ScramblerTest {
     @isTest
     private static void testCarefulEmailScramble() {
         String testEmail = 'testEmail@test.com';
-        testEmail = Scrambler.carefullyScrambleEmailOrUsername(testEmail);
+        testEmail = Scrambler.carefullyScrambleEmailOrUsername(testEmail).replace('"', '');
 
-        System.assertEquals('"testEmail@test.com.' + Scrambler.getSandboxDomain() + '"', testEmail);
+        System.assertEquals('testEmail@test.com.' + Scrambler.getSandboxDomain(), testEmail);
 
-        testEmail = Scrambler.carefullyScrambleEmailOrUsername(testEmail);
-        System.assertEquals('"testEmail@test.com.' + Scrambler.getSandboxDomain() + '"', testEmail);
+        testEmail = Scrambler.carefullyScrambleEmailOrUsername(testEmail).replace('"', '');
+
+        System.assertEquals('testEmail@test.com.' + Scrambler.getSandboxDomain(), testEmail);
     }
 
     @isTest

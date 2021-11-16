@@ -1,4 +1,5 @@
 public without sharing class SubscriberService {
+    @TestVisible
     private static Boolean parentSubsSynced = false;
 
     /**

@@ -46,24 +46,37 @@
 
                         <!-- For Each Input Field (BEFORE Status) -->
                         <template for:each={inputFieldsBefore} for:item="item">
-                            <lightning-input-field field-name={item} name={item} key={item} id={item}>
+                            <lightning-input-field
+                                field-name={item.path}
+                                name={item.path}
+                                key={item.path}
+                                id={item.path}
+                                required={item.required}
+                            >
                             </lightning-input-field>
                         </template>
 
                         <!-- Status Dropdown Override -->
                         <lightning-combobox
-                            name="status"
+                            name="Status"
                             label={statusInputLabel}
                             placeholder={statusInputPlaceholder}
-                            value={currentCaseStatus}
+                            value=""
                             options={statusOptions}
                             onchange={handleOnStatusChange}
                             class="customStatusBox"
+                            required
                         ></lightning-combobox>
 
                         <!-- For Each Input Field (AFTER Status) -->
                         <template for:each={inputFieldsAfter} for:item="item">
-                            <lightning-input-field field-name={item} name={item} key={item} id={item}>
+                            <lightning-input-field
+                                field-name={item.path}
+                                name={item.path}
+                                key={item.path}
+                                id={item.path}
+                                required={item.required}
+                            >
                             </lightning-input-field>
                         </template>
 
@@ -88,7 +101,12 @@
             <template if:true={hasError}>
                 <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
                     <span class="slds-assistive-text">error</span>
-                    <h2>{errorMessage}</h2>
+                    <h2>
+                        {errorMessage}
+                        <br />
+                        Contact Salesforce Support:
+                        <lightning-formatted-email value={errorContactEmail} hide-icon></lightning-formatted-email>
+                    </h2>
                 </div>
             </template>
         </p>

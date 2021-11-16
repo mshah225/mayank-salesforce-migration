@@ -28,12 +28,13 @@ export default class CaseQuickClose extends LightningElement {
     @api recordSubmitButtonLabel = 'Submit';
     @api recordSubmitButtonVariant = 'brand';
     record;
-    casesStatusOptions;
+    casesStatusOptions = [];
     isLoading = false;
     isFormVisible = false;
     isButtonVisible = true;
     errorDetail = '';
-    selectedStatus;
+    errorContact = 'salesforce.support@asu.edu';
+    selectedStatus = '';
     inputFieldsBefore = [];
     inputFieldsAfter = [];
     statusFieldLabel;
@@ -65,7 +66,16 @@ export default class CaseQuickClose extends LightningElement {
         }
         if (data) {
             this.caseStatusOptions = this.buildStatusOptions(data);
-            this.loadFieldset();
+
+            // If we weren't able to get the status options, set error
+            try {
+                if (this.caseStatusOptions.length === 0) {
+                    throw new Error('Unable to access Status Options for Picklist.');
+                }
+                this.loadFieldset();
+            } catch (e) {
+                this.handleGlobalError(e);
+            }
         }
     }
 
@@ -92,11 +102,6 @@ export default class CaseQuickClose extends LightningElement {
     // Submit Button Variant
     get lwcRecordSubmitButtonVariant() {
         return this.recordSubmitButtonVariant;
-    }
-
-    // Case Status (Current)
-    get currentCaseStatus() {
-        return getFieldValue(this.record, STATUS_FIELD);
     }
 
     // Case Status Options (Type = Closed)
@@ -141,12 +146,20 @@ export default class CaseQuickClose extends LightningElement {
         this.errorDetail = detail;
     }
 
+    // Error Contact Info
+    get errorContactEmail() {
+        return this.errorContact;
+    }
+
     // Label of the status field we are re-creating
     get statusInputLabel() {
         return this.statusFieldLabel;
     }
     get statusInputPlaceholder() {
         return 'Select ' + this.statusFieldLabel;
+    }
+    get statusRequired() {
+        return this.statusFieldRequired;
     }
 
     // Build Status Options Array
@@ -191,9 +204,9 @@ export default class CaseQuickClose extends LightningElement {
                     */
                     if (element.fieldPath !== 'Status') {
                         if (!hasStatusField) {
-                            before.push(element.fieldPath);
+                            before.push({path: element.fieldPath, required: element.required});
                         } else {
-                            after.push(element.fieldPath);
+                            after.push({path: element.fieldPath, required: element.required});
                         }
                     } else {
                         hasStatusField = true;
@@ -230,12 +243,17 @@ export default class CaseQuickClose extends LightningElement {
 
     // Override Submit
     handleOnSubmit(event) {
-        event.preventDefault();
-        this.loading = true;
-
         // Vars
         let fields = event.detail.fields;
         fields.Status = this.selectedStatus;
+        event.preventDefault();
+
+        // Make sure our fields are validated
+        if (!this.validateFields()) {
+            return;
+        }
+
+        this.loading = true;
 
         // Custom Status Logic
         if (fields.Status === 'Closed: SPAM') {
@@ -251,6 +269,7 @@ export default class CaseQuickClose extends LightningElement {
                 fields.Description = 'SPAM: ' + currentDescription;
             }
         }
+
         // Submit
         this.template.querySelector('lightning-record-edit-form').submit(fields);
     }
@@ -263,7 +282,7 @@ export default class CaseQuickClose extends LightningElement {
             variant: 'success',
         });
         this.dispatchEvent(evt);
-        this.resetForm();
+        this.handleResetForm();
     }
 
     // Reset
@@ -296,6 +315,52 @@ export default class CaseQuickClose extends LightningElement {
 
     // Global Error
     handleGlobalError(error) {
-        this.errorMessage = error;
+        this.errorMessage = this.reduceErrors(error);
+    }
+
+    // Reduces one or more LDS errors into a string[] of error messages.
+    reduceErrors(errors) {
+        if (!Array.isArray(errors)) {
+            errors = [errors];
+        }
+
+        return (
+            errors
+                // Remove null/undefined items
+                .filter((error) => !!error)
+                // Extract an error message
+                .map((error) => {
+                    // UI API read errors
+                    if (Array.isArray(error.body)) {
+                        return error.body.map((e) => e.message);
+                    }
+                    // UI API DML, Apex and network errors
+                    else if (error.body && typeof error.body.message === 'string') {
+                        return error.body.message;
+                    }
+                    // JS errors
+                    else if (typeof error.message === 'string') {
+                        return error.message;
+                    }
+                    // Unknown error shape so try HTTP status text
+                    return error.statusText;
+                })
+                // Flatten
+                .reduce((prev, curr) => prev.concat(curr), [])
+                // Remove empty strings
+                .filter((message) => !!message)
+        );
+    }
+
+    // Validate Fields
+    validateFields() {
+        return [
+            ...this.template.querySelectorAll('lightning-input-field'),
+            ...this.template.querySelectorAll('lightning-combobox'),
+        ].reduce((validSoFar, field) => {
+            // Return whether all fields up to this point are valid and whether current field is valid
+            // reportValidity returns validity and also displays/clear message on element based on validity
+            return validSoFar && field.reportValidity();
+        }, true);
     }
 }

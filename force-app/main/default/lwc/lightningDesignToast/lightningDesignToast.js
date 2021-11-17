@@ -4,7 +4,7 @@ export default class LightningDesignToast extends LightningElement {
     @api set variant(val) {
         this._variant = val;
         this._icon = 'utility:' + val;
-        this._classList = 'slds-notify slds-notify_toast slds-theme_' + val;
+        this._classList = 'yes-clicks slds-notify slds-notify_toast slds-theme_' + val;
         if (val === 'loading') {
             this._loadingToast = true;
         } else {
@@ -39,11 +39,12 @@ export default class LightningDesignToast extends LightningElement {
     _duration = 3000;
     _loadingToast = false;
     _icon = 'utility:info';
-    _classList = 'slds-notify slds-notify_toast slds-theme_info';
+    _classList = 'yes-clicks slds-notify slds-notify_toast slds-theme_info';
     _hide = true;
     _timeoutToClose = null;
     _timeoutToDisplayNone = null;
-    _wrapperClassListStr = 'slds-notify_container slds-hide fadeOutTransition slds-is-fixed slds-align_absolute-center';
+    _wrapperClassListStr =
+        'slds-notify_container slds-hide fadeOutTransition slds-is-fixed slds-align_absolute-center no-clicks';
 
     @api fire() {
         this.openToast();

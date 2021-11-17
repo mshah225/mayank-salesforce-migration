@@ -8,6 +8,13 @@
     background-color: unset;
 }
 
+:host .yes-clicks {
+    pointer-events: auto;
+}
+:host .no-clicks {
+    pointer-events: none;
+}
+
 :host .fadeInTransition {
     animation: fadeIn ease 2s;
     -webkit-animation: fadeIn ease 2s;

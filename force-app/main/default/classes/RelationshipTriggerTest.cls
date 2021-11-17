@@ -163,4 +163,21 @@ private class RelationshipTriggerTest {
         delete relationships;
         test.stopTest();
     }
+
+    @isTest
+    static void testCreateRelationship() {
+        Account testAccount = new Account(Name = 'Test Account', Website = 'www.example.com');
+        insert testAccount;
+
+        Contact testContact = new Contact(FirstName = 'John', LastName = 'Doe');
+        insert testContact;
+
+        String title = 'test title';
+
+        Id recordId = IDHelper.getRecordTypeId('Relationship__c', 'Account_to_Contact');
+
+        test.startTest();
+        RelationshipService.createContactAccountRelationship(testContact.Id, testAccount.Id, recordId, title);
+        test.stopTest();
+    }
 }

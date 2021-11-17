@@ -2,7 +2,7 @@ trigger LeadTrigger on Lead(after delete, after insert, after update, before del
     TriggerFactory.createAndExecuteHandler(LeadHandler.class);
 
     if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.LeadTA();
+        TerritoryAssignmentLead ta = new TerritoryAssignmentLead();
+        ta.assignTerritories();
     }
 }

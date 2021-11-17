@@ -9,7 +9,7 @@ trigger ContactTrigger on Contact(
     TriggerFactory.createAndExecuteHandler(ContactHandler.class);
 
     if (Trigger.isAfter && Trigger.isUpdate) {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.ContactTA();
+        TerritoryAssignmentContact ta = new TerritoryAssignmentContact();
+        ta.assignTerritoriesOnAfterUpdate();
     }
 }

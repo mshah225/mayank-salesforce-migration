@@ -9,7 +9,7 @@ trigger OpportunityTrigger on Opportunity(
     TriggerFactory.createAndExecuteHandler(OpportunityHandler.class);
 
     if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.OpportunityTA();
+        TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
+        ta.assignTerritories();
     }
 }

@@ -44,8 +44,7 @@ public without sharing class TerritoryAssignmentTest {
         Opp.OwnerId = TestUser.Id;
         insert Opp;
 
-        TerritoryAssignmentAccount.assignTerritoriesOnBeforeInsertDone = false;
-        TerritoryAssignmentAccount.assignTerritoriesOnBeforeUpdateDone = false;
+        TerritoryAssignmentAccount.assignTerritoriesDone = false;
 
         Test.startTest();
         HS.ShippingPostalCode = '85287';

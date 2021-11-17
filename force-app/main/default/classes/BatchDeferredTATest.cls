@@ -49,8 +49,7 @@ private class BatchDeferredTATest {
         }
         insert leadInsertList;
 
-        TerritoryAssignmentAccount.assignTerritoriesOnBeforeInsertDone = false;
-        TerritoryAssignmentAccount.assignTerritoriesOnBeforeUpdateDone = false;
+        TerritoryAssignmentAccount.assignTerritoriesDone = false;
 
         HS.Territory_Manager__c = TestUser2.Id;
         update HS;
@@ -105,8 +104,7 @@ private class BatchDeferredTATest {
         Opp.CloseDate = date.today() + 365;
         insert Opp;
 
-        TerritoryAssignmentAccount.assignTerritoriesOnBeforeInsertDone = false;
-        TerritoryAssignmentAccount.assignTerritoriesOnBeforeUpdateDone = false;
+        TerritoryAssignmentAccount.assignTerritoriesDone = false;
 
         HS.Territory_Manager__c = TestUser2.Id;
         update HS;

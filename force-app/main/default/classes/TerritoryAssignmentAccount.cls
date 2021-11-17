@@ -1,9 +1,8 @@
 public without sharing class TerritoryAssignmentAccount {
-    public static Boolean assignTerritoriesOnBeforeInsertDone = false;
-    public static Boolean assignTerritoriesOnBeforeUpdateDone = false;
+    public static Boolean assignTerritoriesDone = false;
 
-    public void assignTerritoriesOnBeforeInsert(List<Account> newAccountList) {
-        if (assignTerritoriesOnBeforeInsertDone) {
+    public void assignTerritories() {
+        if (assignTerritoriesDone) {
             return;
         }
 
@@ -11,9 +10,9 @@ public without sharing class TerritoryAssignmentAccount {
         Set<String> ZipsInTrigger = new Set<String>();
         List<Key_Value__c> KVList = new List<Key_Value__c>();
 
-        for (Account InsZip : newAccountList) {
+        for (Account InsZip : (List<Account>) Trigger.New) {
             //Ensures Zipcode is five digits or less
-            string shortZip = TerritoryAssignmentService.shortenZipCode(InsZip.ShippingPostalCode);
+            string shortZip = shortenZipCode(InsZip.ShippingPostalCode);
             ZipsInTrigger.add(shortZip);
         }
 
@@ -28,40 +27,35 @@ public without sharing class TerritoryAssignmentAccount {
                 KVMap.put(K.Geomarket_ZIP__c, K.Geomarket_Code__c);
             }
 
-            for (Account AccGeo : newAccountList) {
+            for (Account AccGeo : (List<Account>) Trigger.New) {
                 //Ensures Zipcode is five digits or less
-                string shortZip = TerritoryAssignmentService.shortenZipCode(AccGeo.ShippingPostalCode);
+                string shortZip = shortenZipCode(AccGeo.ShippingPostalCode);
                 AccGeo.Geomarket_Code__c = KVMap.get(shortZip);
             }
         }
 
-        assignTerritoriesOnBeforeInsertDone = true;
-    }
+        if (Trigger.isUpdate) {
+            Map<ID, Account> AcountOldMap = (Map<ID, Account>) Trigger.oldMap;
 
-    public void assignTerritoriesOnBeforeUpdate(List<Account> newAccountList, Map<Id, Account> oldAccountMap) {
-        assignTerritories(newAccountList);
+            for (Account A : (List<Account>) Trigger.New) {
+                if (
+                    A.Defer_Territory_Assignment__c == false &&
+                    AcountOldMap.get(A.Id).Defer_Territory_Assignment__c == true
+                ) {
+                    continue;
+                }
 
-        if (assignTerritoriesOnBeforeUpdateDone) {
-            return;
-        }
-
-        for (Account acc : newAccountList) {
-            if (
-                acc.Defer_Territory_Assignment__c == false &&
-                oldAccountMap.get(acc.Id).Defer_Territory_Assignment__c == true
-            ) {
-                continue;
-            }
-
-            if (
-                acc.Territory_Manager__c != null &&
-                oldAccountMap.get(acc.Id).Territory_Manager__c != acc.Territory_Manager__c &&
-                oldAccountMap.get(acc.Id).Territory_Manager__c != null
-            ) {
-                acc.Defer_Territory_Assignment__c = true;
-                acc.Previous_Territory_Manager_ID__c = oldAccountMap.get(acc.Id).Territory_Manager__c;
+                if (
+                    A.Territory_Manager__c != null &&
+                    AcountOldMap.get(A.Id).Territory_Manager__c != A.Territory_Manager__c &&
+                    AcountOldMap.get(A.Id).Territory_Manager__c != null
+                ) {
+                    A.Defer_Territory_Assignment__c = true;
+                    A.Previous_Territory_Manager_ID__c = AcountOldMap.get(A.Id).Territory_Manager__c;
+                }
             }
         }
-        assignTerritoriesOnBeforeUpdateDone = true;
+
+        assignTerritoriesDone = true;
     }
 }

@@ -1,30 +1,36 @@
 public without sharing class TerritoryAssignmentContact {
-    public static Boolean assignTerritoriesOnAfterUpdateDone = false;
+    public static Boolean assignTerritoriesDone = false;
 
-    public void assignTerritoriesOnAfterUpdate(List<Contact> newContactList, Map<Id, Contact> oldContactMap) {
-        if (assignTerritoriesOnAfterUpdateDone) {
+    public void assignTerritories() {
+        if (assignTerritoriesDone) {
             return;
         }
 
-        Set<Id> contactIdsWithTAChanges = new Set<Id>();
-        List<Opportunity> oppList;
+        if (Trigger.isAfter && Trigger.isUpdate) {
+            Set<Id> contactIdsWithTAChanges = new Set<Id>();
+            List<Opportunity> oppList;
 
-        for (Contact c : newContactList) {
-            if (c.MailingState != oldContactMap.get(c.Id).MailingState) {
-                contactIdsWithTAChanges.add(c.Id);
+            for (Contact c : (List<Contact>) Trigger.new) {
+                if (c.MailingState != oldContactMap.get(c.Id).MailingState) {
+                    contactIdsWithTAChanges.add(c.Id);
+                }
             }
-        }
 
-        oppList = new List<Opportunity>(
-            [SELECT Id, Territory_Assignment_Required__c FROM Opportunity WHERE Contact__c IN :contactIdsWithTAChanges]
-        );
+            oppList = new List<Opportunity>(
+                [
+                    SELECT Id, Territory_Assignment_Required__c
+                    FROM Opportunity
+                    WHERE Contact__c IN :contactIdsWithTAChanges
+                ]
+            );
 
-        if (oppList.size() > 0) {
-            for (Opportunity o : oppList) {
-                o.Territory_Assignment_Required__c = true;
+            if (oppList.size() > 0) {
+                for (Opportunity o : oppList) {
+                    o.Territory_Assignment_Required__c = true;
+                }
+                TerritoryAssignmentService.updateOpportunityList(oppList);
+                assignTerritoriesDone = true;
             }
-            TerritoryAssignmentService.updateOpportunityList(oppList);
-            assignTerritoriesOnAfterUpdateDone = true;
         }
     }
 }

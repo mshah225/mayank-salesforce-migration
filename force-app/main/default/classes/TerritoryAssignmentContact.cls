@@ -8,6 +8,7 @@ public without sharing class TerritoryAssignmentContact {
 
         if (Trigger.isAfter && Trigger.isUpdate) {
             Set<Id> contactIdsWithTAChanges = new Set<Id>();
+            Map<Id, Contact> oldContactMap = (Map<Id, Contact>) Trigger.oldMap;
             List<Opportunity> oppList;
 
             for (Contact c : (List<Contact>) Trigger.new) {

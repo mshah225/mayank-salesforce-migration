@@ -1953,7 +1953,9 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Enrolled in Next Term</th>
-                                                    <td id="sr_next_term_enrolled"></td>
+                                                    <td id="sr_next_term_enrolled">
+                                                        {!theContact.Enrolled_Next_Term__c}
+                                                    </td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -3083,9 +3085,7 @@
                             if (!response.totalSize == 0) {
                                 var result = response.records[0];
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
-                                document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
-                                document.getElementById('sr_next_term_enrolled').innerHTML =
-                                    result.NEXT_TERM_ENROLLED__c;                            
+                                document.getElementById('stdtRetentionResponseErrors').style.display = 'none';               
 
                                 cleanUpUndefined('UGgeneralIndicators');
                                 indicatorTabLoaded = true;

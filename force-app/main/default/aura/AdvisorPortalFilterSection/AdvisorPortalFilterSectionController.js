@@ -10,16 +10,16 @@
 
     clearFilters: function (component, event, helper) {
         component.set('v.Student', '');
-        component.find('campusPicklist').resetMultiSelect();
+        component.find('campusPicklist').loudSelect('');
         component.set('v.Major', '');
-        component.find('residencyPicklist').resetMultiSelect();
-        component.find('caseStatusPicklist').resetMultiSelect();
-        component.find('caseSubjectPicklist').resetMultiSelect();
-        component.find('caseCategoryPicklist').resetMultiSelect();
-        component.find('academicLevelPicklist').resetMultiSelect();
+        component.find('residencyPicklist').loudSelect('');
+        component.find('caseStatusPicklist').loudSelect('');
+        component.find('caseSubjectPicklist').loudSelect('');
+        component.find('caseCategoryPicklist').loudSelect('');
+        component.find('academicLevelPicklist').loudSelect('');
         component.set('v.StudentGroup', '');
-        component.find('outlookScoreOptionsPicklist').resetMultiSelect();
-        component.find('outlookChangePicklist').resetMultiSelect();
+        component.find('outlookScoreOptionsPicklist').loudSelect('');
+        component.find('outlookChangePicklist').loudSelect('');
         component.set('v.CaseCount', null);
         component.set('v.CreatedFromDate', '');
         component.set('v.CreatedToDate', '');

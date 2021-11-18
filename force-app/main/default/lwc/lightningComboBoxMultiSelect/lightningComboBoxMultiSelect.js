@@ -97,12 +97,12 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
         this.shownPlacard = this.placeholder;
     }
 
-    @api resetMultiSelect() {
-        for (let i = 0; i < this._options.length; i++) {
-            this._options[i].isSelected = false;
-        }
-        this._value = '';
-        this.shownPlacard = this.placeholder;
+    @api quietSelect(val) {
+        this.value = val;
+    }
+
+    @api loudSelect(val) {
+        this.value = val;
         this.updateValue();
     }
 

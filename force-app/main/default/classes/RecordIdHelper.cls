@@ -272,7 +272,7 @@ public class RecordIdHelper {
             for (Schema.SObjectType sType : gd.values()) {
                 Schema.DescribeSObjectResult r = sType.getDescribe();
                 String prefix = r.getKeyPrefix();
-                String objName = r.getRecordName();
+                String objName = r.getName();
                 ObjPrefix__C tmp = new ObjPrefix__C();
                 tmp.Prefix__c = prefix;
                 tmp.ObjectName__c = objName;

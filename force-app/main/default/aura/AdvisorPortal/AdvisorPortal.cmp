@@ -1,5 +1,4 @@
 <aura:component access="public">
-    <aura:attribute name="ContactsInView" type="AdvisorPortalContact[]" />
     <aura:attribute name="FilteredContacts" type="AdvisorPortalContact[]" />
     <aura:attribute name="isProcessing" type="Boolean" default="true" />
     <aura:attribute name="processingCounter" type="Integer" default="0" />
@@ -7,7 +6,6 @@
     <aura:attribute name="SelectedUserOptions" type="List" />
     <aura:attribute name="GraduateStudentsOnly" type="Boolean" />
     <aura:attribute name="DefaultFilter" type="Object" />
-    <aura:attribute name="CaseContactWrappers" type="List" />
     <aura:handler
         name="incrementProcessingCounterEvent"
         event="c:IncrementProcessingCounterEvent"

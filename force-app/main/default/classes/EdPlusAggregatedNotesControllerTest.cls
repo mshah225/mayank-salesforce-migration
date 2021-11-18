@@ -8,9 +8,9 @@ public class EdPlusAggregatedNotesControllerTest {
     /**
      * Extend our ExternalObjectQueryService class to mock our external data
      */
-    class EdPlusAggregatedNotesControllerMock extends ExternalObjectQueryService {
+    class Mock extends ExternalObjectQueryService {
         final Map<SObjectType, List<SObject>> cache;
-        public EdPlusAggregatedNotesControllerMock() {
+        public Mock() {
             cache = new Map<SObjectType, List<SObject>>();
         }
         public Mock setDataStore(List<SObject> records) {
@@ -161,8 +161,7 @@ public class EdPlusAggregatedNotesControllerTest {
         mockExternalTasks[4].Created_Date_edpl__c = Date.today().addDays(-2);
 
         // Insert the mocked data into our cache
-        EdPlusAggregatedNotesControllerMock m = new EdPlusAggregatedNotesControllerMock()
-            .setDataStore(mockExternalTasks);
+        Mock m = new Mock().setDataStore(mockExternalTasks);
 
         // Set the mocked data
         ExternalObjectQueryService.setMock(m);

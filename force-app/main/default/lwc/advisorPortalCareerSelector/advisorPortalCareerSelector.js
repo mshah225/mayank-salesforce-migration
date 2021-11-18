@@ -18,6 +18,22 @@ export default class AdvisorPortalCareerSelector extends LightningElement {
     ];
     value = 'UGRD';
 
+    @api
+    quietSelect(val) {
+        this.value = val;
+    }
+
+    @api
+    loudSelect(val) {
+        this.value = val;
+
+        this.dispatchEvent(
+            new CustomEvent('togglegradonly', {
+                detail: {gradOnly: this.value === 'GRD'},
+            })
+        );
+    }
+
     updateViewCasesFor(event) {
         this.value = event.detail.value;
 

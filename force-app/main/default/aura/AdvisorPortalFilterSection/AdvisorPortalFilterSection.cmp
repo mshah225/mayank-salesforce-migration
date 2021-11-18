@@ -59,6 +59,7 @@
     <aura:registerEvent name="classicToast" type="c:ShowClassicToast" />
 
     <aura:method name="forceApplyFilters" action="{!c.applyFilters}"></aura:method>
+    <aura:method name="forceClearFilters" action="{!c.clearFilters}"></aura:method>
     <aura:method name="getCurrentFilter" action="{!c.getFilter}">
         <aura:attribute name="callback" type="Function" />
     </aura:method>

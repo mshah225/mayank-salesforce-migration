@@ -55,6 +55,11 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         this.makeToast('loading', '', '');
         clearDefaultFilter()
             .then(() => {
+                this.dispatchEvent(
+                    new CustomEvent('clearappliedfilters', {
+                        detail: {},
+                    })
+                );
                 this.makeToast('success', 'Success', 'Default filter cleared.');
             })
             .catch((err) => {

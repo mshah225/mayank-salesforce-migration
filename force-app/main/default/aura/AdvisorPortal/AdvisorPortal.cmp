@@ -66,6 +66,7 @@
         <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
             <div class="slds-grid slds-grid_vertical">
                 <c:advisorPortalCareerSelector
+                    aura:id="careerSelectorLWCElement"
                     class="slds-col slds-size_1-of-1"
                     ontogglegradonly="{!c.updateGraduateStudentsOnly}"
                     defaultFilter="{!v.DefaultFilter}"
@@ -73,6 +74,7 @@
                 <c:advisorPortalSaveFilters
                     class="slds-col slds-size_1-of-1"
                     onsetdefaultfilter="{!c.setDefaultFilter}"
+                    onclearappliedfilters="{!c.clearAppliedFilter}"
                     onrequestcurrentfilter="{!c.getCurrentFilter}"
                     onincrementprocessingcounterevent="{!c.callsIncrementProcessingCounter}"
                     ondecrementprocessingcounterevent="{!c.callsDecrementProcessingCounter}"

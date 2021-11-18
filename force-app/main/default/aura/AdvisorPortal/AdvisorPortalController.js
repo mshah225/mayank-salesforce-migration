@@ -33,6 +33,11 @@
         const detail = event.getParams('detail');
         component.find('filterSectionAuraElement').getCurrentFilter(detail.callback);
     },
+    clearAppliedFilter: function (component, event, helper) {
+        component.set('v.DefaultFilter', {});
+        component.find('filterSectionAuraElement').forceClearFilters();
+        component.find('careerSelectorLWCElement').quietSelect('UGRD');
+    },
 
     showToastLWC: function (component, event, helper) {
         const detail = event.getParams('detail');

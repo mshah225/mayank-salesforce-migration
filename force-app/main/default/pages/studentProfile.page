@@ -1956,7 +1956,6 @@
                                                     <td id="sr_next_term_enrolled">
                                                         {!IF((theContact.Enrolled_Next_Term__c), '--', 'N')}
                                                     </td>
-                                                    </td>
                                                 </tr>
                                             </table>
                                         </div>

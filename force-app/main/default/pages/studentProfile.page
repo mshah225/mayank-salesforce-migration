@@ -1954,7 +1954,8 @@
                                                 <tr>
                                                     <th>Enrolled in Next Term</th>
                                                     <td id="sr_next_term_enrolled">
-                                                        {!theContact.Enrolled_Next_Term__c}
+                                                        {!IF((theContact.Enrolled_Next_Term__c), '--', 'N')}
+                                                    </td>
                                                     </td>
                                                 </tr>
                                             </table>

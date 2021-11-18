@@ -6,19 +6,18 @@
 @isTest
 public class EdPlusAggregatedNotesControllerTest {
     /**
-     * Extend our Query class to mock our external data
+     * Extend our ExternalObjectQueryService class to mock our external data
      */
-    class Mock extends Query {
+    class EdPlusAggregatedNotesControllerMock extends ExternalObjectQueryService {
         final Map<SObjectType, List<SObject>> cache;
-        public Mock() {
+        public EdPlusAggregatedNotesControllerMock() {
             cache = new Map<SObjectType, List<SObject>>();
         }
         public Mock setDataStore(List<SObject> records) {
             cache.put(records.getSObjectType(), records);
-
             return this;
         }
-        protected override List<SObject> passthrough(List<SObject> records) {
+        protected override List<SObject> recordTunnel(List<SObject> records) {
             return cache.get(records.getSObjectType());
         }
     }
@@ -162,7 +161,8 @@ public class EdPlusAggregatedNotesControllerTest {
         mockExternalTasks[4].Created_Date_edpl__c = Date.today().addDays(-2);
 
         // Insert the mocked data into our cache
-        Mock m = new Mock().setDataStore(mockExternalTasks);
+        EdPlusAggregatedNotesControllerMock m = new EdPlusAggregatedNotesControllerMock()
+            .setDataStore(mockExternalTasks);
 
         // Set the mocked data
         ExternalObjectQueryService.setMock(m);

@@ -1,9 +1,9 @@
 @isTest
-public class QueryTest {
+public class ExternalObjectQueryServiceTest {
     /**
      * Test external data query helper
      */
-    public static testMethod void testQueryHelper() {
+    public static testMethod void testExternalObjectQueryService() {
         Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
 
         // Begin
@@ -14,7 +14,7 @@ public class QueryTest {
         insert internalContacts;
 
         // Test passthrough
-        List<SObject> results = Query.records(internalContacts);
+        List<SObject> results = ExternalObjectQueryService.getRecords(internalContacts);
         System.assertEquals(5, results.size());
 
         // End

@@ -140,6 +140,6 @@ public class EdPlusEarnedAdmissionControllerTest {
         Mock m = new Mock().setDataStore(mockExternalApplications);
 
         // Set the mocked data
-        Query.setMock(m);
+        ExternalObjectQueryService.setMock(m);
     }
 }

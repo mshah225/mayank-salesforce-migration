@@ -165,6 +165,6 @@ public class EdPlusAggregatedNotesControllerTest {
         Mock m = new Mock().setDataStore(mockExternalTasks);
 
         // Set the mocked data
-        Query.setMock(m);
+        ExternalObjectQueryService.setMock(m);
     }
 }

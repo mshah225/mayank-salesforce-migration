@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Record_Type_Id__c</fullName>
+    <description>Id of the Case record type that the case should be created as.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The 15 character case sensitive Id of the record type associated with this assignment rule. This Id is shown immediately after "...salesforce.com/setup/ui/recordtypefields.jsp?id=" in the URL when viewing the record type.</inlineHelpText>
+    <label>Case Record Type Id</label>
+    <length>15</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

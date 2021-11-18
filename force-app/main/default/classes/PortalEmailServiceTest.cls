@@ -1,7 +1,7 @@
 @isTest
 public class PortalEmailServiceTest {
-    static Id advisorRTID = IDHelper.getRTID('Portal_Email__c', 'Advisor');
-    static Id coachRTID = IDHelper.getRTID('Portal_Email__c', 'Coach');
+    static Id advisorRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
+    static Id coachRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
 
     @testSetup
     public static void testSetup() {

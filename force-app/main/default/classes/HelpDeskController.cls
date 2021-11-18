@@ -61,7 +61,7 @@ public with sharing class HelpDeskController {
 
     public List<SelectOption> getOriginOptions() {
         List<SelectOption> origins = new List<SelectOption>();
-    
+
         for (Help_Desk_Case_Origin__mdt statusSetting : [
             SELECT Label, Value__c, Display_Order__c
             FROM Help_Desk_Case_Origin__mdt
@@ -70,7 +70,7 @@ public with sharing class HelpDeskController {
         ]) {
             origins.add(new SelectOption(statusSetting.Label, statusSetting.Value__c));
         }
-    
+
         return origins;
     }
 
@@ -181,10 +181,7 @@ public with sharing class HelpDeskController {
         Integer numberOfAuthenticatedMatches = [
             SELECT COUNT()
             FROM DUO_Authentication__c
-            WHERE
-                ANI__c = :callerID
-                AND Status__c = 'Authenticated'
-                AND Call_Object_Identifier__c = :callMasterId
+            WHERE ANI__c = :callerID AND Status__c = 'Authenticated' AND Call_Object_Identifier__c = :callMasterId
             LIMIT 1
         ];
         if (numberOfAuthenticatedMatches >= 1) {
@@ -601,7 +598,7 @@ public with sharing class HelpDeskController {
             myCase.clear();
         }
 
-        ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
+        ID functionalTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group');
         myCase.ContactId = selectedContactId;
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';

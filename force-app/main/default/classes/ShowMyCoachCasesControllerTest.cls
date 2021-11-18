@@ -33,7 +33,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getProfileID('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileID('System Administrator'),
             LanguageLocaleKey = 'en_US'
         );
         User user2 = new User(
@@ -45,7 +45,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getProfileID('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileID('System Administrator'),
             LanguageLocaleKey = 'en_US'
         );
         insert new List<User>{ user1, user2 };
@@ -69,7 +69,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
             Coaching_Student__c = true,
             Is_Active__c = true,
             Time_Zone__c = 'Arizona (AZ)',
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Student__c', 'Coach')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         // 2nd Student - Not Coaching Student
         Success_Student__c student2 = new Success_Student__c(
@@ -84,7 +84,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
             Coaching_Student__c = true,
             Is_Active__c = false,
             Time_Zone__c = 'Hawaii-Hilo (HI)',
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Student__c', 'Coach')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         // 4th Student - No Time Zone
         Success_Student__c student4 = new Success_Student__c(
@@ -92,7 +92,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
             Coaching_Student__c = true,
             Is_Active__c = true,
             Time_Zone__c = null,
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Student__c', 'Coach')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         // 5th/6th Students - Multiple Students Associated with Single Contact
         // Should only display Mountain (MST)
@@ -101,14 +101,14 @@ public with sharing class ShowMyCoachCasesControllerTest {
             Coaching_Student__c = true,
             Is_Active__c = true,
             Time_Zone__c = null,
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Student__c', 'Coach')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         Success_Student__c student6 = new Success_Student__c(
             Student__c = contacts[4].Id,
             Coaching_Student__c = true,
             Is_Active__c = true,
             Time_Zone__c = 'Mountain (MST)',
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Student__c', 'Coach')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         insert new List<Success_Student__c>{ student1, student2, student3, student4, student5, student6 };
 
@@ -122,7 +122,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
                     Description = 'Test Description',
                     ContactId = contacts[i].Id,
                     OwnerId = user1.Id,
-                    RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
                 )
             );
         }
@@ -159,7 +159,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
         System.runAs(originalCaseOwner) {
             controller = new ShowMyCoachCasesController();
             controller.queryAttr = new CoachPortalMainPageController().myProactiveQuery;
-            controller.proactiveCaseRTID = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+            controller.proactiveCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             controller.resetRecordList();
         }
         Test.stopTest();
@@ -220,7 +220,7 @@ public with sharing class ShowMyCoachCasesControllerTest {
         System.runAs(originalCaseOwner) {
             controller = new ShowMyCoachCasesController();
             controller.queryAttr = new CoachPortalMainPageController().myProactiveQuery;
-            controller.portalEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Coach');
+            controller.portalEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
             controller.resetRecordList();
             for (showMyCoachCasesController.caseWrapper caseWrapper : controller.caseList) {
                 caseWrapper.selected = true;

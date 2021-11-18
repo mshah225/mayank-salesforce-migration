@@ -1,5 +1,5 @@
 @isTest
-public class QADefaultHandlerTest {
+public class EmailSendDefaultsHandlerTest {
     private static final String userAlias = 'testusr';
     private static final String groupName = 'TestGroupName1';
 
@@ -137,7 +137,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testOnInitDefaultsForCaseEmail() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
             SELECT Id, OwnerId
@@ -161,7 +161,7 @@ public class QADefaultHandlerTest {
 
         System.runAs(testUser) {
             Test.startTest();
-            qadh.onInitDefaults(new List<QuickAction.SendEmailQuickActionDefaults>{ defaultsSettingEmail });
+            esdh.onInitDefaults(new List<QuickAction.SendEmailQuickActionDefaults>{ defaultsSettingEmail });
             Test.stopTest();
         }
 
@@ -173,7 +173,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testOnInitDefaultsForCaseSendEmail() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
             SELECT Id, OwnerId
@@ -197,7 +197,7 @@ public class QADefaultHandlerTest {
 
         System.runAs(testUser) {
             Test.startTest();
-            qadh.onInitDefaults(new List<QuickAction.SendEmailQuickActionDefaults>{ defaultsSettingEmail });
+            esdh.onInitDefaults(new List<QuickAction.SendEmailQuickActionDefaults>{ defaultsSettingEmail });
             Test.stopTest();
         }
 
@@ -209,7 +209,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testGetEmailFromAddressGroupAdvisorCase() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         EmailMessage em = new EmailMessage();
         Case testCase = [
             SELECT Id, OwnerId
@@ -219,7 +219,7 @@ public class QADefaultHandlerTest {
         Success_Pod__c testPod = [SELECT Primary_Email__c FROM Success_Pod__c WHERE OwnerId = :testCase.OwnerId];
 
         Test.startTest();
-        qadh.setEmailFromAndToAddress(testCase.Id, em);
+        esdh.setEmailFromAndToAddress(testCase.Id, em);
         Test.stopTest();
 
         System.assertEquals(testPod.Primary_Email__c, em.FromAddress);
@@ -227,7 +227,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testGetEmailFromAddressUserAdvisorCase() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         EmailMessage em = new EmailMessage();
         Case testCase = [
             SELECT Id, Most_Recent_Queue__c
@@ -241,7 +241,7 @@ public class QADefaultHandlerTest {
         ];
 
         Test.startTest();
-        qadh.setEmailFromAndToAddress(testCase.Id, em);
+        esdh.setEmailFromAndToAddress(testCase.Id, em);
         Test.stopTest();
 
         System.assertEquals(testPod.Primary_Email__c, em.FromAddress);
@@ -249,7 +249,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testGetEmailFromAddressCoachCase() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         EmailMessage em = new EmailMessage();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
@@ -260,7 +260,7 @@ public class QADefaultHandlerTest {
 
         System.runAs(testUser) {
             Test.startTest();
-            qadh.setEmailFromAndToAddress(testCase.Id, em);
+            esdh.setEmailFromAndToAddress(testCase.Id, em);
             Test.stopTest();
         }
 
@@ -269,7 +269,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testNullCcAddress() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         EmailMessage em = new EmailMessage();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
@@ -281,7 +281,7 @@ public class QADefaultHandlerTest {
         em.CcAddress = testUser.Recruiter_Email__c;
         System.runAs(testUser) {
             Test.startTest();
-            qadh.setEmailFromAndToAddress(testCase.Id, em);
+            esdh.setEmailFromAndToAddress(testCase.Id, em);
             Test.stopTest();
         }
 
@@ -290,7 +290,7 @@ public class QADefaultHandlerTest {
 
     @isTest
     private static void testIsAdvisorCase() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         Case advisorCase = new Case(
             RecordTypeId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach'),
             Subject = 'Advisor Case',
@@ -302,27 +302,27 @@ public class QADefaultHandlerTest {
             Description = 'Not Advisor Case'
         );
 
-        System.assert(qadh.isAdvisorCase(advisorCase));
-        System.assert(!qadh.isAdvisorCase(notAdvisorCase));
+        System.assert(esdh.isAdvisorCase(advisorCase));
+        System.assert(!esdh.isAdvisorCase(notAdvisorCase));
     }
 
     @isTest
     private static void testCaseOwnedByGroup() {
-        QADefaultHandler qadh = new QADefaultHandler();
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
         User testUser = [SELECT Id FROM User WHERE Alias = :userAlias];
         Group testGroup = [SELECT Id FROM Group WHERE Name = :groupName];
 
         Case userCase = new Case(OwnerId = testUser.Id, Subject = 'User Case', Description = 'User Case');
         Case groupCase = new Case(OwnerId = testGroup.Id, Subject = 'Group Case', Description = 'Group Case');
 
-        System.assert(!qadh.caseOwnedByGroup(userCase));
-        System.assert(qadh.caseOwnedByGroup(groupCase));
+        System.assert(!esdh.caseOwnedByGroup(userCase));
+        System.assert(esdh.caseOwnedByGroup(groupCase));
     }
 
     @isTest
     private static void testNullContextId() {
-        QADefaultHandler qadh = new QADefaultHandler();
-        qadh.setEmailFromAndToAddress(null, null);
+        EmailSendDefaultsHandler esdh = new EmailSendDefaultsHandler();
+        esdh.setEmailFromAndToAddress(null, null);
         List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
         System.assertEquals(1, errorList.size());
     }

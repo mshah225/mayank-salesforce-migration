@@ -1,6 +1,7 @@
-global class QADefaultHandler implements QuickAction.QuickActionDefaultsHandler {
+global class EmailSendDefaultsHandler implements QuickAction.QuickActionDefaultsHandler {
     private static boolean debug = false;
-    global QADefaultHandler() {
+
+    global EmailSendDefaultsHandler() {
     }
 
     global void onInitDefaults(QuickAction.QuickActionDefaults[] defaults) {
@@ -33,17 +34,25 @@ global class QADefaultHandler implements QuickAction.QuickActionDefaultsHandler 
         String result;
         Case c;
         List<String> vars = new List<String>();
-        try{
-            c = [SELECT Contact.Email, OwnerId, RecordTypeId, Most_Recent_Queue__c
-                FROM Case
-                WHERE Id = :contextId];
+        try {
+            c = [SELECT Contact.Email, OwnerId, RecordTypeId, Most_Recent_Queue__c FROM Case WHERE Id = :contextId];
             em.ToAddress = c.Contact.Email;
             if (c.RecordTypeId == IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')) {
                 List<Success_pod__c> primaryEmailFromPod;
                 if (Validator.validateId(c.ownerId, group.class)) {
-                    primaryEmailFromPod = [SELECT Primary_Email__c FROM Success_pod__c WHERE ownerId = :c.OwnerId LIMIT 1];
+                    primaryEmailFromPod = [
+                        SELECT Primary_Email__c
+                        FROM Success_pod__c
+                        WHERE ownerId = :c.OwnerId
+                        LIMIT 1
+                    ];
                 } else {
-                    primaryEmailFromPod = [SELECT Primary_Email__c FROM Success_Pod__c WHERE Owner_Name__c = :c.Most_Recent_Queue__c LIMIT 1];
+                    primaryEmailFromPod = [
+                        SELECT Primary_Email__c
+                        FROM Success_Pod__c
+                        WHERE Owner_Name__c = :c.Most_Recent_Queue__c
+                        LIMIT 1
+                    ];
                 }
                 if (!primaryEmailFromPod.isEmpty() && primaryEmailFromPod[0].Primary_Email__c != null) {
                     result = primaryEmailFromPod[0].Primary_Email__c;
@@ -63,14 +72,12 @@ global class QADefaultHandler implements QuickAction.QuickActionDefaultsHandler 
             if (result != null) {
                 em.FromAddress = result;
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             vars.add(ErrorLogger.convertIdToJSON('contextId', contextId));
             vars.add(ErrorLogger.convertSObjectToJSON('c', c));
             ErrorLogger.log(e, vars, debug);
         }
     }
-
 
     global boolean isAdvisorCase(Case context) {
         if (context.RecordTypeId == IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')) {

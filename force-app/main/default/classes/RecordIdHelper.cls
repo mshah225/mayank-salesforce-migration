@@ -38,6 +38,7 @@ public class RecordIdHelper {
 
             return objPrefix;
         }
+        private set;
     }
 
     public static Integer ProfileIdsRecordCount {
@@ -89,6 +90,7 @@ public class RecordIdHelper {
             return null;
         }
     }
+
     /*
      * Gets the name based on the record Type
      */
@@ -99,7 +101,7 @@ public class RecordIdHelper {
             }
         }
         if (rebuildRecordTypeIdCache(SObjectType, null, recordID)) {
-            return getName(SObjectType, recordID);
+            return getRecordName(SObjectType, recordID);
         } else {
             return null;
         }
@@ -270,7 +272,7 @@ public class RecordIdHelper {
             for (Schema.SObjectType sType : gd.values()) {
                 Schema.DescribeSObjectResult r = sType.getDescribe();
                 String prefix = r.getKeyPrefix();
-                String objName = r.getName();
+                String objName = r.getRecordName();
                 ObjPrefix__C tmp = new ObjPrefix__C();
                 tmp.Prefix__c = prefix;
                 tmp.ObjectName__c = objName;

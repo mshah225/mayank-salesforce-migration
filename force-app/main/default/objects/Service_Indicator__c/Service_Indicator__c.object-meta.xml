@@ -143,6 +143,7 @@
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description>A student’s active service indicators from PeopleSoft with details like reason and instructions to student and a flag to indicate whether the service indicator prevents enrollment. Data displayed in the Service Indicator section of the Student Profile. Indicators that prevent enrollment are displayed in the Enrollment Holds sections of the Undergraduate Indicators and Graduate Indicators.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>

@@ -3152,12 +3152,12 @@
                 );
 
                 var financialAidUnresolvedQuery =
-                    'SELECT ACTION__c, AID_YEAR__c, CHECKLIST_CD__c, CHKLST_ITEM_CD__c, ' +
-                    'STATUS__c, STATUS_DT__c, STRM__c ' +
-                    'FROM JBT_RET_FINAID_UNRESOLVED__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}' " +
-                    'ORDER BY AID_YEAR__c DESC, CHECKLIST_CD__c ASC';
+                    'SELECT Aid_Year__c, Checklist_Code__c, Checklist_Item_Code__c, Item_Description__c, Checklist_Item_Status_Date__c, ' +
+                    'Checklist_Item_Status__c ' +
+                    'FROM Checklist_Item__c ' +
+                    "WHERE Contact__c = '{!theContact.Id}' " +
+                    "AND Administrative_Function__c = \'FINA\' " +
+                    'ORDER BY AID_YEAR__c DESC';
                 var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     financialAidUnresolvedQuery,
@@ -3181,35 +3181,25 @@
                                     "<tbody style='font-weight:normal;'>";
 
                                 for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].STATUS_DT__c;
-                                    var statusDate = new Date(utcSeconds);
-                                    statusDate =
-                                        statusDate.getMonth() +
-                                        1 +
-                                        '/' +
-                                        statusDate.getDate() +
-                                        '/' +
-                                        statusDate.getFullYear();
-
                                     html +=
                                         '<tr>' +
                                         '<td>' +
-                                        result[i].AID_YEAR__c +
+                                        result[i].Aid_Year__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].CHECKLIST_CD__c +
+                                        result[i].Checklist_Code__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].CHKLST_ITEM_CD__c +
+                                        result[i].Checklist_Item_Code__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].ACTION__c +
+                                        result[i].Item_Description__c +
                                         '</td>' +
                                         '<td>' +
-                                        statusDate +
+                                        result[i].Checklist__Item_Status_Date__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].STATUS__c +
+                                        result[i].Checklist_Item_Status__c +
                                         '</td>' +
                                         '</tr>';
                                 }

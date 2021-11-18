@@ -51,7 +51,7 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateAcademicsMessages { get; set; }
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
-    public List<String> graduateIndicatorsMessages { get; set; }
+    public List<String> graduateIndicatorsMessages { get; set; }    
 
     public Student_Program_Plan__c ugStudentProgram {
         get {

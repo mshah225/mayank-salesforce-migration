@@ -2,7 +2,7 @@
 public with sharing class JiraReportIssueControllerTest {
     @isTest
     private static void testJiraKey() {
-        Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
+        Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
 
         Test.startTest();
         String keyBug = JiraReportIssueController.callout('Summary', 'description', 'addUsers', 'New');

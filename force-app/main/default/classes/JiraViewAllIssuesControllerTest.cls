@@ -26,7 +26,7 @@ public with sharing class JiraViewAllIssuesControllerTest {
         List<JiraViewAllIssuesController.JiraIssue> issueList = null;
 
         System.runAs(u) {
-            Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
+            Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
             Test.startTest();
             issueList = JiraViewAllIssuesController.getIssuesForUser();
             Test.stopTest();
@@ -71,7 +71,7 @@ public with sharing class JiraViewAllIssuesControllerTest {
         List<JiraViewAllIssuesController.JiraIssue> issueList = null;
 
         System.runAs(u) {
-            Test.setMock(HttpCalloutMock.class, new JiraHttpMockCallout());
+            Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
             Test.startTest();
             issueList = JiraViewAllIssuesController.getWatchedIssuesForUser();
             Test.stopTest();

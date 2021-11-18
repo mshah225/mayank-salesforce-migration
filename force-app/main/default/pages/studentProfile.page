@@ -1882,7 +1882,13 @@
                                                 <table class="table table-striped asu-detail-table">
                                                     <tr>
                                                         <th>Financial Aid Issue</th>
-                                                        <td id="sr_finAid_issue"></td>
+                                                        <td id="sr_finAid_issue">
+                                                            <apex:repeat value="{!financialAidIndicators}" var = "indicator">
+                                                            	<p>
+                                                                    {!indicator}
+                                                                </p>
+                                                            </apex:repeat>
+                                                        </td>
                                                     </tr>
                                                     <tr id="sr_finAid_unresolved_tr" style="display: none">
                                                         <th colspan="2">
@@ -2009,27 +2015,6 @@
                                     <div id="ps_transcript" style="display: none"></div>
 
                                     <div id="psTranscriptErrors"></div>
-                                </div>
-
-                                <div class="page-header-smaller">
-                                    <h4>
-                                        <i class="fa fa-caret-down"></i>
-                                        &nbsp;Indicators History
-                                    </h4>
-                                </div>
-
-                                <div style="overflow: auto; max-height: 400px">
-                                    <div style="margin-bottom: 10px">
-                                        <button class="btn btn-default btn-adjust" onclick="getRetentionSNPs(); return false;">
-                                            <a href="#">
-                                                Load Indicators History &nbsp;&nbsp;
-                                                <i class="fa"></i>
-                                            </a>
-                                        </button>
-                                    </div>
-                                    <div id="ps_retention_snp" style="display: none"></div>
-
-                                    <div id="psRetentionSNPErrors"></div>
                                 </div>
                             </apex:pageBlock>
                         </div>
@@ -2694,7 +2679,11 @@
                                                 <tr>
                                                     <th>Financial Aid Issue</th>
                                                     <td id="gr_financialAidIssue">
-                                                        {!IF(ISBLANK(theContact.Financial_Aid_Indicator__c), '--', theContact.Financial_Aid_Indicator__c)}
+                                                        <apex:repeat value="{!financialAidIndicators}" var = "indicator">
+                                                            <p>
+                                                                {!indicator}
+                                                            </p>
+                                                        </apex:repeat>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -2850,10 +2839,7 @@
             $j(this).attr('src', '{!$Resource.blankAvatar}');
         });
 
-        $j(document).ready(function () {
-            $j('#btnLoadIndicatorsHistory').click(function () {
-                getRetentionSNPs();
-            });
+        $j(document).ready(function () {          
 
             maskPhoneNumbers();
             filterFinancialAid();
@@ -3078,7 +3064,7 @@
                 var retentionQuery =
                     'SELECT ASR_INDICATOR__c, CI_INDEX_INDICATOR__c, ' +
                     'CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, EMPLID__c, ' +
-                    'ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, FINANCIAL_HOLD__c, ' +
+                    'ENRL_HOLD_COUNT__c, ExternalId, FINANCIAL_HOLD__c, ' +
                     'Id, NEXT_TERM_ENROLLED__c, ' +
                     'STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c, ' +
                     'TERM_MYASU_USAGE__c ' +
@@ -3097,7 +3083,6 @@
                                 var result = response.records[0];
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
-                                document.getElementById('sr_finAid_issue').innerHTML = result.FA_INDICATOR__c;
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
                                     result.NEXT_TERM_ENROLLED__c;
                                 document.getElementById('sr_financial_hold').innerHTML = result.FINANCIAL_HOLD__c;
@@ -3128,28 +3113,7 @@
         // Method to load the Undergraduate Indicators tab
         function getGeneralIndicators() {
             if (!indicatorTabLoaded) {
-                var errorHtml = '';
-                var financialAidQuery =
-                    'SELECT EMPLID__c, FA_IND__c ' +
-                    'FROM JBT_RET_FINAID_INDICATORS__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'LIMIT 1';
-                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
-                conn.query(
-                    financialAidQuery,
-                    function (err, response) {
-                        if (err) {
-                            errorHtml += err;
-                        } else {
-                            if (!response.totalSize == 0) {
-                                result = response.records[0];
-                                document.getElementById('sr_finAid_issue').innerHTML =
-                                    "<span style='color:red'>" + result.FA_IND__c + '</span>';
-                            }
-                        }
-                    },
-                    { buffer: false, escape: true, timeout: 120000 }
-                );
+                var errorHtml = '';                
 
                 var financialAidUnresolvedQuery =
                     'SELECT Aid_Year__c, Checklist_Code__c, Checklist_Item_Code__c, Item_Description__c, Checklist_Item_Status_Date__c, ' +
@@ -3493,169 +3457,7 @@
                     { buffer: false, escape: true, timeout: 120000 }
                 );
             }
-        }
-
-        // Method to retention snps.
-        function getRetentionSNPs() {
-            if (!indicatorHistoryLoaded) {
-                document.getElementById('psRetentionSNPErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                var rententionQuery =
-                    'SELECT ASR_INDICATOR__c, AVG_MYASU_COHORT__c, CI_INDEX_INDICATOR__c, ' +
-                    'CREATED_EW_DTTM__c, CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, ' +
-                    'EMPLID__c, ENRL_HOLD_COUNT__c, ExternalId, FA_INDICATOR__c, ' +
-                    'FINANCIAL_HOLD__c, Id, NEXT_TERM_ENROLLED__c, ' +
-                    'PROBATION_INDICATOR__c, SNP_WEEK__c, STRM__c, TERM_MYASU_USAGE__c, ' +
-                    'TRANSCRIPTS_SENT_COUNT__c ' +
-                    'FROM ASU_STDNT_RETENTION_SNP__x ' +
-                    "WHERE emplId__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY CREATED_EW_DTTM__c DESC, STRM__c DESC';
-                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
-                conn.query(
-                    rententionQuery,
-                    function (err, response) {
-                        if (err) {
-                            document.getElementById('psRetentionSNPErrors').innerHTML = err;
-                        } else {
-                            document.getElementById('psRetentionSNPErrors').innerHTML = '';
-
-                            if (!response.totalSize == 0) {
-                                var result = response.records;
-                                document.getElementById('ps_retention_snp').style.display = 'initial';
-
-                                var html =
-                                    '' +
-                                    "<div class='table-responsive'>" +
-                                    "<table class='table table-striped table-bordered'> " +
-                                    '<thead>' +
-                                    '<tr>' +
-                                    '<th>Date</th>' +
-                                    '<th>Term</th>' +
-                                    '<th>FinAid Issue</th>' +
-                                    '<th>CI Index</th>' +
-                                    '<th>ASR</th>' +
-                                    '<th>eAdvisor</th>' +
-                                    '<th>MyASU Usage</th>' +
-                                    '<th>Avg MyASU Cohort Usage</th>' +
-                                    '<th>Cumulative GPA</th>' +
-                                    '<th>Probation</th>' +
-                                    '<th>Transcripts Sent</th>' +
-                                    '<th>Past Due</th>' +
-                                    '<th>Financial Holds</th>' +
-                                    '<th>Total Indicators</th>' +
-                                    '</tr>' +
-                                    '</thead>' +
-                                    '<tbody>';
-
-                                for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].CREATED_EW_DTTM__c;
-                                    var createdDate = new Date(utcSeconds);
-                                    createdDate =
-                                        createdDate.getMonth() +
-                                        1 +
-                                        '/' +
-                                        createdDate.getDate() +
-                                        '/' +
-                                        createdDate.getFullYear();
-
-                                    var totIndicators = 0;
-
-                                    if (typeof result[i].FA_INDICATOR__c == 'string' && result[i].FA_INDICATOR__c != '')
-                                        totIndicators++;
-                                    if (result[i].CI_INDEX_INDICATOR__c > 0 && result[i].CI_INDEX_INDICATOR__c <= 93)
-                                        totIndicators++;
-                                    if (result[i].ASR_INDICATOR__c > 0) totIndicators++;
-                                    if (
-                                        typeof result[i].EADVISOR_INDICATOR__c == 'string' &&
-                                        result[i].EADVISOR_INDICATOR__c.startsWith('Off Track')
-                                    )
-                                        totIndicators++;
-                                    if (result[i].TERM_MYASU_USAGE__c < 0.7 * result[i].AVG_MYASU_COHORT__c)
-                                        totIndicators++;
-                                    if (result[i].CUM_GPA_INDICATOR__c > 0 && result[i].CUM_GPA_INDICATOR__c <= 2.25)
-                                        totIndicators++;
-                                    if (
-                                        typeof result[i].PROBATION_INDICATOR__c == 'string' &&
-                                        result[i].PROBATION_INDICATOR__c == 'PROB'
-                                    )
-                                        totIndicators++;
-                                    if (result[i].ENRL_HOLD_COUNT__c > 0) totIndicators++;
-                                    if (
-                                        typeof result[i].NEXT_TERM_ENROLLED__c == 'string' &&
-                                        result[i].NEXT_TERM_ENROLLED__c == 'N'
-                                    )
-                                        totIndicators++;
-                                    if (result[i].PAST_DUE_TIP__c > 0) totIndicators++;
-                                    if (
-                                        typeof result[i].FINANCIAL_HOLD__c == 'string' &&
-                                        result[i].FINANCIAL_HOLD__c == 'Y'
-                                    )
-                                        totIndicators++;
-
-                                    html +=
-                                        '' +
-                                        '<tr>' +
-                                        '<td>' +
-                                        createdDate +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].STRM__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].FA_INDICATOR__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].CI_INDEX_INDICATOR__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ASR_INDICATOR__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].EADVISOR_INDICATOR__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].TERM_MYASU_USAGE__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].AVG_MYASU_COHORT__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].CUM_GPA_INDICATOR__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].PROBATION_INDICATOR__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].TRANSCRIPTS_SENT_COUNT__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        "{!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}" +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].FINANCIAL_HOLD__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        totIndicators +
-                                        '</td>' +
-                                        '</tr>';
-                                }
-
-                                html += '</tbody></table></div>';
-
-                                document.getElementById('ps_retention_snp').innerHTML = html;
-                                cleanUpUndefined('ps_retention_snp');
-                                indicatorHistoryLoaded = true;
-                            } else {
-                                document.getElementById('psRetentionSNPErrors').innerHTML =
-                                    'No indicator history found.';
-                                indicatorHistoryLoaded = true;
-                            }
-                        }
-                    },
-                    { buffer: false, escape: true, timeout: 120000 }
-                );
-            }
-        }
+        }        
 
         // Method to load the advisor comments.
         function getPSAdvisorNotes() {

@@ -1,7 +1,7 @@
 public without sharing class TerritoryAssignmentOpportunity {
-    public static Boolean assignTerritoriesDone = false;
+    public static Boolean assignTerritoryDone = false;
 
-    public void assignTerritories() {
+    public void assignTerritory() {
         Set<Id> contactIdSet = new Set<Id>();
         List<Contact> contactList = new List<Contact>();
         Set<Id> locationSet = new Set<Id>();
@@ -583,6 +583,6 @@ public without sharing class TerritoryAssignmentOpportunity {
             }
         }
 
-        assignTerritoriesDone = true;
+        assignTerritoryDone = true;
     }
 }

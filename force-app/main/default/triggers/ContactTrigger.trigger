@@ -10,6 +10,6 @@ trigger ContactTrigger on Contact(
 
     if (Trigger.isAfter && Trigger.isUpdate) {
         TerritoryAssignmentContact ta = new TerritoryAssignmentContact();
-        ta.assignTerritories();
+        ta.assignTerritory();
     }
 }

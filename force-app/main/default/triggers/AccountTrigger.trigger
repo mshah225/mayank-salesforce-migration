@@ -9,6 +9,6 @@ trigger AccountTrigger on Account(
 ) {
     if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
         TerritoryAssignmentAccount ta = new TerritoryAssignmentAccount();
-        ta.assignTerritories();
+        ta.assignTerritory();
     }
 }

@@ -1,8 +1,8 @@
 public without sharing class TerritoryAssignmentAccount {
-    public static Boolean assignTerritoriesDone = false;
+    public static Boolean assignTerritoryDone = false;
 
-    public void assignTerritories() {
-        if (assignTerritoriesDone) {
+    public void assignTerritory() {
+        if (assignTerritoryDone) {
             return;
         }
 
@@ -56,6 +56,6 @@ public without sharing class TerritoryAssignmentAccount {
             }
         }
 
-        assignTerritoriesDone = true;
+        assignTerritoryDone = true;
     }
 }

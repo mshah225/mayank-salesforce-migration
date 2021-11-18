@@ -11,6 +11,6 @@ trigger PreviousEducationTrigger on Previous_Education__c(
 
     if (Trigger.isAfter && (Trigger.isInsert || Trigger.isUpdate)) {
         TerritoryAssignmentPreviousEducation ta = new TerritoryAssignmentPreviousEducation();
-        ta.assignTerritories();
+        ta.assignTerritory();
     }
 }

@@ -44,7 +44,7 @@ public without sharing class TerritoryAssignmentTest {
         Opp.OwnerId = TestUser.Id;
         insert Opp;
 
-        TerritoryAssignmentAccount.assignTerritoriesDone = false;
+        TerritoryAssignmentAccount.assignTerritoryDone = false;
 
         Test.startTest();
         HS.ShippingPostalCode = '85287';
@@ -1436,7 +1436,7 @@ public without sharing class TerritoryAssignmentTest {
 
         Test.startTest();
         // Force an update to run on lead
-        TerritoryAssignmentLead.assignTerritoriesDone = false;
+        TerritoryAssignmentLead.assignTerritoryDone = false;
 
         Lead updatedLead = [SELECT Id FROM Lead WHERE Id = :l.Id];
         updatedLead.International_Student__c = true;

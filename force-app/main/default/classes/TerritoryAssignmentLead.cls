@@ -1,11 +1,11 @@
 public without sharing class TerritoryAssignmentLead {
-    public static Boolean assignTerritoriesDone = false;
+    public static Boolean assignTerritoryDone = false;
 
-    public void assignTerritories() {
-        if (assignTerritoriesDone) {
+    public void assignTerritory() {
+        if (assignTerritoryDone) {
             return;
         }
-        assignTerritoriesDone = true;
+        assignTerritoryDone = true;
 
         /**
          * Start lead geomarket code evaluation

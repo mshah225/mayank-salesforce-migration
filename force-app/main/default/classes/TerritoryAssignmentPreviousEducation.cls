@@ -1,11 +1,11 @@
 public without sharing class TerritoryAssignmentPreviousEducation {
-    public static Boolean assignTerritoriesDone = false;
+    public static Boolean assignTerritoryDone = false;
 
-    public void assignTerritories() {
-        if (assignTerritoriesDone) {
+    public void assignTerritory() {
+        if (assignTerritoryDone) {
             return;
         }
-        assignTerritoriesDone = true;
+        assignTerritoryDone = true;
 
         List<Previous_Education__c> peTriggerList = new List<Previous_Education__c>();
         Set<Id> contactIdSet = new Set<Id>();

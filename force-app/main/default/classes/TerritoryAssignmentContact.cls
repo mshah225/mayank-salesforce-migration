@@ -1,8 +1,8 @@
 public without sharing class TerritoryAssignmentContact {
-    public static Boolean assignTerritoriesDone = false;
+    public static Boolean assignTerritoryDone = false;
 
-    public void assignTerritories() {
-        if (assignTerritoriesDone) {
+    public void assignTerritory() {
+        if (assignTerritoryDone) {
             return;
         }
 
@@ -30,7 +30,7 @@ public without sharing class TerritoryAssignmentContact {
                     o.Territory_Assignment_Required__c = true;
                 }
                 TerritoryAssignmentService.updateOpportunityList(oppList);
-                assignTerritoriesDone = true;
+                assignTerritoryDone = true;
             }
         }
     }

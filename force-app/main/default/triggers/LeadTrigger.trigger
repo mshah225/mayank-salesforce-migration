@@ -3,6 +3,6 @@ trigger LeadTrigger on Lead(after delete, after insert, after update, before del
 
     if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
         TerritoryAssignmentLead ta = new TerritoryAssignmentLead();
-        ta.assignTerritories();
+        ta.assignTerritory();
     }
 }

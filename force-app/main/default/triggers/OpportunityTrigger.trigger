@@ -10,6 +10,6 @@ trigger OpportunityTrigger on Opportunity(
 
     if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
         TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
-        ta.assignTerritories();
+        ta.assignTerritory();
     }
 }

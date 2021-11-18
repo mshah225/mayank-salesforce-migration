@@ -3260,7 +3260,7 @@
                     'SELECT SI_Instructions__c, SI_Reason__c, SI_Code__c, SI_Start_Term__c, SI_Start_Term__r.Name ' +
                     'FROM Service_Indicator__c ' +
                     "WHERE SI_Contact__r.EMPLID__c = '{!theContact.EMPLID__c}' AND Enrollment_Impact__c = true " +
-                    "AND (SI_Start_Term__c = null OR SI_Start_Term__r.PeopleSoft_Code__c  >= '{!currentTerm}' OR SI_Start_Term__r.PeopleSoft_Code__c  = '0000') " +
+                    "AND (SI_Start_Term__c = null OR SI_Start_Term__r.PeopleSoft_Code__c  <= '{!currentTerm}' OR SI_Start_Term__r.PeopleSoft_Code__c  = '0000') " +
                     'ORDER BY SI_Start_Term__r.PeopleSoft_Code__c  ASC, SI_Code__c ASC ';
                 conn.query(
                     enrollmentHoldsQuery,

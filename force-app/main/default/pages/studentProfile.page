@@ -1829,15 +1829,6 @@
                                                                     {!IF(ISBLANK(ugStudentProgram.Enrl_Deposit__c), '--', ugStudentProgram.Enrl_Deposit__c)}
                                                                 </td>
                                                             </tr>
-                                                            <tr>
-                                                                <th>Orientation Date</th>
-                                                                <td>
-                                                                    {!IF(OR(ISBLANK(theContact.Orient_Dt__c), ISBLANK(ugStudentProgram.Admit_Type__c)), '--', '')}
-                                                                    <apex:outputText value="{0,date,MM/dd/yyyy}" rendered="{!IF(ISBLANK(ugStudentProgram.Admit_Type__c), FALSE, TRUE)}">
-                                                                        <apex:param value="{!theContact.Orient_Dt__c}" />
-                                                                    </apex:outputText>
-                                                                </td>
-                                                            </tr>
                                                         </table>
                                                     </div>
                                                 </div>
@@ -1986,11 +1977,15 @@
                                                 </tr>
                                                 <tr>
                                                     <th>MyASU Usage Term</th>
-                                                    <td id="sr_term_myasu_usage"></td>
+                                                    <td id="sr_term_myasu_usage">
+                                                        {!IF(ISBLANK(theContact.MyASU_Usage__c),'--', theContact.MyASU_Usage__c)}
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>MyASU Usage Cohort</th>
-                                                    <td id="sr_term_avg_myasu_usage"></td>
+                                                    <td id="sr_term_avg_myasu_usage">
+                                                        {!IF(ISBLANK(theContact.Average_MyASU_Cohort__c),'--', theContact.Average_MyASU_Cohort__c)}
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>30% Below Mean MyASU Usage</th>
@@ -3038,6 +3033,12 @@
             getStudentRetention();
             getGeneralIndicators();
             getTranscripts();
+            if ('{!theContact.Average_MyASU_Cohort__c}' == '' ){ 
+                document.getElementById('sr_below_mean_myasu_usage').innerHTML = '--';
+            } else {
+                document.getElementById('sr_below_mean_myasu_usage').innerHTML = Math.floor(0.7 * '{!theContact.Average_MyASU_Cohort__c}');
+            }
+            
         }
 
         function loadCommentsTab() {
@@ -3084,16 +3085,7 @@
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
                                 document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
                                 document.getElementById('sr_next_term_enrolled').innerHTML =
-                                    result.NEXT_TERM_ENROLLED__c;
-                                document.getElementById('sr_financial_hold').innerHTML = result.FINANCIAL_HOLD__c;
-                                document.getElementById('sr_term_myasu_usage').innerHTML = Math.floor(
-                                    result.TERM_MYASU_USAGE__c
-                                );
-                                document.getElementById('sr_term_avg_myasu_usage').innerHTML =
-                                    result.AVG_MYASU_COHORT__c;
-                                document.getElementById('sr_below_mean_myasu_usage').innerHTML = Math.floor(
-                                    0.7 * result.AVG_MYASU_COHORT__c
-                                );
+                                    result.NEXT_TERM_ENROLLED__c;                            
 
                                 cleanUpUndefined('UGgeneralIndicators');
                                 indicatorTabLoaded = true;
@@ -3264,11 +3256,11 @@
                 );
 
                 var enrollmentHoldsQuery =
-                    'SELECT INFO_INSTRUCT1__c, REASON__c, SRVC_IND_CD__c, STRM__c ' +
-                    'FROM PS_ASU_SP_ENRHLD_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND (STRM__c >= '{!currentTerm}' OR STRM__c = '0000') " +
-                    'ORDER BY STRM__c ASC, SRVC_IND_CD__c ASC ';
+                    'SELECT SI_Instructions__c, SI_Reason__c, SI_Code__c, SI_Start_Term__c, SI_Start_Term__r.Name ' +
+                    'FROM Service_Indicator__c ' +
+                    "WHERE SI_Contact__r.EMPLID__c = '{!theContact.EMPLID__c}' AND Enrollment_Impact__c = true " +
+                    "AND (SI_Start_Term__c = null OR SI_Start_Term__r.PeopleSoft_Code__c  >= '{!currentTerm}' OR SI_Start_Term__r.PeopleSoft_Code__c  = '0000') " +
+                    'ORDER BY SI_Start_Term__r.PeopleSoft_Code__c  ASC, SI_Code__c ASC ';
                 conn.query(
                     enrollmentHoldsQuery,
                     function (err, response) {
@@ -3282,6 +3274,7 @@
                             }
                             if (!response.totalSize == 0) {
                                 var result = response.records;
+                                var startTerm = '';
                                 if ('{!studentProgram.Career__c}' == 'Graduate') {
                                     document.getElementById('gr_en_holds').innerHTML =
                                         "<span style='color:red'>" + result.length;
@@ -3303,19 +3296,24 @@
                                     '</table>' +
                                     "<tbody style='font-weight:normal;'>";
                                 for (var i = 0; i < result.length; i++) {
+                                    if (result[i].SI_Start_Term__c != null) {
+                                    	startTerm = result[i].SI_Start_Term__r.Name;
+                                	} else {
+                                        startTerm = '--';
+                                    }
                                     html +=
                                         '<tr>' +
                                         '<td>' +
-                                        result[i].SRVC_IND_CD__c +
+                                        result[i].SI_Code__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].STRM__c +
+                                        startTerm +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].REASON__c +
+                                        result[i].SI_Reason__c +
                                         '</td>' +
                                         '<td>' +
-                                        result[i].INFO_INSTRUCT1__c +
+                                        result[i].SI_Instructions__c +
                                         '</td>' +
                                         '</tr>';
                                 }

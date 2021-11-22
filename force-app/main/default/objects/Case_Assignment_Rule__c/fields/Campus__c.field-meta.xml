@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campus__c</fullName>
+    <description>[??] - ASU Campuses</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The ASU Campus that this email is associated with.</inlineHelpText>
+    <label>Campus</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Downtown</fullName>
+                <default>false</default>
+                <label>Downtown</label>
+            </value>
+            <value>
+                <fullName>Havasu</fullName>
+                <default>false</default>
+                <label>Havasu</label>
+            </value>
+            <value>
+                <fullName>Polytechnic</fullName>
+                <default>false</default>
+                <label>Polytechnic</label>
+            </value>
+            <value>
+                <fullName>Tempe</fullName>
+                <default>false</default>
+                <label>Tempe</label>
+            </value>
+            <value>
+                <fullName>Thunderbird</fullName>
+                <default>false</default>
+                <label>Thunderbird</label>
+            </value>
+            <value>
+                <fullName>West</fullName>
+                <default>false</default>
+                <label>West</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

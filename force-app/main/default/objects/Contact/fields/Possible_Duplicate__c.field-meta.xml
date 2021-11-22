@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Possible_Duplicate__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[manual] - Checkbox use for duplicate contact</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Please checkmark ALL Contact records when you identify matching information on multiple Contact records (not Lead records). Matching fields may include: email, street address, birthdate, first/last name, or phone number</inlineHelpText>
+    <label>Possible Duplicate</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

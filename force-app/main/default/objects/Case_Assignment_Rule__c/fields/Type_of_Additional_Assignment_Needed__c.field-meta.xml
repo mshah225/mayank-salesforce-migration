@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_of_Additional_Assignment_Needed__c</fullName>
+    <description>Picklist field used to indicate what type of additional assignment is needed for the rule.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If the Email Address is a group inbox and needs additional assignment, such as routing to a Territory Manager or Enrollment Coach, indicate the additional assignment here.</inlineHelpText>
+    <label>Type of Additional Assignment Needed</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Territory Manager</fullName>
+                <default>false</default>
+                <label>Territory Manager</label>
+            </value>
+            <value>
+                <fullName>Enrollment Coach</fullName>
+                <default>false</default>
+                <label>Enrollment Coach</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

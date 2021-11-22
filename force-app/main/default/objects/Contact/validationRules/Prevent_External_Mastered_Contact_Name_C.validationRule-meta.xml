@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Prevent_External_Mastered_Contact_Name_C</fullName>
-    <active>true</active>
-    <description>This validation rule prevents non system administrators from changing the First Name, Last Name, or Salutation on Externally Mastered Contacts that are managed by MDM.</description>
-    <errorConditionFormula>AND( $Profile.Id &lt;&gt; '00ed00000017Iob' &amp;&amp; $Profile.Id &lt;&gt; '00ed00000019yKB' &amp;&amp; RecordTypeId = '012d0000000wzM4',
- ISCHANGED( FirstName) || ISCHANGED (LastName) || ISCHANGED (Salutation))</errorConditionFormula>
-    <errorMessage>Only System Administrators can change names on External Mastered Contacts.</errorMessage>
-</ValidationRule>

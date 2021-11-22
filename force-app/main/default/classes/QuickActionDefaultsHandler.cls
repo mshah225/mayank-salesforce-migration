@@ -1,7 +1,7 @@
-global class EmailSendDefaultsHandler implements QuickAction.QuickActionDefaultsHandler {
+global class QuickActionDefaultsHandler implements QuickAction.QuickActionDefaultsHandler {
     private static boolean debug = false;
 
-    global EmailSendDefaultsHandler() {
+    global QuickActionDefaultsHandler() {
     }
 
     global void onInitDefaults(QuickAction.QuickActionDefaults[] defaults) {

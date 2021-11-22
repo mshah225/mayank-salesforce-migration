@@ -1,5 +1,5 @@
 @isTest
-public class EmailSendDefaultsHandlerTest {
+public class QuickActionDefaultsHandlerTest {
     private static final String userAlias = 'testusr';
     private static final String groupName = 'TestGroupName1';
 
@@ -137,7 +137,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testOnInitDefaultsForCaseEmail() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
             SELECT Id, OwnerId
@@ -173,7 +173,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testOnInitDefaultsForCaseSendEmail() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
             SELECT Id, OwnerId
@@ -209,7 +209,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testGetEmailFromAddressGroupAdvisorCase() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         EmailMessage em = new EmailMessage();
         Case testCase = [
             SELECT Id, OwnerId
@@ -227,7 +227,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testGetEmailFromAddressUserAdvisorCase() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         EmailMessage em = new EmailMessage();
         Case testCase = [
             SELECT Id, Most_Recent_Queue__c
@@ -249,7 +249,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testGetEmailFromAddressCoachCase() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         EmailMessage em = new EmailMessage();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
@@ -269,7 +269,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testNullCcAddress() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         EmailMessage em = new EmailMessage();
         User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
         Case testCase = [
@@ -290,7 +290,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testIsAdvisorCase() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         Case advisorCase = new Case(
             RecordTypeId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach'),
             Subject = 'Advisor Case',
@@ -308,7 +308,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testCaseOwnedByGroup() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         User testUser = [SELECT Id FROM User WHERE Alias = :userAlias];
         Group testGroup = [SELECT Id FROM Group WHERE Name = :groupName];
 
@@ -321,7 +321,7 @@ public class EmailSendDefaultsHandlerTest {
 
     @isTest
     private static void testNullContextId() {
-        EmailSendDefaultsHandler defaultsHandler = new EmailSendDefaultsHandler();
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         defaultsHandler.setEmailFromAndToAddress(null, null);
         List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
         System.assertEquals(1, errorList.size());

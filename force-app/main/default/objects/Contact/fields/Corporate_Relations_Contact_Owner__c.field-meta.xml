@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Corporate_Relations_Contact_Owner__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Salesforce] - Corporate relations Contact Owner</description>
+    <externalId>false</externalId>
+    <label>Corporate Relations Contact Owner</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>User.UserType</field>
+            <operation>equals</operation>
+            <value>Standard</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Contacts1</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

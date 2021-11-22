@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enrolled_Hold_Count__c</fullName>
+    <businessOwnerGroup>Data_Owner_Registrar</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>(Peoplesoft) Count of service indicators on PS_SRVC_IND_DATA with a PS_SERVICE_IMPACT.SERVICE_IMPACT LIKE '%ENR' 
+Visible on the Graduate Student Profile tab; Access granted via PS security role 'Student Profile'.</description>
+    <externalId>false</externalId>
+    <label>Enrolled Hold Count</label>
+    <precision>6</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

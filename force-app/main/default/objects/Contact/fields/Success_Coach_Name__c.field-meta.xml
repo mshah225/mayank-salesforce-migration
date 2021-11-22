@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Success_Coach_Name__c</fullName>
+    <description>Student Success Coach name</description>
+    <externalId>false</externalId>
+    <formula>IF( ISBLANK( Success_Coach_Resource__r.Delegated_UserId__c  ) ,
+
+(Success_Coach_Resource__r.Resource__r.FirstName + " " +  Success_Coach_Resource__r.Resource__r.LastName),
+
+(Success_Coach_Resource__r.Delegated_Resource__r.FirstName + " " +Success_Coach_Resource__r.Delegated_Resource__r.LastName) )</formula>
+    <label>Success Coach Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

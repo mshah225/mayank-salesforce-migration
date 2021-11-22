@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Duplicate__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[Peoplesoft] - Duplicate value in PeopleSoft. XXX'+LAST_NAME,FIRST_NAME+EMPLID = TRUE</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This Contact record is a Duplicate value in PeopleSoft. Please do not use.</inlineHelpText>
+    <label>Duplicate</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -1874,7 +1874,7 @@
                                                     <tr>
                                                         <th>Financial Aid Issue</th>
                                                         <td id="sr_finAid_issue">
-                                                            <apex:repeat value="{!financialAidIndicators}" var = "indicator">
+                                                            <apex:repeat value="{!financialAidIndicators}" var="indicator">
                                                             	<p>
                                                                     {!indicator}
                                                                 </p>
@@ -2676,7 +2676,7 @@
                                                 <tr>
                                                     <th>Financial Aid Issue</th>
                                                     <td id="gr_financialAidIssue">
-                                                        <apex:repeat value="{!financialAidIndicators}" var = "indicator">
+                                                        <apex:repeat value="{!financialAidIndicators}" var="indicator">
                                                             <p>
                                                                 {!indicator}
                                                             </p>

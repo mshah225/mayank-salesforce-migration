@@ -1,4 +1,4 @@
-public with sharing class TestEngagementContactsDispatcher implements TriggerDispatcherInterface {
+public class TestEngagementContactsDispatcher implements TriggerDispatcherInterface {
     private List<Test_Engagement_Contacts__c> newList;
     private Map<Id, Test_Engagement_Contacts__c> newMap;
     private List<Test_Engagement_Contacts__c> oldList;

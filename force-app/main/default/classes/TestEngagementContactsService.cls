@@ -1,4 +1,4 @@
-public with sharing class TestEngagementContactsService {
+public class TestEngagementContactsService {
     private final static boolean debug = false;
 
     public static void updateEmailStatuses(List<Test_Engagement_Contacts__c> TECList) {

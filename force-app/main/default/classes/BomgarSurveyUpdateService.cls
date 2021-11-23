@@ -1,4 +1,4 @@
-public with sharing class BomgarSurveyUpdateService {
+public class BomgarSurveyUpdateService {
     public static void processSurveyData(List<bomgar__SurveyData__c> surveys) {
         for (bomgar__SurveyData__c surveyData : surveys) {
             String lsid = '';

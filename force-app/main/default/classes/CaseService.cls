@@ -269,4 +269,8 @@ public class CaseService {
 
     public class CaseServiceException extends Exception {
     }
+
+    /** After here is stuff used by the case dispatcher. Everything prior to this point
+     * is old and we should try to remove references to them.
+     */
 }

@@ -1,4 +1,4 @@
-public with sharing class BomgarCreateCaseService {
+public class BomgarCreateCaseService {
     public static void processEvents(List<bomgar__BomgarWebEvent__c> events) {
         for (bomgar__BomgarWebEvent__c bgEvent : events) {
             if (

@@ -1,4 +1,4 @@
-public with sharing class FinancialAidPackageDispatcher implements TriggerDispatcherInterface {
+public class FinancialAidPackageDispatcher implements TriggerDispatcherInterface {
     private List<Financial_Aid_Package__c> newList;
     private Map<Id, Financial_Aid_Package__c> newMap;
     private List<Financial_Aid_Package__c> oldList;

@@ -1,4 +1,4 @@
-public with sharing class FinancialAidPackageService {
+public class FinancialAidPackageService {
     public static void populateStatusTimeStamps(
         List<Financial_Aid_Package__c> newFAs,
         Map<Id, Financial_Aid_Package__c> oldFAs

@@ -12,24 +12,21 @@ public class CaseDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        CaseHandler handler = new CaseHandler();
-        handler.mapInsertedGroupIdsToNames(newList);
-        handler.processCaseAssociations(newList);
+        CaseService.assignClassificationsAndRecordType(newList, oldMap);
+        CaseService.assignRecentGroupAndQueue(newList, oldMap);
+        CaseService.processCaseAssociations(newList);
     }
     public void beforeUpdate() {
-        CaseHandler handler = new CaseHandler();
-        handler.mapUpdatedGroupIdsToNames(newList, oldMap);
-        handler.updateMostRecentFunctionalGroup(newMap, oldMap);
+        CaseService.assignClassificationsAndRecordType(newList, oldMap);
+        CaseService.assignRecentGroupAndQueue(newList, oldMap);
     }
     public void beforeDelete() {
     }
     public void afterInsert() {
-        CaseHandler handler = new CaseHandler();
-        handler.forwardInsertedCaseEmail(newList);
+        CaseService.forwardInsertedCaseEmail(newList);
     }
     public void afterUpdate() {
-        CaseHandler handler = new CaseHandler();
-        handler.forwardUpdatedCaseEmail(newMap, oldMap);
+        CaseService.forwardInsertedCaseEmail(newList);
     }
     public void afterDelete() {
     }

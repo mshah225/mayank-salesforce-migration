@@ -1,5 +1,5 @@
 @isTest
-private class OWEAServiceTest {
+private class OrgWideEmailAddressServiceTest {
     @isTest
     static void testGetOWEAs() {
         OrgWideEmailAddress expectedAddress = [SELECT Address FROM OrgWideEmailAddress LIMIT 1];

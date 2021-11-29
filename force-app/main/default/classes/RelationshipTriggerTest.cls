@@ -174,7 +174,7 @@ private class RelationshipTriggerTest {
 
         String title = 'test title';
 
-        Id recordId = IDHelper.getRecordTypeId('Relationship__c', 'Account_to_Contact');
+        Id recordId = RecordIdHelper.getRecordTypeId('Relationship__c', 'Account_to_Contact');
 
         test.startTest();
         RelationshipService.createContactAccountRelationship(testContact.Id, testAccount.Id, recordId, title);

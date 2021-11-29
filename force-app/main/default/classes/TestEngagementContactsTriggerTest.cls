@@ -3,7 +3,7 @@ private class TestEngagementContactsTriggerTest {
     @TestSetup
     private static void setup() {
         Success_POD__c successPOD = new Success_POD__c(
-            RecordTypeId = IDHelper.getRecordTypeId('Success_POD__c', 'Coach'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_POD__c', 'Coach'),
             Name = 'Coach POD'
         );
         insert successPOD;
@@ -16,14 +16,14 @@ private class TestEngagementContactsTriggerTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             LanguageLocaleKey = 'en_US'
         );
         insert userCoachUser;
 
         Success_Resource__c successCoachUser = new Success_Resource__c(
             Resource__c = userCoachUser.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Resource__c', 'Coach'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach'),
             Role__c = 'User',
             AgentID__c = '12345',
             Success_POD__c = successPOD.Id,
@@ -32,7 +32,7 @@ private class TestEngagementContactsTriggerTest {
         insert successCoachUser;
 
         Contact userStudent = new Contact(
-            RecordTypeId = IDHelper.getRecordTypeId('Contact', 'External_Mastered'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Contact', 'External_Mastered'),
             Firstname = 'John',
             Lastname = 'Doe',
             Email = 'john.doe@asu.edu.xyz',
@@ -44,7 +44,7 @@ private class TestEngagementContactsTriggerTest {
 
         Date today = System.today();
         Case caseCoach1 = new Case(
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach'),
             Type = 'Coach Initiated',
             Subject = 'Drop/Withdrawn',
             Status = 'New',

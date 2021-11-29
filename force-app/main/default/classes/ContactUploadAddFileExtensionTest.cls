@@ -230,4 +230,30 @@ private class ContactUploadAddFileExtensionTest {
         System.assertEquals('--', subscriptionOptions.get(0).getValue());
         System.assertEquals(1, subscriptionOptions.size());
     }
+
+    @isTest
+    private static void subscriptionStatusOptionsTest() {
+        setTestData();
+        List<SelectOption> subscriptionStatusOptions = new List<SelectOption>();
+        String contactModeSelected;
+        Boolean modeSelected;
+
+        System.runAs(adminUser) {
+            PageReference pageRef = Page.ContactUploadAddFilePage;
+            Test.setCurrentPage(pageRef);
+
+            pageRef.getParameters().put('Id', String.valueOf(conUploadRecord.Id));
+            ApexPages.StandardController sc = new ApexPages.StandardController(conUploadRecord);
+            ContactUploadAddFileExtension contactUploadExtension = new ContactUploadAddFileExtension(sc);
+
+            Test.startTest();
+            contactUploadExtension.contactUploadButton();
+            subscriptionStatusOptions = contactUploadExtension.subscriptionStatusOptions;
+            contactModeSelected = contactUploadExtension.contactModeSelected;
+            modeSelected = contactUploadExtension.modeSelected;
+            Test.stopTest();
+        }
+
+        System.assertEquals(2, subscriptionStatusOptions.size());
+    }
 }

@@ -1,4 +1,4 @@
-public class IDHelper {
+public class RecordIdHelper {
     public static List<Record_Type_ids__c> RecordTypeIds {
         /*
          * Initializes to the values from the cache
@@ -38,6 +38,7 @@ public class IDHelper {
 
             return objPrefix;
         }
+        private set;
     }
 
     public static Integer ProfileIdsRecordCount {
@@ -69,18 +70,6 @@ public class IDHelper {
     }
 
     /*
-     * Returns the desired record type ID. Method Provided as shorthand.
-     *
-     * @param String The API name of the desired object.
-     * @param String The name of the record type required.
-     *
-     * @return Id The Id of the desired record type
-     */
-    public static Id getRTID(String SObjectType, String Name) {
-        return getRecordTypeId(SObjectType, Name);
-    }
-
-    /*
      * Returns the desired record type ID.
      *
      * @param String The API name of the desired object.
@@ -101,31 +90,21 @@ public class IDHelper {
             return null;
         }
     }
+
     /*
      * Gets the name based on the record Type
      */
-    public static String getName(String SObjectType, Id recordID) {
+    public static String getRecordName(String SObjectType, Id recordID) {
         for (Record_Type_ids__c RTID : RecordTypeIds) {
             if (RTID.Id__c == recordID && RTID.SObject_Type__c == SObjectType) {
                 return RTID.Name__c;
             }
         }
         if (rebuildRecordTypeIdCache(SObjectType, null, recordID)) {
-            return getName(SObjectType, recordID);
+            return getRecordName(SObjectType, recordID);
         } else {
             return null;
         }
-    }
-
-    /*
-     * Returns the desired profile ID. Method provided as shorthand.
-     *
-     * @param String The name of the desired profile.
-     *
-     * @return Id The Id of the desired record type
-     */
-    public static Id getPID(String Name) {
-        return getProfileId(Name);
     }
 
     /*

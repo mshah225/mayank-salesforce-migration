@@ -212,7 +212,7 @@ private class MyASUHelpPaginationControllerTest {
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
             ContactId = testContact.Id,
-            ProfileId = IDHelper.getProfileId('ASU Community')
+            ProfileId = RecordIdHelper.getProfileId('ASU Community')
         );
         insert testUser;
         // Need terms for MyASUHelpController constructor

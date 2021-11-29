@@ -80,25 +80,25 @@ private class AdvisorPortalMassTransferControllerTest {
             Resource__c = allowedUser1.Id,
             Role__c = 'Department Manager',
             IsActive__c = true,
-            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
         );
         Success_Resource__c allowedUser2Resource = new Success_Resource__c(
             Resource__c = allowedUser2.Id,
             Role__c = 'College Manager',
             IsActive__c = true,
-            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
         );
         Success_Resource__c unallowedUserResource1 = new Success_Resource__c(
             Resource__c = unallowedUser1.Id,
             Role__c = 'User',
             IsActive__c = true,
-            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
         );
         Success_Resource__c unallowedUserResource2 = new Success_Resource__c(
             Resource__c = unallowedUser2.Id,
             Role__c = 'College Manager',
             IsActive__c = false,
-            RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
         );
         insert new List<Success_Resource__c>{
             allowedUser1Resource,

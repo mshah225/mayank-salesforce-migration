@@ -28,7 +28,7 @@ private class FamilyPortalControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('Standard User')
+            ProfileId = RecordIdHelper.getProfileId('Standard User')
         );
         User testCommunityUser = new User(
             FirstName = communityContact.FirstName,
@@ -42,7 +42,7 @@ private class FamilyPortalControllerTest {
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
             ContactId = communityContact.Id,
-            ProfileId = IdHelper.getProfileId('ASU Community')
+            ProfileId = RecordIdHelper.getProfileId('ASU Community')
         );
         User testGuestUser = new User(
             LastName = 'site guest user',
@@ -54,7 +54,7 @@ private class FamilyPortalControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('Standard User')
+            ProfileId = RecordIdHelper.getProfileId('Standard User')
         );
 
         insert new List<User>{ testUser, testCommunityUser, testGuestUser };

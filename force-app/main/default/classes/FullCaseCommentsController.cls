@@ -18,7 +18,9 @@ public with sharing class FullCaseCommentsController {
                 [
                     SELECT Id
                     FROM Case
-                    WHERE ContactId = :theContact.Id AND RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+                    WHERE
+                        ContactId = :theContact.Id
+                        AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
                 ]
             );
 

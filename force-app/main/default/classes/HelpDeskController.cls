@@ -613,7 +613,7 @@ public with sharing class HelpDeskController {
             myCase.clear();
         }
 
-        ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
+        ID functionalTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group');
         myCase.ContactId = selectedContactId;
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';

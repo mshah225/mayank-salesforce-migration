@@ -33,7 +33,7 @@ public with sharing class LiveAgentPreSurveyControllerTest {
             Active__c = true,
             Visible__c = true,
             Record_Types_String__c = 'wer',
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
         );
         insert functionalGroup;
         Case_Classification__c category = new Case_Classification__c(
@@ -41,7 +41,7 @@ public with sharing class LiveAgentPreSurveyControllerTest {
             Active__c = true,
             Visible__c = true,
             Parent__c = functionalGroup.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
         );
         insert category;
         Case_Classification__c subcategory = new Case_Classification__c(
@@ -49,7 +49,7 @@ public with sharing class LiveAgentPreSurveyControllerTest {
             Active__c = true,
             Visible__c = true,
             Parent__c = category.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
         );
         insert subcategory;
 
@@ -62,7 +62,7 @@ public with sharing class LiveAgentPreSurveyControllerTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getProfileID('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileID('System Administrator'),
             LanguageLocaleKey = 'en_US'
         );
         insert u;
@@ -78,21 +78,21 @@ public with sharing class LiveAgentPreSurveyControllerTest {
         Id functionalGroupId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
             LIMIT 1
         ]
         .Id;
         Id categoryId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
             LIMIT 1
         ]
         .Id;
         Id subCategoryId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
             LIMIT 1
         ]
         .Id;
@@ -141,21 +141,21 @@ public with sharing class LiveAgentPreSurveyControllerTest {
         Id functionalGroupId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
             LIMIT 1
         ]
         .Id;
         Id categoryId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
             LIMIT 1
         ]
         .Id;
         Id subCategoryId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
             LIMIT 1
         ]
         .Id;
@@ -193,21 +193,21 @@ public with sharing class LiveAgentPreSurveyControllerTest {
         Id functionalGroupId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
             LIMIT 1
         ]
         .Id;
         Id categoryId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
             LIMIT 1
         ]
         .Id;
         Id subCategoryId = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
             LIMIT 1
         ]
         .Id;

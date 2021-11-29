@@ -1,6 +1,6 @@
-<apex:page controller="IDHelper" title="IDHelper Manager">
+<apex:page controller="RecordIdHelper" title="Record ID Helper Manager">
     <!--
-	This page helps provide information about the IDHelper as well as
+	This page helps provide information about the RecordIdHelper as well as
 	a UI to manage it; for instance, the cache can be cleared from within this page.
 	-->
     <style>
@@ -40,14 +40,15 @@
         }
     </style>
     <apex:form id="alius-format197">
-        <apex:pageblock title="IDHelper">
+        <apex:pageblock title="RecordIdHelper">
             <apex:pageBlockButtons location="top">
-                <apex:commandButton action="{!clearCache}" value="Clear Cache" reRender="IDHelperStats" status="ASUAjaxStatus" />
-                <apex:commandButton action="{!rebuildCache}" value="Rebuild Cache" reRender="IDHelperStats" status="ASUAjaxStatus" />
+                <apex:commandButton action="{!clearCache}" value="Clear Cache" reRender="RecordIdHelperStats" status="ASUAjaxStatus" />
+                <apex:commandButton action="{!rebuildCache}" value="Rebuild Cache" reRender="RecordIdHelperStats" status="ASUAjaxStatus"
+                />
             </apex:pageBlockButtons>
             <apex:tabPanel id="alius-format198">
                 <apex:tab title="Stats" label="Stats">
-                    <apex:pageBlockSection id="IDHelperStats">
+                    <apex:pageBlockSection id="RecordIdHelperStats">
                         <apex:pageBlockSectionItem id="alius-format199">
                             <apex:outputLabel for="profileIdsCount">Number of Profiles</apex:outputLabel>
                             <apex:outputText id="profileIdsCount">{!ProfileIdsRecordCount}</apex:outputText>
@@ -73,12 +74,12 @@
                             <apex:outputText id="totalRecordTypeIdsSize">{!recordTypeIdRecordSizeInBytes*RecordTypeIdsRecordCount} Bytes</apex:outputText>
                         </apex:pageBlockSectionItem>
                         <apex:pageBlockSectionItem dataStyle="text-align:center;">
-                            <apex:commandButton action="{!rebuildProfileIdCache}" value="Rebuild Profile_Ids__c" reRender="IDHelperStats" status="ASUAjaxStatus"
+                            <apex:commandButton action="{!rebuildProfileIdCache}" value="Rebuild Profile_Ids__c" reRender="RecordIdHelperStats" status="ASUAjaxStatus"
                             />
                         </apex:pageBlockSectionItem>
                         <apex:pageBlockSectionItem dataStyle="text-align:center;">
-                            <apex:commandButton action="{!rebuildRecordTypeIdCache}" value="Rebuild Record_Type_Ids__c" reRender="IDHelperStats" status="ASUAjaxStatus"
-                            />
+                            <apex:commandButton action="{!rebuildRecordTypeIdCache}" value="Rebuild Record_Type_Ids__c" reRender="RecordIdHelperStats"
+                                status="ASUAjaxStatus" />
                         </apex:pageBlockSectionItem>
                     </apex:pageBlockSection>
                 </apex:tab>

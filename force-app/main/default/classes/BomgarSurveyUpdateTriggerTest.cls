@@ -37,7 +37,7 @@ private class BomgarSurveyUpdateTriggerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('Standard User'),
+            ProfileId = RecordIdHelper.getProfileId('Standard User'),
             FederationIdentifier = bp.bomgar__Username__c + '@admin.asu.edu'
         );
         insert u;

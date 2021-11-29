@@ -44,6 +44,7 @@ public with sharing class HelpDeskController {
     public String contactName { get; set; }
     public String knowString { get; set; }
     public Boolean savedAndClosed { get; set; }
+    public Map<String, String> queryConfig { get; set; }
 
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions() {
@@ -61,7 +62,7 @@ public with sharing class HelpDeskController {
 
     public List<SelectOption> getOriginOptions() {
         List<SelectOption> origins = new List<SelectOption>();
-    
+
         for (Help_Desk_Case_Origin__mdt statusSetting : [
             SELECT Label, Value__c, Display_Order__c
             FROM Help_Desk_Case_Origin__mdt
@@ -70,7 +71,7 @@ public with sharing class HelpDeskController {
         ]) {
             origins.add(new SelectOption(statusSetting.Label, statusSetting.Value__c));
         }
-    
+
         return origins;
     }
 
@@ -134,6 +135,7 @@ public with sharing class HelpDeskController {
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
         ccPicklist = new CaseClassificationPicklistService();
+        loadQueryConfig();
         setCallerID();
         isPageLoaded = true;
     }
@@ -171,6 +173,19 @@ public with sharing class HelpDeskController {
         }
     }
 
+    private void loadQueryConfig() {
+        queryConfig = new Map<String, String>();
+
+        List<Help_Desk_Query_Configuration__mdt> config = [
+            SELECT Label, Value__c
+            FROM Help_Desk_Query_Configuration__mdt
+        ];
+
+        for (Help_Desk_Query_Configuration__mdt mdt : config) {
+            queryConfig.put(mdt.Label, mdt.Value__c);
+        }
+    }
+
     private void setDuoAuthenticatedStatus() {
         String callMasterId;
         //_c is the only way that inContact can pass us the Unique Identifier.
@@ -181,10 +196,7 @@ public with sharing class HelpDeskController {
         Integer numberOfAuthenticatedMatches = [
             SELECT COUNT()
             FROM DUO_Authentication__c
-            WHERE
-                ANI__c = :callerID
-                AND Status__c = 'Authenticated'
-                AND Call_Object_Identifier__c = :callMasterId
+            WHERE ANI__c = :callerID AND Status__c = 'Authenticated' AND Call_Object_Identifier__c = :callMasterId
             LIMIT 1
         ];
         if (numberOfAuthenticatedMatches >= 1) {
@@ -212,7 +224,7 @@ public with sharing class HelpDeskController {
                 CAP__c,
                 FERPA_Directory_Hold__c
             FROM Contact
-            WHERE Name = 'Non-Affiliate Caller'
+            WHERE Id = :queryConfig.get('Non-Affiliate Caller Contact')
         ];
 
         if (nonAffiliateList.size() > 0) {

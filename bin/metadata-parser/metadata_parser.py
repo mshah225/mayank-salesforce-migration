@@ -14,7 +14,7 @@ filePathToRead = './queries/'
 fileToRead = ''
 filePathToWrite = './results/output/'
 fileToWrite = ''
-headersToWrite = ['Old Nomenclature', 'New Nomenclature', 'Profiles', 'Permission Sets', 'Permission Set Groups']
+headersToWrite = ['Metadata Name', 'Profiles', 'Permission Sets', 'Permission Set Groups']
 rowsToWrite = []
 
 metadataType = ''
@@ -55,7 +55,7 @@ with open(filePathToRead + fileToRead) as csvFile:
         metadataOutput.append(metadataItem(metadataItemName, profileList, permissionSetList, permissionSetGroupList))
 
     for metadataItemInstance in metadataOutput:
-        rowsToWrite.append([metadataItemInstance.metadataName, '', metadataItemInstance.profiles, metadataItemInstance.permissionSets, metadataItemInstance.permissionSetGroups])
+        rowsToWrite.append([metadataItemInstance.metadataName, metadataItemInstance.profiles, metadataItemInstance.permissionSets, metadataItemInstance.permissionSetGroups])
 
 with open(filePathToWrite + fileToWrite, 'w') as csvFile:
     writer = csv.writer(csvFile)

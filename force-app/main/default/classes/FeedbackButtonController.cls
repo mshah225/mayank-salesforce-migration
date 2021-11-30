@@ -107,7 +107,7 @@ public without sharing class FeedbackButtonController {
                 throw new dynamicFeedbackException('Error: Form submission after initialization error');
             }
 
-            if (caseDescription == '') {
+            if (caseDescription.replaceAll('\\s', '') == '') {
                 proceed = false;
 
                 alertHandler.newAlert(customAlert.WARNING, 'Feedback comments are required.');

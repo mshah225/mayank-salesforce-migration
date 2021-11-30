@@ -143,7 +143,7 @@ public with sharing class PersistenceFeedbackControllerTest {
     private static void testAlertOnEmptyDescription() {
         Contact c = [SELECT Id FROM Contact LIMIT 1];
 
-        String caseDesc = '';
+        String caseDesc = '  \n';
 
         PageReference pageRef = Page.PersistenceFeedback;
         pageRef.getParameters().put('misc', caseDesc);

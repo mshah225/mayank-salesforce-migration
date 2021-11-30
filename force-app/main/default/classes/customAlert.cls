@@ -26,16 +26,28 @@ public class customAlert {
     public String severity { get; set; }
 
     /**
+     * The title to be displayed
+     */
+    public String title { get; set; }
+
+    /**
      * The message to be displayed
      */
     public String message { get; set; }
 
     /**
+     * A link, if there is one, to be displayed
+     */
+    public String link { get; set; }
+
+    /**
      * Constructor with initializers
      */
-    public customAlert(String severity, String message) {
+    public customAlert(String severity, String title, String message, String link) {
         this.severity = severity;
+        this.title = title;
         this.message = message;
+        this.link = link;
     }
 
     /**

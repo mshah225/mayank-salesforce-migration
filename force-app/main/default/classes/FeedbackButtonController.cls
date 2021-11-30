@@ -22,6 +22,7 @@ public without sharing class FeedbackButtonController {
     public pageReference init() {
         try {
             alertHandler = new AlertHandler();
+            alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
             URLParamsExistAndAreValid = false;
             caseDescription = ApexPages.currentPage().getParameters().get('misc');
             retURL = ApexPages.currentPage().getParameters().get('retURL');

@@ -19,8 +19,6 @@
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
-    <div id="ASUBrandAlertWrapper" class="no-slds-scope" style="{!IF($Label.MyASU_Help_Alert_Status == 'true', '', 'display:none')}"
-        role="alert"></div>
 
     <c:GoogleTagManagerBody />
     <div role="main">
@@ -95,21 +93,6 @@
                     {},
                     "ASUBrandFooterWrapper"
                 );
-                $Lightning.createComponent(
-                    "c:asuBrandAlert",
-                    {},
-                    "ASUBrandAlertWrapper"
-                );
-                // Hide errors that appear randomly from LWC
-                const observerxw = new MutationObserver(function (mutations) {
-                    const errorDiv = document.querySelector('#auraErrorMessage');
-                    if (errorDiv != null && errorDiv.innerHTML.length > 0) {
-                        console.error(errorDiv.innerText);
-                        errorDiv.innerHTML = '';
-                    }
-                });
-                observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
-
             }
         );
         // Hide errors that appear randomly from LWC

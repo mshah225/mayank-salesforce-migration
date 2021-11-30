@@ -6,13 +6,12 @@
         <title>{!pageTitle}</title>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=.5, minimum-scale=.5, maximum-scale=.5" />
-        <meta name="viewport" content="target-densitydpi=device-dpi" />
+        <meta name="viewport" content="width=device-width, initial-scale=.5, minimum-scale=.5, maximum-scale=.5, target-densitydpi=device-dpi"
+        />
 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <script src="{!$Resource.pkb_jquery_1_6_2}" type="text/javascript" />
-        <script src="{!$Resource.pkb_jquery_simplemodal_1_4_1}" type="text/javascript" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <apex:outputText rendered="{!viewingArticle}">
             <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}" />
             <apex:variable var="articleURL" value="{!pkbCon.currentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}"
@@ -46,32 +45,34 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
 
         <!--  HOME PAGE LAYOUT -->
 
-        <div id="header">
-            <span style="margin-left: 5px">
-                <apex:outputLink value="{!pkbCon.currentSiteUrl}">
-                    <apex:image value="{!$Resource.pkb_logo}" />
-                    <apex:param name="{!pkbCon.languageParam}" value="{!pkbcon.selectedLanguage}" />
-                </apex:outputLink>
-            </span>
+        <div class="pkb-scope">
+            <div id="header">
+                <span style="margin-left: 5px">
+                    <apex:outputLink value="{!pkbCon.currentSiteUrl}">
+                        <apex:image value="{!$Resource.pkb_logo}" />
+                        <apex:param name="{!pkbCon.languageParam}" value="{!pkbcon.selectedLanguage}" />
+                    </apex:outputLink>
+                </span>
+            </div>
         </div>
 
-        <div id="body">
-            <div id="left_column">
-                <div id="leftHeader" style="height: 110px">&nbsp;</div>
+        <div id="body" class="d-flex flex-row mx-4 my-1 border pkb-scope">
+            <div class="col-4 col-lg-3 py-2 bg-lighter border-right">
+                <div style="height: 110px">&nbsp;</div>
 
                 <apex:outputText rendered="{!displayContactUs}">
                     <apex:outputText rendered="{!searchExecuted}">
-                        <div id="immediateHelp" style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px">
+                        <div id="immediateHelp" class="font-weight-bold pt-1 text-right font-size-std">
                             {!$Label.PKB2_Answers_Might_Help}
                         </div>
                     </apex:outputText>
                 </apex:outputText>
 
                 <apex:outputText rendered="{!NOT(displayContactUs)}">
-                    <div id="left_content">
+                    <div>
                         <apex:outputText rendered="{!NOT(viewingArticle)}">
                             <c:pkb_narrow pkbCon="{!pkbCon}" />
-                            <div id="contactUs">
+                            <div class="font-size-sm text-muted">
                                 {!$Label.PKB2_Contact_Us_Link_Prompt}
                                 <br />
                                 <apex:outputLink value="{!pkbCon.currentSiteUrl}">
@@ -90,12 +91,12 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
                 </apex:outputText>
             </div>
 
-            <div id="right_column">
-                <div id="rightHeader" style="height: 106px">
+            <div class="col-8 col-lg-9 py-2">
+                <div class="mb-2">
                     <c:pkb_search pkbCon="{!pkbCon}" />
                 </div>
 
-                <div id="right_content">
+                <div>
                     <apex:outputText rendered="{!NOT(displayContactUs)}">
                         <apex:outputText rendered="{!NOT(viewingArticle)}">
                             <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
@@ -104,7 +105,7 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
                         </apex:outputText>
 
                         <apex:outputText rendered="{!viewingArticle}">
-                            <div id="articleView">
+                            <div>
                                 <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
                             </div>
                         </apex:outputText>
@@ -116,15 +117,13 @@ KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
                     </apex:outputText>
                 </div>
             </div>
-
-            <div style="clear: both"></div>
         </div>
 
         <div id="footer">
             <apex:outputPanel styleClass="pkbPoweredBySFDC" style="float: right">
                 <a href="http://www.salesforce.com/crm/customer-service-support/">
                     <apex:image value="{!$Resource.pkb_footer}" alt="Customer Service Software" />
-                    <apex:outputPanel styleClass="pkbPoweredBySFDCText">salesforce.com</apex:outputPanel>
+                    <apex:outputPanel styleClass="d-none">salesforce.com</apex:outputPanel>
                 </a>
             </apex:outputPanel>
         </div>

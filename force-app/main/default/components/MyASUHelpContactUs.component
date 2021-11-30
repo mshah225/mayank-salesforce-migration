@@ -51,7 +51,7 @@
                                     />
                                     <label for="myasu-help-contact-us-email-message" class="">Message</label>
                                     <apex:inputField id="myasu-help-contact-us-email-message" styleClass="w-100" value="{!newCase.Description}" required="true"
-                                        label="" />
+                                    />
                                     <div>
                                         <apex:commandLink onclick="event.target.classList.add('disabled')" styleClass="btn btn-maroon btn-md mt-1" action="{!submitCase}">
                                             Submit

@@ -22,12 +22,10 @@
         <title>{!pageTitle}</title>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=.5, minimum-scale=.5, maximum-scale=.5" />
-        <meta name="viewport" content="target-densitydpi=device-dpi" />
+        <meta name="viewport" content="width=device-width, initial-scale=.5, minimum-scale=.5, maximum-scale=.5, target-densitydpi=device-dpi"
+        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <script src="{!$Resource.pkb_jquery_1_6_2}" type="text/javascript" />
-        <script src="{!$Resource.pkb_jquery_simplemodal_1_4_1}" type="text/javascript" />
         <apex:outputText rendered="{!viewingArticle}">
             <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension,
                                  '')}" />
@@ -41,12 +39,12 @@
             <meta property="description" content="{!pkbCon.theKad.summary}" />
             <link rel="canonical" href="{!articleURL}" />
         </apex:outputText>
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
         <c:pkb_css_asu />
         <c:pkb_js pkbCon="{!pkbCon}" />
-        <style></style>
         <c:pkb_remove_MyASU />
-        <link rel="shortcut icon" href="https://students.asu.edu/sites/all/themes/asu_students/favicon.ico" type="image/vnd.microsoft.icon"
-        />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
     </head>
 
     <body>
@@ -65,67 +63,46 @@
     -->
 
         <!--  HOME PAGE LAYOUT -->
-        <div width="100%" height="100px">
-            <iframe src="https://www.asu.edu/asuthemes/3.1/headers/default_myasu_iframe.shtml" frameborder="0" width="100%" height="100px"></iframe>
-        </div>
-        <!-- 
-    <div id="header">
-        <span style="margin-left: 5px;">
-            <apex:outputLink value="{!pkbCon.currentSiteUrl}">
-            <apex:image value="{!$Resource.asu_logo}" style="margin-top: 16px" />
-            <apex:param name="{!pkbCon.languageParam}" value="{!pkbcon.selectedLanguage}" />
-            </apex:outputLink>
-        </span>
-    </div>
-    -->
-        <div id="body">
-            <div id="left_column">
-                <div id="leftHeader" style="height: 110px">&nbsp;</div>
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
+
+        <div class="d-flex flex-row mx-4 my-1 border pkb-scope">
+            <div class="col-4 col-lg-3 py-2 bg-lighter border-right">
+                <div style="height: 110px">&nbsp;</div>
                 <apex:outputText rendered="{!displayContactUs}">
                     <apex:outputText rendered="{!searchExecuted}">
-                        <div id="immediateHelp" style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px">
+                        <div id="immediateHelp" class="font-weight-bold pt-1 text-right font-size-std">
                             {!$Label.PKB2_Answers_Might_Help}
                         </div>
                     </apex:outputText>
                 </apex:outputText>
                 <apex:outputText rendered="{!NOT(displayContactUs)}">
-                    <div id="left_content">
+                    <div>
                         <apex:outputText rendered="{!viewingArticle}">
                             <c:pkb_related pkbCon="{!pkbCon}" />
                         </apex:outputText>
                         <br />
-                        <!--<apex:outputText rendered="{!NOT(viewingArticle)}">-->
                         <apex:outputText rendered="true">
                             <c:pkb_narrow pkbCon="{!pkbCon}" />
-                            <div id="contactUs">
+                            <div class="font-size-sm text-muted">
                                 {!$Label.PKB2_Contact_Us_Link_Prompt}
                                 <br />
-                                <!--<apex:outputLink value="{!pkbCon.currentSiteUrl}"> 
-                            !$Label.PKB2_Contact_Us}
-                            <apex:param name="{!pkbCon.contactUsParam}" value="{!pkbCon.contactUsValue}" />
-                            <apex:param name="{!pkbCon.feedbackSourceParam}" value="{!pkbCon.feedbackContactUs}" />
-                            <apex:param name="{!pkbCon.languageParam}" value="{!pkbCon.selectedLanguage}" />
-                            -->
                                 <apex:outputLink value="https://contact.asu.edu/">
                                     {!$Label.PKB2_Contact_Us}
                                 </apex:outputLink>
                             </div>
                         </apex:outputText>
-                        <!--   
-                    <apex:outputText rendered="{!viewingArticle}">
-                        <c:pkb_related pkbCon="{!pkbCon}" />
-                    </apex:outputText>
-                    -->
                     </div>
                 </apex:outputText>
             </div>
 
-            <div id="right_column">
-                <div id="rightHeader" style="height: 63px">
+            <div class="col-8 col-lg-9 py-2">
+                <div class="mb-2">
                     <c:pkb_search pkbCon="{!pkbCon}" />
                 </div>
 
-                <div id="right_content">
+                <div>
                     <apex:outputText rendered="{!NOT(displayContactUs)}">
                         <apex:outputText rendered="{!NOT(viewingArticle)}">
                             <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
@@ -135,7 +112,7 @@
                             <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
                         </apex:outputText>
                         <apex:outputText rendered="{!viewingArticle}">
-                            <div id="articleView">
+                            <div>
                                 <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
                             </div>
                         </apex:outputText>
@@ -143,24 +120,13 @@
 
                     <apex:outputText rendered="{!displayContactUs}">
                         <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
-
                         <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
                     </apex:outputText>
                 </div>
             </div>
-            <div style="clear: both"></div>
         </div>
 
-        <div id="footer">
-            <!--apex:outputPanel styleClass="pkbPoweredBySFDC" style="float: right;">
-            <a href="http://www.salesforce.com/crm/customer-service-support/"><apex:image value="{!$Resource.pkb_footer}" alt="Customer Service Software"/>
-            <apex:outputPanel styleClass="pkbPoweredBySFDCText">salesforce.com</apex:outputPanel></a>
-        </apex:outputPanel -->
-        </div>
-
-        <div width="100%" height="24px">
-            <iframe src="https://www.asu.edu/go/footer/footer_iframe_grey.html" frameborder="0" width="100%" height="24px"></iframe>
-        </div>
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
         <apex:outputPanel rendered="{!NOT(viewingArticle)}">
             <site:googleAnalyticsTracking />
@@ -189,6 +155,48 @@
                 ga('send', 'pageview');
             </script>
         </apex:outputPanel>
+
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            let navTreeStr = '{"navbarLinks" : []}';
+            let title = '';
+            let baseUrl = 'https://webapp4.asu.edu/myasu/student';
+            if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
+                navTreeStr = undefined;
+            }
+            if (urlParams.get('title') != null) {
+                title = undefined;
+            }
+            if (urlParams.get('baseUrl') != null) {
+                baseUrl = undefined;
+            }
+
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        { title, baseUrl, navTreeStr },
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                    // Hide errors that appear randomly from LWC
+                    const observer = new MutationObserver(function (mutations) {
+                        const errorDiv = document.querySelector('#auraErrorMessage');
+                        if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                            console.error(errorDiv.innerText);
+                            errorDiv.innerHTML = '';
+                        }
+                    });
+                    observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+
+                }
+            );
+        </script>
     </body>
 
     </html>

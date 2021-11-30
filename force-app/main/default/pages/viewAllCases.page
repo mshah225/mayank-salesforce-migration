@@ -16,7 +16,6 @@
 
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
-    <div id="ASUBrandHeaderSpacer"></div>
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
@@ -132,7 +131,16 @@
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    { title, baseUrl, navTreeStr },
+                    {
+                        title, baseUrl, navTreeStr,
+                        stationary: true,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

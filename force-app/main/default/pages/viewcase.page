@@ -390,7 +390,16 @@
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    { title, baseUrl, navTreeStr },
+                    {
+                        title, baseUrl, navTreeStr,
+                        stationary: true,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

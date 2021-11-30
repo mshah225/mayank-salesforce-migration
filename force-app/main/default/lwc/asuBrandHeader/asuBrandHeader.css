@@ -1,7 +1,59 @@
-.headerSpacer {
+/** Rules to turn off header's fixed positioning */
+:host .top-level-wrapper.force-relative-header header {
+    position: relative;
+    margin-bottom: var(--lwc-varSpacingVerticalMedium, 1rem);
+}
+:host .top-level-wrapper.force-relative-header .header-spacer {
+    display: none;
+}
+@media only screen and (min-width: 993px) {
+    :host .top-level-wrapper.force-relative-header .universal-nav {
+        min-height: 24px;
+    }
+    :host .top-level-wrapper.view-as-enabled .header-nav .navlist li:nth-last-child(1) {
+        display: none;
+    }
+    :host .top-level-wrapper.view-as-enabled .header-nav .navlist li:nth-last-child(2) {
+        display: none;
+    }
+}
+
+/** Default spacing of header */
+:host .header-spacer {
     height: 150px;
 }
 
-button:focus {
+/** Cleanup box-shadows from buttons */
+:host button:focus {
     box-shadow: unset !important;
+}
+
+/** View as rules to position nicely on desktop (on smaller screens it is inserted as dropdown options) */
+@media only screen and (max-width: 992px) {
+    :host .view-as-container {
+        display: none;
+    }
+}
+:host .view-as-container {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1224px;
+    position: relative;
+}
+:host .view-as {
+    background-color: none;
+    text-align: right;
+    margin-right: 1rem;
+    position: absolute;
+    right: 0;
+    bottom: 24px;
+    z-index: 3000;
+}
+:host .view-as a.btn {
+    padding: 4px 8px 4px 8px;
+    line-height: 14px;
+}
+:host .view-as a.btn.bg-light:hover {
+    background-color: #f5f5f5 !important;
+    transform: none;
 }

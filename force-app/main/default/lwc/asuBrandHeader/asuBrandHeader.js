@@ -3,6 +3,8 @@ import {loadScript, loadStyle} from 'lightning/platformResourceLoader';
 import bootstrap_4_asu from '@salesforce/resourceUrl/bootstrap_4_asu';
 import jQuery from '@salesforce/resourceUrl/jQuery_3_1_1';
 import getFirstName from '@salesforce/apex/ASUBrandUtilities.getFirstName';
+import ASU_Brand_Header_Vendor_URL from '@salesforce/label/c.ASU_Brand_Header_Vendor_URL';
+import ASU_Brand_Header_Components_Library_URL from '@salesforce/label/c.ASU_Brand_Header_Components_Library_URL';
 
 export default class AsuBrandHeader extends LightningElement {
     @api title;
@@ -77,17 +79,11 @@ export default class AsuBrandHeader extends LightningElement {
         }
 
         loadScript(this, jQuery).then(() => {
-            $.getScript(
-                'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js',
-                () => {
-                    $.getScript(
-                        'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js',
-                        () => {
-                            this.generateHeader();
-                        }
-                    );
-                }
-            );
+            $.getScript(ASU_Brand_Header_Vendor_URL, () => {
+                $.getScript(ASU_Brand_Header_Components_Library_URL, () => {
+                    this.generateHeader();
+                });
+            });
         });
     }
 

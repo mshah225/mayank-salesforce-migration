@@ -42,7 +42,7 @@
                     return true;
                 }
             } else {
-                document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
+                document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply.\n';
             }
             return false;
             }

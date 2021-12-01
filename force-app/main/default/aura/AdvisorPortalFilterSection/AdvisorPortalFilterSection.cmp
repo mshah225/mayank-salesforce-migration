@@ -83,7 +83,7 @@
                         value="{!v.Student}"
                         label="Student†: "
                         onblur="{!c.applyFilters}"
-                        title="Uses preferred name"
+                        title="Uses full name (preferred or legal)"
                     />
                 </span>
                 <c:ComboBoxMultiSelect
@@ -270,8 +270,8 @@
                     />
                 </div>
                 <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
-                    <div class="slds-text-align_right slds-show_medium">† Uses preferred name</div>
-                    <div class="slds-hide_medium">† Uses preferred name</div>
+                    <div class="slds-text-align_right slds-show_medium">† Uses full name (preferred or legal)</div>
+                    <div class="slds-var-m-top_xx-small slds-hide_medium">† Uses full name (preferred or legal)</div>
                 </div>
             </div>
         </div>

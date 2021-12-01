@@ -77,7 +77,7 @@ private class MyASUHelpPaginationControllerTest {
         Test.stopTest();
 
         System.assertEquals(10, vf.getPageSize(), 'These tests expect the page size to be 10');
-        System.assertEquals(4, vf.lastPage, '30 results / 10 per page means should have 3+1 pages');
+        System.assertEquals(3, vf.lastPage, '30 results / 10 per page means should have 3+1 pages');
         System.assertEquals(1, pageNum1);
         System.assertEquals(2, pageNum2);
         System.assertEquals(3, pageNum3);

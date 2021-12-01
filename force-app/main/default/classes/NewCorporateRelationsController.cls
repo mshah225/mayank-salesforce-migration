@@ -1,4 +1,4 @@
-public class NewCorporateRelationsContactController {
+public class NewCorporateRelationsController {
     public Account account { get; set; }
     public Contact contact { get; set; }
     public RecordType crRecordType { get; set; }
@@ -34,7 +34,7 @@ public class NewCorporateRelationsContactController {
         set;
     }
 
-    public NewCorporateRelationsContactController() {
+    public NewCorporateRelationsController() {
         page = 1;
         account = new Account();
         contact = new Contact();

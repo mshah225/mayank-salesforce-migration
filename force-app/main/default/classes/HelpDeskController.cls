@@ -768,6 +768,7 @@ public with sharing class HelpDeskController {
 
         Case orignalCase = (Case) caseWrappers.get(selectedCaseId).Ca;
         myCase = orignalCase.clone(true, true, true, true);
+        myCase.Description = [SELECT Description FROM Case WHERE Id =: selectedCaseId LIMIT 1].Description;
 
         ccPicklist.selectedFunctionalGroup = myCase.CC_Functional_Group__c;
 
@@ -915,7 +916,6 @@ public with sharing class HelpDeskController {
     public class CaseWrapper {
         public Case Ca { get; set; }
         public String shortDescr { get; set; }
-        public String fullDescr { get; set; }
 
         public CaseWrapper(Case c) {
             Ca = c;
@@ -926,7 +926,7 @@ public with sharing class HelpDeskController {
                 shortDescr = ' ';
             }
 
-            fullDescr = c.Description;
+            c.Description = null;
         }
     }
 

@@ -31,7 +31,6 @@ public with sharing class ViewCaseController {
     public String siteTitleUrl { get; set; }
     public String formattedClosedDate { get; set; }
     public String formattedCreatedDate { get; set; }
-    public AlertHandler alertHandler { get; set; } // Use the custom alerting component
     public List<AttachmentWithFormattedDateTime> allCaseAttachmentsFormattedTime { get; set; }
 
     public ViewCaseController() {

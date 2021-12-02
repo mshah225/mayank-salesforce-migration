@@ -9,6 +9,21 @@
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
 
     <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js" />
+    
+    <script type="text/javascript">
+        function disableOnSubmit() {
+            let submissionFields = document.getElementsByClassName('w-100');
+        	let buttonField = document.getElementsByClassName('b-100');
+        
+            if (submissionFields[0].value == '' || submissionFields[1].value == '') {
+                return false;
+            }
+            
+        	buttonField[0].classList.add('disabled');
+            return true;
+        }
+    </script>
+    
     <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';
@@ -53,9 +68,7 @@
                                     <apex:inputField id="myasu-help-contact-us-email-message" styleClass="w-100" value="{!newCase.Description}" required="true"
                                         label="" />
                                     <div>
-                                        <apex:commandLink onclick="event.target.classList.add('disabled')" styleClass="btn btn-maroon btn-md mt-1" action="{!submitCase}">
-                                            Submit
-                                        </apex:commandLink>
+                                        <apex:commandButton onclick="disableOnSubmit();" styleClass="btn btn-maroon btn-md mt-1 b-100"  value="Submit"/>
                                     </div>
                                 </apex:form>
                             </div>

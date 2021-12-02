@@ -96,7 +96,10 @@ public with sharing class MyASUHelpController {
     }
 
     public void checkForViewAs() {
-        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
+        if (
+            ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null &&
+            ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != ''
+        ) {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__c;
 

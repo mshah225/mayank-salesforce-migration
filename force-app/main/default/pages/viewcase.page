@@ -41,10 +41,8 @@
                 } else {
                     return true;
                 }
-            } else {
-                document.getElementById('errorDiv').innerHTML = 'Error: Please add a reply or an attachment\n';
-            }
-            return false;
+            } 
+            return true;
             }
 
             function validateFile() {
@@ -154,6 +152,9 @@
                     <li class="breadcrumb-item active">{!caseDetails.Subject}</li>
                 </ol>
             </nav>
+            <apex:outputPanel id="alerts">
+                <c:customAlerts alerts="{!alertHandler.alerts}" />
+            </apex:outputPanel>
             <div class="row">
                 <div class="col-lg-7 mb-4">
                     <div class="border myasu-help-scope">
@@ -258,17 +259,16 @@
 
                                         <div id="myasu-help-case-reply" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingReply" data-parent="#accordion-case-details">
                                             <div class="panel-body">
-                                                <apex:inputTextarea value="{!caseReply}" id="replyText" rows="5" cols="98" style="max-width: 100%; max-height: 100%" />
+                                                <apex:inputTextarea value="{!caseReply}" id="replyText" required="true" rows="5" cols="98" style="max-width: 100%; max-height: 100%" />
                                                 <span> Upload New Attachments (max size 25MB) </span>
                                                 <apex:inputFile fileName="{!replyCaseAttachment.name}" styleClass="d-block" id="replyFile" value="{!replyCaseAttachment.Body}"
                                                 />
                                                 <div class="mt-2">
-                                                    <apex:commandLink action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md" />
+                                                    <apex:commandButton action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md" />
                                                 </div>
                                                 <br />
                                                 <div class="errorMsg" id="errorDiv" />
                                             </div>
-
                                         </div>
                                     </div>
 

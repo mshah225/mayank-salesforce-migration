@@ -30,6 +30,7 @@ public with sharing class ViewCaseController {
     public String siteTitleUrl { get; set; }
     public String formattedClosedDate { get; set; }
     public String formattedCreatedDate { get; set; }
+    public AlertHandler alertHandler { get; set; } // Use the custom alerting component
     public List<AttachmentWithFormattedDateTime> allCaseAttachmentsFormattedTime { get; set; }
 
     public ViewCaseController() {
@@ -37,6 +38,7 @@ public with sharing class ViewCaseController {
         siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu/student';
         viewingAs = false;
         replyCaseAttachment = new Attachment();
+        alertHandler = new AlertHandler();
         checkForViewAs();
         popUserContact();
         popTerms();
@@ -347,15 +349,12 @@ public with sharing class ViewCaseController {
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
-                ApexPages.addmessage(
-                    new ApexPages.message(ApexPages.severity.CONFIRM, 'Your response was submitted successfully.')
-                );
+                alertHandler.newAlert(customAlert.CONFIRM, 'Your response was submitted successfully.');
+                retrieveAttachmentList();
             } else {
-                ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
-                    )
+                alertHandler.newAlert(
+                    customAlert.FATAL,
+                    'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080.'
                 );
             }
         }
@@ -366,16 +365,12 @@ public with sharing class ViewCaseController {
         if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
             String attachmentUploadResponse = uploadAttachment();
             if (attachmentUploadResponse.contains('success')) {
-                ApexPages.addmessage(
-                    new ApexPages.message(ApexPages.severity.CONFIRM, 'Your attachment upload was successful.')
-                );
+                alertHandler.newAlert(customAlert.CONFIRM, 'Your attachment upload was successful.');
                 retrieveAttachmentList();
             } else {
-                ApexPages.addmessage(
-                    new ApexPages.message(
-                        ApexPages.severity.ERROR,
-                        'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
-                    )
+                alertHandler.newAlert(
+                    customAlert.FATAL,
+                    'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080.'
                 );
             }
         }

@@ -6,6 +6,7 @@ public with sharing class ViewCaseController {
     private Term__c termB;
     private Map<String, String> viewAsMap;
     private MyASUHelpViewAsService viewAsService;
+    public AlertHandler alertHandler { get; set; } // Use the custom alerting component
 
     public Id caseId { get; set; }
     public String firstName { get; set; }
@@ -39,6 +40,7 @@ public with sharing class ViewCaseController {
         viewingAs = false;
         replyCaseAttachment = new Attachment();
         alertHandler = new AlertHandler();
+        alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
         checkForViewAs();
         popUserContact();
         popTerms();
@@ -51,7 +53,7 @@ public with sharing class ViewCaseController {
         if (String.isEmpty(caseId)) {
             return false;
         }
-        Case caseOnPage = [SELECT ClosedDate FROM Case WHERE Id = :caseId];
+        Case caseOnPage = getCaseDetails();
         if (caseOnPage.ClosedDate == null) {
             return false;
         }
@@ -340,6 +342,7 @@ public with sharing class ViewCaseController {
     }
 
     public PageReference submitReply() {
+        alertHandler.clear();
         submitCaseReply();
         submitAttachmentReply();
         return null;
@@ -354,7 +357,7 @@ public with sharing class ViewCaseController {
             } else {
                 alertHandler.newAlert(
                     customAlert.FATAL,
-                    'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080.'
+                    'Your response was not submitted successfully. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
                 );
             }
         }
@@ -370,7 +373,7 @@ public with sharing class ViewCaseController {
             } else {
                 alertHandler.newAlert(
                     customAlert.FATAL,
-                    'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080.'
+                    'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
                 );
             }
         }

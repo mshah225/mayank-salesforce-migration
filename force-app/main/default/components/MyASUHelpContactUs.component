@@ -66,7 +66,7 @@
                                     />
                                     <label for="myasu-help-contact-us-email-message" class="">Message</label>
                                     <apex:inputField id="myasu-help-contact-us-email-message" styleClass="w-100" value="{!newCase.Description}" required="true"
-                                        label="" />
+                                    />
                                     <div>
                                         <apex:commandButton onclick="disableOnSubmit();" styleClass="btn btn-maroon btn-md mt-1 b-100"  value="Submit"/>
                                     </div>

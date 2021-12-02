@@ -17,6 +17,7 @@
 
 
         <script>
+            // Depends on having customAlerts component on page - since that provides the visualforceAddCustomAlert and visualforceClearCustomAlerts functions
             var $j = jQuery.noConflict();
             function validateReply() {
                 var filePresent = false;
@@ -41,13 +42,13 @@
                 } else {
                     return true;
                 }
-            } 
+            }
             return true;
             }
 
             function validateFile() {
                 var errorPresent = false;
-                document.getElementById('errorDiv').innerHTML = '';
+                visualforceClearCustomAlerts();
                 $j('input[type=file]').each(function () {
                     fileName = this.files[0].name;
                     fileSize = this.files[0].size / 1000000;
@@ -55,18 +56,10 @@
                     var fileExtensionArray = fileName.split('.');
                     var fileExtension = '.' + fileExtensionArray[fileExtensionArray.length - 1];
                     if (validFileTypes.indexOf(fileExtension.toLowerCase()) == -1) {
-                        document.getElementById('errorDiv').innerHTML =
-                            'Error: This attachment is not an acceptable file type.\n' +
-                            'The following attachment types are allowed:\n' +
-                            'Microsoft Word (.doc or .docx)\n' +
-                            'Microsoft Excel (.xls or .xlsx)\n' +
-                            'Image (.jpg, .jpeg, .gif, .png)\n' +
-                            'Adobe PDF (.pdf)\n' +
-                            'Text (.txt).\n';
+                        visualforceAddCustomAlert('FATAL', 'Error! ', 'This attachment is not an acceptable file type. The following attachment types are allowed: Microsoft Word (.doc or .docx), Microsoft Excel (.xls or .xlsx), Image (.jpg, .jpeg, .gif, .png), Adobe PDF (.pdf), Text (.txt).', '');
                         errorPresent = true;
-                    }
-                    if (fileSize > 25) {
-                        document.getElementById('errorDiv').innerHTML += 'The attachment exceeds the file size limit of 25 MB\n';
+                    } else if (fileSize > 25) {
+                        visualforceAddCustomAlert('FATAL', 'Error! ', 'The attachment exceeds the file size limit of 25 MB.', '');
                         errorPresent = true;
                     }
                 });
@@ -131,16 +124,20 @@
 
     <apex:includeLightning />
     <c:SLDSRemoveGlobalStyles />
-    <div id="ASUBrandHeaderSpacer"></div>
     <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
 
-    <c:MyASUHelpPageNotifications />
-    <apex:pageMessages id="message" />
-
     <div role="main">
         <div class="container myasu-help-scope">
+            <div class="row">
+                <div class="col-lg-12">
+                    <apex:outputPanel id="alerts">
+                        <c:customAlerts alerts="{!alertHandler.alerts}" captureSalesforceErrors="true" />
+                    </apex:outputPanel>
+                </div>
+            </div>
+
 
             <nav aria-label="breadcrumbs">
                 <ol class="breadcrumb">
@@ -259,12 +256,14 @@
 
                                         <div id="myasu-help-case-reply" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingReply" data-parent="#accordion-case-details">
                                             <div class="panel-body">
-                                                <apex:inputTextarea value="{!caseReply}" id="replyText" required="true" rows="5" cols="98" style="max-width: 100%; max-height: 100%" />
+                                                <apex:inputTextarea value="{!caseReply}" id="replyText" required="true" rows="5" cols="98" style="max-width: 100%; max-height: 100%"
+                                                />
                                                 <span> Upload New Attachments (max size 25MB) </span>
                                                 <apex:inputFile fileName="{!replyCaseAttachment.name}" styleClass="d-block" id="replyFile" value="{!replyCaseAttachment.Body}"
                                                 />
                                                 <div class="mt-2">
-                                                    <apex:commandButton action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md" />
+                                                    <apex:commandButton onclick="return validateReply();" action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md"
+                                                    />
                                                 </div>
                                                 <br />
                                                 <div class="errorMsg" id="errorDiv" />
@@ -392,7 +391,16 @@
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    { title, baseUrl, navTreeStr },
+                    {
+                        title, baseUrl, navTreeStr,
+                        stationary: true,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

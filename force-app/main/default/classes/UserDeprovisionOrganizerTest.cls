@@ -403,7 +403,7 @@ public class UserDeprovisionOrganizerTest {
         Map<Id, User> oldUsersMap = new Map<Id, User>();
         List<User> newUsers = new List<User>();
 
-        Id standardProfile = IDHelper.getProfileId('Standard User');
+        Id standardProfile = RecordIdHelper.getProfileId('Standard User');
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Deprovision_User_Configuration__c deproConfig = new Deprovision_User_Configuration__c(
                 Name = 'ProfileToIgnore',

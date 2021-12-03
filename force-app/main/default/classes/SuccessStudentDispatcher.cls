@@ -1,4 +1,4 @@
-public class SuccessStudentDispatcher implements IDispatch {
+public class SuccessStudentDispatcher implements TriggerDispatcherInterface {
     Map<Id, Success_Student__c> newMap;
     Map<id, Success_Student__c> oldMap;
 

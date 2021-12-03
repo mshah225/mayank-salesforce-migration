@@ -15,7 +15,7 @@ public with sharing class CaseListTransferControllerTest {
             Active__c = true,
             Visible__c = true,
             Record_Types_String__c = 'wer',
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
         );
         insert functionalGroup;
         Case_Classification__c category = new Case_Classification__c(
@@ -23,7 +23,7 @@ public with sharing class CaseListTransferControllerTest {
             Active__c = true,
             Visible__c = true,
             Parent__c = functionalGroup.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
         );
         insert category;
         Case_Classification__c subcategory = new Case_Classification__c(
@@ -31,7 +31,7 @@ public with sharing class CaseListTransferControllerTest {
             Active__c = true,
             Visible__c = true,
             Parent__c = category.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
         );
         insert subcategory;
 
@@ -72,7 +72,7 @@ public with sharing class CaseListTransferControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'AS Admission Services']
             .Id
         );
@@ -88,7 +88,7 @@ public with sharing class CaseListTransferControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             UserRoleId = ur.Id,
             IsActive = true,
             UserPermissionsSupportUser = true
@@ -105,7 +105,7 @@ public with sharing class CaseListTransferControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             UserRoleId = parentUr.Id,
             IsActive = true,
             UserPermissionsSupportUser = true
@@ -121,7 +121,7 @@ public with sharing class CaseListTransferControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             UserRoleId = childUr.Id,
             IsActive = true,
             UserPermissionsSupportUser = true
@@ -143,7 +143,7 @@ public with sharing class CaseListTransferControllerTest {
             Email_Address__c = 'case-list-transfer-controller-test-email-addr@test.test',
             Case_Feed_Email_Template_Id__c = null,
             Campus__c = Case.Campus__c.getDescribe().getPicklistValues()[0].value,
-            Case_Record_Type_Id__c = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach').to15()
+            Case_Record_Type_Id__c = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach').to15()
         );
         Case_Assignment_Rule__c car2 = new Case_Assignment_Rule__c(
             CTPColumn__c = 'Service Departments',
@@ -764,7 +764,7 @@ public with sharing class CaseListTransferControllerTest {
         Case_Classification__c functionalGroup = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
             LIMIT 1
         ];
 
@@ -938,7 +938,10 @@ public with sharing class CaseListTransferControllerTest {
 
         System.assertEquals(1, ApexPages.getMessages().size());
         System.assertEquals(ApexPages.severity.ERROR, messages[0].getSeverity());
-        System.assertEquals('All of the selected cases must be assigned to the same functional group.', messages[0].getSummary());
+        System.assertEquals(
+            'All of the selected cases must be assigned to the same functional group.',
+            messages[0].getSummary()
+        );
     }
 
     @isTest

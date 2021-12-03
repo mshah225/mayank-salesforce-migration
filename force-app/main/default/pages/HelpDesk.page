@@ -387,7 +387,7 @@
 
                                     <apex:column value="{!case.Ca.Subject}" />
 
-                                    <apex:column headerValue="Description" value="{!case.shortDescr}" title="{!case.fullDescr}" />
+                                    <apex:column headerValue="Description" value="{!case.shortDescr}" />
 
                                     <apex:column value="{!case.Ca.ClosedDate}" />
                                 </apex:pageBlockTable>

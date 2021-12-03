@@ -1,4 +1,4 @@
-public with sharing class EmailMessageDispatcher implements IDispatch {
+public with sharing class EmailMessageDispatcher implements TriggerDispatcherInterface {
     private static Map<Id, Case> casesToUpdate; // List of parent cases that need to be updated
     private static Map<Id, EmailMessage> newEmails; // trigger.new
     private static Map<Id, EmailMessage> oldEmails; // trigger.oldMap

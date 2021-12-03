@@ -84,7 +84,7 @@ private class AdvisorPortalTopLevelFilterTest {
             .Id,
             Resource__c = testManager.Id,
             IsActive__c = true,
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
         );
         insert myTestResource;
 

@@ -1,4 +1,4 @@
-<apex:page showHeader="true" sidebar="true" controller="NewCorporateRelationsContactController">
+<apex:page showHeader="true" sidebar="true" controller="NewCorporateRelationsController">
     <apex:form id="alius-format1118">
         <apex:actionFunction name="checkClick" action="{!click}" reRender="accountHelpPanel" />
     </apex:form>

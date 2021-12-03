@@ -22,6 +22,7 @@ public without sharing class FeedbackButtonController {
     public pageReference init() {
         try {
             alertHandler = new AlertHandler();
+            alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
             URLParamsExistAndAreValid = false;
             caseDescription = ApexPages.currentPage().getParameters().get('misc');
             retURL = ApexPages.currentPage().getParameters().get('retURL');
@@ -107,7 +108,7 @@ public without sharing class FeedbackButtonController {
                 throw new dynamicFeedbackException('Error: Form submission after initialization error');
             }
 
-            if (caseDescription == '') {
+            if (caseDescription.replaceAll('\\s', '') == '') {
                 proceed = false;
 
                 alertHandler.newAlert(customAlert.WARNING, 'Feedback comments are required.');

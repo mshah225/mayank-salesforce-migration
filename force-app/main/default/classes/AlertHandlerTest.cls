@@ -75,4 +75,25 @@ public class AlertHandlerTest {
         System.assert(handler.getConfirm()[0].severity == 'CONFIRM');
         System.assert(handler.getConfirm()[0].message == confirmAlertMsg);
     }
+
+    @isTest
+    private static void testExtractingFromParamList() {
+        AlertHandler handler = new AlertHandler();
+        AlertHandler handler2 = new AlertHandler();
+
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put('feedback', 'yes');
+        paramMap.put('confirm', 'newcase');
+        paramMap.put('suggest', 'yes');
+        Map<String, String> paramMap2 = new Map<String, String>();
+        paramMap2.put('confirm', 'feedback');
+
+        Test.startTest();
+        handler.loadStandardAlertsFromMap(paramMap);
+        handler2.loadStandardAlertsFromMap(paramMap2);
+        Test.stopTest();
+
+        System.assert(handler.alerts.size() == 3);
+        System.assert(handler2.alerts.size() == 1);
+    }
 }

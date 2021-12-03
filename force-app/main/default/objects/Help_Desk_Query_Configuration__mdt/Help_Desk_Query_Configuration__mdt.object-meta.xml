@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Custom metadata used to contain various fields for querying information on the help desk.  Such as the id of the Non-Affiliate Caller contact.</description>
-    <label>Help Desk Query Configuration</label>
-    <pluralLabel>Help Desk Query Configurations</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

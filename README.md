@@ -2,9 +2,9 @@
 
 ### Metadata Contents
 
--   ApexClass
+-   [ApexClass](https://github.com/asu-sf/metadata-security/blob/main/ApexClass_security_list.csv)
 -   ApexComponent
--   ApexPage
+-   [ApexPage](https://github.com/asu-sf/metadata-security/blob/main/ApexPage_security_list.csv)
 -   ApexTrigger
 -   AuraDefinitionBundle
 -   LightningComponentBundle

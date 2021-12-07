@@ -150,7 +150,7 @@ public class UserTriggerTest {
         insert (testCGList);
         //Insert a user with a Case Management People Soft Role
         Test.startTest();
-        User testUser = UserService.createTestUser();
+        User testUser = createTestUser();
         testUser.Role_Case_Management__c = true;
         Id asuServiceProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Service - ASU Online'].Id;
         testUser.ProfileId = asuServiceProfile;
@@ -193,7 +193,7 @@ public class UserTriggerTest {
 
         //Insert a user with a Recruitment Communications People Soft Role
         Test.startTest();
-        User testUser = UserService.createTestUser();
+        User testUser = createTestUser();
         testUser.Role_Recruitment_Communications__c = true;
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Recruitment - Admission Services'].Id;
         testUser.ProfileId = asuRecruitProfile;
@@ -238,7 +238,7 @@ public class UserTriggerTest {
         //Insert a user with Knwoledge People Soft Role
         Test.startTest();
 
-        User testUser = UserService.createTestUser();
+        User testUser = createTestUser();
         testUser.Role_Knowledge__c = true;
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
         testUser.ProfileId = asuRecruitProfile;
@@ -286,7 +286,7 @@ public class UserTriggerTest {
         Test.startTest();
 
         //Insert a user with Marketing Cloud Admin People Soft Role
-        User testUser = UserService.createTestUser();
+        User testUser = createTestUser();
         testUser.Role_Connected_MC_Adm__c = true;
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
         testUser.ProfileId = asuRecruitProfile;
@@ -346,7 +346,7 @@ public class UserTriggerTest {
         //Insert a user with Academic Advisor Portal People Soft Role
         Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
 
-        List<User> users = UserService.createMultipleTestUsers(2);
+        List<User> users = createMultipleTestUsers(2);
 
         User testUser = users[0];
         testUser.Role_Academic_Advisor_Portal__c = true;
@@ -531,5 +531,37 @@ public class UserTriggerTest {
             }
         }
         return userFields;
+    }
+
+    public static User createTestUser() {
+        User testUser = new User(
+            FirstName = 'Test',
+            LastName = 'User',
+            Username = 'test.user.emperor.of.Byzantium@test.example.com',
+            Email = 'test.user@test.example.com',
+            Alias = 'testuser',
+            CommunityNickname = 'testuserCom',
+            TimeZoneSidKey = 'America/Phoenix',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'ISO-8859-1',
+            LanguageLocaleKey = 'en_US'
+        );
+        return testUser;
+    }
+
+    public static List<User> createMultipleTestUsers(Integer numUsers) {
+        List<User> userList = new List<User>();
+
+        for (Integer i = 0; i < numUsers; i++) {
+            User tUser = createTestUser();
+            tUser.FirstName = 'Test' + i;
+            tUser.LastName = 'User' + i;
+            tUser.Username = 'test.user.emperor.of.Byzantium' + i + '@test.example.com';
+            tUser.Email = 'test.user' + i + '@test.example.com';
+            tUser.Alias = 'test' + i;
+            tUser.CommunityNickname = 'testuser' + i;
+            userList.add(tUser);
+        }
+        return userList;
     }
 }

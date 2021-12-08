@@ -258,8 +258,8 @@ export default class CaseQuickClose extends LightningElement {
         // Custom Status Logic
         if (fields.Status === 'Closed: SPAM') {
             // Vars
-            const currentSubject = getFieldValue(this.record.data, SUBJECT_FIELD);
-            const currentDescription = getFieldValue(this.record.data, DESCRIPTION_FIELD);
+            const currentSubject = getFieldValue(this.record, SUBJECT_FIELD);
+            const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD);
 
             // Modify case details
             if (!currentSubject.startsWith('SPAM:')) {

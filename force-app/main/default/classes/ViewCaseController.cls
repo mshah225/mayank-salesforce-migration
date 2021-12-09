@@ -8,6 +8,7 @@ public with sharing class ViewCaseController {
     private MyASUHelpViewAsService viewAsService;
     public AlertHandler alertHandler { get; set; } // Use the custom alerting component
 
+    public Case caseDetails { get; set; }
     public Id caseId { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -43,7 +44,8 @@ public with sharing class ViewCaseController {
         checkForViewAs();
         popUserContact();
         popTerms();
-        setCaseId();
+        this.caseId = ApexPages.currentPage().getParameters().get('id');
+        retrieveCaseDetails();
         retrieveAttachmentList();
         showOpenNewCaseAlert = displayOpenNewCaseAlert();
     }
@@ -52,11 +54,10 @@ public with sharing class ViewCaseController {
         if (String.isEmpty(caseId)) {
             return false;
         }
-        Case caseOnPage = getCaseDetails();
-        if (caseOnPage.ClosedDate == null) {
+        if (caseDetails.ClosedDate == null) {
             return false;
         }
-        Date caseClosedDate = caseOnPage.ClosedDate.date();
+        Date caseClosedDate = caseDetails.ClosedDate.date();
         if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
             return true;
         }
@@ -133,15 +134,11 @@ public with sharing class ViewCaseController {
         asurite = userContact.ASURite_ID__c;
     }
 
-    public void setCaseId() {
-        caseId = ApexPages.currentPage().getParameters().get('id');
-    }
-
-    public Case getCaseDetails() {
+    private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
-            return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
+            caseDetails = viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
-            Case returnCase = [
+            caseDetails = [
                 SELECT
                     Id,
                     CaseNumber,
@@ -161,14 +158,12 @@ public with sharing class ViewCaseController {
                 LIMIT 1
             ];
 
-            if (returnCase.CreatedDate != null) {
-                formattedCreatedDate = ((DateTime) returnCase.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
+            if (caseDetails.CreatedDate != null) {
+                formattedCreatedDate = ((DateTime) caseDetails.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
             }
-            if (returnCase.ClosedDate != null) {
-                formattedClosedDate = ((DateTime) returnCase.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
+            if (caseDetails.ClosedDate != null) {
+                formattedClosedDate = ((DateTime) caseDetails.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
             }
-
-            return returnCase;
         }
     }
 
@@ -353,6 +348,7 @@ public with sharing class ViewCaseController {
             if (restStatusAndInfo.isSuccessfull()) {
                 alertHandler.newAlert(customAlert.CONFIRM, 'Your response was submitted successfully.');
                 retrieveAttachmentList();
+                retrieveCaseDetails();
             } else {
                 alertHandler.newAlert(
                     customAlert.FATAL,

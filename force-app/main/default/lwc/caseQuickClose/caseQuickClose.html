@@ -42,7 +42,20 @@
                         onload={handleOnFormLoad}
                         onerror={handleOnFormError}
                     >
-                        <lightning-messages></lightning-messages>
+                        <!-- Validation Error -->
+                        <template if:true={hasValidationError}>
+                            <div class="slds-notify_container slds-is-relative toastzindex">
+                                <div
+                                    class="slds-notify slds-notify_toast slds-theme_error toastnominwidth"
+                                    role="alert"
+                                >
+                                    <div class="slds-notify__content">
+                                        <h2 class="slds-text-heading_small">{validationError.message}</h2>
+                                        <p if:true={validationError.detail}>{validationError.detail}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
 
                         <!-- For Each Input Field (BEFORE Status) -->
                         <template for:each={inputFieldsBefore} for:item="item">

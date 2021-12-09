@@ -7,3 +7,10 @@
 .customStatusBox {
     margin-bottom: var(--lwc-spacingXSmall, 0.5rem);
 }
+
+.toastzindex {
+    z-index: 1;
+}
+.toastnominwidth {
+    min-width: 0;
+}

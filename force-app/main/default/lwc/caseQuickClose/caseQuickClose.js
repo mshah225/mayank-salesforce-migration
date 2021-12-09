@@ -38,6 +38,7 @@ export default class CaseQuickClose extends LightningElement {
     inputFieldsBefore = [];
     inputFieldsAfter = [];
     statusFieldLabel;
+    validationError;
 
     // Case Record
     @wire(getRecord, {
@@ -77,6 +78,14 @@ export default class CaseQuickClose extends LightningElement {
                 this.handleGlobalError(e);
             }
         }
+    }
+
+    // Validation Error Override
+    get hasValidationError() {
+        return this.validationError ? true : false;
+    }
+    set hasValidationError(error) {
+        this.validationError = error;
     }
 
     // Component Name (Card Title)
@@ -291,6 +300,7 @@ export default class CaseQuickClose extends LightningElement {
         this.formVisible = false;
         this.buttonVisible = true;
         this.errorMessage = '';
+        this.hasValidationError = null;
     }
 
     // Form Loaded
@@ -299,8 +309,9 @@ export default class CaseQuickClose extends LightningElement {
     }
 
     // Form Error
-    handleOnFormError() {
+    handleOnFormError(event) {
         this.loading = false;
+        this.hasValidationError = event.detail;
     }
 
     // Cancel Form

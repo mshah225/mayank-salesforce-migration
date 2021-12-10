@@ -134,11 +134,12 @@ public with sharing class ViewCaseController {
         asurite = userContact.ASURite_ID__c;
     }
 
+    @TestVisible
     private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
             caseDetails = viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
         } else {
-            caseDetails = [
+            List<Case> caseDetailsOptions = [
                 SELECT
                     Id,
                     CaseNumber,
@@ -158,11 +159,15 @@ public with sharing class ViewCaseController {
                 LIMIT 1
             ];
 
-            if (caseDetails.CreatedDate != null) {
-                formattedCreatedDate = ((DateTime) caseDetails.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
-            }
-            if (caseDetails.ClosedDate != null) {
-                formattedClosedDate = ((DateTime) caseDetails.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
+            if (!caseDetailsOptions.isEmpty()) {
+                caseDetails = caseDetailsOptions[0];
+
+                if (caseDetails.CreatedDate != null) {
+                    formattedCreatedDate = ((DateTime) caseDetails.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
+                }
+                if (caseDetails.ClosedDate != null) {
+                    formattedClosedDate = ((DateTime) caseDetails.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
+                }
             }
         }
     }
@@ -478,6 +483,7 @@ public with sharing class ViewCaseController {
         }
     }
 
+    @TestVisible
     private class EmailMessageWithFormattedDateTime {
         public String CreatedDate { get; set; }
         public String LastModifiedDate { get; set; }

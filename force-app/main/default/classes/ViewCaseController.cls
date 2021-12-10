@@ -134,6 +134,10 @@ public with sharing class ViewCaseController {
         asurite = userContact.ASURite_ID__c;
     }
 
+    public Case getCaseDetails() {
+        return caseDetails;
+    }
+
     @TestVisible
     private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {

@@ -5,7 +5,7 @@ public without sharing class SuccessPodFactory {
             super(
                 new Success_Pod__c(
                     OwnerId = UserInfo.getUserId(),
-                    RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor'),
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor'),
                     Name = 'Test Pod ',
                     Committee__c = 'tp'
                 )
@@ -20,7 +20,7 @@ public without sharing class SuccessPodFactory {
             super(
                 new Success_Pod__c(
                     OwnerId = groupId,
-                    RecordTypeId = IdHelper.getRTID('Success_Pod__c', 'Advisor'),
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Advisor'),
                     Name = 'Test Pod ',
                     Committee__c = 'tp'
                 )

@@ -6,6 +6,7 @@ public with sharing class MyASUHelpController {
     private Date today;
     private Term__c termcAC;
     private Term__c termcB;
+    public AlertHandler alertHandler { get; set; } // Use the custom alerting component
     private MyASUHelpViewAsService viewAsService;
     public List<Opportunity> oppList;
     public Boolean viewingAs { get; set; }
@@ -22,7 +23,6 @@ public with sharing class MyASUHelpController {
     public String viewAsUrl { get; set; }
     public String asurite { get; set; }
     public String userAsurite;
-    public String mMessage;
 
     public String functionalGroup { get; set; }
     public Boolean isSearchingWithFunctionalGroup { get; set; }
@@ -75,6 +75,38 @@ public with sharing class MyASUHelpController {
         viewingAs = false;
         functionalGroup = null;
         isSearchingWithFunctionalGroup = false;
+        alertHandler = new AlertHandler();
+        loadStudentSCAlerts(); // Do before standard alerts to appear above standard alerts
+        alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
+    }
+
+    private void loadStudentSCAlerts() {
+        // Only loaded on studentSC page
+        if (ApexPages.currentPage().getUrl().toLowerCase().contains(Page.studentSC.getUrl().toLowerCase())) {
+            List<Service_Center_Maintenance__c> scmList = [
+                SELECT Message__c, Start_Time__c, End_Time__c
+                FROM Service_Center_Maintenance__c
+                WHERE Displayed__c = TRUE
+            ];
+            if (scmList.size() > 0) {
+                if (
+                    (scmList[0].Start_Time__c <= System.now() && scmList[0].End_Time__c >= System.now()) ||
+                    (scmList[0].Start_Time__c == null &&
+                    scmList[0].End_Time__c == null)
+                ) {
+                    alertHandler.newAlert(customAlert.WARNING, ' ', scmList[0].Message__c, '');
+                }
+            }
+
+            if (Label.MyASU_Help_Alert_Status == 'true') {
+                alertHandler.newAlert(
+                    customAlert.WARNING,
+                    ' ',
+                    'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now. ',
+                    'https://students.asu.edu/contact/financialaid'
+                );
+            }
+        }
     }
 
     private void setLiveAgentSettings() {
@@ -96,7 +128,10 @@ public with sharing class MyASUHelpController {
     }
 
     public void checkForViewAs() {
-        if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
+        if (
+            ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null &&
+            ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != ''
+        ) {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__c;
 
@@ -375,26 +410,6 @@ public with sharing class MyASUHelpController {
         } else {
             return true;
         }
-    }
-
-    public String getmMessage() {
-        List<Service_Center_Maintenance__c> scmList = [
-            SELECT Message__c, Start_Time__c, End_Time__c
-            FROM Service_Center_Maintenance__c
-            WHERE Displayed__c = TRUE
-        ];
-
-        if (scmList.size() > 0) {
-            if (
-                (scmList[0].Start_Time__c <= System.now() && scmList[0].End_Time__c >= System.now()) ||
-                (scmList[0].Start_Time__c == null &&
-                scmList[0].End_Time__c == null)
-            ) {
-                mMessage = scmList[0].Message__c;
-            }
-        }
-
-        return mMessage;
     }
 
     public List<Case> getMyCases() {

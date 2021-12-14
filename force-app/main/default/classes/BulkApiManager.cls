@@ -2,6 +2,7 @@ public class BulkApiManager {
     private String jobId;
     private String orgUrl;
     private String sessionKey;
+    @TestVisible
     private String objectType;
     private String operationType;
     private final Integer NUMBER_OF_RETRIES = 10;

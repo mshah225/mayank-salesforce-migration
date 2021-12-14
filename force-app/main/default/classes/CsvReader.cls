@@ -102,6 +102,7 @@ public class CsvReader {
         return csvValue;
     }
 
+    @TestVisible
     private class CsvValue {
         public String value;
         public Boolean enclosed;

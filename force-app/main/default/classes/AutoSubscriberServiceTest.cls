@@ -56,7 +56,7 @@ public with sharing class AutoSubscriberServiceTest {
 
         Campaign testCampaign = new Campaign(
             Name = 'TestCampaign',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'EOSS_Event')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'EOSS_Event')
         );
         insert testCampaign;
 

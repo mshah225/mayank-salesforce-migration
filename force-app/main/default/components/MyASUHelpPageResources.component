@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component id="alius-format917">
     <apex:attribute name="viewingAs" description="Is the user viewing as?" type="Boolean" />
     <apex:attribute name="masqScopeIdCookie" description="Cookie" type="String" />
     <script>
@@ -9,7 +9,7 @@
             if (masqCookie != '' && viewingAs == 'true') {
                 $('a').each(function () {
                     var href = this.href;
-                    if (href.indexOf('force') > -1) {
+                    if (href.indexOf('force') > -1 || href == '/') {
                         if (href.indexOf('?') != -1) {
                             href = href + '&masqScopeIdCookie={!masqScopeIdCookie}';
                         } else {

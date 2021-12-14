@@ -284,7 +284,10 @@ public class UnifiedProspectPageController {
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest') AND Type = 'ASU Location' AND IsActive = TRUE
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Campaign', 'Interest')
+                AND Type = 'ASU Location'
+                AND IsActive = TRUE
             ORDER BY Name ASC
         ];
 
@@ -304,7 +307,10 @@ public class UnifiedProspectPageController {
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest') AND Type = 'Academic' AND IsActive = TRUE
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Campaign', 'Interest')
+                AND Type = 'Academic'
+                AND IsActive = TRUE
             ORDER BY Name ASC
         ];
 
@@ -324,7 +330,10 @@ public class UnifiedProspectPageController {
         List<Campaign> interests = [
             SELECT Id, Name, RecordTypeId
             FROM Campaign
-            WHERE RecordTypeId = :IDHelper.getRTID('Campaign', 'Interest') AND Type = 'ASU Colleges' AND IsActive = TRUE
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Campaign', 'Interest')
+                AND Type = 'ASU Colleges'
+                AND IsActive = TRUE
             ORDER BY Name ASC
         ];
 

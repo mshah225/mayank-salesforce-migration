@@ -1,4 +1,4 @@
-public with sharing class StudentProgramPlanDispatcher implements IDispatch {
+public with sharing class StudentProgramPlanDispatcher implements TriggerDispatcherInterface {
     private List<Student_Program_Plan__c> newList;
     private Map<Id, Student_Program_Plan__c> newMap;
     private List<Student_Program_Plan__c> oldList;

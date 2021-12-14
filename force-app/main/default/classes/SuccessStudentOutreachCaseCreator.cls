@@ -1,6 +1,6 @@
 public class SuccessStudentOutreachCaseCreator {
     private static final Date TOMORROW = System.today().addDays(1);
-    private static final Id COACH_CASE_RECORD_TYPE = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+    private static final Id COACH_CASE_RECORD_TYPE = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
     private static Id asuCoachOutreachGroup;
     private static Id adHocCategory;
 

@@ -245,7 +245,7 @@
                 gridlines: {
                     color: '#fff'
                 },
-                maxValue: 11.5,
+                maxValue: 10,
                 textStyle: {
                     fontSize: 11
                 },

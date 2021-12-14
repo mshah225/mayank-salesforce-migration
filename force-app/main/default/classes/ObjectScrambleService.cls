@@ -41,7 +41,7 @@ public class ObjectScrambleService {
                 queryToReturn = 'SELECT Id FROM ' + System.Label.SilverPopName;
             }
             when CAR {
-                queryToReturn = 'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c';
+                queryToReturn = 'SELECT Id, Email_Address__c, Reply_To_Email_Address__c FROM Case_Assignment_Rule__c WHERE Do_Not_Change_in_Sandbox_Refresh__c = FALSE';
             }
             when USER {
                 Id sysAdminId = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1].Id;

@@ -1,7 +1,0 @@
-SELECT Id, Name,
-   (SELECT Parent.Id, Parent.Type, Parent.Label, Parent.PermissionSetGroupId, Parent.Profile.Id, Parent.Profile.Name
-   FROM SetupEntityAccessItems
-   ORDER BY Parent.Label ASC)
-FROM ApexPage
-WHERE NamespacePrefix = NULL
-ORDER BY Name ASC

@@ -93,8 +93,9 @@
                         type="text"
                         name="StudentField"
                         value="{!v.Student}"
-                        label="Student: "
+                        label="Student†: "
                         onblur="{!c.applyFilters}"
+                        title="Uses full name (preferred or legal)"
                     />
                 </span>
                 <c:lightningComboBoxMultiSelect
@@ -270,14 +271,20 @@
                 </div>
             </div>
 
-            <div>
-                <lightning:button label="Clear Filters" title="Clear Filters" onclick="{!c.clearFilters}" />
-                <lightning:button
-                    variant="brand"
-                    label="Apply Filters"
-                    title="Apply Filters"
-                    onclick="{!c.applyFilters}"
-                />
+            <div class="slds-grid slds-wrap slds-gutters_x-small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning:button label="Clear Filters" title="Clear Filters" onclick="{!c.clearFilters}" />
+                    <lightning:button
+                        variant="brand"
+                        label="Apply Filters"
+                        title="Apply Filters"
+                        onclick="{!c.applyFilters}"
+                    />
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
+                    <div class="slds-text-align_right slds-show_medium">† Uses full name (preferred or legal)</div>
+                    <div class="slds-var-m-top_xx-small slds-hide_medium">† Uses full name (preferred or legal)</div>
+                </div>
             </div>
         </div>
     </aura:renderIf>

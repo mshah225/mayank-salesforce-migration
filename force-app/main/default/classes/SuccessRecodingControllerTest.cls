@@ -199,4 +199,26 @@ private class SuccessRecodingControllerTest {
 
         System.assert(b);
     }
+    
+    static testMethod void testPageResetnStudTransfer() {
+
+        Test.startTest();
+        SuccessRecodingController src = new SuccessRecodingController();
+        src.page1Reset();
+        src.transferStudents();
+        Test.stopTest();
+
+        System.assertEquals(src.coachPath, false);
+        
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b = false;
+        
+        for (Apexpages.Message msg : msgs) {
+            if (msg.getDetail().contains('please try again or select another Coach.')) {
+                b = true;
+            }
+        }
+
+        System.assert(b);
+    }
 }

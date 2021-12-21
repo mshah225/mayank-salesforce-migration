@@ -7,7 +7,7 @@ private class MyASUHelpControllerTest {
         // Insert test contacts
         List<Contact> testContacts = new List<Contact>();
         Integer emplId = 1200000000;
-        for (Integer i = 0; i < 4; i++) {
+        for (Integer i = 0; i < 5; i++) {
             testContacts.add(
                 new Contact(
                     FirstName = 'Test',
@@ -168,12 +168,12 @@ private class MyASUHelpControllerTest {
         testOpportunities.add(
             // No term opporunity for third contact
             new Opportunity(
-                Contact__c = testContacts[1].Id,
+                Contact__c = testContacts[2].Id,
                 RecordTypeId = undergradProspectId,
                 StageName = 'Not Enrolled',
                 CloseDate = System.today().addYears(1),
                 Name = 'Test Opportunity',
-                AccountId = testContacts[1].AccountId,
+                AccountId = testContacts[2].AccountId,
                 Career__c = 'Undergraduate'
             )
         );
@@ -233,6 +233,63 @@ private class MyASUHelpControllerTest {
             )
         );
         insert testBomgarEvents;
+
+        List<FAQ__kav> faqList = new List<FAQ__kav>();
+        // Add FAQ articles
+        for (Integer i = 0; i < 6; i++) {
+            FAQ__kav techFaqArticle = new FAQ__kav(
+                Title = 'Testing Tech FAQ Article' + i,
+                Summary = 'Test FAQ ' + i,
+                Answer__c = 'TEST' + i,
+                Language = 'en_US',
+                Functional_Group__c = 'Technical Resources',
+                IsVisibleInPKB = true,
+                IsVisibleInCsp = true,
+                IsVisibleInPrm = true,
+                URLName = 'Tech-Testing-FAQ-Article-' + i
+            );
+            faqList.add(techFaqArticle);
+
+            FAQ__kav finAidFaqArticle = new FAQ__kav(
+                Title = 'Testing FinAid FAQ Article' + i,
+                Summary = 'Test FAQ ' + i,
+                Answer__c = 'TEST' + i,
+                Language = 'en_US',
+                Functional_Group__c = 'Financial Aid',
+                IsVisibleInPKB = true,
+                IsVisibleInCsp = true,
+                IsVisibleInPrm = true,
+                URLName = 'FinAid-Testing-FAQ-Article-' + i
+            );
+            faqList.add(finAidFaqArticle);
+
+            FAQ__kav housingFaqArticle = new FAQ__kav(
+                Title = 'Testing Housing FAQ Article' + i,
+                Summary = 'Test FAQ ' + i,
+                Answer__c = 'TEST' + i,
+                Language = 'en_US',
+                Functional_Group__c = 'Housing',
+                IsVisibleInPKB = true,
+                IsVisibleInCsp = true,
+                IsVisibleInPrm = true,
+                URLName = 'Housing-Testing-FAQ-Article-' + i
+            );
+            faqList.add(housingFaqArticle);
+        }
+        insert faqList;
+        // And publish all the FAQ articles
+        List<Id> faqListIds = new List<Id>();
+        for (FAQ__kav faqArticle : faqList) {
+            faqListIds.add(faqArticle.Id);
+        }
+        List<FAQ__kav> faqListWithKnowledgeArticleIds = [
+            SELECT Id, KnowledgeArticleId
+            FROM FAQ__kav
+            WHERE Id IN :faqListIds
+        ];
+        for (FAQ__kav faqArticle : faqListWithKnowledgeArticleIds) {
+            KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+        }
     }
 
     @isTest
@@ -488,7 +545,7 @@ private class MyASUHelpControllerTest {
             helpTab.newCase.Subject = 'Test Subject for SC';
             helpTab.newCase.Description = 'Test Desc';
 
-             submit = helpTab.submitCase();
+            submit = helpTab.submitCase();
 
             helpTab.getClosedCases();
             helpTab.viewCase();
@@ -871,12 +928,12 @@ private class MyASUHelpControllerTest {
         }
         Test.stopTest();
 
-        System.assertEquals(0, helptab.getAllFinancialArticles().size());
-        System.assertEquals(0, helptab.getTopThreeFinancialArticles().size());
-        System.assertEquals(0, helptab.getAllTechnicalArticles().size());
-        System.assertEquals(0, helptab.getTopThreeTechnicalArticles().size());
-        System.assertEquals(0, helptab.getAllHousingArticles().size());
-        System.assertEquals(0, helptab.getTopThreeHousingArticles().size());
+        System.assertEquals(6, helptab.getAllFinancialArticles().size());
+        System.assertEquals(3, helptab.getTopThreeFinancialArticles().size());
+        System.assertEquals(6, helptab.getAllTechnicalArticles().size());
+        System.assertEquals(3, helptab.getTopThreeTechnicalArticles().size());
+        System.assertEquals(6, helptab.getAllHousingArticles().size());
+        System.assertEquals(3, helptab.getTopThreeHousingArticles().size());
         System.assertNotEquals(null, helptab.getViewAllFinancialArticlesLink());
         System.assertNotEquals(null, helptab.getViewAllTechnicalArticlesLink());
         System.assertNotEquals(null, helptab.getViewAllHousingArticlesLink());

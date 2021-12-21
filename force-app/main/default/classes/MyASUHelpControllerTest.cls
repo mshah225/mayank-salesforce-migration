@@ -263,11 +263,13 @@ private class MyASUHelpControllerTest {
         myASUHelp.getParameters().put('source', 'viewAllCases');
         Test.setCurrentPage(myASUHelp);
 
-        Test.startTest();
+        MyASUHelpController helpTab;
+        ViewCaseController vcc;
 
+        Test.startTest();
         System.runAs(testUser) {
-            MyASUHelpController helpTab = new MyASUHelpController();
-            ViewCaseController vcc = new ViewCaseController();
+            helpTab = new MyASUHelpController();
+            vcc = new ViewCaseController();
 
             helpTab.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
@@ -280,24 +282,24 @@ private class MyASUHelpControllerTest {
 
             helpTab.getSource();
             vcc.getSource();
-
-            Boolean found = false;
-            for (CustomAlert c : helpTab.alertHandler.alerts) {
-                if (c.message == 'There is maintenance') {
-                    found = true;
-                    break;
-                }
-            }
-            System.assert(found, 'Did not add proper maintenance message');
-            System.assertEquals(false, helpTab.getHelpBox());
-            System.assertEquals(true, helpTab.getNormalPhone());
-            System.assertEquals(false, helpTab.getRoverPhone());
-
-            System.assertEquals(false, vcc.getHelpBox());
-            System.assertEquals(true, vcc.getNormalPhone());
-            System.assertEquals(false, vcc.getRoverPhone());
         }
         Test.stopTest();
+
+        Boolean found = false;
+        for (CustomAlert c : helpTab.alertHandler.alerts) {
+            if (c.message == 'There is maintenance') {
+                found = true;
+                break;
+            }
+        }
+        System.assert(found, 'Did not add proper maintenance message');
+        System.assertEquals(false, helpTab.getHelpBox());
+        System.assertEquals(true, helpTab.getNormalPhone());
+        System.assertEquals(false, helpTab.getRoverPhone());
+
+        System.assertEquals(false, vcc.getHelpBox());
+        System.assertEquals(true, vcc.getNormalPhone());
+        System.assertEquals(false, vcc.getRoverPhone());
     }
 
     @isTest
@@ -324,16 +326,19 @@ private class MyASUHelpControllerTest {
         myASUHelp.getParameters().put('source', 'viewAllCases');
         Test.setCurrentPage(myASUHelp);
 
-        Test.startTest();
+        ViewAllCasesController vacc;
+        ViewCaseController vcc;
+        MyASUHelpController helpTab;
 
+        Test.startTest();
         System.runAs(testUser) {
-            ViewAllCasesController vacc = new ViewAllCasesController();
-            ViewCaseController vcc = new ViewCaseController();
+            vacc = new ViewAllCasesController();
+            vcc = new ViewCaseController();
 
             vacc.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             vacc.viewAsUrl = 'www.hankhillgifs.com';
 
-            MyASUHelpController helpTab = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
 
             helpTab.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
@@ -353,18 +358,19 @@ private class MyASUHelpControllerTest {
             helpTab.stopViewAsUrl = 'www.giphy.com/search/shrek-is-love';
             helpTab.viewAsUrl = 'www.hankhillgifs.com';
             helpTab.getmyCasesBox();
-            System.assertEquals(false, helpTab.getHelpBox());
-            System.assertEquals(false, vcc.getHelpBox());
-            Boolean found = false;
-            for (CustomAlert c : helpTab.alertHandler.alerts) {
-                if (c.message == 'There is maintenance forever') {
-                    found = true;
-                    break;
-                }
-            }
-            System.assert(found, 'Did not add proper maintenance message');
         }
         Test.stopTest();
+
+        System.assertEquals(false, helpTab.getHelpBox());
+        System.assertEquals(false, vcc.getHelpBox());
+        Boolean found = false;
+        for (CustomAlert c : helpTab.alertHandler.alerts) {
+            if (c.message == 'There is maintenance forever') {
+                found = true;
+                break;
+            }
+        }
+        System.assert(found, 'Did not add proper maintenance message');
     }
 
     @isTest
@@ -384,22 +390,23 @@ private class MyASUHelpControllerTest {
         myASUHelp.getParameters().put('source', 'viewAllCases');
         Test.setCurrentPage(myASUHelp);
 
-        Test.startTest();
+        ViewCaseController vcc;
+        MyASUHelpController helpTab;
 
+        Test.startTest();
         System.runAs(testUser) {
-            MyASUHelpController helpTab = new MyASUHelpController();
-            ViewCaseController vcc = new ViewCaseController();
+            helpTab = new MyASUHelpController();
+            vcc = new ViewCaseController();
 
             helpTab.oppList = oppListForTestUser;
             vcc.oppList = oppListForTestUser;
             helpTab.oppList = oppListForTestUser;
-
-            System.assertEquals(true, helpTab.getmyCasesBox());
-            System.assertEquals(true, helpTab.getHelpBox());
-            System.assertEquals(true, vcc.getHelpBox());
         }
-
         Test.stopTest();
+
+        System.assertEquals(true, helpTab.getmyCasesBox());
+        System.assertEquals(true, helpTab.getHelpBox());
+        System.assertEquals(true, vcc.getHelpBox());
     }
 
     @isTest
@@ -415,20 +422,21 @@ private class MyASUHelpControllerTest {
             WHERE Contact__c = :testUser.ContactId
         ];
 
-        Test.startTest();
-
         PageReference myASUHelp = Page.studentSC;
         Test.setCurrentPage(myASUHelp);
 
+        MyASUHelpController helpTab;
+
+        Test.startTest();
         System.runAs(testUser) {
-            MyASUHelpController helpTab = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
 
             helpTab.oppList = oppListForTestUser;
-
-            System.assertEquals(true, helpTab.getMyCasesBox());
-            System.assertEquals(true, helpTab.getHelpBox());
         }
         Test.stopTest();
+
+        System.assertEquals(true, helpTab.getMyCasesBox());
+        System.assertEquals(true, helpTab.getHelpBox());
     }
 
     @isTest
@@ -447,18 +455,17 @@ private class MyASUHelpControllerTest {
         PageReference myASUHelp = Page.studentSC;
         Test.setCurrentPage(myASUHelp);
 
+        MyASUHelpController helpTab;
+
         Test.startTest();
-
         System.runAs(testUser) {
-            MyASUHelpController helpTab = new MyASUHelpController();
-            System.assertEquals(true, helpTab.getHelpBox());
-
+            helpTab = new MyASUHelpController();
             helpTab.oppList = oppListForTestUser;
-
-            System.assertEquals(true, helpTab.getMyCasesBox());
         }
-
         Test.stopTest();
+
+        System.assertEquals(true, helpTab.getHelpBox());
+        System.assertEquals(true, helpTab.getMyCasesBox());
     }
 
     @isTest
@@ -472,15 +479,16 @@ private class MyASUHelpControllerTest {
         PageReference myASUHelp = Page.studentSC;
         Test.setCurrentPage(myASUHelp);
 
-        Test.startTest();
+        MyASUHelpController helpTab;
+        PageReference submit;
 
+        Test.startTest();
         System.runAs(testUser) {
-            MyASUHelpController helpTab = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
             helpTab.newCase.Subject = 'Test Subject for SC';
             helpTab.newCase.Description = 'Test Desc';
 
-            PageReference submit = helpTab.submitCase();
-            System.assertEquals(submit.getURL().contains('/viewcase?'), true);
+             submit = helpTab.submitCase();
 
             helpTab.getClosedCases();
             helpTab.viewCase();
@@ -489,10 +497,11 @@ private class MyASUHelpControllerTest {
 
             helpTab.viewingAs = true;
             helpTab.masqScopeIdCookie = 'testCookie';
-            System.assertEquals(helpTab.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
         }
-
         Test.stopTest();
+
+        System.assertEquals(submit.getURL().contains('/viewcase?'), true);
+        System.assertEquals(helpTab.submitCase().getURL().contains('masqScopeIdCookie=testCookie'), true);
     }
 
     @isTest
@@ -502,12 +511,14 @@ private class MyASUHelpControllerTest {
             FROM User
             WHERE Alias = :'testUsr0'
         ];
+
         PageReference myASUHelp = Page.studentSC;
         Test.setCurrentPage(myASUHelp);
         PageReference submit;
-        String urlReturnedFromSubmit;
 
+        String urlReturnedFromSubmit;
         MyASUHelpController helpTab;
+
         System.runAs(testUser) {
             helpTab = new MyASUHelpController();
             helpTab.suggestAnArticle.Description = 'Description';
@@ -532,21 +543,23 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
 
+        MyASUHelpController helpTab;
+        PageReference stop;
+
         Test.startTest();
-
         System.runAs(testUser) {
-            MyASUHelpController helpTab = new MyASUHelpController();
+            helpTab = new MyASUHelpController();
             helpTab.viewingAs = true;
-            PageReference stop = ApexPages.currentPage();
-
-            System.assertEquals(stop.getURL(), helpTab.suggestAnArticleSubmit().getURL());
+            stop = ApexPages.currentPage();
         }
-
         Test.stopTest();
+
+        System.assertEquals(stop.getURL(), helpTab.suggestAnArticleSubmit().getURL());
     }
 
     @isTest
@@ -557,6 +570,7 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
@@ -572,6 +586,7 @@ private class MyASUHelpControllerTest {
             vcc.getCaseDetails();
         }
         Test.stopTest();
+
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);
     }
 
@@ -583,6 +598,7 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
@@ -596,6 +612,7 @@ private class MyASUHelpControllerTest {
             checkCase = vcc.getCaseDetails();
         }
         Test.stopTest();
+
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);
     }
 
@@ -612,17 +629,20 @@ private class MyASUHelpControllerTest {
             WHERE ContactId = :testUser.ContactId AND Subject = 'Open Test Case'
             LIMIT 1
         ];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
 
         List<ChatMessage> fetchedChatMessages;
+
         Test.startTest();
         System.runAs(testUser) {
             ViewCaseController vcc = new ViewCaseController();
             fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
+
         System.assertEquals(fetchedChatMessages.size(), 1);
     }
 
@@ -639,17 +659,20 @@ private class MyASUHelpControllerTest {
             WHERE ContactId = :testUser.ContactId AND Subject = 'Open Test Case'
             LIMIT 1
         ];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
 
         List<ChatMessage> fetchedChatMessages;
+
         Test.startTest();
         System.runAs(testUser) {
             ViewCaseController vcc = new ViewCaseController();
             fetchedChatMessages = vcc.getChatMessages();
         }
         Test.stopTest();
+
         List<bomgar__Event__c> bomgarForAssert = [
             SELECT
                 bomgar__DestinationValue__c,
@@ -663,7 +686,7 @@ private class MyASUHelpControllerTest {
                 OwnerId
             FROM bomgar__Event__c
             WHERE
-                bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+                bomgar__BomgarSession__r.bomgar__relatedcase__c = :caseOnTestUser.Id
                 AND (bomgar__PerformedByType__c = 'representative'
                 OR bomgar__PerformedByType__c = 'customer')
                 AND bomgar__DestinationValue__c = 'everyone'
@@ -681,22 +704,24 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
 
         ViewCaseController vcc;
+
+        Test.setMock(HttpCalloutMock.class, new EmailMessageSuccessMock());
+        Test.startTest();
         System.runAs(testUser) {
             vcc = new ViewCaseController();
-            Test.setMock(HttpCalloutMock.class, new EmailMessageSuccessMock());
             vcc.replyCaseAttachment.Name = 'Test Name';
             vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
             vcc.caseReply = 'Test Message';
 
-            Test.startTest();
             vcc.submitReply();
-            Test.stopTest();
         }
+        Test.stopTest();
 
         System.assert(String.isEmpty(vcc.caseReply));
         Boolean successMessageFound = false;
@@ -716,22 +741,24 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
 
         ViewCaseController vcc;
+
+        Test.setMock(HttpCalloutMock.class, new EmailMessageFailureMock());
+        Test.startTest();
         System.runAs(testUser) {
             vcc = new ViewCaseController();
-            Test.setMock(HttpCalloutMock.class, new EmailMessageFailureMock());
             vcc.replyCaseAttachment.Name = 'Test Name';
             vcc.replyCaseAttachment.Body = Blob.valueOf('Test Attachment Body');
             vcc.caseReply = 'Test Message';
 
-            Test.startTest();
             vcc.submitReply();
-            Test.stopTest();
         }
+        Test.stopTest();
 
         System.assert(String.isEmpty(vcc.caseReply));
         Boolean failureMessageFound = false;
@@ -753,16 +780,20 @@ private class MyASUHelpControllerTest {
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
         caseOnTestUser.Intended_Recipient__c = 'testEmail@test.com';
         update caseOnTestUser;
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
+
         String jsonEmail;
+
+        Test.startTest();
         System.runAs(testUser) {
             ViewCaseController vcc = new ViewCaseController();
-            Test.startTest();
             jsonEmail = vcc.createJsonEmail();
-            Test.stopTest();
         }
+        Test.stopTest();
+
         System.assert(jsonEmail.contains('testEmail@test.com'));
     }
 
@@ -774,16 +805,19 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
+
         PageReference viewCase = Page.viewcase;
         viewCase.getParameters().put('id', caseOnTestUser.Id);
         Test.setCurrentPage(viewCase);
+
         String jsonEmail;
+
+        Test.startTest();
         System.runAs(testUser) {
             ViewCaseController vcc = new ViewCaseController();
-            Test.startTest();
             jsonEmail = vcc.createJsonEmail();
-            Test.stopTest();
         }
+        Test.stopTest();
         System.assert(jsonEmail.contains('noEmail@test.com'));
     }
 
@@ -795,22 +829,29 @@ private class MyASUHelpControllerTest {
             FROM User
             WHERE Alias = :'testUsr0'
         ];
+
         Pagereference pr;
 
+        MyASUHelpController helpTabFinance, helpTabTech, helpTabHousing;
+
+        Test.startTest();
         System.runAs(testUser) {
-            Test.startTest();
             pr = ApexPages.currentPage();
+
             pr.getParameters().put('category', 'finance');
-            MyASUHelpController helpTab = new MyASUHelpController();
-            System.assertEquals('Financial Aid', helpTab.functionalGroup);
+            helpTabFinance = new MyASUHelpController();
+
             pr.getParameters().put('category', 'technical');
-            helpTab = new MyASUHelpController();
-            System.assertEquals('%Technical Resources%', helpTab.functionalGroup);
+            helpTabTech = new MyASUHelpController();
+
             pr.getParameters().put('category', 'housing');
-            helpTab = new MyASUHelpController();
-            System.assertEquals('Housing', helpTab.functionalGroup);
-            Test.stopTest();
+            helpTabHousing = new MyASUHelpController();
         }
+        Test.stopTest();
+
+        System.assertEquals('Financial Aid', helpTabFinance.functionalGroup);
+        System.assertEquals('%Technical Resources%', helpTabTech.functionalGroup);
+        System.assertEquals('Housing', helpTabHousing.functionalGroup);
     }
 
     @isTest
@@ -822,20 +863,22 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :'testUsr0'
         ];
 
-        System.runAs(testUser) {
-            Test.startTest();
-            MyASUHelpController helpTab = new MyASUHelpController();
-            System.assertEquals(0, helptab.getAllFinancialArticles().size());
-            System.assertEquals(0, helptab.getTopThreeFinancialArticles().size());
-            System.assertEquals(0, helptab.getAllTechnicalArticles().size());
-            System.assertEquals(0, helptab.getTopThreeTechnicalArticles().size());
-            System.assertEquals(0, helptab.getAllHousingArticles().size());
-            System.assertEquals(0, helptab.getTopThreeHousingArticles().size());
-            System.assertNotEquals(null, helptab.getViewAllFinancialArticlesLink());
-            System.assertNotEquals(null, helptab.getViewAllTechnicalArticlesLink());
-            System.assertNotEquals(null, helptab.getViewAllHousingArticlesLink());
+        MyASUHelpController helpTab;
 
-            Test.stopTest();
+        Test.startTest();
+        System.runAs(testUser) {
+            helpTab = new MyASUHelpController();
         }
+        Test.stopTest();
+
+        System.assertEquals(0, helptab.getAllFinancialArticles().size());
+        System.assertEquals(0, helptab.getTopThreeFinancialArticles().size());
+        System.assertEquals(0, helptab.getAllTechnicalArticles().size());
+        System.assertEquals(0, helptab.getTopThreeTechnicalArticles().size());
+        System.assertEquals(0, helptab.getAllHousingArticles().size());
+        System.assertEquals(0, helptab.getTopThreeHousingArticles().size());
+        System.assertNotEquals(null, helptab.getViewAllFinancialArticlesLink());
+        System.assertNotEquals(null, helptab.getViewAllTechnicalArticlesLink());
+        System.assertNotEquals(null, helptab.getViewAllHousingArticlesLink());
     }
 }

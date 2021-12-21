@@ -8,7 +8,14 @@ public with sharing class ViewCaseController {
     private MyASUHelpViewAsService viewAsService;
     public AlertHandler alertHandler { get; set; } // Use the custom alerting component
 
-    public Case caseDetails { get; set; }
+    public Case caseDetails {
+        get {
+            if (caseDetails == null || caseDetails.Id == null)
+                retrieveCaseDetails();
+            return caseDetails;
+        }
+        set;
+    }
     public Id caseId { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -45,8 +52,8 @@ public with sharing class ViewCaseController {
         popUserContact();
         popTerms();
         this.caseId = ApexPages.currentPage().getParameters().get('id');
-        retrieveCaseDetails();
         retrieveAttachmentList();
+        retrieveCaseDetails(); // Must occur after retrieveAttachmentList or tests will fail for some reason
         showOpenNewCaseAlert = displayOpenNewCaseAlert();
     }
 
@@ -134,14 +141,10 @@ public with sharing class ViewCaseController {
         asurite = userContact.ASURite_ID__c;
     }
 
-    public Case getCaseDetails() {
-        return caseDetails;
-    }
-
     @TestVisible
     private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
-            caseDetails = viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
+            caseDetails = viewAsService.getCaseDetails(caseId);
         } else {
             List<Case> caseDetailsOptions = [
                 SELECT
@@ -159,7 +162,7 @@ public with sharing class ViewCaseController {
                     Created_By_Name__c,
                     ClosedDate
                 FROM Case
-                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
+                WHERE Id = :caseId
                 LIMIT 1
             ];
 
@@ -200,17 +203,9 @@ public with sharing class ViewCaseController {
         emailAddresses.add(userContact.Lead_Secondary_Email__c);
 
         if (viewAsService != null) {
-            return viewAsService.getCaseEmails(
-                EMAIL_VISIBILITY_DATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                emailAddresses
-            );
+            return viewAsService.getCaseEmails(EMAIL_VISIBILITY_DATE, caseId, emailAddresses);
         } else {
-            return CaseService.getCaseEmailMessages(
-                EMAIL_VISIBILITY_DATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                emailAddresses
-            );
+            return CaseService.getCaseEmailMessages(EMAIL_VISIBILITY_DATE, caseId, emailAddresses);
         }
     }
     public EmailMessageWithFormattedDateTime[] getEmailMessagesWithFormattedDateTime() {
@@ -258,7 +253,7 @@ public with sharing class ViewCaseController {
                 OwnerId
             FROM bomgar__Event__c
             WHERE
-                bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+                bomgar__BomgarSession__r.bomgar__relatedcase__c = :caseId
                 AND (bomgar__PerformedByType__c = 'representative'
                 OR bomgar__PerformedByType__c = 'customer')
                 AND bomgar__DestinationValue__c = 'everyone'
@@ -273,11 +268,7 @@ public with sharing class ViewCaseController {
     }
 
     private List<ChatMessage> getLiveChatMessages() {
-        List<Chat_Message__c> chatMessages = [
-            SELECT Body__c
-            FROM Chat_Message__c
-            WHERE Case__c = :ApexPages.currentPage().getParameters().get('Id')
-        ];
+        List<Chat_Message__c> chatMessages = [SELECT Body__c FROM Chat_Message__c WHERE Case__c = :caseId];
         List<ChatMessage> liveChatMessages = new List<ChatMessage>();
         for (Chat_Message__c message : chatMessages) {
             liveChatMessages.add(new ChatMessage(message));

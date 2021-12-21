@@ -8,14 +8,7 @@ public with sharing class ViewCaseController {
     private MyASUHelpViewAsService viewAsService;
     public AlertHandler alertHandler { get; set; } // Use the custom alerting component
 
-    public Case caseDetails {
-        get {
-            if (caseDetails == null || caseDetails.Id == null)
-                retrieveCaseDetails();
-            return caseDetails;
-        }
-        set;
-    }
+    public Case caseDetailsCache { get; set; }
     public Id caseId { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -61,10 +54,10 @@ public with sharing class ViewCaseController {
         if (String.isEmpty(caseId)) {
             return false;
         }
-        if (caseDetails.ClosedDate == null) {
+        if (caseDetailsCache.ClosedDate == null) {
             return false;
         }
-        Date caseClosedDate = caseDetails.ClosedDate.date();
+        Date caseClosedDate = caseDetailsCache.ClosedDate.date();
         if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
             return true;
         }
@@ -141,10 +134,14 @@ public with sharing class ViewCaseController {
         asurite = userContact.ASURite_ID__c;
     }
 
+    public Case getCaseDetails() {
+        return caseDetailsCache;
+    }
+
     @TestVisible
     private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
-            caseDetails = viewAsService.getCaseDetails(caseId);
+            caseDetailsCache = viewAsService.getCaseDetails(caseId);
         } else {
             List<Case> caseDetailsOptions = [
                 SELECT
@@ -167,13 +164,13 @@ public with sharing class ViewCaseController {
             ];
 
             if (!caseDetailsOptions.isEmpty()) {
-                caseDetails = caseDetailsOptions[0];
+                caseDetailsCache = caseDetailsOptions[0];
 
-                if (caseDetails.CreatedDate != null) {
-                    formattedCreatedDate = ((DateTime) caseDetails.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
+                if (caseDetailsCache.CreatedDate != null) {
+                    formattedCreatedDate = ((DateTime) caseDetailsCache.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
                 }
-                if (caseDetails.ClosedDate != null) {
-                    formattedClosedDate = ((DateTime) caseDetails.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
+                if (caseDetailsCache.ClosedDate != null) {
+                    formattedClosedDate = ((DateTime) caseDetailsCache.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
                 }
             }
         }

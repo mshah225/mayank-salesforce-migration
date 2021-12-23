@@ -129,6 +129,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
         return !successfulDetails.isEmpty();
     }
 
+    @TestVisible
     private Boolean noErroredRecords() {
         List<Contact_Upload_Detail__c> erroredDetails = [
             SELECT Id

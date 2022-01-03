@@ -504,4 +504,74 @@ public with sharing class pkb_SecurityHandler {
             system.assertEquals(pkb_SecurityHandler.isGuestUser(), false);
         }
     }
+
+    public static testMethod void testSecurityHandler() {
+        String msg = '';
+        SObjectType caseObjType = Case.sObjectType;
+        // Observed bizarre behavior: if first call is false rest will be false
+        System.runAs(readOnlyUser()) {
+            //create permission
+            try {
+                canCreate(caseObjType);
+            } catch (pkb_SecurityHandler.SecurityException sEx) {
+                msg = formatReplace(
+                    ERROR_OBJECT_NOT_CREATEABLE,
+                    new List<String>{ toString(new List<Schema.SObjectType>{ caseObjType }) }
+                );
+                system.assertEquals(sEx.getMessage(), msg);
+            }
+            //update permissions
+            try {
+                canUpdate(caseObjType);
+            } catch (pkb_SecurityHandler.SecurityException sEx) {
+                msg = formatReplace(
+                    ERROR_OBJECT_NOT_UPDATEABLE,
+                    new List<String>{ toString(new List<Schema.SObjectType>{ caseObjType }) }
+                );
+                system.assertEquals(sEx.getMessage(), msg);
+            }
+            //delete permission
+            try {
+                canDelete(caseObjType);
+            } catch (pkb_SecurityHandler.SecurityException sEx) {
+                msg = formatReplace(
+                    ERROR_OBJECT_NOT_DELETABLE,
+                    new List<String>{ toString(new List<Schema.SObjectType>{ caseObjType }) }
+                );
+                system.assertEquals(sEx.getMessage(), msg);
+            }
+        }
+    }
+
+    public static testMethod void testqueryFormat() {
+        Account account1 = new Account(Name = 'Test Account1');
+        Account account2 = new Account(Name = 'Test Account2');
+        List<Account> listOfAccountObjects = new List<Account>{ account1, account2 };
+
+        Test.startTest();
+        queryFormat(listOfAccountObjects);
+        String result = joinList(listOfAccountObjects, '/');
+        getKAVPermissions();
+        Test.stopTest();
+
+        System.assertEquals(result, 'Account:{Name=Test Account1}/Account:{Name=Test Account2}');
+    }
+
+    private static User readOnlyUser() {
+        Profile p = [SELECT Id, Name FROM Profile WHERE Name LIKE '%Read Only%'];
+        User u = new User(
+            UserName = 'asu-test-user2143e@test-company.com',
+            FirstName = 'Test-First-Name',
+            LastName = 'Test-Last-Name',
+            Alias = 'test',
+            Email = 'test-user@test-company.com',
+            EmailEncodingKey = 'UTF-8',
+            LanguageLocaleKey = 'en_US',
+            LocalesIdKey = 'en_US',
+            TimezonesIdKey = 'America/Los_Angeles',
+            ProfileId = p.Id
+        );
+        //insert u;
+        return u;
+    }
 }

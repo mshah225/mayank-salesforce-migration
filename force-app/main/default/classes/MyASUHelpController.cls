@@ -102,7 +102,7 @@ public with sharing class MyASUHelpController {
                 alertHandler.newAlert(
                     customAlert.WARNING,
                     ' ',
-                    'Have a Financial Aid question? Before you contact us, get quick answers to the most common questions students are asking right now. ',
+                    'Have a financial aid question? There may be high call volumes, so consider contacting us about Fall 2022 after February 1. Click here to get quick answers to the most common questions.',
                     'https://students.asu.edu/contact/financialaid'
                 );
             }

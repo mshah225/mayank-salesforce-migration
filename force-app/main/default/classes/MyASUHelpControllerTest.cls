@@ -469,7 +469,7 @@ private class MyASUHelpControllerTest {
         Test.startTest();
         System.runAs(testUser) {
             vcc = new ViewCaseController();
-            checkCase = vcc.caseDetails;
+            checkCase = vcc.getCaseDetails();
 
             vcc.viewingAs = true;
             vcc.retrieveCaseDetails();
@@ -489,7 +489,7 @@ private class MyASUHelpControllerTest {
         System.runAs(testUser) {
             vcc = new ViewCaseController();
             vcc.viewingAs = true;
-            checkCase = vcc.caseDetails;
+            checkCase = vcc.getCaseDetails();
         }
         Test.stopTest();
         System.assertEquals(checkCase.Id, caseOnTestUser.Id);

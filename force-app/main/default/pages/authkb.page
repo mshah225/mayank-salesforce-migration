@@ -26,9 +26,15 @@
 
     <c:GoogleTagManagerBody />
     <main role="main">
-        <c:MyASUHelpPageNotifications />
-
         <div class="container myasu-help-scope">
+            <div class="row">
+                <div class="col-lg-12">
+                    <apex:outputPanel id="alerts">
+                        <c:customAlerts alerts="{!alertHandler.alerts}" captureSalesforceErrors="false" />
+                    </apex:outputPanel>
+                </div>
+            </div>
+
             <nav aria-label="breadcrumbs">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Home</li>
@@ -140,7 +146,7 @@
                             </div>
                             <div class="p-2 collapse border-top" id="suggest-an-article">
                                 <div class="panel-body">
-                                    <apex:form>
+                                    <apex:form id="alius-format1173">
                                         <apex:pageBlock mode="maindetail">
 
                                             <apex:outputLabel styleClass="c-p9rem p-0 m-0" value="Have an idea for an article you'd like to see? Please tell us below!"
@@ -149,7 +155,7 @@
                                                 <apex:inputTextarea styleClass="w-100" id="myasu-help-region-suggest-article" required="true" value="{!suggestedArticleDescription}"
                                                 />
                                             </apex:pageBlock>
-                                            <apex:commandLink value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-maroon btn-md mt-1" />
+                                            <apex:commandButton value="Submit" action="{!suggestAnArticleSubmit}" styleClass="btn btn-maroon btn-md mt-1" />
                                         </apex:pageBlock>
                                     </apex:form>
                                 </div>
@@ -265,7 +271,16 @@
             function () {
                 $Lightning.createComponent(
                     "c:asuBrandHeader",
-                    { title, baseUrl, navTreeStr },
+                    {
+                        title, baseUrl, navTreeStr,
+                        stationary: true,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
                     "ASUBrandHeaderWrapper"
                 );
                 $Lightning.createComponent(

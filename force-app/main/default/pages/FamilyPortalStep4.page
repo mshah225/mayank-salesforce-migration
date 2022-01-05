@@ -40,18 +40,18 @@
     </apex:form>
 
     <div class="family-portal-scope" role="main">
-        <apex:form>
+        <apex:form id="alius-format170">
             <div id="accessible-body">
                 <div class="family-portal-4-container container mt-3 mb-5 mw-100 pl-4 pr-4">
                     <div class="row">
                         <div class="col-md-12 family-portal-body-margin">
-                            <apex:pageBlock>
+                            <apex:pageBlock id="alius-format171">
                                 <div>
                                     <h2>If you have current or future students, please tell us about them.</h2>
                                 </div>
                                 <div class="family-portal-4-table-wrapper">
                                     <apex:dataTable value="{!studentWrapperList}" var="swl" id="family-portal-student-page-block">
-                                        <apex:column>
+                                        <apex:column id="alius-format172">
                                             <div class="col-md-3 float-left my-1">
                                                 <apex:outputText styleClass="font-weight-bold d-block" value="My Student Is..." />
                                                 <apex:inputField styleClass="d-block w-100" value="{!swl.familyPortalStudentObj.Enrollment_Status__c}">
@@ -97,7 +97,7 @@
                                                 </span>
                                             </div>
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column id="alius-format173">
                                             <span role="button">
                                                 <apex:commandLink styleClass="family-portal-4-student-remove-button d-inline-block" action="{!removeStudentRow}" reRender="family-portal-student-page-block">
                                                     <apex:param value="{!swl.studentIndex}" name="index" />

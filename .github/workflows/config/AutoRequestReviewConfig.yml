@@ -4,15 +4,13 @@ reviewers:
             - jdsanch8
             - mgilardi
     per_author:
+        carlhussey-asu:
+            - repository-maintainers
         jahami10:
-            - repository-maintainers
-        jldalbey:
-            - repository-maintainers
-        mjain1541:
             - repository-maintainers
         rnordmanASU:
             - repository-maintainers
-        carlhussey-asu:
+        ShahanaASU:
             - repository-maintainers
 options:
     ignore_draft: true

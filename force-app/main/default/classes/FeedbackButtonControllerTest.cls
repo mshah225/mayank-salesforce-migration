@@ -262,7 +262,7 @@ public class FeedbackButtonControllerTest {
      */
     public static testMethod void Test_NoDescription() {
         ApexPages.CurrentPage().getParameters().put('contactId', testContact.Id); //The contactId is provided for efficiency
-        ApexPages.CurrentPage().getParameters().put('misc', ''); // Override misc with invalid value
+        ApexPages.CurrentPage().getParameters().put('misc', '  \n'); // Override misc with invalid value
         FeedbackButtonController controller = new FeedbackButtonController();
         List<Case> cases;
 

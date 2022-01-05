@@ -5,6 +5,7 @@ public with sharing class MyASUHelpPaginationController {
     public Integer currentPage;
     public Integer lastPage;
     public Integer numberOfResults;
+    public Integer extraRows;
     public List<KnowledgeArticleVersion> articleList;
 
     public Boolean onFirstPage;
@@ -59,7 +60,12 @@ public with sharing class MyASUHelpPaginationController {
 
     private void setLastPageNumber() {
         if (numberOfResults > 0) {
-            lastPage = (numberOfResults / pageSize) + 1;
+            extraRows = Math.Mod(numberOfResults, pageSize);
+            if (extraRows > 0) {
+                lastPage = (numberOfResults / pageSize) + 1;
+            } else {
+                lastPage = (numberOfResults / pageSize);
+            }
         } else {
             lastPage = 1;
         }

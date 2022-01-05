@@ -18,7 +18,7 @@
                     <apex:actionSupport event="onchange" action="{!selectOwner}" />
                 </apex:inputField>
             </apex:pageBlockSection>
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons id="alius-format1170">
                 <apex:commandButton action="{!cancel}" value="Cancel" />
                 <apex:commandButton action="{!confirmOwner}" value="Continue" />
             </apex:pageBlockButtons>
@@ -34,7 +34,7 @@
                     <apex:column value="{!Opportunity.OwnerId}" />
                 </apex:pageBlockTable>
             </apex:pageBlockSection>
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons id="alius-format1171">
                 <apex:commandButton action="{!page1}" value="Previous" />
                 <apex:commandButton action="{!cancel}" value="Cancel" />
                 <apex:commandButton action="{!submitUpdate}" value="Update" />
@@ -51,7 +51,7 @@
                     <apex:column value="{!Opportunity.OwnerId}" />
                 </apex:pageBlockTable>
             </apex:pageBlockSection>
-            <apex:pageBlockButtons>
+            <apex:pageBlockButtons id="alius-format1172">
                 <apex:commandButton action="{!cancel}" value="Done" />
             </apex:pageBlockButtons>
         </apex:pageBlock>

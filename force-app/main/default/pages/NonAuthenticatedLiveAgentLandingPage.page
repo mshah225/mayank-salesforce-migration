@@ -34,7 +34,7 @@
 
         <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
 
-        <script type="text/javascript" src="https://c.la4-c1cs-dfw.salesforceliveagent.com/content/g/js/44.0/deployment.js"></script>
+        <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js"></script>
         <script type="text/javascript">
             var orgId = '{!orgId}';
             var chatDeploymentId = '{!chatDeploymentId}';
@@ -81,7 +81,9 @@
                 function () {
                     $Lightning.createComponent(
                         "c:asuBrandHeader",
-                        { title, baseUrl, navTreeStr },
+                        {
+                            title, baseUrl, navTreeStr
+                        },
                         "ASUBrandHeaderWrapper"
                     );
                     $Lightning.createComponent(

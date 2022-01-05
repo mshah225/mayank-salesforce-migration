@@ -277,7 +277,7 @@ public class CaseService {
     public static void processCaseAssociations(List<Case> newList) {
         Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
         Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
-        Id recruitmentCaseRecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
+        Id recruitmentCaseRecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
 
         Set<Id> caseContactIdSet = new Set<ID>();
         Set<Id> campaignIdSet = new Set<Id>();
@@ -662,11 +662,11 @@ public class CaseService {
     private static void assignRecordType(Case caseRecord, Map<Id, String> mapCCIdToName) {
         if (mapCCIdToName.containsKey(caseRecord.CC_Functional_Group__c)) {
             if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Advisor Outreach')) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
             } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Coach Outreach')) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             } else if (
-                (caseRecord.RecordTypeId == IDHelper.getRecordTypeId('Case', 'ASU_Service') &&
+                (caseRecord.RecordTypeId == RecordIDHelper.getRecordTypeId('Case', 'ASU_Service') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
                 (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
                 (mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
@@ -674,9 +674,9 @@ public class CaseService {
                 (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
                 mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
             ) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
             } else if (
-                caseRecord.RecordTypeId == IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services') &&
+                caseRecord.RecordTypeId == RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
                 (caseRecord.CC_Category__c == null ||
@@ -686,13 +686,13 @@ public class CaseService {
                 (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
                 !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
             ) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Service');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Service');
             } else if (
                 mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Financial Aid') &&
                 mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
                 mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
             ) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach');
             }
         }
     }

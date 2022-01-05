@@ -4,8 +4,7 @@ public class UserTriggerTest {
     static void changeKnowledgePermission() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         User updateUser = (User) userCreator.create(1)[0];
-        Id sysAdminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
-        updateUser.ProfileId = sysAdminProfile;
+        updateUser.ProfileId = RecordIdHelper.getProfileId('System Administrator');
         insert updateUser;
 
         updateUser.Role_Knowledge__c = true;
@@ -41,18 +40,17 @@ public class UserTriggerTest {
         User testUser = (User) userCreator.create(1)[0];
         testUser.Username += 'community';
         testUser.CommunityNickname += 'community';
-        Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-        testUser.ProfileId = communityProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Community');
 
         testUser.isActive = true;
         testUser.FederationIdentifier = 'testuser@asu.edu';
         insert testUser;
         Test.stopTest();
 
-        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        String communityCapProfile = RecordIdHelper.getProfileId('ASU Community CAP');
         testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
-        System.assert(testUser.ProfileId == communityCapProfile.Id);
+        System.assertEquals(communityCapProfile, testUser.ProfileId);
     }
 
     @isTest
@@ -85,9 +83,8 @@ public class UserTriggerTest {
         testUsers[1].Username += 'community';
         testUsers[0].CommunityNickname += 'community';
         testUsers[1].CommunityNickname += 'community';
-        Id communityProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
-        testUsers[0].ProfileId = communityProfile;
-        testUsers[1].ProfileId = communityProfile;
+        testUsers[0].ProfileId = RecordIdHelper.getProfileId('ASU Community');
+        testUsers[1].ProfileId = RecordIdHelper.getProfileId('ASU Community');
 
         testUsers[0].isActive = true;
         testUsers[1].isActive = true;
@@ -98,15 +95,15 @@ public class UserTriggerTest {
         insert testUsers;
         Test.stopTest();
 
-        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        String communityCapProfile = RecordIdHelper.getProfileId('ASU Community CAP');
         Set<Id> testUserIds = new Set<Id>();
         testUserIds.add(testUsers[0].Id);
         testUserIds.add(testUsers[1].Id);
         testUsers = [SELECT ProfileId FROM User WHERE Id IN :testUserIds];
 
         System.assertEquals(2, testUsers.size());
-        System.assert(testUsers[0].ProfileId == communityCapProfile.Id);
-        System.assert(testUsers[1].ProfileId == communityCapProfile.Id);
+        System.assertEquals(communityCapProfile, testUsers[0].ProfileId);
+        System.assertEquals(communityCapProfile, testUsers[1].ProfileId);
     }
 
     @isTest
@@ -115,15 +112,15 @@ public class UserTriggerTest {
         User testUser = (User) userCreator.create(1)[0];
         testUser.Username += 'chatter';
         testUser.CommunityNickname += 'chatter';
-        Id chatterProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'].Id;
+        Id chatterProfile = RecordIdHelper.getProfileId('ASU Chatter User');
         testUser.ProfileId = chatterProfile;
         testUser.FederationIdentifier = 'testuser@asu.edu';
         insert testUser;
 
-        Profile communityCapProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'];
+        String communityCapProfile = RecordIdHelper.getProfileId('ASU Community CAP');
         testUser = [SELECT ProfileId FROM User WHERE Id = :testUser.Id];
 
-        System.assert(testUser.ProfileId != communityCapProfile.Id);
+        System.assertNotEquals(communityCapProfile, testUser.ProfileId);
     }
 
     //methods to test bulkAfter
@@ -152,7 +149,7 @@ public class UserTriggerTest {
         Test.startTest();
         User testUser = createTestUser();
         testUser.Role_Case_Management__c = true;
-        Id asuServiceProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Service - ASU Online'].Id;
+        Id asuServiceProfile = RecordIdHelper.getProfileId('ASU Service - ASU Online');
         testUser.ProfileId = asuServiceProfile;
         testUser.FederationIdentifier = 'testuserService@asu.edu';
         testUser.EmployeeNumber = '9933663399';
@@ -165,7 +162,7 @@ public class UserTriggerTest {
             WHERE MemberId = :testUser.Id
         ];
 
-        System.assertEquals(lstCGM.size(), 1);
+        System.assertEquals(1, lstCGM.size());
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
@@ -189,13 +186,13 @@ public class UserTriggerTest {
         String strGrpName = 'ASU Recruitment' + String.valueOf(dbRandom);
         CollaborationGroup objCG = new CollaborationGroup(name = strGrpName, CollaborationType = 'Public');
         testCGList.add(objCG);
-        insert (testCGList);
+        insert testCGList;
 
         //Insert a user with a Recruitment Communications People Soft Role
         Test.startTest();
         User testUser = createTestUser();
         testUser.Role_Recruitment_Communications__c = true;
-        Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Recruitment - Admission Services'].Id;
+        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Recruitment - Admission Services');
         testUser.ProfileId = asuRecruitProfile;
         testUser.FederationIdentifier = 'testuserRecruit@asu.edu';
         testUser.EmployeeNumber = '9933663399';
@@ -209,7 +206,7 @@ public class UserTriggerTest {
             WHERE MemberId = :testUser.Id
         ];
 
-        System.assertEquals(lstCGM.size(), 1);
+        System.assertEquals(1, lstCGM.size());
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
@@ -240,7 +237,7 @@ public class UserTriggerTest {
 
         User testUser = createTestUser();
         testUser.Role_Knowledge__c = true;
-        Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
+        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Knowledge User');
         testUser.ProfileId = asuRecruitProfile;
         testUser.FederationIdentifier = 'testuserKnowledge@asu.edu';
         testUser.EmployeeNumber = '9933663399';
@@ -255,7 +252,7 @@ public class UserTriggerTest {
             WHERE MemberId = :testUser.Id
         ];
 
-        System.assertEquals(lstCGM.size(), 1);
+        System.assertEquals(1, lstCGM.size());
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
@@ -288,7 +285,7 @@ public class UserTriggerTest {
         //Insert a user with Marketing Cloud Admin People Soft Role
         User testUser = createTestUser();
         testUser.Role_Connected_MC_Adm__c = true;
-        Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
+        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Knowledge User');
         testUser.ProfileId = asuRecruitProfile;
         testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
         testUser.EmployeeNumber = '9933663399';
@@ -303,7 +300,7 @@ public class UserTriggerTest {
             WHERE MemberId = :testUser.Id
         ];
 
-        System.assertEquals(lstCGM.size(), 1);
+        System.assertEquals(1, lstCGM.size());
         //Check whether the user is added to the correct chatter group.
         System.assertEquals(lstCGM[0].CollaborationGroupId, testCGList[0].Id);
     }
@@ -344,7 +341,7 @@ public class UserTriggerTest {
         Test.startTest();
 
         //Insert a user with Academic Advisor Portal People Soft Role
-        Id asuRecruitProfile = [SELECT Id FROM Profile WHERE Name = 'ASU Knowledge User'].Id;
+        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Knowledge User');
 
         List<User> users = createMultipleTestUsers(2);
 
@@ -398,8 +395,7 @@ public class UserTriggerTest {
     public static void checkDeprovisionedUserWithProcessingNotes() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         User updateUser = (User) userCreator.create(1)[0];
-        Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
-        updateUser.ProfileId = standardProfile;
+        Id standardProfile = RecordIdHelper.getProfileId('Standard User');
         updateUser.UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert updateUser;
@@ -441,8 +437,8 @@ public class UserTriggerTest {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
         List<User> usersToDeprovision = (List<User>) userCreator.create(40);
         List<Id> deprovisionedUserIds = new List<Id>();
-        Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
-        Id successCoachRole = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
+        Id standardProfile = RecordIdHelper.getProfileId('Standard User');
+        Id successCoachRole = RecordIdHelper.getProfileId('SC Success Coach');
 
         for (User user : usersToDeprovision) {
             user.ProfileId = standardProfile;

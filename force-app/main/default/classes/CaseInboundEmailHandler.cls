@@ -89,7 +89,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     if (caseStatusIsNotNull && (caseStatusIsNotClosed || caseCanBeReopened)) {
                         this.theCase = caseSearch;
 
-                        Id serviceRecordType = IdHelper.getRecordTypeId('Case', 'ASU_Service');
+                        Id serviceRecordType = RecordIDHelper.getRecordTypeId('Case', 'ASU_Service');
 
                         // Assign service cases back to the most recently associated Queue
                         if (this.theCase.RecordTypeId == serviceRecordType) {
@@ -329,7 +329,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         update theContact;
                     }
                 } else {
-                    Id rtId = IdHelper.getRecordTypeId('Contact', 'SF_Mastered');
+                    Id rtId = RecordIDHelper.getRecordTypeId('Contact', 'SF_Mastered');
 
                     if (fname.length() > 40) {
                         fname = fname.subString(0, 40);

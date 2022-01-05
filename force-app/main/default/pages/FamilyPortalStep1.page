@@ -40,12 +40,12 @@
     </apex:form>
 
     <div class="family-portal-scope " role="main">
-        <apex:form>
+        <apex:form id="alius-format165">
             <div id="accessible-body">
                 <div class="container mt-3 mb-5 mw-100 pl-4 pr-4">
                     <div class="row">
                         <div class="col-md-12">
-                            <apex:pageBlock>
+                            <apex:pageBlock id="alius-format166">
                                 <div>
                                     <apex:outputPanel layout="none" rendered="{!isExistingGuardian}">
                                         <h1 class="mb-4">

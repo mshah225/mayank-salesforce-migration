@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component id="alius-format919">
     <!-- 1. Insert component immediately after <apex:slds /> tag -->
     <!-- 2. Add 'slds-scope' class to desired SLDS-based container -->
     <script>
@@ -15,7 +15,7 @@
         setTimeout(
             function () {
                 jQuery('.no-slds-scope').removeClass('slds-scope');
-            }, 1000
+            }, 200
         );
 
         window.sldsRemoveGlobalStylesMaxTries = 10;

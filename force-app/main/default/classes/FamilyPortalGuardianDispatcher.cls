@@ -1,4 +1,4 @@
-public class FamilyPortalGuardianDispatcher implements IDispatch {
+public class FamilyPortalGuardianDispatcher implements TriggerDispatcherInterface {
     private List<Family_Portal_Guardian__c> newList;
     private Map<Id, Family_Portal_Guardian__c> newMap;
     private List<Family_Portal_Guardian__c> oldList;

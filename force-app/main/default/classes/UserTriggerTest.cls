@@ -7,7 +7,6 @@ public class UserTriggerTest {
         insert updateUser;
 
         updateUser.Role_Knowledge__c = true;
-
         update updateUser;
 
         updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id = :updateUser.Id];
@@ -28,13 +27,13 @@ public class UserTriggerTest {
         testContact.ACcountId = acc.Id;
         insert testContact;
 
-        Test.startTest();
-
         Student_Group__c testGroup = new Student_Group__c();
         testGroup.SG_Status__c = true;
         testGroup.SG_PeopleSoft_Code__c = 'CP00';
         testGroup.SG_Contact__c = testContact.Id;
         insert testGroup;
+
+        Test.startTest();
 
         User testUser = createTestUser();
         testUser.Username += 'community';
@@ -109,8 +108,7 @@ public class UserTriggerTest {
         User testUser = createTestUser();
         testUser.Username += 'chatter';
         testUser.CommunityNickname += 'chatter';
-        Id chatterProfile = RecordIdHelper.getProfileId('ASU Chatter User');
-        testUser.ProfileId = chatterProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Chatter User');
         testUser.FederationIdentifier = 'testuser@asu.edu';
         insert testUser;
 
@@ -141,17 +139,20 @@ public class UserTriggerTest {
         String strGrpName = 'ASU Service' + String.valueOf(dbRandom);
         CollaborationGroup objCG = new collaborationgroup(name = strGrpName, CollaborationType = 'Public');
         testCGList.add(objCG);
-        insert (testCGList);
+        insert testCGList;
+
         //Insert a user with a Case Management People Soft Role
         Test.startTest();
+
         User testUser = createTestUser();
         testUser.Role_Case_Management__c = true;
-        Id asuServiceProfile = RecordIdHelper.getProfileId('ASU Service - ASU Online');
-        testUser.ProfileId = asuServiceProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Service - ASU Online');
         testUser.FederationIdentifier = 'testuserService@asu.edu';
         testUser.EmployeeNumber = '9933663399';
         insert testUser;
+
         Test.stopTest();
+
         //Query the CollabortationGroupId(Chatter Group) for the inserted user
         List<CollaborationGroupMember> lstCGM = [
             SELECT MemberId, CollaborationGroupId
@@ -187,13 +188,14 @@ public class UserTriggerTest {
 
         //Insert a user with a Recruitment Communications People Soft Role
         Test.startTest();
+
         User testUser = createTestUser();
         testUser.Role_Recruitment_Communications__c = true;
-        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Recruitment - Admission Services');
-        testUser.ProfileId = asuRecruitProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Recruitment - Admission Services');
         testUser.FederationIdentifier = 'testuserRecruit@asu.edu';
         testUser.EmployeeNumber = '9933663399';
         insert testUser;
+
         Test.stopTest();
 
         //Query the CollabortationGroupId(Chatter Group) for the inserted user
@@ -227,15 +229,14 @@ public class UserTriggerTest {
         String strGrpName = 'Knowledge Users' + String.valueOf(dbRandom);
         CollaborationGroup objCG = new CollaborationGroup(name = strGrpName, CollaborationType = 'Public');
         testCGList.add(objCG);
-        insert (testCGList);
+        insert testCGList;
 
         //Insert a user with Knwoledge People Soft Role
         Test.startTest();
 
         User testUser = createTestUser();
         testUser.Role_Knowledge__c = true;
-        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Knowledge User');
-        testUser.ProfileId = asuRecruitProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Knowledge User');
         testUser.FederationIdentifier = 'testuserKnowledge@asu.edu';
         testUser.EmployeeNumber = '9933663399';
         insert testUser;
@@ -275,15 +276,14 @@ public class UserTriggerTest {
         String strGrpName = 'ASU Connected Marketing Cloud' + String.valueOf(dbRandom);
         CollaborationGroup objCG = new CollaborationGroup(name = strGrpName, CollaborationType = 'Public');
         testCGList.add(objCG);
-        insert (testCGList);
-
-        Test.startTest();
+        insert testCGList;
 
         //Insert a user with Marketing Cloud Admin People Soft Role
+        Test.startTest();
+
         User testUser = createTestUser();
         testUser.Role_Connected_MC_Adm__c = true;
-        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Knowledge User');
-        testUser.ProfileId = asuRecruitProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Knowledge User');
         testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
         testUser.EmployeeNumber = '9933663399';
         insert testUser;
@@ -333,24 +333,22 @@ public class UserTriggerTest {
         String strGrpName = 'Academic Advisor Portal ' + String.valueOf(dbRandom);
         CollaborationGroup objCG = new CollaborationGroup(name = strGrpName, CollaborationType = 'Public');
         testCGList.add(objCG);
-        insert (testCGList);
-
-        Test.startTest();
+        insert testCGList;
 
         //Insert a user with Academic Advisor Portal People Soft Role
-        Id asuRecruitProfile = RecordIdHelper.getProfileId('ASU Knowledge User');
+        Test.startTest();
 
         List<User> users = createMultipleTestUsers(2);
 
         User testUser = users[0];
         testUser.Role_Academic_Advisor_Portal__c = true;
-        testUser.ProfileId = asuRecruitProfile;
+        testUser.ProfileId = RecordIdHelper.getProfileId('ASU Knowledge User');
         testUser.FederationIdentifier = 'testuserMarketing1@asu.edu';
         testUser.EmployeeNumber = '9933663399';
 
         User testUser2 = users[1];
         testUser2.Role_Academic_Advisor_Portal__c = true;
-        testUser2.ProfileId = asuRecruitProfile;
+        testUser2.ProfileId = RecordIdHelper.getProfileId('ASU Knowledge User');
         testUser2.FederationIdentifier = 'testuserMarketing2@asu.edu';
         testUser2.EmployeeNumber = '9933663398';
 
@@ -391,7 +389,7 @@ public class UserTriggerTest {
     @isTest
     public static void checkDeprovisionedUserWithProcessingNotes() {
         User updateUser = createTestUser();
-        Id standardProfile = RecordIdHelper.getProfileId('Standard User');
+        updateUser.ProfileId = RecordIdHelper.getProfileId('Standard User');
         updateUser.UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert updateUser;
@@ -432,11 +430,10 @@ public class UserTriggerTest {
     public static void checkBulkDeprovisionedUsersWithProcessingNotes() {
         List<User> usersToDeprovision = createMultipleTestUsers(40);
         List<Id> deprovisionedUserIds = new List<Id>();
-        Id standardProfile = RecordIdHelper.getProfileId('Standard User');
-        Id successCoachRole = RecordIdHelper.getProfileId('SC Success Coach');
+        Id successCoachRole = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
 
         for (User user : usersToDeprovision) {
-            user.ProfileId = standardProfile;
+            user.ProfileId = RecordIdHelper.getProfileId('Standard User');
             user.UserRoleId = successCoachRole;
         }
         System.runAs(new User(Id = UserInfo.getUserId())) {

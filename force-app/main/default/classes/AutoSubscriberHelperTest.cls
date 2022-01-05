@@ -330,7 +330,7 @@ public with sharing class AutoSubscriberHelperTest {
         );
         insert testOppo;
 
-        Id testCampaignRecordType = IDHelper.getRecordTypeId('Campaign', 'Course');
+        Id testCampaignRecordType = RecordIdHelper.getRecordTypeId('Campaign', 'Course');
         Campaign testCampaign = new Campaign(Name = 'TestCampaign', RecordTypeId = testCampaignRecordType);
         insert testCampaign;
 

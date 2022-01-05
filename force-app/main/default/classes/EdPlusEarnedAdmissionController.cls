@@ -13,7 +13,7 @@ public with sharing class EdPlusEarnedAdmissionController {
         List<Id> Contacts = EdPlusUtilities.getExternalContacts(this.parentId);
 
         // Learner applications
-        applications = query.records(
+        applications = ExternalObjectQueryService.getRecords(
             [
                 SELECT
                     Id,

@@ -13,7 +13,7 @@ public with sharing class JiraViewAllIssuesControllerTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getPID('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             LanguageLocaleKey = 'en_US'
         );
         insert u;

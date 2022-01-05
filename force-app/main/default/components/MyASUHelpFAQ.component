@@ -99,8 +99,7 @@
                                         </li>
                                     </apex:repeat>
                                     <li>
-                                        <apex:commandLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="View all finance questions" action="{!getViewAllFinancialArticlesLink}"
-                                        />
+                                        <apex:outputLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="{!viewAllFinancialArticlesLink}">View all finance questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </div>
@@ -113,8 +112,7 @@
                                         </li>
                                     </apex:repeat>
                                     <li>
-                                        <apex:commandLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="View all technology questions" action="{!getViewAllTechnicalArticlesLink}"
-                                        />
+                                        <apex:outputLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="{!viewAllTechnicalArticlesLink}">View all technology questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </div>
@@ -127,8 +125,7 @@
                                         </li>
                                     </apex:repeat>
                                     <li>
-                                        <apex:commandLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="View all housing questions" action="{!getViewAllHousingArticlesLink}"
-                                        />
+                                        <apex:outputLink styleClass="mb-2 d-inline-block c-text-maroon underline" value="{!viewAllHousingArticlesLink}">View all housing questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </div>

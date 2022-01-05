@@ -2,7 +2,7 @@
 public class OpportunityFactory extends TestFactory {
     public static final Opportunity DEFAULT_OPPORTUNITY = new Opportunity(
         Name = 'Test Opp ',
-        RecordTypeId = IdHelper.getRecordTypeId('Opportunity', 'Undergraduate_Prospect'),
+        RecordTypeId = RecordIdHelper.getRecordTypeId('Opportunity', 'Undergraduate_Prospect'),
         StageName = 'Prospect',
         CloseDate = Date.today().addYears(1),
         Type = 'First Time Freshman'

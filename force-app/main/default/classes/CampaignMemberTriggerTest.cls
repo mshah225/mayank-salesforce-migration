@@ -38,7 +38,7 @@ public class CampaignMemberTriggerTest {
     private static Campaign createCampaign(String name, String type) {
         Campaign testCampaign = new Campaign(
             Name = name,
-            RecordTypeId = IdHelper.getRecordTypeId('Campaign', 'Interest'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Interest'),
             Type = type
         );
         insert testCampaign;
@@ -390,7 +390,7 @@ public class CampaignMemberTriggerTest {
         Campaign camp = new Campaign(
             Name = 'National Achievement Finalist',
             Type = 'Scholarship - ASU',
-            RecordTypeId = IdHelper.getRecordTypeId('Campaign', 'Scholarship'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Scholarship'),
             IsActive = true
         );
         insert camp;

@@ -361,7 +361,7 @@ public without sharing class FamilyPortalController {
 
         String interestString = '';
         for (Family_Portal_Guardian_Interest__c interest : guardianInterests) {
-            if (interestString == null) {
+            if (interestString == '') {
                 interestString += (String) interest.Chosen_Interest__c;
             } else {
                 interestString += ';' + (String) interest.Chosen_Interest__c;

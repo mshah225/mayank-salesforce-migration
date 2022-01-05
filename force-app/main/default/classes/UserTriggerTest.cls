@@ -2,8 +2,7 @@
 public class UserTriggerTest {
     @isTest
     static void changeKnowledgePermission() {
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User updateUser = (User) userCreator.create(1)[0];
+        User updateUser = createTestUser();
         updateUser.ProfileId = RecordIdHelper.getProfileId('System Administrator');
         insert updateUser;
 
@@ -30,21 +29,21 @@ public class UserTriggerTest {
         insert testContact;
 
         Test.startTest();
+
         Student_Group__c testGroup = new Student_Group__c();
         testGroup.SG_Status__c = true;
         testGroup.SG_PeopleSoft_Code__c = 'CP00';
         testGroup.SG_Contact__c = testContact.Id;
         insert testGroup;
 
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User) userCreator.create(1)[0];
+        User testUser = createTestUser();
         testUser.Username += 'community';
         testUser.CommunityNickname += 'community';
         testUser.ProfileId = RecordIdHelper.getProfileId('ASU Community');
-
         testUser.isActive = true;
         testUser.FederationIdentifier = 'testuser@asu.edu';
         insert testUser;
+
         Test.stopTest();
 
         String communityCapProfile = RecordIdHelper.getProfileId('ASU Community CAP');
@@ -77,8 +76,7 @@ public class UserTriggerTest {
 
         insert testContacts;
 
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        List<User> testUsers = (List<User>) userCreator.create(2);
+        List<User> testUsers = createMultipleTestUsers(2);
         testUsers[0].Username += 'community';
         testUsers[1].Username += 'community';
         testUsers[0].CommunityNickname += 'community';
@@ -108,8 +106,7 @@ public class UserTriggerTest {
 
     @isTest
     static void insertNonCAPUser() {
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User) userCreator.create(1)[0];
+        User testUser = createTestUser();
         testUser.Username += 'chatter';
         testUser.CommunityNickname += 'chatter';
         Id chatterProfile = RecordIdHelper.getProfileId('ASU Chatter User');
@@ -393,8 +390,7 @@ public class UserTriggerTest {
 
     @isTest
     public static void checkDeprovisionedUserWithProcessingNotes() {
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User updateUser = (User) userCreator.create(1)[0];
+        User updateUser = createTestUser();
         Id standardProfile = RecordIdHelper.getProfileId('Standard User');
         updateUser.UserRoleId = [SELECT Id FROM UserRole WHERE Name = 'SC Success Coach'].Id;
         System.runAs(new User(Id = UserInfo.getUserId())) {
@@ -434,8 +430,7 @@ public class UserTriggerTest {
 
     @isTest
     public static void checkBulkDeprovisionedUsersWithProcessingNotes() {
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        List<User> usersToDeprovision = (List<User>) userCreator.create(40);
+        List<User> usersToDeprovision = createMultipleTestUsers(40);
         List<Id> deprovisionedUserIds = new List<Id>();
         Id standardProfile = RecordIdHelper.getProfileId('Standard User');
         Id successCoachRole = RecordIdHelper.getProfileId('SC Success Coach');

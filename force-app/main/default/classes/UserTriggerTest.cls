@@ -218,7 +218,7 @@ public class UserTriggerTest {
         Chatter_Auto_Add_Users__c objAsuKnowledge = new Chatter_Auto_Add_Users__c();
         objAsuKnowledge.Name = 'Knowledge';
         //Assign Knowledge People Soft Role.
-        objAsuKnowledge.PeopleSoft_Role__c = 'Knowledge';
+        objAsuKnowledge.PeopleSoft_Role__c = 'ASU Knowledge User';
         // Assign a chatter group name that is unique throughout the org(reason for appending random number)
         objAsuKnowledge.Chatter_Group_Name__c = 'Knowledge Users' + String.valueOf(dbRandom);
         objAsuKnowledge.NotificationFrequency__c = 'D';

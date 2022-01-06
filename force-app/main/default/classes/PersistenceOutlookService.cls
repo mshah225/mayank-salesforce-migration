@@ -18,6 +18,6 @@ public class PersistenceOutlookService  {
             oldOutlook.Current_Flag__c = false;
         }
 
-        update oldOutlook;
+        update oldOutlooksToUpdate;
     }
 }

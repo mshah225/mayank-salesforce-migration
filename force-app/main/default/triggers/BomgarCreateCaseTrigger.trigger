@@ -1,26 +1,36 @@
-trigger BomgarCreateCaseTrigger on bomgar__BomgarWebEvent__c(after insert) {
-    List<bomgar__BomgarWebEvent__c> eventList = Trigger.new;
+trigger BomgarCreateCaseTrigger on bomgar__BomgarWebEvent__c(
+    after delete,
+    after insert,
+    after undelete,
+    after update,
+    before delete,
+    before insert,
+    before update
+) {
+    BomgarCreateCaseDispatcher dispatcher = new BomgarCreateCaseDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
 
-    for (bomgar__BomgarWebEvent__c bgEvent : eventList) {
-        if (
-            'support_conference_member_added' == bgEvent.bomgar__EventType__c &&
-            bgEvent.bomgar__ConferenceMemberType__c == 'representative' &&
-            bgEvent.bomgar__ExternalKey__c != null &&
-            bgEvent.bomgar__ExternalKey__c.startsWith('SFDC')
-        ) {
-            // create case
-            String caseId = BomgarCreateCaseUtil.createCase(bgEvent);
-            // update external key
-            try {
-                BomgarCreateCaseUtil.assignCase(bgEvent.bomgar__BomgarSessionID__c, caseId);
-            } catch (Exception e) {
-                Bomgar.BomgarAPIAccess.RecordError(
-                    'BomgarCreateCaseTrigger assignCase Failure lsid=[' +
-                    bgEvent.bomgar__BomgarSessionID__c +
-                    ']',
-                    e
-                );
-            }
-        }
+    if (Trigger.isBefore) {
+        if (Trigger.isInsert)
+            dispatcher.beforeInsert();
+        if (Trigger.isUpdate)
+            dispatcher.beforeUpdate();
+        if (Trigger.isDelete)
+            dispatcher.beforeDelete();
+    }
+
+    if (Trigger.isAfter) {
+        if (Trigger.isInsert)
+            dispatcher.afterInsert();
+        if (Trigger.isUpdate)
+            dispatcher.afterUpdate();
+        if (Trigger.isDelete)
+            dispatcher.afterDelete();
+        if (Trigger.isUndelete)
+            dispatcher.afterUndelete();
     }
 }

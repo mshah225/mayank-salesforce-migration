@@ -7,7 +7,7 @@ private class NewCorporateRelationsControllerTest {
     private static Relationship__c testR;
     private static CampaignMember testCM;
     private static Id crId;
-    private static NewCorporateRelationsContactController ncr;
+    private static NewCorporateRelationsController ncr;
 
     private static void setupData() {
         // Create custom setting to store the recip values
@@ -50,7 +50,7 @@ private class NewCorporateRelationsControllerTest {
 
         insert testCM;
 
-        ncr = new NewCorporateRelationsContactController();
+        ncr = new NewCorporateRelationsController();
     }
 
     @isTest

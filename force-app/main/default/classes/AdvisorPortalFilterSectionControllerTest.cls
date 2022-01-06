@@ -52,7 +52,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         for (Case c : testCases) {
             c.ContactId = testContact.Id;
             c.Subject = 'Subject ' + i;
-            c.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+            c.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
             c.OwnerId = queueId;
             i++;
         }
@@ -78,7 +78,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         Integer i = 0;
         for (Case c : testCases) {
             c.ContactId = testContact.Id;
-            c.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+            c.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
             i++;
         }
         insert testCases;
@@ -97,7 +97,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         CaseFactory.AdvisorOutreachCase watchlistCaseMaker = new CaseFactory.AdvisorOutreachCase(
             UserInfo.getUserId(),
-            IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
             'Outreach Required',
             functionalGroupId,
             categoryWatchlistId,
@@ -135,23 +135,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -186,23 +186,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -253,23 +253,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -309,23 +309,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -372,23 +372,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -429,23 +429,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -495,23 +495,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -552,27 +552,27 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Status = 'New';
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.Status = 'Outreach Required';
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Status = 'New';
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.Status = 'Outreach Required';
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.Status = 'New';
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -638,27 +638,27 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.CC_Functional_Group__c = parent.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.CC_Functional_Group__c = parent.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.CC_Functional_Group__c = parent.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.CC_Functional_Group__c = parent.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.CC_Functional_Group__c = parent.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -700,27 +700,27 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Subject = 'test-subject-ap-r1';
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.Subject = 'test-subject-ap-r2';
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Subject = 'test-subject-ap-r1';
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.Subject = 'test-subject-ap-r2';
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.Subject = 'test-subject-ap-r1';
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -753,23 +753,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -809,23 +809,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -865,23 +865,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -910,25 +910,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.CreatedDate = System.now().addDays(-2);
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.CreatedDate = System.now().addDays(-2);
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -964,24 +964,24 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Followup_Date__c = System.today().addDays(1);
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Followup_Date__c = System.today().addDays(1);
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -1022,23 +1022,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -1109,27 +1109,27 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.CC_Functional_Group__c = parent.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.CC_Functional_Group__c = parent.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.CC_Functional_Group__c = parent.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.CC_Functional_Group__c = parent.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.CC_Functional_Group__c = parent.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -1171,27 +1171,27 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Subject = 'test-subject-ap-r1';
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.Subject = 'test-subject-ap-r2';
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Subject = 'test-subject-ap-r1';
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.Subject = 'test-subject-ap-r2';
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.Subject = 'test-subject-ap-r1';
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
@@ -1228,23 +1228,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 

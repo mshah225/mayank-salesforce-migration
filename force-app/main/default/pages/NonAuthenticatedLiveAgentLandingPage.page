@@ -81,7 +81,9 @@
                 function () {
                     $Lightning.createComponent(
                         "c:asuBrandHeader",
-                        { title, baseUrl, navTreeStr },
+                        {
+                            title, baseUrl, navTreeStr
+                        },
                         "ASUBrandHeaderWrapper"
                     );
                     $Lightning.createComponent(

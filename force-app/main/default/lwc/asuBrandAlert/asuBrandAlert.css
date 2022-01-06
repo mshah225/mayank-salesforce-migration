@@ -1,26 +1,9 @@
-:host .alert {
-    max-width: 1200px;
-    margin: 0.5rem auto 1rem auto;
+:host a:hover {
+    color: #d23153 !important;
 }
-
-:host .alert .alert-content {
-    flex: 10;
-    padding: 0.5rem 0rem;
-    line-height: 2rem;
-}
-
-:host .alert .alert-icon .fa {
-    font-size: 2rem;
-    padding: 0.5rem 0rem;
-}
-
-:host .alert .alert-close .fa {
-    font-size: 1rem;
-}
-
-:host .alert .alert-close button.close {
+.alert-close .btn {
     display: inline-flex;
     align-items: center;
     padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    font-size: 18px;
 }

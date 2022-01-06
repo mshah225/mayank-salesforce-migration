@@ -1,6 +1,7 @@
 <apex:component allowDML="true">
   <apex:attribute name="pkbCon" type="pkb_Controller" required="true" description="handle to the pkb controller" />
 
+  <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
   <script type="text/javascript">
     var $$ = jQuery.noConflict();
 
@@ -29,9 +30,8 @@
     var FEEDBACK_FORM_ID = 'feedbackForm';
     var FEEDBACK_YES_BUTTON = 'feedbackYesButton';
     var FEEDBACK_NO_BUTTON = 'feedbackNoButton';
-    var FEEDBACK_DIALOG_ID = 'feedbackDialog';
+    var FEEDBACK_DIALOG_ID = 'feedbackModal';
     var FEEDBACK_COMMENTS_ID = 'feedbackComments';
-    var FEEDBACK_TEXT_ID = 'feedbackTextArea';
     var CHARS_REMAINING_ID = 'charsRemaining';
     var FEATURED_ARTICLES_ID = 'featuredArticles';
     var IMMEDIATE_HELP_ID = 'immediateHelp';
@@ -123,6 +123,9 @@
 
     // detects the pressing of the enter key while the search box is in focus and performs the search
     function checkForEnter(e, o) {
+      if (o.value != null && o.value != '') {
+        o.classList.remove('default');
+      }
       if (e.keyCode == 13) {
         currSearch = jQuery.trim(o.value);
         buildSearchHref();
@@ -167,19 +170,9 @@
     // restores the search prompt if the search box is empty, otherwise copies the search query to the global var
     function restorePrompt(e) {
       if (e.value == "" || e.value == null) {
-        e.value = searchPrompt;
-        currSearch = searchPrompt;
-        e.className = "default";
+        e.classList.add("default");
       } else {
         currSearch = jQuery.trim(e.value);
-      }
-    }
-
-    // clears the search box of the prompt text when a user clicks on it unless the prompt is being displayed
-    function clearPrompt(e) {
-      if (e.value == searchPrompt) {
-        e.value = "";
-        e.className = "";
       }
     }
 
@@ -187,7 +180,7 @@
     function resetPrompt(e) {
       currSearch = "";
       e.value = "";
-      e.className = "";
+      e.classList.add("default");
     }
 
     function validSearchQuery() {
@@ -219,14 +212,7 @@
     }
 
     function showFeedbackDialog() {
-      $$('#' + FEEDBACK_DIALOG_ID).modal();
-    }
-
-    function copyComments() {
-      var o = $$('[id$=' + FEEDBACK_COMMENTS_ID + ']');
-      var p = $$('#' + FEEDBACK_TEXT_ID);
-
-      if (o.length && p.length) o[0].value = p[0].value;
+      $$('#' + FEEDBACK_DIALOG_ID).modal({ backdrop: true, focus: true, show: true });
     }
 
     function toggleFeedbackYesNoButtons(isEnabled) {
@@ -246,7 +232,11 @@
     }
 
     function closeModal() {
-      $$.modal.close();
+      document.getElementById(CHARS_REMAINING_ID).innerHTML = 255;
+      $$("#" + FEEDBACK_DIALOG_ID)
+        .find("textarea")
+        .val('')
+        .end();
     }
 
     function countChars(event, o) {
@@ -257,8 +247,8 @@
       if (charsLeft <= 0) {
         o.value = o.value.substring(0, maxChars - 1);
         charsLeft = 0;
-        return (event.keyCode == 8);
         chars.innerHTML = charsLeft;
+        return (event.keyCode == 8);
       } else {
         chars.innerHTML = charsLeft;
         return true;
@@ -345,13 +335,18 @@
 
     $$('#' + FEEDBACK_DIALOG_ID).ready(function () {
       if (openDialogWhenReady) showFeedbackDialog();
+      $$("#" + FEEDBACK_DIALOG_ID).on("hidden.bs.modal", closeModal);
     });
 
     $$('#' + SEARCH_TEXT_ID).ready(function () {
       var o = $$('#' + SEARCH_TEXT_ID)[0];
+      let urlParamVal = '{!pkbCon.urlSearchQuery}';
+      if (urlParamVal != null && urlParamVal.length > 0) {
+        currSearch = urlParamVal;
+        o.value = currSearch;
+      }
       if (currSearch == "") {
-        o.value = searchPrompt;
-        o.className = "default";
+        o.classList.add("default");
       }
     });
 

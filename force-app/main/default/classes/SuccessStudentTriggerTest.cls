@@ -12,7 +12,7 @@ public with sharing class SuccessStudentTriggerTest {
             Active__c = true,
             Visible__c = true,
             Record_Types_String__c = 'wer',
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
         );
         insert functionalGroup;
         Case_Classification__c category = new Case_Classification__c(
@@ -20,7 +20,7 @@ public with sharing class SuccessStudentTriggerTest {
             Active__c = true,
             Visible__c = true,
             Parent__c = functionalGroup.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
         );
         insert category;
 
@@ -66,7 +66,7 @@ public with sharing class SuccessStudentTriggerTest {
                 EmailEncodingKey = 'ISO-8859-1',
                 LanguageLocaleKey = 'en_US',
                 IsActive = true,
-                ProfileId = IDHelper.getProfileId('System Administrator')
+                ProfileId = RecordIdHelper.getProfileId('System Administrator')
             )
         );
         resourceUsers.add(
@@ -82,7 +82,7 @@ public with sharing class SuccessStudentTriggerTest {
                 EmailEncodingKey = 'ISO-8859-1',
                 LanguageLocaleKey = 'en_US',
                 IsActive = true,
-                ProfileId = IDHelper.getProfileId('System Administrator')
+                ProfileId = RecordIdHelper.getProfileId('System Administrator')
             )
         );
         insert resourceUsers;
@@ -91,7 +91,7 @@ public with sharing class SuccessStudentTriggerTest {
         for (User u : resourceUsers) {
             successResources.add(
                 new Success_Resource__c(
-                    RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Coach'),
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach'),
                     Resource__c = u.Id
                 )
             );
@@ -105,7 +105,7 @@ public with sharing class SuccessStudentTriggerTest {
                     Coaching_Student__c = true,
                     Student__c = c.Id,
                     Success_Resource__c = successResources[0].Id,
-                    RecordTypeId = IDHelper.getRecordTypeId('Success_Student__c', 'Coach')
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
                 )
             );
         }

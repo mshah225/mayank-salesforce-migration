@@ -15,7 +15,7 @@ public with sharing class OmniChannelControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IDHelper.getProfileId('Standard User')
+            ProfileId = RecordIdHelper.getProfileId('Standard User')
         );
         insert testUser;
     }

@@ -205,12 +205,13 @@ private class MyASUHelpControllerTest {
 
     @isTest
     private static void testStudentSCPageAC() {
+        Datetime now = System.now();
         Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
             Name = 'The Test Message',
             Displayed__c = true,
             Message__c = 'There is maintenance',
-            Start_Time__c = System.now(),
-            End_Time__c = System.now() + 20
+            Start_Time__c = now.addDays(-20),
+            End_Time__c = now.addDays(20)
         );
         insert scm;
 
@@ -238,7 +239,14 @@ private class MyASUHelpControllerTest {
             helpTab.getSource();
             vcc.getSource();
 
-            System.assertEquals('There is maintenance', helpTab.getmMessage());
+            Boolean found = false;
+            for (CustomAlert c : helpTab.alertHandler.alerts) {
+                if (c.message == 'There is maintenance') {
+                    found = true;
+                    break;
+                }
+            }
+            System.assert(found, 'Did not add proper maintenance message');
             System.assertEquals(false, helpTab.getHelpBox());
             System.assertEquals(true, helpTab.getNormalPhone());
             System.assertEquals(false, helpTab.getRoverPhone());
@@ -294,7 +302,14 @@ private class MyASUHelpControllerTest {
             helpTab.getmyCasesBox();
             System.assertEquals(false, helpTab.getHelpBox());
             System.assertEquals(false, vcc.getHelpBox());
-            System.assertEquals('There is maintenance forever', helpTab.getmMessage());
+            Boolean found = false;
+            for (CustomAlert c : helpTab.alertHandler.alerts) {
+                if (c.message == 'There is maintenance forever') {
+                    found = true;
+                    break;
+                }
+            }
+            System.assert(found, 'Did not add proper maintenance message');
         }
         Test.stopTest();
     }
@@ -550,10 +565,9 @@ private class MyASUHelpControllerTest {
         }
 
         System.assert(String.isEmpty(vcc.caseReply));
-        List<Apexpages.Message> msgs = ApexPages.getMessages();
         Boolean successMessageFound = false;
-        for (Apexpages.Message msg : msgs) {
-            if (msg.getDetail().contains('Your response was submitted successfully')) {
+        for (CustomAlert alert : vcc.alertHandler.alerts) {
+            if (alert.message.contains('Your response was submitted successfully')) {
                 successMessageFound = true;
             }
         }
@@ -578,10 +592,9 @@ private class MyASUHelpControllerTest {
         }
 
         System.assert(String.isEmpty(vcc.caseReply));
-        List<Apexpages.Message> msgs = ApexPages.getMessages();
         Boolean failureMessageFound = false;
-        for (Apexpages.Message msg : msgs) {
-            if (msg.getDetail().contains('Your response was not submitted successfully')) {
+        for (CustomAlert alert : vcc.alertHandler.alerts) {
+            if (alert.message.contains('Your response was not submitted successfully')) {
                 failureMessageFound = true;
             }
         }
@@ -620,6 +633,7 @@ private class MyASUHelpControllerTest {
 
     @isTest
     private static void testCheckForFunctionalGroup() {
+        Test.setCurrentPage(Page.StudentSC);
         loadTestUserByLastName('User0');
         Pagereference pr;
 
@@ -641,6 +655,7 @@ private class MyASUHelpControllerTest {
 
     @isTest
     private static void testGetArticlesAndLinks() {
+        Test.setCurrentPage(Page.StudentSC);
         loadTestUserByLastName('User0');
 
         System.runAs(testUser) {

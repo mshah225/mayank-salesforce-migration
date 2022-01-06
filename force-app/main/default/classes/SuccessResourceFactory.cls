@@ -2,7 +2,9 @@
 public class SuccessResourceFactory {
     public class DefaultCoachingResource extends TestFactory {
         public DefaultCoachingResource() {
-            super(new Success_Resource__c(RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Coach')));
+            super(
+                new Success_Resource__c(RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach'))
+            );
         }
     }
 
@@ -13,7 +15,7 @@ public class SuccessResourceFactory {
                     IsActive__c = true,
                     Role__c = 'User',
                     Resource__c = UserInfo.getUserId(),
-                    RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
                 )
             );
         }
@@ -26,7 +28,7 @@ public class SuccessResourceFactory {
                     IsActive__c = true,
                     Role__c = 'Department Manager',
                     Resource__c = UserInfo.getUserId(),
-                    RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
                 )
             );
         }
@@ -39,7 +41,7 @@ public class SuccessResourceFactory {
                     IsActive__c = true,
                     Role__c = 'College Manager',
                     Resource__c = UserInfo.getUserId(),
-                    RecordTypeId = IdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
                 )
             );
         }

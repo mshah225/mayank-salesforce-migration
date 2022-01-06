@@ -1,4 +1,4 @@
-public with sharing class AttachmentDispatcher implements IDispatch {
+public with sharing class AttachmentDispatcher implements TriggerDispatcherInterface {
     private static final boolean debug = false; // Toggle debug error reporting
     private static Map<Id, Attachment> newAttachments; // trigger.new
     private static Map<Id, Attachment> oldAttachments; // trigger.oldMap

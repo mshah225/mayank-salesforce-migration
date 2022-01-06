@@ -10,7 +10,7 @@ public class PersistenceOutlookService  {
         List<Persistence_Outlook__c> oldOutlooksToUpdate = [
             SELECT Id 
             FROM Persistence_Outlook__c 
-            WHERE Contact IN: contactsConnectedToOutlook
+            WHERE Contact__c IN: contactsConnectedToOutlook
             AND Current_Flag__c = true
         ];
 

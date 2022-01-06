@@ -40,6 +40,9 @@ global with sharing class StudentProfileController {
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
+    public Decimal undergradGPA {get; set; }
+    public Decimal gradGPA {get; set; }
+    public List<String> financialAidIndicators { get; set; }
     public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }
@@ -49,7 +52,7 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateAcademicsMessages { get; set; }
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
-    public List<String> graduateIndicatorsMessages { get; set; }
+    public List<String> graduateIndicatorsMessages { get; set; }    
 
     public Student_Program_Plan__c ugStudentProgram {
         get {
@@ -118,6 +121,7 @@ global with sharing class StudentProfileController {
             setMe3Results();
             setAdvisorStatus();
             setCIIndex();
+            setFinancialAidIndicator();
         } else {
             initializeValuesForNullContactId();
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
@@ -220,6 +224,17 @@ global with sharing class StudentProfileController {
             WHERE Contact__c = :theContact.Id AND Acad_Career__c = 'UGRD'
             ORDER BY Effdt__c DESC
         ];
+    }
+
+    private void setFinancialAidIndicator() {
+        financialAidIndicators = new List<String>();
+        if (theContact.Financial_Aid_Indicator__c == null || theContact.Financial_Aid_Indicator__c == '') {
+            financialAidIndicators.add('--');
+        } else {
+            String financialAidIndicator = theContact.Financial_Aid_Indicator__c;
+            financialAidIndicator = financialAidIndicator.replace('\\n', ';');            
+            financialAidIndicators = financialAidIndicator.split(';');
+        }
     }
 
     private void setStudentMilestoneGrad() {
@@ -453,6 +468,30 @@ global with sharing class StudentProfileController {
         }
 
         setSubplanString();
+
+        setGPA();
+    }
+
+    private void setGPA () {
+        for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
+            if (gppw.gradProgramPlan.Primary_Flag__c && gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
+                gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
+                break;
+            }
+            if (gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
+                gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
+            }
+        }
+
+        for (Student_Program_Plan__c ugpp : ugProgramPlans) {
+            if (ugpp.Primary_Flag__c && ugpp.Tot_Cumulative__c > 0) {
+                undergradGPA = ugpp.Cum_GPA__c;
+                break;
+            }
+            if (ugpp.Tot_Cumulative__c > 0) {
+                undergradGPA = ugpp.Cum_GPA__c;
+            }
+        }
     }
 
     private void setTermMap(List<String> terms) {

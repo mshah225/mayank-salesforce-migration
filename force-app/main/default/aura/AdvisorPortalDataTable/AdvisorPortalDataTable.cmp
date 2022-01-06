@@ -172,11 +172,21 @@
                         variant="label-hidden"
                     />
 
-                    <lightning:accordionSection
-                        name="{!contactWrapper.portalContact.Name}"
-                        label="{!contactWrapper.portalContact.LastName + ', ' + contactWrapper.portalContact.FirstName}"
-                    >
+                    <lightning:accordionSection name="{!contactWrapper.portalContact.Name}">
                         <aura:set attribute="actions">
+                            <a
+                                href=""
+                                onclick="{!c.openStudentProfile}"
+                                class="profile-link"
+                                data-contactId="{!contactWrapper.portalContact.Id}"
+                                data-contactName="{!contactWrapper.portalContact.Name}"
+                                title="Student Profile"
+                            >
+                                Profile
+                            </a>
+                            <span class="contact-name">
+                                {!contactWrapper.portalContact.LastName + ', ' + contactWrapper.portalContact.Preferred_First_Name__c}
+                            </span>
                             <span class="slds-p-horizontal_xx-small">&#124;</span>
                             <span class="slds-m-left_xx-small">
                                 {!if(not(empty(contactWrapper.cases)), contactWrapper.cases.length,
@@ -188,17 +198,7 @@
                                     iconName="utility:record"
                                     size="x-small"
                                 />
-                            </aura:if>
-                            <a
-                                href=""
-                                onclick="{!c.openStudentProfile}"
-                                class="profile-link"
-                                data-contactId="{!contactWrapper.portalContact.Id}"
-                                data-contactName="{!contactWrapper.portalContact.Name}"
-                                title="Student Profile"
-                            >
-                                Profile
-                            </a>
+                            </aura:if>                            
                             <c:AdvisorPortalPredictionLevel
                                 predictionLevel="{!contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}"
                             />

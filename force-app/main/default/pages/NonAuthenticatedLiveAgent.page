@@ -1,49 +1,136 @@
-<apex:page showHeader="false" controller="NonAuthenticatedLiveAgentController">
+<apex:page showHeader="false" standardStylesheets="false" controller="NonAuthenticatedLiveAgentController">
+
+    <head>
+        <title>ASU | Live Chat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <script type="text/javascript">
+            (function () {
+                function handlePageLoad() {
+                    var endpointMatcher = new RegExp('[\\?\\&]endpoint=([^&#]*)');
+                    document
+                        .getElementById('prechatForm')
+                        .setAttribute('action', decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
+                }
+                if (window.addEventListener) {
+                    window.addEventListener('load', handlePageLoad, false);
+                } else {
+                    window.attachEvent('onload', handlePageLoad, false);
+                }
+            })();
+
+            function setFields() {
+                setDescription();
+                setName();
+            }
+
+            function setDescription() {
+                document.getElementById('caseDescription').value = '';
+                if (document.getElementById('contactFirstName').value) {
+                    document.getElementById('caseDescription').value +=
+                        'First Name: ' + document.getElementById('contactFirstName').value + ' ';
+                }
+                if (document.getElementById('contactLastName').value) {
+                    document.getElementById('caseDescription').value +=
+                        'Last Name: ' + document.getElementById('contactLastName').value + ' ';
+                }
+                if (document.getElementById('contactAsuriteOrEmplid').value) {
+                    document.getElementById('caseDescription').value +=
+                        'Asurite/Emplid: ' + document.getElementById('contactAsuriteOrEmplid').value + ' ';
+                }
+                if (document.getElementById('caseProblem').value) {
+                    document.getElementById('caseDescription').value +=
+                        'Problem: ' + document.getElementById('caseProblem').value + ' ';
+                }
+            }
+            function setName() {
+                document.getElementById('prechat_field_name').value =
+                    document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value;
+            }
+        </script>
+        <style type="text/css">
+            p {
+                font-weight: bolder;
+            }
+
+            label {
+                font-size: 1rem;
+            }
+
+            @media screen and (min-width: 600px) {
+                .mobile-toast {
+                    font-size: 3vw;
+                }
+
+                .mobileReminder {
+                    font-size: 2vh;
+                }
+
+                .mobileResponse {
+                    font-size: 4vh !important;
+                    border-width: 1px;
+                }
+
+                .mobileLogo {
+                    width: 500px;
+                }
+
+                label {
+                    font-size: 4vh !important;
+                }
+
+                .placeHolderFont::-webkit-input-placeholder {
+                    font-size: 2vh;
+                }
+            }
+
+            @media screen and (max-width: 600px) {
+                .placeHolderFont::-webkit-input-placeholder {
+                    font-size: 0.75em;
+                }
+            }
+        </style>
+    </head>
+
     <h1>
-        <apex:image styleClass="mobileLogo" url="{!$Resource.LiveAgentlogo}" />
-        <c:ASUWebStandards />
+        <apex:image styleClass="mobileLogo ml-2" url="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/asu-logo/arizona-state-university-logo.png')}"
+        />
     </h1>
-    <script type="text/javascript">
-        (function () {
-            function handlePageLoad() {
-                var endpointMatcher = new RegExp('[\\?\\&]endpoint=([^&#]*)');
-                document
-                    .getElementById('prechatForm')
-                    .setAttribute('action', decodeURIComponent(endpointMatcher.exec(document.location.search)[1]));
-            }
-            if (window.addEventListener) {
-                window.addEventListener('load', handlePageLoad, false);
-            } else {
-                window.attachEvent('onload', handlePageLoad, false);
-            }
-        })();
-    </script>
     <c:LiveAgentNotices />
 
     <body style="background-color: #f5f5f5">
         <form method="post" id="prechatForm">
-            <div style="padding: 10px">
-                <label for="contactFirstName">First Name*: </label>
+            <div class="p-2">
+                <label for="contactFirstName">First Name
+                    <span class="text-danger">*</span>
+                </label>
                 <br />
-                <input type="textarea" name="liveagent.prechat:First_Name" class="mobileResponse placeHolderFont searchBox" style="width: 100% !important"
-                    id="contactFirstName" required="true" />
+                <input type="textarea" name="liveagent.prechat:First_Name" class="mobileResponse placeHolderFont searchBox w-100" id="contactFirstName"
+                    required="true" />
                 <br />
-                <label for="contactLastName">Last Name*: </label>
+                <label for="contactLastName">Last Name
+                    <span class="text-danger">*</span>
+                </label>
                 <br />
-                <input type="textarea" name="liveagent.prechat:Last_Name" class="mobileResponse placeHolderFont searchBox" style="width: 100% !important"
-                    id="contactLastName" required="true" />
+                <input type="textarea" name="liveagent.prechat:Last_Name" class="mobileResponse placeHolderFont searchBox w-100" id="contactLastName"
+                    required="true" />
                 <br />
-                <label for="contactAsurite">ASU Id Number or ASURITE: </label>
+                <label for="contactAsurite">ASU Id Number or ASURITE</label>
                 <br />
-                <input type="textarea" name="liveagent.prechat:ASU_ID" class="mobileResponse placeHolderFont searchBox" style="width: 100% !important"
-                    id="contactAsuriteOrEmplid" />
+                <input type="textarea" name="liveagent.prechat:ASU_ID" class="mobileResponse placeHolderFont searchBox w-100" id="contactAsuriteOrEmplid"
+                />
                 <br />
-                <label for="caseProblem">{!presurveyQuestion}*</label>
+                <label for="caseProblem">{!presurveyQuestion}
+                    <span class="text-danger">*</span>
+                </label>
                 <br />
-                <input type="textarea" class="mobileResponse placeHolderFont searchBox" style="width: 100% !important" name="liveagent.prechat:Case_Problem"
-                    id="caseProblem" required="true" placeholder="Enter a brief description of your issue." />
+                <input type="textarea" class="mobileResponse placeHolderFont searchBox w-100" name="liveagent.prechat:Case_Problem" id="caseProblem"
+                    required="true" placeholder="Enter a brief description of your issue." />
                 <br />
-                <p class="mobileReminder">*Designates a required field.</p>
+                <p class="mobileReminder">
+                    <span class="text-danger">*</span>
+                    Designates a required field.</p>
                 <input type="hidden" name="liveagent.prechat:CaseDescription" id="caseDescription" value="" />
                 <br />
                 <input type="hidden" name="liveagent.prechat:CaseStatus" value="New" />
@@ -80,87 +167,9 @@
                 <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseSubCategory" value="false" />
                 <input type="hidden" name="liveagent.prechat.findorcreate.displayToAgent:CaseDescription" value="false" />
             </div>
-            <div style="padding: 10px">
-                <input type="submit" style="height: 15% !important; font-size: 4vw !important" value="Chat Now" id="prechat_submit" onclick="setFields()"
-                    class="btn btn-primary btn-lg" />
+            <div class="p-2">
+                <input type="submit" value="Chat Now" id="prechat_submit" onclick="setFields()" class="btn btn-maroon btn-block btn-lg" />
             </div>
-            <script type="text/javascript">
-                function setFields() {
-                    setDescription();
-                    setName();
-                }
-
-                function setDescription() {
-                    document.getElementById('caseDescription').value = '';
-                    if (document.getElementById('contactFirstName').value) {
-                        document.getElementById('caseDescription').value +=
-                            'First Name: ' + document.getElementById('contactFirstName').value + ' ';
-                    }
-                    if (document.getElementById('contactLastName').value) {
-                        document.getElementById('caseDescription').value +=
-                            'Last Name: ' + document.getElementById('contactLastName').value + ' ';
-                    }
-                    if (document.getElementById('contactAsuriteOrEmplid').value) {
-                        document.getElementById('caseDescription').value +=
-                            'Asurite/Emplid: ' + document.getElementById('contactAsuriteOrEmplid').value + ' ';
-                    }
-                    if (document.getElementById('caseProblem').value) {
-                        document.getElementById('caseDescription').value +=
-                            'Problem: ' + document.getElementById('caseProblem').value + ' ';
-                    }
-                }
-                function setName() {
-                    document.getElementById('prechat_field_name').value =
-                        document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value;
-                }
-            </script>
-
-            <style type="text/css">
-                p {
-                    font-weight: bolder;
-                }
-
-                @media screen and (min-width: 600px) {
-                    .mobile-toast {
-                        font-size: 3vw;
-                    }
-
-                    .mobileQuestion {
-                        font-size: 4.5vh;
-                    }
-
-                    .mobileReminder {
-                        font-size: 2vh;
-                    }
-
-                    .mobileResponse {
-                        font-size: 4vh !important;
-                        border-width: 1px;
-                    }
-
-                    .mobileLogo {
-                        width: 500px;
-                    }
-
-                    label {
-                        font-size: 4vh !important;
-                    }
-
-                    .placeHolderFont::-webkit-input-placeholder {
-                        font-size: 2vh;
-                    }
-                }
-
-                @media screen and (max-width: 600px) {
-                    .mobileQuestion {
-                        font-size: x-large;
-                    }
-
-                    .placeHolderFont::-webkit-input-placeholder {
-                        font-size: 0.75em;
-                    }
-                }
-            </style>
         </form>
     </body>
 </apex:page>

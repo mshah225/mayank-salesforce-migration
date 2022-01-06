@@ -1,4 +1,4 @@
-public with sharing class SubscriberDispatcher implements IDispatch {
+public with sharing class SubscriberDispatcher implements TriggerDispatcherInterface {
     private List<Subscriber__c> newList;
     private Map<Id, Subscriber__c> newMap;
     private List<Subscriber__c> oldList;

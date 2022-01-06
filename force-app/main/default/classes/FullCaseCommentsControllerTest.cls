@@ -13,7 +13,7 @@ private class FullCaseCommentsControllerTest {
         List<Case> cases = TestDataFactory.createCases(5);
         for (Case c : cases) {
             c.ContactId = testContact.Id;
-            c.RecordTypeId = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
+            c.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
         }
         insert cases;
 

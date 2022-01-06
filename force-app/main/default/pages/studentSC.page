@@ -1,72 +1,109 @@
 <apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
-    action="{!init}" cache="true" extensions="ASUBrandController,MyASUHelpPaginationController">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+    cache="true" extensions="MyASUHelpPaginationController">
 
     <head>
         <title>My ASU | Help</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
         <c:MyASUHelpStyles />
         <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
     </head>
 
-    <c:ASUBrandHeader siteTitleName="{!siteTitleName}" siteTitleUrl="{!siteTitleUrl}" />
-    <c:ASUBrandMenu firstName="{!firstName}" lastName="{!lastName}" viewingAs="{!viewingAs}" emplId="{!emplId}" stopViewAsUrl="{!stopViewAsUrl}"
-        viewAsUrl="{!viewAsUrl}" menuLinks="{!menuLinks}" />
+    <apex:includeLightning />
+    <c:SLDSRemoveGlobalStyles />
+    <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
     <c:GoogleTagManagerBody />
-    <div id="asu-content-container" role="main">
-        <c:MyASUHelpPageNotifications viewingAs="{!viewingAs}" firstName="{!firstName}" lastName="{!lastName}" maintenanceString="{!mMessage}"
-        />
+    <div role="main">
         <div class="container">
             <div class="row">
-                <div class="col-md-7 myasu-help-region">
+                <div class="col-lg-12">
+                    <apex:outputPanel id="alerts">
+                        <c:customAlerts alerts="{!alertHandler.alerts}" captureSalesforceErrors="false" />
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+        <div class="container myasu-help-scope">
+            <div class="row">
+                <div class="col-lg-7 mb-4">
                     <c:MyASUHelpFAQ />
                 </div>
-                <div class="col-md-5 myasu-help-region">
-                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
-                    <div style="margin-bottom: 2em"></div>
-                    <c:MyASUHelpMyRequests />
+                <div class="col-lg-5">
+                    <div class="mb-4">
+                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
+                    </div>
+                    <div class="mb-4">
+                        <c:MyASUHelpMyRequests />
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <div id="bgWrapper">
-                        <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-primary" />
-                    </div>
+                <div class="col-lg-12">
+                    <c:FeedbackButton carName="My ASU Help Tab" classes="btn btn-maroon btn-md mb-1" />
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
+
     <script>
-        var widthToPush;
-        var viewAsLinkWidth = realWidth($('.asu-brand-menu-view-as-change'));
-        var logoutAsLinkWidth = realWidth($('.asu-brand-menu-view-as-logout'));
-
-        if (viewAsLinkWidth > logoutAsLinkWidth) {
-            widthToPush = viewAsLinkWidth;
-        } else if (viewAsLinkWidth < logoutAsLinkWidth) {
-            widthToPush = logoutAsLinkWidth;
-        } else {
-            widthToPush = logoutAsLinkWidth;
+        // Load LWCs
+        const urlParams = new URLSearchParams(window.location.search);
+        let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
+        let title = 'My ASU';
+        let baseUrl = 'https://webapp4.asu.edu/myasu/student';
+        if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
+            navTreeStr = undefined;
+        }
+        if (urlParams.get('title') != null) {
+            title = undefined;
+        }
+        if (urlParams.get('baseUrl') != null) {
+            baseUrl = undefined;
         }
 
-        $('.asu-brand-menu-view-as-dropdown-menu').width(widthToPush + 2);
-
-        function realWidth(obj) {
-            var clone = obj.clone();
-            clone.css('visibility', 'hidden');
-            $('body').append(clone);
-            var width = clone.outerWidth();
-            clone.remove();
-            return width;
-        }
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {
+                        title, baseUrl, navTreeStr,
+                        stationary: true,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+            }
+        );
+        // Hide errors that appear randomly from LWC
+        const observer = new MutationObserver(function (mutations) {
+            const errorDiv = document.querySelector('#auraErrorMessage');
+            if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                console.error(errorDiv.innerText);
+                errorDiv.innerHTML = '';
+            }
+        });
+        observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
     </script>
-
-    <c:ASUBrandFooter />
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

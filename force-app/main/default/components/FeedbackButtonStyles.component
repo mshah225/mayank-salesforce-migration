@@ -1,5 +1,6 @@
-<apex:component>
+<apex:component id="alius-format94">
     <apex:stylesheet value="{!URLFOR($Resource.Font_Awesome_4_7_0, 'Font_Awesome_4_7_0/css/font-awesome.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
     <style>
         .feedback-button {
             float: right;
@@ -7,10 +8,12 @@
             padding-right: 0.6em !important;
             padding-top: 0.4em !important;
             padding-bottom: 0.4em !important;
+            font-size: small !important;
         }
 
         .feedback-button-text {
             font-weight: 400 !important;
+            font-size: small !important;
         }
     </style>
 </apex:component>

@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+    AliusCI:
+        Type: 'AWS::Serverless::Function'
+        Properties:
+            Handler: alius_ci.handler
+            Runtime: provided
+            CodeUri: .
+            Description: ''
+            MemorySize: 512
+            Timeout: 600
+            Role: 'arn:aws:iam::187616753226:role/service-role/AliusCI-role-lg7qitel'
+            Events:
+                Api1:
+                    Type: Api
+                    Properties:
+                        Path: /AliusCI
+                        Method: ANY
+            Layers:
+                - 'arn:aws:lambda:us-east-1:553035198032:layer:git-lambda2:8'
+            ReservedConcurrentExecutions: 1

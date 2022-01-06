@@ -1,0 +1,30 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="alert-list">
+        <template for:each={alertList} for:item="alert">
+            <div key={alert.id} class={alert.classList} role="alert" data-key={alert.id}>
+                <div class="alert-icon">
+                    <i title={alert.iconTitle} class={alert.icon}></i>
+                </div>
+                <div class="alert-content">
+                    <strong>{alert.title}</strong>
+                    {alert.message}
+                    <template if:true={alert.linkNotNull}>
+                        &nbsp;
+                        <a href={alert.link} target="_blank"><i class="fa fa-icon fa-external-link"></i></a>
+                    </template>
+                </div>
+                <div class="alert-close">
+                    <button
+                        type="button"
+                        class="btn btn-circle btn-circle-alt-white close"
+                        aria-label="Close"
+                        onclick={closeAlert}
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

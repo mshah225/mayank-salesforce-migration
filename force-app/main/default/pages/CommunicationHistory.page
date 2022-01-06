@@ -51,11 +51,11 @@
     </head>
 
     <body>
-        <apex:pageBlock>
-            <apex:pageBlockSection>
+        <apex:pageBlock id="alius-format136">
+            <apex:pageBlockSection id="alius-format137">
                 <!-- Filters start here -->
-                <apex:form>
-                    <apex:outputText>Filter By: </apex:outputText>
+                <apex:form id="alius-format138">
+                    <apex:outputText id="alius-format139">Filter By: </apex:outputText>
                     <apex:selectList styleClass="indent" value="{!filterType}" size="1">
                         <apex:selectOptions value="{!filterOptions}" />
                     </apex:selectList>
@@ -76,45 +76,45 @@
 
             <apex:pageBlockTable value="{!filteredMessages}" var="message">
                 <!-- Email Name -->
-                <apex:column>
+                <apex:column id="alius-format140">
                     <apex:facet name="header">Email Name</apex:facet>
-                    <apex:outputText>
-                        <a href="/{!message.Id}" target="_blank">{!message.name}</a>
-                    </apex:outputText>
+                    <apex:outputLink value="javascript:;" onClick="openLink('{!message.Id}', '{!message.name}')">
+                        {!message.name}
+                    </apex:outputLink>
                 </apex:column>
 
                 <!-- Subject -->
-                <apex:column>
+                <apex:column id="alius-format141">
                     <apex:facet name="header">Subject</apex:facet>
                     <apex:outputText value="{!message.subject}" />
                 </apex:column>
 
                 <!-- Sent By -->
-                <apex:column>
+                <apex:column id="alius-format142">
                     <apex:facet name="header">Sent By</apex:facet>
                     <apex:outputText value="{!message.sender}" />
                 </apex:column>
 
                 <!-- Delivery Status -->
-                <apex:column>
+                <apex:column id="alius-format143">
                     <apex:facet name="header">Delivery Status</apex:facet>
                     <apex:outputText value="{!message.deliveryStatus}" />
                 </apex:column>
 
                 <!-- Sent Date/Time -->
-                <apex:column>
+                <apex:column id="alius-format144">
                     <apex:facet name="header">Sent Date/Time</apex:facet>
                     <apex:outputText value="{!message.timeSent}" />
                 </apex:column>
 
                 <!-- Open Date/Time -->
-                <apex:column>
+                <apex:column id="alius-format145">
                     <apex:facet name="header">Open Date/Time</apex:facet>
                     <apex:outputText value="{!message.timeOpened}" />
                 </apex:column>
 
                 <!-- Unique Clicks -->
-                <apex:column>
+                <apex:column id="alius-format146">
                     <apex:facet name="header">Unique Clicks</apex:facet>
                     <apex:outputText value="{!message.uniqueClicks}" />
                 </apex:column>
@@ -125,11 +125,27 @@
             </apex:outputPanel>
         </apex:pageBlock>
 
+        <apex:includeScript value="/support/console/38.0/integration.js" />
         <script>
             // Invoke client-side sorting
             $(document).ready(function () {
                 $('table').tablesorter();
             });
+
+            function isLightningExperienceOrSalesforce1() {
+                return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+            }
+
+            function openLink(messageId, messageName) {
+                if (isLightningExperienceOrSalesforce1()) {
+                    var message = "/lightning/r/et4ae5__IndividualEmailResult__c/" + messageId + "/view";
+                    parent.postMessage(message, '*');
+                } else {
+                    sforce.console.getEnclosingPrimaryTabId(function (result) {
+                        sforce.console.openPrimaryTab(null, '/' + messageId, true, messageName);
+                    });
+                }
+            }
         </script>
     </body>
 </apex:page>

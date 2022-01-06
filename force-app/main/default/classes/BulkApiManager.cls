@@ -2,6 +2,7 @@ public class BulkApiManager {
     private String jobId;
     private String orgUrl;
     private String sessionKey;
+    @TestVisible
     private String objectType;
     private String operationType;
     private final Integer NUMBER_OF_RETRIES = 10;
@@ -19,6 +20,8 @@ public class BulkApiManager {
             this.objectType = 'case';
         } else if (objectType == 'DELETED_SILVERPOP') {
             this.objectType = System.Label.SilverPopName;
+        } else if (objectType == 'CONTACT_NO_PHONE') {
+            this.objectType = 'contact';
         } else {
             this.objectType = objectType.toLowerCase().capitalize();
         }

@@ -1,62 +1,117 @@
-<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" extensions="ASUBrandController"
-    action="{!optOutOfEmails}" standardStylesheets="false">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" />
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" cache="false" Controller="UnsubscribeController" action="{!optOutOfEmails}"
+    standardStylesheets="false">
 
     <head>
         <title>ASU | Unsubscribe from Campaign</title>
-        <c:asu_responsive_header_section />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
+        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+        <script>$ = jQuery.noConflict();</script>
         <style>
-            .feedbackButton {
-                float: right;
+            .unsubscribe-scope a:hover:not(.btn),
+            .unsubscribe-scope a:hover:not(.btn) i {
+                color: #d23153 !important;
+            }
+
+            .unsubscribe-scope .c-text-maroon {
+                color: #8c1d40;
+            }
+
+            .unsubscribe-scope a.c-text-maroon:visited {
+                color: #8c1d40;
+            }
+
+            .unsubscribe-scope a:visited .c-text-maroon {
+                color: #8c1d40;
             }
         </style>
     </head>
 
     <body>
-        <div id="main-search" class="main-search closed"></div>
-        <c:SCHeader pageHead="Subscription Center" showNavBar="false" />
-        <div id="bgWrapper">
-            <div id="asu-content-container" role="main">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <apex:outputPanel rendered="{!NOT(failState)}">
-                                <h3 style="margin-top: 17px">
-                                    <a href="mailto:{!emailAddress}">{!emailAddress}</a> has been unsubscribed
-                                </h3>
-                            </apex:outputPanel>
-                            <apex:outputPanel rendered="{!failState}">
-                                <p>
-                                    ASU was unable to process your unsubscribe request. We apologize for the inconvenience. Our support team has been notified
-                                    of this error. Please visit the subscription center to manage your subscriptions.
-                                </p>
-                                <p>
-                                    Please click on the button below to visit ASU's Subscription Center and manage your subscriptions. If you're unable to access
-                                    the Subscription Center or need immediate assistance, please call 1-855-ASU-5080.
-                                </p>
-                            </apex:outputPanel>
-                        </div>
+        <apex:includeLightning />
+        <c:SLDSRemoveGlobalStyles />
+        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
+
+        <div role="main" class="unsubscribe-scope">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <apex:outputPanel rendered="{!NOT(failState)}">
+                            <h3 class="mt-3">
+                                <a class="c-text-maroon" href="mailto:{!emailAddress}">{!emailAddress}</a> has been unsubscribed
+                            </h3>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!failState}">
+                            <p>
+                                ASU was unable to process your unsubscribe request. We apologize for the inconvenience. Our support team has been notified
+                                of this error. Please visit the subscription center to manage your subscriptions.
+                            </p>
+                            <p>
+                                Please click on the button below to visit ASU's Subscription Center and manage your subscriptions. If you're unable to access
+                                the Subscription Center or need immediate assistance, please call
+                                <a class="c-text-maroon" href="tel:1-855-278-5080">1-855-ASU-5080 (1-855-278-5080)</a>.
+                            </p>
+                        </apex:outputPanel>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <h4>{!displayCampaign.name}</h4>
-                            <p>{!displayCampaign.Subscription_Center_Description__c}</p>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <h4>{!displayCampaign.name}</h4>
+                        <p>{!displayCampaign.Subscription_Center_Description__c}</p>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <!-- Update URL to subscription center once it is created -->
-                            <a href="./SubscriptionCenter?subId={!subscriberId}" class="btn btn-primary btn-lg">Visit Subscription Center</a>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Update URL to subscription center once it is created -->
+                        <a href="./SubscriptionCenter?subId={!subscriberId}" class="btn btn-maroon btn-lg">Visit Subscription Center</a>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <c:FeedbackButton carName="One Click Unsubscribe Page" classes="btn btn-primary btn-lg" />
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <c:FeedbackButton carName="One Click Unsubscribe Page" classes="btn btn-maroon btn-md mt-1 mb-1" />
                     </div>
                 </div>
             </div>
         </div>
-        <c:SCFooter />
+
+        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
+
+        <script>     
+            const urlParams = new URLSearchParams(window.location.search);
+            let title = 'Subscription Center';
+            let baseUrl = 'https://webapp4.asu.edu/myasu';
+            if (urlParams.get('title') != null) {
+                title = undefined;
+            }
+            if (urlParams.get('baseUrl') != null) {
+                baseUrl = undefined;
+            }
+
+            $Lightning.use(
+                "c:ASUBrandApp",
+                function () {
+                    $Lightning.createComponent(
+                        "c:asuBrandHeader",
+                        { title, baseUrl },
+                        "ASUBrandHeaderWrapper"
+                    );
+                    $Lightning.createComponent(
+                        "c:asuBrandFooter",
+                        {},
+                        "ASUBrandFooterWrapper"
+                    );
+                    // Hide errors that appear randomly from LWC
+                    const observer = new MutationObserver(function (mutations) {
+                        const errorDiv = document.querySelector('#auraErrorMessage');
+                        if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                            console.error(errorDiv.innerText);
+                            errorDiv.innerHTML = '';
+                        }
+                    });
+                    observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+
+                }
+            );
+        </script>
     </body>
 </apex:page>

@@ -30,20 +30,18 @@
   SITE URL: {!pkbCon.currentSiteUrl}<br/>
 -->
 
-    <div class="article {!IF(pkbCon.displayContactUs && LEFT(aid,15) == LEFT(pkbCon.theKad.id,15), 'selectedArticle', '')}">
+    <div class="font-size-std">
         <apex:outputText escape="false">
-            <a href="{!articleURL}{!params}">{!title}</a>
+            <a class="font-weight-bold text-dark" href="{!articleURL}{!params}">{!title}</a>
         </apex:outputText>
 
-        <div class="data">
-            <!--<apex:outputText value="{!articleTypeLabel}" />
-        &nbsp;-->
+        <div class="text-muted">
             <apex:outputText value="Date Updated: " />
             <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
                 <apex:param value="{!lastModifiedDate}" />
             </apex:outputText>
         </div>
-        <div class="content">
+        <div>
             <apex:outputText rendered="{!pkbCon.showArticleSummary}" value="{!LEFT(summary, 255)}" />
             <apex:outputText rendered="{!LEN(summary) > 255 && pkbCon.showArticleSummary}" value="..." />
         </div>

@@ -8,71 +8,20 @@
     <apex:variable var="pageNum" value="{!pkbCon.pageNumParam}={!pkbCon.currPage}" />
     <noscript> Note: This page requires JavaScript to run correctly. </noscript>
 
-    <!-- Mat's .css edits for SFE-1202 -->
-    <style>
-        .pbHeader {
-            display: none !important;
-        }
-
-        .categoryLine:first-child {
-            border-bottom: solid 1px #e0e0e0 !important;
-            margin-bottom: 15px !important;
-            padding-bottom: 10px !important;
-            padding-top: 10px !important;
-        }
-
-        body .bPageBlock,
-        body #bodyCell .bResource .secondaryPalette,
-        body .secondaryPalette.bPageBlock,
-        body .individualPalette .secondaryPalette.bPageBlock,
-        body .bodyDiv .genericTable,
-        body .genericPageBlockTable,
-        body .bodyDiv .bSubBlock,
-        body .bComponentBlock .bPageBlock,
-        body .bMyDashboard .bPageBlock,
-        body.rlHoverFrame .bPageBlock,
-        body.subjectSelectionPopup div.choicesBox,
-        body.lookupTab .secondaryPalette.bPageBlock,
-        body.popupTab .secondaryPalette.bPageBlock,
-        body.UserTagStatsPage .secondaryPalette.bPageBlock {
-            border-top: solid 1px #eaeaea !important;
-            border-radius: 0px !important;
-        }
-
-        body .bPageTitle .pageTitleIcon {
-            display: none !important;
-        }
-
-        body .bPageTitle .ptBody .pageType,
-        body .bPageTitle .ptBody .pageDescription {
-            margin-left: 0px !important;
-        }
-
-        .bPageTitle .ptBody .content {
-            width: 100% !important;
-        }
-    </style>
-
-    <div style="margin-bottom: 5px">
-        <h2 class="section">&nbsp;</h2>
-    </div>
-
-    <div class="articleViewIcons">
-        <c:pkb_articleicons pkbCon="{!pkbCon}" />
-    </div>
-
-    <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" id="backbutton" style="margin-bottom: 5px">
+    <apex:outputPanel layout="block" rendered="{!AND(showBackLinks, NOT(pkbCon.facebook))}" styleClass="mb-1 font-size-std">
         <apex:outputText rendered="{!pkbCon.displaySearchResultsLink}">
-            <a class="relatedLink" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}">&lt; {!$Label.PKB2_Back_To_Results}</a>
+            <a class="text-dark" href="{!$Site.CurrentSiteUrl}?{!pkbCon.allSearchParams}&{!pageNum}">&lt; {!$Label.PKB2_Back_To_Results}</a>
         </apex:outputText>
         <apex:outputText rendered="{!NOT(pkbCon.displaySearchResultsLink)}">
-            <a class="relatedLink" href="{!$Site.CurrentSiteUrl}">&lt; {!$Label.PKB2_Back_To_Search_Page}</a>
+            <a class="text-dark" href="{!$Site.CurrentSiteUrl}">&lt; {!$Label.PKB2_Back_To_Search_Page}</a>
         </apex:outputText>
     </apex:outputPanel>
 
-    <div style="width: 100%" id="articleContainer">
-        <apex:insert name="body" />
-        <apex:outputPanel layout="block" style="margin-top: 20px; margin-bottom: 20px" rendered="{!NOT(pkbCon.isSite)}">
+    <div class="w-100">
+        <div class="pkb-articlebody-scope">
+            <apex:insert name="body" />
+        </div>
+        <apex:outputPanel layout="block" styleClass="my-3 font-size-std" rendered="{!NOT(pkbCon.isSite)}">
             <i>Viewing the PKB from a normal salesforce url (instead of through a Sites url) is for testing purposes only. No
                 article content will render on this page, but all other PKB functionality can be tested.</i>
         </apex:outputPanel>
@@ -90,7 +39,7 @@
     <apex:outputText rendered="{!pkbCon.facebook}">
         <c:pkb_related pkbCon="{!pkbCon}" />
     </apex:outputText>
-    <apex:outputPanel layout="block" styleClass="feedbackContainer" rendered="{!showFeedbackYesNo}">
+    <apex:outputPanel layout="block" styleClass="mb-2" rendered="{!showFeedbackYesNo}">
         <c:pkb_feedbackyesno pkbCon="{!pkbCon}" />
     </apex:outputPanel>
 </apex:component>

@@ -1,4 +1,5 @@
 public without sharing class SubscriberService {
+    @TestVisible
     private static Boolean parentSubsSynced = false;
 
     /**
@@ -120,38 +121,6 @@ public without sharing class SubscriberService {
         if (subscribersToInsert.size() > 0) {
             insert subscribersToInsert;
         }
-    }
-
-    /**
-     * Returns all the fields on Subscriber in a String
-     * @return A string containing all the Subscriber fields
-     */
-    public static String subscriberFieldsToString() {
-        String subscriberFields = null;
-        Map<String, SObjectField> subscriberFieldMap = ObjectService.getObjectFieldMap('Subscriber__c');
-        subscriberFields = ObjectService.objectFieldsToString(subscriberFieldMap);
-        return subscriberFields;
-    }
-
-    /**
-     * Get a list of Subscribers for the provided Contact Id
-     * @param The Id of the Contact to search on
-     * @return A list of Subscribers for the provided Contact Id
-     */
-    public static List<Subscriber__c> getSubscribers(Id contactId) {
-        String subFields = subscriberFieldsToString();
-        List<Subscriber__c> subs = new List<Subscriber__c>();
-        String soql =
-            '' +
-            'SELECT ' +
-            subFields +
-            ', Subscription__r.Name, Subscription__r.Subscription_Type__c, ' +
-            'Subscription__r.Business_Unit__r.Name ' +
-            'FROM Subscriber__c ' +
-            'WHERE Contact__c = :contactId ' +
-            'ORDER BY Subscription__r.Name ';
-        subs = Database.query(soql);
-        return subs;
     }
 
     /**

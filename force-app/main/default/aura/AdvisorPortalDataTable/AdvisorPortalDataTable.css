@@ -21,9 +21,13 @@
 }
 
 .THIS .profile-link {
-    position: absolute;
-    left: 75px;
+    margin-right: 10px;
     text-decoration: underline;
+}
+
+.THIS .contact-name {
+    font-size: 0.95rem;
+    font-weight: 400px;
 }
 
 .THIS .slds-accordion__section .profile-icn {

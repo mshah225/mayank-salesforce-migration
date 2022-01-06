@@ -1,4 +1,7 @@
 <apex:component controller="showMyCoachingStudentsController" allowDML="true">
+    <apex:includeLightning />
+    <c:SLDSRemoveGlobalStyles />
+
     <apex:includeScript value="{!URLFOR($Resource.showMyStudentsResources, 'showMyStudents.js')}" />
     <apex:stylesheet value="{! URLFOR($Resource.showMyStudentsResources, 'showMyStudents.css') }" />
     <apex:stylesheet value="{!URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
@@ -17,33 +20,30 @@
     <apex:attribute name="showSearch" type="boolean" description="" default="false" />
 
     <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
-        <apex:form>
+        <apex:form id="alius-format930">
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink styleClass="btn btn-default asu-primary" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
+                        <apex:outputLink styleClass="btn btn-default asu-primary btn-md" value="javascript:;" style="margin-right: 10px" onclick="toggleEmailModal(this)"
                             rendered="{! showMassEmail}">Mass Email</apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
+                    <apex:outputPanel layout="block" styleClass="input-group" style="width: 100%; max-width: 250px; margin-top: 5px" rendered="{! showSearch}">
                         <apex:inputText id="myStudentsInput" value="{!searchString}" html-placeholder="Filter Students" onkeypress="return noenter(event);"
                             style="
                                 padding: 6px 12px;
                                 vertical-align: middle;
                                 border-radius: 4px;
                                 border: solid 1px #ccc;
-                                max-width: 300px;
-                                width: 100%;
                                 font-size: 11pt;
                                 border-top-right-radius: 0;
                                 border-bottom-right-radius: 0;
                                 border-right: none;
-                            " />
-                        <span class="input-group-addon">
-                            <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
-                                oncomplete="focusSearch()">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            </apex:commandLink>
-                        </span>
+                                margin-right: 0px !important;
+                            " styleClass="form-control" />
+                        <apex:commandLink id="searchStudentsBtn" action="{!myStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555"
+                            oncomplete="focusSearch()" styleClass="input-group-append btn btn-md btn-light m-0 rounded-0">
+                            <span class="fa fa-search" style="font-size: 16px !important" aria-hidden="true"></span>
+                        </apex:commandLink>
 
                         <script>
                             function noenter(ev) {
@@ -78,11 +78,13 @@
                             focusSearch();
                         </script>
 
-                        <span class="input-group-addon">
-                            <apex:commandLink action="{!resetMyStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="color: #555">
-                                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                            </apex:commandLink>
-                        </span>
+                        <apex:commandLink action="{!resetMyStudentsSearch}" status="ASUAjaxStatus" reRender="rerenderMe" style="
+                                color: #555; 
+                                border-radius: 0px; 
+                                border-top-right-radius: 4px; 
+                                border-bottom-right-radius: 4px;" styleClass="input-group-append btn btn-md btn-light m-0">
+                            <span class="fa fa-refresh" style="font-size: 16px !important" aria-hidden="true"></span>
+                        </apex:commandLink>
                     </apex:outputPanel>
                 </div>
 
@@ -109,8 +111,9 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <!-- Modal Title should be set by JS -->
+                            <h4 class="modal-title summary-modal-title">Mass Email</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Mass Email</h4>
                         </div>
 
                         <div class="modal-body">
@@ -121,8 +124,9 @@
                         </div>
 
                         <div class="modal-footer">
-                            <apex:commandLink type="button" action="{!massEmail}" reRender="tableForm" styleClass="btn btn-default asu-primary" status="ASUAjaxStatus"
-                                value="Send" oncomplete="actionComplete()" onclick="toggleEmailModal(this)" />
+                            <apex:commandLink type="button" action="{!massEmail}" reRender="tableForm" styleClass="btn btn-default btn-md asu-primary"
+                                status="ASUAjaxStatus" value="Send" oncomplete="actionComplete()" onclick="toggleEmailModal(this)"
+                            />
                             <button type="button" class="btn btn-default asu-secondary" data-dismiss="modal">
                                 Cancel
                             </button>
@@ -143,10 +147,10 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="studentName" value="Student_Name__c" assignTo="{!sortField}" /> Name&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Student_Name__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Student_Name__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
@@ -157,15 +161,15 @@
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="studentEmplid" value="EMPLID__c" assignTo="{!sortField}" /> EMPLID&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'EMPLID__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'EMPLID__c'}">
-                                <span style="font-size: 7pt" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Profile')"
+                    <apex:outputLink value="javascript:;" onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.EMPLID__c}', 'Profile')"
                         styleClass="standardLink">
                         {!c.obj.EMPLID__c}
                     </apex:outputLink>
@@ -219,7 +223,7 @@
             </script>
         </apex:form>
 
-        <apex:form>
+        <apex:form id="alius-format931">
             <div class="headerFooter">
                 <apex:commandLink action="{!setConPrev}" value="<< Prev" rendered="{!setCon.HasPrevious}" style="float: left" styleClass="standardLink"
                     reRender="rerenderMe" status="ASUAjaxStatus" />
@@ -240,12 +244,16 @@
     </apex:outputPanel>
 
     <script>
-        var primaryTabId, contactId, contactName, asurite, type;
+        var primaryTabId, contactId, emplId, contactName, type;
 
-        function openActionLink(id, name, asuriteId, buttonType) {
+        function isLightningExperienceOrSalesforce1() {
+            return ((typeof sforce != 'undefined') && sforce && (!!sforce.one));
+        }
+
+        function openActionLink(id, name, emplIdIn, buttonType) {
             contactId = id;
             contactName = name;
-            asurite = asuriteId;
+            emplId = emplIdIn;
             type = buttonType;
             var isFound = false;
 
@@ -325,6 +333,18 @@
                         });
                     }
                 });
+            } else if (isLightningExperienceOrSalesforce1()) {
+                if (type == 'Case') {
+                    var message = "/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=" + contactId + "&RecordType=012d00000021xGL&00Nd0000007segq=ASU Coach Outreach";
+                    parent.postMessage(message, '*');
+                } else if (type == 'Profile') {
+                    // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
+                    var message = contactId + "/apex/StudentProfile?contactId=" + emplId;
+                    parent.postMessage(message, '*');
+                } else if (type == 'All Cases') {
+                    var message = "/lightning/r/Case/" + contactId + "/related/Cases/view";
+                    parent.postMessage(message, '*');
+                }
             }
         }
     </script>

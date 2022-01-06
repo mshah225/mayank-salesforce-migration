@@ -22,6 +22,7 @@ public without sharing class FeedbackButtonController {
     public pageReference init() {
         try {
             alertHandler = new AlertHandler();
+            alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
             URLParamsExistAndAreValid = false;
             caseDescription = ApexPages.currentPage().getParameters().get('misc');
             retURL = ApexPages.currentPage().getParameters().get('retURL');
@@ -47,7 +48,7 @@ public without sharing class FeedbackButtonController {
                     alertHandler.newAlert(
                         customAlert.FATAL,
                         'Invalid carName parameter. Our support team has been notified of this error. ' +
-                        'If you require immediate assistance please call 1-855-ASU-5080.'
+                        'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                     );
 
                     throw new dynamicFeedbackException('Error: Invalid carName parameter');
@@ -56,7 +57,7 @@ public without sharing class FeedbackButtonController {
                 alertHandler.newAlert(
                     customAlert.FATAL,
                     'carName parameter not provided. Our support team has been notified of this error. ' +
-                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
 
                 throw new dynamicFeedbackException('carName parameter not provided');
@@ -101,13 +102,13 @@ public without sharing class FeedbackButtonController {
                 alertHandler.newAlert(
                     customAlert.FATAL,
                     'Form submission after initialization error. Our support team has been notified of this error. ' +
-                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
 
                 throw new dynamicFeedbackException('Error: Form submission after initialization error');
             }
 
-            if (caseDescription == '') {
+            if (caseDescription.replaceAll('\\s', '') == '') {
                 proceed = false;
 
                 alertHandler.newAlert(customAlert.WARNING, 'Feedback comments are required.');
@@ -166,6 +167,14 @@ public without sharing class FeedbackButtonController {
             }
             return null;
         } catch (Exception e) {
+            if (!(e instanceof dynamicFeedbackException)) {
+                alertHandler.newAlert(
+                    customAlert.FATAL,
+                    'Unexpected error. Our support team has been notified of this error. ' +
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
+                );
+            }
+
             List<String> vars = new List<String>();
 
             vars.add(ErrorLogger.convertStringToJSON('carName', carName));

@@ -160,26 +160,6 @@ global with sharing class MCSMSOptInController {
         return null;
     }
 
-    global class OptInRequest {
-        public String subscriberKey { get; set; }
-        public String mobileNumber { get; set; }
-        public String shortCode { get; set; }
-        public String messageText { get; set; }
-        public String asurite { get; set; }
-        public String emplid { get; set; }
-        public String firstname { get; set; }
-        public String lastName { get; set; }
-        public String middlename { get; set; }
-        public String email { get; set; }
-        public String phone { get; set; }
-        public String birthdate { get; set; }
-        public String street { get; set; }
-        public String city { get; set; }
-        public String statecode { get; set; }
-        public String postalcode { get; set; }
-        public String countrycode { get; set; }
-    }
-
     global class OptInResult {
         public Boolean success { get; set; }
         public String message { get; set; }

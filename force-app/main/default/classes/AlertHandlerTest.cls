@@ -1,41 +1,99 @@
 @isTest
 public class AlertHandlerTest {
-    static AlertHandler handler;
-
-    static {
-        handler = new AlertHandler();
+    @isTest
+    private static void testConstructor() {
+        AlertHandler handler = new AlertHandler();
+        System.assert(handler.alerts.size() == 0);
     }
 
-    public static testMethod void Test_Constructor() {
-        system.assert(handler.alerts.size() == 0);
-    }
+    @isTest
+    private static void testNewAlert() {
+        AlertHandler handler = new AlertHandler();
 
-    public static testMethod void Test_newAlert() {
-        test.startTest();
+        Test.startTest();
         handler.newAlert('CONFIRM', 'test');
-        test.stopTest();
+        Test.stopTest();
 
-        system.assert(handler.alerts.size() == 1);
-        system.assert(handler.alerts[0].severity == 'CONFIRM');
-        system.assert(handler.alerts[0].message == 'test');
+        System.assert(handler.alerts.size() == 1);
+        System.assert(handler.alerts[0].severity == 'CONFIRM');
+        System.assert(handler.alerts[0].message == 'test');
     }
 
-    public static testMethod void Test_Clear() {
-        handler.newAlert('CONFIRM', 'test');
+    @isTest
+    private static void testClear() {
+        AlertHandler handler = new AlertHandler();
 
-        test.startTest();
+        Test.startTest();
+        handler.newAlert('CONFIRM', 'test');
         handler.clear();
-        test.stopTest();
+        Test.stopTest();
 
-        system.assert(handler.alerts.size() == 0);
+        System.assert(handler.alerts.size() == 0);
     }
 
-    public static testMethod void Test_Duplicate() {
-        handler.newAlert('CONFIRM', 'test');
-        test.startTest();
-        handler.newAlert('CONFIRM', 'test');
-        test.stopTest();
+    @isTest
+    private static void testDuplicate() {
+        AlertHandler handler = new AlertHandler();
 
-        system.assert(handler.alerts.size() == 1);
+        Test.startTest();
+        handler.newAlert('CONFIRM', 'test');
+        handler.newAlert('CONFIRM', 'test');
+        Test.stopTest();
+
+        System.assert(handler.alerts.size() == 1);
+    }
+
+    @isTest
+    private static void testCategoricalGets() {
+        AlertHandler handler = new AlertHandler();
+
+        String fatalAlertMsg = 'testFatal';
+        String warningAlertMsg = 'testWarning';
+        String infoAlertMsg = 'testInfo';
+        String confirmAlertMsg = 'testConfirm';
+
+        Test.startTest();
+        handler.newAlert('FATAL', fatalAlertMsg);
+        handler.newAlert('WARNING', warningAlertMsg);
+        handler.newAlert('INFO', infoAlertMsg);
+        handler.newAlert('CONFIRM', confirmAlertMsg);
+        Test.stopTest();
+
+        System.assert(handler.getFatal().size() == 1);
+        System.assert(handler.getFatal()[0].severity == 'FATAL');
+        System.assert(handler.getFatal()[0].message == fatalAlertMsg);
+
+        System.assert(handler.getWarning().size() == 1);
+        System.assert(handler.getWarning()[0].severity == 'WARNING');
+        System.assert(handler.getWarning()[0].message == warningAlertMsg);
+
+        System.assert(handler.getInfo().size() == 1);
+        System.assert(handler.getInfo()[0].severity == 'INFO');
+        System.assert(handler.getInfo()[0].message == infoAlertMsg);
+
+        System.assert(handler.getConfirm().size() == 1);
+        System.assert(handler.getConfirm()[0].severity == 'CONFIRM');
+        System.assert(handler.getConfirm()[0].message == confirmAlertMsg);
+    }
+
+    @isTest
+    private static void testExtractingFromParamList() {
+        AlertHandler handler = new AlertHandler();
+        AlertHandler handler2 = new AlertHandler();
+
+        Map<String, String> paramMap = new Map<String, String>();
+        paramMap.put('feedback', 'yes');
+        paramMap.put('confirm', 'newcase');
+        paramMap.put('suggest', 'yes');
+        Map<String, String> paramMap2 = new Map<String, String>();
+        paramMap2.put('confirm', 'feedback');
+
+        Test.startTest();
+        handler.loadStandardAlertsFromMap(paramMap);
+        handler2.loadStandardAlertsFromMap(paramMap2);
+        Test.stopTest();
+
+        System.assert(handler.alerts.size() == 3);
+        System.assert(handler2.alerts.size() == 1);
     }
 }

@@ -1,5 +1,6 @@
 public with sharing class FeedbackController {
     private MyASUHelpController sc;
+    private static Boolean debug = true; // Debug mode flag
 
     public Case c { get; set; }
     public Contact feedbackContact { get; set; }
@@ -23,7 +24,7 @@ public with sharing class FeedbackController {
         }
 
         try {
-            Queue = [SELECT Id FROM Group WHERE Name = 'Student-Centric Initiatives (Case)' AND Type = 'Queue'];
+            Queue = [SELECT Id FROM Group WHERE Name = 'Student Success Innovations (Case)' AND Type = 'Queue'];
             c.OwnerId = Queue.Id;
             c.Subject = 'My ASU Help Tab Feedback';
             c.Description = comments;
@@ -41,7 +42,7 @@ public with sharing class FeedbackController {
                 WHERE
                     RecordType.Name = 'Functional Group'
                     AND Active__c = TRUE
-                    AND Name = 'Student-Centric Initiatives'
+                    AND Name = 'Student Success Innovations'
                     AND Parent__c = NULL
                 LIMIT 1
             ]
@@ -61,6 +62,15 @@ public with sharing class FeedbackController {
             c.Visible_by_Contact__c = false;
             insert c;
         } catch (Exception e) {
+            List<String> vars = new List<String>();
+            if (queue != null)
+                vars.add(ErrorLogger.convertSObjectToJSON('queue', queue));
+            if (comments != null)
+                vars.add(ErrorLogger.convertStringToJSON('comments', comments));
+            if (feedbackContact != null)
+                vars.add(ErrorLogger.convertSObjectToJSON('feedbackContact', feedbackContact));
+
+            ErrorLogger.log(e, vars, debug);
         }
 
         PageReference submit = new PageReference('/studentSC?Confirm=feedback');

@@ -571,7 +571,6 @@ public with sharing class pkb_SecurityHandler {
             TimezonesIdKey = 'America/Los_Angeles',
             ProfileId = p.Id
         );
-        //insert u;
         return u;
     }
 }

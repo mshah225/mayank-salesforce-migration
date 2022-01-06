@@ -17,20 +17,20 @@ public class QuickActionDefaultsHandlerTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getProfileID('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileID('System Administrator'),
             LanguageLocaleKey = 'en_US'
         );
         insert testUser;
 
         Case_Classification__c testAdvFuncGroup = new Case_Classification__c(
             Name = 'ASU Advisor Outreach',
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
             Active__c = true,
             Visible__c = true
         );
         Case_Classification__c testCoachFuncGroup = new Case_Classification__c(
             Name = 'ASU Coach Outreach',
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
             Active__c = true,
             Visible__c = true
         );
@@ -39,14 +39,14 @@ public class QuickActionDefaultsHandlerTest {
         Case_Classification__c testAdvCategory = new Case_Classification__c(
             Name = 'Test Outreach Category',
             Parent__c = testAdvFuncGroup.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category'),
             Active__c = true,
             Visible__c = true
         );
         Case_Classification__c testCoachCategory = new Case_Classification__c(
             Name = 'Test Outreach Category',
             Parent__c = testCoachFuncGroup.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category'),
             Active__c = true,
             Visible__c = true
         );
@@ -66,7 +66,7 @@ public class QuickActionDefaultsHandlerTest {
 
         Success_Pod__c testPod = new Success_Pod__c(
             OwnerId = testGroup.Id,
-            RecordTypeId = IDHelper.getRTID('Success_Pod__c', 'Advisor'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Advisor'),
             Primary_Email__c = testGroup.Name + '@test.asu.edu',
             Name = 'Test Pod 1',
             Committee__c = 'tp1'
@@ -85,8 +85,8 @@ public class QuickActionDefaultsHandlerTest {
         }
         insert testContacts;
 
-        Id advisorOutReachId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
-        Id coachOutReachId = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
+        Id advisorOutReachId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Id coachOutReachId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
         List<Case> testCases = new List<Case>();
         // Advisor Case, Group owned
         testCases.add(
@@ -142,7 +142,7 @@ public class QuickActionDefaultsHandlerTest {
         Case testCase = [
             SELECT Id, OwnerId
             FROM Case
-            WHERE RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
         ];
 
         // Must store as map and then use serialize/deserialize because
@@ -178,7 +178,7 @@ public class QuickActionDefaultsHandlerTest {
         Case testCase = [
             SELECT Id, OwnerId
             FROM Case
-            WHERE RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
         ];
 
         // Must store as map and then use serialize/deserialize because
@@ -214,7 +214,9 @@ public class QuickActionDefaultsHandlerTest {
         Case testCase = [
             SELECT Id, OwnerId
             FROM Case
-            WHERE RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') AND Owner.Name = :groupName
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                AND Owner.Name = :groupName
         ];
         Success_Pod__c testPod = [SELECT Primary_Email__c FROM Success_Pod__c WHERE OwnerId = :testCase.OwnerId];
 
@@ -232,7 +234,9 @@ public class QuickActionDefaultsHandlerTest {
         Case testCase = [
             SELECT Id, Most_Recent_Queue__c
             FROM Case
-            WHERE RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Advisor_Outreach') AND Owner.Alias = :userAlias
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                AND Owner.Alias = :userAlias
         ];
         Success_Pod__c testPod = [
             SELECT Primary_Email__c
@@ -255,7 +259,7 @@ public class QuickActionDefaultsHandlerTest {
         Case testCase = [
             SELECT Id, Most_Recent_Queue__c
             FROM Case
-            WHERE RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
         ];
 
         System.runAs(testUser) {
@@ -275,7 +279,7 @@ public class QuickActionDefaultsHandlerTest {
         Case testCase = [
             SELECT Id, Most_Recent_Queue__c
             FROM Case
-            WHERE RecordTypeId = :IDHelper.getRTID('Case', 'ASU_Coach_Outreach')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
         ];
 
         em.CcAddress = testUser.Recruiter_Email__c;
@@ -292,12 +296,12 @@ public class QuickActionDefaultsHandlerTest {
     private static void testIsAdvisorCase() {
         QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
         Case advisorCase = new Case(
-            RecordTypeId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
             Subject = 'Advisor Case',
             Description = 'Advisor Case'
         );
         Case notAdvisorCase = new Case(
-            RecordTypeId = IDHelper.getRTID('Case', 'ASU_Coach_Outreach'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach'),
             Subject = 'Not Advisor Case',
             Description = 'Not Advisor Case'
         );

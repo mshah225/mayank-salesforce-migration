@@ -1,4 +1,4 @@
-public class PortalEmailDispatcher implements IDispatch {
+public class PortalEmailDispatcher implements TriggerDispatcherInterface {
     private static Map<Id, Portal_Email__c> newPortalEmails; // trigger.newMap
     private static Map<Id, Portal_Email__c> oldPortalEmails; // trigger.oldMap
 

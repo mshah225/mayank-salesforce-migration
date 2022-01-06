@@ -1,17 +1,31 @@
 import {LightningElement, api} from 'lwc';
-import {loadScript} from 'lightning/platformResourceLoader';
+import {loadScript, loadStyle} from 'lightning/platformResourceLoader';
+import bootstrap_4_asu from '@salesforce/resourceUrl/bootstrap_4_asu';
 import jQuery from '@salesforce/resourceUrl/jQuery_3_1_1';
 import getFirstName from '@salesforce/apex/ASUBrandUtilities.getFirstName';
+import ASU_Brand_Header_Vendor_URL from '@salesforce/label/c.ASU_Brand_Header_Vendor_URL';
+import ASU_Brand_Header_Components_Library_URL from '@salesforce/label/c.ASU_Brand_Header_Components_Library_URL';
 
 export default class AsuBrandHeader extends LightningElement {
     @api title;
     @api baseUrl;
     @api navTreeStr;
+    @api buttons = [];
     @api noAutoSpacer = false;
+    @api stationary = false;
     oldStyle = false;
     oldStyleSelectedTab = null;
 
+    @api viewingAs = false;
+    @api viewAsFirstName;
+    @api viewAsLastName;
+    @api viewAsEmplId;
+    @api viewAsViewAsUrl;
+    @api viewAsStopViewAsUrl;
+
     connectedCallback() {
+        loadStyle(this, bootstrap_4_asu + '/dist/css/bootstrap-asu.min.css');
+
         const params = new URLSearchParams(window.location.search);
 
         // Precedence: @api defined > URL param > default value
@@ -55,23 +69,26 @@ export default class AsuBrandHeader extends LightningElement {
             }
         }
     }
+
     renderedCallback() {
+        if (this.stationary) {
+            this.template.querySelector('.top-level-wrapper').classList.add('force-relative-header');
+        }
+        if (this.viewingAs) {
+            this.template.querySelector('.top-level-wrapper').classList.add('view-as-enabled');
+        }
+
         loadScript(this, jQuery).then(() => {
-            $.getScript(
-                'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/vendor.js',
-                () => {
-                    $.getScript(
-                        'https://cdn.jsdelivr.net/gh/mgilardi/asu-design-system/components-library/dist/components-library.js',
-                        () => {
-                            this.generateHeader();
-                        }
-                    );
-                }
-            );
+            $.getScript(ASU_Brand_Header_Vendor_URL, () => {
+                $.getScript(ASU_Brand_Header_Components_Library_URL, () => {
+                    this.generateHeader();
+                });
+            });
         });
     }
+
     generateHeader() {
-        const idSelector = this.template.querySelector('.headerContainer').id;
+        const idSelector = this.template.querySelector('.header-container').id;
         const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
 
         // Additional header params to investigate:
@@ -79,26 +96,32 @@ export default class AsuBrandHeader extends LightningElement {
         // logoutLink (need to set custom for SF here)
         // loginLink (need to set custom for sites that don't have users already logged in, like Family Portal)
 
+        // Always have these props
+        let props = {
+            navTree: navTree,
+            title: this.title,
+            baseUrl: this.baseUrl,
+        };
+
+        // Add section for view as
+        if (this.viewingAs) {
+            props.navTree.push({
+                text: 'View As Student',
+                href: this.viewAsViewAsUrl,
+            });
+            props.navTree.push({
+                text: 'Stop Viewing As: ' + this.viewAsFirstName,
+                href: this.viewAsStopViewAsUrl,
+            });
+        }
+
         getFirstName()
             .then((name) => {
-                const props = {
-                    loggedIn: true,
-                    userName: name,
-                    navTree: navTree,
-                    title: this.title,
-                    baseUrl: this.baseUrl,
-                };
-
-                componentsLibrary.initHeader(props, idSelector, false, this.template);
-                this.setupSpacerResizing();
+                props.loggedIn = true;
+                props.userName = name;
             })
-            .catch(() => {
-                const props = {
-                    navTree: navTree,
-                    title: this.title,
-                    baseUrl: this.baseUrl,
-                };
-
+            .catch(() => {})
+            .finally(() => {
                 componentsLibrary.initHeader(props, idSelector, false, this.template);
                 this.setupSpacerResizing();
             });
@@ -106,19 +129,9 @@ export default class AsuBrandHeader extends LightningElement {
     convertStrToNavTreeObj(navTreeStr) {
         const json = JSON.parse(navTreeStr);
         const entries = json['navbarLinks'];
-        let newStyle = true;
         let listOfLinks = [];
 
         if (entries) {
-            // Determine if using old link format
-            for (let i = 0; i < entries.length; i++) {
-                let entry = entries[i];
-                if (entry['text'] === undefined) {
-                    newStyle = false;
-                    break;
-                }
-            }
-
             if (!this.oldStyle) {
                 listOfLinks = entries;
             } else {
@@ -148,7 +161,7 @@ export default class AsuBrandHeader extends LightningElement {
     }
 
     resizeIt() {
-        this.template.querySelector('.headerSpacer').style.height =
+        this.template.querySelector('.header-spacer').style.height =
             this.template.querySelector('header').clientHeight + 10 + 'px';
     }
     setupSpacerResizing() {
@@ -178,7 +191,7 @@ export default class AsuBrandHeader extends LightningElement {
                     }, 100);
                 }
             });
-            this.template.querySelector('.headerContainer').addEventListener('click', () => {
+            this.template.querySelector('.header-container').addEventListener('click', () => {
                 // only run near the top of the page
                 window.setTimeout(() => {
                     this.resizeIt();

@@ -37,7 +37,7 @@ global class QuickActionDefaultsHandler implements QuickAction.QuickActionDefaul
         try {
             c = [SELECT Contact.Email, OwnerId, RecordTypeId, Most_Recent_Queue__c FROM Case WHERE Id = :contextId];
             em.ToAddress = c.Contact.Email;
-            if (c.RecordTypeId == IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')) {
+            if (c.RecordTypeId == RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')) {
                 List<Success_pod__c> primaryEmailFromPod;
                 if (Validator.validateId(c.ownerId, group.class)) {
                     primaryEmailFromPod = [
@@ -57,7 +57,7 @@ global class QuickActionDefaultsHandler implements QuickAction.QuickActionDefaul
                 if (!primaryEmailFromPod.isEmpty() && primaryEmailFromPod[0].Primary_Email__c != null) {
                     result = primaryEmailFromPod[0].Primary_Email__c;
                 }
-            } else if (c.RecordTypeId == IDHelper.getRTID('Case', 'ASU_Coach_Outreach')) {
+            } else if (c.RecordTypeId == RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')) {
                 List<User> primaryEmailFromUser;
                 primaryEmailFromUser = [SELECT Recruiter_Email__c FROM User WHERE Id = :UserInfo.getUserId()];
                 if (!primaryEmailFromUser.isEmpty() && primaryEmailFromUser[0].Recruiter_Email__c != null) {
@@ -80,7 +80,7 @@ global class QuickActionDefaultsHandler implements QuickAction.QuickActionDefaul
     }
 
     global boolean isAdvisorCase(Case context) {
-        if (context.RecordTypeId == IDHelper.getRTID('Case', 'ASU_Advisor_Outreach')) {
+        if (context.RecordTypeId == RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')) {
             return true;
         } else {
             return false;

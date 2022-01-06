@@ -14,7 +14,7 @@
     <apex:outputText value="{!catGroupLabel}" />
   </span>
   <br />
-  <select name="categorySelect{!catNum}" id="categorySelect{!catNum}" onchange="setCategory(this);">
+  <select name="categorySelect{!catNum}" id="categorySelect{!catNum}" class="w-100" onchange="setCategory(this);">
     <option value="">--{!$Label.PKB2_No_Filter}--</option>
     <knowledge:categoryList categoryVar="c" categoryGroup="{!catGroup}" rootCategory="{!rootCat}" level="-1">
       <option value="{!catGroup}:{!c.Name}">

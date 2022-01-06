@@ -1,107 +1,127 @@
 @isTest
 private class FinancialAidPackageTriggerTest {
-    static List<Id> contactIds = new List<Id>();
-    static List<Id> faPackIds = new List<Id>();
-
-    private static void createContacts(Integer qty) {
-        List<Contact> contacts = new List<Contact>();
-
-        for (Integer i = 0; i < qty; i++) {
-            Contact con = new Contact();
-            con.FirstName = 'FName' + i;
-            con.LastName = 'LName' + i;
-            contacts.add(con);
-        }
-
-        insert contacts;
-
-        for (Contact c : contacts) {
-            contactIds.add(c.Id);
-        }
+    @TestSetup
+    private static void setup() {
+        Contact c = new Contact(FirstName = 'TestContact', LastName = 'TestContact');
+        insert c;
     }
 
-    private static void createFAPacks(Integer qty) {
-        createContacts(qty);
+    @isTest
+    private static void testFAPackStatusTimeStampOnInsert() {
+        Contact c = [SELECT Id FROM Contact LIMIT 1];
+        Date today = System.now().date();
 
-        Date today = Date.today();
-        List<Financial_Aid_Package__c> faPacks = new List<Financial_Aid_Package__c>();
+        Financial_Aid_Package__c newFaPack = new Financial_Aid_Package__c(
+            Contact__c = c.Id,
+            Aid_Year__c = String.valueOf(today.year()),
+            EFC_Range__c = 'Very High',
+            FAFSA_Date_Received__c = today,
+            Fin_Aid_Package_Date__c = today,
+            Financial_Aid_Status__c = 'Act on Your Awards',
+            Pell_Eligibility__c = false,
+            Promise_Cohort__c = 'Obama'
+        );
 
-        for (Id contactId : contactIds) {
-            Financial_Aid_Package__c faPack = new Financial_Aid_Package__c();
-            faPack.Contact__c = contactId;
-            faPack.Aid_Year__c = String.valueOf(today.year());
-            faPack.EFC_Range__c = 'Very High';
-            faPack.FAFSA_Date_Received__c = today;
-            faPack.Fin_Aid_Package_Date__c = today;
-            faPack.Financial_Aid_Status__c = 'Act on Your Awards';
-            faPack.Pell_Eligibility__c = false;
-            faPack.Promise_Cohort__c = 'Obama';
-            faPacks.add(faPack);
+        Datetime beforeInsert = System.now();
+
+        while (System.now().getTime() - beforeInsert.getTime() < 1000) {
+            // Waste at least 1000ms to ensure FA_Status_Time_Stamp__c is far enough from these comparison time stamps
         }
-        insert faPacks;
 
-        for (Financial_Aid_Package__c f : faPacks) {
-            faPackIds.add(f.Id);
+        Test.startTest();
+        insert newFaPack;
+        Test.stopTest();
+
+        Datetime afterInsert = System.now();
+        while (System.now().getTime() - afterInsert.getTime() < 1000) {
+            // Waste at least 1000ms to ensure FA_Status_Time_Stamp__c is far enough from these comparison time stamps
+        }
+        afterInsert = System.now();
+
+        List<Financial_Aid_Package__c> faPacks = [
+            SELECT Id, FA_Status_Time_Stamp__c, CreatedDate
+            FROM Financial_Aid_Package__c
+        ];
+
+        System.assert(!faPacks.isEmpty(), 'Did not create Financial Aid Packages');
+        for (Financial_Aid_Package__c faPack : faPacks) {
+            System.assert(faPack.FA_Status_Time_Stamp__c >= beforeInsert);
+            System.assert(faPack.FA_Status_Time_Stamp__c <= afterInsert);
         }
     }
 
     @isTest
-    static void testFAPackStatusTimeStampOnInsert() {
-        //Invoke the before insert trigger
-        createFAPacks(1);
+    private static void testFAPackStatusTimeStampOnUpdate() {
+        Contact c = [SELECT Id FROM Contact LIMIT 1];
+        Date today = System.now().date();
+
+        Financial_Aid_Package__c newFaPack = new Financial_Aid_Package__c(
+            Contact__c = c.Id,
+            Aid_Year__c = String.valueOf(today.year()),
+            EFC_Range__c = 'Very High',
+            FAFSA_Date_Received__c = today,
+            Fin_Aid_Package_Date__c = today,
+            Financial_Aid_Status__c = 'Act on Your Awards',
+            Pell_Eligibility__c = false,
+            Promise_Cohort__c = 'Obama'
+        );
+
+        insert newFaPack;
+
+        newFaPack.Financial_Aid_Status__c = 'Disbursement';
+
+        Datetime beforeUpdate = System.now();
+
+        while (System.now().getTime() - beforeUpdate.getTime() < 1000) {
+            // Waste at least 1000ms to ensure FA_Status_Time_Stamp__c is far enough from these comparison time stamps
+        }
+
+        Test.startTest();
+        update newFaPack;
+        Test.stopTest();
+
+        Datetime afterUpdate = System.now();
+        while (System.now().getTime() - afterUpdate.getTime() < 1000) {
+            // Waste at least 1000ms to ensure FA_Status_Time_Stamp__c is far enough from these comparison time stamps
+        }
+        afterUpdate = System.now();
 
         //Get the records we created
         List<Financial_Aid_Package__c> faPacks = [
             SELECT Id, FA_Status_Time_Stamp__c, CreatedDate
             FROM Financial_Aid_Package__c
-            WHERE Id = :faPackIds
         ];
 
+        System.assert(!faPacks.isEmpty(), 'Did not create Financial Aid Packages');
         for (Financial_Aid_Package__c faPack : faPacks) {
-            System.debug('Time Stamp is ' + faPack.FA_Status_Time_Stamp__c);
-            System.debug('CreatedDate is ' + faPack.CreatedDate);
-
-            System.assertEquals(faPack.CreatedDate.year(), faPack.FA_Status_Time_Stamp__c.year());
-            System.assertEquals(faPack.CreatedDate.month(), faPack.FA_Status_Time_Stamp__c.month());
-            System.assertEquals(faPack.CreatedDate.day(), faPack.FA_Status_Time_Stamp__c.day());
+            System.assert(faPack.FA_Status_Time_Stamp__c >= beforeUpdate);
+            System.assert(faPack.FA_Status_Time_Stamp__c <= afterUpdate);
         }
     }
 
     @isTest
-    static void testFAPackStatusTimeStampOnUpdate() {
-        //Invoke the before insert trigger
-        createFAPacks(1);
+    private static void padTests() {
+        /**
+         * Just exists to pad the test coverage - we don't do anything on delete/undelete
+         */
+        Contact c = [SELECT Id FROM Contact LIMIT 1];
+        Date today = System.now().date();
 
-        //Get the records we created
-        List<Financial_Aid_Package__c> faPacks = [
-            SELECT Id, FA_Status_Time_Stamp__c, LastModifiedDate
-            FROM Financial_Aid_Package__c
-            WHERE Id = :faPackIds
-        ];
+        Financial_Aid_Package__c newFaPack = new Financial_Aid_Package__c(
+            Contact__c = c.Id,
+            Aid_Year__c = String.valueOf(today.year()),
+            EFC_Range__c = 'Very High',
+            FAFSA_Date_Received__c = today,
+            Fin_Aid_Package_Date__c = today,
+            Financial_Aid_Status__c = 'Act on Your Awards',
+            Pell_Eligibility__c = false,
+            Promise_Cohort__c = 'Obama'
+        );
 
-        //Change the FA Status to invoke before update trigger
-        List<Financial_Aid_Package__c> newFaPacks = new List<Financial_Aid_Package__c>();
-        for (Financial_Aid_Package__c f1 : faPacks) {
-            f1.Financial_Aid_Status__c = 'Disbursement';
-            newFaPacks.add(f1);
-        }
-        //Update the records
-        update newFaPacks;
-
-        //Get the updated records
-        newFaPacks = [
-            SELECT Id, FA_Status_Time_Stamp__c, LastModifiedDate
-            FROM Financial_Aid_Package__c
-            WHERE Id = :faPackIds
-        ];
-
-        for (Financial_Aid_Package__c f2 : faPacks) {
-            System.debug('Time Stamp is ' + f2.FA_Status_Time_Stamp__c);
-            System.debug('LastModifiedDate is ' + f2.LastModifiedDate);
-
-            System.assertEquals(f2.LastModifiedDate.year(), f2.FA_Status_Time_Stamp__c.year());
-            System.assertEquals(f2.LastModifiedDate.month(), f2.FA_Status_Time_Stamp__c.month());
-            System.assertEquals(f2.LastModifiedDate.day(), f2.FA_Status_Time_Stamp__c.day());
-        }
+        Test.startTest();
+        insert newFaPack;
+        delete newFaPack;
+        undelete newFaPack;
+        Test.stopTest();
     }
 }

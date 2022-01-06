@@ -1,7 +1,7 @@
 public class PersistenceOutlookService  {
 
-    static void updateOldPersistenceOutlookRecords(List<Persistence_Outlook__c newList) {
-        Set<Contact> contactsConnectedToOutlook = new List<Contact>();
+    public static void updateOldPersistenceOutlookRecords(List<Persistence_Outlook__c> newList) {
+        Set<Id> contactsConnectedToOutlook = new Set<Id>();
         for (Persistence_Outlook__c outlook : newList) {
             contactsConnectedToOutlook.add(outlook.Contact__c);
             outlook.Current_Flag__c = true; 

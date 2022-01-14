@@ -1,4 +1,4 @@
-@RestResource(urlMapping='/MyASUSuccessCoach')
+@RestResource(urlMapping='/MySuccessCoach')
 global with sharing class SuccessCoachDetailsAPI {
     @HttpGet
     global static List<Success_Resource__c> getMyCoach() {
@@ -17,7 +17,7 @@ global with sharing class SuccessCoachDetailsAPI {
             studentInfo = [
                 SELECT Id, Success_Resource__c
                 FROM Success_Student__c
-                WHERE Coaching_Student__c = TRUE AND Student__r.ASURite_ID__c = :studentId
+                WHERE Student__r.ASURite_ID__c = :studentId AND Coaching_Student__c = TRUE AND Is_Active__c = TRUE
                 LIMIT 1
             ];
             if (studentInfo.size() > 0) {
@@ -30,8 +30,6 @@ global with sharing class SuccessCoachDetailsAPI {
                         Resource__r.Phone,
                         Resource__r.Title,
                         Resource__r.TimeZoneSidKey,
-                        Resource__r.Department,
-                        Resource__r.EmployeeNumber,
                         ASURiteID__c,
                         AgentID__c
                     FROM Success_Resource__c

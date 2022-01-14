@@ -113,6 +113,7 @@ private class SuccessCoachDetailsAPITest {
         successStudent.Student__c = userStudent.Id;
         successStudent.Success_Resource__c = successCoach.Id;
         successStudent.Success_POD__c = successPOD.Id;
+        successStudent.Is_Active__c = true;
         successStudent.Coaching_Student__c = true;
         insert successStudent;
 
@@ -133,7 +134,7 @@ private class SuccessCoachDetailsAPITest {
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         req.AddParameter('studentId', 'jdoe1');
-        req.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/MyASUSuccessCoach';
+        req.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/MySuccessCoach';
         req.httpMethod = 'GET';
         RestContext.request = req;
         RestContext.response = res;

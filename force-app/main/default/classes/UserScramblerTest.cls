@@ -7,7 +7,7 @@ private class UserScramblerTest {
         User testUser = new User(
             FirstName = 'Test',
             LastName = 'User',
-            Username = 'test.user@test.test',
+            Username = 'test.user@test.test.blank',
             Email = 'test.user@test.test',
             Alias = testUserAlias,
             CommunityNickname = testUserAlias,

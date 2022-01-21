@@ -8,7 +8,7 @@ trigger AccountTrigger on Account(
     before update
 ) {
     if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.AccountTA();
+        TerritoryAssignmentAccount ta = new TerritoryAssignmentAccount();
+        ta.assignTerritory();
     }
 }

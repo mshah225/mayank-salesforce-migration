@@ -1,5 +1,5 @@
 @isTest
-public without sharing class TerritoryAssignmentHelperTest {
+public without sharing class TerritoryAssignmentTest {
     @testSetup
     static void setup() {
         UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
@@ -44,7 +44,7 @@ public without sharing class TerritoryAssignmentHelperTest {
         Opp.OwnerId = TestUser.Id;
         insert Opp;
 
-        TerritoryAssignmentHelper.accountTADone = false;
+        TerritoryAssignmentAccount.assignTerritoryDone = false;
 
         Test.startTest();
         HS.ShippingPostalCode = '85287';
@@ -1436,7 +1436,7 @@ public without sharing class TerritoryAssignmentHelperTest {
 
         Test.startTest();
         // Force an update to run on lead
-        TerritoryAssignmentHelper.leadTADone = false;
+        TerritoryAssignmentLead.assignTerritoryDone = false;
 
         Lead updatedLead = [SELECT Id FROM Lead WHERE Id = :l.Id];
         updatedLead.International_Student__c = true;
@@ -1456,8 +1456,8 @@ public without sharing class TerritoryAssignmentHelperTest {
 
     public testMethod static void testErrorLogger() {
         Test.startTest();
-        TerritoryAssignmentHelper.updateContactList(null);
-        TerritoryAssignmentHelper.updateOpportunityList(null);
+        TerritoryAssignmentService.updateContactList(null);
+        TerritoryAssignmentService.updateOpportunityList(null);
         Test.stopTest();
 
         List<Case> errorList = [SELECT Id FROM Case];

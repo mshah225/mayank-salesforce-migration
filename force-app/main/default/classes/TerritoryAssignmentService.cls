@@ -1,8 +1,49 @@
-public class TerritoryAssignmentRuleService {
-    /**
-     * Returns all the fields on TerritoryAssignmentRule in a String
-     * @return A string containing all the TerritoryAssignmentRule fields
-     */
+public with sharing class TerritoryAssignmentService {
+    private static Map<String, List<PS_Country_Map__c>> psCountryMap;
+    private static Boolean debug = false;
+
+    public static String shortenZipCode(String zip) {
+        if (zip != null) {
+            zip = zip.left(5);
+        }
+        return zip;
+    }
+
+    public static String getSFCountry(String country) {
+        if (psCountryMap == null) {
+            psCountryMap = PSCountryMapService.mapPSCountryToIntegrationValue();
+        }
+        List<PS_Country_Map__c> possibleCountries = psCountryMap.get(country);
+
+        if (possibleCountries != null && possibleCountries.size() > 0) {
+            PS_Country_Map__c psCountry = possibleCountries.get(0);
+            String sfCountry = psCountry.Country_Name__c;
+            return sfCountry;
+        } else {
+            return '';
+        }
+    }
+
+    public static void updateContactList(List<Contact> conList) {
+        List<String> vars = new List<String>();
+        try {
+            update conList;
+        } catch (Exception e) {
+            vars.add(ErrorLogger.convertListToJSON('conList', conList));
+            ErrorLogger.log(e, vars, debug);
+        }
+    }
+
+    public static void updateOpportunityList(List<Opportunity> oppList) {
+        List<String> vars = new List<String>();
+        try {
+            update oppList;
+        } catch (Exception e) {
+            vars.add(ErrorLogger.convertListToJSON('oppList', oppList));
+            ErrorLogger.log(e, vars, debug);
+        }
+    }
+
     public static String fieldsToString() {
         String tarFields = null;
 
@@ -13,10 +54,6 @@ public class TerritoryAssignmentRuleService {
         return tarFields;
     }
 
-    /**
-     * Returns a map of all the Territory Assignment Rules sorted by their Rule Key
-     * @return A map containing a set of Rule Keys and their associated Territory Assignment Rules
-     */
     public static Map<String, List<Territory_Assignment_Rule__c>> mapTerritoryAssignmentRulesToRuleKey() {
         Map<String, List<Territory_Assignment_Rule__c>> tarMap = new Map<String, List<Territory_Assignment_Rule__c>>();
 
@@ -30,7 +67,7 @@ public class TerritoryAssignmentRuleService {
                 'FROM Territory_Assignment_Rule__c';
             tars = Database.query(selectAllTars);
         } catch (Exception e) {
-            throw new TerritoryAssignmentRuleServiceException(
+            throw new TerritoryAssignmentServiceException(
                 '!!!ERROR!!!: An error occurred trying to get all of the Territory Assignment Rules in this Org.\n' +
                 e.getMessage()
             );
@@ -48,12 +85,6 @@ public class TerritoryAssignmentRuleService {
         return tarMap;
     }
 
-    /**
-     * Returns the appropriate Territory Assignment Rule for a given list of TARs and an  Assignment Number
-     * @param A list of possible Territory Assignment Rules
-     * @param A Decimal containing the Opportunity or Lead Assignment Number
-     * @return A Territory Assignment Rule that corresponds to the tarList and assignmentNumber, or null if none could be found
-     */
     public static Territory_Assignment_Rule__c getTerritoryAssignmentRule(
         List<Territory_Assignment_Rule__c> tarList,
         Decimal assignmentNumber
@@ -85,6 +116,6 @@ public class TerritoryAssignmentRuleService {
         return tarToReturn;
     }
 
-    public class TerritoryAssignmentRuleServiceException extends Exception {
+    public class TerritoryAssignmentServiceException extends Exception {
     }
 }

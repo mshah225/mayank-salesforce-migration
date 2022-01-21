@@ -143,6 +143,49 @@ private class CrossOrgShareCalloutTest {
     }
 
     /**
+     * Test GET callout success
+     */
+    @isTest
+    private static void testGetCalloutSuccessUsingParamMap() {
+        Test.setMock(HttpCalloutMock.class, new CrossOrgShareCalloutMock());
+
+        CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
+
+        // Set up the Contacts
+        List<Contact> contacts = createContacts(2);
+        insert contacts;
+
+        CrossOrgShareUtilities.CrosswalkGetWrapper record = new CrossOrgShareUtilities.CrosswalkGetWrapper();
+        List<CrossOrgShareUtilities.CrosswalkGetWrapper> mockResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
+
+        Contact testContact = [
+            SELECT Id, SSB_CRMSYSTEM_Contact_ID__c, LastModifiedDate
+            FROM Contact
+            WHERE LastName = 'LName0'
+            LIMIT 1
+        ];
+
+        record.contactId = testContact.Id;
+        record.guid = testContact.SSB_CRMSYSTEM_Contact_ID__c;
+        record.lastModifiedDate = String.valueOf(testContact.LastModifiedDate.format('M/d/yyyy'));
+        record.sourceOrgId = UserInfo.getOrganizationId();
+        mockResponse.add(record);
+
+        Test.startTest();
+        Map<String, String> urlParamMap = new Map<String, String>();
+        urlParamMap.put('guid', testContact.SSB_CRMSYSTEM_Contact_ID__c);
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout(urlParamMap);
+        List<CrossOrgShareUtilities.CrosswalkGetWrapper> actualResponse = new List<CrossOrgShareUtilities.CrosswalkGetWrapper>();
+        actualResponse = CrossOrgShareUtilities.deserializeCrosswalkResponse(crosswalkResponse.getBody());
+        Test.stopTest();
+
+        System.assertEquals(mockResponse[0].guid, actualResponse[0].guid);
+        System.assertEquals(mockResponse[0].lastModifiedDate, actualResponse[0].lastModifiedDate);
+        System.assertEquals(mockResponse[0].contactId, actualResponse[0].contactId);
+        System.assertEquals(mockResponse[0].sourceOrgId, actualResponse[0].sourceOrgId);
+    }
+
+    /**
      * Test GET callout by ID success
      */
     @isTest

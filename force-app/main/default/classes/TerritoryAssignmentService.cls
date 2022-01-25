@@ -1,4 +1,4 @@
-public with sharing class TerritoryAssignmentService {
+public without sharing class TerritoryAssignmentService {
     private static Map<String, List<PS_Country_Map__c>> psCountryMap;
     private static Boolean debug = false;
 

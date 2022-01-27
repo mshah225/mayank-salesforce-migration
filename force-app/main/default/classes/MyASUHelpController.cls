@@ -100,11 +100,11 @@ public with sharing class MyASUHelpController {
 
             List<ASU_Alert_Messages__mdt> alertMessages = [
                 SELECT Display_Message__c, url__c
-                FROM ASU_Alert_Message__mdt
+                FROM ASU_Alert_Messages__mdt
                 WHERE MasterLabel LIKE '%ASUHelpTab%' AND Is_Active__c = true
             ];
 
-            for (ASU_Alert_Messages_mdt message : alertMessages) {
+            for (ASU_Alert_Messages__mdt message : alertMessages) {
                 alertHandler.newAlert(
                     customAlert.WARNING,
                     ' ',

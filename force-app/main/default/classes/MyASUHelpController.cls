@@ -100,7 +100,7 @@ public with sharing class MyASUHelpController {
 
             List<ASU_Alert_Messages__mdt> alertMessages = [
                 SELECT Display_Message__c, url__c
-                FROM ASU_Alert_Messages__mdt
+                FROM ASU_Alert_Message__mdt
                 WHERE MasterLabel LIKE '%ASUHelpTab%' AND Is_Active__c = true
             ];
 

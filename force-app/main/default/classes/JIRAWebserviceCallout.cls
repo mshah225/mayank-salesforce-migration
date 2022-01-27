@@ -73,7 +73,7 @@ global class JIRAWebserviceCallout {
             for (Integer i = 0; i < watchersToAdd.size(); i++) {
                 setHeader(req);
                 setEndPoint(req, endPoint, 'POST');
-                setBody(req, '"' + getJiraAccountId(watchersToAdd[i]) + '"');
+                setBody(req, '"' + getJiraAccountId(watchersToAdd[i] + '@asu.edu') + '"');
                 res = http.send(req);
             }
         } catch (System.CalloutException e) {

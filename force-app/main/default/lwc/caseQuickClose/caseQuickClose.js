@@ -16,6 +16,7 @@ import SUBJECT_FIELD from '@salesforce/schema/Case.Subject';
 import DESCRIPTION_FIELD from '@salesforce/schema/Case.Description';
 import RECORD_TYPE_DEVELOPER_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
+import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
 
 // Vars
 const FIELDSET_PREFIX = 'CQC_RT_';
@@ -43,7 +44,7 @@ export default class CaseQuickClose extends LightningElement {
     // Case Record
     @wire(getRecord, {
         recordId: '$recordId',
-        fields: [SUBJECT_FIELD, DESCRIPTION_FIELD, RECORD_TYPE_DEVELOPER_NAME_FIELD, STATUS_FIELD],
+        fields: [SUBJECT_FIELD, DESCRIPTION_FIELD, RECORD_TYPE_DEVELOPER_NAME_FIELD, STATUS_FIELD, CASE_NUMBER_FIELD],
     })
     wiredCase({error, data}) {
         if (error) {
@@ -285,9 +286,10 @@ export default class CaseQuickClose extends LightningElement {
 
     // Success
     handleOnCaseCloseSuccess(event) {
+        const caseNumber = getFieldValue(this.record, CASE_NUMBER_FIELD);
         const evt = new ShowToastEvent({
             title: 'Case Closed',
-            message: 'Record ID: ' + event.detail.id,
+            message: 'Case Number: ' + caseNumber,
             variant: 'success',
         });
         this.dispatchEvent(evt);

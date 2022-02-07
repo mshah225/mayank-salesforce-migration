@@ -26,12 +26,12 @@ public with sharing class ConversationDispatcher {
     }
 
     public void afterInsert() {
-        ConversationServicer service = new ConversationServicer();
+        ConversationService service = new ConversationService();
         service.execute(newList);
     }
 
     public void afterUpdate() {
-        ConversationServicer service = new ConversationServicer();
+        ConversationService service = new ConversationService();
         service.execute(newList);
         service.updateSharing(oldMap, newMap);
     }

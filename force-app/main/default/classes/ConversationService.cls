@@ -1,4 +1,4 @@
-public with sharing class ConversationServicer {
+public with sharing class ConversationService {
     public void execute(List<smagicinteract__Conversation__c> senders) {
         Map<Id, Set<smagicinteract__conversation__c>> contactConversationMap = getContactConversationMap(senders);
 
@@ -228,7 +228,7 @@ public with sharing class ConversationServicer {
                 // These sharing records are not required and thus an insert exception is
                 // acceptable.
                 smagicinteract__Error_Log__c errorLogObj = new smagicinteract__Error_Log__c();
-                errorLogObj.smagicinteract__Class_Name__c = 'ConversationServicer';
+                errorLogObj.smagicinteract__Class_Name__c = 'ConversationService';
                 errorLogObj.smagicinteract__Error_Message__c = err.getMessage();
                 errorLogObj.smagicinteract__Error_Status_Code__c = String.valueOf(err.getStatusCode());
                 errorLogObj.smagicinteract__Error_Type__c = 'Fatal';

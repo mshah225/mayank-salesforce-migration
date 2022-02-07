@@ -4817,6 +4817,32 @@
                             result = response.records;
                             document.getElementById('ps_transfer_work').style.display = 'initial';
                             transferWrapper = result;
+
+                            if (result[i].Term__r.PeopleSoft_Code__c == null) {
+                                result[i].Term__r.PeopleSoft_Code__c = '--';
+                            }
+                            if (result[i].Name == null) {
+                                result[i].Name = '--';
+                            }
+                            if (result[i].Course_Taken__c == null) {
+                                result[i].Course_Taken__c = '--';
+                            }
+                            if (result[i].ASU_Course__c == null) {
+                                result[i].ASU_Course__c = '--';
+                            }
+                            if (result[i].Grade__c == null) {
+                                result[i].Grade__c = '--';
+                            }
+                            if (result[i].Grade_Points_per_Unit__c == null) {
+                                result[i].Grade_Points_per_Unit__c = '--';
+                            }
+                            if (result[i].Units_Taken__c == null) {
+                                result[i].Units_Taken__c = '--';
+                            }
+                            if (result[i].Units_Transferred__c == null) {
+                                result[i].Units_Transferred__c = '--';
+                            }
+
                             var html =
                                 '' +
                                 "<div class='table-responsive'>" +

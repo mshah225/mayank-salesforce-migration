@@ -12,6 +12,7 @@ public without sharing class UserDeprovisioner {
     private List<CollaborationGroupMember> chatterGroupMemberships;
     private List<PermissionSetAssignment> permissionSetAssignments;
     private List<UserPackageLicense> userPackageLicenses;
+    private List<CronTrigger> cronJobs;
     // Data to delete/update data
     private List<Case> toUpdateCases;
     private UserLogin toUpdateUserLogin;
@@ -19,9 +20,34 @@ public without sharing class UserDeprovisioner {
     private List<CollaborationGroupMember> toDeleteChatterGroupMemberships;
     private List<PermissionSetAssignment> toDeletePermissionSetAssignments;
     private List<UserPackageLicense> toDeleteUserPackageLicenses;
+    private List<CronTrigger> toAbortCronJobs;
 
     private static Boolean debug = false;
     private static Boolean allowRepeatCases = true;
+
+    private static Map<String, String> cronTypeNameMap;
+    private static String getCronTypeNameFromType(String key) {
+        if (cronTypeNameMap == null) {
+            cronTypeNameMap = new Map<String, String>();
+
+            // Get from picklist
+            Map<String, String> nameToKey = ObjectService.getPicklistChoicesMap('CronJobDetail', 'JobType');
+            for (String name : nameToKey.keySet()) {
+                cronTypeNameMap.put(nameToKey.get(name), name);
+            }
+            // Add any others that we know from experience
+            if (!cronTypeNameMap.containsKey('E'))
+                cronTypeNameMap.put('E', 'Sitemap SEO Generation Job');
+            if (!cronTypeNameMap.containsKey('G'))
+                cronTypeNameMap.put('G', 'Sitemap SEO Incremental Job');
+            if (!cronTypeNameMap.containsKey('K'))
+                cronTypeNameMap.put('K', 'Autonomous Data Loader Job');
+        }
+
+        if (cronTypeNameMap.containsKey(key))
+            return cronTypeNameMap.get(key);
+        return key;
+    }
 
     public UserDeprovisioner(
         Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
@@ -39,6 +65,7 @@ public without sharing class UserDeprovisioner {
         toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
         toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
         toDeleteUserPackageLicenses = new List<UserPackageLicense>();
+        toAbortCronJobs = new List<CronTrigger>();
     }
 
     // Wraps together all the logic
@@ -68,6 +95,7 @@ public without sharing class UserDeprovisioner {
             removePermissionSetAssignments();
             removeChatterGroupMemberships();
             removeUserPackageLicenses();
+            abortCronJobs();
             deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
         } catch (Exception e) {
@@ -182,6 +210,23 @@ public without sharing class UserDeprovisioner {
                 removedStr += license.PackageLicense.NamespacePrefix + ', ';
             }
             addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
+        }
+    }
+    private void abortCronJobs() {
+        if (cronJobs != null && !cronJobs.isEmpty()) {
+            String removedStr = 'Aborting scheduled jobs: ';
+            List<String> removedJobStrs = new List<String>();
+            for (CronTrigger job : cronJobs) {
+                toAbortCronJobs.add(job);
+                removedJobStrs.add(
+                    job.CronJobDetail.Name +
+                    ' (type: ' +
+                    getCronTypeNameFromType(job.CronJobDetail.JobType) +
+                    ')'
+                );
+            }
+            removedStr += String.join(removedJobStrs, ', ');
+            addToProcessingNotes(removedStr);
         }
     }
     private void updateUserLogin() {
@@ -306,6 +351,9 @@ public without sharing class UserDeprovisioner {
     public void setUserPackageLicenses(List<UserPackageLicense> userPackageLicenses) {
         this.userPackageLicenses = userPackageLicenses;
     }
+    public void setCronJobs(List<CronTrigger> cronJobs) {
+        this.cronJobs = cronJobs;
+    }
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
     }
@@ -335,6 +383,9 @@ public without sharing class UserDeprovisioner {
     }
     public List<PermissionSetAssignment> getToDeletePermissionSetAssignments() {
         return toDeletePermissionSetAssignments;
+    }
+    public List<CronTrigger> getToAbortCronJobs() {
+        return toAbortCronJobs;
     }
     public List<UserPackageLicense> getToDeleteUserPackageLicenses() {
         return toDeleteUserPackageLicenses;

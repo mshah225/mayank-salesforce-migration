@@ -18,6 +18,7 @@ public without sharing class UserDeprovisionOrganizer {
     private List<PermissionSetAssignment> allUserPermissionSetAssignments;
     private List<UserPackageLicense> allUserPackageLicenses;
     private List<UserLogin> allUserLogins;
+    private List<CronTrigger> allCronJobs;
 
     private Map<Id, List<Case>> userToCaseMap;
     private Map<Id, UserLogin> userToUserLoginMap;
@@ -25,6 +26,7 @@ public without sharing class UserDeprovisionOrganizer {
     private Map<Id, List<CollaborationGroupMember>> userToChatterGroupMembershipMap;
     private Map<Id, List<PermissionSetAssignment>> userToPermissionSetMap;
     private Map<Id, List<UserPackageLicense>> userToPackageLicenseMap;
+    private Map<Id, List<CronTrigger>> userToCronJobsMap;
     private Map<Id, String> userToProcessingNotesMap;
     private Map<Id, String> fieldIdToNameMap;
 
@@ -45,6 +47,7 @@ public without sharing class UserDeprovisionOrganizer {
         this.userToChatterGroupMembershipMap = new Map<Id, List<CollaborationGroupMember>>();
         this.userToPermissionSetMap = new Map<Id, List<PermissionSetAssignment>>();
         this.userToPackageLicenseMap = new Map<Id, List<UserPackageLicense>>();
+        this.userToCronJobsMap = new Map<Id, List<CronTrigger>>();
         this.userToProcessingNotesMap = new Map<Id, String>();
         this.fieldIdToNameMap = new Map<Id, String>();
 
@@ -62,6 +65,7 @@ public without sharing class UserDeprovisionOrganizer {
             populateUserToDeprovisionChatterGroupMembershipMap();
             populateUserToDeprovisionPermissionSetMap();
             populateUserToDeprovisionPackageLicenseMap();
+            populateUserToCronJobsMap();
             populateUserToUserLoginMap();
             populateFieldIdToNameMap();
         }
@@ -76,6 +80,7 @@ public without sharing class UserDeprovisionOrganizer {
             List<CollaborationGroupMember> toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
             List<PermissionSetAssignment> toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
             List<UserPackageLicense> toDeleteUserPackageLicense = new List<UserPackageLicense>();
+            List<CronTrigger> toAbortCronJobs = new List<CronTrigger>();
 
             for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
                 // Setup deprovision
@@ -85,6 +90,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setChatterGroupMemberships(userToChatterGroupMembershipMap.get(userId));
                 userDeprovisioner.setPermissionSetAssignments(userToPermissionSetMap.get(userId));
                 userDeprovisioner.setUserPackageLicenses(userToPackageLicenseMap.get(userId));
+                userDeprovisioner.setCronJobs(userToCronJobsMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
                 userDeprovisioner.setFieldIdToNameMap(fieldIdToNameMap);
                 // Deprovision
@@ -98,6 +104,7 @@ public without sharing class UserDeprovisionOrganizer {
                 toDeletePublicGroupMemberships.addAll(userDeprovisioner.getToDeleteGroupMemberships());
                 toDeleteChatterGroupMemberships.addAll(userDeprovisioner.getToDeleteChatterGroupMemberships());
                 toDeletePermissionSetAssignments.addAll(userDeprovisioner.getToDeletePermissionSetAssignments());
+                toAbortCronJobs.addAll(userDeprovisioner.getToAbortCronJobs());
                 toDeleteUserPackageLicense.addAll(userDeprovisioner.getToDeleteUserPackageLicenses());
 
                 User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
@@ -115,6 +122,10 @@ public without sharing class UserDeprovisionOrganizer {
 
             if (!toDeleteUserPackageLicense.isEmpty()) {
                 deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
+            }
+
+            if (!toAbortCronJobs.isEmpty()) {
+                abortCronJobs('UserId', toAbortCronJobs, userToProcessingNotesMap);
             }
 
             if (!toUpdateUsers.isEmpty()) {
@@ -221,6 +232,22 @@ public without sharing class UserDeprovisionOrganizer {
                 userToPackageLicenseMap.put(userPackageLicense.UserId, new List<UserPackageLicense>());
             }
             userToPackageLicenseMap.get(userPackageLicense.UserId).add(userPackageLicense);
+        }
+    }
+
+    private void populateUserToCronJobsMap() {
+        allCronJobs = [
+            SELECT Id, CronJobDetail.Name, CronJobDetail.JobType, OwnerId
+            FROM CronTrigger
+            WHERE OwnerId IN :userToDeprovisionIds
+        ];
+
+        userToCronJobsMap = new Map<Id, List<CronTrigger>>();
+        for (CronTrigger job : allCronJobs) {
+            if (!userToCronJobsMap.containsKey(job.OwnerId)) {
+                userToCronJobsMap.put(job.OwnerId, new List<CronTrigger>());
+            }
+            userToCronJobsMap.get(job.OwnerId).add(job);
         }
     }
 
@@ -403,6 +430,59 @@ public without sharing class UserDeprovisionOrganizer {
                     } else {
                         throw dmle;
                     }
+                }
+            }
+        }
+
+        if (!usersWithErrors.isEmpty()) {
+            updateUsersProcessingNotes(usersWithErrors);
+        }
+    }
+
+    public static void abortCronJobs(
+        String userIdField,
+        List<CronTrigger> cronJobs,
+        Map<Id, String> userToProcessingNotes
+    ) {
+        Map<Id, String> usersWithErrors = new Map<Id, String>();
+
+        for (CronTrigger job : cronJobs) {
+            try {
+                System.abortJob(job.Id);
+            } catch (Exception e) {
+                String processingNotes = '';
+                String errorNote = 'The following exception has occurred:';
+                errorNote += e.getTypeName() + '\n' + e.getMessage() + '\n' + e.getCause();
+
+                Id userId = (Id) job.get(userIdField);
+
+                // Append to exisiting processing notes / other errors for this user
+                if (usersWithErrors.keySet().contains(userId)) {
+                    processingNotes = usersWithErrors.get(userId) + '---\n';
+                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
+                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
+                }
+                processingNotes += errorNote + '\n';
+
+                usersWithErrors.put(userId, processingNotes);
+
+                // Error log it
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertIdToJSON('userId', userId));
+                if (job != null) {
+                    vars.add(ErrorLogger.convertSObjectToJSON('job', job));
+                }
+                vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
+                try {
+                    ErrorLogger.log(e, vars, debug, allowRepeatCases);
+                } catch (Exception e2) {
+                    ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
+                        e,
+                        vars,
+                        debug,
+                        allowRepeatCases
+                    );
+                    System.enqueueJob(logQueue);
                 }
             }
         }

@@ -1,0 +1,57 @@
+<template>
+    <template if:true={showModal}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-modal="true"
+            aria-describedby="modal-content-id"
+            class="slds-modal slds-fade-in-open"
+            onkeydown={handleKeyPress}
+        >
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 id="modal-heading" class="slds-text-heading_medium slds-hyphenate">{title}</h2>
+                </div>
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id">
+                    <template for:each={questions} for:item="q">
+                        <div key={q.key}>
+                            <template if:true={q.isTextArea}>
+                                <lightning-textarea
+                                    name={q.key}
+                                    label={q.question}
+                                    onfocus={setFocusHere}
+                                    onchange={changeAnswer}
+                                ></lightning-textarea>
+                            </template>
+                            <template if:false={q.isTextArea}>
+                                <lightning-input
+                                    name={q.key}
+                                    type={q.type}
+                                    label={q.question}
+                                    onfocus={setFocusHere}
+                                    onchange={changeAnswer}
+                                ></lightning-input>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-modal__footer">
+                    <template for:each={buttons} for:item="button">
+                        <!-- sldsValidatorIgnoreNextLine -->
+                        <button
+                            key={button.key}
+                            type="button"
+                            class={button.classes}
+                            aria-label={button.ariaLabel}
+                            onclick={button.onClick}
+                            onfocus={setFocusHere}
+                        >
+                            {button.label}
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" onkeydown={handleKeyPress}></div>
+    </template>
+</template>

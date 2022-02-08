@@ -1,0 +1,82 @@
+<template>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Ticket Number">Ticket Number</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Ticket Type">Ticket Type</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Summary">Summary</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Status">Status</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Testing Form">Testing Form</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Second Tech Form">Technical Review Form</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={tickets} for:item="ticket">
+                <tr key={ticket.issueId} class="slds-hint-parent">
+                    <td data-label="Contact">
+                        <div class="slds-truncate">
+                            <a href={ticket.url} target="_blank">{ticket.key}</a>
+                        </div>
+                    </td>
+                    <td data-label="Contact">
+                        <div class="slds-truncate">{ticket.issueType}</div>
+                    </td>
+                    <td data-label="Contact" style="max-width: 200px">
+                        <div class="slds-truncate">{ticket.summary}</div>
+                    </td>
+                    <td data-label="Contact" style="max-width: 200px">
+                        <div class="slds-truncate">{ticket.status}</div>
+                    </td>
+                    <td data-label="QA">
+                        <div class="slds-truncate">
+                            <!-- sldsValidatorIgnoreNextLine -->
+                            <button
+                                class="slds-button slds-button_brand"
+                                data-issue-id={ticket.issueId}
+                                data-issue-key={ticket.key}
+                                onclick={openTestFormModal}
+                            >
+                                Testing Form
+                            </button>
+                        </div>
+                    </td>
+                    <td data-label="Second Tech">
+                        <div class="slds-truncate">
+                            <!-- sldsValidatorIgnoreNextLine -->
+                            <button
+                                class="slds-button slds-button_brand"
+                                data-issue-id={ticket.issueId}
+                                data-issue-key={ticket.key}
+                                onclick={openTechReviewFormModal}
+                            >
+                                Tech Review Form
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+    <c-lightning-question-answer-modal
+        class="testing-form-modal"
+        questions={testFormQuestions}
+        oncomplete={submitTestForm}
+    ></c-lightning-question-answer-modal>
+    <c-lightning-question-answer-modal
+        class="tech-review-form-modal"
+        questions={techReviewFormQuestions}
+        oncomplete={submitTechReviewForm}
+    ></c-lightning-question-answer-modal>
+</template>

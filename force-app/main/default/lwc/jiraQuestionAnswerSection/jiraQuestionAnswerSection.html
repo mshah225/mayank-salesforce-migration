@@ -1,48 +1,48 @@
 <template>
-    <template for:each={questions} for:item="i">
-        <div key={i.key}>
-            <template if:true={i.isTextArea}>
-                <template if:true={i.required}>
+    <template for:each={questions} for:item="q">
+        <div key={q.key}>
+            <template if:true={q.isTextArea}>
+                <template if:true={q.required}>
                     <lightning-textarea
-                        name={i.key}
-                        label={i.question}
-                        onfocus={setFocusHere}
+                        name={q.key}
+                        label={q.question}
                         onchange={changeAnswer}
+                        value={q.answer}
                         required
                     ></lightning-textarea>
                 </template>
-                <template if:false={i.required}>
+                <template if:false={q.required}>
                     <lightning-textarea
-                        name={i.key}
-                        label={i.question}
-                        onfocus={setFocusHere}
+                        name={q.key}
+                        label={q.question}
                         onchange={changeAnswer}
+                        value={q.answer}
                     ></lightning-textarea>
                 </template>
             </template>
-            <template if:false={i.isTextArea}>
-                <template if:true={i.required}>
+            <template if:false={q.isTextArea}>
+                <template if:true={q.required}>
                     <lightning-input
-                        name={i.key}
-                        type={i.type}
-                        label={i.question}
-                        onfocus={setFocusHere}
+                        name={q.key}
+                        type={q.type}
+                        label={q.question}
                         onchange={changeAnswer}
+                        value={q.answer}
                         required
                     ></lightning-input
                 ></template>
-                <template if:false={i.required}>
+                <template if:false={q.required}>
                     <lightning-input
-                        name={i.key}
-                        type={i.type}
-                        label={i.question}
-                        onfocus={setFocusHere}
+                        name={q.key}
+                        type={q.type}
+                        label={q.question}
                         onchange={changeAnswer}
+                        value={q.answer}
                     ></lightning-input
                 ></template>
             </template>
-            <template if:true={i.hasSubnote}>
-                <p class="slds-text-body_regular slds-text-color_weak">{i.subnote}</p>
+            <template if:true={q.hasSubnote}>
+                <p class="slds-text-body_regular slds-text-color_weak">{q.subnote}</p>
             </template>
         </div>
     </template>

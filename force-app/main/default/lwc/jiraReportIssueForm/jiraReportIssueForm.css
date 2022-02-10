@@ -14,3 +14,15 @@
     --slds-c-button-success-color-border: #8c1d40;
     --sds-c-button-success-text-color: #ffffff;
 }
+
+:host h1 {
+    font-size: 3rem;
+    text-align: center;
+    font-weight: normal;
+}
+
+:host .alert-wrapper {
+    text-align: center;
+    color: darkorange;
+    font-size: 1.5rem;
+}

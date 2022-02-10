@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>JIRA Report Issue Form</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="title" type="String" />
+            <property name="question1" type="String" />
+            <property name="question2" type="String" />
+            <property name="question3" type="String" />
+            <property name="type" type="String" datasource="Report A Bug, New Development Request" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

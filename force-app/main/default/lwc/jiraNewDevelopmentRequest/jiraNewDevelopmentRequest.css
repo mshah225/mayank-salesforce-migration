@@ -1,0 +1,16 @@
+:host {
+    --lwc-formLabelFontSize: 1.5rem;
+    --lwc-fontSize3: 0.9rem;
+
+    --slds-c-button-success-color-background-hover: #681630;
+    --slds-c-button-success-color-border-hover: #681630;
+    --sds-c-button-success-text-color-hover: #ffffff;
+
+    --slds-c-button-success-color-background-active: #681630;
+    --slds-c-button-success-color-border-active: #681630;
+    --sds-c-button-success-text-color-active: #ffffff;
+
+    --slds-c-button-success-color-background: #8c1d40;
+    --slds-c-button-success-color-border: #8c1d40;
+    --sds-c-button-success-text-color: #ffffff;
+}

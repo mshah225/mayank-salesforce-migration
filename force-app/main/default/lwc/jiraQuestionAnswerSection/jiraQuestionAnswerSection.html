@@ -1,0 +1,49 @@
+<template>
+    <template for:each={questions} for:item="i">
+        <div key={i.key}>
+            <template if:true={i.isTextArea}>
+                <template if:true={i.required}>
+                    <lightning-textarea
+                        name={i.key}
+                        label={i.question}
+                        onfocus={setFocusHere}
+                        onchange={changeAnswer}
+                        required
+                    ></lightning-textarea>
+                </template>
+                <template if:false={i.required}>
+                    <lightning-textarea
+                        name={i.key}
+                        label={i.question}
+                        onfocus={setFocusHere}
+                        onchange={changeAnswer}
+                    ></lightning-textarea>
+                </template>
+            </template>
+            <template if:false={i.isTextArea}>
+                <template if:true={i.required}>
+                    <lightning-input
+                        name={i.key}
+                        type={i.type}
+                        label={i.question}
+                        onfocus={setFocusHere}
+                        onchange={changeAnswer}
+                        required
+                    ></lightning-input
+                ></template>
+                <template if:false={i.required}>
+                    <lightning-input
+                        name={i.key}
+                        type={i.type}
+                        label={i.question}
+                        onfocus={setFocusHere}
+                        onchange={changeAnswer}
+                    ></lightning-input
+                ></template>
+            </template>
+            <template if:true={i.hasSubnote}>
+                <p class="slds-text-body_regular slds-text-color_weak">{i.subnote}</p>
+            </template>
+        </div>
+    </template>
+</template>

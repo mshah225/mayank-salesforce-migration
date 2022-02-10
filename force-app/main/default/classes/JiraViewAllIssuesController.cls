@@ -12,12 +12,17 @@ public class JiraViewAllIssuesController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static String getIssuesForUserStr(String jiraUserId) {
-        return JiraWebserviceCallout.getIssues(jiraUserId);
+    public static String getIssuesForCurrentUser() {
+        return JiraWebserviceCallout.getIssues(getJiraUserId());
     }
     @AuraEnabled(cacheable=true)
-    public static String getWatchedIssuesForUserStr(String jiraUserId) {
-        return JiraWebserviceCallout.getWatchedIssues(jiraUserId);
+    public static String getWatchedIssuesForCurrentUser() {
+        return JiraWebserviceCallout.getWatchedIssues(getJiraUserId());
+    }
+
+    public static String getJiraUserId() {
+        User currentUser = [SELECT Id, Alias FROM User WHERE Id = :UserInfo.getUserId()];
+        return currentUser.Alias;
     }
 
     private static List<JiraIssue> createMapFromResponse(String jiraResponse) {

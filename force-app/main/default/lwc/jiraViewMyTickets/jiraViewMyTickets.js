@@ -1,22 +1,12 @@
-import {LightningElement, api, wire} from 'lwc';
-import getIssuesForUser from '@salesforce/apex/JiraViewAllIssuesController.getIssuesForUserStr';
-import getWatchedIssuesForUser from '@salesforce/apex/JiraViewAllIssuesController.getWatchedIssuesForUserStr';
+import {LightningElement, wire} from 'lwc';
+import getIssuesForCurrentUser from '@salesforce/apex/JiraViewAllIssuesController.getIssuesForCurrentUser';
+import getWatchedIssuesForCurrentUser from '@salesforce/apex/JiraViewAllIssuesController.getWatchedIssuesForCurrentUser';
 
 export default class JiraViewMyTickets extends LightningElement {
-    @api jiraUserId;
-    myTickets = [
-        {
-            issueId: '799922',
-            key: 'SFE-41805',
-            url: 'https://asudev.jira.com/browse/SFE-41805',
-            issueType: 'Task',
-            summary: 'Modal testing ticket',
-            status: 'In Progress',
-        },
-    ];
+    myTickets = [];
     watchedTickets = [];
 
-    @wire(getIssuesForUser, {jiraUserId: '$jiraUserId'})
+    @wire(getIssuesForCurrentUser)
     gotIssuesForUser(result) {
         let {data, err} = result;
         const myTickets = [];
@@ -32,7 +22,7 @@ export default class JiraViewMyTickets extends LightningElement {
         this.myTickets = myTickets;
     }
 
-    @wire(getWatchedIssuesForUser, {jiraUserId: '$jiraUserId'})
+    @wire(getWatchedIssuesForCurrentUser)
     gotWatchedIssuesForUser(result) {
         let {data, err} = result;
         const watchedTickets = [];

@@ -1,16 +1,23 @@
 public class JiraViewAllIssuesController {
     @AuraEnabled
-    public static List<JiraIssue> getIssuesForUser() {
-        String asurite = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Alias;
+    public static List<JiraIssue> getIssuesForUser(String asurite) {
         String jiraResponse = JiraWebserviceCallout.getIssues(asurite);
         return createMapFromResponse(jiraResponse);
     }
 
     @AuraEnabled
-    public static List<JiraIssue> getWatchedIssuesForUser() {
-        String asurite = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Alias;
+    public static List<JiraIssue> getWatchedIssuesForUser(String asurite) {
         String jiraResponse = JiraWebserviceCallout.getWatchedIssues(asurite);
         return createMapFromResponse(jiraResponse);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String getIssuesForUserStr(String jiraUserId) {
+        return JiraWebserviceCallout.getIssues(jiraUserId);
+    }
+    @AuraEnabled(cacheable=true)
+    public static String getWatchedIssuesForUserStr(String jiraUserId) {
+        return JiraWebserviceCallout.getWatchedIssues(jiraUserId);
     }
 
     private static List<JiraIssue> createMapFromResponse(String jiraResponse) {
@@ -35,16 +42,12 @@ public class JiraViewAllIssuesController {
     }
 
     public class JiraIssue {
-        @AuraEnabled
-        public String issueId { get; set; }
-        @AuraEnabled
-        public String summary { get; set; }
-        @AuraEnabled
-        public String key { get; set; }
-        @AuraEnabled
-        public String issueType { get; set; }
-        @AuraEnabled
-        public String status { get; set; }
+        public String issueId;
+        public String summary;
+        public String key;
+        public String issueType;
+        public String status;
+        public String url;
 
         public JiraIssue(String issueId, String summary, String key, String issueType, String Status) {
             this.issueId = issueId;
@@ -52,6 +55,7 @@ public class JiraViewAllIssuesController {
             this.key = key;
             this.issueType = issueType;
             this.status = status;
+            this.url = 'https://asudev.jira.com/browse/' + this.key;
         }
     }
 }

@@ -23,19 +23,22 @@ export default class JiraTicketTable extends LightningElement {
         },
     ];
 
+    currentlyHasFocus;
+    setFocusHere(e) {
+        this.currentlyHasFocus = e.target;
+    }
+
     openTestFormModal(e) {
         const modal = this.template.querySelector('.testing-form-modal');
-        modal.title = 'Testing Form for ' + e.originalTarget.dataset.issueKey;
-        modal.dataset.issueId = e.originalTarget.dataset.issueId;
-        modal.dataset.issueKey = e.originalTarget.dataset.issueKey;
-        modal.returnFocusTo = this.template.querySelector(':focus');
+        modal.title = 'Testing Form for ' + e.target.value;
+        modal.dataset.issueKey = e.target.value;
+        modal.returnFocusTo = this.currentlyHasFocus;
         modal.openModal();
     }
     openTestFormModalKeyboard(e) {
         if (this.isSelectionKey(e.which)) this.openTestFormModal(e);
     }
     submitTestForm(e) {
-        const issueId = e.originalTarget.dataset.issueId;
         const issueKey = e.originalTarget.dataset.issueKey;
         const formDetails = JSON.parse(e.detail);
         let comment = '';
@@ -46,7 +49,6 @@ export default class JiraTicketTable extends LightningElement {
                 .replace(new RegExp('"', 'g'), '\\"')}\\n\n`;
         }
 
-        console.log(issueId);
         console.log(issueKey);
         console.log(formDetails);
         console.log(comment);
@@ -63,17 +65,15 @@ export default class JiraTicketTable extends LightningElement {
 
     openTechReviewFormModal(e) {
         const modal = this.template.querySelector('.tech-review-form-modal');
-        modal.title = 'Tech Form for ' + e.originalTarget.dataset.issueKey;
-        modal.dataset.issueId = e.originalTarget.dataset.issueId;
-        modal.dataset.issueKey = e.originalTarget.dataset.issueKey;
-        modal.returnFocusTo = this.template.querySelector(':focus');
+        modal.title = 'Tech Form for ' + e.target.value;
+        modal.dataset.issueKey = e.target.value;
+        modal.returnFocusTo = this.currentlyHasFocus;
         modal.openModal();
     }
     openTechReviewFormModalKeyboard(e) {
         if (this.isSelectionKey(e.which)) this.openTechReviewFormModal(e);
     }
     submitTechReviewForm(e) {
-        const issueId = e.originalTarget.dataset.issueId;
         const issueKey = e.originalTarget.dataset.issueKey;
         const formDetails = JSON.parse(e.detail);
         let comment = '';
@@ -84,7 +84,6 @@ export default class JiraTicketTable extends LightningElement {
                 .replace(new RegExp('"', 'g'), '\\"')}\\n\n`;
         }
 
-        console.log(issueId);
         console.log(issueKey);
         console.log(formDetails);
         console.log(comment);

@@ -41,28 +41,26 @@
                     </td>
                     <td data-label="QA">
                         <div class="slds-truncate">
-                            <!-- sldsValidatorIgnoreNextLine -->
-                            <button
-                                class="slds-button slds-button_brand"
-                                data-issue-id={ticket.issueId}
-                                data-issue-key={ticket.key}
+                            <lightning-button
+                                variant="brand"
+                                label="Testing Form"
+                                title="Testing Form"
+                                value={ticket.key}
                                 onclick={openTestFormModal}
-                            >
-                                Testing Form
-                            </button>
+                                onfocus={setFocusHere}
+                            ></lightning-button>
                         </div>
                     </td>
                     <td data-label="Second Tech">
                         <div class="slds-truncate">
-                            <!-- sldsValidatorIgnoreNextLine -->
-                            <button
-                                class="slds-button slds-button_brand"
-                                data-issue-id={ticket.issueId}
-                                data-issue-key={ticket.key}
+                            <lightning-button
+                                variant="brand"
+                                label="Tech Review Form"
+                                title="Tech Review Form"
+                                value={ticket.key}
                                 onclick={openTechReviewFormModal}
-                            >
-                                Tech Review Form
-                            </button>
+                                onfocus={setFocusHere}
+                            ></lightning-button>
                         </div>
                     </td>
                 </tr>

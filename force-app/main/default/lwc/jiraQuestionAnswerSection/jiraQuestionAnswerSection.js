@@ -6,7 +6,8 @@ export default class JiraQuestionAnswerSection extends LightningElement {
      * {
      *   key: 'A unique key to identify this question'
      *   question: 'The question',
-     *   type: 'text'|'textarea'
+     *   type: 'text'|'textarea'|'combobox'
+     *   options: [{label, value}, ...]  only allowed if type is combobox
      *   subnote: 'note to go under the input field',
      *   required: true|false,
      * }
@@ -16,7 +17,7 @@ export default class JiraQuestionAnswerSection extends LightningElement {
         for (let i = 0; i < val.length; i++) {
             let q = {...val[i]};
             q.isTextArea = q.type === 'textarea';
-            q.isLink = q.type === 'link';
+            q.isComboBox = q.type === 'combobox';
             q.hasSubnote = q.subnote != null && q.subnote !== '';
             if (q.required == null) q.required = false;
             if (q.answer == null) q.answer = '';
@@ -30,7 +31,7 @@ export default class JiraQuestionAnswerSection extends LightningElement {
     _questions = [];
 
     @api reportValidity() {
-        let allInputs = this.template.querySelectorAll('lightning-input, lightning-textarea');
+        let allInputs = this.template.querySelectorAll('lightning-input, lightning-textarea, lightning-combobox');
         let valid = true;
         for (let i = 0; i < allInputs.length; i++) {
             valid &= allInputs[i].reportValidity();
@@ -40,7 +41,7 @@ export default class JiraQuestionAnswerSection extends LightningElement {
 
     @api
     clearAll() {
-        let allInputs = this.template.querySelectorAll('lightning-input, lightning-textarea');
+        let allInputs = this.template.querySelectorAll('lightning-input, lightning-textarea, lightning-combobox');
         for (let i = 0; i < allInputs.length; i++) {
             allInputs[i].value = '';
         }

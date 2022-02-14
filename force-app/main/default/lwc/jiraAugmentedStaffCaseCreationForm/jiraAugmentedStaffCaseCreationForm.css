@@ -1,6 +1,7 @@
 :host {
     --lwc-formLabelFontSize: 1.5rem;
     --lwc-fontSize2: 0.9rem;
+    --lwc-fontSize3: 1.5rem;
 
     --slds-c-button-brand-color-background-hover: #681630;
     --slds-c-button-brand-color-border-hover: #681630;
@@ -15,10 +16,13 @@
     --sds-c-button-brand-text-color: #ffffff;
 }
 
-:host h1 {
-    font-size: 3rem;
-    text-align: center;
-    font-weight: normal;
+:host .checkbox {
+    display: inline-block;
+    border: 2px solid black;
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    border-radius: 3px;
 }
 
 :host .alert-wrapper {

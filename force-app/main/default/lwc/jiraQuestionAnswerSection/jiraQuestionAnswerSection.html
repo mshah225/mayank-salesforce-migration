@@ -21,28 +21,51 @@
                 </template>
             </template>
             <template if:false={q.isTextArea}>
-                <template if:true={q.required}>
-                    <lightning-input
-                        name={q.key}
-                        type={q.type}
-                        label={q.question}
-                        onchange={changeAnswer}
-                        value={q.answer}
-                        required
-                    ></lightning-input
-                ></template>
-                <template if:false={q.required}>
-                    <lightning-input
-                        name={q.key}
-                        type={q.type}
-                        label={q.question}
-                        onchange={changeAnswer}
-                        value={q.answer}
-                    ></lightning-input
-                ></template>
+                <template if:true={q.isComboBox}>
+                    <template if:true={q.required}>
+                        <lightning-combobox
+                            name={q.key}
+                            label={q.question}
+                            onchange={changeAnswer}
+                            options={q.options}
+                            value={q.answer}
+                            required
+                        ></lightning-combobox>
+                    </template>
+                    <template if:false={q.required}>
+                        <lightning-combobox
+                            name={q.key}
+                            label={q.question}
+                            onchange={changeAnswer}
+                            options={q.options}
+                            value={q.answer}
+                        ></lightning-combobox>
+                    </template>
+                </template>
+                <template if:false={q.isComboBox}>
+                    <template if:true={q.required}>
+                        <lightning-input
+                            name={q.key}
+                            type={q.type}
+                            label={q.question}
+                            onchange={changeAnswer}
+                            value={q.answer}
+                            required
+                        ></lightning-input
+                    ></template>
+                    <template if:false={q.required}>
+                        <lightning-input
+                            name={q.key}
+                            type={q.type}
+                            label={q.question}
+                            onchange={changeAnswer}
+                            value={q.answer}
+                        ></lightning-input
+                    ></template>
+                </template>
             </template>
             <template if:true={q.hasSubnote}>
-                <p class="slds-text-body_regular slds-text-color_weak">{q.subnote}</p>
+                <p class="slds-text-body_small slds-text-color_weak">{q.subnote}</p>
             </template>
         </div>
     </template>

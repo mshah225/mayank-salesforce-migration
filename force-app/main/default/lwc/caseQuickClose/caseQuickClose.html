@@ -18,7 +18,7 @@
 
                 <!-- Loading -->
                 <template if:true={loading}>
-                    <br /><br />
+                    <template if:false={formVisible}> <br /><br /> </template>
                     <div class="slds-spinner_container">
                         <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
                             <span class="slds-assistive-text">Loading...</span>
@@ -28,7 +28,7 @@
                             <br />
                         </div>
                     </div>
-                    <br /><br />
+                    <template if:false={formVisible}> <br /><br /> </template>
                 </template>
 
                 <!-- On Form Visible -->
@@ -57,6 +57,14 @@
                             </div>
                         </template>
 
+                        <!-- Hidden status field - This needs to exist to handle dependent fields using the input-field updateDependentField method  -->
+                        <lightning-input-field
+                            field-name="Status"
+                            data-id="statusField"
+                            class="slds-hidden displaynone"
+                        ></lightning-input-field>
+                        <!-- /Hidden status field -->
+
                         <!-- For Each Input Field (BEFORE Status) -->
                         <template for:each={inputFieldsBefore} for:item="item">
                             <lightning-input-field
@@ -69,12 +77,12 @@
                             </lightning-input-field>
                         </template>
 
-                        <!-- Status Dropdown Override -->
+                        <!-- Status Dropdown -->
                         <lightning-combobox
                             name="Status"
                             label={statusInputLabel}
                             placeholder={statusInputPlaceholder}
-                            value=""
+                            value={currentStatus}
                             options={statusOptions}
                             onchange={handleOnStatusChange}
                             class="customStatusBox"

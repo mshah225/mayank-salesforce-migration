@@ -3,6 +3,8 @@
     text-align: center;
     z-index: 10000;
     background-color: rgba(0, 0, 0, 0.002);
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 .customStatusBox {
     margin-bottom: var(--lwc-spacingXSmall, 0.5rem);
@@ -13,4 +15,7 @@
 }
 .toastnominwidth {
     min-width: 0;
+}
+.displaynone {
+    display: none;
 }

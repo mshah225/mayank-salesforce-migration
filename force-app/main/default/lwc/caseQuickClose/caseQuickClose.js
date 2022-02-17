@@ -172,6 +172,11 @@ export default class CaseQuickClose extends LightningElement {
         return this.statusFieldRequired;
     }
 
+    // Get the current status
+    get currentStatus() {
+        return getFieldValue(this.record, STATUS_FIELD);
+    }
+
     // Build Status Options Array
     buildStatusOptions(options) {
         return options.values
@@ -226,7 +231,7 @@ export default class CaseQuickClose extends LightningElement {
                 });
 
                 // Error Check
-                if (before.length === 0 && after.length === 0) {
+                if (before.length === 0 && after.length === 0 && !hasStatusField) {
                     throw new Error('No fields found in fieldset.');
                 }
                 if (!hasStatusField) {
@@ -324,6 +329,8 @@ export default class CaseQuickClose extends LightningElement {
     // Status Change
     handleOnStatusChange(event) {
         this.selectedStatus = event.detail.value;
+        let hiddenStatusField = this.template.querySelector('[data-id="statusField"]');
+        hiddenStatusField.value = this.selectedStatus;
     }
 
     // Global Error

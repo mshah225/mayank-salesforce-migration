@@ -5,14 +5,20 @@
         </div>
         <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
             <div class="slds-grid slds-grid_vertical">
-                <c-advisor-portal-career-selector></c-advisor-portal-career-selector>
+                <c-advisor-portal-career-selector
+                    onchange={updateFilterCareerSelection}
+                    default-filter={defaultFilter}
+                ></c-advisor-portal-career-selector>
                 <c-advisor-portal-save-filters></c-advisor-portal-save-filters>
             </div>
         </div>
     </div>
     <div class="slds-grid slds-wrap slds-gutters_direct-x-small">
         <div class="slds-col slds-max-large-size_1-of-1">
-            <c-advisor-portal-contact-case-selector></c-advisor-portal-contact-case-selector>
+            <c-advisor-portal-contact-case-selector
+                onchange={updateFilterContactCaseSelection}
+                default-filter={defaultFilter}
+            ></c-advisor-portal-contact-case-selector>
             <div></div>
         </div>
     </div>

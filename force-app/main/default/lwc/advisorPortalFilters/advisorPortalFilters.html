@@ -1,3 +1,240 @@
 <template>
-    <p>Filters</p>
+    <div class="slds-grid slds-gutters slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <div>
+                <label class="slds-form-element__label" id="studentLabel">Student</label>
+            </div>
+            <div>
+                <lightning-input type="text" aria-labelled-by="studentLabel"></lightning-input>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <div>
+                <label class="slds-form-element__label" id="campusLabel">Campus</label>
+            </div>
+            <div>
+                <c-lightning-combo-box-multi-select aria-labelled-by="campusLabel"></c-lightning-combo-box-multi-select>
+            </div>
+        </div>
+
+        <template if:true={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="degreeLevelLabel"> Degree Level </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="degreeLevelLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="acadProgramLabel"> Academic Program </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="acadProgramLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="schoolDepartmentLabel"> School/Department </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="schoolDepartmentLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="acadPlanLabel"> Academic Plan </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="acadPlanLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <fieldset class="slds-form-element slds-form-element_compound">
+                    <label class="slds-form-element__label">Admit Term</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                <lightning-input type="text" label="From"></lightning-input>
+                            </div>
+                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                <lightning-input type="text" label="To"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </template>
+        <template if:false={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="acadLevelPlan"> Academic Level </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="acadLevelPlan"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="studentGroupLabel"> Student Group </label>
+                </div>
+                <div>
+                    <lightning-input type="text" aria-labelled-by="studentGroupLabel"></lightning-input>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="majorLabel">Major</label>
+                </div>
+                <div>
+                    <lightning-input type="text" aria-labelled-by="majorLabel"></lightning-input>
+                </div>
+            </div>
+        </template>
+
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <div>
+                <label class="slds-form-element__label" id="residencyLabel">Residency</label>
+            </div>
+            <div>
+                <c-lightning-combo-box-multi-select
+                    aria-labelled-by="residencyLabel"
+                ></c-lightning-combo-box-multi-select>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <div>
+                <label class="slds-form-element__label" id="caseStatusLabel"> Case Status </label>
+            </div>
+            <div>
+                <c-lightning-combo-box-multi-select
+                    aria-labelled-by="caseStatusLabel"
+                ></c-lightning-combo-box-multi-select>
+            </div>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <div>
+                <label class="slds-form-element__label" id="caseCategoryLabel"> Case Category </label>
+            </div>
+            <div>
+                <c-lightning-combo-box-multi-select
+                    aria-labelled-by="caseCategoryLabel"
+                ></c-lightning-combo-box-multi-select>
+            </div>
+        </div>
+
+        <template if:true={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="specialPopulationLabel"> Special Population </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="specialPopulationLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+        </template>
+        <template if:false={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="caseSubjectLabel"> Case Subject </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="caseSubjectLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="outlookScoreLabel"> Outlook Score </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="outlookScoreLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <div>
+                    <label class="slds-form-element__label" id="outlookChangeLabel"> Outlook Change </label>
+                </div>
+                <div>
+                    <c-lightning-combo-box-multi-select
+                        aria-labelled-by="outlookChangeLabel"
+                    ></c-lightning-combo-box-multi-select>
+                </div>
+            </div>
+        </template>
+
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <div>
+                <label class="slds-form-element__label" id="caseCountLabel">Case Count</label>
+            </div>
+            <div>
+                <lightning-input type="text" aria-labelled-by="caseCountLabel"></lightning-input>
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-3">
+            <fieldset class="slds-form-element slds-form-element_compound">
+                <label class="slds-form-element__label">Created Date</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input type="date" label="From"></lightning-input>
+                        </div>
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input type="date" label="To"></lightning-input>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="slds-col slds-size_1-of-3">
+            <fieldset class="slds-form-element slds-form-element_compound">
+                <label class="slds-form-element__label">Follow Up Date</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input type="date" label="From"></lightning-input>
+                        </div>
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input type="date" label="To"></lightning-input>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <template if:false={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-3">
+                <fieldset class="slds-form-element slds-form-element_compound">
+                    <label class="slds-form-element__label">Persistence Change Date</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                <lightning-input type="date" label="From"></lightning-input>
+                            </div>
+                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                <lightning-input type="date" label="To"></lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </template>
+    </div>
 </template>

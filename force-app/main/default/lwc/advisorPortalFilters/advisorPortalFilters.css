@@ -1,0 +1,9 @@
+:host .no-padding {
+    --lwc-spacingXSmall: 0px;
+    --lwc-spacingXxSmall: 0px;
+}
+
+:host .px-xxsm {
+    padding-left: 4px;
+    padding-right: 4px;
+}

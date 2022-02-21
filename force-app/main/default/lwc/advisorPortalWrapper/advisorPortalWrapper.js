@@ -4,13 +4,24 @@ export default class AdvisorPortalWrapper extends LightningElement {
     defaultFilter = {caseTypeState: 'AllCasesState'};
     currentFilter = {caseTypeState: 'AllCasesState'};
 
+    updateFilter(e) {
+        this.currentFilter[e.detail.name] = e.detail.value;
+        this.triggerCurrentFilterChanges();
+        this.printCurrentFilter();
+    }
     updateFilterCareerSelection(e) {
         this.currentFilter.gradStudentsOnly = e.detail.value;
+        this.triggerCurrentFilterChanges();
         this.printCurrentFilter();
     }
     updateFilterContactCaseSelection(e) {
         this.currentFilter.caseTypeState = e.detail.value;
+        this.triggerCurrentFilterChanges();
         this.printCurrentFilter();
+    }
+
+    triggerCurrentFilterChanges() {
+        this.currentFilter = {...this.currentFilter};
     }
 
     printCurrentFilter() {

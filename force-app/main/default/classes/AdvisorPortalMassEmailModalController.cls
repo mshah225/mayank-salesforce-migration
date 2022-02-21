@@ -5,7 +5,7 @@
  * Controller logic for AdvisorPortalMassEmailModalController.cmp
  */
 public class AdvisorPortalMassEmailModalController {
-    private static final Id ADVISOR_PORTAL_EMAIL_RTID = IDHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
+    private static final Id ADVISOR_PORTAL_EMAIL_RTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
 
     @AuraEnabled
     public static user fetchUser() {

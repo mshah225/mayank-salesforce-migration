@@ -47,7 +47,12 @@ private class SuccessRecodingControllerTest {
         testCases[1].OwnerId = testUser2.Id;
         insert testCases;
 
-        Id coachRTId = [SELECT Id, Name, sObjectType  From RecordType WHERE Name = 'Coach' And SObjectType = 'Success_Student__c'].Id;
+        Id coachRTId = [
+            SELECT Id, Name, sObjectType
+            FROM RecordType
+            WHERE Name = 'Coach' AND SObjectType = 'Success_Student__c'
+        ]
+        .Id;
 
         Success_Student__c testStudent1 = new Success_Student__c(
             RecordTypeId = coachRTId,
@@ -106,7 +111,7 @@ private class SuccessRecodingControllerTest {
         ]);
 
         // This coach should have two students now.
-        //System.Assert(students.size() == 2); 
+        //System.Assert(students.size() == 2);
     }
 
     static testMethod void testCoachPath() {
@@ -155,7 +160,7 @@ private class SuccessRecodingControllerTest {
         ]);
 
         // This coach should have two students now.
-        //System.Assert(students.size() == 2); 
+        //System.Assert(students.size() == 2);
     }
 
     static testMethod void testStudentSearchError() {
@@ -193,6 +198,27 @@ private class SuccessRecodingControllerTest {
 
         for (Apexpages.Message msg : msgs) {
             if (msg.getDetail().contains('Search terms must be at least 3 characters long.')) {
+                b = true;
+            }
+        }
+
+        System.assert(b);
+    }
+
+    static testMethod void testPageResetnStudTransfer() {
+        Test.startTest();
+        SuccessRecodingController src = new SuccessRecodingController();
+        src.page1Reset();
+        src.transferStudents();
+        Test.stopTest();
+
+        System.assertEquals(src.coachPath, false);
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        Boolean b = false;
+
+        for (Apexpages.Message msg : msgs) {
+            if (msg.getDetail().contains('please try again or select another Coach.')) {
                 b = true;
             }
         }

@@ -1,4 +1,4 @@
-<apex:component>
+<apex:component id="alius-format98">
     <script>
         (function ($) {
             $.fn.multiSwitch = function (options) {
@@ -11,7 +11,7 @@
                     options
                 );
 
-                // Create de base element
+                // Create de base elements
                 var element = $('<div />').addClass('multi-switch');
                 // Set width in the base element
                 element.css('width', settings.width);

@@ -70,17 +70,17 @@ public with sharing class FeedbackButtonService {
                     } else {
                         // this is an error because empty feedback should never get to this point - it should be stopped on frontend
                         throw new LWCFeedbackException(
-                            'Feedback must contain some text. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.'
+                            'Feedback must contain some text. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                         );
                     }
                 } else {
                     throw new LWCFeedbackException(
-                        'Invalid carName parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.'
+                        'Invalid carName parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                     );
                 }
             } else {
                 throw new LWCFeedbackException(
-                    'Invalid contactId parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.'
+                    'Invalid contactId parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
             }
         } catch (Exception e) {

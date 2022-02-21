@@ -377,7 +377,7 @@ public class TestDataFactory {
      * @param ID The record type Id for the new pods
      */
     public static List<Success_Pod__c> createAdvisorPods(Integer numberOfPods) {
-        Id advisorPodRTID = IDHelper.getRTID('Success_Pod__c', 'Advisor');
+        Id advisorPodRTID = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Advisor');
         List<Success_Pod__c> result = new List<Success_Pod__c>();
         List<Group> groups = new List<Group>();
         List<QueueSobject> queues = new List<QueueSobject>();
@@ -418,7 +418,7 @@ public class TestDataFactory {
     }
 
     public static Success_Resource__c createMyAdvisorUserResource() {
-        Id advisorResourceRTId = IDHelper.getRTID('Success_Resource__c', 'Advisor');
+        Id advisorResourceRTId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor');
 
         Success_Resource__c result = new Success_Resource__c(
             IsActive__c = true,
@@ -449,7 +449,7 @@ public class TestDataFactory {
     }
 
     public static List<Success_Student__c> createAdvisorStudents(List<Success_Pod__c> pods, Integer numberOfStudents) {
-        // Id advisorStudentRTID = IDHelper.getRTID('Success_Student__c', 'Advisor');
+        // Id advisorStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor');
         List<Success_Student__c> result = new List<Success_Student__c>();
         Map<Id, List<Contact>> contacts = new Map<Id, List<Contact>>();
 
@@ -490,7 +490,7 @@ public class TestDataFactory {
      * Generates test data for the current user as if they were an advisor
      */
     public static void makeMeAnAdvisorUser(Integer numberOfPods, Integer numberOfCases, Integer numberOfStudents) {
-        Id advisorOutReachId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
+        Id advisorOutReachId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Success_Resource__c myAdvisorUserResource = createMyAdvisorUserResource();
         List<Success_Pod__c> myAdvisorPods = createAdvisorPods(numberOfPods);
         List<Success_Student__c> myAdvisorStudents = createAdvisorStudents(myAdvisorPods, numberOfStudents);

@@ -39,7 +39,7 @@
             return isValid;
         }
     </script>
-    <apex:pageBlock>
+    <apex:pageBlock id="alius-format99">
         <!-- Section to Upload New Attachments -->
         <div class="row">
             <div class="header">

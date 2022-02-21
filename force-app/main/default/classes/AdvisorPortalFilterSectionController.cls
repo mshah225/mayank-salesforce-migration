@@ -102,7 +102,7 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
-        Id recordType = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
 
         for (AggregateResult result : [
@@ -130,7 +130,7 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
-        Id recordType = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
 
         for (AggregateResult result : [
@@ -308,7 +308,7 @@ public class AdvisorPortalFilterSectionController {
             'FROM Case ' +
             'WHERE IsClosed = FALSE ' +
             'AND RecordTypeId = \'' +
-            IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') +
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') +
             '\'';
 
         if (!String.isBlank(filter.caseCategory)) {

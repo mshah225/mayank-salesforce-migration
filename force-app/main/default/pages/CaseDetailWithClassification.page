@@ -18,7 +18,7 @@
             <br />
             <apex:outputPanel id="wrapper">
                 <apex:outputLabel value="Case Functional Group: " for="functionalGroupOptions" />
-                <apex:actionRegion>
+                <apex:actionRegion id="alius-format115">
                     <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
                         size="1" style="max-width:80%" disabled="true">
                         <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="wrapper"
@@ -29,7 +29,7 @@
                 <br />
                 <br />
                 <apex:outputLabel value="Case Category: " for="categoryOptions" />
-                <apex:actionRegion>
+                <apex:actionRegion id="alius-format116">
                     <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1" style="max-width:80%">
                         <apex:actionSupport event="onchange" onsubmit="showButtons();" action="{!ccPicklist.updateSubCategories}" rerender="wrapper"
                         />
@@ -39,7 +39,7 @@
                 <br />
                 <br />
                 <apex:outputLabel value="Case Sub Category: " for="subCategoryOptions" />
-                <apex:actionRegion>
+                <apex:actionRegion id="alius-format117">
                     <apex:selectList label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1" onchange="showButtons();" style="max-width:80%">
                         <apex:selectOptions id="subCategoryOptions" value="{!ccPicklist.subCategoryOptions}" />
                     </apex:selectList>

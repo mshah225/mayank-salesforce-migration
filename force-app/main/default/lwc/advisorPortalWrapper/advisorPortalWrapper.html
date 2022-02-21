@@ -1,27 +1,55 @@
 <template>
-    <div class="slds-grid slds-wrap slds-gutters_direct-x-small">
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
         <div class="slds-col slds-max-large-size_1-of-1">
-            <c-advisor-portal-user-select></c-advisor-portal-user-select>
+            <div class="slds-card slds-var-p-around_small">
+                <c-advisor-portal-user-select></c-advisor-portal-user-select>
+            </div>
         </div>
         <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
             <div class="slds-grid slds-grid_vertical">
-                <c-advisor-portal-career-selector
-                    onchange={updateFilterCareerSelection}
-                    default-filter={defaultFilter}
-                ></c-advisor-portal-career-selector>
-                <c-advisor-portal-save-filters></c-advisor-portal-save-filters>
+                <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                    <div class="slds-card slds-var-p-around_small">
+                        <c-advisor-portal-career-selector
+                            onchange={updateFilterCareerSelection}
+                            default-filter={defaultFilter}
+                        ></c-advisor-portal-career-selector>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                    <div class="slds-card slds-var-p-around_small">
+                        <c-advisor-portal-save-filters></c-advisor-portal-save-filters>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="slds-grid slds-wrap slds-gutters_direct-x-small">
-        <div class="slds-col slds-max-large-size_1-of-1">
-            <c-advisor-portal-contact-case-selector
-                onchange={updateFilterContactCaseSelection}
-                default-filter={defaultFilter}
-            ></c-advisor-portal-contact-case-selector>
-            <div></div>
+
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-col">
+            <div class="slds-card slds-var-p-around_small">
+                <c-advisor-portal-contact-case-selector
+                    class="slds-col slds-size_1-of-2"
+                    onchange={updateFilterContactCaseSelection}
+                    default-filter={defaultFilter}
+                ></c-advisor-portal-contact-case-selector>
+                <div class="slds-col slds-size_1-of-2"></div>
+            </div>
         </div>
     </div>
-    <c-advisor-portal-filters></c-advisor-portal-filters>
-    <c-advisor-portal-results></c-advisor-portal-results>
+
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-col">
+            <div class="slds-card slds-var-p-around_small">
+                <c-advisor-portal-filters></c-advisor-portal-filters>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-col">
+            <div class="slds-card slds-var-p-around_small">
+                <c-advisor-portal-results></c-advisor-portal-results>
+            </div>
+        </div>
+    </div>
 </template>

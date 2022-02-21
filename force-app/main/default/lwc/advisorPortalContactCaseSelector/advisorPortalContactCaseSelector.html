@@ -1,12 +1,10 @@
 <template>
-    <div class="slds-card slds-var-p-around_small slds-var-m-bottom_x-small light-blue-background">
-        <lightning-radio-group
-            name="ShowResultsFor"
-            label="Show Results for"
-            options={options}
-            value={value}
-            type="button"
-            onchange={updateShowResultsFor}
-        ></lightning-radio-group>
-    </div>
+    <lightning-radio-group
+        name="ShowResultsFor"
+        label="Show Results for"
+        options={options}
+        value={value}
+        type="button"
+        onchange={updateShowResultsFor}
+    ></lightning-radio-group>
 </template>

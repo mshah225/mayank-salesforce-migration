@@ -13,7 +13,10 @@
                 <label class="slds-form-element__label" id="campusLabel">Campus</label>
             </div>
             <div>
-                <c-lightning-combo-box-multi-select aria-labelled-by="campusLabel"></c-lightning-combo-box-multi-select>
+                <c-lightning-combo-box-multi-select
+                    aria-labelled-by="campusLabel"
+                    options={campusPicklistValues}
+                ></c-lightning-combo-box-multi-select>
             </div>
         </div>
 
@@ -82,6 +85,7 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="acadLevelPlan"
+                        options={academicLevelPicklistValues}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -110,6 +114,7 @@
             <div>
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="residencyLabel"
+                    options={residencyPicklistValues}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -120,6 +125,7 @@
             <div>
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="caseStatusLabel"
+                    options={caseStatusPicklistValues}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -130,6 +136,7 @@
             <div>
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="caseCategoryLabel"
+                    options={caseCategoryPicklistValues}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -154,6 +161,7 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="caseSubjectLabel"
+                        options={caseSubjectPicklistValues}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -164,6 +172,7 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="outlookScoreLabel"
+                        options={outlookScoreOptions}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -174,6 +183,7 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="outlookChangeLabel"
+                        options={outlookChangeOptions}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -236,5 +246,21 @@
                 </fieldset>
             </div>
         </template>
+    </div>
+    <div class="slds-grid slds-wrap slds-gutters_x-small slds-var-m-top_small">
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <lightning-button label="Clear Filters" title="Clear Filters" onclick={clearFilters}></lightning-button>
+            <lightning-button
+                variant="brand"
+                label="Apply Filters"
+                title="Apply Filters"
+                onclick={applyFilters}
+                class="slds-var-m-left_xx-small"
+            ></lightning-button>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
+            <div class="slds-text-align_right slds-show_medium">† Uses full name (preferred or legal)</div>
+            <div class="slds-var-m-top_xx-small slds-hide_medium">† Uses full name (preferred or legal)</div>
+        </div>
     </div>
 </template>

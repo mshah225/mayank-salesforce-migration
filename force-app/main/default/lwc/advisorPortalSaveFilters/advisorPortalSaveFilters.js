@@ -20,7 +20,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                 );
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
@@ -39,7 +39,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                                 this.makeToast('success', 'Success', 'Filters saved as default.');
                             })
                             .catch((err) => {
-                                console.log(err);
+                                console.error(err);
                                 this.makeToast('error', 'Error', err.body.message);
                             })
                             .finally(() => {

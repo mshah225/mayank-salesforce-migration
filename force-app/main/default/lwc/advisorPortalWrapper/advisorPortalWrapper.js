@@ -1,9 +1,11 @@
 import {LightningElement} from 'lwc';
 
 export default class AdvisorPortalWrapper extends LightningElement {
-    defaultFilter = {caseTypeState: 'AllCasesState'};
-    currentFilter = {caseTypeState: 'AllCasesState'};
+    defaultFilter = {};
+    currentFilter = {};
     selectedUsers = [];
+    shownResults = [];
+    selectedResults = [];
 
     updateFilter(e) {
         this.currentFilter[e.detail.name] = e.detail.value;
@@ -22,7 +24,8 @@ export default class AdvisorPortalWrapper extends LightningElement {
     }
 
     changeSelectedUsers(e) {
-        this.selectedUsers = e.detail;
+        this.selectedUsers = [...e.detail];
+        console.log(this.selectedUsers);
     }
 
     triggerCurrentFilterChanges() {

@@ -21,7 +21,7 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getPicklistValues(String objectName, String fieldName) {
         Map<String, String> picklistValuesByLabel = new Map<String, String>();
 
@@ -48,6 +48,13 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCampusValuesX(String filterJSON) {
+        Map<String, String> campusMap = new Map<String, String>();
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}')
+            campusMap = getCampusValues((AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class));
+        return campusMap;
+    }
     @AuraEnabled
     public static Map<String, String> getCampusValues(AdvisorPortalFilter filter) {
         Map<String, String> picklistValuesByLabel = new Map<String, String>();
@@ -76,7 +83,7 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return caseStatusValuesByLabel, a Map of Advisor_Portal_Case_Status__mdt record values by label.
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getCaseStatusSettings() {
         Map<String, String> caseStatusValuesByLabel = new Map<String, String>();
 
@@ -98,7 +105,7 @@ public class AdvisorPortalFilterSectionController {
      * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @return caseSubjectValuesByLabel, a Map of Case Subjects.
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
@@ -126,7 +133,7 @@ public class AdvisorPortalFilterSectionController {
      * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @return caseClassificationValuesByLabel, a Map of Case Subjects.
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
@@ -155,6 +162,22 @@ public class AdvisorPortalFilterSectionController {
         return caseClassificationValuesByLabel;
     }
 
+    @AuraEnabled
+    public static List<String> getFilteredCasesX(List<String> viewAsOptions, String filterJSON) {
+        List<Id> viewAsOptionsIdList = new List<Id>();
+        for (String opt : viewAsOptions) {
+            viewAsOptionsIdList.add(Id.valueOf(opt));
+        }
+        AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+        List<AdvisorPortalContact> advisorPortalContacts = getFilteredCases(viewAsOptionsIdList, filter);
+        List<String> serializedAdvisorPortalContacts = new List<String>();
+        for (AdvisorPortalContact con : advisorPortalContacts) {
+            serializedAdvisorPortalContacts.add(JSON.serialize(con));
+        }
+
+        return serializedAdvisorPortalContacts;
+    }
     @AuraEnabled
     public static List<AdvisorPortalContact> getFilteredCases(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
         if (filter.allCasesState) {

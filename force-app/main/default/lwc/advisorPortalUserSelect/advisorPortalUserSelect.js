@@ -2,7 +2,6 @@ import {LightningElement, wire, track} from 'lwc';
 import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
 
 export default class AdvisorPortalUserSelect extends LightningElement {
-    allUserOptionsCount = 0;
     @track
     allUserOptions = [];
     @track
@@ -93,7 +92,6 @@ export default class AdvisorPortalUserSelect extends LightningElement {
     gotViewAsOptions(result) {
         let {data, error} = result;
         if (data != null) {
-            let allUserOptionsCount = 0;
             let firstSelectionFound = false;
             let allUserOptions = [];
 
@@ -109,8 +107,6 @@ export default class AdvisorPortalUserSelect extends LightningElement {
                 }
 
                 if (!option.isHeader) {
-                    allUserOptionsCount++;
-
                     if (!firstSelectionFound) {
                         this.myQueueId = option.value;
                         option.isSelected = true;
@@ -123,9 +119,11 @@ export default class AdvisorPortalUserSelect extends LightningElement {
 
             this.allUserOptions = allUserOptions;
             this.filterResults = allUserOptions;
-            this.allUserOptionsCount = allUserOptionsCount;
-        } else {
-            console.log(error);
+
+            this.applyChanges();
+        } else if (error != null) {
+            // eslint-disable-next-line no-console
+            console.error(error);
         }
     }
 

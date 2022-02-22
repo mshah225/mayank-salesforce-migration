@@ -51,12 +51,12 @@
     </span>
     <div>
         <div class="feedbackButtonWrapper">
-            <c:feedbackButton
+            <c:advisorPortalFeedbackButton
                 carName="Advisor Portal"
                 title="We value your feedback. Do you have a question, issue, or idea to impove the Advisor Portal? Submit it below."
                 onshowtoast="{!c.showToastLWC}"
                 sendToastEvent="true"
-            ></c:feedbackButton>
+            ></c:advisorPortalFeedbackButton>
         </div>
     </div>
     <div class="slds-grid slds-wrap slds-gutters_direct-x-small">

@@ -1,4 +1,4 @@
-import {LightningElement, api, wire, track} from 'lwc';
+import {LightningElement, wire, track} from 'lwc';
 import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
 
 export default class AdvisorPortalUserSelect extends LightningElement {

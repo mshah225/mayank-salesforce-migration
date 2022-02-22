@@ -10,26 +10,25 @@
   1.0    10/9/2019   thom.clark@sierra-cedar.com     Initial Version
 -->
 <template>
-    <li role="presentation" class="slds-listbox__item" onclick={toggleOption} aria-label={label}>
-        <div
-            class="lds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
-            role="option"
-            aria-selected={ariaSelected}
-        >
-            <span class="slds-media__figure slds-listbox__option-icon">
-                <span if:true={isSelected}>
-                    <span class="slds-icon_container slds-icon-utility-check slds-current-color">
-                        <lightning-icon
-                            class="icn slds-icon-text-default"
-                            icon-name="utility:check"
-                            size="x-small"
-                        ></lightning-icon>
-                    </span>
+    <div
+        class="lds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+        role="option"
+        aria-selected={ariaSelected}
+        onclick={toggleOption}
+    >
+        <span class="slds-media__figure slds-listbox__option-icon">
+            <span if:true={isSelected}>
+                <span class="slds-icon_container slds-icon-utility-check slds-current-color">
+                    <lightning-icon
+                        class="icn slds-icon-text-default"
+                        icon-name="utility:check"
+                        size="x-small"
+                    ></lightning-icon>
                 </span>
             </span>
-            <span class="slds-media__body">
-                <a class="slds-truncate">{label}</a>
-            </span>
-        </div>
-    </li>
+        </span>
+        <span class="slds-media__body">
+            <a class="slds-truncate">{label}</a>
+        </span>
+    </div>
 </template>

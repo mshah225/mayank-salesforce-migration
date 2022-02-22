@@ -1,10 +1,5 @@
-public class AdvisorPortalTopLevelFilterController {
-    @AuraEnabled
-    public static void setOwnerIdListFromUserSelection(List<String> ownerIdList) {
-        Cache.Session.put('advisorPortalOwnerIdList', ownerIdList);
-    }
-
-    @AuraEnabled
+public class AdvisorPortalTopLevelFilterController { 
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> viewAsOptions() {
         Map<String, String> viewAsOptions = new Map<String, String>();
 

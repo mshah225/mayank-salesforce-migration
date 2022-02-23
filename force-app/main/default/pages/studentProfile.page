@@ -3441,7 +3441,7 @@
                                     "<table id='transcript_table' class='table table-striped table-bordered'> " +
                                     '<thead>' +
                                     '<tr>' +
-                                    '<th>Sent On</th>' +
+                                    '<th>Request Date</th>' +
                                     '<th>Status</th>' +
                                     '<th>Recipient</th>' +
                                     '</tr>' +

@@ -11,19 +11,53 @@ export default class AdvisorPortalFeedbackButton extends LightningElement {
             type: 'textarea',
         },
     ];
+    feedbackModalButtons = [];
+    feedbackAnswer;
 
     openModal() {
-        this.template.querySelector('c-lightning-question-answer-modal').openModal();
+        const modalSelector = 'c-lightning-question-answer-modal';
+        if (this.feedbackModalButtons.length === 0) {
+            // add buttons for reset modal
+            this.feedbackModalButtons = [
+                {
+                    key: 'negativeButton-1',
+                    ariaLabel: 'Cancel',
+                    label: 'Cancel',
+                    onClick: () => {
+                        this.template.querySelector(modalSelector).closeModal();
+                    },
+                    classes: 'slds-button slds-button_neutral',
+                },
+                {
+                    key: 'positiveButton-1',
+                    ariaLabel: 'Save',
+                    label: 'Save',
+                    onClick: () => {
+                        this.submitFeedback();
+                    },
+                    classes: 'slds-button slds-button_brand',
+                },
+            ];
+        }
+
+        this.template.querySelector(modalSelector).openModal();
     }
 
     openModalKeyboard(e) {
         if (this.isSelectionKey(e.which)) this.openModal();
     }
 
-    submitFeedback(e) {
-        let feedback = JSON.parse(e.detail)[0].answer;
+    changeFeedback(e) {
+        this.feedbackAnswer = e.detail.value;
+    }
+
+    submitFeedback() {
+        const modalSelector = 'c-lightning-question-answer-modal';
+
+        let feedback = this.feedbackAnswer;
         if (feedback == null) feedback = '';
         feedback = feedback.trim();
+
         if (feedback.length > 0) {
             this.loading = true;
             submitFeedback({carName: this.carName, feedbackText: feedback})
@@ -45,6 +79,7 @@ export default class AdvisorPortalFeedbackButton extends LightningElement {
                 })
                 .finally(() => {
                     this.loading = false;
+                    this.template.querySelector(modalSelector).closeModal();
                 });
         } else {
             this.makeToast('error', 'Error', 'Feedback must contain some content.');

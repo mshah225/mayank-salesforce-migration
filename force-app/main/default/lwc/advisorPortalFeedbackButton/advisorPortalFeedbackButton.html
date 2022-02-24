@@ -20,7 +20,8 @@
         <c-lightning-question-answer-modal
             title="Feedback"
             questions={questions}
-            oncomplete={submitFeedback}
+            onchange={changeFeedback}
+            buttons={feedbackModalButtons}
         ></c-lightning-question-answer-modal>
     </div>
 </template>

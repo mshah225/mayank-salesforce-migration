@@ -6,7 +6,7 @@ import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSe
 import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
 import getFilteredCasesX from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCasesX';
 
-export default class AdvisorPortalFilters extends LightningElement {
+export default class AdvisorPortalFilterSection extends LightningElement {
     @api set defaultFilter(val) {
         this._defaultFilter = val;
         this.currentFilter = val;

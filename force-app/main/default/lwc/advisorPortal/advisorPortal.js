@@ -1,6 +1,6 @@
 import {LightningElement} from 'lwc';
 
-export default class AdvisorPortalWrapper extends LightningElement {
+export default class AdvisorPortal extends LightningElement {
     defaultFilter = {};
     currentFilter = {};
     selectedUsers = [];
@@ -10,6 +10,7 @@ export default class AdvisorPortalWrapper extends LightningElement {
     // Should only run once on page load
     setDefaultFilter(e) {
         this.defaultFilter = JSON.parse(e.detail.filter);
+        this.currentFilter = this.defaultFilter;
     }
 
     updateFilter(e) {

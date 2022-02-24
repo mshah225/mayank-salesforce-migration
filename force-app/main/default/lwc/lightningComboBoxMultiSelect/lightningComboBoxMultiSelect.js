@@ -94,7 +94,7 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
     shown = 'false';
 
     connectedCallback() {
-        this.shownPlacard = this.placeholder;
+        this.updatePlacard();
     }
 
     @api quietSelect(val) {

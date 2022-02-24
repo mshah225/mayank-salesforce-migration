@@ -3032,7 +3032,6 @@
         }
 
         function loadUGIndicatorTab() {
-            getStudentRetention();
             getGeneralIndicators();
             getTranscripts();
             if ('{!theContact.Average_MyASU_Cohort__c}' == '' ){ 
@@ -3057,50 +3056,7 @@
                 element.innerHTML = element.innerHTML.replace(/undefined/g, '--');
                 element.innerHTML = element.innerHTML.replace(/NaN/g, '--');
             }
-        }
-
-        // Method to load the Undergraduate Indicators tab
-        function getStudentRetention() {
-            if (!indicatorTabLoaded) {
-                document.getElementById('stdtRetentionResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                var retentionQuery =
-                    'SELECT ASR_INDICATOR__c, CI_INDEX_INDICATOR__c, ' +
-                    'CUM_GPA_INDICATOR__c, DisplayUrl, EADVISOR_INDICATOR__c, EMPLID__c, ' +
-                    'ENRL_HOLD_COUNT__c, ExternalId, FINANCIAL_HOLD__c, ' +
-                    'Id, NEXT_TERM_ENROLLED__c, ' +
-                    'STRM__c, TOT_IND__c, AVG_MYASU_COHORT__c, ' +
-                    'TERM_MYASU_USAGE__c ' +
-                    'FROM ASU_STDNT_RETENTION__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
-                var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
-                conn.query(
-                    retentionQuery,
-                    function (err, response) {
-                        if (err) {
-                            document.getElementById('stdtRetentionResponseErrors').innerHTML = err;
-                        } else {
-                            document.getElementById('stdtRetentionResponseErrors').innerHTML = '';
-
-                            if (!response.totalSize == 0) {
-                                var result = response.records[0];
-                                document.getElementById('UGgeneralIndicators').style.display = 'initial';
-                                document.getElementById('stdtRetentionResponseErrors').style.display = 'none';               
-
-                                cleanUpUndefined('UGgeneralIndicators');
-                                indicatorTabLoaded = true;
-                            } else {
-                                document.getElementById('stdtRetentionResponseErrors').innerHTML =
-                                    'No general indicators found.';
-                                document.getElementById('stdtRetentionResponseErrors').style.display = 'default';
-                                indicatorTabLoaded = true;
-                            }
-                        }
-                    },
-                    { buffer: false, escape: true, timeout: 120000 }
-                );
-            }
-        }
+        }        
 
         // Method to load the Undergraduate Indicators tab
         function getGeneralIndicators() {

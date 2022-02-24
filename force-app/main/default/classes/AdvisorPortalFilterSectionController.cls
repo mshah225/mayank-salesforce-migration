@@ -51,8 +51,10 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getCampusValuesX(String filterJSON) {
         Map<String, String> campusMap = new Map<String, String>();
-        if (filterJSON != null && filterJSON != '' && filterJSON != '{}')
-            campusMap = getCampusValues((AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class));
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+            campusMap = getCampusValues(filter);
+        }
         return campusMap;
     }
     @AuraEnabled
@@ -64,7 +66,7 @@ public class AdvisorPortalFilterSectionController {
             ORDER BY CreatedDate, Name
         ];
 
-        if (filter != null && filter.gradStudentsOnly) {
+        if (filter != null && filter.career != null && filter.career == 'GRD') {
             // Load only some locations for graduate students
             for (Location__c campus : campusLocations)
                 if (campus.Graduate_Enabled__c)
@@ -180,7 +182,7 @@ public class AdvisorPortalFilterSectionController {
     }
     @AuraEnabled
     public static List<AdvisorPortalContact> getFilteredCases(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
-        if (filter.allCasesState) {
+        if (filter.caseTypeState == 'AllCasesState') {
             return getAllContactsAndRespectiveCases(viewAsOptions, filter);
         } else {
             return getContactCaseWrappersWithLessQueries(viewAsOptions, filter);
@@ -252,7 +254,11 @@ public class AdvisorPortalFilterSectionController {
             }
 
             // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && filter.caseCount != null && filter.caseCount > 0) {
+            if (
+                !casesByContactIds.containsKey(contact.Id) &&
+                !String.isBlank(filter.caseCount) &&
+                Integer.valueOf(filter.caseCount) > 0
+            ) {
                 continue;
             }
 
@@ -261,8 +267,8 @@ public class AdvisorPortalFilterSectionController {
             if (casesByContactIds.containsKey(contact.Id)) {
                 // Skip Contact if we filter by Case count and it has less than we want.
                 if (
-                    (filter.caseCount != null || filter.caseCount > 0) &&
-                    casesByContactIds.get(contact.Id).size() != filter.caseCount
+                    !String.isBlank(filter.caseCount) &&
+                    casesByContactIds.get(contact.Id).size() != Integer.valueOf(filter.caseCount)
                 ) {
                     continue;
                 }
@@ -355,7 +361,7 @@ public class AdvisorPortalFilterSectionController {
             queryString += ' AND OwnerId IN :idList';
         }
 
-        if (filter.watchlistCasesState != null && filter.watchlistCasesState) {
+        if (!String.isBlank(filter.caseTypeState) && filter.caseTypeState == 'WatchlistCasesState') {
             queryString += ' AND CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Advisor Outreach\'';
         }
 
@@ -552,7 +558,11 @@ public class AdvisorPortalFilterSectionController {
             }
 
             // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && filter.caseCount != null && filter.caseCount > 0) {
+            if (
+                !casesByContactIds.containsKey(contact.Id) &&
+                !String.isBlank(filter.caseCount) &&
+                Integer.valueOf(filter.caseCount) > 0
+            ) {
                 continue;
             }
 
@@ -561,8 +571,8 @@ public class AdvisorPortalFilterSectionController {
             if (casesByContactIds.containsKey(contact.Id)) {
                 // Skip Contact if we filter by Case count and it has less than we want.
                 if (
-                    (filter.caseCount != null || filter.caseCount > 0) &&
-                    casesByContactIds.get(contact.Id).size() != filter.caseCount
+                    !String.isBlank(filter.caseCount) &&
+                    casesByContactIds.get(contact.Id).size() != Integer.valueOf(filter.caseCount)
                 ) {
                     continue;
                 }
@@ -632,7 +642,7 @@ public class AdvisorPortalFilterSectionController {
             !String.isBlank(filter.campus) ||
             !String.isBlank(filter.residency) ||
             !String.isBlank(filter.major) ||
-            filter.gradStudentsOnly != null
+            filter.career != null
         ) {
             Set<Id> filteredContactIds = new Set<Id>();
             String queryString =
@@ -665,8 +675,8 @@ public class AdvisorPortalFilterSectionController {
                     '%\' )';
             }
 
-            if (filter.gradStudentsOnly != null) {
-                if (filter.gradStudentsOnly)
+            if (filter.career != null) {
+                if (filter.career == 'GRD')
                     queryString += ' AND Career__c = \'Graduate\'';
                 else
                     queryString += ' AND Career__c != \'Graduate\'';

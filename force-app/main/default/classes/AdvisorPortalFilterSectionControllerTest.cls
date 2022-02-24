@@ -887,7 +887,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
-        filter.caseCount = 2;
+        filter.caseCount = '2';
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -1141,7 +1141,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
-        filter.watchlistCasesState = true;
+        filter.caseTypeState = 'WatchlistCasesState';
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -1434,7 +1434,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.major = 'law';
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.gradStudentsOnly = true;
+        filter3.career = 'GRD';
 
         // Act
         Test.startTest();

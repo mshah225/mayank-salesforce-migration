@@ -41,7 +41,7 @@ export default class AdvisorPortalContactCaseSelector extends LightningElement {
     sendEvent() {
         this.dispatchEvent(
             new CustomEvent('change', {
-                detail: {value: this.value},
+                detail: {name: 'caseTypeState', value: this.value},
             })
         );
     }

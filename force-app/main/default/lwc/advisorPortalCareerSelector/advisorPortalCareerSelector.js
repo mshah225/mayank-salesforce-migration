@@ -7,8 +7,8 @@ export default class AdvisorPortalCareerSelector extends LightningElement {
         return null; // no getting needed
     }
     set defaultFilter(val) {
-        if (val != null && val.gradStudentsOnly != null) {
-            this.value = val.gradStudentsOnly ? 'GRD' : 'UGRD';
+        if (val != null && val.career != null && val.career !== '') {
+            this.quietSelect(val.career);
         }
     }
 
@@ -40,14 +40,8 @@ export default class AdvisorPortalCareerSelector extends LightningElement {
 
     sendEvent() {
         this.dispatchEvent(
-            new CustomEvent('togglegradonly', {
-                detail: {gradOnly: this.value === 'GRD'},
-            })
-        );
-
-        this.dispatchEvent(
             new CustomEvent('change', {
-                detail: {value: this.value === 'GRD'},
+                detail: {name: 'career', value: this.value},
             })
         );
     }

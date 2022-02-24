@@ -16,14 +16,16 @@
                 <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
                     <div class="slds-card slds-var-p-around_small">
                         <c-advisor-portal-career-selector
-                            onchange={updateFilterCareerSelection}
+                            onchange={updateFilter}
                             default-filter={defaultFilter}
                         ></c-advisor-portal-career-selector>
                     </div>
                 </div>
                 <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
                     <div class="slds-card slds-var-p-around_small">
-                        <c-advisor-portal-save-filters></c-advisor-portal-save-filters>
+                        <c-advisor-portal-save-filters
+                            onsetdefaultfilter={setDefaultFilter}
+                        ></c-advisor-portal-save-filters>
                     </div>
                 </div>
             </div>
@@ -35,7 +37,7 @@
             <div class="slds-card slds-var-p-around_small">
                 <c-advisor-portal-contact-case-selector
                     class="slds-col slds-size_1-of-2"
-                    onchange={updateFilterContactCaseSelection}
+                    onchange={updateFilter}
                     default-filter={defaultFilter}
                 ></c-advisor-portal-contact-case-selector>
                 <div class="slds-col slds-size_1-of-2"></div>
@@ -49,8 +51,8 @@
                 <c-advisor-portal-filters
                     onchange={updateFilter}
                     view-as-users={selectedUsers}
-                    default-filter={defaultFilter}
                     current-filter={currentFilter}
+                    default-filter={defaultFilter}
                 ></c-advisor-portal-filters>
             </div>
         </div>

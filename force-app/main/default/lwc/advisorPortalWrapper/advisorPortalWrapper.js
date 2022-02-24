@@ -7,18 +7,13 @@ export default class AdvisorPortalWrapper extends LightningElement {
     shownResults = [];
     selectedResults = [];
 
+    // Should only run once on page load
+    setDefaultFilter(e) {
+        this.defaultFilter = JSON.parse(e.detail.filter);
+    }
+
     updateFilter(e) {
         this.currentFilter[e.detail.name] = e.detail.value;
-        this.triggerCurrentFilterChanges();
-        this.printCurrentFilter();
-    }
-    updateFilterCareerSelection(e) {
-        this.currentFilter.gradStudentsOnly = e.detail.value;
-        this.triggerCurrentFilterChanges();
-        this.printCurrentFilter();
-    }
-    updateFilterContactCaseSelection(e) {
-        this.currentFilter.caseTypeState = e.detail.value;
         this.triggerCurrentFilterChanges();
         this.printCurrentFilter();
     }

@@ -5,7 +5,13 @@
                 <label class="slds-form-element__label" id="studentLabel">Student</label>
             </div>
             <div>
-                <lightning-input type="text" aria-labelled-by="studentLabel"></lightning-input>
+                <lightning-input
+                    type="text"
+                    aria-labelled-by="studentLabel"
+                    name="studentString"
+                    onchange={changeField}
+                    value={currentFilter.studentString}
+                ></lightning-input>
             </div>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
@@ -16,6 +22,9 @@
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="campusLabel"
                     options={campusPicklistValues}
+                    name="campus"
+                    onchange={changeField}
+                    value={currentFilter.campus}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -28,6 +37,9 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="degreeLevelLabel"
+                        name="degreeLevel"
+                        onchange={changeField}
+                        value={currentFilter.degreeLevel}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -38,6 +50,9 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="acadProgramLabel"
+                        name="academicProgram"
+                        onchange={changeField}
+                        value={currentFilter.academicProgram}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -48,6 +63,9 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="schoolDepartmentLabel"
+                        name="schoolDepartment"
+                        onchange={changeField}
+                        value={currentFilter.schoolDepartment}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -58,6 +76,9 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="acadPlanLabel"
+                        name="academicPlan"
+                        onchange={changeField}
+                        value={currentFilter.academicPlan}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -67,10 +88,22 @@
                     <div class="slds-form-element__control">
                         <div class="slds-form-element__row">
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="text" label="From"></lightning-input>
+                                <lightning-input
+                                    type="text"
+                                    label="From"
+                                    name="admitTermFrom"
+                                    onchange={changeField}
+                                    value={currentFilter.admitTermFrom}
+                                ></lightning-input>
                             </div>
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="text" label="To"></lightning-input>
+                                <lightning-input
+                                    type="text"
+                                    label="To"
+                                    name="admitTermTo"
+                                    onchange={changeField}
+                                    value={currentFilter.admitTermTo}
+                                ></lightning-input>
                             </div>
                         </div>
                     </div>
@@ -86,6 +119,9 @@
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="acadLevelPlan"
                         options={academicLevelPicklistValues}
+                        name="academicLevel"
+                        onchange={changeField}
+                        value={currentFilter.academicLevel}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -94,7 +130,13 @@
                     <label class="slds-form-element__label" id="studentGroupLabel"> Student Group </label>
                 </div>
                 <div>
-                    <lightning-input type="text" aria-labelled-by="studentGroupLabel"></lightning-input>
+                    <lightning-input
+                        type="text"
+                        aria-labelled-by="studentGroupLabel"
+                        name="studentGroupCode"
+                        onchange={changeField}
+                        value={currentFilter.studentGroupCode}
+                    ></lightning-input>
                 </div>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
@@ -102,7 +144,13 @@
                     <label class="slds-form-element__label" id="majorLabel">Major</label>
                 </div>
                 <div>
-                    <lightning-input type="text" aria-labelled-by="majorLabel"></lightning-input>
+                    <lightning-input
+                        type="text"
+                        aria-labelled-by="majorLabel"
+                        name="major"
+                        onchange={changeField}
+                        value={currentFilter.major}
+                    ></lightning-input>
                 </div>
             </div>
         </template>
@@ -115,6 +163,9 @@
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="residencyLabel"
                     options={residencyPicklistValues}
+                    name="residency"
+                    onchange={changeField}
+                    value={currentFilter.residency}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -126,6 +177,9 @@
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="caseStatusLabel"
                     options={caseStatusPicklistValues}
+                    name="caseStatus"
+                    onchange={changeField}
+                    value={currentFilter.caseStatus}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -137,6 +191,9 @@
                 <c-lightning-combo-box-multi-select
                     aria-labelled-by="caseCategoryLabel"
                     options={caseCategoryPicklistValues}
+                    name="caseCategory"
+                    onchange={changeField}
+                    value={currentFilter.caseCategory}
                 ></c-lightning-combo-box-multi-select>
             </div>
         </div>
@@ -149,6 +206,9 @@
                 <div>
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="specialPopulationLabel"
+                        name="specialPopulation"
+                        onchange={changeField}
+                        value={currentFilter.specialPopulation}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -162,6 +222,9 @@
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="caseSubjectLabel"
                         options={caseSubjectPicklistValues}
+                        name="caseSubject"
+                        onchange={changeField}
+                        value={currentFilter.caseSubject}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -173,6 +236,9 @@
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="outlookScoreLabel"
                         options={outlookScoreOptions}
+                        name="outlookScore"
+                        onchange={changeField}
+                        value={currentFilter.outlookScore}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -184,6 +250,9 @@
                     <c-lightning-combo-box-multi-select
                         aria-labelled-by="outlookChangeLabel"
                         options={outlookChangeOptions}
+                        name="outlookChange"
+                        onchange={changeField}
+                        value={currentFilter.outlookChange}
                     ></c-lightning-combo-box-multi-select>
                 </div>
             </div>
@@ -194,7 +263,13 @@
                 <label class="slds-form-element__label" id="caseCountLabel">Case Count</label>
             </div>
             <div>
-                <lightning-input type="text" aria-labelled-by="caseCountLabel"></lightning-input>
+                <lightning-input
+                    type="text"
+                    aria-labelled-by="caseCountLabel"
+                    name="caseCount"
+                    onchange={changeField}
+                    value={currentFilter.caseCount}
+                ></lightning-input>
             </div>
         </div>
     </div>
@@ -205,10 +280,22 @@
                 <div class="slds-form-element__control">
                     <div class="slds-form-element__row">
                         <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                            <lightning-input type="date" label="From"></lightning-input>
+                            <lightning-input
+                                type="date"
+                                label="From"
+                                name="createdFromDate"
+                                onchange={changeField}
+                                value={currentFilter.createdFromDate}
+                            ></lightning-input>
                         </div>
                         <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                            <lightning-input type="date" label="To"></lightning-input>
+                            <lightning-input
+                                type="date"
+                                label="To"
+                                name="createdToDate"
+                                onchange={changeField}
+                                value={currentFilter.createdToDate}
+                            ></lightning-input>
                         </div>
                     </div>
                 </div>
@@ -220,10 +307,22 @@
                 <div class="slds-form-element__control">
                     <div class="slds-form-element__row">
                         <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                            <lightning-input type="date" label="From"></lightning-input>
+                            <lightning-input
+                                type="date"
+                                label="From"
+                                name="followUpFromDate"
+                                onchange={changeField}
+                                value={currentFilter.followUpFromDate}
+                            ></lightning-input>
                         </div>
                         <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                            <lightning-input type="date" label="To"></lightning-input>
+                            <lightning-input
+                                type="date"
+                                label="To"
+                                name="followUpToDate"
+                                onchange={changeField}
+                                value={currentFilter.followUpToDate}
+                            ></lightning-input>
                         </div>
                     </div>
                 </div>
@@ -236,10 +335,22 @@
                     <div class="slds-form-element__control">
                         <div class="slds-form-element__row">
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="From"></lightning-input>
+                                <lightning-input
+                                    type="date"
+                                    label="From"
+                                    name="persistenceFromDate"
+                                    onchange={changeField}
+                                    value={currentFilter.persistenceFromDate}
+                                ></lightning-input>
                             </div>
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="To"></lightning-input>
+                                <lightning-input
+                                    type="date"
+                                    label="To"
+                                    name="persistenceToDate"
+                                    onchange={changeField}
+                                    value={currentFilter.persistenceToDate}
+                                ></lightning-input>
                             </div>
                         </div>
                     </div>

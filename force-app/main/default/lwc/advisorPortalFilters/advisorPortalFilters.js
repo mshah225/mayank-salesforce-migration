@@ -1,5 +1,4 @@
 import {LightningElement, api, wire} from 'lwc';
-import {refreshApex} from '@salesforce/apex';
 import getPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getPicklistValues';
 import getCampusValuesX from '@salesforce/apex/AdvisorPortalFilterSectionController.getCampusValuesX';
 import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
@@ -8,11 +7,16 @@ import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalF
 import getFilteredCasesX from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCasesX';
 
 export default class AdvisorPortalFilters extends LightningElement {
-    @api defaultFilter;
+    @api set defaultFilter(val) {
+        this._defaultFilter = val;
+        this.currentFilter = val;
+    }
+    get defaultFilter() {
+        return this._defaultFilter;
+    }
+    _defaultFilter;
 
     @api set viewAsUsers(val) {
-        this.userIdsChanged();
-
         this._viewAsUsers = [...val];
     }
     get viewAsUsers() {
@@ -21,24 +25,24 @@ export default class AdvisorPortalFilters extends LightningElement {
     _viewAsUsers = [];
 
     @api set currentFilter(val) {
-        if (val.gradStudentsOnly !== this._currentFilter.gradStudentsOnly) {
-            this.gradToggleChanged();
+        if (this.filterIsDifferent(this.currentFilter, val)) {
+            this.copyChanges(this.currentFilter, val);
+            this._currentFilter = {...this._currentFilter};
         }
-
-        this._currentFilter = {...val};
     }
     get currentFilter() {
+        if (this._currentFilter == null) this._currentFilter = this.getEmptyFilter();
         return this._currentFilter;
     }
-    _currentFilter = {};
+    _currentFilter;
     get currentFilterJSON() {
         return JSON.stringify(this.currentFilter);
     }
 
     get isGraduateOnly() {
         if (this.currentFilter == null) return false;
-        else if (this.currentFilter.gradStudentsOnly == null) return false;
-        return this.currentFilter.gradStudentsOnly;
+        else if (this.currentFilter.career == null) return false;
+        return this.currentFilter.career === 'GRD';
     }
 
     residencyPicklistValues = [];
@@ -65,45 +69,42 @@ export default class AdvisorPortalFilters extends LightningElement {
         }
     }
 
+    // Reassigning currentFilterJSON, like in we do it `set currentFilter` will trigger this to re-run
     campusPicklistValues = [];
-    getCampusValuesWire;
     @wire(getCampusValuesX, {filterJSON: '$currentFilterJSON'})
     gotCampusValues(result) {
-        this.getCampusValuesWire = result;
         let {data, error} = result;
         if (data != null) {
             this.campusPicklistValues = this.buildPicklistOptionsArray(data);
         } else if (error != null) {
             // eslint-disable-next-line no-console
-            console.error(error);
+            console.error('gotCampusValues', error);
         }
     }
 
+    // Reassigning viewAsUsers, like in we do it `set viewAsUsers` will trigger this to re-run
     caseSubjectPicklistValues = [];
-    getCaseSubjectPicklistValuesWire;
     @wire(getCaseSubjectPicklistValues, {viewAsOptions: '$viewAsUsers'})
     gotCaseSubjectPicklistValues(result) {
-        this.getCaseSubjectPicklistValuesWire = result;
         let {data, error} = result;
         if (data != null) {
             this.caseSubjectPicklistValues = this.buildPicklistOptionsArray(data);
         } else if (error != null) {
             // eslint-disable-next-line no-console
-            console.error(error);
+            console.error('gotCaseSubjectPicklistValues', error);
         }
     }
 
+    // Reassigning viewAsUsers, like in we do it `set viewAsUsers` will trigger this to re-run
     caseCategoryPicklistValues = [];
-    getCaseClassificationPicklistValuesWire;
     @wire(getCaseClassificationPicklistValues, {viewAsOptions: '$viewAsUsers'})
     gotCaseClassificationPicklistValues(result) {
-        this.getCaseClassificationPicklistValuesWire = result;
         let {data, error} = result;
         if (data != null) {
             this.caseCategoryPicklistValues = this.buildPicklistOptionsArray(data);
         } else if (error != null) {
             // eslint-disable-next-line no-console
-            console.error(error);
+            console.error('gotCaseClassificationPicklistValues', error);
         }
     }
 
@@ -127,10 +128,22 @@ export default class AdvisorPortalFilters extends LightningElement {
         {label: 'No change', value: 'No Change'},
     ];
 
+    changeField(event) {
+        const fieldChanged = event.originalTarget.name;
+        const newValue = event.detail.value;
+        this.currentFilter[fieldChanged] = newValue;
+
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        this.sendChangeFilterEvent(fieldChanged, newValue);
+    }
+
     clearFilters() {
         const clearFilter = {};
         clearFilter.caseTypeState = this.currentFilter.caseTypeState;
-        clearFilter.gradStudentsOnly = this.currentFilter.gradStudentsOnly;
+        clearFilter.career = this.currentFilter.career;
         this.currentFilter = clearFilter;
         this.applyFilters();
     }
@@ -158,20 +171,26 @@ export default class AdvisorPortalFilters extends LightningElement {
     }
 
     // Helper functions
-    userIdsChanged() {
-        console.log(this.viewAsUsers);
-        refreshApex(this.getCaseSubjectPicklistValuesWire);
-        refreshApex(this.getCaseClassificationPicklistValuesWire);
+    copyChanges(filterA, filterB) {
+        for (let i = 0; i < this.filterPropertyList.length; i++) {
+            const propertyName = this.filterPropertyList[i];
+            if (filterB[propertyName] != null && filterA[propertyName] !== filterB[propertyName])
+                filterA[propertyName] = filterB[propertyName];
+        }
     }
 
-    gradToggleChanged() {
-        refreshApex(this.getCampusValuesWire)
-            .then((val) => {
-                console.log(val);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+    filterIsDifferent(filterA, filterB) {
+        let same = true;
+
+        for (let i = 0; i < this.filterPropertyList.length; i++) {
+            const propertyName = this.filterPropertyList[i];
+            if (filterA[propertyName] !== filterB[propertyName]) {
+                same = false;
+                break;
+            }
+        }
+
+        return !same;
     }
 
     buildPicklistOptionsArray(optionsMap) {
@@ -182,5 +201,57 @@ export default class AdvisorPortalFilters extends LightningElement {
         });
 
         return optionsList;
+    }
+
+    // Generate an "empty" filter object, with default values
+    getEmptyFilter() {
+        const filter = {};
+        for (let i = 0; i < this.filterPropertyList.length; i++) {
+            const propertyName = this.filterPropertyList[i];
+            filter[propertyName] = '';
+            if (propertyName === 'career') filter[propertyName] = 'UGRD';
+            if (propertyName === 'caseTypeState') filter[propertyName] = 'ProactiveCasesState';
+        }
+        return filter;
+    }
+
+    // All names of properties on filter object should match AdvisorPortalFilter object
+    filterPropertyList = [
+        'studentString',
+        'caseCategory',
+        'caseSubject',
+        'caseStatus',
+        'caseCount',
+        'caseTypeState',
+        'career',
+        'outlookScore',
+        'outlookChange',
+        'createdFromDate',
+        'createdToDate',
+        'followUpFromDate',
+        'followUpToDate',
+        'persistenceFromDate',
+        'persistenceToDate',
+        'studentGroupCode',
+        'academicLevel',
+        'campus',
+        'major',
+        'residency',
+        'advisor',
+        'degreeLevel',
+        'academicProgram',
+        'schoolDepartment',
+        'academicPlan',
+        'admitTermFrom',
+        'admitTermTo',
+        'specialPopulation',
+    ];
+
+    sendChangeFilterEvent(name, value) {
+        this.dispatchEvent(
+            new CustomEvent('change', {
+                detail: {name, value},
+            })
+        );
     }
 }

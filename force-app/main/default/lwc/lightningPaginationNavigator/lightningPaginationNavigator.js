@@ -13,27 +13,53 @@ export default class LightningPaginationNavigator extends LightningElement {
     }
     _resultsCount = 0;
 
-    @api set numberResultsPerPage(val) {
+    @api set pageSize(val) {
         let newVal = val;
         if (typeof newVal === 'string') {
             newVal = parseInt(newVal, 10);
         }
-        this._numberResultsPerPage = newVal;
+        this._pageSize = newVal;
     }
-    get numberResultsPerPage() {
-        return this._numberResultsPerPage;
+    get pageSize() {
+        return this._pageSize;
     }
-    _numberResultsPerPage = 10;
+    _pageSize = 20;
 
     @api itemType = 'items';
 
-    currentPage = 0;
+    @api set extended(val) {
+        let newVal = val;
+        if (newVal === 'true') newVal = true;
+        else if (newVal === 'false') newVal = false;
+        this._extended = newVal;
+    }
+    get extended() {
+        return this._extended;
+    }
+    _extended;
+
+    @api set currentPage(val) {
+        let newVal = val;
+        if (typeof newVal === 'string') newVal = parseInt(newVal, 10);
+        this._currentPage = newVal;
+    }
+    get currentPage() {
+        return this._currentPage;
+    }
+    _currentPage = 0;
+
+    pageSizeOptions = [
+        {label: '20', value: 20},
+        {label: '50', value: 50},
+        {label: '100', value: 100},
+        {label: '200', value: 200},
+    ];
 
     get firstPage() {
         return 0;
     }
     get lastPage() {
-        return Math.ceil(this.resultsCount / this.numberResultsPerPage) - 1;
+        return Math.ceil(this.resultsCount / this.pageSize) - 1;
     }
 
     get onFirstPage() {
@@ -43,11 +69,18 @@ export default class LightningPaginationNavigator extends LightningElement {
         return this.currentPage === this.lastPage;
     }
 
+    get currentPageStr() {
+        return this.currentPage + 1;
+    }
+    get lastPageStr() {
+        return this.lastPage + 1;
+    }
+
     get startIndexOfViewingResults() {
-        return this.numberResultsPerPage * this.currentPage + 1;
+        return this.pageSize * this.currentPage + 1;
     }
     get endIndexOfViewingResults() {
-        let upperLimit = this.numberResultsPerPage * (this.currentPage + 1);
+        let upperLimit = this.pageSize * (this.currentPage + 1);
         if (upperLimit > this.resultsCount) upperLimit = this.resultsCount;
         return upperLimit;
     }
@@ -55,7 +88,7 @@ export default class LightningPaginationNavigator extends LightningElement {
     navigateToFirstPage() {
         const oldCurrentPage = this.currentPage;
         this.currentPage = this.firstPage;
-        if (oldCurrentPage !== this.currentPage) this.sendEvent();
+        if (oldCurrentPage !== this.currentPage) this.sendChangePageEvent();
     }
     navigateToPreviousPage() {
         const oldCurrentPage = this.currentPage;
@@ -65,7 +98,7 @@ export default class LightningPaginationNavigator extends LightningElement {
             prevPage = this.firstPage;
         }
         this.currentPage = prevPage;
-        if (oldCurrentPage !== this.currentPage) this.sendEvent();
+        if (oldCurrentPage !== this.currentPage) this.sendChangePageEvent();
     }
     navigateToNextPage() {
         const oldCurrentPage = this.currentPage;
@@ -75,15 +108,26 @@ export default class LightningPaginationNavigator extends LightningElement {
             nextPage = this.lastPage;
         }
         this.currentPage = nextPage;
-        if (oldCurrentPage !== this.currentPage) this.sendEvent();
+        if (oldCurrentPage !== this.currentPage) this.sendChangePageEvent();
     }
     navigateToLastPage() {
         const oldCurrentPage = this.currentPage;
         this.currentPage = this.lastPage;
-        if (oldCurrentPage !== this.currentPage) this.sendEvent();
+        if (oldCurrentPage !== this.currentPage) this.sendChangePageEvent();
     }
 
-    sendEvent() {
+    changePageSize(e) {
+        this.pageSize = e.detail.value;
+        this.sendChangePageSizeEvent();
+        this.currentPage = 0;
+        this.sendChangePageEvent();
+    }
+
+    sendChangePageEvent() {
         this.dispatchEvent(new CustomEvent('changepage', {detail: this.currentPage}));
+    }
+
+    sendChangePageSizeEvent() {
+        this.dispatchEvent(new CustomEvent('changepagesize', {detail: this.pageSize}));
     }
 }

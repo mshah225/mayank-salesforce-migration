@@ -17,7 +17,11 @@
             ></lightning-button>
         </div>
         <div class="slds-col slds-text-align_center slds-align_absolute-center">
-            <span>Showing {startIndexOfViewingResults} - {endIndexOfViewingResults} of {resultsCount} {itemType}</span>
+            <template if:false={extended}>
+                <span>
+                    Showing {startIndexOfViewingResults} - {endIndexOfViewingResults} of {resultsCount} {itemType}
+                </span>
+            </template>
         </div>
         <div class="slds-col slds-grow-none slds-text-align_right">
             <lightning-button
@@ -36,4 +40,20 @@
             ></lightning-button>
         </div>
     </nav>
+    <template if:true={extended}>
+        <div>
+            <div class="slds-align_absolute-center">
+                <lightning-combobox
+                    label="Page Size"
+                    value={pageSize}
+                    options={pageSizeOptions}
+                    onchange={changePageSize}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-align_absolute-center">
+                Showing {startIndexOfViewingResults} - {endIndexOfViewingResults} of {resultsCount} {itemType}
+            </div>
+            <div class="slds-align_absolute-center">Page {currentPageStr} of {lastPageStr}</div>
+        </div>
+    </template>
 </template>

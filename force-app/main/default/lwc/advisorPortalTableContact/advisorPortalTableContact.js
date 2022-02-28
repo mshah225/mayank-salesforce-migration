@@ -1,6 +1,6 @@
 import {LightningElement, api} from 'lwc';
 
-export default class AdvisorPortalResult extends LightningElement {
+export default class AdvisorPortalTableContact extends LightningElement {
     @api set contactWrapper(val) {
         // make a deep copy when this is initially set, then to keep parent and this synced up we should use events and
         // trust that the parent is keeping their copy up to date

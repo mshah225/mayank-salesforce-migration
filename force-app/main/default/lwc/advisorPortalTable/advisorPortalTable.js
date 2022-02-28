@@ -1,7 +1,7 @@
 import {LightningElement, api} from 'lwc';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
 
-export default class AdvisorPortalResults extends LightningElement {
+export default class AdvisorPortalTable extends LightningElement {
     @api set allResults(val) {
         // deep copy the results to allow us to modify our copy
         this._allResults = JSON.parse(JSON.stringify(val));

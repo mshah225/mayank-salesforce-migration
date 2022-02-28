@@ -75,12 +75,12 @@
 
         <ul class="slds-accordion">
             <template for:each={shownContactWrappers} for:item="contactWrapper">
-                <c-advisor-portal-result
+                <c-advisor-portal-table-contact
                     key={contactWrapper.portalContact.Id}
                     contact-wrapper={contactWrapper}
                     onnavigate={bubbleEvent}
                     onchangeselected={updateSelected}
-                ></c-advisor-portal-result>
+                ></c-advisor-portal-table-contact>
             </template>
         </ul>
 

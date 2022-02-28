@@ -1603,7 +1603,7 @@
                                                     <tr>
                                                         <th>Cumulative GPA</th>
                                                         <td id="ugap_gpa">
-                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">                                                            
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">
                                                                 <c:sp_GPA gpa="{!undergradGPA}" />
                                                             </a>
                                                             <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
@@ -1875,7 +1875,7 @@
                                                         <th>Financial Aid Issue</th>
                                                         <td id="sr_finAid_issue">
                                                             <apex:repeat value="{!financialAidIndicators}" var="indicator">
-                                                            	<p>
+                                                                <p>
                                                                     {!indicator}
                                                                 </p>
                                                             </apex:repeat>
@@ -2836,7 +2836,7 @@
             $j(this).attr('src', '{!$Resource.blankAvatar}');
         });
 
-        $j(document).ready(function () {          
+        $j(document).ready(function () {
 
             maskPhoneNumbers();
             filterFinancialAid();
@@ -3035,12 +3035,12 @@
             getStudentRetention();
             getGeneralIndicators();
             getTranscripts();
-            if ('{!theContact.Average_MyASU_Cohort__c}' == '' ){ 
+            if ('{!theContact.Average_MyASU_Cohort__c}' == '') {
                 document.getElementById('sr_below_mean_myasu_usage').innerHTML = '--';
             } else {
                 document.getElementById('sr_below_mean_myasu_usage').innerHTML = Math.floor(0.7 * '{!theContact.Average_MyASU_Cohort__c}');
             }
-            
+
         }
 
         function loadCommentsTab() {
@@ -3085,7 +3085,7 @@
                             if (!response.totalSize == 0) {
                                 var result = response.records[0];
                                 document.getElementById('UGgeneralIndicators').style.display = 'initial';
-                                document.getElementById('stdtRetentionResponseErrors').style.display = 'none';               
+                                document.getElementById('stdtRetentionResponseErrors').style.display = 'none';
 
                                 cleanUpUndefined('UGgeneralIndicators');
                                 indicatorTabLoaded = true;
@@ -3105,7 +3105,7 @@
         // Method to load the Undergraduate Indicators tab
         function getGeneralIndicators() {
             if (!indicatorTabLoaded) {
-                var errorHtml = '';                
+                var errorHtml = '';
 
                 var financialAidUnresolvedQuery =
                     'SELECT Aid_Year__c, Checklist_Code__c, Checklist_Item_Code__c, Item_Description__c, Checklist_Item_Status_Date__c, ' +
@@ -3171,12 +3171,18 @@
                 );
 
                 var asrInformationQuery =
-                    'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
-                    'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
-                    'EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c ' +
-                    'FROM PS_ASU_SR_ASR_INDV__x ' +
+                    "SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, " +
+                    "CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, " +
+                    "EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c " +
+                    "FROM PS_ASU_SR_ASR_INDV__x " +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}'";
+                    "AND STRM__c = '{!currentTerm}' " +
+                    "AND (" +
+                    "(CRSE_GRADE_INPUT__c != '' AND CRSE_GRADE_INPUT__c != NULL) " +
+                    "OR (COMMENT1__c != '' AND COMMENT1__c != NULL) " +
+                    "OR (ASU_GRADE_INST_LST__c != '' AND ASU_GRADE_INST_LST__c != NULL) " +
+                    "OR (ASU_GRADE_RSN_LIST__c != '' AND ASU_GRADE_RSN_LIST__c != NULL)" +
+                    ")";
                 conn.query(
                     asrInformationQuery,
                     function (err, response) {
@@ -3297,8 +3303,8 @@
                                     "<tbody style='font-weight:normal;'>";
                                 for (var i = 0; i < result.length; i++) {
                                     if (result[i].SI_Start_Term__c != null) {
-                                    	startTerm = result[i].SI_Start_Term__r.Name;
-                                	} else {
+                                        startTerm = result[i].SI_Start_Term__r.Name;
+                                    } else {
                                         startTerm = '--';
                                     }
                                     html +=
@@ -3455,7 +3461,7 @@
                     { buffer: false, escape: true, timeout: 120000 }
                 );
             }
-        }        
+        }
 
         // Method to load the advisor comments.
         function getPSAdvisorNotes() {
@@ -4608,7 +4614,7 @@
 
                             for (var i = 0; i < result.length; i++) {
                                 if (result[i].Name == null) {
-                                	result[i].Name = '--';
+                                    result[i].Name = '--';
                                 }
                                 if (result[i].Course_Taken__c == null) {
                                     result[i].Course_Taken__c = '--';

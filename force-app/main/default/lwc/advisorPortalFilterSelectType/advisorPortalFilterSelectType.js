@@ -1,6 +1,6 @@
 import {LightningElement, api} from 'lwc';
 
-export default class AdvisorPortalContactCaseSelector extends LightningElement {
+export default class AdvisorPortalFilterSelectType extends LightningElement {
     @api
     get defaultFilter() {
         return null; // no getting needed

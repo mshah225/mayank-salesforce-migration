@@ -1,7 +1,6 @@
-/* eslint-disable no-console */
 import {LightningElement, api} from 'lwc';
 
-export default class AdvisorPortalCareerSelector extends LightningElement {
+export default class AdvisorPortalFilterSelectCareer extends LightningElement {
     @api
     get defaultFilter() {
         return null; // no getting needed

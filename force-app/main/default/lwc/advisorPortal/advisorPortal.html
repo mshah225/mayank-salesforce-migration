@@ -15,10 +15,10 @@
             <div class="slds-grid slds-grid_vertical">
                 <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
                     <div class="slds-card slds-var-p-around_small">
-                        <c-advisor-portal-career-selector
+                        <c-advisor-portal-filter-select-career
                             onchange={updateFilter}
                             default-filter={defaultFilter}
-                        ></c-advisor-portal-career-selector>
+                        ></c-advisor-portal-filter-select-career>
                     </div>
                 </div>
                 <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
@@ -36,11 +36,11 @@
     <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
         <div class="slds-col">
             <div class="slds-card slds-var-p-around_small">
-                <c-advisor-portal-contact-case-selector
+                <c-advisor-portal-filter-select-type
                     class="slds-col slds-size_1-of-2"
                     onchange={updateFilter}
                     default-filter={defaultFilter}
-                ></c-advisor-portal-contact-case-selector>
+                ></c-advisor-portal-filter-select-type>
                 <div class="slds-col slds-size_1-of-2"></div>
             </div>
         </div>

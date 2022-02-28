@@ -2,7 +2,14 @@ import {LightningElement, api} from 'lwc';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
 
 export default class AdvisorPortalResults extends LightningElement {
-    @api allResults = [];
+    @api set allResults(val) {
+        // deep copy the results to allow us to modify our copy
+        this._allResults = JSON.parse(JSON.stringify(val));
+    }
+    get allResults() {
+        return this._allResults;
+    }
+    _allResults = [];
     currentPage = 0;
     pageSize = 20;
 
@@ -22,8 +29,6 @@ export default class AdvisorPortalResults extends LightningElement {
 
         return shownResults;
     }
-
-    openSections = [];
 
     get sizeOfResults() {
         return this.allResults.length;
@@ -54,36 +59,32 @@ export default class AdvisorPortalResults extends LightningElement {
         this.currentPage = newPage;
     }
 
-    toggleSelectRelatedCases(e) {
-        console.log('toggleSelectRelatedCases', e);
-    }
+    updateSelected(e) {
+        const changedContact = e.detail.contact;
+        const changedCases = e.detail.cases;
+        for (let i = 0; i < this.allResults.length; i++) {
+            const contactWrapper = this.allResults[i];
 
-    openDropdown(e) {
-        console.log('openDropdown', e, e.target, JSON.stringify(e.target.dataset));
-        const contactIdToToggleFor = e.target.dataset.contactId;
-        for (let i = 0; i < this.allResults; i++) {
-            const contactWrapper = this.allResults[i];
-            if (contactWrapper.portalContact.Id === contactIdToToggleFor) {
-                contactWrapper.isOpen = true;
-                this.allResults = [...this.allResults];
-                break;
-            }
-        }
-    }
-    closeDropdown(e) {
-        console.log('closeDropdown', e, e.target, JSON.stringify(e.target.dataset));
-        const contactIdToToggleFor = e.target.dataset.contactId;
-        for (let i = 0; i < this.allResults; i++) {
-            const contactWrapper = this.allResults[i];
-            if (contactWrapper.portalContact.Id === contactIdToToggleFor) {
-                contactWrapper.isOpen = false;
-                this.allResults = [...this.allResults];
+            if (contactWrapper.portalContact.Id === changedContact.Id) {
+                contactWrapper.isSelected = changedContact.selected;
+                for (let j = 0; j < contactWrapper.cases.length; j++) {
+                    const caseWrapper = contactWrapper.cases[j];
+                    if (changedCases.includes(caseWrapper.portalCase.Id)) {
+                        caseWrapper.isSelected = true;
+                    } else {
+                        caseWrapper.isSelected = false;
+                    }
+                }
                 break;
             }
         }
     }
 
-    openStudentProfile(e) {
-        console.log('openStudentProfile', e);
+    bubbleEvent(e) {
+        this.dispatchEvent(
+            new CustomEvent(e.type, {
+                detail: e.detail,
+            })
+        );
     }
 }

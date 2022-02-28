@@ -17,20 +17,23 @@ export default class AdvisorPortalResult extends LightningElement {
         return this.contactWrapper !== null;
     }
 
-    get selectedItems() {
-        const selectedItems = [];
+    getSelectedItems() {
+        const selectedCases = [];
 
-        if (this.contactWrapper.isSelected) {
-            selectedItems.push(this.contactWrapper.portalContact.Id);
-        }
         for (let i = 0; i < this.contactWrapper.cases.length; i++) {
             const caseWrapper = this.contactWrapper.cases[i];
             if (caseWrapper.isSelected) {
-                selectedItems.push(caseWrapper.portalCase.Id);
+                selectedCases.push(caseWrapper.portalCase.Id);
             }
         }
 
-        return selectedItems;
+        return {
+            contact: {
+                Id: this.contactWrapper.portalContact.Id,
+                selected: this.contactWrapper.isSelected,
+            },
+            cases: selectedCases,
+        };
     }
 
     toggleSelectRelatedCases(e) {
@@ -92,7 +95,7 @@ export default class AdvisorPortalResult extends LightningElement {
     }
 
     sendSelectEvent() {
-        this.dispatchEvent(new CustomEvent('changeselectedlist', {detail: this.selectedItems}));
+        this.dispatchEvent(new CustomEvent('changeselected', {detail: this.getSelectedItems()}));
     }
 
     sendOpenToggleEvent() {

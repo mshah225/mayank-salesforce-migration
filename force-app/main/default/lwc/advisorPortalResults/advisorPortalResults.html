@@ -63,15 +63,7 @@
             </div>
         </div>
 
-        <div
-            style="
-                padding: 20px;
-                background-color: rgb(250, 250, 249);
-                padding-top: 4px;
-                padding-bottom: 4px;
-                margin-bottom: 10px;
-            "
-        >
+        <div class="light-gray-background px-2 py-1">
             <c-lightning-pagination-navigator
                 results-count={sizeOfResults}
                 page-size={pageSize}
@@ -86,19 +78,13 @@
                 <c-advisor-portal-result
                     key={contactWrapper.portalContact.Id}
                     contact-wrapper={contactWrapper}
+                    onnavigate={bubbleEvent}
+                    onchangeselected={updateSelected}
                 ></c-advisor-portal-result>
             </template>
         </ul>
 
-        <div
-            style="
-                padding: 20px;
-                background-color: rgb(250, 250, 249);
-                padding-top: 4px;
-                padding-bottom: 4px;
-                margin-bottom: 10px;
-            "
-        >
+        <div class="light-gray-background px-2 py-1 mt-1">
             <c-lightning-pagination-navigator
                 results-count={sizeOfResults}
                 page-size={pageSize}

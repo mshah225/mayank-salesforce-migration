@@ -5,3 +5,21 @@
 :host .persistence-icon {
     width: var(--lwc-squareIconUtilityLarge, 1.5rem);
 }
+
+:host .light-gray-background {
+    background-color: rgb(250, 250, 249);
+}
+
+:host .px-2 {
+    padding-left: var(--lwc-varSpacingMedium, 1rem);
+    padding-right: var(--lwc-varSpacingMedium, 1rem);
+}
+
+:host .py-1 {
+    padding-top: var(--lwc-varSpacingXSmall, 0.5rem);
+    padding-bottom: var(--lwc-varSpacingXSmall, 0.5rem);
+}
+
+:host .mt-1 {
+    margin-top: var(--lwc-varSpacingXSmall, 0.5rem);
+}

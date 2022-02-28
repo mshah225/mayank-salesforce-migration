@@ -4,52 +4,33 @@ import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
 export default class AdvisorPortalResults extends LightningElement {
     @api allResults = [];
     currentPage = 0;
+    pageSize = 20;
 
     get shownContactWrappers() {
-        const shownResults = [
-            {
-                isSelected: true,
-                isOpen: true,
-                portalContact: {
-                    Id: '001',
-                    Name: 'Robert Nordman',
-                    Preferred_First_Name__c: 'Robert',
-                    LastName: 'Nordman',
-                    Curr_Cont_Prediction_Level__c: 6,
-                    Most_Recent_Outlook_Change_Direction__c: 1,
-                    Change_Date__c: 1547250828000,
-                },
-                hasCases: true,
-                hasMultipleCases: false,
-                isOutreachCustomer: true,
-                cases: [
-                    {
-                        isSelected: true,
-                        hasFollowupDate: true,
-                        portalCase: {
-                            Id: '301',
-                            Priority: 'Normal',
-                            CaseNumber: '16317868',
-                            Subject: '2217 Applied to Graduate',
-                            Status: 'Outreach Required',
-                            Followup_Date__c: 1547250828000,
-                            Owner: {
-                                Name: 'UGBA16',
-                            },
-                            CreatedDate: 1547250828000,
-                        },
-                    },
-                ],
-            },
-        ];
+        const shownResults = [];
+
+        for (let i = 0; i < this.allResults.length; i++) {
+            const result = this.allResults[i];
+            if (i < this.currentPage * this.pageSize) {
+                continue; // these are on a previous page
+            } else if (i > (this.currentPage + 1) * this.pageSize) {
+                continue; // these are on a next page
+            } else {
+                shownResults.push(result);
+            }
+        }
 
         return shownResults;
     }
 
     openSections = [];
 
+    get sizeOfResults() {
+        return this.allResults.length;
+    }
+
     get allResultsIsEmpty() {
-        return this.sizeOfAllResults === 0;
+        return false && this.allResults.length === 0;
     }
 
     get persistenceIconVeryLow() {
@@ -73,12 +54,36 @@ export default class AdvisorPortalResults extends LightningElement {
         this.currentPage = newPage;
     }
 
+    toggleSelectRelatedCases(e) {
+        console.log('toggleSelectRelatedCases', e);
+    }
+
     openDropdown(e) {
-        console.log(e);
-        //const contactId = e.originalTarget.data.contactId;
+        console.log('openDropdown', e, e.target, JSON.stringify(e.target.dataset));
+        const contactIdToToggleFor = e.target.dataset.contactId;
+        for (let i = 0; i < this.allResults; i++) {
+            const contactWrapper = this.allResults[i];
+            if (contactWrapper.portalContact.Id === contactIdToToggleFor) {
+                contactWrapper.isOpen = true;
+                this.allResults = [...this.allResults];
+                break;
+            }
+        }
     }
     closeDropdown(e) {
-        console.log(e);
-        //const contactId = e.originalTarget.data.contactId;
+        console.log('closeDropdown', e, e.target, JSON.stringify(e.target.dataset));
+        const contactIdToToggleFor = e.target.dataset.contactId;
+        for (let i = 0; i < this.allResults; i++) {
+            const contactWrapper = this.allResults[i];
+            if (contactWrapper.portalContact.Id === contactIdToToggleFor) {
+                contactWrapper.isOpen = false;
+                this.allResults = [...this.allResults];
+                break;
+            }
+        }
+    }
+
+    openStudentProfile(e) {
+        console.log('openStudentProfile', e);
     }
 }

@@ -1,0 +1,21 @@
+:host .accordianSectionLabel {
+    display: inline;
+}
+
+:host .accordianSectionLabelWrapper {
+    padding: var(--lwc-varSpacingXSmall, 0.5rem);
+}
+:host .accordianSectionBodyWrapper {
+    padding-left: var(--lwc-varSpacingLarge, 1.5rem);
+    padding-right: var(--lwc-varSpacingLarge, 1.5rem);
+}
+
+:host .profile-link {
+    text-decoration: underline;
+    margin-left: var(--lwc-varSpacingXSmall, 0.5rem);
+    margin-right: var(--lwc-varSpacingXSmall, 0.5rem);
+}
+
+:host .text-1rem {
+    font-size: 1rem;
+}

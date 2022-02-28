@@ -5,7 +5,3 @@
 :host .persistence-icon {
     width: var(--lwc-squareIconUtilityLarge, 1.5rem);
 }
-
-:host .accordianToggle {
-    display: inline;
-}

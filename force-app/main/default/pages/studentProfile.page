@@ -3176,13 +3176,7 @@
                     "EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c " +
                     "FROM PS_ASU_SR_ASR_INDV__x " +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}' " +
-                    "AND (" +
-                    "(CRSE_GRADE_INPUT__c != '' AND CRSE_GRADE_INPUT__c != NULL) " +
-                    "OR (COMMENT1__c != '' AND COMMENT1__c != NULL) " +
-                    "OR (ASU_GRADE_INST_LST__c != '' AND ASU_GRADE_INST_LST__c != NULL) " +
-                    "OR (ASU_GRADE_RSN_LIST__c != '' AND ASU_GRADE_RSN_LIST__c != NULL)" +
-                    ")";
+                    "AND STRM__c = '{!currentTerm}'";
                 conn.query(
                     asrInformationQuery,
                     function (err, response) {
@@ -3191,8 +3185,10 @@
                             document.getElementById('sr_asr_errors').className = '';
                             document.getElementById('sr_asr_errors').innerHTML = 'An Error has occured trying to load the data for this object';
                         } else {
-                            if (!response.totalSize == 0) {
-                                result = response.records;
+                            result = response.records.filter(element => {
+                                return element.CRSE_GRADE_INPUT__c != null || element.COMMENT1__c != null || element.ASU_GRADE_RSN_LIST__c != null || element.ASU_GRADE_INST_LST__c != null;
+                            });
+                            if (result.length > 0) {
                                 var html =
                                     '' +
                                     '<thead>' +

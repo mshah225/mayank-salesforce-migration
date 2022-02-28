@@ -1,0 +1,11 @@
+:host lightning-icon.outreach-icn {
+    /* Turns gray icon into green */
+    --lwc-colorTextSuccess: green;
+}
+:host .persistence-icon {
+    width: var(--lwc-squareIconUtilityLarge, 1.5rem);
+}
+
+:host .accordianToggle {
+    display: inline;
+}

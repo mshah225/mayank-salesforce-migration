@@ -1,3 +1,342 @@
 <template>
-    <p>Results</p>
+    <template if:false={allResultsIsEmpty}>
+        <div class="slds-var-p-vertical_x-small">
+            <div class="slds-var-p-bottom_small">
+                <lightning-icon
+                    class="outreach-icn"
+                    icon-name="utility:record"
+                    variant="success"
+                    size="x-small"
+                ></lightning-icon>
+                = Indicates a case that needs attention because it has the status Outreach Required or Customer Replied.
+                <br /><img
+                    src={persistenceIconVeryLow}
+                    alt="very low"
+                    title="Very Low"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Very Low
+                <img
+                    src={persistenceIconLow}
+                    alt="low"
+                    title="Low"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Low
+                <img
+                    src={persistenceChartModerate}
+                    alt="moderate"
+                    title="Moderate"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Moderate
+                <img
+                    src={persistenceIconHigh}
+                    alt="high"
+                    title="High"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = High
+                <img
+                    src={persistenceIconVeryHigh}
+                    alt="very high"
+                    title="Very High"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Very High
+            </div>
+            <div class="slds-checkbox_button-group" style="border: none">
+                <lightning-input
+                    type="checkbox"
+                    label="Select All"
+                    checked={selectedAll}
+                    class="top-level-select"
+                    onchange={toggleSelectAll}
+                ></lightning-input>
+                <lightning-input
+                    type="checkbox"
+                    label="Expand All"
+                    checked={expandedAll}
+                    class="top-level-select"
+                    onchange={toggleExpandAll}
+                ></lightning-input>
+            </div>
+        </div>
+
+        <div
+            style="
+                padding: 20px;
+                background-color: rgb(250, 250, 249);
+                padding-top: 4px;
+                padding-bottom: 4px;
+                margin-bottom: 10px;
+            "
+        >
+            <c-lightning-pagination-navigator
+                results-count="30"
+                page-size="20"
+                current-page={currentPage}
+                item-type="Contacts"
+                onchangepage={changePage}
+            ></c-lightning-pagination-navigator>
+        </div>
+
+        <template for:each={shownContactWrappers} for:item="contactWrapper">
+            <div key={contactWrapper.portalContact.Id}>
+                <!-- sldsValidatorIgnoreNextLine -->
+                <input
+                    type="checkbox"
+                    checked={contactWrapper.isSelected}
+                    data-key={contactWrapper.portalContact.Id}
+                    onchange={toggleRelatedCases}
+                />
+                <div class="accordianToggle">
+                    <template if:true={contactWrapper.isOpen}>
+                        <span onlick={closeDropdown} data-contact-id={contactWrapper.portalContact.Id}>
+                            <lightning-icon
+                                icon-name="utility:chevrondown"
+                                size="x-small"
+                                role="button"
+                            ></lightning-icon>
+                        </span>
+                    </template>
+                    <template if:false={contactWrapper.isOpen}>
+                        <span onlick={openDropdown} data-contact-id={contactWrapper.portalContact.Id}>
+                            <lightning-icon
+                                icon-name="utility:chevronright"
+                                size="x-small"
+                                role="button"
+                            ></lightning-icon>
+                        </span>
+                    </template>
+                    <a
+                        href=""
+                        onclick={openStudentProfile}
+                        class="profile-link"
+                        data-contact-id={contactWrapper.portalContact.Id}
+                        data-contact-name={contactWrapper.portalContact.Name}
+                        title="Student Profile"
+                    >
+                        Profile
+                    </a>
+                    <span class="contact-name">
+                        {contactWrapper.portalContact.LastName}, {contactWrapper.portalContact.Preferred_First_Name__c}
+                    </span>
+                    <span class="slds-var-p-horizontal_xx-small">&#124;</span>
+                    <span class="slds-var-m-left_xx-small">
+                        <template if:true={contactWrapper.hasCases}>
+                            <template if:true={contactWrapper.hasMultipleCases}>
+                                {contactWrapper.cases.length} cases
+                            </template>
+                            <template if:false={contactWrapper.hasMultipleCases}>
+                                {contactWrapper.cases.length} case
+                            </template>
+                        </template>
+                        <template if:false={contactWrapper.hasCases}> 0 cases </template>
+                    </span>
+
+                    <template if:true={contactWrapper.isOutreachCustomer}>
+                        <lightning-icon
+                            class="outreach-icn"
+                            icon-name="utility:record"
+                            variant="success"
+                            size="x-small"
+                        ></lightning-icon>
+                    </template>
+
+                    <c-advisor-portal-prediction-level
+                        prediction-level={contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}
+                    ></c-advisor-portal-prediction-level>
+
+                    <c-advisor-portal-outlook-change-direction
+                        change-direction={contactWrapper.portalContact.Most_Recent_Outlook_Change_Direction__c}
+                        change-date={contactWrapper.portalContact.Change_Date__c}
+                    ></c-advisor-portal-outlook-change-direction>
+                </div>
+                <template if:true={contactWrapper.isOpen}>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="slds-text-title_caps" scope="col"></th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Case Priority">Case Priority</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Case Number">Case Number</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Case Subject">Case Subject</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Status">Status</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Followup Date">Followup Date</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Case Owner">Case Owner</div>
+                                </th>
+                                <th class="slds-text-title_caps" scope="col">
+                                    <div class="slds-truncate" title="Case Created Date">Case Created Date</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={contactWrapper.cases} for:item="caseWrapper">
+                                <tr class="slds-hint-parent" key={caseWrapper.portalCase.Id}>
+                                    <th data-label="" scope="row">
+                                        <div class="slds-truncate">
+                                            <!-- sldsValidatorIgnoreNextLine -->
+                                            <input
+                                                type="checkbox"
+                                                checked={caseWrapper.isSelected}
+                                                data-key={caseWrapper.portalCase.Id}
+                                                onchange={toggleCaseSelect}
+                                            />
+                                        </div>
+                                    </th>
+                                    <th data-label="Priority">
+                                        <div class="slds-truncate" title="Priority">
+                                            {caseWrapper.portalCase.Priority}
+                                        </div>
+                                    </th>
+                                    <td data-label="Case Number">
+                                        <div class="slds-truncate" title="Case Number">
+                                            {caseWrapper.portalCase.CaseNumber}
+                                        </div>
+                                    </td>
+                                    <td data-label="Subject">
+                                        <div class="slds-truncate" title="Subject">
+                                            <a
+                                                href=""
+                                                data-case-id={caseWrapper.portalCase.Id}
+                                                data-case-number={caseWrapper.portalCase.CaseNumber}
+                                                data-contact-id={contactWrapper.portalContact.Id}
+                                                data-contact-name={contactWrapper.portalContact.Name}
+                                                onclick={openCase}
+                                            >
+                                                {caseWrapper.portalCase.Subject}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td data-label="Status">
+                                        <div class="slds-truncate" title="Status">{caseWrapper.portalCase.Status}</div>
+                                    </td>
+                                    <td data-label="Followup Date">
+                                        <div class="slds-truncate" title="Followup Date">
+                                            <template if:true={caseWrapper.hasFollowupDate}>
+                                                <lightning-formatted-date-time
+                                                    value={caseWrapper.portalCase.Followup_Date__c}
+                                                ></lightning-formatted-date-time>
+                                            </template>
+                                        </div>
+                                    </td>
+                                    <td data-label="Owner">
+                                        <div class="slds-truncate" title="Owner">
+                                            {caseWrapper.portalCase.Owner.Name}
+                                        </div>
+                                    </td>
+                                    <td data-label="Created Date">
+                                        <div class="slds-truncate" title="Created Date">
+                                            <lightning-formatted-date-time
+                                                value={caseWrapper.portalCase.CreatedDate}
+                                            ></lightning-formatted-date-time>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+            </div>
+        </template>
+
+        <ul class="slds-accordion">
+            <li class="slds-accordion__list-item">
+                <section class="slds-accordion__section slds-is-open">
+                    <div class="slds-accordion__summary">
+                        <h2 class="slds-accordion__summary-heading">
+                            <button
+                                class="slds-button slds-button_reset slds-accordion__summary-action"
+                                aria-controls="referenceId-75"
+                                aria-expanded="true"
+                                title="Accordion summary"
+                            >
+                                <lightning-icon
+                                    icon-name="utility:chevronright"
+                                    size="x-small"
+                                    role="button"
+                                ></lightning-icon>
+                                <span class="slds-accordion__summary-content">Accordion summary</span>
+                            </button>
+                        </h2>
+                    </div>
+                    <div class="slds-accordion__content" id="referenceId-75">Accordion details - A</div>
+                </section>
+            </li>
+            <li class="slds-accordion__list-item">
+                <section class="slds-accordion__section">
+                    <div class="slds-accordion__summary">
+                        <h2 class="slds-accordion__summary-heading">
+                            <button
+                                class="slds-button slds-button_reset slds-accordion__summary-action"
+                                aria-controls="referenceId-76"
+                                aria-expanded="false"
+                                title="Accordion summary"
+                            >
+                                <lightning-icon
+                                    icon-name="utility:chevronright"
+                                    size="x-small"
+                                    role="button"
+                                ></lightning-icon>
+                                <span class="slds-accordion__summary-content">Accordion summary</span>
+                            </button>
+                        </h2>
+                    </div>
+                    <div hidden="" class="slds-accordion__content" id="referenceId-76">Accordion details - B</div>
+                </section>
+            </li>
+            <li class="slds-accordion__list-item">
+                <section class="slds-accordion__section">
+                    <div class="slds-accordion__summary">
+                        <h2 class="slds-accordion__summary-heading">
+                            <button
+                                class="slds-button slds-button_reset slds-accordion__summary-action"
+                                aria-controls="referenceId-77"
+                                aria-expanded="false"
+                                title="Accordion summary"
+                            >
+                                <lightning-icon
+                                    icon-name="utility:chevronright"
+                                    size="x-small"
+                                    role="button"
+                                ></lightning-icon>
+                                <span class="slds-accordion__summary-content">Accordion summary</span>
+                            </button>
+                        </h2>
+                    </div>
+                    <div hidden="" class="slds-accordion__content" id="referenceId-77">Accordion details - C</div>
+                </section>
+            </li>
+        </ul>
+
+        <div
+            style="
+                padding: 20px;
+                background-color: rgb(250, 250, 249);
+                padding-top: 4px;
+                padding-bottom: 4px;
+                margin-bottom: 10px;
+            "
+        >
+            <c-lightning-pagination-navigator
+                results-count="30"
+                page-size="20"
+                item-type="Contacts"
+                current-page={currentPage}
+                onchangepage={changePage}
+                extended="true"
+            ></c-lightning-pagination-navigator>
+        </div>
+    </template>
 </template>

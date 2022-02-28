@@ -11,7 +11,7 @@
  **/
 import {LightningElement, api, track} from 'lwc';
 
-export default class AdvisorPortalTopLevelFilterOption extends LightningElement {
+export default class AdvisorPortalUserSelectOption extends LightningElement {
     @track isSelected;
 
     @api

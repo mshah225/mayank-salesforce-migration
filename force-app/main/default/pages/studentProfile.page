@@ -3245,12 +3245,15 @@
                                 html += '</tbody>';
 
                                 document.getElementById('sr_asr_errors').innerHTML = '';
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + response.totalSize;
+                                document.getElementById('sr_asr').innerHTML = "<span style='color:red'>" + result.length;
                                 document.getElementById('sr_asr_info_table').innerHTML = html;
                                 document.getElementById('sr_asr_info_tr').style.display = 'table-row';
-
                                 cleanUpUndefined('sr_asr_info_tr');
+                            } else {
+                                document.getElementById('sr_asr_errors').innerHTML = '';
+                                document.getElementById('sr_asr').innerHTML = "<span style='color:black'>" + '--';
+                                document.getElementById('sr_asr_info_table').style.display = 'none';
+                                document.getElementById('sr_asr_info_tr').style.display = 'none';
                             }
                         }
                     },

@@ -1,10 +1,10 @@
 import {LightningElement, api, wire} from 'lwc';
 import getPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getPicklistValues';
-import getCampusValuesX from '@salesforce/apex/AdvisorPortalFilterSectionController.getCampusValuesX';
+import getCampusValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCampusValues';
 import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
 import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
 import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
-import getFilteredCasesX from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCasesX';
+import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 
 export default class AdvisorPortalFilterSection extends LightningElement {
     @api set defaultFilter(val) {
@@ -71,7 +71,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
 
     // Reassigning currentFilterJSON, like in we do it `set currentFilter` will trigger this to re-run
     campusPicklistValues = [];
-    @wire(getCampusValuesX, {filterJSON: '$currentFilterJSON'})
+    @wire(getCampusValues, {filterJSON: '$currentFilterJSON'})
     gotCampusValues(result) {
         let {data, error} = result;
         if (data != null) {
@@ -152,16 +152,9 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         let viewAsOptions = this.viewAsUsers;
         let filterJSON = JSON.stringify(this.currentFilter);
 
-        console.log('--applyFilters--');
-        console.log(viewAsOptions);
-        console.log(filterJSON);
-        console.log('--applyFilters--');
-
-        getFilteredCasesX({viewAsOptions, filterJSON})
+        getFilteredCases({viewAsOptions, filterJSON})
             .then((val) => {
-                console.log('--applyFilters then--');
-                console.log(val);
-                console.log('--applyFilters then--');
+                this.sendChangeResultsEvent(JSON.parse(val));
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -170,7 +163,10 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             .finally(() => {});
     }
 
-    // Helper functions
+    /**
+     * Helper functions
+     */
+    // Copy only the fields that are different from filterB to filterA
     copyChanges(filterA, filterB) {
         for (let i = 0; i < this.filterPropertyList.length; i++) {
             const propertyName = this.filterPropertyList[i];
@@ -179,6 +175,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         }
     }
 
+    // Check if filterA and filterB disagree
     filterIsDifferent(filterA, filterB) {
         let same = true;
 
@@ -193,6 +190,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         return !same;
     }
 
+    // Convert returned picklist map into array of options for comboboxes
     buildPicklistOptionsArray(optionsMap) {
         let optionsList = [];
 
@@ -247,10 +245,19 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         'specialPopulation',
     ];
 
+    // Send events
     sendChangeFilterEvent(name, value) {
         this.dispatchEvent(
             new CustomEvent('change', {
                 detail: {name, value},
+            })
+        );
+    }
+
+    sendChangeResultsEvent(results) {
+        this.dispatchEvent(
+            new CustomEvent('setresults', {
+                detail: results,
             })
         );
     }

@@ -30,7 +30,6 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     }
 
     saveFilters() {
-        console.log(this.currentFilter);
         setDefaultFilter({json: JSON.stringify(this.currentFilter)})
             .then(() => {
                 this.makeToast('success', 'Success', 'Filters saved as default.');

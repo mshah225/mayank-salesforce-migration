@@ -49,35 +49,29 @@ public class AdvisorPortalFilterSectionController {
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCampusValuesX(String filterJSON) {
+    public static Map<String, String> getCampusValues(String filterJSON) {
         Map<String, String> campusMap = new Map<String, String>();
         if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
             AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
-            campusMap = getCampusValues(filter);
+
+            List<Location__c> campusLocations = [
+                SELECT Name, Graduate_Enabled__c, Location_Code__c
+                FROM Location__c
+                ORDER BY CreatedDate, Name
+            ];
+
+            if (filter != null && filter.career != null && filter.career == 'GRD') {
+                // Load only some locations for graduate students
+                for (Location__c campus : campusLocations)
+                    if (campus.Graduate_Enabled__c)
+                        campusMap.put(campus.Name, campus.Location_Code__c);
+            } else {
+                // Load all locations for undergraduate students
+                for (Location__c campus : campusLocations)
+                    campusMap.put(campus.Name, campus.Location_Code__c);
+            }
         }
         return campusMap;
-    }
-    @AuraEnabled
-    public static Map<String, String> getCampusValues(AdvisorPortalFilter filter) {
-        Map<String, String> picklistValuesByLabel = new Map<String, String>();
-        List<Location__c> campusLocations = [
-            SELECT Name, Graduate_Enabled__c, Location_Code__c
-            FROM Location__c
-            ORDER BY CreatedDate, Name
-        ];
-
-        if (filter != null && filter.career != null && filter.career == 'GRD') {
-            // Load only some locations for graduate students
-            for (Location__c campus : campusLocations)
-                if (campus.Graduate_Enabled__c)
-                    picklistValuesByLabel.put(campus.Name, campus.Location_Code__c);
-        } else {
-            // Load all locations for undergraduate students
-            for (Location__c campus : campusLocations)
-                picklistValuesByLabel.put(campus.Name, campus.Location_Code__c);
-        }
-
-        return picklistValuesByLabel;
     }
 
     /**
@@ -165,28 +159,17 @@ public class AdvisorPortalFilterSectionController {
     }
 
     @AuraEnabled
-    public static List<String> getFilteredCasesX(List<String> viewAsOptions, String filterJSON) {
-        List<Id> viewAsOptionsIdList = new List<Id>();
-        for (String opt : viewAsOptions) {
-            viewAsOptionsIdList.add(Id.valueOf(opt));
-        }
+    public static String getFilteredCases(List<Id> viewAsOptions, String filterJSON) {
         AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
 
-        List<AdvisorPortalContact> advisorPortalContacts = getFilteredCases(viewAsOptionsIdList, filter);
-        List<String> serializedAdvisorPortalContacts = new List<String>();
-        for (AdvisorPortalContact con : advisorPortalContacts) {
-            serializedAdvisorPortalContacts.add(JSON.serialize(con));
+        List<AdvisorPortalContact> results = new List<AdvisorPortalContact>();
+        if (filter.caseTypeState == 'AllCasesState') {
+            results = getAllContactsAndRespectiveCases(viewAsOptions, filter);
+        } else {
+            results = getContactCaseWrappersWithLessQueries(viewAsOptions, filter);
         }
 
-        return serializedAdvisorPortalContacts;
-    }
-    @AuraEnabled
-    public static List<AdvisorPortalContact> getFilteredCases(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
-        if (filter.caseTypeState == 'AllCasesState') {
-            return getAllContactsAndRespectiveCases(viewAsOptions, filter);
-        } else {
-            return getContactCaseWrappersWithLessQueries(viewAsOptions, filter);
-        }
+        return JSON.serialize(results);
     }
 
     /**

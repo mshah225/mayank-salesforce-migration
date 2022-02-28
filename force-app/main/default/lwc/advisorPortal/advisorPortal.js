@@ -4,7 +4,7 @@ export default class AdvisorPortal extends LightningElement {
     defaultFilter = {};
     currentFilter = {};
     selectedUsers = [];
-    shownResults = [];
+    allResults = [];
     selectedResults = [];
 
     // Should only run once on page load
@@ -17,6 +17,11 @@ export default class AdvisorPortal extends LightningElement {
         this.currentFilter[e.detail.name] = e.detail.value;
         this.triggerCurrentFilterChanges();
         this.printCurrentFilter();
+    }
+
+    updateResults(e) {
+        console.log(e);
+        this.allResults = e.detail;
     }
 
     changeSelectedUsers(e) {

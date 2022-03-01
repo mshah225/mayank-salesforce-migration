@@ -1,13 +1,13 @@
 <template>
     <template if:true={contactWrapperNotNull}>
         <div class="accordianSectionLabelWrapper">
-            <!-- sldsValidatorIgnoreNextLine -->
-            <input
+            <lightning-input
                 type="checkbox"
                 checked={contactWrapper.isSelected}
-                data-key={contactWrapper.portalContact.Id}
-                onchange={toggleSelectRelatedCases}
-            />
+                onchange={toggleContactSelect}
+                class="inline-input"
+            >
+            </lightning-input>
             <div class="accordianSectionLabel">
                 <template if:true={contactWrapper.isOpen}>
                     <!-- sldsValidatorIgnoreNextLine -->
@@ -102,13 +102,13 @@
                             <tr class="slds-hint-parent" key={caseWrapper.portalCase.Id}>
                                 <th data-label="" scope="row">
                                     <div class="slds-truncate">
-                                        <!-- sldsValidatorIgnoreNextLine -->
-                                        <input
+                                        <lightning-input
                                             type="checkbox"
                                             checked={caseWrapper.isSelected}
-                                            data-case-id={caseWrapper.portalCase.Id}
+                                            name={caseWrapper.portalCase.Id}
                                             onchange={toggleCaseSelect}
-                                        />
+                                            class="inline-input"
+                                        ></lightning-input>
                                     </div>
                                 </th>
                                 <th data-label="Priority">

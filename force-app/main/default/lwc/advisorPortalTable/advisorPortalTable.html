@@ -51,14 +51,14 @@
                     label="Select All"
                     checked={selectedAll}
                     class="top-level-select"
-                    onchange={toggleSelectAll}
+                    onchange={updateSelectedAll}
                 ></lightning-input>
                 <lightning-input
                     type="checkbox"
                     label="Expand All"
                     checked={expandedAll}
                     class="top-level-select"
-                    onchange={toggleExpandAll}
+                    onchange={updateExpandedAll}
                 ></lightning-input>
             </div>
         </div>
@@ -80,6 +80,7 @@
                     contact-wrapper={contactWrapper}
                     onnavigate={bubbleEvent}
                     onchangeselected={updateSelected}
+                    onchangeopentoggle={updateToggleAccordian}
                 ></c-advisor-portal-table-contact>
             </template>
         </ul>

@@ -2,11 +2,8 @@ import {LightningElement, api} from 'lwc';
 
 export default class AdvisorPortalTableContact extends LightningElement {
     @api set contactWrapper(val) {
-        // make a deep copy when this is initially set, then to keep parent and this synced up we should use events and
-        // trust that the parent is keeping their copy up to date
-        if (this._contactWrapper === null) {
-            this._contactWrapper = JSON.parse(JSON.stringify(val));
-        }
+        // make a deep copy so we can modify
+        this._contactWrapper = JSON.parse(JSON.stringify(val));
     }
     get contactWrapper() {
         return this._contactWrapper;
@@ -36,8 +33,8 @@ export default class AdvisorPortalTableContact extends LightningElement {
         };
     }
 
-    toggleSelectRelatedCases(e) {
-        const checked = e.originalTarget.checked;
+    toggleContactSelect(e) {
+        const checked = e.detail.checked;
 
         this.contactWrapper.isSelected = checked;
 
@@ -46,13 +43,12 @@ export default class AdvisorPortalTableContact extends LightningElement {
             caseWrapper.isSelected = checked;
         }
 
-        this.triggerRenderChanges();
         this.sendSelectEvent();
     }
 
     toggleCaseSelect(e) {
-        const caseId = e.originalTarget.dataset.caseId;
-        const newSelectState = e.originalTarget.checked;
+        const caseId = e.originalTarget.name;
+        const newSelectState = e.detail.checked;
 
         for (let i = 0; i < this.contactWrapper.cases.length; i++) {
             const caseWrapper = this.contactWrapper.cases[i];
@@ -65,15 +61,11 @@ export default class AdvisorPortalTableContact extends LightningElement {
     }
 
     closeDropdown() {
-        this.contactWrapper.isOpen = false;
-        this.triggerRenderChanges();
-        this.sendOpenToggleEvent();
+        this.sendOpenToggleEvent(false);
     }
 
     openDropdown() {
-        this.contactWrapper.isOpen = true;
-        this.triggerRenderChanges();
-        this.sendOpenToggleEvent();
+        this.sendOpenToggleEvent(true);
     }
 
     openStudentProfile() {
@@ -90,20 +82,16 @@ export default class AdvisorPortalTableContact extends LightningElement {
         });
     }
 
-    triggerRenderChanges() {
-        this._contactWrapper = {...this._contactWrapper};
-    }
-
     sendSelectEvent() {
         this.dispatchEvent(new CustomEvent('changeselected', {detail: this.getSelectedItems()}));
     }
 
-    sendOpenToggleEvent() {
+    sendOpenToggleEvent(state) {
         this.dispatchEvent(
             new CustomEvent('changeopentoggle', {
                 detail: {
                     contactId: this.contactWrapper.portalContact.Id,
-                    open: this.contactWrapper.isOpen,
+                    open: state,
                 },
             })
         );

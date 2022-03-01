@@ -87,6 +87,10 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         return placeholder;
     }
 
+    connectedCallback() {
+        this.sendLoadingEvent(true);
+    }
+
     // Retrieve all options
     @wire(viewAsOptions, {})
     gotViewAsOptions(result) {
@@ -125,6 +129,8 @@ export default class AdvisorPortalUserSelect extends LightningElement {
             // eslint-disable-next-line no-console
             console.error(error);
         }
+
+        this.sendLoadingEvent(false);
     }
 
     // Limit results to match search
@@ -250,5 +256,10 @@ export default class AdvisorPortalUserSelect extends LightningElement {
             userIds.push(opt.value);
         }
         this.dispatchEvent(new CustomEvent('changeusers', {detail: userIds}));
+    }
+
+    // tell parent to display blocking loading circle
+    sendLoadingEvent(loadMore) {
+        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }
 }

@@ -11,3 +11,8 @@
     padding-top: 1rem;
     margin-top: auto;
 }
+
+.no-scroll {
+    height: 97.2vh;
+    overflow: hidden;
+}

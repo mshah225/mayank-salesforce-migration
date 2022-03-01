@@ -11,7 +11,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     resetButtons = [];
 
     connectedCallback() {
-        this.incrementProcessingCounter();
+        this.sendLoadingEvent(true);
         getDefaultFilter()
             .then((val) => {
                 this.dispatchEvent(
@@ -25,7 +25,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                 this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
-                this.decrementProcessingCounter();
+                this.sendLoadingEvent(false);
             });
     }
 
@@ -123,10 +123,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         );
     }
 
-    incrementProcessingCounter() {
-        this.dispatchEvent(new CustomEvent('incrementprocessingcounterevent'));
-    }
-    decrementProcessingCounter() {
-        this.dispatchEvent(new CustomEvent('decrementprocessingcounterevent'));
+    sendLoadingEvent(loadMore) {
+        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }
 }

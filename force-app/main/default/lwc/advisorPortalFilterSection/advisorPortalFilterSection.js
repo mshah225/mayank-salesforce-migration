@@ -25,10 +25,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     _viewAsUsers = [];
 
     @api set currentFilter(val) {
+        this.sendLoadingEvent(true);
         if (this.filterIsDifferent(this.currentFilter, val)) {
             this.copyChanges(this.currentFilter, val);
             this._currentFilter = {...this._currentFilter};
         }
+        this.sendLoadingEvent(false);
     }
     get currentFilter() {
         if (this._currentFilter == null) this._currentFilter = this.getEmptyFilter();
@@ -55,6 +57,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             // eslint-disable-next-line no-console
             console.error(error);
         }
+        this.sendLoadingEvent(false);
     }
 
     caseStatusPicklistValues = [];
@@ -67,6 +70,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             // eslint-disable-next-line no-console
             console.error(error);
         }
+        this.sendLoadingEvent(false);
     }
 
     // Reassigning currentFilterJSON, like in we do it `set currentFilter` will trigger this to re-run
@@ -80,6 +84,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             // eslint-disable-next-line no-console
             console.error('gotCampusValues', error);
         }
+        this.sendLoadingEvent(false);
     }
 
     // Reassigning viewAsUsers, like in we do it `set viewAsUsers` will trigger this to re-run
@@ -93,6 +98,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             // eslint-disable-next-line no-console
             console.error('gotCaseSubjectPicklistValues', error);
         }
+        this.sendLoadingEvent(false);
     }
 
     // Reassigning viewAsUsers, like in we do it `set viewAsUsers` will trigger this to re-run
@@ -106,6 +112,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             // eslint-disable-next-line no-console
             console.error('gotCaseClassificationPicklistValues', error);
         }
+        this.sendLoadingEvent(false);
     }
 
     academicLevelPicklistValues = [
@@ -127,6 +134,14 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Down', value: 'Down'},
         {label: 'No change', value: 'No Change'},
     ];
+
+    connectedCallback() {
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+    }
 
     changeField(event) {
         const fieldChanged = event.originalTarget.name;
@@ -260,5 +275,9 @@ export default class AdvisorPortalFilterSection extends LightningElement {
                 detail: results,
             })
         );
+    }
+
+    sendLoadingEvent(loadMore) {
+        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }
 }

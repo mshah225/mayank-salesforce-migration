@@ -47,6 +47,7 @@ export default class AdvisorPortalTable extends LightningElement {
 
         this._allResults = newVal;
         this.determineShownContactWrappers();
+        this.sendSelectedEvent();
     }
     get allResults() {
         return this._allResults;
@@ -56,7 +57,7 @@ export default class AdvisorPortalTable extends LightningElement {
     currentPage = 0;
     pageSize = 20;
 
-    expandedAll = false;
+    expandedAll = true;
     selectedAll = false;
 
     shownContactWrappers = [];
@@ -132,6 +133,7 @@ export default class AdvisorPortalTable extends LightningElement {
             }
         }
 
+        this.sendSelectedEvent();
         this.determineShownContactWrappers();
     }
 
@@ -171,6 +173,7 @@ export default class AdvisorPortalTable extends LightningElement {
                 break;
             }
         }
+        this.sendSelectedEvent();
         this.determineShownContactWrappers();
     }
 
@@ -194,5 +197,30 @@ export default class AdvisorPortalTable extends LightningElement {
                 detail: e.detail,
             })
         );
+    }
+
+    sendSelectedEvent() {
+        // Make a list of all contacts and cases that are selected
+        const selectedContactCaseWrappers = [];
+        for (let i = 0; i < this.allResults.length; i++) {
+            const res = this.allResults[i];
+            const wrapper = {contactId: res.portalContact.Id, selected: false, cases: []};
+            let somethingSelected = false;
+            if (res.isSelected) {
+                wrapper.selected = true;
+                somethingSelected = true;
+            }
+            for (let j = 0; j < res.cases.length; j++) {
+                const c = res.cases[j];
+                if (c.isSelected) {
+                    wrapper.cases.push({caseId: c.portalCase.Id, selected: true});
+                    somethingSelected = true;
+                }
+            }
+            if (somethingSelected) selectedContactCaseWrappers.push(wrapper);
+        }
+
+        // Send it
+        this.dispatchEvent(new CustomEvent('setselected', {detail: selectedContactCaseWrappers}));
     }
 }

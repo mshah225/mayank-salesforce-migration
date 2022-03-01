@@ -25,8 +25,12 @@ export default class AdvisorPortal extends LightningElement {
     }
 
     changeSelectedUsers(e) {
+        console.log(e);
         this.selectedUsers = [...e.detail];
-        console.log(this.selectedUsers);
+    }
+
+    updateSelectedResults(e) {
+        console.log(e);
     }
 
     triggerCurrentFilterChanges() {

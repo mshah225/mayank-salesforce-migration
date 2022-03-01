@@ -44,7 +44,6 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
     }
     sendEmails() {
         const jsonWrappers = [];
-        console.log(this.selectedContactWrappers);
         for (let i = 0; i < this.selectedContactWrappers.length; i++) {
             const entry = this.selectedContactWrappers[i];
             const cases = [];
@@ -60,18 +59,21 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
             );
         }
 
+        this.sendLoadingEvent(true);
         createPortalEmailsStr({
             contactWrappersJSONList: jsonWrappers,
             subject: this.subject,
             body: this.body,
         })
-            .then((data) => {
-                console.log(data);
+            .then(() => {
+                this.subject = '';
+                this.body = '';
             })
             .catch((err) => {
                 console.error(err);
             })
             .finally(() => {
+                this.closeModal();
                 this.sendLoadingEvent(false);
             });
     }

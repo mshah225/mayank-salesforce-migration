@@ -14,23 +14,58 @@
                 </div>
                 <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id">
                     <template for:each={questions} for:item="q">
-                        <div key={q.key}>
-                            <template if:true={q.isTextArea}>
-                                <lightning-textarea
-                                    name={q.key}
-                                    label={q.question}
-                                    onfocus={setFocusHere}
-                                    onchange={changeAnswer}
-                                ></lightning-textarea>
+                        <div key={q.key} class="slds-var-m-top_small">
+                            <template if:true={q.isLabel}>
+                                <template if:true={q.isBoldLabel}>
+                                    <b>{q.question} </b>
+                                </template>
+                                <template if:false={q.isBoldLabel}> {q.question} </template>
                             </template>
-                            <template if:false={q.isTextArea}>
-                                <lightning-input
-                                    name={q.key}
-                                    type={q.type}
-                                    label={q.question}
-                                    onfocus={setFocusHere}
-                                    onchange={changeAnswer}
-                                ></lightning-input>
+                            <template if:false={q.isLabel}>
+                                <template if:true={q.isTextArea}>
+                                    <template if:true={q.required}>
+                                        <lightning-textarea
+                                            name={q.key}
+                                            label={q.question}
+                                            onfocus={setFocusHere}
+                                            onchange={changeAnswer}
+                                            value={q.answer}
+                                            required
+                                        ></lightning-textarea>
+                                    </template>
+                                    <template if:false={q.required}>
+                                        <lightning-textarea
+                                            name={q.key}
+                                            label={q.question}
+                                            onfocus={setFocusHere}
+                                            onchange={changeAnswer}
+                                            value={q.answer}
+                                        ></lightning-textarea>
+                                    </template>
+                                </template>
+                                <template if:false={q.isTextArea}>
+                                    <template if:true={q.required}>
+                                        <lightning-input
+                                            name={q.key}
+                                            type={q.type}
+                                            label={q.question}
+                                            onfocus={setFocusHere}
+                                            onchange={changeAnswer}
+                                            value={q.answer}
+                                            required
+                                        ></lightning-input>
+                                    </template>
+                                    <template if:false={q.required}>
+                                        <lightning-input
+                                            name={q.key}
+                                            type={q.type}
+                                            label={q.question}
+                                            onfocus={setFocusHere}
+                                            onchange={changeAnswer}
+                                            value={q.answer}
+                                        ></lightning-input>
+                                    </template>
+                                </template>
                             </template>
                         </div>
                     </template>

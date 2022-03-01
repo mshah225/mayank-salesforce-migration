@@ -8,7 +8,8 @@ export default class LightningQuestionAnswerModal extends LightningElement {
      * {
      *   key: 'A unique key to identify this question'
      *   question: 'The question',
-     *   type: 'text'|'textarea'
+     *   type: 'text'|'textarea'|'label'|'label-bold'
+     *   required: true|false
      * }
      */
     @api set questions(val) {
@@ -16,6 +17,12 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         for (let i = 0; i < val.length; i++) {
             let q = {...val[i]};
             q.isTextArea = q.type === 'textarea';
+            q.isLabel = q.type.includes('label');
+            if (q.isLabel) {
+                q.isBoldLabel = q.type === 'label-bold';
+            }
+            if (q.required == null) q.required = false;
+            if (q.answer == null) q.answer = '';
             newQuestions.push(q);
         }
         this._questions = newQuestions;
@@ -61,19 +68,16 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         }
     }
 
-    @api
-    openModal() {
+    @api openModal() {
         this.showModal = true;
     }
-    @api
-    closeModal() {
+    @api closeModal() {
         this.showModal = false;
         this.needToSetFocus = true;
         if (this.returnFocusTo != null) this.returnFocusTo.focus();
     }
 
-    @api
-    focus() {
+    @api focus() {
         this.template.querySelector('.slds-modal').focus();
     }
 
@@ -115,13 +119,45 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         }
     }
 
-    submitModal() {
+    @api reportValidity() {
+        let ok = true;
+        const fields = this.template.querySelectorAll('lightning-input, lightning-textarea');
+        console.log(fields);
+        for (let i = 0; i < fields.length; i++) {
+            const field = fields[i];
+            ok &= field.reportValidity();
+        }
+        return ok;
+    }
+
+    @api getQuestionAnswers() {
+        const questionAnswers = [];
         for (let i = 0; i < this.questions.length; i++) {
             const q = this.questions[i];
-            if (q.answer == null) {
+            if (q.answer == null && !q.isLabel) {
+                q.answer = '';
+            }
+
+            if (!q.isLabel) {
+                questionAnswers.push(q);
+            }
+        }
+        return questionAnswers;
+    }
+
+    submitModal() {
+        if (!this.reportValidity()) {
+            return; // Cannot complete if required fields aren't filled in
+        }
+
+        // Fill in empty strings for all optional questions
+        for (let i = 0; i < this.questions.length; i++) {
+            const q = this.questions[i];
+            if (q.answer == null && q.type != null) {
                 q.answer = '';
             }
         }
+
         this.dispatchEvent(new CustomEvent('complete', {detail: JSON.stringify(this.questions)}));
     }
 }

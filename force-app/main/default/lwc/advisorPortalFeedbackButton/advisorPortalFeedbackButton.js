@@ -87,7 +87,6 @@ export default class AdvisorPortalFeedbackButton extends LightningElement {
     }
 
     makeToast(type, title, body) {
-        console.log('[' + type + '] ' + title + ' -- ' + body);
         this.dispatchEvent(
             new CustomEvent('showtoast', {
                 detail: {

@@ -68,9 +68,11 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
             .then(() => {
                 this.subject = '';
                 this.body = '';
+                this.makeToast('success', 'Success', 'Sent emails.');
             })
             .catch((err) => {
                 console.error(err);
+                this.makeToast('error', 'Failures', 'Emails were unable to be sent.');
             })
             .finally(() => {
                 this.closeModal();
@@ -171,5 +173,18 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
 
     sendLoadingEvent(loadMore) {
         this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
+    }
+
+    makeToast(type, title, body) {
+        this.dispatchEvent(
+            new CustomEvent('showtoast', {
+                detail: {
+                    title: title,
+                    message: body,
+                    type: type,
+                    duration: 5000,
+                },
+            })
+        );
     }
 }

@@ -4,9 +4,11 @@
             <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
         </template>
 
+        <c-lightning-design-toast></c-lightning-design-toast>
+
         <div>
             <div class="slds-text-align_right slds-var-m-bottom_x-small">
-                <c-advisor-portal-feedback-button onshowtoast={showToastLWC}></c-advisor-portal-feedback-button>
+                <c-advisor-portal-feedback-button onshowtoast={handleToast}></c-advisor-portal-feedback-button>
             </div>
         </div>
 
@@ -32,9 +34,10 @@
                     <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
                         <div class="slds-card slds-var-p-around_small">
                             <c-advisor-portal-save-filters
-                                onsetdefaultfilter={setDefaultFilter}
                                 current-filter={currentFilter}
+                                onsetdefaultfilter={setDefaultFilter}
                                 onloading={handleLoading}
+                                onshowtoast={handleToast}
                             ></c-advisor-portal-save-filters>
                         </div>
                     </div>
@@ -126,6 +129,7 @@
         <c-advisor-portal-modal-mass-email
             selected-contact-wrappers={selectedResults}
             onloading={handleLoading}
+            onshowtoast={handleToast}
         ></c-advisor-portal-modal-mass-email>
     </div>
 </template>

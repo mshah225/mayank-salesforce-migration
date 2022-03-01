@@ -10,6 +10,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     @api set defaultFilter(val) {
         this._defaultFilter = val;
         this.currentFilter = val;
+        this.applyFilters();
     }
     get defaultFilter() {
         return this._defaultFilter;
@@ -136,6 +137,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     ];
 
     connectedCallback() {
+        // one for each wire
         this.sendLoadingEvent(true);
         this.sendLoadingEvent(true);
         this.sendLoadingEvent(true);
@@ -167,6 +169,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         let viewAsOptions = this.viewAsUsers;
         let filterJSON = JSON.stringify(this.currentFilter);
 
+        this.sendLoadingEvent(true);
         getFilteredCases({viewAsOptions, filterJSON})
             .then((val) => {
                 this.sendChangeResultsEvent(JSON.parse(val));
@@ -175,7 +178,9 @@ export default class AdvisorPortalFilterSection extends LightningElement {
                 // eslint-disable-next-line no-console
                 console.error(err);
             })
-            .finally(() => {});
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
     /**

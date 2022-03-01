@@ -1,4 +1,3 @@
-import {getListUi} from 'lightning/uiListApi';
 import {LightningElement} from 'lwc';
 
 export default class AdvisorPortal extends LightningElement {
@@ -72,5 +71,15 @@ export default class AdvisorPortal extends LightningElement {
             this.loadingCounter--;
             if (this.loadingCounter < 0) this.loadingCounter = 0;
         }
+    }
+
+    handleToast(e) {
+        console.log('handleToast');
+        const toastLWC = this.template.querySelector('c-lightning-design-toast');
+        const title = e.detail.title;
+        const message = e.detail.message;
+        const type = e.detail.type;
+        const duration = e.duration ? e.duration : 5000;
+        toastLWC.fireParams(title, message, type, duration);
     }
 }

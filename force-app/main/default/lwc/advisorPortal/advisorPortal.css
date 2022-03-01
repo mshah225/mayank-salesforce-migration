@@ -12,7 +12,6 @@
     margin-top: auto;
 }
 
-.no-scroll {
-    height: 97.2vh;
-    overflow: hidden;
+:host lightning-spinner {
+    position: fixed;
 }

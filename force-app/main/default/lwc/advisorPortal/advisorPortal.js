@@ -13,12 +13,6 @@ export default class AdvisorPortal extends LightningElement {
         return this.loadingCounter > 0;
     }
 
-    get topLevelWrapperClasses() {
-        const classes = [];
-        if (this.isLoading) classes.push('no-scroll');
-        return classes.join(' ');
-    }
-
     // Should only run once on page load
     setDefaultFilter(e) {
         this.defaultFilter = JSON.parse(e.detail.filter);
@@ -71,10 +65,20 @@ export default class AdvisorPortal extends LightningElement {
             this.loadingCounter--;
             if (this.loadingCounter < 0) this.loadingCounter = 0;
         }
+
+        if (this.isLoading) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+            window.onscroll = function () {
+                window.scrollTo(scrollLeft, scrollTop);
+            };
+        } else {
+            window.onscroll = function () {};
+        }
     }
 
     handleToast(e) {
-        console.log('handleToast');
         const toastLWC = this.template.querySelector('c-lightning-design-toast');
         const title = e.detail.title;
         const message = e.detail.message;

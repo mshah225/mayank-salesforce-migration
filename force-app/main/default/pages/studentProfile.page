@@ -3306,13 +3306,13 @@
                     "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
                 var transcriptQuery =
-                    'SELECT EMPLID__c, ADDRESS1__c, ADDRESS2__c, ADDRESS3__c, ' +
-                    'ADDRESS4__c, CITY__c, COUNTRY__c, SEND_TO_NAME__c, ' +
-                    'POSTAL__c, STATE__c, STATUS__c, REQUEST_OR_SENT_DATE__c, ' +
-                    'DisplayURL, ExternalId, Id ' +
-                    'FROM JBT_RET_TRANSCRIPT_SENT_VW__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY REQUEST_OR_SENT_DATE__c DESC, SEND_TO_NAME__c DESC';
+                    'SELECT Address1__c, Address2__c, Address3__c, ' +
+                    'Address4__c, City__c, Country__c, Send_To_Name__c, ' +
+                    'Postal__c, State__c, Status__c, Request_Or_Sent_Date__c, ' +
+                    'Id ' +
+                    'FROM Transcript_Sent__c ' +
+                    "WHERE Contact__c = '{!theContact}' " +
+                    'ORDER BY Request_Or_Sent_Date__c DESC, Send_To_Name__c DESC';
                 conn.query(
                     transcriptQuery,
                     function (err, response) {
@@ -3332,7 +3332,7 @@
                                     "<table id='transcript_table' class='table table-striped table-bordered'> " +
                                     '<thead>' +
                                     '<tr>' +
-                                    '<th>Sent On</th>' +
+                                    '<th>Request Date</th>' +
                                     '<th>Status</th>' +
                                     '<th>Recipient</th>' +
                                     '</tr>' +
@@ -3340,7 +3340,7 @@
                                     '<tbody>';
                                 var result = response.records;
                                 for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].REQUEST_OR_SENT_DATE__c;
+                                    var utcSeconds = result[i].Request_Or_Sent_Date__c;
                                     var sentDate = new Date(utcSeconds);
                                     sentDate =
                                         sentDate.getUTCMonth() +
@@ -3350,13 +3350,13 @@
                                         '/' +
                                         sentDate.getUTCFullYear();
 
-                                    var status = result[i].STATUS__c;
+                                    var status = result[i].Status__c;
                                     var recipient = new Array(
-                                        result[i].SEND_TO_NAME__c,
-                                        result[i].ADDRESS1__c,
-                                        result[i].ADDRESS2__c,
-                                        result[i].ADDRESS3__c,
-                                        result[i].ADDRESS4__c
+                                        result[i].Send_To_Name__c,
+                                        result[i].Address1__c,
+                                        result[i].Address2__c,
+                                        result[i].Address3__c,
+                                        result[i].Address4__c
                                     );
 
                                     html +=
@@ -3381,14 +3381,14 @@
 
                                     html +=
                                         "<li class='transcriptAddress'>" +
-                                        result[i].CITY__c +
+                                        result[i].City__c +
                                         ', ' +
-                                        result[i].STATE__c +
+                                        result[i].State__c +
                                         ' ' +
-                                        result[i].POSTAL__c +
+                                        result[i].Postal__c +
                                         '</li>' +
                                         "<li class='transcriptAddress'> " +
-                                        result[i].COUNTRY__c +
+                                        result[i].Country__c +
                                         '</li>' +
                                         '</td>' +
                                         '</tr>';
@@ -3403,7 +3403,9 @@
                                 transcriptsLoaded = true;
                             } else {
                                 document.getElementById('ps_transcript').innerHTML = 'No transcripts found.';
+                                document.getElementById('ps_transcript').style.display = 'initial';
                                 document.getElementById('gr_psTranscript').innerHTML = 'No transcripts found.';
+                                document.getElementById('gr_psTranscript').style.display = 'initial';
                                 transcriptsLoaded = true;
                             }
                         }

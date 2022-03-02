@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Address4__c</fullName>
+    <businessOwnerGroup>Data_Owner_Registrar</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>Data sourced from ODS:  PS_ASU_REQUEST_DTL</description>
+    <externalId>false</externalId>
+    <label>Recipient Address 4</label>
+    <length>55</length>
+    <required>false</required>
+    <securityClassification>Sensitive</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

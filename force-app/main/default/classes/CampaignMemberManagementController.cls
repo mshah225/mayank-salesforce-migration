@@ -725,6 +725,7 @@ public with sharing class CampaignMemberManagementController {
                 SELECT Id, Status
                 FROM Campaignmember
                 WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
+                AND ContactId = :contactId
             ]) {
                 ck.status = 'Inactive';
                 ChildKillList.add(ck);

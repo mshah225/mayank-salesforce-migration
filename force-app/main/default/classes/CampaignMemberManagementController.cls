@@ -715,36 +715,26 @@ public with sharing class CampaignMemberManagementController {
             WHERE Id = :inActivateCMId
         ];
 
-        User currentUser = [SELECT Id, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
+        
+        inActivateCamMem.Status = 'Inactive';
 
-        if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name) {
-            inActivateCamMem.Status = 'Inactive';
+        if (inActivateCamMem.Campaign.ParentId == null) {
+            List<CampaignMember> ChildKillList = new List<CampaignMember>();
 
-            if (inActivateCamMem.Campaign.ParentId == null) {
-                List<CampaignMember> ChildKillList = new List<CampaignMember>();
-
-                for (CampaignMember ck : [
-                    SELECT Id, Status
-                    FROM Campaignmember
-                    WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
-                ]) {
-                    ck.status = 'Inactive';
-                    ChildKillList.add(ck);
-                }
-
-                update ChildKillList;
+            for (CampaignMember ck : [
+                SELECT Id, Status
+                FROM Campaignmember
+                WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
+            ]) {
+                ck.status = 'Inactive';
+                ChildKillList.add(ck);
             }
 
-            update inActivateCamMem;
-        } else {
-            ApexPages.addmessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You do not have access to remove this Affiliation, only a ' +
-                    'member of the Department that created it can.'
-                )
-            );
+            update ChildKillList;
         }
+
+        update inActivateCamMem;
+        
 
         buildCampaignMemberMap();
         renderedTab = 'crTab';

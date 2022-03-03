@@ -1,0 +1,102 @@
+<template>
+    <template for:each={questions} for:item="q">
+        <div key={q.key}>
+            <template if:true={q.isLabel}>
+                <template if:true={q.isBoldLabel}>
+                    <b>{q.question} </b>
+                </template>
+                <template if:true={q.isPlainLabel}> {q.question} </template>
+            </template>
+            <template if:true={q.isSpacer}>
+                <div class={q.subtype}></div>
+            </template>
+            <template if:true={q.isTextArea}>
+                <template if:true={q.required}>
+                    <lightning-textarea
+                        name={q.key}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                        required
+                    ></lightning-textarea>
+                </template>
+                <template if:false={q.required}>
+                    <lightning-textarea
+                        name={q.key}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                    ></lightning-textarea>
+                </template>
+            </template>
+            <template if:true={q.isComboBox}>
+                <template if:true={q.required}>
+                    <lightning-combobox
+                        name={q.key}
+                        label={q.question}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        required
+                    ></lightning-combobox>
+                </template>
+                <template if:false={q.required}>
+                    <lightning-combobox
+                        name={q.key}
+                        label={q.question}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                    ></lightning-combobox>
+                </template>
+            </template>
+            <template if:true={q.isMultiCombobox}>
+                <template if:true={q.required}>
+                    <c-lightning-combo-box-multi-select
+                        name={q.key}
+                        label={q.question}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        single-select={q.isSingleSelect}
+                        required
+                    ></c-lightning-combo-box-multi-select>
+                </template>
+                <template if:false={q.required}>
+                    <c-lightning-combo-box-multi-select
+                        name={q.key}
+                        label={q.question}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        single-select={q.isSingleSelect}
+                    ></c-lightning-combo-box-multi-select>
+                </template>
+            </template>
+            <template if:true={q.isInput}>
+                <template if:true={q.required}>
+                    <lightning-input
+                        name={q.key}
+                        type={q.type}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                        required
+                    ></lightning-input
+                ></template>
+                <template if:false={q.required}>
+                    <lightning-input
+                        name={q.key}
+                        type={q.type}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                    ></lightning-input
+                ></template>
+            </template>
+            <template if:true={q.hasSubnote}>
+                <p class="slds-text-body_small slds-text-color_weak">{q.subnote}</p>
+            </template>
+        </div>
+    </template>
+</template>

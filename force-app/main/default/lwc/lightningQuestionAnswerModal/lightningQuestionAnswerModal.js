@@ -3,31 +3,8 @@ import {LightningElement, api} from 'lwc';
 export default class LightningQuestionAnswerModal extends LightningElement {
     @api title = '';
 
-    /**
-     * Expected format for each question:
-     * {
-     *   key: 'A unique key to identify this question'
-     *   question: 'The question',
-     *   type: 'text'|'textarea'|'label'|'label-bold'|'multi-combobox-single'
-     *   required: true|false
-     * }
-     */
     @api set questions(val) {
-        let newQuestions = [];
-        for (let i = 0; i < val.length; i++) {
-            let q = {...val[i]};
-            q.isTextArea = q.type === 'textarea';
-            q.isMultiComboboxSingle = q.type === 'multi-combobox-single';
-            q.isLabel = q.type.includes('label');
-            if (q.isLabel) {
-                q.isBoldLabel = q.type === 'label-bold';
-            }
-            if (q.required == null) q.required = false;
-            if (q.answer == null) q.answer = '';
-            newQuestions.push(q);
-        }
-        this._questions = newQuestions;
-        console.log('this._questions', this._questions);
+        this._questions = JSON.parse(JSON.stringify(val));
     }
     get questions() {
         return this._questions;
@@ -88,16 +65,19 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         this.currentlyFocusedElement = e.target;
     }
 
+    killTabKeyPressEvent(e) {
+        if (e.which === 9) {
+            e.stopPropogation();
+        }
+    }
+
     handleKeyPress(e) {
         if (e.which === 27) {
             // Pressed escape - must close modal
             if (!this.noEscape) this.closeModal();
         } else if (e.which === 9) {
             // Pressed tab - must keep within modal
-            const allFocusableInModal = this.template.querySelectorAll(
-                'button, lightning-input, lightning-textarea',
-                'c-lightning-combo-box-multi-select'
-            );
+            const allFocusableInModal = this.template.querySelectorAll('button, lightning-button-icon');
             const firstFocusableInModal = allFocusableInModal[0];
             const finalFocusableInModal = allFocusableInModal[allFocusableInModal.length - 1];
 
@@ -114,43 +94,20 @@ export default class LightningQuestionAnswerModal extends LightningElement {
     }
 
     changeAnswer(e) {
-        const key = e.originalTarget.name;
-        const ans = e.detail.value;
+        const key = e.detail.key;
+        const ans = e.detail.answer;
         for (let i = 0; i < this.questions.length; i++) {
             const q = this.questions[i];
             if (q.key === key) {
                 q.answer = ans;
             }
         }
+        console.log(this.questions);
     }
 
     @api reportValidity() {
-        let ok = true;
-        const fields = this.template.querySelectorAll(
-            'lightning-input, lightning-textarea',
-            'c-lightning-combo-box-multi-select'
-        );
-        console.log(fields);
-        for (let i = 0; i < fields.length; i++) {
-            const field = fields[i];
-            ok &= field.reportValidity();
-        }
-        return ok;
-    }
-
-    @api getQuestionAnswers() {
-        const questionAnswers = [];
-        for (let i = 0; i < this.questions.length; i++) {
-            const q = this.questions[i];
-            if (q.answer == null && !q.isLabel) {
-                q.answer = '';
-            }
-
-            if (!q.isLabel) {
-                questionAnswers.push(q);
-            }
-        }
-        return questionAnswers;
+        const qaSection = this.template.querySelector('c-lightning-question-answer-section');
+        return qaSection.reportValidity();
     }
 
     submitModal() {

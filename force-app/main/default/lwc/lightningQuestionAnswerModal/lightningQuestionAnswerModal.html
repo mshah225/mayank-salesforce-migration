@@ -9,93 +9,27 @@
             onkeydown={handleKeyPress}
         >
             <div class="slds-modal__container">
-                <div class="slds-modal__header">
+                <header class="slds-modal__header">
+                    <!-- sldsValidatorIgnoreNextLine -->
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        variant="bare-inverse"
+                        alternative-text="Close"
+                        size="large"
+                        title="Close"
+                        onclick={closeModal}
+                        class="slds-modal__close"
+                        tabindex="0"
+                        onfocus={setFocusHere}
+                    ></lightning-button-icon>
                     <h2 id="modal-heading" class="slds-text-heading_medium slds-hyphenate">{title}</h2>
-                </div>
+                </header>
                 <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id">
-                    <template for:each={questions} for:item="q">
-                        <div key={q.key} class="slds-var-m-top_small">
-                            <template if:true={q.isLabel}>
-                                <template if:true={q.isBoldLabel}>
-                                    <b>{q.question} </b>
-                                </template>
-                                <template if:false={q.isBoldLabel}> {q.question} </template>
-                            </template>
-                            <template if:false={q.isLabel}>
-                                <template if:true={q.isMultiComboboxSingle}>
-                                    <template if:true={q.required}>
-                                        <c-lightning-combo-box-multi-select
-                                            name={q.key}
-                                            label={q.question}
-                                            options={q.options}
-                                            onfocus={setFocusHere}
-                                            onchange={changeAnswer}
-                                            value={q.answer}
-                                            single-select="true"
-                                            required
-                                        ></c-lightning-combo-box-multi-select>
-                                    </template>
-                                    <template if:false={q.required}>
-                                        <c-lightning-combo-box-multi-select
-                                            name={q.key}
-                                            label={q.question}
-                                            options={q.options}
-                                            onfocus={setFocusHere}
-                                            onchange={changeAnswer}
-                                            single-select="true"
-                                            value={q.answer}
-                                        ></c-lightning-combo-box-multi-select>
-                                    </template>
-                                </template>
-                                <template if:false={q.isMultiComboboxSingle}>
-                                    <template if:true={q.isTextArea}>
-                                        <template if:true={q.required}>
-                                            <lightning-textarea
-                                                name={q.key}
-                                                label={q.question}
-                                                onfocus={setFocusHere}
-                                                onchange={changeAnswer}
-                                                value={q.answer}
-                                                required
-                                            ></lightning-textarea>
-                                        </template>
-                                        <template if:false={q.required}>
-                                            <lightning-textarea
-                                                name={q.key}
-                                                label={q.question}
-                                                onfocus={setFocusHere}
-                                                onchange={changeAnswer}
-                                                value={q.answer}
-                                            ></lightning-textarea>
-                                        </template>
-                                    </template>
-                                    <template if:false={q.isTextArea}>
-                                        <template if:true={q.required}>
-                                            <lightning-input
-                                                name={q.key}
-                                                type={q.type}
-                                                label={q.question}
-                                                onfocus={setFocusHere}
-                                                onchange={changeAnswer}
-                                                value={q.answer}
-                                                required
-                                            ></lightning-input>
-                                        </template>
-                                        <template if:false={q.required}>
-                                            <lightning-input
-                                                name={q.key}
-                                                type={q.type}
-                                                label={q.question}
-                                                onfocus={setFocusHere}
-                                                onchange={changeAnswer}
-                                                value={q.answer}
-                                            ></lightning-input>
-                                        </template>
-                                    </template>
-                                </template>
-                            </template>
-                        </div>
-                    </template>
+                    <c-lightning-question-answer-section
+                        questions={questions}
+                        onchange={changeAnswer}
+                        onkeydown={killTabKeyPressEvent}
+                    ></c-lightning-question-answer-section>
                 </div>
                 <div class="slds-modal__footer">
                     <template for:each={buttons} for:item="button">

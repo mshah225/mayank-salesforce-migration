@@ -73,6 +73,22 @@ export default class AdvisorPortal extends LightningElement {
         console.log(this.currentFilter);
     }
 
+    filterVisibility = true;
+    toggleFilterVisibility() {
+        if (this.filterVisibility) {
+            this.filterVisibility = false;
+        } else {
+            this.filterVisibility = true;
+        }
+
+        const elem = this.template.querySelector('.filterSectionWrapper');
+        if (this.filterVisibility) {
+            elem.classList.remove('d-none');
+        } else {
+            elem.classList.add('d-none');
+        }
+    }
+
     navigate(e) {
         console.log('navigate', e);
     }

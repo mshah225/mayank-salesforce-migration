@@ -6,6 +6,10 @@
     margin-right: 0.8rem;
 }
 
+:host .d-none {
+    display: none;
+}
+
 :host .advanced-filter-button {
     /** cheaty way to align at bottom of div but still have spacing above when vertical layout */
     padding-top: 1rem;

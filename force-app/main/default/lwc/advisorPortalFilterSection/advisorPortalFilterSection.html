@@ -1,86 +1,57 @@
 <template>
     <div class="slds-grid slds-gutters slds-wrap">
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <div>
-                <label class="slds-form-element__label" id="studentLabel">Student</label>
-            </div>
-            <div>
-                <lightning-input
-                    type="text"
-                    aria-labelled-by="studentLabel"
-                    name="studentString"
-                    onchange={changeField}
-                    value={currentFilter.studentString}
-                ></lightning-input>
-            </div>
+            <lightning-input
+                label="Student"
+                type="text"
+                name="studentString"
+                onchange={changeField}
+                value={currentFilter.studentString}
+                required="true"
+            ></lightning-input>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <div>
-                <label class="slds-form-element__label" id="campusLabel">Campus</label>
-            </div>
-            <div>
-                <c-lightning-combo-box-multi-select
-                    aria-labelled-by="campusLabel"
-                    options={campusPicklistValues}
-                    name="campus"
-                    onchange={changeField}
-                    value={currentFilter.campus}
-                ></c-lightning-combo-box-multi-select>
-            </div>
+            <c-lightning-combo-box-multi-select
+                label="Campus"
+                options={campusPicklistValues}
+                name="campus"
+                onchange={changeField}
+                value={currentFilter.campus}
+            ></c-lightning-combo-box-multi-select>
         </div>
 
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="degreeLevelLabel"> Degree Level </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="degreeLevelLabel"
-                        name="degreeLevel"
-                        onchange={changeField}
-                        value={currentFilter.degreeLevel}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Degree Level"
+                    name="degreeLevel"
+                    onchange={changeField}
+                    value={currentFilter.degreeLevel}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="acadProgramLabel"> Academic Program </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="acadProgramLabel"
-                        name="academicProgram"
-                        onchange={changeField}
-                        value={currentFilter.academicProgram}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Academic Program"
+                    name="academicProgram"
+                    onchange={changeField}
+                    value={currentFilter.academicProgram}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="schoolDepartmentLabel"> School/Department </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="schoolDepartmentLabel"
-                        name="schoolDepartment"
-                        onchange={changeField}
-                        value={currentFilter.schoolDepartment}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="School/Department"
+                    name="schoolDepartment"
+                    onchange={changeField}
+                    value={currentFilter.schoolDepartment}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="acadPlanLabel"> Academic Plan </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="acadPlanLabel"
-                        name="academicPlan"
-                        onchange={changeField}
-                        value={currentFilter.academicPlan}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Academic Plan"
+                    name="academicPlan"
+                    onchange={changeField}
+                    value={currentFilter.academicPlan}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <fieldset class="slds-form-element slds-form-element_compound">
@@ -112,165 +83,110 @@
         </template>
         <template if:false={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="acadLevelPlan"> Academic Level </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="acadLevelPlan"
-                        options={academicLevelPicklistValues}
-                        name="academicLevel"
-                        onchange={changeField}
-                        value={currentFilter.academicLevel}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Academic Level"
+                    options={academicLevelPicklistValues}
+                    name="academicLevel"
+                    onchange={changeField}
+                    value={currentFilter.academicLevel}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="studentGroupLabel"> Student Group </label>
-                </div>
-                <div>
-                    <lightning-input
-                        type="text"
-                        aria-labelled-by="studentGroupLabel"
-                        name="studentGroupCode"
-                        onchange={changeField}
-                        value={currentFilter.studentGroupCode}
-                    ></lightning-input>
-                </div>
+                <lightning-input
+                    type="text"
+                    label="Student Group"
+                    name="studentGroupCode"
+                    onchange={changeField}
+                    value={currentFilter.studentGroupCode}
+                ></lightning-input>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="majorLabel">Major</label>
-                </div>
-                <div>
-                    <lightning-input
-                        type="text"
-                        aria-labelled-by="majorLabel"
-                        name="major"
-                        onchange={changeField}
-                        value={currentFilter.major}
-                    ></lightning-input>
-                </div>
+                <lightning-input
+                    type="text"
+                    label="Major"
+                    name="major"
+                    onchange={changeField}
+                    value={currentFilter.major}
+                ></lightning-input>
             </div>
         </template>
 
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <div>
-                <label class="slds-form-element__label" id="residencyLabel">Residency</label>
-            </div>
-            <div>
-                <c-lightning-combo-box-multi-select
-                    aria-labelled-by="residencyLabel"
-                    options={residencyPicklistValues}
-                    name="residency"
-                    onchange={changeField}
-                    value={currentFilter.residency}
-                ></c-lightning-combo-box-multi-select>
-            </div>
+            <c-lightning-combo-box-multi-select
+                label="Residency"
+                options={residencyPicklistValues}
+                name="residency"
+                onchange={changeField}
+                value={currentFilter.residency}
+            ></c-lightning-combo-box-multi-select>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <div>
-                <label class="slds-form-element__label" id="caseStatusLabel"> Case Status </label>
-            </div>
-            <div>
-                <c-lightning-combo-box-multi-select
-                    aria-labelled-by="caseStatusLabel"
-                    options={caseStatusPicklistValues}
-                    name="caseStatus"
-                    onchange={changeField}
-                    value={currentFilter.caseStatus}
-                ></c-lightning-combo-box-multi-select>
-            </div>
+            <c-lightning-combo-box-multi-select
+                label="Case Status"
+                options={caseStatusPicklistValues}
+                name="caseStatus"
+                onchange={changeField}
+                value={currentFilter.caseStatus}
+            ></c-lightning-combo-box-multi-select>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <div>
-                <label class="slds-form-element__label" id="caseCategoryLabel"> Case Category </label>
-            </div>
-            <div>
-                <c-lightning-combo-box-multi-select
-                    aria-labelled-by="caseCategoryLabel"
-                    options={caseCategoryPicklistValues}
-                    name="caseCategory"
-                    onchange={changeField}
-                    value={currentFilter.caseCategory}
-                ></c-lightning-combo-box-multi-select>
-            </div>
+            <c-lightning-combo-box-multi-select
+                label="Case Category"
+                options={caseCategoryPicklistValues}
+                name="caseCategory"
+                onchange={changeField}
+                value={currentFilter.caseCategory}
+            ></c-lightning-combo-box-multi-select>
         </div>
 
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="specialPopulationLabel"> Special Population </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="specialPopulationLabel"
-                        name="specialPopulation"
-                        onchange={changeField}
-                        value={currentFilter.specialPopulation}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Special Population"
+                    name="specialPopulation"
+                    onchange={changeField}
+                    value={currentFilter.specialPopulation}
+                ></c-lightning-combo-box-multi-select>
             </div>
         </template>
         <template if:false={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="caseSubjectLabel"> Case Subject </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="caseSubjectLabel"
-                        options={caseSubjectPicklistValues}
-                        name="caseSubject"
-                        onchange={changeField}
-                        value={currentFilter.caseSubject}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Case Subject"
+                    options={caseSubjectPicklistValues}
+                    name="caseSubject"
+                    onchange={changeField}
+                    value={currentFilter.caseSubject}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="outlookScoreLabel"> Outlook Score </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="outlookScoreLabel"
-                        options={outlookScoreOptions}
-                        name="outlookScore"
-                        onchange={changeField}
-                        value={currentFilter.outlookScore}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Outlook Score"
+                    options={outlookScoreOptions}
+                    name="outlookScore"
+                    onchange={changeField}
+                    value={currentFilter.outlookScore}
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <div>
-                    <label class="slds-form-element__label" id="outlookChangeLabel"> Outlook Change </label>
-                </div>
-                <div>
-                    <c-lightning-combo-box-multi-select
-                        aria-labelled-by="outlookChangeLabel"
-                        options={outlookChangeOptions}
-                        name="outlookChange"
-                        onchange={changeField}
-                        value={currentFilter.outlookChange}
-                    ></c-lightning-combo-box-multi-select>
-                </div>
+                <c-lightning-combo-box-multi-select
+                    label="Outlook Change"
+                    options={outlookChangeOptions}
+                    name="outlookChange"
+                    onchange={changeField}
+                    value={currentFilter.outlookChange}
+                ></c-lightning-combo-box-multi-select>
             </div>
         </template>
 
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <div>
-                <label class="slds-form-element__label" id="caseCountLabel">Case Count</label>
-            </div>
-            <div>
-                <lightning-input
-                    type="text"
-                    aria-labelled-by="caseCountLabel"
-                    name="caseCount"
-                    onchange={changeField}
-                    value={currentFilter.caseCount}
-                ></lightning-input>
-            </div>
+            <lightning-input
+                type="text"
+                label="Case Count"
+                name="caseCount"
+                onchange={changeField}
+                value={currentFilter.caseCount}
+            ></lightning-input>
         </div>
     </div>
     <div class="slds-grid slds-gutters">

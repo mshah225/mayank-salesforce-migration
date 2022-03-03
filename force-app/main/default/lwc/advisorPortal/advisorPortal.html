@@ -61,7 +61,14 @@
                             <!-- sldsValidatorIgnoreNextLine -->
                             <legend class="slds-form-element__legend slds-form-element__label">Mass Actions</legend>
                             <div class="slds-form-element__control">
-                                <lightning-button label="Mass Transfer" variant="brand" class="mr-2"></lightning-button>
+                                <template if:true={allowedToUseMassTransfer}>
+                                    <lightning-button
+                                        label="Mass Transfer"
+                                        onclick={openModalMassTransfer}
+                                        variant="brand"
+                                        class="mr-2"
+                                    ></lightning-button>
+                                </template>
                                 <lightning-button
                                     label="Mass Email"
                                     onclick={openModalMassEmail}
@@ -76,7 +83,7 @@
                                     alternative-text="Refresh"
                                     size="medium"
                                     title="Refresh"
-                                    onclick={refresh}
+                                    onclick={reloadContacts}
                                 ></lightning-button-icon>
                             </div>
                         </fieldset>
@@ -121,5 +128,13 @@
         selected-contact-wrappers={selectedResults}
         onloading={handleLoading}
         onshowtoast={handleToast}
+        onreloadcontacts={reloadContacts}
     ></c-advisor-portal-modal-mass-email>
+    <c-advisor-portal-modal-mass-transfer
+        selected-contact-wrappers={selectedResults}
+        options={allUsers}
+        onloading={handleLoading}
+        onshowtoast={handleToast}
+        onreloadcontacts={reloadContacts}
+    ></c-advisor-portal-modal-mass-transfer>
 </template>

@@ -165,9 +165,31 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.applyFilters();
     }
 
+    // don't regenerate the JSON, use whichever JSON more recent request was used with
+    cachedFitlerJSON = null;
+    @api forceRefresh() {
+        if (this.cachedFitlerJSON === null) return;
+
+        let viewAsOptions = this.viewAsUsers;
+
+        this.sendLoadingEvent(true);
+        getFilteredCases({viewAsOptions, filterJSON: this.cachedFitlerJSON})
+            .then((val) => {
+                this.sendChangeResultsEvent(JSON.parse(val));
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error(err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
+    }
+
     applyFilters() {
         let viewAsOptions = this.viewAsUsers;
         let filterJSON = JSON.stringify(this.currentFilter);
+        this.cachedFitlerJSON = filterJSON;
 
         this.sendLoadingEvent(true);
         getFilteredCases({viewAsOptions, filterJSON})

@@ -37,7 +37,8 @@ export default class AdvisorPortalModalMassTransfer extends LightningElement {
                     key: 'transferTo',
                     question: 'New Owner',
                     options: this.options,
-                    type: 'multi-combobox-single',
+                    type: 'multi-combobox',
+                    subtype: 'single',
                     required: true,
                 },
             ];

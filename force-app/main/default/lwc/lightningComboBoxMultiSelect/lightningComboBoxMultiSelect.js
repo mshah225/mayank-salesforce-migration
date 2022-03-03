@@ -137,7 +137,6 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
     }
 
     toggleDropdown() {
-        console.log('toggleDropdown', this.shown);
         if (this.shown && !this.firstOpen) {
             this.closeDropdown();
         } else {

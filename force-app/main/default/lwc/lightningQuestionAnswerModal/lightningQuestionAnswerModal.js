@@ -67,7 +67,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
 
     killTabKeyPressEvent(e) {
         if (e.which === 9) {
-            e.stopPropogation();
+            e.stopPropagation();
         }
     }
 

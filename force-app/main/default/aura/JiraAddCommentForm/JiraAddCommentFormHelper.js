@@ -7,12 +7,14 @@
         var questionFour = component.get('v.questionFour');
         var questionFive = component.get('v.questionFive');
         var questionSix = component.get('v.questionSix');
+        var questionSeven = component.get('v.questionSeven');
         var answerOne = component.get('v.answerOne');
         var answerTwo = component.get('v.answerTwo');
         var answerThree = component.get('v.answerThree');
         var answerFour = component.get('v.answerFour');
         var answerFive = component.get('v.answerFive');
         var answerSix = component.get('v.answerSix');
+        var answerSeven = component.get('v.answerSeven');
         var jiraKey = component.get('v.ticketKey');
 
         var ticketComment = '';
@@ -22,6 +24,7 @@
         ticketComment += this.addToTicketComment(questionFour, answerFour);
         ticketComment += this.addToTicketComment(questionFive, answerFive);
         ticketComment += this.addToTicketComment(questionSix, answerSix);
+        ticketComment += this.addToTicketComment(questionSeven, answerSeven);
 
         var action = component.get('c.submitForm');
         action.setParams({
@@ -64,6 +67,9 @@
         }
         if (component.get('v.questionSix') == undefined) {
             var question = component.find('questionSix').destroy();
+        }
+        if (component.get('v.questionSeven') == undefined) {
+            var question = component.find('questionSeven').destroy();
         }
     },
 });

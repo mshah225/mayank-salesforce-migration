@@ -121,9 +121,12 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
 
     getStageTwoModalQuestions() {
         return [
-            {key: 'subject', question: this.subject, type: 'label-bold'},
+            {key: 'subject', question: this.subject, type: 'label', subtype: 'bold'},
+            {key: 'spacer-1', question: '', type: 'spacer', subtype: 'slds-m-top_small'},
             {key: 'body-prefix', question: 'Dear StudentFirstName,', type: 'label'},
+            {key: 'spacer-1', question: '', type: 'spacer', subtype: 'slds-m-top_small'},
             {key: 'body', question: this.body, type: 'label'},
+            {key: 'spacer-1', question: '', type: 'spacer', subtype: 'slds-m-top_small'},
             {key: 'body-suffix', question: 'Sincerely, ' + this.myname, type: 'label'},
         ];
     }

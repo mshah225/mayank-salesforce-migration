@@ -16,7 +16,10 @@
                 <h2 class="h3 text-danger text-center">EMPLID/ASURITE was not found!</h2>
             </template>
         </template>
-        <c-jira-question-answer-section questions={questions} onchange={changeAnswers}></c-jira-question-answer-section>
+        <c-lightning-question-answer-section
+            questions={questions}
+            onchange={changeAnswers}
+        ></c-lightning-question-answer-section>
         <div>
             <label id="close-case-label" class="slds-form-element__label">Close Case?</label>
             <input

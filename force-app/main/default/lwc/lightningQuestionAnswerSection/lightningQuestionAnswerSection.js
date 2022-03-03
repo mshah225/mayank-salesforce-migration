@@ -1,6 +1,6 @@
 import {LightningElement, api} from 'lwc';
 
-export default class JiraQuestionAnswerSection extends LightningElement {
+export default class LightningQuestionAnswerSection extends LightningElement {
     /**
      * Expected format for each q:
      * {
@@ -60,5 +60,10 @@ export default class JiraQuestionAnswerSection extends LightningElement {
             })
         );
         e.stopPropagation();
+    }
+
+    @api focus() {
+        let firstInput = this.template.querySelector('lightning-input, lightning-textarea, lightning-combobox');
+        firstInput.focus();
     }
 }

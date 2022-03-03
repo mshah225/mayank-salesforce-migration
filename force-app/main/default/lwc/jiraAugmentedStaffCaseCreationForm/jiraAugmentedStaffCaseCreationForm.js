@@ -160,7 +160,7 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
 
     isValid() {
         let valid = true;
-        const qaSection = this.template.querySelector('c-jira-question-answer-section');
+        const qaSection = this.template.querySelector('c-lightning-question-answer-section');
         valid &= qaSection.reportValidity();
         valid &= this.foundStudent;
 

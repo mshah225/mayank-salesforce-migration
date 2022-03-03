@@ -61,19 +61,16 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         }
     }
 
-    @api
-    openModal() {
+    @api openModal() {
         this.showModal = true;
     }
-    @api
-    closeModal() {
+    @api closeModal() {
         this.showModal = false;
         this.needToSetFocus = true;
         if (this.returnFocusTo != null) this.returnFocusTo.focus();
     }
 
-    @api
-    focus() {
+    @api focus() {
         this.template.querySelector('.slds-modal').focus();
     }
 
@@ -82,13 +79,21 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         this.currentlyFocusedElement = e.target;
     }
 
+    killTabKeyPressEvent(e) {
+        if (e.which === 9) {
+            e.stopPropogation();
+        }
+    }
+
     handleKeyPress(e) {
         if (e.which === 27) {
             // Pressed escape - must close modal
             if (!this.noEscape) this.closeModal();
         } else if (e.which === 9) {
             // Pressed tab - must keep within modal
-            const allFocusableInModal = this.template.querySelectorAll('button, lightning-input, lightning-textarea');
+            const allFocusableInModal = this.template.querySelectorAll(
+                'button, c-lightning-question-answer-section, lightning-button-icon'
+            );
             const firstFocusableInModal = allFocusableInModal[0];
             const finalFocusableInModal = allFocusableInModal[allFocusableInModal.length - 1];
 
@@ -104,15 +109,17 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         }
     }
 
-    changeAnswer(e) {
-        const key = e.originalTarget.name;
-        const ans = e.detail.value;
+    recordChange(e) {
+        const key = e.detail.key;
+        const ans = e.detail.answer;
         for (let i = 0; i < this.questions.length; i++) {
             const q = this.questions[i];
             if (q.key === key) {
                 q.answer = ans;
             }
         }
+
+        console.log(this.questions);
     }
 
     submitModal() {

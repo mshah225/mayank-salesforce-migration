@@ -96,7 +96,7 @@ export default class JiraReportIssueForm extends LightningElement {
     }
 
     isValid() {
-        const allQuestionSections = this.template.querySelectorAll('c-jira-question-answer-section');
+        const allQuestionSections = this.template.querySelectorAll('c-lightning-question-answer-section');
         let valid = true;
         for (let i = 0; i < allQuestionSections.length; i++) {
             valid &= allQuestionSections[i].reportValidity();
@@ -165,7 +165,7 @@ export default class JiraReportIssueForm extends LightningElement {
     }
 
     clearInputs() {
-        const allQuestionSections = this.template.querySelectorAll('c-jira-question-answer-section');
+        const allQuestionSections = this.template.querySelectorAll('c-lightning-question-answer-section');
         for (let i = 0; i < allQuestionSections.length; i++) {
             allQuestionSections[i].clearAll();
         }

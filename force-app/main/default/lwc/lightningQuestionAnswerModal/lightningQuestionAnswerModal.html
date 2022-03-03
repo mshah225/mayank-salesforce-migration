@@ -22,48 +22,75 @@
                                 <template if:false={q.isBoldLabel}> {q.question} </template>
                             </template>
                             <template if:false={q.isLabel}>
-                                <template if:true={q.isTextArea}>
+                                <template if:true={q.isMultiComboboxSingle}>
                                     <template if:true={q.required}>
-                                        <lightning-textarea
+                                        <c-lightning-combo-box-multi-select
                                             name={q.key}
                                             label={q.question}
+                                            options={q.options}
                                             onfocus={setFocusHere}
                                             onchange={changeAnswer}
                                             value={q.answer}
+                                            single-select="true"
                                             required
-                                        ></lightning-textarea>
+                                        ></c-lightning-combo-box-multi-select>
                                     </template>
                                     <template if:false={q.required}>
-                                        <lightning-textarea
+                                        <c-lightning-combo-box-multi-select
                                             name={q.key}
                                             label={q.question}
+                                            options={q.options}
                                             onfocus={setFocusHere}
                                             onchange={changeAnswer}
+                                            single-select="true"
                                             value={q.answer}
-                                        ></lightning-textarea>
+                                        ></c-lightning-combo-box-multi-select>
                                     </template>
                                 </template>
-                                <template if:false={q.isTextArea}>
-                                    <template if:true={q.required}>
-                                        <lightning-input
-                                            name={q.key}
-                                            type={q.type}
-                                            label={q.question}
-                                            onfocus={setFocusHere}
-                                            onchange={changeAnswer}
-                                            value={q.answer}
-                                            required
-                                        ></lightning-input>
+                                <template if:false={q.isMultiComboboxSingle}>
+                                    <template if:true={q.isTextArea}>
+                                        <template if:true={q.required}>
+                                            <lightning-textarea
+                                                name={q.key}
+                                                label={q.question}
+                                                onfocus={setFocusHere}
+                                                onchange={changeAnswer}
+                                                value={q.answer}
+                                                required
+                                            ></lightning-textarea>
+                                        </template>
+                                        <template if:false={q.required}>
+                                            <lightning-textarea
+                                                name={q.key}
+                                                label={q.question}
+                                                onfocus={setFocusHere}
+                                                onchange={changeAnswer}
+                                                value={q.answer}
+                                            ></lightning-textarea>
+                                        </template>
                                     </template>
-                                    <template if:false={q.required}>
-                                        <lightning-input
-                                            name={q.key}
-                                            type={q.type}
-                                            label={q.question}
-                                            onfocus={setFocusHere}
-                                            onchange={changeAnswer}
-                                            value={q.answer}
-                                        ></lightning-input>
+                                    <template if:false={q.isTextArea}>
+                                        <template if:true={q.required}>
+                                            <lightning-input
+                                                name={q.key}
+                                                type={q.type}
+                                                label={q.question}
+                                                onfocus={setFocusHere}
+                                                onchange={changeAnswer}
+                                                value={q.answer}
+                                                required
+                                            ></lightning-input>
+                                        </template>
+                                        <template if:false={q.required}>
+                                            <lightning-input
+                                                name={q.key}
+                                                type={q.type}
+                                                label={q.question}
+                                                onfocus={setFocusHere}
+                                                onchange={changeAnswer}
+                                                value={q.answer}
+                                            ></lightning-input>
+                                        </template>
                                     </template>
                                 </template>
                             </template>

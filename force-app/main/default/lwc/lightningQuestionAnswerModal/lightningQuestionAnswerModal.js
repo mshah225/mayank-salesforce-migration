@@ -8,7 +8,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
      * {
      *   key: 'A unique key to identify this question'
      *   question: 'The question',
-     *   type: 'text'|'textarea'|'label'|'label-bold'
+     *   type: 'text'|'textarea'|'label'|'label-bold'|'multi-combobox-single'
      *   required: true|false
      * }
      */
@@ -17,6 +17,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         for (let i = 0; i < val.length; i++) {
             let q = {...val[i]};
             q.isTextArea = q.type === 'textarea';
+            q.isMultiComboboxSingle = q.type === 'multi-combobox-single';
             q.isLabel = q.type.includes('label');
             if (q.isLabel) {
                 q.isBoldLabel = q.type === 'label-bold';
@@ -26,6 +27,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
             newQuestions.push(q);
         }
         this._questions = newQuestions;
+        console.log('this._questions', this._questions);
     }
     get questions() {
         return this._questions;
@@ -92,7 +94,10 @@ export default class LightningQuestionAnswerModal extends LightningElement {
             if (!this.noEscape) this.closeModal();
         } else if (e.which === 9) {
             // Pressed tab - must keep within modal
-            const allFocusableInModal = this.template.querySelectorAll('button, lightning-input, lightning-textarea');
+            const allFocusableInModal = this.template.querySelectorAll(
+                'button, lightning-input, lightning-textarea',
+                'c-lightning-combo-box-multi-select'
+            );
             const firstFocusableInModal = allFocusableInModal[0];
             const finalFocusableInModal = allFocusableInModal[allFocusableInModal.length - 1];
 
@@ -121,7 +126,10 @@ export default class LightningQuestionAnswerModal extends LightningElement {
 
     @api reportValidity() {
         let ok = true;
-        const fields = this.template.querySelectorAll('lightning-input, lightning-textarea');
+        const fields = this.template.querySelectorAll(
+            'lightning-input, lightning-textarea',
+            'c-lightning-combo-box-multi-select'
+        );
         console.log(fields);
         for (let i = 0; i < fields.length; i++) {
             const field = fields[i];

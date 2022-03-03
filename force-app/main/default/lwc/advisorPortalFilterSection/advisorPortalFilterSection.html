@@ -24,6 +24,7 @@
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box-multi-select
                     label="Degree Level"
+                    options={degreeLevelOptions}
                     name="degreeLevel"
                     onchange={changeField}
                     value={currentFilter.degreeLevel}
@@ -32,6 +33,7 @@
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box-multi-select
                     label="Academic Program"
+                    options={academicProgramOptions}
                     name="academicProgram"
                     onchange={changeField}
                     value={currentFilter.academicProgram}
@@ -40,6 +42,7 @@
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box-multi-select
                     label="School/Department"
+                    options={schoolDepartmentOptions}
                     name="schoolDepartment"
                     onchange={changeField}
                     value={currentFilter.schoolDepartment}
@@ -48,6 +51,7 @@
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box-multi-select
                     label="Academic Plan"
+                    options={academicPlanOptions}
                     name="academicPlan"
                     onchange={changeField}
                     value={currentFilter.academicPlan}
@@ -143,6 +147,7 @@
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box-multi-select
                     label="Special Population"
+                    options={specialPopulationOptions}
                     name="specialPopulation"
                     onchange={changeField}
                     value={currentFilter.specialPopulation}

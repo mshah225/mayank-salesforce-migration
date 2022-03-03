@@ -135,6 +135,31 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Down', value: 'Down'},
         {label: 'No change', value: 'No Change'},
     ];
+    degreeLevelOptions = [
+        {label: 'Masters', value: 'Masters'},
+        {label: 'Doctorate', value: 'Doctorate'},
+        {label: 'Certificate', value: 'Certificate'},
+        {label: 'Non-degree', value: 'Non-degree'},
+    ];
+    academicProgramOptions = [];
+    schoolDepartmentOptions = [];
+    academicPlanOptions = [];
+    specialPopulationOptions = [
+        {label: 'Accelerated 4+1 Degrees', value: 'Accelerated 4+1 Degrees'},
+        {label: 'International Accelerated Students', value: 'International Accelerated Students'},
+        {label: 'Format Students', value: 'Format Students'},
+        {label: 'Provivisional Admits, not met yet', value: 'Provivisional Admits, not met yet'},
+        {label: 'Veterans', value: 'Veterans'},
+        {label: 'Applied to Graduate', value: 'Applied to Graduate'},
+        {label: 'Mayo Students', value: 'Mayo Students'},
+        {label: 'Cintana Students', value: 'Cintana Students'},
+        {label: 'HS Dual Enrollment Students', value: 'HS Dual Enrollment Students'},
+        {label: 'Teach for America Students', value: 'Teach for America Students'},
+        {label: 'Research Assistants', value: 'Research Assistants'},
+        {label: 'Teaching Assistants', value: 'Teaching Assistants'},
+        {label: 'Concurrent Enrollment', value: 'Concurrent Enrollment'},
+        {label: 'Active Students with Registation Hold', value: 'Active Students with Registation Hold'},
+    ];
 
     connectedCallback() {
         // one for each wire

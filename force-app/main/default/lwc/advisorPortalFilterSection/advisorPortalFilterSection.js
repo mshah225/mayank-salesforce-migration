@@ -5,7 +5,10 @@ import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionCo
 import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
 import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
 import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
+import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
+import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
+import {refreshApex} from '@salesforce/apex';
 
 export default class AdvisorPortalFilterSection extends LightningElement {
     @api set defaultFilter(val) {
@@ -122,11 +125,55 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     gotAcademicProgramPicklistValues(result) {
         let {data, error} = result;
         if (data != null) {
-            this.academicProgramOptions = this.buildPicklistOptionsArray(data);
+            const newAcademicProgramOptions = [{label: '--None--', value: ''}];
+            const allOtherOptions = this.buildPicklistOptionsArray(data);
+            for (let i = 0; i < allOtherOptions.length; i++) {
+                newAcademicProgramOptions.push(allOtherOptions[i]);
+            }
+            this.academicProgramOptions = newAcademicProgramOptions;
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error('gotAcademicProgramPicklistValues', error);
         }
+        this.sendLoadingEvent(false);
+    }
+
+    schoolDepartmentOptions = [];
+    @wire(getSchoolDepartmentPicklistVaues, {filterJSON: '$currentFilterJSON'})
+    gotSchoolDepartmentPicklistVaues(result) {
+        let {data, error} = result;
+        if (data != null) {
+            const newSchoolDepartmentOptions = [{label: '--None--', value: ''}];
+            const allOtherOptions = this.buildPicklistOptionsArray(data);
+            for (let i = 0; i < allOtherOptions.length; i++) {
+                newSchoolDepartmentOptions.push(allOtherOptions[i]);
+            }
+            this.schoolDepartmentOptions = newSchoolDepartmentOptions;
+        } else if (error != null) {
+            // eslint-disable-next-line no-console
+            console.error('gotSchoolDepartmentPicklistVaues', error);
+        }
+        this.sendLoadingEvent(false);
+    }
+
+    academicPlanOptions = [];
+    academicPlanOptionsWire;
+    @wire(getAcademicPlanPicklistValues, {filterJSON: '$currentFilterJSON'})
+    gotAcademicPlanPicklistValues(result) {
+        this.academicPlanOptionsWire = result;
+        let {data, error} = this.academicPlanOptionsWire;
+        if (data != null) {
+            const newAcademicPlanOptions = [{label: '--None--', value: ''}];
+            const allOtherOptions = this.buildPicklistOptionsArray(data);
+            for (let i = 0; i < allOtherOptions.length; i++) {
+                newAcademicPlanOptions.push(allOtherOptions[i]);
+            }
+            this.academicPlanOptions = newAcademicPlanOptions;
+        } else if (error != null) {
+            // eslint-disable-next-line no-console
+            console.error('gotAcademicPlanPicklistValues', error);
+        }
+        this.sendLoadingEvent(false);
     }
 
     academicLevelPicklistValues = [
@@ -149,13 +196,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'No change', value: 'No Change'},
     ];
     degreeLevelOptions = [
+        {label: '--None--', value: ''},
         {label: 'Masters', value: 'masters'},
         {label: 'Doctorate', value: 'doctorate'},
         {label: 'Certificate', value: 'certificate'},
         {label: 'Non-degree', value: 'non-degree'},
     ];
-    schoolDepartmentOptions = [];
-    academicPlanOptions = [];
     specialPopulationOptions = [
         {label: 'Accelerated 4+1 Degrees', value: 'Accelerated 4+1 Degrees'},
         {label: 'International Accelerated Students', value: 'International Accelerated Students'},
@@ -180,12 +226,17 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.sendLoadingEvent(true);
         this.sendLoadingEvent(true);
         this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
     }
 
     changeField(event) {
         const fieldChanged = event.originalTarget.name;
         const newValue = event.detail.value;
         this.currentFilter[fieldChanged] = newValue;
+
+        this.updateConditionalFields();
 
         event.stopPropagation();
         event.stopImmediatePropagation();
@@ -267,6 +318,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         }
 
         return !same;
+    }
+
+    // Update any filter fields where the options are dependent on the selection in some other picklist
+    updateConditionalFields() {
+        this.sendLoadingEvent(true);
+        refreshApex(this.academicPlanOptionsWire).then(() => {});
     }
 
     // Convert returned picklist map into array of options for comboboxes

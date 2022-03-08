@@ -178,12 +178,78 @@ public class AdvisorPortalFilterSectionController {
                     AND Program__r.Career__c = 'Graduate'
                     AND Program__r.Program_Code__c NOT IN ('GRPR', 'GCNV')
                 GROUP BY Program__c
-                ORDER BY MAX(Program__r.Name) ASC 
+                ORDER BY MAX(Program__r.Name) ASC
             ]
         );
 
         for (AggregateResult plan : activePlans) {
             labelToValueMap.put((String) plan.get('expr0'), (String) plan.get('expr1'));
+        }
+
+        return labelToValueMap;
+    }
+
+    /**
+     * Gets active school/departments values for the School/Department filter
+     * If filter is set, and indicates an academicProgram, only return schools under that program
+     *
+     * @return labelToValueMap, a Map of picklist values by their labels.
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getSchoolDepartmentPicklistVaues(String filterJSON) {
+        Map<String, String> labelToValueMap = new Map<String, String>();
+        Boolean getAllOptions = false;
+        return labelToValueMap;
+    }
+
+    /**
+     * Gets active academic plans for the Academic Plan filter
+     * If filter is set, and indicates an academicProgram, only return plans under that program
+     *                 , and indicates a schoolDepartment, only return plans under that department
+     *                 , and indicates a degree level, only return plans for that level
+     *
+     * @return labelToValueMap, a Map of picklist values by their labels.
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getAcademicPlanPicklistValues(String filterJSON) {
+        Map<String, String> labelToValueMap = new Map<String, String>();
+        Boolean getAllOptions = false;
+        String queryString =
+            'SELECT Name, Plan_Code__c' +
+            ' FROM Plan__c' +
+            ' WHERE Plan_Status__c = TRUE' +
+            ' AND Plan_Effective_Date__c <= TODAY' +
+            ' AND Program__r.Career__c = \'Graduate\'';
+
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+            if (!String.isBlank(filter.schoolDepartment)) {
+                queryString +=
+                    ' AND Program__r.Academic_Group__r.Academic_Group_Code__c = \'' +
+                    filter.schoolDepartment +
+                    '\'';
+            }
+            if (!String.isBlank(filter.academicProgram)) {
+                queryString += ' AND Program__r.Program_Code__c = \'' + filter.academicProgram + '\'';
+            }
+            if (!String.isBlank(filter.degreeLevel)) {
+                if (filter.degreeLevel == 'masters') {
+                    queryString += ' AND Plan_Type__c = \'MAJ\'';
+                } else if (filter.degreeLevel == 'doctorate') {
+                    queryString += ' AND Plan_Type__c = \'MAJ\'';
+                } else if (filter.degreeLevel == 'certificate') {
+                    queryString += ' AND Plan_Type__c = \'CER\'';
+                } else if (filter.degreeLevel == 'non-degree') {
+                    queryString += ' AND Plan_Type__c = \'NDG\'';
+                }
+            }
+        }
+
+        queryString += ' ORDER BY Name ASC';
+
+        for (Plan__c plan : Database.query(queryString)) {
+            labelToValueMap.put(plan.Name, plan.Plan_Code__c);
         }
 
         return labelToValueMap;

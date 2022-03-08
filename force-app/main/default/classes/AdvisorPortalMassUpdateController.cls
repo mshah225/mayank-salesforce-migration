@@ -5,17 +5,7 @@
  * Controller Logic for AdvisorPortalMassUpdate.cmp
  */
 public class AdvisorPortalMassUpdateController {
-    @AuraEnabled
-    public static List<String> populateClosedCaseStatusOptions() {
-        return new List<String>{
-            'Closed: Customer Self-Resolved',
-            'Conferred with Student by Email',
-            'Conferred with Student by Phone',
-            'In Person Meeting'
-        };
-    }
-
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateRecommendedActionOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -31,12 +21,7 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
-    public static List<String> populateStudentIntentionOptions() {
-        return new List<String>{ 'Not returning ever', 'Not returning temporarily', 'Enrolled' };
-    }
-
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateReturnTermOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -50,7 +35,7 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateStudentRiskOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -61,7 +46,7 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateReasonNotReturningOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -70,6 +55,48 @@ public class AdvisorPortalMassUpdateController {
         }
 
         return optionsMap;
+    }
+
+    @AuraEnabled(cacheable=true)
+    //               dropdown     value     required
+    public static Map<String, Map<String, List<String>>> getCustomMetadata() {
+        // I split these two functions up make it easier to write the tests (since you can't insert test metadata)
+        return convertMetadataToMapping(retrieveMetadata());
+    }
+
+    @TestVisible
+    private static Map<String, Map<String, List<String>>> convertMetadataToMapping(
+        List<Advisor_Portal_Mass_Close_Configuration__mdt> metadata
+    ) {
+        Map<String, Map<String, List<String>>> returnMapping = new Map<String, Map<String, List<String>>>();
+
+        for (Advisor_Portal_Mass_Close_Configuration__mdt metadatum : metadata) {
+            if (!returnMapping.containsKey(metadatum.Dropdown__c)) {
+                returnMapping.put(metadatum.Dropdown__c, new Map<String, List<String>>());
+            }
+
+            List<String> required = new List<String>();
+            if (metadatum.Required_Fields__c != null) {
+                List<String> splitUp = metadatum.Required_Fields__c.split(',');
+                for (String req : splitUp) {
+                    required.add(req.trim());
+                }
+            }
+            returnMapping.get(metadatum.Dropdown__c).put(metadatum.Value__c, required);
+        }
+
+        return returnMapping;
+    }
+
+    private static List<Advisor_Portal_Mass_Close_Configuration__mdt> retrieveMetadata() {
+        List<Advisor_Portal_Mass_Close_Configuration__mdt> metadata = new List<Advisor_Portal_Mass_Close_Configuration__mdt>(
+            [
+                SELECT Dropdown__c, Value__c, Required_Fields__c
+                FROM Advisor_Portal_Mass_Close_Configuration__mdt
+                WHERE Enabled__c = TRUE
+            ]
+        );
+        return metadata;
     }
 
     @AuraEnabled

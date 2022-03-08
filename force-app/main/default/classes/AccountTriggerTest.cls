@@ -10,5 +10,8 @@ private class AccountTriggerTest {
         update acc;
 
         System.assertEquals(acc.Name, 'Testaccount2');
+
+        delete acc;
+        undelete acc;
     }
 }

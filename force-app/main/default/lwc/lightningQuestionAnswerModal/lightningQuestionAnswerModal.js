@@ -102,7 +102,11 @@ export default class LightningQuestionAnswerModal extends LightningElement {
                 q.answer = ans;
             }
         }
-        console.log(this.questions);
+        this.dispatchEvent(
+            new CustomEvent('change', {
+                detail: {key: key, answer: ans},
+            })
+        );
     }
 
     @api reportValidity() {

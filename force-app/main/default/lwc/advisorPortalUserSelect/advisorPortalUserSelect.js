@@ -125,12 +125,12 @@ export default class AdvisorPortalUserSelect extends LightningElement {
             this.filterResults = allUserOptions;
 
             this.applyChanges();
+            this.sendLoadingEvent(false);
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error(error);
+            this.sendLoadingEvent(false);
         }
-
-        this.sendLoadingEvent(false);
     }
 
     // Limit results to match search

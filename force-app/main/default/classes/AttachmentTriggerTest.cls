@@ -161,7 +161,7 @@ public class AttachmentTriggerTest {
             }
         }
 
-        //system.assertEquals(4, hasAttachmentCount);
-        //system.assertEquals(2, doesNotHaveAttachmentCount);
+        system.assertEquals(4, hasAttachmentCount);
+        system.assertEquals(2, doesNotHaveAttachmentCount);
     }
 }

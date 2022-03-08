@@ -82,7 +82,7 @@ public with sharing class AttachmentService {
      * SFE-5455: If a case has no attachments the "has Attachment" box should
      * be set to false
      */
-    private void setCaseNumberOfFiles(Map<Id, Case> casesToUpdate) {
+    private static void setCaseNumberOfFiles(Map<Id, Case> casesToUpdate) {
         Set<Id> emailMessageIds = new Set<id>(); // Aggregate of all email message Ids from All cases to update
         Map<Id, Integer> numberOfAttachmentsPerCase = new Map<Id, Integer>(); // Map of case ID to the number of attachments the case has
 

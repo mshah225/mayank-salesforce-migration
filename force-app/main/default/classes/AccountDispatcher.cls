@@ -17,12 +17,12 @@ public class AccountDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.AccountTA();
+        TerritoryAssignmentAccount ta = new TerritoryAssignmentAccount();
+        ta.assignTerritory();
     }
     public void beforeUpdate() {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.AccountTA();
+        TerritoryAssignmentAccount ta = new TerritoryAssignmentAccount();
+        ta.assignTerritory();
     }
     public void beforeDelete() {
     }

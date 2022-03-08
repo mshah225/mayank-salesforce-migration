@@ -34,5 +34,4 @@ trigger AccountTrigger on Account(
         if (Trigger.isUndelete) {
             dispatcher.afterUndelete();
         }
-    }
 }

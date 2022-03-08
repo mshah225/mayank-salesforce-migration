@@ -6,9 +6,11 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      * {
      *   key: 'A unique key to identify this question'
      *   question: 'The question',
-     *   type: 'text'|'textarea'|'combobox'|'label'
+     *     sourceLabel: the source label (only allowed for dual-listboxes)
+     *     selectedLabel: the selected label (only allowed for dual-listboxes)
+     *   type: 'text'|'textarea'|'combobox'|'multi-combobox'|'dual-listbox'|'label'
      *   subtype:  should specify sub type of type if multiple are possible
-     *   options: [{label, value}, ...]  only allowed if type is combobox or multi-combobox
+     *   options: [{label, value}, ...]  only allowed if type is combobox, multi-combobox, or dual-listbox
      *   subnote: 'note to go under the input field',
      *   required: true|false,
      * }
@@ -20,6 +22,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      *          'multi-combobox'
      *              'single'
      *              'multi' (default)
+     *          'dual-listbox'
      *          'label'
      *              'bold'
      *              'plain' (default)
@@ -36,7 +39,15 @@ export default class LightningQuestionAnswerSection extends LightningElement {
             q.isComboBox = q.type === 'combobox';
             q.isMultiCombobox = q.type === 'multi-combobox';
             if (q.isMultiCombobox) q.isSingleSelect = q.subtype === 'single';
-            q.isInput = !(q.isTextArea || q.isComboBox || q.isLabel || q.isMultiCombobox || q.isSpacer);
+            q.isDualListbox = q.type === 'dual-listbox';
+            q.isInput = !(
+                q.isTextArea ||
+                q.isComboBox ||
+                q.isLabel ||
+                q.isMultiCombobox ||
+                q.isDualListbox ||
+                q.isSpacer
+            );
             q.hasSubnote = q.subnote != null && q.subnote !== '';
             if (q.required == null) q.required = false;
             if (q.answer == null) q.answer = '';

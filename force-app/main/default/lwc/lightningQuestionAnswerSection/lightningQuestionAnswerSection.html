@@ -73,6 +73,31 @@
                     ></c-lightning-combo-box-multi-select>
                 </template>
             </template>
+            <template if:true={q.isDualListbox}>
+                <template if:true={q.required}>
+                    <lightning-dual-listbox
+                        name={q.key}
+                        label={q.question}
+                        source-label={q.sourceLabel}
+                        selected-label={q.selectedLabel}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        required
+                    ></lightning-dual-listbox>
+                </template>
+                <template if:false={q.required}>
+                    <lightning-dual-listbox
+                        name={q.key}
+                        label={q.question}
+                        source-label={q.sourceLabel}
+                        selected-label={q.selectedLabel}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                    ></lightning-dual-listbox>
+                </template>
+            </template>
             <template if:true={q.isInput}>
                 <template if:true={q.required}>
                     <lightning-input

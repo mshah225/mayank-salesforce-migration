@@ -692,19 +692,56 @@ public class AdvisorPortalFilterSectionController {
      */
     @TestVisible
     private static Set<Id> filterStudentGroups(AdvisorPortalFilter filter, Set<Id> contactIds) {
+        Boolean useQueryString = false;
         Set<Id> filteredContactIds = new Set<Id>();
+        String queryString =
+            'SELECT SG_Contact__c' +
+            ' FROM Student_Group__c' +
+            ' WHERE SG_Contact__c IN :contactIds' +
+            ' AND SG_Status__c = TRUE';
 
-        if (!String.isBlank(filter.studentGroupCode)) {
-            for (AggregateResult studentPlanResult : [
-                SELECT SG_Contact__c
-                FROM Student_Group__c
-                WHERE
-                    SG_Contact__c IN :contactIds
-                    AND SG_PeopleSoft_Code__c = :filter.studentGroupCode
-                    AND SG_Status__c = TRUE
-                GROUP BY SG_Contact__c
-                LIMIT 2000
-            ]) {
+        if (filter.career != null) {
+            // if statement for using either grad level or undergrad level filtering
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    useQueryString = true;
+                    if (filter.specialPopulation == 'accelerated 4+1 degrees') {
+                        queryString += ' AND SG_PeopleSoft_Code__c IN (\'GRAH\', \'GRAI\')';
+                    } else if (filter.specialPopulation == 'international accelerated students') {
+                        queryString += ' AND SG_PeopleSoft_Code__c = \'ADIP\'';
+                    } else if (filter.specialPopulation == 'format students') {
+                    } else if (filter.specialPopulation == 'provivisional admits, not met yet') {
+                    } else if (filter.specialPopulation == 'veterans') {
+                        queryString += ' AND SG_PeopleSoft_Code__c IN (\'SR1B\', \'SR1D\')';
+                    } else if (filter.specialPopulation == 'applied to graduate') {
+                    } else if (filter.specialPopulation == 'mayo students') {
+                        queryString += ' AND SG_PeopleSoft_Code__c = \'SRKY\'';
+                    } else if (filter.specialPopulation == 'cintana students') {
+                        queryString += ' AND SG_PeopleSoft_Code__c = \'ADAD\'';
+                    } else if (filter.specialPopulation == 'hs dual enrollment students') {
+                        queryString += ' AND SG_PeopleSoft_Code__c = \'ADAM\'';
+                    } else if (filter.specialPopulation == 'teach for america students') {
+                        queryString += ' AND SG_PeopleSoft_Code__c = \'SRSA\'';
+                    } else if (filter.specialPopulation == 'research assistants') {
+                        // Skipping for now
+                    } else if (filter.specialPopulation == 'teaching assistants') {
+                        // Skipping for now
+                    } else if (filter.specialPopulation == 'concurrent enrollment') {
+                    } else if (filter.specialPopulation == 'active students with registation hold') {
+                    }
+                }
+            } else {
+                if (!String.isBlank(filter.studentGroupCode)) {
+                    useQueryString = true;
+                    queryString += ' AND SG_PeopleSoft_Code__c = :filter.studentGroupCode';
+                }
+            }
+
+            queryString += ' GROUP BY SG_Contact__c LIMIT 2000';
+        }
+        // make query to filter - or return intial set of contactIds if no filtering is needed
+        if (useQueryString) {
+            for (AggregateResult studentPlanResult : Database.query(queryString)) {
                 filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
             }
             return filteredContactIds;
@@ -723,14 +760,12 @@ public class AdvisorPortalFilterSectionController {
      */
     @TestVisible
     private static Set<Id> filterStudentPlans(AdvisorPortalFilter filter, Set<Id> contactIds) {
-        if (filter.career != null) {
-            Set<Id> filteredContactIds = new Set<Id>();
-            String queryString =
-                '' +
-                'SELECT Contact__c ' +
-                'FROM Student_Program_Plan__c ' +
-                'WHERE Contact__c IN :contactIds';
+        Boolean useQueryString = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE Contact__c IN :contactIds';
 
+        if (filter.career != null) {
+            useQueryString = true;
             // if statement for using either grad level or undergrad level filtering
             if (filter.career == 'GRD') {
                 // Use grad portal filtering capabilities
@@ -785,6 +820,14 @@ public class AdvisorPortalFilterSectionController {
 
             for (AggregateResult studentPlanResult : Database.query(queryString)) {
                 filteredContactIds.add((Id) studentPlanResult.get('Contact__c'));
+            }
+            return filteredContactIds;
+        }
+
+        // make query to filter - or return intial set of contactIds if no filtering is needed
+        if (useQueryString) {
+            for (AggregateResult studentPlanResult : Database.query(queryString)) {
+                filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
             }
             return filteredContactIds;
         } else {

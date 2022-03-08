@@ -72,6 +72,7 @@ public class AttachmentTriggerTest {
 
     @isTest
     static void VerifyCaseNumberOfFiles() {
+        List<Attachment> attachments = [SELECT Id FROM Attachment];
         Integer hasAttachmentCount = [SELECT COUNT() FROM Case WHERE Attachments__c != NULL];
         Integer doesNotHaveAttachmentCount = [SELECT COUNT() FROM Case WHERE Attachments__c = NULL];
 

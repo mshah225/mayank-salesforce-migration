@@ -54,7 +54,7 @@ public class EmailMessageService {
      *
      * @return Map<Id, Case> map of updated cases
      */
-    private static void setAdvisorCaseStatus(Map<Id, Case> casesToCheck) {
+    public static void setAdvisorCaseStatus(Map<Id, Case> casesToCheck) {
         Id advisorRTID;
         Map<Id, Case> result;
 

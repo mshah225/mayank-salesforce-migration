@@ -136,10 +136,10 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'No change', value: 'No Change'},
     ];
     degreeLevelOptions = [
-        {label: 'Masters', value: 'Masters'},
-        {label: 'Doctorate', value: 'Doctorate'},
-        {label: 'Certificate', value: 'Certificate'},
-        {label: 'Non-degree', value: 'Non-degree'},
+        {label: 'Masters', value: 'masters'},
+        {label: 'Doctorate', value: 'doctorate'},
+        {label: 'Certificate', value: 'certificate'},
+        {label: 'Non-degree', value: 'non-degree'},
     ];
     academicProgramOptions = [];
     schoolDepartmentOptions = [];

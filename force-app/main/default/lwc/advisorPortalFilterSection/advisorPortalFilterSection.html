@@ -22,13 +22,13 @@
 
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <lightning-combobox
                     label="Degree Level"
                     options={degreeLevelOptions}
                     name="degreeLevel"
                     onchange={changeField}
                     value={currentFilter.degreeLevel}
-                ></c-lightning-combo-box-multi-select>
+                ></lightning-combobox>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box-multi-select

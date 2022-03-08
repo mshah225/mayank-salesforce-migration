@@ -620,13 +620,7 @@ public class AdvisorPortalFilterSectionController {
      */
     @TestVisible
     private static Set<Id> filterStudentPlans(AdvisorPortalFilter filter, Set<Id> contactIds) {
-        if (
-            !String.isBlank(filter.academicLevel) ||
-            !String.isBlank(filter.campus) ||
-            !String.isBlank(filter.residency) ||
-            !String.isBlank(filter.major) ||
-            filter.career != null
-        ) {
+        if (filter.career != null) {
             Set<Id> filteredContactIds = new Set<Id>();
             String queryString =
                 '' +
@@ -634,11 +628,42 @@ public class AdvisorPortalFilterSectionController {
                 'FROM Student_Program_Plan__c ' +
                 'WHERE Contact__c IN :contactIds';
 
-            if (!String.isBlank(filter.academicLevel)) {
-                List<String> academicLevels = filter.academicLevel.split(';');
-                queryString += ' AND Cohort__c IN :academicLevels';
+            // if statement for using either grad level or undergrad level filtering
+            if (filter.career == 'GRD') {
+                // Use grad portal filtering capabilities
+                queryString += ' AND Career__c = \'Graduate\'';
+
+                if (!String.isBlank(filter.degreeLevel)) {
+                    if (filter.degreeLevel == 'masters') {
+                        queryString += ' AND Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'17\'';
+                    } else if (filter.degreeLevel == 'doctorate') {
+                        queryString += ' AND Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'21\'';
+                    } else if (filter.degreeLevel == 'certificate') {
+                        queryString += ' AND Plan_Type_Text__c = \'CER\'';
+                    } else if (filter.degreeLevel == 'non-degree') {
+                        queryString += ' AND Plan_Type_Text__c = \'NDG\'';
+                    }
+                }
+            } else {
+                // use undergrad portal filtering capabilties
+                queryString += ' AND Career__c != \'Graduate\'';
+
+                if (!String.isBlank(filter.academicLevel)) {
+                    List<String> academicLevels = filter.academicLevel.split(';');
+                    queryString += ' AND Cohort__c IN :academicLevels';
+                }
+
+                if (!String.isBlank(filter.major)) {
+                    queryString +=
+                        ' AND  Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
+                        filter.major +
+                        '%\' OR Plan_Code__c LIKE \'%' +
+                        filter.major +
+                        '%\' )';
+                }
             }
 
+            // ... and for filters that both grad and undergrad use
             if (!String.isBlank(filter.campus)) {
                 List<String> campuses = filter.campus.split(';');
                 queryString += ' AND Campus__r.Location_Code__c IN :campuses';
@@ -647,22 +672,6 @@ public class AdvisorPortalFilterSectionController {
             if (!String.isBlank(filter.residency)) {
                 List<String> residencies = filter.residency.split(';');
                 queryString += ' AND Residency__c IN :residencies';
-            }
-
-            if (!String.isBlank(filter.major)) {
-                queryString +=
-                    ' AND  Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
-                    filter.major +
-                    '%\' OR Plan_Code__c LIKE \'%' +
-                    filter.major +
-                    '%\' )';
-            }
-
-            if (filter.career != null) {
-                if (filter.career == 'GRD')
-                    queryString += ' AND Career__c = \'Graduate\'';
-                else
-                    queryString += ' AND Career__c != \'Graduate\'';
             }
 
             queryString += ' GROUP BY Contact__c LIMIT 2000';

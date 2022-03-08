@@ -23,6 +23,8 @@ export default class AdvisorPortalFilterSection extends LightningElement {
 
     @api set viewAsUsers(val) {
         this._viewAsUsers = [...val];
+        this.refreshCaseSubjectPicklistValues();
+        this.refreshCaseClassificationPicklistValues();
     }
     get viewAsUsers() {
         return this._viewAsUsers;
@@ -30,27 +32,28 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     _viewAsUsers = [];
 
     @api set currentFilter(val) {
-        this.sendLoadingEvent(true);
         if (this.filterIsDifferent(this.currentFilter, val)) {
             this.copyChanges(this.currentFilter, val);
-            this._currentFilter = {...this._currentFilter};
+
+            if (this.isGraduateOnly !== (this.currentFilter.career === 'GRD')) {
+                this.sendLoadingEvent(true);
+                // take the grad toggle change back a rendering cycle to ensure parent LWC can re-render and show loading circle while this completes
+                // since this might take a bit if "Academic Plan" is rendering all options (700-ish)
+                this.throwBackARenderCycle(() => {
+                    this.isGraduateOnly = this.currentFilter.career === 'GRD';
+                    this.sendLoadingEvent(false);
+                });
+                this.refreshCampusValues();
+            }
         }
-        this.sendLoadingEvent(false);
     }
     get currentFilter() {
         if (this._currentFilter == null) this._currentFilter = this.getEmptyFilter();
         return this._currentFilter;
     }
     _currentFilter;
-    get currentFilterJSON() {
-        return JSON.stringify(this.currentFilter);
-    }
 
-    get isGraduateOnly() {
-        if (this.currentFilter == null) return false;
-        else if (this.currentFilter.career == null) return false;
-        return this.currentFilter.career === 'GRD';
-    }
+    isGraduateOnly = false;
 
     residencyPicklistValues = [];
     residencyPicklistValuesWire;
@@ -60,11 +63,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         let {data, error} = this.residencyPicklistValuesWire;
         if (data != null) {
             this.residencyPicklistValues = this.buildPicklistOptionsArray(data);
+            this.checkWiresLoadingComplete();
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error(error);
+            this.checkWiresLoadingComplete();
         }
-        this.checkInitialLoadingComplete();
     }
 
     caseStatusPicklistValues = [];
@@ -75,65 +79,71 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         let {data, error} = this.caseStatusPicklistValuesWire;
         if (data != null) {
             this.caseStatusPicklistValues = this.buildPicklistOptionsArray(data);
+            this.checkWiresLoadingComplete();
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error(error);
+            this.checkWiresLoadingComplete();
         }
-        this.checkInitialLoadingComplete();
     }
 
-    // Reassigning currentFilterJSON, like in we do it `set currentFilter` will trigger this to re-run
+    // Imperative rather than wire to gain more precise control over when this triggers
     campusPicklistValues = [];
-    campusPicklistValuesWire;
-    @wire(getCampusValues, {filterJSON: '$currentFilterJSON'})
-    gotCampusValues(result) {
-        this.campusPicklistValuesWire = result;
-        let {data, error} = this.campusPicklistValuesWire;
-        if (data != null) {
-            this.campusPicklistValues = this.buildPicklistOptionsArray(data);
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error('gotCampusValues', error);
-        }
-        this.checkInitialLoadingComplete();
+    refreshCampusValues() {
+        this.sendLoadingEvent(true);
+        const filterJSON = JSON.stringify(this.currentFilter);
+        getCampusValues({filterJSON})
+            .then((val) => {
+                this.campusPicklistValues = this.buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCampusValues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
-    // Reassigning viewAsUsers, like in we do it `set viewAsUsers` will trigger this to re-run
+    // Imperative rather than wire to gain more precise control over when this triggers
     caseSubjectPicklistValues = [];
-    caseSubjectPicklistValuesWire;
-    @wire(getCaseSubjectPicklistValues, {viewAsOptions: '$viewAsUsers'})
-    gotCaseSubjectPicklistValues(result) {
-        this.caseSubjectPicklistValuesWire = result;
-        let {data, error} = this.caseSubjectPicklistValuesWire;
-        if (data != null) {
-            this.caseSubjectPicklistValues = this.buildPicklistOptionsArray(data);
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error('gotCaseSubjectPicklistValues', error);
-        }
-        this.checkInitialLoadingComplete();
+    refreshCaseSubjectPicklistValues() {
+        this.sendLoadingEvent(true);
+        getCaseSubjectPicklistValues({viewAsOptions: this.viewAsUsers})
+            .then((val) => {
+                this.caseSubjectPicklistValues = this.buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseSubjectPicklistValues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
-    // Reassigning viewAsUsers, like in we do it `set viewAsUsers` will trigger this to re-run
+    // Imperative rather than wire to gain more precise control over when this triggers
     caseCategoryPicklistValues = [];
-    caseCategoryPicklistValuesWire;
-    @wire(getCaseClassificationPicklistValues, {viewAsOptions: '$viewAsUsers'})
-    gotCaseClassificationPicklistValues(result) {
-        this.caseCategoryPicklistValuesWire = result;
-        let {data, error} = this.caseCategoryPicklistValuesWire;
-        if (data != null) {
-            this.caseCategoryPicklistValues = this.buildPicklistOptionsArray(data);
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error('gotCaseClassificationPicklistValues', error);
-        }
-        this.checkInitialLoadingComplete();
+    refreshCaseClassificationPicklistValues() {
+        this.sendLoadingEvent(true);
+        getCaseClassificationPicklistValues({viewAsOptions: this.viewAsUsers})
+            .then((val) => {
+                this.caseCategoryPicklistValues = this.buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseClassificationPicklistValues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
     academicProgramOptions = [];
     academicProgramOptionsWire;
     @wire(getAcademicProgramPicklistValues, {})
     gotAcademicProgramPicklistValues(result) {
+        console.log('gotAcademicProgramPicklistValues');
         this.academicProgramOptionsWire = result;
         let {data, error} = this.academicProgramOptionsWire;
         if (data != null) {
@@ -143,51 +153,58 @@ export default class AdvisorPortalFilterSection extends LightningElement {
                 newAcademicProgramOptions.push(allOtherOptions[i]);
             }
             this.academicProgramOptions = newAcademicProgramOptions;
+            this.checkWiresLoadingComplete();
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error('gotAcademicProgramPicklistValues', error);
+            this.checkWiresLoadingComplete();
         }
-        this.checkInitialLoadingComplete();
     }
 
+    // Imperative rather than wire to gain more precise control over when this triggers
     schoolDepartmentOptions = [];
-    schoolDepartmentOptionsWire;
-    @wire(getSchoolDepartmentPicklistVaues, {filterJSON: '$currentFilterJSON'})
-    gotSchoolDepartmentPicklistVaues(result) {
-        this.schoolDepartmentOptionsWire = result;
-        let {data, error} = this.schoolDepartmentOptionsWire;
-        if (data != null) {
-            const newSchoolDepartmentOptions = [{label: '--None--', value: ''}];
-            const allOtherOptions = this.buildPicklistOptionsArray(data);
-            for (let i = 0; i < allOtherOptions.length; i++) {
-                newSchoolDepartmentOptions.push(allOtherOptions[i]);
-            }
-            this.schoolDepartmentOptions = newSchoolDepartmentOptions;
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error('gotSchoolDepartmentPicklistVaues', error);
-        }
-        this.checkInitialLoadingComplete();
+    refreshSchoolDepartmentPicklistVaues() {
+        this.sendLoadingEvent(true);
+        const filterJSON = JSON.stringify(this.currentFilter);
+        getSchoolDepartmentPicklistVaues({filterJSON})
+            .then((val) => {
+                const newSchoolDepartmentOptions = [{label: '--None--', value: ''}];
+                const allOtherOptions = this.buildPicklistOptionsArray(val);
+                for (let i = 0; i < allOtherOptions.length; i++) {
+                    newSchoolDepartmentOptions.push(allOtherOptions[i]);
+                }
+                this.schoolDepartmentOptions = newSchoolDepartmentOptions;
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshSchoolDepartmentPicklistVaues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
+    // Imperative rather than wire to gain more precise control over when this triggers
     academicPlanOptions = [];
-    academicPlanOptionsWire;
-    @wire(getAcademicPlanPicklistValues, {filterJSON: '$currentFilterJSON'})
-    gotAcademicPlanPicklistValues(result) {
-        this.academicPlanOptionsWire = result;
-        let {data, error} = this.academicPlanOptionsWire;
-        if (data != null) {
-            const newAcademicPlanOptions = [{label: '--None--', value: ''}];
-            const allOtherOptions = this.buildPicklistOptionsArray(data);
-            for (let i = 0; i < allOtherOptions.length; i++) {
-                newAcademicPlanOptions.push(allOtherOptions[i]);
-            }
-            this.academicPlanOptions = newAcademicPlanOptions;
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error('gotAcademicPlanPicklistValues', error);
-        }
-        this.checkInitialLoadingComplete();
+    refreshAcademicPlanPicklistValues() {
+        this.sendLoadingEvent(true);
+        const filterJSON = JSON.stringify(this.currentFilter);
+        getAcademicPlanPicklistValues({filterJSON})
+            .then((val) => {
+                const newAcademicPlanOptions = [{label: '--None--', value: ''}];
+                const allOtherOptions = this.buildPicklistOptionsArray(val);
+                for (let i = 0; i < allOtherOptions.length; i++) {
+                    newAcademicPlanOptions.push(allOtherOptions[i]);
+                }
+                this.academicPlanOptions = newAcademicPlanOptions;
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('gotAcademicPlanPicklistValues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
     academicLevelPicklistValues = [
@@ -233,10 +250,15 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Active Students with Registation Hold', value: 'Active Students with Registation Hold'},
     ];
 
-    initialLoad = true;
+    wiresLoading = true;
     connectedCallback() {
-        // one for initial load
+        // one for initial wire loading
         this.sendLoadingEvent(true);
+        this.refreshCampusValues();
+        this.refreshSchoolDepartmentPicklistVaues();
+        this.refreshAcademicPlanPicklistValues();
+        this.refreshCaseSubjectPicklistValues();
+        this.refreshCaseClassificationPicklistValues();
     }
 
     changeField(event) {
@@ -244,7 +266,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         const newValue = event.detail.value;
         this.currentFilter[fieldChanged] = newValue;
 
-        this.updateConditionalFields();
+        //this.updateConditionalFields();
 
         event.stopPropagation();
         event.stopImmediatePropagation();
@@ -305,19 +327,14 @@ export default class AdvisorPortalFilterSection extends LightningElement {
      * Helper functions
      */
     // Send a loading decrement after all components have loaded
-    checkInitialLoadingComplete() {
-        if (this.initialLoad) {
+    checkWiresLoadingComplete() {
+        if (this.wiresLoading) {
             if (
-                this.academicPlanOptionsWire != null &&
-                this.schoolDepartmentOptionsWire != null &&
-                this.academicProgramOptionsWire != null &&
-                this.caseCategoryPicklistValuesWire != null &&
-                this.caseSubjectPicklistValuesWire != null &&
-                this.campusPicklistValuesWire != null &&
+                this.residencyPicklistValuesWire != null &&
                 this.caseStatusPicklistValuesWire != null &&
-                this.residencyPicklistValuesWire != null
+                this.academicProgramOptionsWire != null
             ) {
-                this.initialLoad = false;
+                this.wiresLoading = false;
                 this.sendLoadingEvent(false);
             }
         }
@@ -357,6 +374,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             .finally(() => {
                 this.sendLoadingEvent(false);
             });
+    }
+
+    // Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before
+    // running this code (we primarily use this to ensure the parent either begins/stops the loading circle during otherwise blocking operations)
+    throwBackARenderCycle(fn) {
+        setTimeout(fn, 1);
     }
 
     // Convert returned picklist map into array of options for comboboxes

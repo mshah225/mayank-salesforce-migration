@@ -4,6 +4,7 @@ import getCampusValues from '@salesforce/apex/AdvisorPortalFilterSectionControll
 import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
 import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
 import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
+import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 
 export default class AdvisorPortalFilterSection extends LightningElement {
@@ -116,6 +117,18 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.sendLoadingEvent(false);
     }
 
+    academicProgramOptions = [];
+    @wire(getAcademicProgramPicklistValues, {})
+    gotAcademicProgramPicklistValues(result) {
+        let {data, error} = result;
+        if (data != null) {
+            this.academicProgramOptions = this.buildPicklistOptionsArray(data);
+        } else if (error != null) {
+            // eslint-disable-next-line no-console
+            console.error('gotAcademicProgramPicklistValues', error);
+        }
+    }
+
     academicLevelPicklistValues = [
         {label: 'Freshman', value: 'Freshman'},
         {label: 'Sophomore', value: 'Sophomore'},
@@ -141,7 +154,6 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Certificate', value: 'certificate'},
         {label: 'Non-degree', value: 'non-degree'},
     ];
-    academicProgramOptions = [];
     schoolDepartmentOptions = [];
     academicPlanOptions = [];
     specialPopulationOptions = [

@@ -158,6 +158,37 @@ public class AdvisorPortalFilterSectionController {
         return caseClassificationValuesByLabel;
     }
 
+    /**
+     * Gets active Academic Program values to display on the filter section in the Graduate Advisor Portal.
+     *
+     * @return a map of active program names to their program codes
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getAcademicProgramPicklistValues() {
+        Map<String, String> labelToValueMap = new Map<String, String>();
+
+        // Find programs where they have at least one active plan within them
+        List<AggregateResult> activePlans = new List<AggregateResult>(
+            [
+                SELECT MAX(Program__r.Name), MAX(Program__r.Program_Code__c)
+                FROM Plan__c
+                WHERE
+                    Plan_Status__c = TRUE
+                    AND Plan_Effective_Date__c <= TODAY
+                    AND Program__r.Career__c = 'Graduate'
+                    AND Program__r.Program_Code__c NOT IN ('GRPR', 'GCNV')
+                GROUP BY Program__c
+                ORDER BY MAX(Program__r.Name) ASC 
+            ]
+        );
+
+        for (AggregateResult plan : activePlans) {
+            labelToValueMap.put((String) plan.get('expr0'), (String) plan.get('expr1'));
+        }
+
+        return labelToValueMap;
+    }
+
     @AuraEnabled
     public static String getFilteredCases(List<Id> viewAsOptions, String filterJSON) {
         AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
@@ -643,6 +674,10 @@ public class AdvisorPortalFilterSectionController {
                     } else if (filter.degreeLevel == 'non-degree') {
                         queryString += ' AND Plan_Type_Text__c = \'NDG\'';
                     }
+                }
+
+                if (!String.isBlank(filter.academicProgram)) {
+                    queryString += ' AND Program_Code__c = \'' + filter.academicProgram + '\'';
                 }
             } else {
                 // use undergrad portal filtering capabilties

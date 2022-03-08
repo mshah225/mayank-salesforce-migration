@@ -237,7 +237,7 @@ public class AdvisorPortalFilterSectionController {
             }
 
             if (!String.isBlank(filter.academicProgram)) {
-                queryString += ' AND Program__r.Program_Code__c = \'' + filter.academicProgram + '\'';
+                queryString += ' AND Program_Code__c = \'' + filter.academicProgram + '\'';
             }
 
             if (!String.isBlank(filter.schoolDepartment)) {
@@ -245,6 +245,10 @@ public class AdvisorPortalFilterSectionController {
                     ' AND Program__r.Academic_Group__r.Academic_Group_Code__c = \'' +
                     filter.schoolDepartment +
                     '\'';
+            }
+
+            if (!String.isBlank(filter.academicPlan)) {
+                queryString += ' AND Plan_Code__c = \'' + filter.academicPlan + '\'';
             }
         }
 

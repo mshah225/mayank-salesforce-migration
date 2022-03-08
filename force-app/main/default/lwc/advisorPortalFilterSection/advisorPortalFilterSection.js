@@ -264,9 +264,10 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     changeField(event) {
         const fieldChanged = event.originalTarget.name;
         const newValue = event.detail.value;
+        const oldValue = this.currentFilter[fieldChanged];
         this.currentFilter[fieldChanged] = newValue;
 
-        //this.updateConditionalFields();
+        this.updateConditionalFields(fieldChanged, oldValue, newValue);
 
         event.stopPropagation();
         event.stopImmediatePropagation();
@@ -365,15 +366,15 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     }
 
     // Update any filter fields where the options are dependent on the selection in some other picklist
-    updateConditionalFields() {
-        this.sendLoadingEvent(true);
-        refreshApex(this.academicPlanOptionsWire)
-            .catch((err) => {
-                console.error(err);
-            })
-            .finally(() => {
-                this.sendLoadingEvent(false);
-            });
+    updateConditionalFields(changedField, oldVal, newVal) {
+        if (changedField === 'degreeLevel') {
+            this.refreshAcademicPlanPicklistValues();
+        } else if (changedField === 'academicProgram') {
+            this.refreshSchoolDepartmentPicklistVaues();
+            this.refreshAcademicPlanPicklistValues();
+        } else if (changedField === 'schoolDepartment') {
+            this.refreshAcademicPlanPicklistValues();
+        }
     }
 
     // Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before

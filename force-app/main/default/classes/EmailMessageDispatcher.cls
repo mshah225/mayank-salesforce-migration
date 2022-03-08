@@ -1,34 +1,29 @@
-public with sharing class EmailMessageDispatcher implements TriggerDispatcherInterface {
-    private static Map<Id, Case> casesToUpdate; // List of parent cases that need to be updated
-    private static Map<Id, EmailMessage> newEmails; // trigger.new
-    private static Map<Id, EmailMessage> oldEmails; // trigger.oldMap
+public class EmailMessageDispatcher implements TriggerDispatcherInterface {
+    private List<EmailMessage> newList;
+    private Map<Id, EmailMessage> newMap;
+    private List<EmailMessage> oldList;
+    private Map<Id, EmailMessage> oldMap;
 
-    public EmailMessageDispatcher(Map<Id, EmailMessage> newMap, Map<Id, EmailMessage> oldMap) {
-        newEmails = newMap;
-        oldEmails = oldMap;
+    public EmailMessageDispatcher(
+        List<EmailMessage> newList,
+        Map<Id, EmailMessage> newMap,
+        List<EmailMessage> oldList,
+        Map<Id, EmailMessage> oldMap
+    ) {
+        this.newList = newList;
+        this.newMap = newMap;
+        this.oldList = oldList;
+        this.oldMap = oldMap;
     }
 
-    public void afterInsert() {
-        casesToUpdate = EmailMessageService.getCasesFromEmailMessages(newEmails);
-        system.debug('getCasesFromEmailMessages: ' + string.valueOf(casesToUpdate));
-
-        if (casesToUpdate != null && casesToUpdate.size() > 0) {
-            casesToUpdate = EmailMessageService.setAdvisorCaseStatus(casesToUpdate);
-
-            system.debug('setAdvisorCaseStatus: ' + string.valueOf(casesToUpdate));
-
-            if (casesToUpdate.size() > 0) {
-                update casesToUpdate.values();
-            }
-        }
-    }
-
-    //Required by Dispatcher Interface
     public void beforeInsert() {
     }
     public void beforeUpdate() {
     }
     public void beforeDelete() {
+    }
+    public void afterInsert() {
+        EmailMessageService.getCasesFromEmailMessages(newMap);
     }
     public void afterUpdate() {
     }

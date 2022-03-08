@@ -174,10 +174,10 @@ public class AdvisorPortalFilterSectionController {
                 FROM Plan__c
                 WHERE
                     Plan_Status__c = TRUE
-                    AND Plan_Effective_Date__c <= TODAY
                     AND Program__r.Career__c = 'Graduate'
                     AND Program__r.Program_Code__c NOT IN ('GRPR', 'GCNV')
                 GROUP BY Program__c
+                HAVING MAX(Plan_Effective_Date__c) < TODAY
                 ORDER BY MAX(Program__r.Name) ASC
             ]
         );
@@ -224,15 +224,6 @@ public class AdvisorPortalFilterSectionController {
         if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
             AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
 
-            if (!String.isBlank(filter.schoolDepartment)) {
-                queryString +=
-                    ' AND Program__r.Academic_Group__r.Academic_Group_Code__c = \'' +
-                    filter.schoolDepartment +
-                    '\'';
-            }
-            if (!String.isBlank(filter.academicProgram)) {
-                queryString += ' AND Program__r.Program_Code__c = \'' + filter.academicProgram + '\'';
-            }
             if (!String.isBlank(filter.degreeLevel)) {
                 if (filter.degreeLevel == 'masters') {
                     queryString += ' AND Plan_Type__c = \'MAJ\'';
@@ -243,6 +234,17 @@ public class AdvisorPortalFilterSectionController {
                 } else if (filter.degreeLevel == 'non-degree') {
                     queryString += ' AND Plan_Type__c = \'NDG\'';
                 }
+            }
+
+            if (!String.isBlank(filter.academicProgram)) {
+                queryString += ' AND Program__r.Program_Code__c = \'' + filter.academicProgram + '\'';
+            }
+
+            if (!String.isBlank(filter.schoolDepartment)) {
+                queryString +=
+                    ' AND Program__r.Academic_Group__r.Academic_Group_Code__c = \'' +
+                    filter.schoolDepartment +
+                    '\'';
             }
         }
 

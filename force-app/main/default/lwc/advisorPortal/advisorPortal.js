@@ -111,6 +111,13 @@ export default class AdvisorPortal extends LightningElement {
             this.template.querySelector('c-advisor-portal-modal-mass-transfer').openModal();
         }
     }
+    openModalMassClose() {
+        if (this.selectedResults.length === 0) {
+            this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
+        } else {
+            this.template.querySelector('c-advisor-portal-modal-mass-close').openModal();
+        }
+    }
 
     handleLoading(e) {
         const loadMore = e.detail;

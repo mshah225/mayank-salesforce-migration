@@ -75,7 +75,12 @@
                                     variant="brand"
                                     class="mr-2"
                                 ></lightning-button>
-                                <lightning-button label="Mass Close" variant="brand" class="mr-2"></lightning-button>
+                                <lightning-button
+                                    label="Mass Close"
+                                    onclick={openModalMassClose}
+                                    variant="brand"
+                                    class="mr-2"
+                                ></lightning-button>
                                 <!-- sldsValidatorIgnoreNextLine -->
                                 <lightning-button-icon
                                     icon-name="utility:refresh"
@@ -141,4 +146,10 @@
         onshowtoast={handleToast}
         onreloadcontacts={reloadContacts}
     ></c-advisor-portal-modal-mass-transfer>
+    <c-advisor-portal-modal-mass-close
+        selected-contact-wrappers={selectedResults}
+        onloading={handleLoading}
+        onshowtoast={handleToast}
+        onreloadcontacts={reloadContacts}
+    ></c-advisor-portal-modal-mass-close>
 </template>

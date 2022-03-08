@@ -3,7 +3,7 @@ import {LightningElement, api} from 'lwc';
 
 export default class LightningComboBoxMultiSelect extends LightningElement {
     @api label = '';
-    @api placeholder = '--Select--';
+    @api placeholder = 'Select an Option';
     @api required = false;
     @api variant = 'standard'; // Use only null, standard, or label-hidden
 

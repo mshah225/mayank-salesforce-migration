@@ -79,6 +79,8 @@ public class SuccessStudentService {
             );
             outreachCases.add(newCase);
         }
-        insert outreachCases;
+        if (outreachCases.size() > 0) {
+            insert outreachCases;
+        }
     }
 }

@@ -1,4 +1,4 @@
-public class SuccessStudentOutreachCaseCreator {
+public class SuccessStudentService {
     private static final Date TOMORROW = System.today().addDays(1);
     private static final Id COACH_CASE_RECORD_TYPE = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
     private static Id asuCoachOutreachGroup;
@@ -10,7 +10,7 @@ public class SuccessStudentOutreachCaseCreator {
     private Set<Id> outreachStudentIds;
     private List<Case> outreachCases;
 
-    public SuccessStudentOutreachCaseCreator(
+    public SuccessStudentService(
         Map<Id, Success_Student__c> successStudents,
         Map<Id, Success_Student__c> previousValues
     ) {
@@ -79,9 +79,6 @@ public class SuccessStudentOutreachCaseCreator {
             );
             outreachCases.add(newCase);
         }
-    }
-
-    public List<Case> getOutreachCases() {
-        return outreachCases;
+        insert outreachCases;
     }
 }

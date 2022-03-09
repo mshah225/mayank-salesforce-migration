@@ -1,16 +1,19 @@
 public class SuccessStudentDispatcher implements TriggerDispatcherInterface {
-    Map<Id, Success_Student__c> newMap;
-    Map<id, Success_Student__c> oldMap;
+    private List<Success_Student__c> newList;
+    private Map<Id, Success_Student__c> newMap;
+    private List<Success_Student__c> oldList;
+    private Map<Id, Success_Student__c> oldMap;
 
-    public SuccessStudentDispatcher(Map<Id, Success_Student__c> newMap, Map<id, Success_Student__c> oldMap) {
+    public SuccessStudentDispatcher(
+        List<Success_Student__c> newList,
+        Map<Id, Success_Student__c> newMap,
+        List<Success_Student__c> oldList,
+        Map<Id, Success_Student__c> oldMap
+    ) {
+        this.newList = newList;
         this.newMap = newMap;
+        this.oldList = oldList;
         this.oldMap = oldMap;
-    }
-
-    public void afterUpdate() {
-        SuccessStudentOutreachCaseCreator caseCreator = new SuccessStudentOutreachCaseCreator(newMap, oldMap);
-        List<Case> newOutreachCases = caseCreator.getOutreachCases();
-        insert newOutreachCases;
     }
 
     public void beforeInsert() {
@@ -20,6 +23,9 @@ public class SuccessStudentDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
+        new SuccessStudentService(newMap, oldMap);
+    }
+    public void afterUpdate() {
     }
     public void afterDelete() {
     }

@@ -237,7 +237,7 @@ public class AdvisorPortalFilterSectionController {
             }
 
             if (!String.isBlank(filter.academicProgram)) {
-                queryString += ' AND Program_Code__c = \'' + filter.academicProgram + '\'';
+                queryString += ' AND Program__r.Program_Code__c = \'' + filter.academicProgram + '\'';
             }
 
             if (!String.isBlank(filter.schoolDepartment)) {

@@ -1,4 +1,4 @@
-import {LightningElement, api, wire} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import getPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getPicklistValues';
 import getCampusValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCampusValues';
 import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
@@ -182,6 +182,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         getAcademicPlanPicklistValues({filterJSON})
             .then((val) => {
+                console.log('getAcademicPlanPicklistValues', val);
                 this.academicPlanOptions = this.buildPicklistOptionsArray(val);
             })
             .catch((err) => {

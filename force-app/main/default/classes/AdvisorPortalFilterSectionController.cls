@@ -199,7 +199,6 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getSchoolDepartmentPicklistVaues(String filterJSON) {
         Map<String, String> labelToValueMap = new Map<String, String>();
-        Boolean getAllOptions = false;
         return labelToValueMap;
     }
 
@@ -214,7 +213,6 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getAcademicPlanPicklistValues(String filterJSON) {
         Map<String, String> labelToValueMap = new Map<String, String>();
-        Boolean getAllOptions = false;
         String queryString =
             'SELECT Name, Plan_Code__c' +
             ' FROM Plan__c' +
@@ -226,30 +224,36 @@ public class AdvisorPortalFilterSectionController {
             AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
 
             if (!String.isBlank(filter.degreeLevel)) {
-                if (filter.degreeLevel == 'masters') {
-                    queryString += ' AND Plan_Type__c = \'MAJ\'';
-                } else if (filter.degreeLevel == 'doctorate') {
-                    queryString += ' AND Plan_Type__c = \'MAJ\'';
-                } else if (filter.degreeLevel == 'certificate') {
-                    queryString += ' AND Plan_Type__c = \'CER\'';
-                } else if (filter.degreeLevel == 'non-degree') {
-                    queryString += ' AND Plan_Type__c = \'NDG\'';
+                List<String> degreeLevels = filter.degreeLevel.split(';');
+                Set<String> planTypesSet = new Set<String>();
+
+                if (degreeLevels.contains('masters')) {
+                    planTypesSet.add('MAJ');
+                }
+                if (degreeLevels.contains('doctorate')) {
+                    planTypesSet.add('MAJ');
+                }
+                if (degreeLevels.contains('certificate')) {
+                    planTypesSet.add('CER');
+                }
+                if (degreeLevels.contains('non-degree')) {
+                    planTypesSet.add('NDG');
+                }
+
+                if (!planTypesSet.isEmpty()) {
+                    List<String> planTypesList = new List<String>(planTypesSet);
+                    queryString += ' AND Plan_Type__c IN :planTypesList';
                 }
             }
 
             if (!String.isBlank(filter.academicProgram)) {
-                queryString += ' AND Program__r.Program_Code__c = \'' + filter.academicProgram + '\'';
+                List<String> academicPrograms = filter.academicProgram.split(';');
+                queryString += ' AND Program__r.Program_Code__c IN :academicPrograms';
             }
 
             if (!String.isBlank(filter.schoolDepartment)) {
-                queryString +=
-                    ' AND Program__r.Academic_Group__r.Academic_Group_Code__c = \'' +
-                    filter.schoolDepartment +
-                    '\'';
-            }
-
-            if (!String.isBlank(filter.academicPlan)) {
-                queryString += ' AND Plan_Code__c = \'' + filter.academicPlan + '\'';
+                List<String> schoolDepartments = filter.schoolDepartment.split(';');
+                queryString += ' AND Program__r.Academic_Group__r.Academic_Group_Code__c IN :schoolDepartments';
             }
         }
 
@@ -773,19 +777,30 @@ public class AdvisorPortalFilterSectionController {
                 queryString += ' AND Career__c = \'Graduate\'';
 
                 if (!String.isBlank(filter.degreeLevel)) {
-                    if (filter.degreeLevel == 'masters') {
-                        queryString += ' AND Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'17\'';
-                    } else if (filter.degreeLevel == 'doctorate') {
-                        queryString += ' AND Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'21\'';
-                    } else if (filter.degreeLevel == 'certificate') {
-                        queryString += ' AND Plan_Type_Text__c = \'CER\'';
-                    } else if (filter.degreeLevel == 'non-degree') {
-                        queryString += ' AND Plan_Type_Text__c = \'NDG\'';
+                    List<String> degreeLevels = filter.academicLevel.split(';');
+                    List<String> degreeLevelQueryComponents = new List<String>();
+
+                    if (degreeLevels.contains('masters')) {
+                        degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'17\')');
+                    }
+                    if (degreeLevels.contains('doctorate')) {
+                        degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'21\')');
+                    }
+                    if (degreeLevels.contains('certificate')) {
+                        degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'CER\')');
+                    }
+                    if (degreeLevels.contains('non-degree')) {
+                        degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'NDG\')');
+                    }
+
+                    if (!degreeLevelQueryComponents.isEmpty()) {
+                        queryString += ' AND (' + String.join(degreeLevelQueryComponents, ' OR ') + ')';
                     }
                 }
 
                 if (!String.isBlank(filter.academicProgram)) {
-                    queryString += ' AND Program_Code__c = \'' + filter.academicProgram + '\'';
+                    List<String> academicPrograms = filter.academicProgram.split(';');
+                    queryString += ' AND Program_Code__c IN :academicPrograms';
                 }
 
                 if (!String.isBlank(filter.admitTermFrom)) {

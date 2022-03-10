@@ -23,9 +23,9 @@ public class SuccessStudentDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
-        new SuccessStudentService(newMap, oldMap);
     }
     public void afterUpdate() {
+        new SuccessStudentService(newMap, oldMap);
     }
     public void afterDelete() {
     }

@@ -71,14 +71,18 @@ export default class AdvisorPortalTableContact extends LightningElement {
     openStudentProfile() {
         this.sendNavigateEvent('studentprofile', {
             contactId: this.contactWrapper.portalContact.Id,
+            contactName: this.contactWrapper.portalContact.Name,
         });
     }
 
     openCase(e) {
         const caseId = e.originalTarget.dataset.caseId;
+        const caseNumber = e.originalTarget.dataset.caseNumber;
         this.sendNavigateEvent('viewcase', {
             contactId: this.contactWrapper.portalContact.Id,
+            contactName: this.contactWrapper.portalContact.Name,
             caseId: caseId,
+            caseNumber: caseNumber,
         });
     }
 

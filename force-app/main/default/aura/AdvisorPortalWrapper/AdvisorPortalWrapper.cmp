@@ -1,4 +1,0 @@
-<aura:component>
-    <ltng:require scripts="/support/console/45.0/integration.js" />
-    <c:advisorPortal onnavigate="{!c.handleNavigate}"></c:advisorPortal>
-</aura:component>

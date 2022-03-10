@@ -11,7 +11,7 @@
 
     <script>
         $Lightning.use('c:AdvisorPortalDataTableApp', function () {
-            $Lightning.createComponent('c:AdvisorPortalWrapper', { label: '' }, 'AdvisorPortalDataTable', function (cmp) { });
+            $Lightning.createComponent('c:AdvisorPortal', { label: '' }, 'AdvisorPortalDataTable', function (cmp) { });
         });
     </script>
 </apex:page>

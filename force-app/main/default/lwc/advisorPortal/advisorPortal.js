@@ -12,6 +12,13 @@ export default class AdvisorPortal extends LightningElement {
     selectedResults = [];
 
     loadingCounter = 0;
+    sforce = {
+        console: {
+            isInConsole: function () {
+                return false;
+            },
+        },
+    };
 
     get isLoading() {
         return this.loadingCounter > 0;
@@ -34,7 +41,15 @@ export default class AdvisorPortal extends LightningElement {
     connectedCallback() {
         this.loadMore();
 
-        loadScript(integration_v54_js);
+        loadScript(this, integration_v54_js)
+            .then(() => {
+                // eslint-disable-next-line no-undef
+                this.sforce = getSforce();
+                console.log(this.sforce);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }
 
     // Should only run once on page load
@@ -94,7 +109,109 @@ export default class AdvisorPortal extends LightningElement {
     }
 
     navigate(e) {
-        this.dispatchEvent(new CustomEvent('navigate', {detail: e.detail}));
+        const detail = e.detail;
+
+        const location = detail.location;
+        let contactId, contactName, caseId, caseNumber, profileURL;
+
+        switch (location) {
+            case 'viewcase':
+                contactId = detail.params.contactId;
+                contactName = detail.params.contactName;
+                caseId = detail.params.caseId;
+                caseNumber = detail.params.caseNumber;
+                this.openPrimaryAndSubTab(
+                    contactId,
+                    contactName,
+                    '/' + contactId,
+                    caseId,
+                    caseNumber,
+                    '/' + caseId,
+                    false
+                );
+                break;
+            case 'studentprofile':
+                contactId = detail.params.contactId;
+                contactName = detail.params.contactName;
+                profileURL = '/apex/StudentProfile?contactId=' + contactId;
+                this.openPrimaryAndSubTab(
+                    contactId,
+                    contactName,
+                    '/' + contactId,
+                    profileURL,
+                    contactName + "'s Profile",
+                    profileURL,
+                    false
+                );
+                break;
+            default:
+                console.log('navagation location unsupported', event);
+                break;
+        }
+    }
+    openPrimaryAndSubTab(primaryTabId, primaryTabName, primaryTabURL, subTabId, subTabName, subTabURL, openPrimary) {
+        if (this.sforce.console.isInConsole()) {
+            this.sforce.console.focusPrimaryTabByName(primaryTabId, (focusPrimaryTabResponse) => {
+                if (!focusPrimaryTabResponse.success) {
+                    this.sforce.console.openPrimaryTab(
+                        null,
+                        primaryTabURL,
+                        true,
+                        primaryTabName,
+                        (openPrimaryTabResponse) => {
+                            this.sforce.console.openSubtab(
+                                openPrimaryTabResponse.id,
+                                subTabURL,
+                                true,
+                                subTabName,
+                                null,
+                                (openSubTabResponse) => {
+                                    if (!openSubTabResponse.success) {
+                                        this.sforce.console.focusSubTabByNameAndPrimaryTabId(
+                                            subTabId,
+                                            openSubTabResponse.id
+                                        );
+                                    }
+                                },
+                                subTabId
+                            );
+                        },
+                        primaryTabId
+                    );
+                } else {
+                    this.sforce.console.getFocusedPrimaryTabId((primaryFocusResponse) => {
+                        this.sforce.console.focusSubtabByNameAndPrimaryTabId(
+                            subTabId,
+                            primaryFocusResponse.id,
+                            (focusSubTabResponse) => {
+                                if (!focusSubTabResponse.success) {
+                                    this.sforce.console.openSubtab(
+                                        primaryFocusResponse.id,
+                                        subTabURL,
+                                        true,
+                                        subTabName,
+                                        null,
+                                        (openSubTabResponse) => {
+                                            if (!openSubTabResponse.success) {
+                                                this.sforce.console.focusSubTabByNameAndPrimaryTabId(
+                                                    subTabId,
+                                                    openSubTabResponse.id
+                                                );
+                                            }
+                                        },
+                                        subTabId
+                                    );
+                                }
+                            }
+                        );
+                    });
+                }
+            });
+        } else if (!openPrimary) {
+            window.open(subTabURL, '_blank');
+        } else {
+            window.open(primaryTabURL, '_blank');
+        }
     }
 
     reloadContacts() {

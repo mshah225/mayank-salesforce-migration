@@ -1,0 +1,7 @@
+<aura:documentation>
+    <aura:description>
+        Advisor Portal Wrapper. This wrapper exists to provide navigation functionalities to the advisorPortal LWCs.
+        Needed since there is no equilvalent to /support/console/45.0/integration.js API and the NavagationMixin LWC
+        replacement seems to not work.
+    </aura:description>
+</aura:documentation>

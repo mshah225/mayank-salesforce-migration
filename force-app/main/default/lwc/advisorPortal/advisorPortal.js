@@ -1,5 +1,7 @@
 import {LightningElement, wire} from 'lwc';
 import checkIfAllowedToUse from '@salesforce/apex/AdvisorPortalMassTransferController.checkIfAllowedToUse';
+import {loadScript} from 'lightning/platformResourceLoader';
+import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 
 export default class AdvisorPortal extends LightningElement {
     defaultFilter = {};
@@ -31,6 +33,8 @@ export default class AdvisorPortal extends LightningElement {
     // One loading for each wire
     connectedCallback() {
         this.loadMore();
+
+        loadScript(integration_v54_js);
     }
 
     // Should only run once on page load
@@ -90,7 +94,7 @@ export default class AdvisorPortal extends LightningElement {
     }
 
     navigate(e) {
-        console.log('navigate', e);
+        this.dispatchEvent(new CustomEvent('navigate', {detail: e.detail}));
     }
 
     reloadContacts() {

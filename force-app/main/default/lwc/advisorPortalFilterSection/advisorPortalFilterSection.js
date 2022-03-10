@@ -146,12 +146,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.sendLoadingEvent(true);
         getAcademicProgramPicklistValues()
             .then((val) => {
-                const newAcademicProgramOptions = [{label: '--None--', value: ''}];
-                const allOtherOptions = this.buildPicklistOptionsArray(val);
-                for (let i = 0; i < allOtherOptions.length; i++) {
-                    newAcademicProgramOptions.push(allOtherOptions[i]);
-                }
-                this.academicProgramOptions = newAcademicProgramOptions;
+                this.academicProgramOptions = this.buildPicklistOptionsArray(val);
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -169,12 +164,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         getSchoolDepartmentPicklistVaues({filterJSON})
             .then((val) => {
-                const newSchoolDepartmentOptions = [{label: '--None--', value: ''}];
-                const allOtherOptions = this.buildPicklistOptionsArray(val);
-                for (let i = 0; i < allOtherOptions.length; i++) {
-                    newSchoolDepartmentOptions.push(allOtherOptions[i]);
-                }
-                this.schoolDepartmentOptions = newSchoolDepartmentOptions;
+                this.schoolDepartmentOptions = this.buildPicklistOptionsArray(val);
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -192,12 +182,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         getAcademicPlanPicklistValues({filterJSON})
             .then((val) => {
-                const newAcademicPlanOptions = [{label: '--None--', value: ''}];
-                const allOtherOptions = this.buildPicklistOptionsArray(val);
-                for (let i = 0; i < allOtherOptions.length; i++) {
-                    newAcademicPlanOptions.push(allOtherOptions[i]);
-                }
-                this.academicPlanOptions = newAcademicPlanOptions;
+                this.academicPlanOptions = this.buildPicklistOptionsArray(val);
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -228,7 +213,6 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'No change', value: 'No Change'},
     ];
     degreeLevelOptions = [
-        {label: '--None--', value: ''},
         {label: 'Masters', value: 'masters'},
         {label: 'Doctorate', value: 'doctorate'},
         {label: 'Certificate', value: 'certificate'},
@@ -285,10 +269,29 @@ export default class AdvisorPortalFilterSection extends LightningElement {
      * Clear all filters
      */
     clearFilters() {
-        const clearFilter = {};
+        const clearFilter = this.getEmptyFilter();
         clearFilter.caseTypeState = this.currentFilter.caseTypeState;
         clearFilter.career = this.currentFilter.career;
         this.currentFilter = clearFilter;
+
+        console.log('clearFilters', this.currentFilter);
+
+        // visually clear every field
+        for (let i = 0; i < this.filterPropertyList.length; i++) {
+            const field = this.filterPropertyList[i];
+            const element = this.template.querySelector('[data-name="' + field + '"]');
+
+            // so long as the field is visibile, report if valid (if null then it is a disabled field because
+            // it is either a grad only field and the user is in undergrad mode, or the other way around)
+            if (element != null) {
+                try {
+                    element.value = '';
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+
         this.applyFilters();
     }
 
@@ -300,15 +303,16 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         let valid = true;
 
         // check that every field is valid
-        for (let i = 0; i < this.filterPropertyList; i++) {
+        for (let i = 0; i < this.filterPropertyList.length; i++) {
             const field = this.filterPropertyList[i];
-            const element = this.template.querySelector('[name="' + field + '"]');
+            const element = this.template.querySelector('[data-name="' + field + '"]');
             // so long as the field is visibile, report if valid (if null then it is a disabled field because
             // it is either a grad only field and the user is in undergrad mode, or the other way around)
             if (element != null) {
-                valid &= field.reportValidity();
+                valid &= element.reportValidity();
             }
         }
+
         return valid;
     }
 

@@ -30,6 +30,7 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
             }
         }
         this._value = val;
+        this._options = [...this._options]; // trigger re-rendering the placard
     }
     @api get value() {
         const selectedValues = [];

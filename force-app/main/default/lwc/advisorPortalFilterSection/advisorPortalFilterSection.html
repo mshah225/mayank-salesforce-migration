@@ -5,6 +5,7 @@
                 label="Student"
                 type="text"
                 name="studentString"
+                data-name="studentString"
                 onchange={changeField}
                 value={currentFilter.studentString}
             ></lightning-input>
@@ -14,6 +15,7 @@
                 label="Campus"
                 options={campusPicklistValues}
                 name="campus"
+                data-name="campus"
                 onchange={changeField}
                 value={currentFilter.campus}
             ></c-lightning-combo-box-multi-select>
@@ -21,40 +23,48 @@
 
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox
+                <c-lightning-combo-box-multi-select
                     label="Degree Level"
                     options={degreeLevelOptions}
                     name="degreeLevel"
+                    data-name="degreeLevel"
                     onchange={changeField}
                     value={currentFilter.degreeLevel}
-                ></lightning-combobox>
+                    single-select="true"
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox
+                <c-lightning-combo-box-multi-select
                     label="Academic Program"
                     options={academicProgramOptions}
                     name="academicProgram"
+                    data-name="academicProgram"
                     onchange={changeField}
                     value={currentFilter.academicProgram}
-                ></lightning-combobox>
+                    single-select="true"
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox
+                <c-lightning-combo-box-multi-select
                     label="School/Department"
                     options={schoolDepartmentOptions}
                     name="schoolDepartment"
+                    data-name="schoolDepartment"
                     onchange={changeField}
                     value={currentFilter.schoolDepartment}
-                ></lightning-combobox>
+                    single-select="true"
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox
+                <c-lightning-combo-box-multi-select
                     label="Academic Plan"
                     options={academicPlanOptions}
                     name="academicPlan"
+                    data-name="academicPlan"
                     onchange={changeField}
                     value={currentFilter.academicPlan}
-                ></lightning-combobox>
+                    single-select="true"
+                ></c-lightning-combo-box-multi-select>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <fieldset class="slds-form-element slds-form-element_compound">
@@ -98,6 +108,7 @@
                     label="Academic Level"
                     options={academicLevelPicklistValues}
                     name="academicLevel"
+                    data-name="academicLevel"
                     onchange={changeField}
                     value={currentFilter.academicLevel}
                 ></c-lightning-combo-box-multi-select>
@@ -107,6 +118,7 @@
                     type="text"
                     label="Student Group"
                     name="studentGroupCode"
+                    data-name="studentGroupCode"
                     onchange={changeField}
                     value={currentFilter.studentGroupCode}
                 ></lightning-input>
@@ -116,6 +128,7 @@
                     type="text"
                     label="Major"
                     name="major"
+                    data-name="major"
                     onchange={changeField}
                     value={currentFilter.major}
                 ></lightning-input>
@@ -127,6 +140,7 @@
                 label="Residency"
                 options={residencyPicklistValues}
                 name="residency"
+                data-name="residency"
                 onchange={changeField}
                 value={currentFilter.residency}
             ></c-lightning-combo-box-multi-select>
@@ -136,6 +150,7 @@
                 label="Case Status"
                 options={caseStatusPicklistValues}
                 name="caseStatus"
+                data-name="caseStatus"
                 onchange={changeField}
                 value={currentFilter.caseStatus}
             ></c-lightning-combo-box-multi-select>
@@ -145,6 +160,7 @@
                 label="Case Category"
                 options={caseCategoryPicklistValues}
                 name="caseCategory"
+                data-name="caseCategory"
                 onchange={changeField}
                 value={currentFilter.caseCategory}
             ></c-lightning-combo-box-multi-select>
@@ -156,6 +172,7 @@
                     label="Special Population"
                     options={specialPopulationOptions}
                     name="specialPopulation"
+                    data-name="specialPopulation"
                     onchange={changeField}
                     value={currentFilter.specialPopulation}
                 ></c-lightning-combo-box-multi-select>
@@ -167,6 +184,7 @@
                     label="Case Subject"
                     options={caseSubjectPicklistValues}
                     name="caseSubject"
+                    data-name="caseSubject"
                     onchange={changeField}
                     value={currentFilter.caseSubject}
                 ></c-lightning-combo-box-multi-select>
@@ -176,6 +194,7 @@
                     label="Outlook Score"
                     options={outlookScoreOptions}
                     name="outlookScore"
+                    data-name="outlookScore"
                     onchange={changeField}
                     value={currentFilter.outlookScore}
                 ></c-lightning-combo-box-multi-select>
@@ -185,6 +204,7 @@
                     label="Outlook Change"
                     options={outlookChangeOptions}
                     name="outlookChange"
+                    data-name="outlookChange"
                     onchange={changeField}
                     value={currentFilter.outlookChange}
                 ></c-lightning-combo-box-multi-select>
@@ -196,6 +216,7 @@
                 type="text"
                 label="Case Count"
                 name="caseCount"
+                data-name="caseCount"
                 onchange={changeField}
                 value={currentFilter.caseCount}
             ></lightning-input>
@@ -212,6 +233,7 @@
                                 type="date"
                                 label="From"
                                 name="createdFromDate"
+                                data-name="createdFromDate"
                                 onchange={changeField}
                                 value={currentFilter.createdFromDate}
                                 max={createdToDateForRangeCheck}
@@ -223,6 +245,7 @@
                                 type="date"
                                 label="To"
                                 name="createdToDate"
+                                data-name="createdToDate"
                                 onchange={changeField}
                                 value={currentFilter.createdToDate}
                                 min={createdFromDateForRangeCheck}
@@ -243,6 +266,7 @@
                                 type="date"
                                 label="From"
                                 name="followUpFromDate"
+                                data-name="followUpFromDate"
                                 onchange={changeField}
                                 value={currentFilter.followUpFromDate}
                                 max={followUpToDateForRangeCheck}
@@ -254,6 +278,7 @@
                                 type="date"
                                 label="To"
                                 name="followUpToDate"
+                                data-name="followUpToDate"
                                 onchange={changeField}
                                 value={currentFilter.followUpToDate}
                                 min={followUpFromDateForRangeCheck}
@@ -275,6 +300,7 @@
                                     type="date"
                                     label="From"
                                     name="persistenceFromDate"
+                                    data-name="persistenceFromDate"
                                     onchange={changeField}
                                     value={currentFilter.persistenceFromDate}
                                     max={persistenceToDateForRangeCheck}
@@ -286,6 +312,7 @@
                                     type="date"
                                     label="To"
                                     name="persistenceToDate"
+                                    data-name="persistenceToDate"
                                     onchange={changeField}
                                     value={currentFilter.persistenceToDate}
                                     min={persistenceFromDateForRangeCheck}

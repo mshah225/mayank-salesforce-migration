@@ -438,6 +438,9 @@ export default class AdvisorPortalFilterSection extends LightningElement {
                     // eslint-disable-next-line no-console
                     console.error(err);
                 }
+            } else {
+                toTermComponent.setCustomValidity('');
+                fromTermComponent.setCustomValidity('');
             }
         } else if (changedField === 'createdFromDate' || changedField === 'createdToDate') {
             const fromDate = this.currentFilter.createdFromDate;
@@ -456,6 +459,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             this.persistenceToDateForRangeCheck = toDate;
         }
     }
+    // Use these to verify date ranges are valid - enables us to trigger the re-render without replacing the filter object
     createdToDateForRangeCheck;
     createdFromDateForRangeCheck;
     followUpFromDateForRangeCheck;

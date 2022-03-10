@@ -6,7 +6,7 @@
                 type="text"
                 name="studentString"
                 data-name="studentString"
-                onchange={changeField}
+                oncommit={changeField}
                 value={currentFilter.studentString}
             ></lightning-input>
         </div>
@@ -16,7 +16,7 @@
                 options={campusPicklistValues}
                 name="campus"
                 data-name="campus"
-                onchange={changeField}
+                oncommit={changeField}
                 value={currentFilter.campus}
             ></c-lightning-combo-box-multi-select>
         </div>
@@ -28,7 +28,7 @@
                     options={degreeLevelOptions}
                     name="degreeLevel"
                     data-name="degreeLevel"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.degreeLevel}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -38,7 +38,7 @@
                     options={academicProgramOptions}
                     name="academicProgram"
                     data-name="academicProgram"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.academicProgram}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -48,7 +48,7 @@
                     options={schoolDepartmentOptions}
                     name="schoolDepartment"
                     data-name="schoolDepartment"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.schoolDepartment}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -58,7 +58,7 @@
                     options={academicPlanOptions}
                     name="academicPlan"
                     data-name="academicPlan"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.academicPlan}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -73,7 +73,7 @@
                                     label="From"
                                     name="admitTermFrom"
                                     data-name="admitTermFrom"
-                                    onchange={changeField}
+                                    oncommit={changeField}
                                     pattern={admitTermFromPattern}
                                     title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 2217 is 2(0)21, fall semester)"
                                     message-when-pattern-mismatch={admitTermFromPatternMismatchError}
@@ -86,7 +86,7 @@
                                     label="To"
                                     name="admitTermTo"
                                     data-name="admitTermTo"
-                                    onchange={changeField}
+                                    oncommit={changeField}
                                     pattern={admitTermToPattern}
                                     title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 1984 is 1(9)98, summer semester)"
                                     message-when-pattern-mismatch={admitTermToPatternMismatchError}
@@ -105,7 +105,7 @@
                     options={academicLevelPicklistValues}
                     name="academicLevel"
                     data-name="academicLevel"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.academicLevel}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -115,7 +115,7 @@
                     label="Student Group"
                     name="studentGroupCode"
                     data-name="studentGroupCode"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.studentGroupCode}
                 ></lightning-input>
             </div>
@@ -125,7 +125,7 @@
                     label="Major"
                     name="major"
                     data-name="major"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.major}
                 ></lightning-input>
             </div>
@@ -137,7 +137,7 @@
                 options={residencyPicklistValues}
                 name="residency"
                 data-name="residency"
-                onchange={changeField}
+                oncommit={changeField}
                 value={currentFilter.residency}
             ></c-lightning-combo-box-multi-select>
         </div>
@@ -147,7 +147,7 @@
                 options={caseStatusPicklistValues}
                 name="caseStatus"
                 data-name="caseStatus"
-                onchange={changeField}
+                oncommit={changeField}
                 value={currentFilter.caseStatus}
             ></c-lightning-combo-box-multi-select>
         </div>
@@ -157,7 +157,7 @@
                 options={caseCategoryPicklistValues}
                 name="caseCategory"
                 data-name="caseCategory"
-                onchange={changeField}
+                oncommit={changeField}
                 value={currentFilter.caseCategory}
             ></c-lightning-combo-box-multi-select>
         </div>
@@ -169,7 +169,7 @@
                     options={specialPopulationOptions}
                     name="specialPopulation"
                     data-name="specialPopulation"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.specialPopulation}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -181,7 +181,7 @@
                     options={caseSubjectPicklistValues}
                     name="caseSubject"
                     data-name="caseSubject"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.caseSubject}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -191,7 +191,7 @@
                     options={outlookScoreOptions}
                     name="outlookScore"
                     data-name="outlookScore"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.outlookScore}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -201,7 +201,7 @@
                     options={outlookChangeOptions}
                     name="outlookChange"
                     data-name="outlookChange"
-                    onchange={changeField}
+                    oncommit={changeField}
                     value={currentFilter.outlookChange}
                 ></c-lightning-combo-box-multi-select>
             </div>
@@ -213,7 +213,7 @@
                 label="Case Count"
                 name="caseCount"
                 data-name="caseCount"
-                onchange={changeField}
+                oncommit={changeField}
                 value={currentFilter.caseCount}
             ></lightning-input>
         </div>
@@ -230,7 +230,7 @@
                                 label="From"
                                 name="createdFromDate"
                                 data-name="createdFromDate"
-                                onchange={changeField}
+                                oncommit={changeField}
                                 value={currentFilter.createdFromDate}
                                 max={createdToDateForRangeCheck}
                                 message-when-range-overflow="Must be before the to date"
@@ -242,7 +242,7 @@
                                 label="To"
                                 name="createdToDate"
                                 data-name="createdToDate"
-                                onchange={changeField}
+                                oncommit={changeField}
                                 value={currentFilter.createdToDate}
                                 min={createdFromDateForRangeCheck}
                                 message-when-range-underflow="Must be after the from date"
@@ -263,7 +263,7 @@
                                 label="From"
                                 name="followUpFromDate"
                                 data-name="followUpFromDate"
-                                onchange={changeField}
+                                oncommit={changeField}
                                 value={currentFilter.followUpFromDate}
                                 max={followUpToDateForRangeCheck}
                                 message-when-range-overflow="Must be before the to date"
@@ -275,7 +275,7 @@
                                 label="To"
                                 name="followUpToDate"
                                 data-name="followUpToDate"
-                                onchange={changeField}
+                                oncommit={changeField}
                                 value={currentFilter.followUpToDate}
                                 min={followUpFromDateForRangeCheck}
                                 message-when-range-underflow="Must be after the from date"
@@ -297,7 +297,7 @@
                                     label="From"
                                     name="persistenceFromDate"
                                     data-name="persistenceFromDate"
-                                    onchange={changeField}
+                                    oncommit={changeField}
                                     value={currentFilter.persistenceFromDate}
                                     max={persistenceToDateForRangeCheck}
                                     message-when-range-overflow="Must be before the to date"
@@ -309,7 +309,7 @@
                                     label="To"
                                     name="persistenceToDate"
                                     data-name="persistenceToDate"
-                                    onchange={changeField}
+                                    oncommit={changeField}
                                     value={currentFilter.persistenceToDate}
                                     min={persistenceFromDateForRangeCheck}
                                     message-when-range-underflow="Must be after the from date"

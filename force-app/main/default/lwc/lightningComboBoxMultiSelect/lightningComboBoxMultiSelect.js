@@ -189,6 +189,7 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
     closeModalTimeout = null;
     focusOutOfDropdown() {
         this.closeModalTimeout = setTimeout(() => {
+            this.commitValue();
             this.closeDropdown();
         }, 40);
     }
@@ -236,6 +237,15 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
     updateValue() {
         this.dispatchEvent(
             new CustomEvent('change', {
+                detail: {
+                    value: this.value,
+                },
+            })
+        );
+    }
+    commitValue() {
+        this.dispatchEvent(
+            new CustomEvent('commit', {
                 detail: {
                     value: this.value,
                 },

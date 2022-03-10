@@ -66,7 +66,11 @@
                                     type="text"
                                     label="From"
                                     name="admitTermFrom"
+                                    data-name="admitTermFrom"
                                     onchange={changeField}
+                                    pattern={admitTermFromPattern}
+                                    title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 2217 is 2(0)21, fall semester)"
+                                    message-when-pattern-mismatch={admitTermFromPatternMismatchError}
                                     value={currentFilter.admitTermFrom}
                                 ></lightning-input>
                             </div>
@@ -75,7 +79,11 @@
                                     type="text"
                                     label="To"
                                     name="admitTermTo"
+                                    data-name="admitTermTo"
                                     onchange={changeField}
+                                    pattern={admitTermToPattern}
+                                    title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 1984 is 1(9)98, summer semester)"
+                                    message-when-pattern-mismatch={admitTermToPatternMismatchError}
                                     value={currentFilter.admitTermTo}
                                 ></lightning-input>
                             </div>
@@ -206,6 +214,8 @@
                                 name="createdFromDate"
                                 onchange={changeField}
                                 value={currentFilter.createdFromDate}
+                                max={createdToDateForRangeCheck}
+                                message-when-range-overflow="Must be before the to date"
                             ></lightning-input>
                         </div>
                         <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
@@ -215,6 +225,8 @@
                                 name="createdToDate"
                                 onchange={changeField}
                                 value={currentFilter.createdToDate}
+                                min={createdFromDateForRangeCheck}
+                                message-when-range-underflow="Must be after the from date"
                             ></lightning-input>
                         </div>
                     </div>
@@ -233,6 +245,8 @@
                                 name="followUpFromDate"
                                 onchange={changeField}
                                 value={currentFilter.followUpFromDate}
+                                max={followUpToDateForRangeCheck}
+                                message-when-range-overflow="Must be before the to date"
                             ></lightning-input>
                         </div>
                         <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
@@ -242,6 +256,8 @@
                                 name="followUpToDate"
                                 onchange={changeField}
                                 value={currentFilter.followUpToDate}
+                                min={followUpFromDateForRangeCheck}
+                                message-when-range-underflow="Must be after the from date"
                             ></lightning-input>
                         </div>
                     </div>
@@ -261,6 +277,8 @@
                                     name="persistenceFromDate"
                                     onchange={changeField}
                                     value={currentFilter.persistenceFromDate}
+                                    max={persistenceToDateForRangeCheck}
+                                    message-when-range-overflow="Must be before the to date"
                                 ></lightning-input>
                             </div>
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
@@ -270,6 +288,8 @@
                                     name="persistenceToDate"
                                     onchange={changeField}
                                     value={currentFilter.persistenceToDate}
+                                    min={persistenceFromDateForRangeCheck}
+                                    message-when-range-underflow="Must be after the from date"
                                 ></lightning-input>
                             </div>
                         </div>

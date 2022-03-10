@@ -262,12 +262,17 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.refreshAcademicPlanPicklistValues();
     }
 
+    /**
+     * Handle an change field event - update filter object to contain new value and trigger and conditional fields
+     * @param {changeEvent} event
+     */
     changeField(event) {
         const fieldChanged = event.originalTarget.name;
         const newValue = event.detail.value;
         this.currentFilter[fieldChanged] = newValue;
 
         this.updateConditionalFields(fieldChanged);
+        this.updateValidityChecks(fieldChanged);
 
         event.stopPropagation();
         event.stopImmediatePropagation();
@@ -276,6 +281,9 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.sendChangeFilterEvent(fieldChanged, newValue);
     }
 
+    /**
+     * Clear all filters
+     */
     clearFilters() {
         const clearFilter = {};
         clearFilter.caseTypeState = this.currentFilter.caseTypeState;
@@ -284,7 +292,29 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this.applyFilters();
     }
 
-    // don't regenerate the JSON, use whichever JSON more recent request was used with
+    /**
+     * Reports the validity of all fields
+     * @returns validity of all fields
+     */
+    reportValidity() {
+        let valid = true;
+
+        // check that every field is valid
+        for (let i = 0; i < this.filterPropertyList; i++) {
+            const field = this.filterPropertyList[i];
+            const element = this.template.querySelector('[name="' + field + '"]');
+            // so long as the field is visibile, report if valid (if null then it is a disabled field because
+            // it is either a grad only field and the user is in undergrad mode, or the other way around)
+            if (element != null) {
+                valid &= field.reportValidity();
+            }
+        }
+        return valid;
+    }
+
+    /**
+     * Reload the previously applied filter (don't regenerate the JSON, use whichever JSON more recent request was used with)
+     */
     cachedFitlerJSON = null;
     @api forceRefresh() {
         if (this.cachedFitlerJSON === null) return;
@@ -305,7 +335,14 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             });
     }
 
+    /**
+     * Apply the current filters
+     */
     applyFilters() {
+        if (!this.reportValidity()) {
+            return; // don't apply if not valid
+        }
+
         let viewAsOptions = this.viewAsUsers;
         let filterJSON = JSON.stringify(this.currentFilter);
         this.cachedFitlerJSON = filterJSON;
@@ -327,7 +364,17 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     /**
      * Helper functions
      */
-    // Copy only the fields that are different from filterB to filterA
+
+    admitTermFromPattern = '[0-2][0-9]{2}[1,4,7]';
+    admitTermFromPatternMismatchError = 'Should be a valid Peoplesoft term code.';
+    admitTermToPattern = '[0-2][0-9]{2}[1,4,7]';
+    admitTermToPatternMismatchError = 'Should be a valid Peoplesoft term code.';
+
+    /**
+     * Copy only the fields that are different from filterB to filterA
+     * @param {AdvisorPortalFilter} filterA
+     * @param {AdvisorPortalFilter} filterB
+     */
     copyChanges(filterA, filterB) {
         for (let i = 0; i < this.filterPropertyList.length; i++) {
             const propertyName = this.filterPropertyList[i];
@@ -336,7 +383,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         }
     }
 
-    // Check if filterA and filterB disagree
+    /**
+     * Check if filterA and filterB disagree
+     * @param {AdvisorPortalFilter} filterA
+     * @param {AdvisorPortalFilter} filterB
+     * @returns true if different
+     */
     filterIsDifferent(filterA, filterB) {
         let same = true;
 
@@ -351,7 +403,66 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         return !same;
     }
 
-    // Update any filter fields where the options are dependent on the selection in some other picklist
+    /**
+     * Update an interdependent fields (such as dates being before/after as appropriate)
+     * @param {String} changedField
+     */
+    updateValidityChecks(changedField) {
+        if (changedField === 'admitTermFrom' || changedField === 'admitTermTo') {
+            const fromTerm = this.currentFilter.admitTermFrom;
+            const toTerm = this.currentFilter.admitTermTo;
+            const fromTermComponent = this.template.querySelector('[data-name="admitTermFrom"]');
+            const toTermComponent = this.template.querySelector('[data-name="admitTermTo"]');
+
+            if (
+                fromTerm != null &&
+                fromTerm !== '' &&
+                toTerm != null &&
+                toTerm !== '' &&
+                fromTerm.length === 4 &&
+                toTerm.length === 4
+            ) {
+                try {
+                    if (parseInt(toTerm, 10) < parseInt(fromTerm, 10)) {
+                        toTermComponent.setCustomValidity('To term should be after the From term');
+                        fromTermComponent.setCustomValidity('From term should be before the To term');
+                    } else {
+                        toTermComponent.setCustomValidity('');
+                        fromTermComponent.setCustomValidity('');
+                    }
+                } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.error(err);
+                }
+            }
+        } else if (changedField === 'createdFromDate' || changedField === 'createdToDate') {
+            const fromDate = this.currentFilter.createdFromDate;
+            const toDate = this.currentFilter.createdToDate;
+            this.createdFromDateForRangeCheck = fromDate;
+            this.createdToDateForRangeCheck = toDate;
+        } else if (changedField === 'followUpFromDate' || changedField === 'followUpToDate') {
+            const fromDate = this.currentFilter.followUpFromDate;
+            const toDate = this.currentFilter.followUpToDate;
+            this.followUpFromDateForRangeCheck = fromDate;
+            this.followUptoDateForRangeCheck = toDate;
+        } else if (changedField === 'persistenceFromDate' || changedField === 'persistenceToDate') {
+            const fromDate = this.currentFilter.persistenceFromDate;
+            const toDate = this.currentFilter.persistenceToDate;
+            this.persistenceFromDateForRangeCheck = fromDate;
+            this.persistenceToDateForRangeCheck = toDate;
+        }
+    }
+    createdToDateForRangeCheck;
+    createdFromDateForRangeCheck;
+    followUpFromDateForRangeCheck;
+    followUptoDateForRangeCheck;
+    persistenceFromDateForRangeCheck;
+    persistenceToDateForRangeCheck;
+
+    /**
+     * Update any filter fields where the options are dependent on the selection in some other picklist
+     * @param {String} changedField
+     */
     updateConditionalFields(changedField) {
         if (changedField === 'degreeLevel') {
             this.refreshAcademicPlanPicklistValues();
@@ -363,13 +474,20 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         }
     }
 
-    // Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before
-    // running this code (we primarily use this to ensure the parent either begins/stops the loading circle during otherwise blocking operations)
+    /**
+     * Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before
+     * running this code (we primarily use this to ensure the parent either begins/stops the loading circle during otherwise blocking operations)
+     * @param {Function} fn
+     */
     throwBackARenderCycle(fn) {
         setTimeout(fn, 1);
     }
 
-    // Convert returned picklist map into array of options for comboboxes
+    /**
+     * Convert returned picklist map into array of options for comboboxes
+     * @param {Map} optionsMap
+     * @returns label-value array
+     */
     buildPicklistOptionsArray(optionsMap) {
         let optionsList = [];
 
@@ -380,7 +498,10 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         return optionsList;
     }
 
-    // Generate an "empty" filter object, with default values
+    /**
+     * Generate an "empty" filter object, with default values
+     * @returns an AdvisorPortalFilter that is as empty as permitted
+     */
     getEmptyFilter() {
         const filter = {};
         for (let i = 0; i < this.filterPropertyList.length; i++) {
@@ -424,7 +545,11 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         'specialPopulation',
     ];
 
-    // Send events
+    /**
+     * Raise an event to change the filter is the parent
+     * @param {String} name
+     * @param {String|Integer} value
+     */
     sendChangeFilterEvent(name, value) {
         this.dispatchEvent(
             new CustomEvent('change', {
@@ -433,6 +558,10 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         );
     }
 
+    /**
+     * Raise an event of the matched AdvisorPortalContacts
+     * @param {List<AdvisorPortalContact>} results
+     */
     sendChangeResultsEvent(results) {
         this.dispatchEvent(
             new CustomEvent('setresults', {
@@ -441,6 +570,10 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         );
     }
 
+    /**
+     * Raise an event to increase or decrease the loading counter
+     * @param {Boolean} loadMore
+     */
     sendLoadingEvent(loadMore) {
         this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }

@@ -167,7 +167,8 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getAcademicProgramPicklistValues() {
         Map<String, String> labelToValueMap = new Map<String, String>();
 
-        // Find programs where they have at least one active plan within them
+        // Find programs where they have at least one active plan within them by
+        // looking at all active plans and taking each unique program from there
         List<AggregateResult> activePlans = new List<AggregateResult>(
             [
                 SELECT MAX(Program__r.Name), MAX(Program__r.Program_Code__c)
@@ -252,10 +253,10 @@ public class AdvisorPortalFilterSectionController {
             }
         }
 
-        queryString += ' ORDER BY Name ASC';
+        queryString += ' ORDER BY Plan_Code__c ASC';
 
         for (Plan__c plan : Database.query(queryString)) {
-            labelToValueMap.put(plan.Name, plan.Plan_Code__c);
+            labelToValueMap.put(plan.Plan_Code__c + ' / ' + plan.Name, plan.Plan_Code__c);
         }
 
         return labelToValueMap;
@@ -785,6 +786,16 @@ public class AdvisorPortalFilterSectionController {
 
                 if (!String.isBlank(filter.academicProgram)) {
                     queryString += ' AND Program_Code__c = \'' + filter.academicProgram + '\'';
+                }
+
+                if (!String.isBlank(filter.admitTermFrom)) {
+                    queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c >= \'' + filter.admitTermFrom + '\'';
+                    queryString += ' OR Requirement_Term__c >= \'' + filter.admitTermFrom + '\')';
+                }
+
+                if (!String.isBlank(filter.admitTermTo)) {
+                    queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c <= \'' + filter.admitTermTo + '\'';
+                    queryString += ' OR Requirement_Term__c <= \'' + filter.admitTermTo + '\')';
                 }
             } else {
                 // use undergrad portal filtering capabilties

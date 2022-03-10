@@ -8,7 +8,6 @@ import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilt
 import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
-import {refreshApex} from '@salesforce/apex';
 
 export default class AdvisorPortalFilterSection extends LightningElement {
     @api set defaultFilter(val) {
@@ -55,36 +54,38 @@ export default class AdvisorPortalFilterSection extends LightningElement {
 
     isGraduateOnly = false;
 
+    // Imperative rather than wire to gain more precise control over when this triggers
     residencyPicklistValues = [];
-    residencyPicklistValuesWire;
-    @wire(getPicklistValues, {objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
-    gotPicklistValues(result) {
-        this.residencyPicklistValuesWire = result;
-        let {data, error} = this.residencyPicklistValuesWire;
-        if (data != null) {
-            this.residencyPicklistValues = this.buildPicklistOptionsArray(data);
-            this.checkWiresLoadingComplete();
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error(error);
-            this.checkWiresLoadingComplete();
-        }
+    refreshResidencyPicklistValues() {
+        this.sendLoadingEvent(true);
+        getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
+            .then((val) => {
+                this.residencyPicklistValues = this.buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshResidencyPicklistValues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
+    // Imperative rather than wire to gain more precise control over when this triggers
     caseStatusPicklistValues = [];
-    caseStatusPicklistValuesWire;
-    @wire(getCaseStatusSettings, {})
-    gotCaseStatusSettings(result) {
-        this.caseStatusPicklistValuesWire = result;
-        let {data, error} = this.caseStatusPicklistValuesWire;
-        if (data != null) {
-            this.caseStatusPicklistValues = this.buildPicklistOptionsArray(data);
-            this.checkWiresLoadingComplete();
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error(error);
-            this.checkWiresLoadingComplete();
-        }
+    refreshCaseStatusSettings() {
+        this.sendLoadingEvent(true);
+        getCaseStatusSettings()
+            .then((val) => {
+                this.caseStatusPicklistValues = this.buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseStatusSettings', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
     // Imperative rather than wire to gain more precise control over when this triggers
@@ -139,26 +140,26 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             });
     }
 
+    // Imperative rather than wire to gain more precise control over when this triggers
     academicProgramOptions = [];
-    academicProgramOptionsWire;
-    @wire(getAcademicProgramPicklistValues, {})
-    gotAcademicProgramPicklistValues(result) {
-        console.log('gotAcademicProgramPicklistValues');
-        this.academicProgramOptionsWire = result;
-        let {data, error} = this.academicProgramOptionsWire;
-        if (data != null) {
-            const newAcademicProgramOptions = [{label: '--None--', value: ''}];
-            const allOtherOptions = this.buildPicklistOptionsArray(data);
-            for (let i = 0; i < allOtherOptions.length; i++) {
-                newAcademicProgramOptions.push(allOtherOptions[i]);
-            }
-            this.academicProgramOptions = newAcademicProgramOptions;
-            this.checkWiresLoadingComplete();
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error('gotAcademicProgramPicklistValues', error);
-            this.checkWiresLoadingComplete();
-        }
+    refreshAcademicProgramPicklistValues() {
+        this.sendLoadingEvent(true);
+        getAcademicProgramPicklistValues()
+            .then((val) => {
+                const newAcademicProgramOptions = [{label: '--None--', value: ''}];
+                const allOtherOptions = this.buildPicklistOptionsArray(val);
+                for (let i = 0; i < allOtherOptions.length; i++) {
+                    newAcademicProgramOptions.push(allOtherOptions[i]);
+                }
+                this.academicProgramOptions = newAcademicProgramOptions;
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshAcademicProgramPicklistValues', err);
+            })
+            .finally(() => {
+                this.sendLoadingEvent(false);
+            });
     }
 
     // Imperative rather than wire to gain more precise control over when this triggers
@@ -250,24 +251,23 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Active Students with Registation Hold', value: 'Active Students with Registation Hold'},
     ];
 
-    wiresLoading = true;
     connectedCallback() {
-        // one for initial wire loading
-        this.sendLoadingEvent(true);
+        this.refreshResidencyPicklistValues();
+        this.refreshCaseStatusSettings();
         this.refreshCampusValues();
-        this.refreshSchoolDepartmentPicklistVaues();
-        this.refreshAcademicPlanPicklistValues();
         this.refreshCaseSubjectPicklistValues();
         this.refreshCaseClassificationPicklistValues();
+        this.refreshAcademicProgramPicklistValues();
+        this.refreshSchoolDepartmentPicklistVaues();
+        this.refreshAcademicPlanPicklistValues();
     }
 
     changeField(event) {
         const fieldChanged = event.originalTarget.name;
         const newValue = event.detail.value;
-        const oldValue = this.currentFilter[fieldChanged];
         this.currentFilter[fieldChanged] = newValue;
 
-        this.updateConditionalFields(fieldChanged, oldValue, newValue);
+        this.updateConditionalFields(fieldChanged);
 
         event.stopPropagation();
         event.stopImmediatePropagation();
@@ -327,20 +327,6 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     /**
      * Helper functions
      */
-    // Send a loading decrement after all components have loaded
-    checkWiresLoadingComplete() {
-        if (this.wiresLoading) {
-            if (
-                this.residencyPicklistValuesWire != null &&
-                this.caseStatusPicklistValuesWire != null &&
-                this.academicProgramOptionsWire != null
-            ) {
-                this.wiresLoading = false;
-                this.sendLoadingEvent(false);
-            }
-        }
-    }
-
     // Copy only the fields that are different from filterB to filterA
     copyChanges(filterA, filterB) {
         for (let i = 0; i < this.filterPropertyList.length; i++) {
@@ -366,7 +352,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     }
 
     // Update any filter fields where the options are dependent on the selection in some other picklist
-    updateConditionalFields(changedField, oldVal, newVal) {
+    updateConditionalFields(changedField) {
         if (changedField === 'degreeLevel') {
             this.refreshAcademicPlanPicklistValues();
         } else if (changedField === 'academicProgram') {

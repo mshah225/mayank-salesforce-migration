@@ -41,9 +41,11 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
                 if (this.singleSelect) break; //only the first one for singleSelect mode
             }
         }
-        return selectedValues.join(';');
+        return selectedValues.sort((a, b) => a.localCompare(b)).join(';');
     }
     _value = '';
+
+    valueOnOpen; // tracks the value when you open the modal to determine if it actually changed between opening and closing
 
     @api get options() {
         return this._options;
@@ -146,6 +148,7 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
         }
     }
     openDropdown() {
+        this.valueOnOpen = this.value;
         this.shown = true;
         this.setDropdownState(true);
         this.focus();
@@ -156,7 +159,8 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
         this.setDropdownState(false);
         this.updateErrorState();
         this.updateActiveBorder();
-        this.commitValue();
+        // commit if changed
+        if (this.valueOnOpen !== this.value) this.commitValue();
     }
     setDropdownState(shouldOpen) {
         const openClass = 'slds-is-open';

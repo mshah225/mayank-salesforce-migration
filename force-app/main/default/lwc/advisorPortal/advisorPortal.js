@@ -45,7 +45,6 @@ export default class AdvisorPortal extends LightningElement {
             .then(() => {
                 // eslint-disable-next-line no-undef
                 this.sforce = getSforce();
-                console.log(this.sforce);
             })
             .catch((err) => {
                 console.error(err);

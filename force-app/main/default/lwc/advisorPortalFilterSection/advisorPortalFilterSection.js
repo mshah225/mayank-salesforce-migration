@@ -182,7 +182,6 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         getAcademicPlanPicklistValues({filterJSON})
             .then((val) => {
-                console.log('getAcademicPlanPicklistValues', val);
                 this.academicPlanOptions = this.buildPicklistOptionsArray(val);
             })
             .catch((err) => {
@@ -273,17 +272,17 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         const clearFilter = this.getEmptyFilter();
         clearFilter.caseTypeState = this.currentFilter.caseTypeState;
         clearFilter.career = this.currentFilter.career;
-        this.currentFilter = clearFilter;
-
-        console.log('clearFilters', this.currentFilter);
+        this._currentFilter = clearFilter;
 
         // visually clear every field
         for (let i = 0; i < this.filterPropertyList.length; i++) {
             const field = this.filterPropertyList[i];
             const element = this.template.querySelector('[data-name="' + field + '"]');
 
-            // so long as the field is visibile, report if valid (if null then it is a disabled field because
-            // it is either a grad only field and the user is in undergrad mode, or the other way around)
+            // send clear event for every field
+            this.sendChangeFilterEvent(field, '');
+
+            // so long as the field is visibile, clear it visually
             if (element != null) {
                 try {
                     element.value = '';
@@ -555,7 +554,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     ];
 
     /**
-     * Raise an event to change the filter is the parent
+     * Raise an event to change the filter in the parent
      * @param {String} name
      * @param {String|Integer} value
      */

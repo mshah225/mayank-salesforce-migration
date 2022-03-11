@@ -156,6 +156,7 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
         this.setDropdownState(false);
         this.updateErrorState();
         this.updateActiveBorder();
+        this.commitValue();
     }
     setDropdownState(shouldOpen) {
         const openClass = 'slds-is-open';
@@ -189,7 +190,6 @@ export default class LightningComboBoxMultiSelect extends LightningElement {
     closeModalTimeout = null;
     focusOutOfDropdown() {
         this.closeModalTimeout = setTimeout(() => {
-            this.commitValue();
             this.closeDropdown();
         }, 40);
     }

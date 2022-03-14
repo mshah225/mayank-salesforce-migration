@@ -13,7 +13,7 @@ public class EmailMessageService {
      *
      * @return Map<Id, Case> A map of parent cases for the provided email messages
      */
-    public static Map<Id, Case> getCasesFromEmailMessages(Map<Id, EmailMessage> messages) {
+    public static void getCasesFromEmailMessages(Map<Id, EmailMessage> messages) {
         Map<Id, Case> result;
         Set<Id> caseIds;
 
@@ -41,7 +41,9 @@ public class EmailMessageService {
             ErrorLogger.log(ex, vars, debug);
         }
 
-        return result;
+        if (result != null && result.size() > 0) {
+            setAdvisorCaseStatus(result);
+        }
     }
 
     /*
@@ -52,7 +54,7 @@ public class EmailMessageService {
      *
      * @return Map<Id, Case> map of updated cases
      */
-    public static Map<Id, Case> setAdvisorCaseStatus(Map<Id, Case> casesToCheck) {
+    public static void setAdvisorCaseStatus(Map<Id, Case> casesToCheck) {
         Id advisorRTID;
         Map<Id, Case> result;
 
@@ -80,7 +82,9 @@ public class EmailMessageService {
             ErrorLogger.log(ex, vars, debug);
         }
 
-        return result;
+        if (result.size() > 0) {
+            update result.values();
+        }
     }
 
     private class EmailMessageServiceException extends exception {

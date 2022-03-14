@@ -5,6 +5,7 @@ global class JIRAWebserviceCallout {
         List<String> errorLoggerVars = new List<String>();
         String jiraKey;
         String alias = [SELECT alias FROM User WHERE Id = :UserInfo.getUserId()].alias;
+        String email = alias + '@asu.edu';
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
@@ -26,7 +27,7 @@ global class JIRAWebserviceCallout {
             '"     }';
         bodyWithoutReporter = body + '   }}';
 
-        body += ', "reporter": { "id": "' + getJIRAUserId(alias) + '"  }' + '   }}';
+        body += ', "reporter": { "id": "' + getJiraAccountId(email) + '"  }' + '   }}';
 
         setHeader(req);
         setEndpoint(req, endpoint, 'POST');
@@ -66,13 +67,13 @@ global class JIRAWebserviceCallout {
 
         String endpoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '/watchers';
 
-        String[] watchersToAdd = watchers.split(',');
+        String[] watchersToAdd = watchers.replaceAll('\\s+', '').split(',');
         try {
             //Send endpoint to JIRA
             for (Integer i = 0; i < watchersToAdd.size(); i++) {
                 setHeader(req);
                 setEndPoint(req, endPoint, 'POST');
-                setBody(req, '"' + getJIRAUserId(watchersToAdd[i]) + '"');
+                setBody(req, '"' + getJiraAccountId(watchersToAdd[i] + '@asu.edu') + '"');
                 res = http.send(req);
             }
         } catch (System.CalloutException e) {
@@ -128,6 +129,7 @@ global class JIRAWebserviceCallout {
     webService static String getIssues(String asurite) {
         List<String> errorLoggerVars = new List<String>();
         String responseBody;
+        String accountId = getJiraAccountId(asurite + '@asu.edu');
 
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
@@ -135,7 +137,7 @@ global class JIRAWebserviceCallout {
 
         String endPoint =
             'callout:Jira_Base_URL/rest/api/2/search?jql=assignee%3D' +
-            asurite +
+            accountId +
             '%26status!%3DDone%26status!%3DCanceled%26Status!%3DClosed%26Status!%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
@@ -155,6 +157,7 @@ global class JIRAWebserviceCallout {
     webService static String getWatchedIssues(String asurite) {
         List<String> errorLoggerVars = new List<String>();
         String responseBody;
+        String accountId = getJiraAccountId(asurite + '@asu.edu');
 
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
@@ -162,9 +165,9 @@ global class JIRAWebserviceCallout {
 
         String endPoint =
             'callout:Jira_Base_URL/rest/api/2/search?jql=watcher%20%3D%20' +
-            asurite +
+            accountId +
             '%20AND%20(assignee%20%3D%20NULL%20OR%20assignee%20!%3D%20' +
-            asurite +
+            accountId +
             ')%26status%21%3DDone%26status%21%3DCanceled%26Status%21%3DClosed%26Status%21%3D%22Close%20Issue%22%20order%20by%20updated%20DESC&fields=id,summary,issuetype,status';
 
         try {
@@ -235,27 +238,29 @@ global class JIRAWebserviceCallout {
         return statusKey;
     }
 
-    private static String getJIRAUserId(String username) {
+    private static String getJiraAccountId(String email) {
         List<String> errorLoggerVars = new List<String>();
-        String userId;
+        String accountId;
 
         HttpRequest req = new HttpRequest();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
 
-        username = username.replace('\n', '').replace('\r', '');
-
-        String endPoint = 'callout:Jira_Base_URL/rest/api/2/jql/pdcleaner';
+        String endPoint = 'callout:Jira_Base_URL/rest/api/3/user/search?query=' + email;
 
         try {
             setHeader(req);
-            setEndPoint(req, endPoint, 'POST');
-            setBody(req, '{"queryStrings": ["assignee = ' + username + '"]}');
+            setEndPoint(req, endPoint, 'GET');
             res = http.send(req);
 
-            Map<String, Object> responseMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-            List<Object> queryStringList = (List<Object>) responseMap.get('queryStrings');
-            userId = queryStringList[0].toString().split(' = ')[1];
+            JSONParser parser = JSON.createParser(res.getBody());
+            while (parser.nextToken() != null) {
+                if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'accountId')) {
+                    parser.nextToken();
+                    accountId = parser.getText();
+                    break;
+                }
+            }
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
@@ -263,6 +268,6 @@ global class JIRAWebserviceCallout {
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
 
-        return userId;
+        return accountId;
     }
 }

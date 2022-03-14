@@ -56,7 +56,7 @@ public class EmailMessageService {
      */
     public static void setAdvisorCaseStatus(Map<Id, Case> casesToCheck) {
         Id advisorRTID;
-        Map<Id, Case> result;
+        Map<Id, Case> result = new Map<Id, Case>();
 
         try {
             if (casesToCheck == null) {
@@ -64,8 +64,6 @@ public class EmailMessageService {
             }
 
             advisorRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-            result = new Map<Id, Case>();
-
             for (Case c : casesToCheck.values()) {
                 if (c.recordTypeId == advisorRTID) {
                     c.status = 'Email Sent';

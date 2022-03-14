@@ -126,47 +126,6 @@ global class JiraCallout {
         }
     }
 
-    @TestVisible
-    private static String getStatusKey(String statusName) {
-        String statusKey;
-        switch on statusName {
-            when 'Open' {
-                statusKey = '131';
-            }
-            when 'In Testing' {
-                statusKey = '81';
-            }
-            when 'Technical Review' {
-                statusKey = '91';
-            }
-            when 'New Development Request' {
-                statusKey = '11';
-            }
-            when 'New' {
-                statusKey = '3';
-            }
-            when 'Working' {
-                statusKey = '4';
-            }
-            when 'Closed' {
-                statusKey = '2';
-            }
-            when 'Escalated' {
-                statusKey = '5';
-            }
-            when 'Ready For Work' {
-                statusKey = '351';
-            }
-            when 'Done' {
-                statusKey = '111';
-            }
-            when else {
-                statusKey = '11';
-            }
-        }
-        return statusKey;
-    }
-
     webService static String getIssues(String asurite) {
         List<String> errorLoggerVars = new List<String>();
         String responseBody;
@@ -225,6 +184,60 @@ global class JiraCallout {
         return responseBody;
     }
 
+    private static void setHeader(HttpRequest req) {
+        req.setHeader('Content-Type', 'application/json');
+    }
+
+    private static void setEndPoint(HttpRequest req, String endPoint, String method) {
+        req.setMethod(method);
+        req.setEndpoint(endPoint);
+    }
+
+    private static void setBody(HttpRequest req, String body) {
+        req.setBody(body);
+    }
+
+    @TestVisible
+    private static String getStatusKey(String statusName) {
+        String statusKey;
+        switch on statusName {
+            when 'Open' {
+                statusKey = '131';
+            }
+            when 'In Testing' {
+                statusKey = '81';
+            }
+            when 'Technical Review' {
+                statusKey = '91';
+            }
+            when 'New Development Request' {
+                statusKey = '11';
+            }
+            when 'New' {
+                statusKey = '3';
+            }
+            when 'Working' {
+                statusKey = '4';
+            }
+            when 'Closed' {
+                statusKey = '2';
+            }
+            when 'Escalated' {
+                statusKey = '5';
+            }
+            when 'Ready For Work' {
+                statusKey = '351';
+            }
+            when 'Done' {
+                statusKey = '111';
+            }
+            when else {
+                statusKey = '11';
+            }
+        }
+        return statusKey;
+    }
+
     private static String getJiraAccountId(String email) {
         List<String> errorLoggerVars = new List<String>();
         String accountId;
@@ -238,16 +251,16 @@ global class JiraCallout {
         try {
             setHeader(req);
             setEndPoint(req, endPoint, 'GET');
-            res = http.send(req);
+            // res = http.send(req);
 
-            JSONParser parser = JSON.createParser(res.getBody());
-            while (parser.nextToken() != null) {
-                if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'accountId')) {
-                    parser.nextToken();
-                    accountId = parser.getText();
-                    break;
-                }
-            }
+            // JSONParser parser = JSON.createParser(res.getBody());
+            // while (parser.nextToken() != null) {
+            //     if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'accountId')) {
+            //         parser.nextToken();
+            //         accountId = parser.getText();
+            //         break;
+            //     }
+            // }
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
@@ -256,18 +269,5 @@ global class JiraCallout {
         }
 
         return accountId;
-    }
-
-    private static void setHeader(HttpRequest req) {
-        req.setHeader('Content-Type', 'application/json');
-    }
-
-    private static void setEndPoint(HttpRequest req, String endPoint, String method) {
-        req.setMethod(method);
-        req.setEndpoint(endPoint);
-    }
-
-    private static void setBody(HttpRequest req, String body) {
-        req.setBody(body);
     }
 }

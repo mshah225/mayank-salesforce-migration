@@ -8,9 +8,9 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      *   question: 'The question',
      *     sourceLabel: the source label (only allowed for dual-listboxes)
      *     selectedLabel: the selected label (only allowed for dual-listboxes)
-     *   type: 'text'|'textarea'|'combobox'|'multi-combobox'|'dual-listbox'|'label'
+     *   type: 'text'|'textarea'|'combobox'|'dual-listbox'|'label'
      *   subtype:  should specify sub type of type if multiple are possible
-     *   options: [{label, value}, ...]  only allowed if type is combobox, multi-combobox, or dual-listbox
+     *   options: [{label, value}, ...]  only allowed if type is combobox, or dual-listbox
      *   subnote: 'note to go under the input field',
      *   required: true|false,
      * }
@@ -19,9 +19,8 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      * types:   'text'
      *          'textarea'
      *          'combobox'
-     *          'multi-combobox'
-     *              'single'
-     *              'multi' (default)
+     *              'single' (default)
+     *              'multi'
      *          'dual-listbox'
      *          'label'
      *              'bold'
@@ -37,17 +36,9 @@ export default class LightningQuestionAnswerSection extends LightningElement {
             if (q.isLabel) q.isPlainLabel = q.subtype === 'plain' || q.subtype == null;
             q.isTextArea = q.type === 'textarea';
             q.isComboBox = q.type === 'combobox';
-            q.isMultiCombobox = q.type === 'multi-combobox';
-            if (q.isMultiCombobox) q.isSingleSelect = q.subtype === 'single';
+            if (q.isComboBox) q.isMultiSelect = q.subtype === 'multi';
             q.isDualListbox = q.type === 'dual-listbox';
-            q.isInput = !(
-                q.isTextArea ||
-                q.isComboBox ||
-                q.isLabel ||
-                q.isMultiCombobox ||
-                q.isDualListbox ||
-                q.isSpacer
-            );
+            q.isInput = !(q.isTextArea || q.isComboBox || q.isLabel || q.isDualListbox || q.isSpacer);
             q.hasSubnote = q.subnote != null && q.subnote !== '';
             if (q.required == null) q.required = false;
             if (q.answer == null) q.answer = '';
@@ -96,5 +87,5 @@ export default class LightningQuestionAnswerSection extends LightningElement {
         firstInput.focus();
     }
 
-    allInputTypes = 'lightning-input, lightning-textarea, lightning-combobox, c-lightning-combo-box-multi-select';
+    allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box';
 }

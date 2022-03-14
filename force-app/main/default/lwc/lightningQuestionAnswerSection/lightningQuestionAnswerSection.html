@@ -31,46 +31,25 @@
             </template>
             <template if:true={q.isComboBox}>
                 <template if:true={q.required}>
-                    <lightning-combobox
+                    <c-lightning-combo-box
                         name={q.key}
                         label={q.question}
                         options={q.options}
                         value={q.answer}
                         onchange={changeAnswer}
+                        multi-select={q.isMultiSelect}
                         required
-                    ></lightning-combobox>
+                    ></c-lightning-combo-box>
                 </template>
                 <template if:false={q.required}>
-                    <lightning-combobox
+                    <c-lightning-combo-box
                         name={q.key}
                         label={q.question}
                         options={q.options}
                         value={q.answer}
                         onchange={changeAnswer}
-                    ></lightning-combobox>
-                </template>
-            </template>
-            <template if:true={q.isMultiCombobox}>
-                <template if:true={q.required}>
-                    <c-lightning-combo-box-multi-select
-                        name={q.key}
-                        label={q.question}
-                        options={q.options}
-                        value={q.answer}
-                        onchange={changeAnswer}
-                        single-select={q.isSingleSelect}
-                        required
-                    ></c-lightning-combo-box-multi-select>
-                </template>
-                <template if:false={q.required}>
-                    <c-lightning-combo-box-multi-select
-                        name={q.key}
-                        label={q.question}
-                        options={q.options}
-                        value={q.answer}
-                        onchange={changeAnswer}
-                        single-select={q.isSingleSelect}
-                    ></c-lightning-combo-box-multi-select>
+                        multi-select={q.isMultiSelect}
+                    ></c-lightning-combo-box>
                 </template>
             </template>
             <template if:true={q.isDualListbox}>

@@ -30,6 +30,9 @@ export default class AdvisorPortalModalMassTransfer extends LightningElement {
                 allUserOptions.push(option);
             }
 
+            allUserOptions.push({label: 'AB-1', value: 'AB-1', isLabel: true});
+            allUserOptions.push({label: 'AB-2', value: 'AB-2', isLabel: false});
+
             this.options = allUserOptions;
 
             this.questions = [
@@ -37,7 +40,7 @@ export default class AdvisorPortalModalMassTransfer extends LightningElement {
                     key: 'transferTo',
                     question: 'New Owner',
                     options: this.options,
-                    type: 'multi-combobox',
+                    type: 'combobox',
                     subtype: 'single',
                     required: true,
                 },

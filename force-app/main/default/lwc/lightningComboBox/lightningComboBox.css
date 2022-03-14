@@ -1,0 +1,56 @@
+:host .inputBox.active {
+    border-color: var(--lwc-colorBorderBrand, #1b96ff);
+    box-shadow: var(--lwc-shadowButtonFocus, 0 0 3px #0176d3);
+
+    --slds-c-input-color-border: var(
+        --slds-c-input-color-border-focus,
+        var(--sds-c-input-color-border-focus, var(--lwc-colorBorderInputActive, rgb(27, 150, 255)))
+    );
+    --slds-c-input-background-color: var(
+        --slds-c-input-color-background-focus,
+        var(--sds-c-input-color-background-focus, var(--lwc-colorBackgroundInputActive, rgb(255, 255, 255)))
+    );
+    --slds-c-input-text-color: var(--slds-c-input-text-color-focus, var(--sds-c-input-text-color-focus));
+    --slds-c-input-shadow: var(
+        --slds-c-input-shadow-focus,
+        var(--sds-c-input-shadow-focus, 0 0 3px var(--lwc-brandAccessible, rgb(1, 118, 211)))
+    );
+    outline: 0;
+}
+
+:host .focusCapture {
+    outline: none;
+}
+:host .verticalAlign {
+    cursor: pointer;
+    padding: 0px 5px !important;
+}
+:host .slds-dropdown {
+    padding: 0px !important;
+}
+:host .recordListBox {
+    margin-top: 0px !important;
+    overflow-y: scroll;
+}
+:host .slds-listbox li {
+    padding: 0.45rem 0.7rem !important;
+    display: flex;
+}
+:host .eachItem:hover,
+:host .eachItem[data-hover='1'] {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* For Scrolling */
+:host ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+:host ::-webkit-scrollbar-track {
+    display: none !important;
+}
+:host ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.4);
+}

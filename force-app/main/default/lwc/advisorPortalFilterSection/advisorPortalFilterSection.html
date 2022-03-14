@@ -11,56 +11,61 @@
             ></lightning-input>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <c-lightning-combo-box-multi-select
+            <c-lightning-combo-box
                 label="Campus"
                 options={campusPicklistValues}
                 name="campus"
                 data-name="campus"
                 oncommit={changeField}
                 value={currentFilter.campus}
-            ></c-lightning-combo-box-multi-select>
+                multi-select="true"
+            ></c-lightning-combo-box>
         </div>
 
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Degree Level"
                     options={degreeLevelOptions}
                     name="degreeLevel"
                     data-name="degreeLevel"
                     oncommit={changeField}
                     value={currentFilter.degreeLevel}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Academic Program"
                     options={academicProgramOptions}
                     name="academicProgram"
                     data-name="academicProgram"
                     oncommit={changeField}
                     value={currentFilter.academicProgram}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="School/Department"
                     options={schoolDepartmentOptions}
                     name="schoolDepartment"
                     data-name="schoolDepartment"
                     oncommit={changeField}
                     value={currentFilter.schoolDepartment}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Academic Plan"
                     options={academicPlanOptions}
                     name="academicPlan"
                     data-name="academicPlan"
                     oncommit={changeField}
                     value={currentFilter.academicPlan}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <fieldset class="slds-form-element slds-form-element_compound">
@@ -100,14 +105,15 @@
         </template>
         <template if:false={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Academic Level"
                     options={academicLevelPicklistValues}
                     name="academicLevel"
                     data-name="academicLevel"
                     oncommit={changeField}
                     value={currentFilter.academicLevel}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <lightning-input
@@ -117,6 +123,7 @@
                     data-name="studentGroupCode"
                     oncommit={changeField}
                     value={currentFilter.studentGroupCode}
+                    multi-select="true"
                 ></lightning-input>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
@@ -132,78 +139,85 @@
         </template>
 
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <c-lightning-combo-box-multi-select
+            <c-lightning-combo-box
                 label="Residency"
                 options={residencyPicklistValues}
                 name="residency"
                 data-name="residency"
                 oncommit={changeField}
                 value={currentFilter.residency}
-            ></c-lightning-combo-box-multi-select>
+                multi-select="true"
+            ></c-lightning-combo-box>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <c-lightning-combo-box-multi-select
+            <c-lightning-combo-box
                 label="Case Status"
                 options={caseStatusPicklistValues}
                 name="caseStatus"
                 data-name="caseStatus"
                 oncommit={changeField}
                 value={currentFilter.caseStatus}
-            ></c-lightning-combo-box-multi-select>
+                multi-select="true"
+            ></c-lightning-combo-box>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-            <c-lightning-combo-box-multi-select
+            <c-lightning-combo-box
                 label="Case Category"
                 options={caseCategoryPicklistValues}
                 name="caseCategory"
                 data-name="caseCategory"
                 oncommit={changeField}
                 value={currentFilter.caseCategory}
-            ></c-lightning-combo-box-multi-select>
+                multi-select="true"
+            ></c-lightning-combo-box>
         </div>
 
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Special Population"
                     options={specialPopulationOptions}
                     name="specialPopulation"
                     data-name="specialPopulation"
                     oncommit={changeField}
                     value={currentFilter.specialPopulation}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
         </template>
         <template if:false={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Case Subject"
                     options={caseSubjectPicklistValues}
                     name="caseSubject"
                     data-name="caseSubject"
                     oncommit={changeField}
                     value={currentFilter.caseSubject}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Outlook Score"
                     options={outlookScoreOptions}
                     name="outlookScore"
                     data-name="outlookScore"
                     oncommit={changeField}
                     value={currentFilter.outlookScore}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box-multi-select
+                <c-lightning-combo-box
                     label="Outlook Change"
                     options={outlookChangeOptions}
                     name="outlookChange"
                     data-name="outlookChange"
                     oncommit={changeField}
                     value={currentFilter.outlookChange}
-                ></c-lightning-combo-box-multi-select>
+                    multi-select="true"
+                ></c-lightning-combo-box>
             </div>
         </template>
 

@@ -256,9 +256,10 @@ export default class LightningComboBox extends LightningElement {
      * @param {mouseenterevent} e
      */
     hoverElement(e) {
+        const prevHoverIndex = this.hoveredIndex;
         let hoveredIndex = e.currentTarget.dataset.index;
         this.hoveredIndex = parseInt(hoveredIndex, 10);
-        this.updateHoverStates();
+        if (this.hoveredIndex !== prevHoverIndex) this.updateHoverStates();
     }
 
     /**

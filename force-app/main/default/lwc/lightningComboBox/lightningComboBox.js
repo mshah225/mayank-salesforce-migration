@@ -45,6 +45,7 @@ export default class LightningComboBox extends LightningElement {
     @api set options(val) {
         const optionsClone = JSON.parse(JSON.stringify(val));
 
+        // add extra attributes
         for (let i = 0; i < optionsClone.length; i++) {
             const opt = optionsClone[i];
             if (opt.isSelected == null) opt.isSelected = false;
@@ -291,6 +292,8 @@ export default class LightningComboBox extends LightningElement {
         }
 
         this._options = options;
+        this.updatePlacard();
+        if (foundOne) this.sendCommitEvent();
     }
 
     /**

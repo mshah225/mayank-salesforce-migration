@@ -1,5 +1,5 @@
 @isTest
-global class JiraHttpMockCallout implements HttpCalloutMock {
+global class JiraCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         if (req.getEndpoint().contains('watchers')) {
             return addWatchers();

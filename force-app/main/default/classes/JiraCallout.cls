@@ -1,4 +1,4 @@
-global class JIRAWebserviceCallout {
+global class JiraCallout {
     private static final Boolean DEBUG = false;
 
     webService static String createNewIssue(String summary, String description, String addUsers, String type) {

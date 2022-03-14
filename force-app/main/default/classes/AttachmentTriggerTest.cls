@@ -96,6 +96,32 @@ public class AttachmentTriggerTest {
         system.assertEquals(4, hasAttachmentCount);
         system.assertEquals(2, doesNotHaveAttachmentCount);
 
+        for (Integer x = 0; x < attachments.size(); x++) {
+            attachments[x].name = string.valueOf(x);
+        }
+
+        update attachments;
+
+        // verify that updating attachments has no impact
+        cases = [SELECT Id, Attachments__c FROM Case];
+        hasAttachmentCount = 0;
+        doesNotHaveAttachmentCount = 0;
+
+        for (Case c : cases) {
+            if (c.Attachments__c != null) {
+                if (integer.valueOf(c.Attachments__c) > 0) {
+                    hasAttachmentCount = hasAttachmentCount + 1;
+                } else {
+                    doesNotHaveAttachmentCount = doesNotHaveAttachmentCount + 1;
+                }
+            } else {
+                doesNotHaveAttachmentCount = doesNotHaveAttachmentCount + 1;
+            }
+        }
+
+        system.assertEquals(4, hasAttachmentCount);
+        system.assertEquals(2, doesNotHaveAttachmentCount);
+
         delete attachments;
 
         cases = [SELECT Id, Attachments__c FROM Case];
@@ -119,32 +145,6 @@ public class AttachmentTriggerTest {
 
         undelete attachments;
 
-        cases = [SELECT Id, Attachments__c FROM Case];
-        hasAttachmentCount = 0;
-        doesNotHaveAttachmentCount = 0;
-
-        for (Case c : cases) {
-            if (c.Attachments__c != null) {
-                if (integer.valueOf(c.Attachments__c) > 0) {
-                    hasAttachmentCount = hasAttachmentCount + 1;
-                } else {
-                    doesNotHaveAttachmentCount = doesNotHaveAttachmentCount + 1;
-                }
-            } else {
-                doesNotHaveAttachmentCount = doesNotHaveAttachmentCount + 1;
-            }
-        }
-
-        system.assertEquals(4, hasAttachmentCount);
-        system.assertEquals(2, doesNotHaveAttachmentCount);
-
-        for (Integer x = 0; x < attachments.size(); x++) {
-            attachments[x].name = string.valueOf(x);
-        }
-
-        update attachments;
-
-        // verify that updating attachments has no impact
         cases = [SELECT Id, Attachments__c FROM Case];
         hasAttachmentCount = 0;
         doesNotHaveAttachmentCount = 0;

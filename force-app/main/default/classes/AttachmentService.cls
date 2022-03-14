@@ -10,7 +10,7 @@ public with sharing class AttachmentService {
      * @param List<Attachment> trigger.new
      * @return Map<Id,Case> a map containing all of the cases that will need updating
      */
-    public static Map<Id, Case> getCasesFromAttachments(List<Attachment> newList) {
+    public static void getCasesFromAttachments(List<Attachment> newList) {
         String casePrefix = ObjectService.getKeyPrefix(new Case().getSObjectType()); // Case prefix
         String emailMessagePrefix = ObjectService.getKeyPrefix(new EmailMessage().getSObjectType()); // Email message Prefix
         Set<Id> emailMessages = new Set<Id>(); // List of emails with new attachments
@@ -62,7 +62,9 @@ public with sharing class AttachmentService {
                 }
             }
 
-            return casesToUpdate;
+            if (casesToUpdate != null && !casesToUpdate.isEmpty()) {
+                setCaseNumberOfFiles(casesToUpdate);
+            }
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertStringToJSON('casePrefix', casePrefix));
@@ -70,9 +72,7 @@ public with sharing class AttachmentService {
             vars.add(ErrorLogger.convertStringToJSON('parentId', parentId));
             vars.add(ErrorLogger.convertMapToJSON('casesToUpdate', casesToUpdate));
             vars.add(ErrorLogger.convertSetToJSON('emailMessages', emailMessages));
-
             ErrorLogger.log(ex, vars, debug);
-            return null;
         }
     }
 
@@ -82,7 +82,7 @@ public with sharing class AttachmentService {
      * SFE-5455: If a case has no attachments the "has Attachment" box should
      * be set to false
      */
-    public static Map<Id, Case> setCaseNumberOfFiles(Map<Id, Case> casesToUpdate) {
+    private static void setCaseNumberOfFiles(Map<Id, Case> casesToUpdate) {
         Set<Id> emailMessageIds = new Set<id>(); // Aggregate of all email message Ids from All cases to update
         Map<Id, Integer> numberOfAttachmentsPerCase = new Map<Id, Integer>(); // Map of case ID to the number of attachments the case has
 
@@ -116,15 +116,13 @@ public with sharing class AttachmentService {
                 casesToUpdate.get(i).Attachments__c = numberOfAttachmentsPerCase.get(i);
             }
 
-            return casesToUpdate;
+            update casesToUpdate.values();
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertSetToJSON('emailMessageIds', emailMessageIds));
             vars.add(ErrorLogger.convertMapToJSON('numberOfAttachmentsPerCase', numberOfAttachmentsPerCase));
             vars.add(ErrorLogger.convertMapToJSON('casesToUpdate', casesToUpdate));
-
             ErrorLogger.log(ex, vars, debug);
-            return null;
         }
     }
 }

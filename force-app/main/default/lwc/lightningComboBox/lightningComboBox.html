@@ -9,7 +9,7 @@
         <div class="slds-combobox_container">
             <div class={comboboxClasses} aria-expanded="true" aria-haspopup="listbox" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <div class="inputBox slds-form-element" onclick={toggleDropdown}>
+                    <div class="inputBox slds-form-element" onclick={toggleDropdown} onmousedown={preventDefault}>
                         <label class="slds-form-element__label slds-no-flex slds-assistive-text"></label>
                         <div class="slds-form-element__control slds-grow">
                             <div

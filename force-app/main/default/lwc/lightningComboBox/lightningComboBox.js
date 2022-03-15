@@ -389,6 +389,14 @@ export default class LightningComboBox extends LightningElement {
     hasError = false;
 
     /**
+     * Prevent the default actions for this event
+     * @param {Event} e
+     */
+    preventDefault(e) {
+        e.preventDefault();
+    }
+
+    /**
      * Send a commit event (usually when dropdown closes)
      */
     sendCommitEvent() {

@@ -4,20 +4,23 @@
             <template if:true={required}>
                 <span style="color: red">*&nbsp;</span>
             </template>
-            <label class="slds-form-element__label">{label}</label>
+            <label class="slds-form-element__label" for="combobox-id" id="combobox-label">{label}</label>
         </template>
         <div class="slds-combobox_container">
-            <div
-                class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
-                aria-expanded="true"
-                aria-haspopup="listbox"
-                role="combobox"
-            >
+            <div class={comboboxClasses} aria-expanded="true" aria-haspopup="listbox" role="combobox">
                 <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                     <div class="inputBox slds-form-element" onclick={toggleDropdown}>
                         <label class="slds-form-element__label slds-no-flex slds-assistive-text"></label>
                         <div class="slds-form-element__control slds-grow">
-                            <div role="button" class="slds-input slds-combobox__input slds-input_faux">
+                            <div
+                                role="button"
+                                class="slds-input slds-combobox__input slds-input_faux"
+                                id="combobox-id"
+                                aria-labelledby="combobox-label"
+                                aria-controls="listbox-id"
+                                aria-expanded={ariaBoxIsExpanded}
+                                aria-haspopup="listbox"
+                            >
                                 <span class="slds-truncate"><label>{placard}</label></span>
                             </div>
                         </div>
@@ -37,56 +40,54 @@
                     ></div>
                 </div>
                 <!-- Dropdown List -->
-                <template if:true={showDropdown}>
-                    <div
-                        class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
-                        onkeydown={keyboardController}
-                    >
-                        <ul class="slds-listbox slds-listbox_vertical recordListBox" role="presentation">
-                            <template for:each={options} for:item="option">
-                                <template if:true={option.isLabel}>
-                                    <li key={option.value} role="presentation" class="slds-listbox__item">
-                                        <div class="slds-listbox__option_plain slds-listbox__option-header"></div>
-                                        <div
-                                            class="slds-listbox__option_plain slds-listbox__option-header"
-                                            role="presentation"
-                                        >
-                                            <span class="slds-media__body">
-                                                <h3 class="slds-truncate" title={option.label}>{option.label}</h3>
-                                            </span>
-                                        </div>
-                                    </li>
-                                </template>
-                                <template if:false={option.isLabel}>
-                                    <li
-                                        key={option.value}
-                                        data-id={option.value}
-                                        data-index={option.index}
-                                        data-hover="0"
-                                        onmousemove={hoverElement}
-                                        onmousedown={toggleItem}
-                                        class="slds-listbox__item eachItem"
+                <div
+                    id="listbox-id"
+                    class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                    role="listbox"
+                    onkeydown={keyboardController}
+                >
+                    <ul class="slds-listbox slds-listbox_vertical recordListBox" role="presentation">
+                        <template for:each={options} for:item="option">
+                            <template if:true={option.isLabel}>
+                                <li key={option.value} role="presentation" class="slds-listbox__item">
+                                    <div class="slds-listbox__option_plain slds-listbox__option-header"></div>
+                                    <div
+                                        class="slds-listbox__option_plain slds-listbox__option-header"
+                                        role="presentation"
                                     >
-                                        <span class="slds-media__figure slds-listbox__option-icon">
-                                            <template if:true={option.isSelected}>
-                                                <lightning-icon
-                                                    icon-name="utility:check"
-                                                    size="x-small"
-                                                    alternative-text="icon"
-                                                ></lightning-icon>
-                                            </template>
+                                        <span class="slds-media__body">
+                                            <h3 class="slds-truncate" title={option.label}>{option.label}</h3>
                                         </span>
-                                        <span
-                                            class="slds-media slds-listbox__option_entity verticalAlign slds-truncate"
-                                        >
-                                            {option.label}
-                                        </span>
-                                    </li>
-                                </template>
+                                    </div>
+                                </li>
                             </template>
-                        </ul>
-                    </div>
-                </template>
+                            <template if:false={option.isLabel}>
+                                <li
+                                    key={option.value}
+                                    data-id={option.value}
+                                    data-index={option.index}
+                                    data-hover={option.isHovered}
+                                    onmousemove={hoverElement}
+                                    onmousedown={toggleItem}
+                                    class="slds-listbox__item eachItem"
+                                >
+                                    <span class="slds-media__figure slds-listbox__option-icon">
+                                        <template if:true={option.isSelected}>
+                                            <lightning-icon
+                                                icon-name="utility:check"
+                                                size="x-small"
+                                                alternative-text="icon"
+                                            ></lightning-icon>
+                                        </template>
+                                    </span>
+                                    <span class="slds-media slds-listbox__option_entity verticalAlign slds-truncate">
+                                        {option.label}
+                                    </span>
+                                </li>
+                            </template>
+                        </template>
+                    </ul>
+                </div>
             </div>
         </div>
         <template if:true={hasError}>

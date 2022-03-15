@@ -50,6 +50,7 @@ export default class LightningComboBox extends LightningElement {
             const opt = optionsClone[i];
             if (opt.isSelected == null) opt.isSelected = false;
             if (opt.isLabel == null) opt.isLabel = false;
+            if (opt.isHovered == null) opt.isHovered = false;
             opt.index = i;
         }
 
@@ -63,6 +64,16 @@ export default class LightningComboBox extends LightningElement {
 
     placard = '';
     showDropdown = false;
+
+    get comboboxClasses() {
+        let classes = ['slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click '];
+        if (this.showDropdown) classes.push('slds-is-open');
+        return classes.join(' ');
+    }
+
+    get ariaBoxIsExpanded() {
+        return this.showDropdown ? 'true' : 'false';
+    }
 
     connectedCallback() {
         this.placard = this.placeholder;
@@ -266,12 +277,13 @@ export default class LightningComboBox extends LightningElement {
      * Update hover data attributes
      */
     updateHoverStates() {
-        const allItems = this.template.querySelectorAll('.eachItem');
-        for (let i = 0; i < allItems.length; i++) {
-            const item = allItems[i];
-            if (this.hoveredIndex === i) item.dataset.hover = '1';
-            else item.dataset.hover = '0';
+        const options = JSON.parse(JSON.stringify(this._options));
+        for (let i = 0; i < options.length; i++) {
+            const opt = options[i];
+            if (this.hoveredIndex === opt.index) opt.isHovered = true;
+            else opt.isHovered = false;
         }
+        this._options = options;
     }
 
     /**

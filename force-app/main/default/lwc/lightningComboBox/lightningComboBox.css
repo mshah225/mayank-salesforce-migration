@@ -36,7 +36,7 @@
     padding: 0.45rem 0.7rem !important;
     display: flex;
 }
-:host .eachItem[data-hover='1'] {
+:host .eachItem[data-hover='true'] {
     background-color: #f1f1f1;
     cursor: pointer;
 }

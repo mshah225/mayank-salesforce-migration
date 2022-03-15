@@ -93,8 +93,8 @@ public class AttachmentTriggerTest {
             }
         }
 
-        system.assertEquals(4, hasAttachmentCount);
-        system.assertEquals(2, doesNotHaveAttachmentCount);
+        System.assertEquals(4, hasAttachmentCount);
+        System.assertEquals(2, doesNotHaveAttachmentCount);
 
         for (Integer x = 0; x < attachments.size(); x++) {
             attachments[x].name = string.valueOf(x);
@@ -119,8 +119,8 @@ public class AttachmentTriggerTest {
             }
         }
 
-        system.assertEquals(4, hasAttachmentCount);
-        system.assertEquals(2, doesNotHaveAttachmentCount);
+        System.assertEquals(4, hasAttachmentCount);
+        System.assertEquals(2, doesNotHaveAttachmentCount);
 
         delete attachments;
 
@@ -140,8 +140,8 @@ public class AttachmentTriggerTest {
             }
         }
 
-        system.assertEquals(0, hasAttachmentCount);
-        system.assertEquals(6, doesNotHaveAttachmentCount);
+        System.assertEquals(0, hasAttachmentCount);
+        System.assertEquals(6, doesNotHaveAttachmentCount);
 
         undelete attachments;
 
@@ -161,8 +161,8 @@ public class AttachmentTriggerTest {
             }
         }
 
-        system.assertEquals(4, hasAttachmentCount);
-        system.assertEquals(2, doesNotHaveAttachmentCount);
+        System.assertEquals(4, hasAttachmentCount);
+        System.assertEquals(2, doesNotHaveAttachmentCount);
     }
 
     /**
@@ -178,11 +178,8 @@ public class AttachmentTriggerTest {
             caseIds.add(att.ParentId);
         }
 
-        System.debug(caseIds.size());
-        System.debug(caseIds);
-
         Integer numberOfCases = [SELECT COUNT() FROM Case WHERE Id IN :caseIds];
-        system.assertEquals(4, numberOfCases);
+        System.assertEquals(3, numberOfCases);
     }
 
     /**
@@ -194,7 +191,7 @@ public class AttachmentTriggerTest {
         AttachmentService.updateCasesFromAttachments(attachments);
         List<Case> errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
 
-        system.assertEquals(1, errorCases.size());
+        System.assertEquals(1, errorCases.size());
         // Clean up error cases so that we can easily test other methods' exception handling
         if (errorCases.size() > 0) {
             delete errorCases;
@@ -215,7 +212,7 @@ public class AttachmentTriggerTest {
             }
         }
 
-        system.assertEquals(4, counter);
+        System.assertEquals(4, counter);
     }
 
     /**
@@ -226,8 +223,8 @@ public class AttachmentTriggerTest {
         Map<Id, Case> casesToUpdate = AttachmentService.setCaseNumberOfFiles(null);
         List<Case> errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
 
-        system.assertEquals(null, casesToUpdate);
-        system.assertEquals(1, errorCases.size());
+        System.assertEquals(null, casesToUpdate);
+        System.assertEquals(1, errorCases.size());
         delete errorCases;
     }
 }

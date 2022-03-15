@@ -23,7 +23,7 @@ public class EmailMessageDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
-        EmailMessageService.getCasesFromEmailMessages(newMap);
+        EmailMessageService.updateCasesFromEmailMessages(newMap);
     }
     public void afterUpdate() {
     }

@@ -81,25 +81,32 @@ public class AttachmentServiceTest {
      * Test to see if the service can correctly retrieve cases that need to be udpated
      * based on the provided attachment list.
      */
-    public static testMethod void Test_getCasesFromAttachments() {
-        List<Attachment> attachments = [SELECT Id, parentId FROM Attachment];
-        Map<Id, Case> casesToUpdate = AttachmentService.getCasesFromAttachments(attachments);
+    public static testMethod void Test_updateCasesFromAttachments() {
+        List<Attachment> attachments = [SELECT Id, ParentId FROM Attachment];
+        AttachmentService.updateCasesFromAttachments(attachments);
 
-        system.assertEquals(4, casesToUpdate.size());
+        Set<Id> caseIds = new Set<Id>();
+        for (Attachment att : attachments) {
+            caseIds.add(att.ParentId);
+        }
+
+        System.debug(caseIds.size());
+        System.debug(caseIds);
+
+        Integer numberOfCases = [SELECT COUNT() FROM Case WHERE Id IN :caseIds];
+        system.assertEquals(4, numberOfCases);
     }
 
     /**
      * Test to see if the service can correctly handle exceptions
      * (will log a error and return null)
      */
-    public static testMethod void Test_getCasesFromAttachments_ExceptionHandling() {
+    public static testMethod void Test_updateCasesFromAttachments_ExceptionHandling() {
         List<Attachment> attachments = [SELECT Id FROM Attachment];
-        Map<Id, Case> casesToUpdate = AttachmentService.getCasesFromAttachments(attachments);
+        AttachmentService.updateCasesFromAttachments(attachments);
         List<Case> errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
 
         system.assertEquals(1, errorCases.size());
-        system.assertEquals(null, casesToUpdate);
-
         // Clean up error cases so that we can easily test other methods' exception handling
         if (errorCases.size() > 0) {
             delete errorCases;

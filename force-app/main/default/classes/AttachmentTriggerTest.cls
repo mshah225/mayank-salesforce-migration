@@ -164,4 +164,70 @@ public class AttachmentTriggerTest {
         system.assertEquals(4, hasAttachmentCount);
         system.assertEquals(2, doesNotHaveAttachmentCount);
     }
+
+    /**
+     * Test to see if the service can correctly retrieve cases that need to be udpated
+     * based on the provided attachment list.
+     */
+    public static testMethod void Test_updateCasesFromAttachments() {
+        List<Attachment> attachments = [SELECT Id, ParentId FROM Attachment];
+        AttachmentService.updateCasesFromAttachments(attachments);
+
+        Set<Id> caseIds = new Set<Id>();
+        for (Attachment att : attachments) {
+            caseIds.add(att.ParentId);
+        }
+
+        System.debug(caseIds.size());
+        System.debug(caseIds);
+
+        Integer numberOfCases = [SELECT COUNT() FROM Case WHERE Id IN :caseIds];
+        system.assertEquals(4, numberOfCases);
+    }
+
+    /**
+     * Test to see if the service can correctly handle exceptions
+     * (will log a error and return null)
+     */
+    public static testMethod void Test_updateCasesFromAttachments_ExceptionHandling() {
+        List<Attachment> attachments = [SELECT Id FROM Attachment];
+        AttachmentService.updateCasesFromAttachments(attachments);
+        List<Case> errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+
+        system.assertEquals(1, errorCases.size());
+        // Clean up error cases so that we can easily test other methods' exception handling
+        if (errorCases.size() > 0) {
+            delete errorCases;
+        }
+    }
+
+    /**
+     * Test attachment Services ability to count the number of attachments per case
+     */
+    public static testMethod void Test_setCaseNumberOfFiles() {
+        Integer counter = 0;
+        Map<Id, Case> casesToUpdate = new Map<Id, Case>([SELECT Id FROM Case]);
+        casesToUpdate = AttachmentService.setCaseNumberOfFiles(casesToUpdate);
+
+        for (Case c : casesToUpdate.values()) {
+            if (c.Attachments__c > 0) {
+                counter += 1;
+            }
+        }
+
+        system.assertEquals(4, counter);
+    }
+
+    /**
+     * Tests setCaseNumberOfFiles ability to handle exceptions
+     */
+    public static testMethod void Test_setCaseNumberOfFiles_ExceptionHandling() {
+        Integer counter = 0;
+        Map<Id, Case> casesToUpdate = AttachmentService.setCaseNumberOfFiles(null);
+        List<Case> errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+
+        system.assertEquals(null, casesToUpdate);
+        system.assertEquals(1, errorCases.size());
+        delete errorCases;
+    }
 }

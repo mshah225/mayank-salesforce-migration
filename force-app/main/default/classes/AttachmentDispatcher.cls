@@ -23,14 +23,14 @@ public class AttachmentDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
-        AttachmentService.getCasesFromAttachments(newList);
+        AttachmentService.updateCasesFromAttachments(newList);
     }
     public void afterUpdate() {
     }
     public void afterDelete() {
-        AttachmentService.getCasesFromAttachments(oldList);
+        AttachmentService.updateCasesFromAttachments(oldList);
     }
     public void afterUndelete() {
-        AttachmentService.getCasesFromAttachments(newList);
+        AttachmentService.updateCasesFromAttachments(newList);
     }
 }

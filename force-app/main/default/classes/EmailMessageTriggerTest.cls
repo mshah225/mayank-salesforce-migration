@@ -79,7 +79,7 @@ public class EmailMessageTriggerTest {
     public static testMethod void Test_ExceptionHandling() {
         List<Case> errorCases;
         Test.startTest();
-        EmailMessageService.getCasesFromEmailMessages(null);
+        EmailMessageService.updateCasesFromEmailMessages(null);
 
         errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
 

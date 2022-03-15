@@ -219,20 +219,15 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Non-degree', value: 'non-degree'},
     ];
     specialPopulationOptions = [
-        {label: 'Accelerated 4+1 Degrees', value: 'Accelerated 4+1 Degrees'},
-        {label: 'International Accelerated Students', value: 'International Accelerated Students'},
-        {label: 'Format Students', value: 'Format Students'},
-        {label: 'Provivisional Admits, not met yet', value: 'Provivisional Admits, not met yet'},
-        {label: 'Veterans', value: 'Veterans'},
-        {label: 'Applied to Graduate', value: 'Applied to Graduate'},
-        {label: 'Mayo Students', value: 'Mayo Students'},
-        {label: 'Cintana Students', value: 'Cintana Students'},
-        {label: 'HS Dual Enrollment Students', value: 'HS Dual Enrollment Students'},
-        {label: 'Teach for America Students', value: 'Teach for America Students'},
-        {label: 'Research Assistants', value: 'Research Assistants'},
-        {label: 'Teaching Assistants', value: 'Teaching Assistants'},
-        {label: 'Concurrent Enrollment', value: 'Concurrent Enrollment'},
-        {label: 'Active Students with Registation Hold', value: 'Active Students with Registation Hold'},
+        {label: 'Accelerated 4+1 Degrees', value: 'accelerated 4+1 degrees'},
+        {label: 'Format Students', value: 'format students'},
+        {label: 'Provivisional Admits, not met yet', value: 'provivisional admits, not met yet'},
+        {label: 'Veterans', value: 'veterans'},
+        {label: 'Applied to Graduate', value: 'applied to graduate'},
+        {label: 'Mayo Students', value: 'mayo students'},
+        {label: 'Cintana Students', value: 'cintana students'},
+        {label: 'Concurrent Enrollment', value: 'concurrent enrollment'},
+        {label: 'Active Students with Registation Hold', value: 'active students with registation hold'},
     ];
 
     connectedCallback() {

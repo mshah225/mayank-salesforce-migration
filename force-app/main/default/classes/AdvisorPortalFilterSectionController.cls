@@ -318,6 +318,34 @@ public class AdvisorPortalFilterSectionController {
         // Filter based on Student Plans
         filteredContactIds = filterStudentPlans(filter, filteredContactIds);
 
+        // Filter on special populations if possible
+        // note, these are all aditive, so we should UNION the results of all the special population filters
+        if (filter.career == 'GRD') {
+            if (!String.isBlank(filter.specialPopulation)) {
+                Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(
+                    filter,
+                    filteredContactIds
+                );
+                Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(filter, filteredContactIds);
+                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmits(
+                    filter,
+                    filteredContactIds
+                );
+                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationRegistrationHold(
+                    filter,
+                    filteredContactIds
+                );
+                Set<Id> filteredContactIds5 = getMatchesForSpecialPopulationStudentGroups(filter, filteredContactIds);
+
+                filteredContactIds.clear();
+                filteredContactIds.addAll(filteredContactIds1);
+                filteredContactIds.addAll(filteredContactIds2);
+                filteredContactIds.addAll(filteredContactIds3);
+                filteredContactIds.addAll(filteredContactIds4);
+                filteredContactIds.addAll(filteredContactIds5);
+            }
+        }
+
         // Remove cases that don't match contact filters and generate list of filteredCaseContacts
         for (Integer i = 0; i < filteredCases.size(); i++) {
             Case eachCase = filteredCases.get(i);
@@ -601,11 +629,28 @@ public class AdvisorPortalFilterSectionController {
             contacts.add(student.Student__r);
         }
 
-        // Filter based on Student Groups (LIMIT 2000 query, unavoidable)
         contactIds = filterStudentGroups(filter, contactIds);
 
-        // Filter based on Student Plans (LIMIT 2000 query, unavoidable)
         contactIds = filterStudentPlans(filter, contactIds);
+
+        // Filter on special populations if possible
+        // note, these are all aditive, so we should UNION the results of all the special population filters
+        if (filter.career == 'GRD') {
+            if (!String.isBlank(filter.specialPopulation)) {
+                Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(filter, contactIds);
+                Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(filter, contactIds);
+                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmits(filter, contactIds);
+                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationRegistrationHold(filter, contactIds);
+                Set<Id> filteredContactIds5 = getMatchesForSpecialPopulationStudentGroups(filter, contactIds);
+
+                contactIds.clear();
+                contactIds.addAll(filteredContactIds1);
+                contactIds.addAll(filteredContactIds2);
+                contactIds.addAll(filteredContactIds3);
+                contactIds.addAll(filteredContactIds4);
+                contactIds.addAll(filteredContactIds5);
+            }
+        }
 
         for (Contact c : contacts) {
             if (!contactIds.contains(c.Id)) {
@@ -706,42 +751,19 @@ public class AdvisorPortalFilterSectionController {
             ' AND SG_Status__c = TRUE';
 
         if (filter.career != null) {
-            // if statement for using either grad level or undergrad level filtering
-            if (filter.career == 'GRD') {
-                if (!String.isBlank(filter.specialPopulation)) {
-                    useQueryString = true;
-                    if (filter.specialPopulation == 'accelerated 4+1 degrees') {
-                        queryString += ' AND SG_PeopleSoft_Code__c IN (\'GRAH\', \'GRAI\')';
-                    } else if (filter.specialPopulation == 'international accelerated students') {
-                        queryString += ' AND SG_PeopleSoft_Code__c = \'ADIP\'';
-                    } else if (filter.specialPopulation == 'format students') {
-                    } else if (filter.specialPopulation == 'provivisional admits, not met yet') {
-                    } else if (filter.specialPopulation == 'veterans') {
-                        queryString += ' AND SG_PeopleSoft_Code__c IN (\'SR1B\', \'SR1D\')';
-                    } else if (filter.specialPopulation == 'applied to graduate') {
-                    } else if (filter.specialPopulation == 'mayo students') {
-                        queryString += ' AND SG_PeopleSoft_Code__c = \'SRKY\'';
-                    } else if (filter.specialPopulation == 'cintana students') {
-                        queryString += ' AND SG_PeopleSoft_Code__c = \'ADAD\'';
-                    } else if (filter.specialPopulation == 'hs dual enrollment students') {
-                        queryString += ' AND SG_PeopleSoft_Code__c = \'ADAM\'';
-                    } else if (filter.specialPopulation == 'teach for america students') {
-                        queryString += ' AND SG_PeopleSoft_Code__c = \'SRSA\'';
-                    } else if (filter.specialPopulation == 'research assistants') {
-                        // Skipping for now
-                    } else if (filter.specialPopulation == 'teaching assistants') {
-                        // Skipping for now
-                    } else if (filter.specialPopulation == 'concurrent enrollment') {
-                    } else if (filter.specialPopulation == 'active students with registation hold') {
-                    }
-                }
-            } else {
+            // if statement for using either undergrad filtering
+            // if grad filtering, there still might be some of student group filters to apply
+            // (for special populations), but they happen in a different place since they
+            // need to be applied as a UNION rather than an INTERSECTION
+            if (filter.career != 'GRD') {
                 if (!String.isBlank(filter.studentGroupCode)) {
                     useQueryString = true;
                     queryString += ' AND SG_PeopleSoft_Code__c = :filter.studentGroupCode';
                 }
             }
 
+            queryString += ' AND SG_Effective_Date__c < TODAY';
+            queryString += ' AND SG_Status__c = TRUE';
             queryString += ' GROUP BY SG_Contact__c LIMIT 2000';
         }
         // make query to filter - or return intial set of contactIds if no filtering is needed
@@ -770,8 +792,8 @@ public class AdvisorPortalFilterSectionController {
         String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE Contact__c IN :contactIds';
 
         if (filter.career != null) {
-            useQueryString = true;
             // if statement for using either grad level or undergrad level filtering
+            useQueryString = true;
             if (filter.career == 'GRD') {
                 // Use grad portal filtering capabilities
                 queryString += ' AND Career__c = \'Graduate\'';
@@ -841,23 +863,315 @@ public class AdvisorPortalFilterSectionController {
                 List<String> residencies = filter.residency.split(';');
                 queryString += ' AND Residency__c IN :residencies';
             }
-
-            queryString += ' GROUP BY Contact__c LIMIT 2000';
-
-            for (AggregateResult studentPlanResult : Database.query(queryString)) {
-                filteredContactIds.add((Id) studentPlanResult.get('Contact__c'));
-            }
-            return filteredContactIds;
         }
 
+        queryString += ' GROUP BY Contact__c LIMIT 2000';
         // make query to filter - or return intial set of contactIds if no filtering is needed
         if (useQueryString) {
             for (AggregateResult studentPlanResult : Database.query(queryString)) {
-                filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
+                filteredContactIds.add((Id) studentPlanResult.get('Contact__c'));
             }
             return filteredContactIds;
         } else {
             return contactIds;
         }
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's groups
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     */
+    private static Set<Id> getMatchesForSpecialPopulationStudentGroups(AdvisorPortalFilter filter, Set<Id> contactIds) {
+        Set<Id> filteredContactIds = new Set<Id>();
+        String queryString =
+            'SELECT SG_Contact__c' +
+            ' FROM Student_Group__c' +
+            ' WHERE SG_Contact__c IN :contactIds' +
+            ' AND SG_Status__c = TRUE';
+
+        if (filter.career != null) {
+            // if statement for using either grad level or undergrad level filtering
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    Set<String> acceptablePeoplesoftCodesSet = new Set<String>();
+                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    if (specialPopulations.contains('accelerated 4+1 degrees')) {
+                        acceptablePeoplesoftCodesSet.add('GRAH'); // Active undergrad, 4 + 1 applicant
+                        acceptablePeoplesoftCodesSet.add('GRAI'); // When matriculated as a student
+                        acceptablePeoplesoftCodesSet.add('ADIP'); // International Accelerated (IADP) students
+                    }
+                    if (specialPopulations.contains('veterans')) {
+                        acceptablePeoplesoftCodesSet.add('SR1B');
+                        acceptablePeoplesoftCodesSet.add('SR1D');
+                    }
+                    if (specialPopulations.contains('mayo students')) {
+                        acceptablePeoplesoftCodesSet.add('SRKY');
+                    }
+                    if (specialPopulations.contains('cintana students')) {
+                        acceptablePeoplesoftCodesSet.add('ADAD'); // Cintana Students
+                        acceptablePeoplesoftCodesSet.add('ADAM'); // hs dual enrollment students
+                        acceptablePeoplesoftCodesSet.add('SRSA'); // teach for america students
+                    }
+                    if (specialPopulations.contains('active students with registation hold')) {
+                    }
+
+                    if (!acceptablePeoplesoftCodesSet.isEmpty()) {
+                        List<String> acceptablePeoplesoftCodesList = new List<String>(acceptablePeoplesoftCodesSet);
+                        queryString += ' AND SG_PeopleSoft_Code__c IN :acceptablePeoplesoftCodesList';
+
+                        queryString += ' AND SG_Effective_Date__c < TODAY';
+                        queryString += ' AND SG_Status__c = TRUE';
+                        queryString += ' GROUP BY SG_Contact__c LIMIT 2000';
+
+                        for (AggregateResult studentPlanResult : Database.query(queryString)) {
+                            filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
+                        }
+                    }
+                }
+            }
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's Student_Program_Plan__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     */
+    private static Set<Id> getMatchesForSpecialPopulationDualOrAppliedToGrad(
+        AdvisorPortalFilter filter,
+        Set<Id> contactIds
+    ) {
+        Set<Id> filteredContactIds = new Set<Id>();
+
+        List<String> dualEnrollmentCareers = new List<String>{ 'Graduate', 'Law' };
+        List<String> appliedToGraduateCodes = new List<String>{ 'AG', 'AP', 'GD', 'IR', 'PN' };
+
+        // Query for both applied to graduate and dual enrollment
+        List<Student_Program_Plan__c> potentialMatches = [
+            SELECT Contact__c, Program_Code__c
+            FROM Student_Program_Plan__c
+            WHERE
+                Contact__c IN :contactIds
+                AND (Career__c IN :dualEnrollmentCareers
+                OR (Career__c = 'Graduate'
+                AND Status__c = 'Active in Program'
+                AND Degree_Chkout_Stat_Code__c IN :appliedToGraduateCodes))
+                AND Effective_Date__c <= TODAY
+            ORDER BY Contact__c, Effective_Date__c, Plan_Sequence__c DESC NULLS LAST
+            LIMIT 2000
+        ];
+
+        Id prevContactId = null;
+        Id currContactId = null;
+        Integer numberOfPlans = 0;
+        for (Student_Program_Plan__c programPlan : potentialMatches) {
+            prevContactId = currContactId;
+            currContactId = programPlan.Contact__c;
+
+            // first program plan for this contact, reset counter
+            if (prevContactId != currContactId) {
+                numberOfPlans = 0;
+            }
+
+            if (filter.career != null) {
+                if (filter.career == 'GRD') {
+                    if (!String.isBlank(filter.specialPopulation)) {
+                        List<String> specialPopulations = filter.specialPopulation.split(';');
+                        if (specialPopulations.contains('applied to graduate')) {
+                            // this is a match for the applied to graduate filter
+                            if (
+                                programPlan.Career__c == 'Graduate' &&
+                                programPlan.Status__c == 'Active in Program' &&
+                                appliedToGraduateCodes.contains(programPlan.Degree_Chkout_Stat_Code__c)
+                            ) {
+                                filteredContactIds.add(currContactId);
+                            }
+                        }
+
+                        if (specialPopulations.contains('concurrent enrollment')) {
+                            // this is a match for the dual enrollment filter
+                            if (dualEnrollmentCareers.contains(programPlan.Career__c)) {
+                                numberOfPlans++;
+
+                                if (numberOfPlans > 1) {
+                                    filteredContactIds.add(currContactId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's Student_Milestone__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     */
+    private static Set<Id> getMatchesForSpecialPopulationFormatStudents(
+        AdvisorPortalFilter filter,
+        Set<Id> contactIds
+    ) {
+        Set<Id> filteredContactIds = new Set<Id>();
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    if (specialPopulations.contains('format students')) {
+                        String currentPSCode = getCurrentPeoplesoftTermCode();
+                        List<AggregateResult> mileStoneStudents = new List<AggregateResult>(
+                            [
+                                SELECT Contact__c
+                                FROM Student_Milestone__c
+                                WHERE
+                                    Contact__c IN :contactIds
+                                    AND Milestone__c = 'GRFORMAT'
+                                    AND Effdt__c <= TODAY
+                                    AND Term_Required__r.PeopleSoft_Code__c >= :currentPSCode
+                                GROUP BY Contact__c
+                                LIMIT 2000
+                            ]
+                        );
+
+                        for (AggregateResult studentMilestone : mileStoneStudents) {
+                            filteredContactIds.add((Id) studentMilestone.get('Contact__c'));
+                        }
+                    }
+                }
+            }
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's Service_Indicator__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     */
+    private static Set<Id> getMatchesForSpecialPopulationProvisionalAdmits(
+        AdvisorPortalFilter filter,
+        Set<Id> contactIds
+    ) {
+        Set<Id> filteredContactIds = new Set<Id>();
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    if (specialPopulations.contains('provivisional admits, not met yet')) {
+                        List<AggregateResult> serviceIndicators = new List<AggregateResult>(
+                            [
+                                SELECT SI_Contact__c
+                                FROM Service_Indicator__c
+                                WHERE
+                                    SI_Contact__c IN :contactIds
+                                    AND SI_Code__c = 'AD4'
+                                    AND SI_Reason__c = 'PROV'
+                                    AND SI_Positive_Service_Indicator__c = TRUE
+                                GROUP BY SI_Contact__c
+                                LIMIT 2000
+                            ]
+                        );
+
+                        for (AggregateResult serviceIndicator : serviceIndicators) {
+                            filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
+                        }
+                    }
+                }
+            }
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that need to query
+     * both Service_Indicator__c and Student_Program_Plan__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     */
+    private static Set<Id> getMatchesForSpecialPopulationRegistrationHold(
+        AdvisorPortalFilter filter,
+        Set<Id> contactIds
+    ) {
+        Set<Id> filteredContactIds = new Set<Id>();
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    if (specialPopulations.contains('active students with registation hold')) {
+                        String currentPSCode = getCurrentPeoplesoftTermCode();
+                        List<AggregateResult> serviceIndicators = new List<AggregateResult>(
+                            [
+                                SELECT SI_Contact__c
+                                FROM Service_Indicator__c
+                                WHERE
+                                    SI_Contact__c IN :contactIds
+                                    AND Enrollment_Impact__c = TRUE
+                                    AND SI_Positive_Service_Indicator__c = FALSE
+                                    AND SI_Start_Term__r.PeopleSoft_Code__c >= :currentPSCode
+                                    AND SI_End_Term__r.PeopleSoft_Code__c <= :currentPSCode
+                                GROUP BY SI_Contact__c
+                                LIMIT 2000
+                            ]
+                        );
+                        for (AggregateResult serviceIndicator : serviceIndicators) {
+                            filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
+                        }
+
+                        List<AggregateResult> ensureStudentIsActive = [
+                            SELECT Contact__c
+                            FROM Student_Program_Plan__c
+                            WHERE
+                                Contact__c IN :filteredContactIds
+                                AND Career__c = 'Graduate'
+                                AND Status__c = 'Active in Program'
+                                AND Effective_Date__c <= TODAY
+                            GROUP BY Contact__c
+                            LIMIT 2000
+                        ];
+                        filteredContactIds.clear();
+                        for (AggregateResult studentIsActiveCheck : ensureStudentIsActive) {
+                            filteredContactIds.add((Id) studentIsActiveCheck.get('Contact__c'));
+                        }
+                    }
+                }
+            }
+        }
+
+        return filteredContactIds;
+    }
+
+    private static String getCurrentPeoplesoftTermCode() {
+        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        return currentTermData.CurrTerm__c;
     }
 }

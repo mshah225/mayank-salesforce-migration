@@ -4,7 +4,7 @@ import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 
 export default class AdvisorPortal extends LightningElement {
-    defaultFilter = {};
+    defaultFilter = null;
     currentFilter = {};
     allUsers = [];
     selectedUsers = [];

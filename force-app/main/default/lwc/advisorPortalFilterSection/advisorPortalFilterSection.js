@@ -267,7 +267,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
      */
     changeField(event) {
         const fieldChanged = event.currentTarget.dataset.name;
-        const newValue = event.detail.value;
+        const newValue = event.currentTarget.value;
         const oldValue = this.currentFilter[fieldChanged];
 
         if (oldValue !== newValue) {

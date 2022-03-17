@@ -7,3 +7,9 @@
     padding-left: 4px;
     padding-right: 4px;
 }
+
+:host .fieldLoadingCircle {
+    position: relative;
+    top: -24px;
+    left: calc(100% - 48px);
+}

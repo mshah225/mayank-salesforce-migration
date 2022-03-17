@@ -20,6 +20,12 @@
                 value={currentFilter.campus}
                 oncommit={changeField}
             ></c-lightning-combo-box>
+            <lightning-spinner
+                if:true={loadingCampusValues}
+                class="fieldLoadingCircle"
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
         </div>
 
         <template if:true={isGraduateOnly}>
@@ -44,6 +50,12 @@
                     value={currentFilter.academicProgram}
                     oncommit={changeField}
                 ></c-lightning-combo-box>
+                <lightning-spinner
+                    if:true={loadingAcadProgram}
+                    class="fieldLoadingCircle"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box
@@ -55,6 +67,12 @@
                     value={currentFilter.schoolDepartment}
                     oncommit={changeField}
                 ></c-lightning-combo-box>
+                <lightning-spinner
+                    if:true={loadingSchoolDepartment}
+                    class="fieldLoadingCircle"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box
@@ -66,6 +84,12 @@
                     value={currentFilter.academicPlan}
                     oncommit={changeField}
                 ></c-lightning-combo-box>
+                <lightning-spinner
+                    if:true={loadingAcadPlan}
+                    class="fieldLoadingCircle"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <fieldset class="slds-form-element slds-form-element_compound">
@@ -158,6 +182,12 @@
                 value={currentFilter.caseStatus}
                 oncommit={changeField}
             ></c-lightning-combo-box>
+            <lightning-spinner
+                if:true={loadingCaseStatus}
+                class="fieldLoadingCircle"
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
             <c-lightning-combo-box
@@ -169,6 +199,12 @@
                 value={currentFilter.caseCategory}
                 oncommit={changeField}
             ></c-lightning-combo-box>
+            <lightning-spinner
+                if:true={loadingCaseCategory}
+                class="fieldLoadingCircle"
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
         </div>
 
         <template if:true={isGraduateOnly}>

@@ -72,7 +72,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
     }
 
     changeAnswer(e) {
-        const key = e.originalTarget.name;
+        const key = e.currentTarget.name;
         const ans = e.detail.value;
         this.dispatchEvent(
             new CustomEvent('change', {

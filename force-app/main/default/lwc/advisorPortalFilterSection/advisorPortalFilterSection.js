@@ -11,9 +11,18 @@ import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionControl
 
 export default class AdvisorPortalFilterSection extends LightningElement {
     @api set defaultFilter(val) {
-        this._defaultFilter = val;
-        this.currentFilter = val;
-        this.applyFilters();
+        if (val != null) {
+            this._defaultFilter = val;
+            this.copyChanges(this.currentFilter, val);
+
+            if (val.degreeLevel != null) this.updateConditionalFields('degreeLevel');
+            if (val.academicProgram != null) this.updateConditionalFields('academicProgram');
+            if (val.schoolDepartment != null) this.updateConditionalFields('schoolDepartment');
+            if (val.admitTermFrom != null) this.updateValidityChecks('admitTermFrom');
+            if (val.admitTermTo != null) this.updateValidityChecks('admitTermTo');
+
+            this.applyFilters();
+        }
     }
     get defaultFilter() {
         return this._defaultFilter;
@@ -34,12 +43,14 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         if (this.filterIsDifferent(this.currentFilter, val)) {
             this.copyChanges(this.currentFilter, val);
 
-            if (this.isGraduateOnly !== (this.currentFilter.career === 'GRD')) {
+            const newIsGraduateOnly = this.currentFilter.career === 'GRD';
+            if (this.isGraduateOnly !== newIsGraduateOnly) {
                 this.sendLoadingEvent(true);
                 // take the grad toggle change back a rendering cycle to ensure parent LWC can re-render and show loading circle while this completes
                 // since this might take a bit if "Academic Plan" is rendering all options (700-ish)
                 this.throwBackARenderCycle(() => {
-                    this.isGraduateOnly = this.currentFilter.career === 'GRD';
+                    this.isGraduateOnly = newIsGraduateOnly;
+                    this.applyFilters();
                     this.sendLoadingEvent(false);
                 });
                 this.refreshCampusValues();
@@ -58,7 +69,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     residencyPicklistValues = [];
     refreshResidencyPicklistValues() {
         this.sendLoadingEvent(true);
-        getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
+        return getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
             .then((val) => {
                 this.residencyPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -75,7 +86,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     caseStatusPicklistValues = [];
     refreshCaseStatusSettings() {
         this.sendLoadingEvent(true);
-        getCaseStatusSettings()
+        return getCaseStatusSettings()
             .then((val) => {
                 this.caseStatusPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -93,7 +104,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     refreshCampusValues() {
         this.sendLoadingEvent(true);
         const filterJSON = JSON.stringify(this.currentFilter);
-        getCampusValues({filterJSON})
+        return getCampusValues({filterJSON})
             .then((val) => {
                 this.campusPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -110,7 +121,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     caseSubjectPicklistValues = [];
     refreshCaseSubjectPicklistValues() {
         this.sendLoadingEvent(true);
-        getCaseSubjectPicklistValues({viewAsOptions: this.viewAsUsers})
+        return getCaseSubjectPicklistValues({viewAsOptions: this.viewAsUsers})
             .then((val) => {
                 this.caseSubjectPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -127,7 +138,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     caseCategoryPicklistValues = [];
     refreshCaseClassificationPicklistValues() {
         this.sendLoadingEvent(true);
-        getCaseClassificationPicklistValues({viewAsOptions: this.viewAsUsers})
+        return getCaseClassificationPicklistValues({viewAsOptions: this.viewAsUsers})
             .then((val) => {
                 this.caseCategoryPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -144,7 +155,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     academicProgramOptions = [];
     refreshAcademicProgramPicklistValues() {
         this.sendLoadingEvent(true);
-        getAcademicProgramPicklistValues()
+        return getAcademicProgramPicklistValues()
             .then((val) => {
                 this.academicProgramOptions = this.buildPicklistOptionsArray(val);
             })
@@ -162,7 +173,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     refreshSchoolDepartmentPicklistVaues() {
         this.sendLoadingEvent(true);
         const filterJSON = JSON.stringify(this.currentFilter);
-        getSchoolDepartmentPicklistVaues({filterJSON})
+        return getSchoolDepartmentPicklistVaues({filterJSON})
             .then((val) => {
                 this.schoolDepartmentOptions = this.buildPicklistOptionsArray(val);
             })
@@ -180,7 +191,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     refreshAcademicPlanPicklistValues() {
         this.sendLoadingEvent(true);
         const filterJSON = JSON.stringify(this.currentFilter);
-        getAcademicPlanPicklistValues({filterJSON})
+        return getAcademicPlanPicklistValues({filterJSON})
             .then((val) => {
                 this.academicPlanOptions = this.buildPicklistOptionsArray(val);
             })
@@ -246,18 +257,20 @@ export default class AdvisorPortalFilterSection extends LightningElement {
      * @param {changeEvent} event
      */
     changeField(event) {
-        const fieldChanged = event.originalTarget.name;
+        const fieldChanged = event.currentTarget.name;
         const newValue = event.detail.value;
-        this.currentFilter[fieldChanged] = newValue;
+        const oldValue = this.currentFilter[fieldChanged];
 
-        this.updateConditionalFields(fieldChanged);
-        this.updateValidityChecks(fieldChanged);
+        if (oldValue !== newValue) {
+            this.currentFilter[fieldChanged] = newValue;
+            this.updateConditionalFields(fieldChanged);
+            this.updateValidityChecks(fieldChanged);
+            this.sendChangeFilterEvent(fieldChanged, newValue);
+        }
 
         event.stopPropagation();
         event.stopImmediatePropagation();
         event.preventDefault();
-
-        this.sendChangeFilterEvent(fieldChanged, newValue);
     }
 
     /**
@@ -272,19 +285,19 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         // visually clear every field
         for (let i = 0; i < this.filterPropertyList.length; i++) {
             const field = this.filterPropertyList[i];
-            const element = this.template.querySelector('[data-name="' + field + '"]');
+
+            // don't reset these two fields
+            if (field === 'caseTypeState' || field === 'career') continue;
 
             // send clear event for every field
             this.sendChangeFilterEvent(field, '');
+        }
 
-            // so long as the field is visibile, clear it visually
-            if (element != null) {
-                try {
-                    element.value = '';
-                } catch (err) {
-                    console.error(err);
-                }
-            }
+        // Visually clear all the standard lightning-inputs
+        // all the comboboxes auto update though, so don't need to change those
+        const lightningInputs = this.template.querySelectorAll('lightning-input');
+        for (let i = 0; i < lightningInputs.length; i++) {
+            lightningInputs[i].value = '';
         }
 
         this.applyFilters();
@@ -297,15 +310,11 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     reportValidity() {
         let valid = true;
 
-        // check that every field is valid
-        for (let i = 0; i < this.filterPropertyList.length; i++) {
-            const field = this.filterPropertyList[i];
-            const element = this.template.querySelector('[data-name="' + field + '"]');
-            // so long as the field is visibile, report if valid (if null then it is a disabled field because
-            // it is either a grad only field and the user is in undergrad mode, or the other way around)
-            if (element != null) {
-                valid &= element.reportValidity();
-            }
+        // check that every input field is valid (only really verifying ranges, and those are all lightning-inputs)
+        const lightningInputs = this.template.querySelectorAll('lightning-input');
+        for (let i = 0; i < lightningInputs.length; i++) {
+            const element = lightningInputs[i];
+            valid &= element.reportValidity();
         }
 
         return valid;
@@ -551,7 +560,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
     /**
      * Raise an event to change the filter in the parent
      * @param {String} name
-     * @param {String|Integer} value
+     * @param {String} value
      */
     sendChangeFilterEvent(name, value) {
         this.dispatchEvent(

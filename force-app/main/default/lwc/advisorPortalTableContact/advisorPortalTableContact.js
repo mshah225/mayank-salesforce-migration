@@ -47,7 +47,7 @@ export default class AdvisorPortalTableContact extends LightningElement {
     }
 
     toggleCaseSelect(e) {
-        const caseId = e.originalTarget.name;
+        const caseId = e.currentTarget.name;
         const newSelectState = e.detail.checked;
 
         for (let i = 0; i < this.contactWrapper.cases.length; i++) {
@@ -76,8 +76,8 @@ export default class AdvisorPortalTableContact extends LightningElement {
     }
 
     openCase(e) {
-        const caseId = e.originalTarget.dataset.caseId;
-        const caseNumber = e.originalTarget.dataset.caseNumber;
+        const caseId = e.currentTarget.dataset.caseId;
+        const caseNumber = e.currentTarget.dataset.caseNumber;
         this.sendNavigateEvent('viewcase', {
             contactId: this.contactWrapper.portalContact.Id,
             contactName: this.contactWrapper.portalContact.Name,

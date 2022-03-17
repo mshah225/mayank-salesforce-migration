@@ -288,25 +288,41 @@ export default class LightningComboBox extends LightningElement {
 
     /**
      * Update the options array to ensure selection matches the value set by the parent element
+     * and make sure the value only contains values from the options
      */
     forceSelectedStatesToMatchValue() {
         const parentDeclaredValues = this._value.split(';');
         const options = JSON.parse(JSON.stringify(this._options));
+        const newValues = [];
+        let madeAChange = false;
 
         let foundOne = false;
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
             if (parentDeclaredValues.includes(opt.value) && (this.multiSelect || !foundOne)) {
+                if (!opt.isSelected) madeAChange = true;
                 opt.isSelected = true;
                 foundOne = true;
+                newValues.push(opt.value);
             } else {
+                if (opt.isSelected) madeAChange = true;
                 opt.isSelected = false;
             }
         }
 
         this._options = options;
+
+        if (madeAChange) {
+            this._value = newValues.join(';');
+            this.sendCommitEvent();
+        }
+
         this.updatePlacard();
-        if (foundOne) this.sendCommitEvent();
+
+        // must throwback update one cycle sometimes - seems to be related to conditionally rendering fields (degree level, academic program, etc.)
+        this.throwBackARenderCycle(() => {
+            this.updatePlacard();
+        });
     }
 
     /**
@@ -442,5 +458,14 @@ export default class LightningComboBox extends LightningElement {
                 detail: {},
             })
         );
+    }
+
+    /**
+     * Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before
+     * running this code (this is used to doubly ensure the displayed placard is correct)
+     * @param {Function} fn
+     */
+    throwBackARenderCycle(fn) {
+        setTimeout(fn, 1);
     }
 }

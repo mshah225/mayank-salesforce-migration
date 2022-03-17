@@ -799,7 +799,7 @@ public class AdvisorPortalFilterSectionController {
                 queryString += ' AND Career__c = \'Graduate\'';
 
                 if (!String.isBlank(filter.degreeLevel)) {
-                    List<String> degreeLevels = filter.academicLevel.split(';');
+                    List<String> degreeLevels = filter.degreeLevel.split(';');
                     List<String> degreeLevelQueryComponents = new List<String>();
 
                     if (degreeLevels.contains('masters')) {

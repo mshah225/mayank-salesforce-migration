@@ -33,6 +33,7 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         this._viewAsUsers = [...val];
         this.refreshCaseSubjectPicklistValues();
         this.refreshCaseClassificationPicklistValues();
+        this.forceRefresh();
     }
     get viewAsUsers() {
         return this._viewAsUsers;

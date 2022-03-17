@@ -825,6 +825,11 @@ public class AdvisorPortalFilterSectionController {
                     queryString += ' AND Program_Code__c IN :academicPrograms';
                 }
 
+                if (!String.isBlank(filter.academicPlan)) {
+                    List<String> academicPlans = filter.academicPlan.split(';');
+                    queryString += ' AND Plan_Code__c IN :academicPlans';
+                }
+
                 if (!String.isBlank(filter.admitTermFrom)) {
                     queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c >= \'' + filter.admitTermFrom + '\'';
                     queryString += ' OR Requirement_Term__c >= \'' + filter.admitTermFrom + '\')';

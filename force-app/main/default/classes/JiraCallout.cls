@@ -67,7 +67,11 @@ global class JiraCallout {
 
         String endpoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '/watchers';
 
-        String[] watchersToAdd = watchers.replaceAll('\\s+', '').split(',');
+        List<String> watchersToAdd = new List<String>();
+        if (String.isNotEmpty(watchers)) {
+            watchersToAdd = watchers.replaceAll('\\s+', '').split(',');
+        }
+
         try {
             //Send endpoint to JIRA
             for (Integer i = 0; i < watchersToAdd.size(); i++) {

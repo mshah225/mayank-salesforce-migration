@@ -251,16 +251,16 @@ global class JiraCallout {
         try {
             setHeader(req);
             setEndPoint(req, endPoint, 'GET');
-            // res = http.send(req);
+            res = http.send(req);
 
-            // JSONParser parser = JSON.createParser(res.getBody());
-            // while (parser.nextToken() != null) {
-            //     if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'accountId')) {
-            //         parser.nextToken();
-            //         accountId = parser.getText();
-            //         break;
-            //     }
-            // }
+            JSONParser parser = JSON.createParser(res.getBody());
+            while (parser.nextToken() != null) {
+                if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && (parser.getText() == 'accountId')) {
+                    parser.nextToken();
+                    accountId = parser.getText();
+                    break;
+                }
+            }
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());

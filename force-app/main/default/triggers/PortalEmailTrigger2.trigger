@@ -1,4 +1,4 @@
-trigger AccountTrigger on Account(
+trigger PortalEmailTrigger2 on Portal_Email__c(
     after delete,
     after insert,
     after undelete,
@@ -7,7 +7,12 @@ trigger AccountTrigger on Account(
     before insert,
     before update
 ) {
-    AccountDispatcher dispatcher = new AccountDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+    PortalEmailDispatcher dispatcher = new PortalEmailDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
 
     if (Trigger.isBefore) {
         if (Trigger.isInsert) {

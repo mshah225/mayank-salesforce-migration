@@ -1,5 +1,5 @@
 @isTest
-global class JiraHttpMockCallout implements HttpCalloutMock {
+global class JiraCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         if (req.getEndpoint().contains('watchers')) {
             return addWatchers();
@@ -11,8 +11,8 @@ global class JiraHttpMockCallout implements HttpCalloutMock {
             return updateStatus();
         } else if (req.getEndpoint().contains('/rest/api/2/search?jql=')) {
             return getIssues();
-        } else if (req.getEndpoint().contains('/rest/api/2/jql/pdcleaner')) {
-            return getId();
+        } else if (req.getEndpoint().contains('/rest/api/3/user/search?query=')) {
+            return getJiraAccountId();
         }
         return null;
     }
@@ -59,12 +59,10 @@ global class JiraHttpMockCallout implements HttpCalloutMock {
         return res;
     }
 
-    private HTTPResponse getId() {
+    private HTTPResponse getJiraAccountId() {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
-        res.setBody(
-            '{"queryStrings":["assignee = 557058:472c64c9-2567-4213-839b-86bf21558300"],"queriesWithUnknownUsers":[]}'
-        );
+        res.setBody('{"accountId":"557058:472c64c9-2567-4213-839b-86bf21558300"}');
         res.setStatusCode(200);
         return res;
     }

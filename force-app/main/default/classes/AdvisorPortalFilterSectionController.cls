@@ -922,8 +922,6 @@ public class AdvisorPortalFilterSectionController {
                         acceptablePeoplesoftCodesSet.add('ADAM'); // hs dual enrollment students
                         acceptablePeoplesoftCodesSet.add('SRSA'); // teach for america students
                     }
-                    if (specialPopulations.contains('active students with registation hold')) {
-                    }
 
                     if (!acceptablePeoplesoftCodesSet.isEmpty()) {
                         List<String> acceptablePeoplesoftCodesList = new List<String>(acceptablePeoplesoftCodesSet);

@@ -106,14 +106,13 @@ public class AdvisorPortalFilterSectionController {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
         Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
 
         for (AggregateResult result : [
             SELECT Subject
             FROM Case
             WHERE IsClosed = FALSE AND RecordTypeId = :recordType AND Subject != NULL AND OwnerId IN :viewAsOptions
             GROUP BY Subject
-            LIMIT :remainingQueries
+            LIMIT 10000
         ]) {
             if (result.get('Subject') != null) {
                 caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
@@ -134,7 +133,6 @@ public class AdvisorPortalFilterSectionController {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
         Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
 
         for (AggregateResult result : [
             SELECT CC_Category__r.Name CategoryName
@@ -145,7 +143,7 @@ public class AdvisorPortalFilterSectionController {
                 AND CC_Category__c != NULL
                 AND OwnerId IN :viewAsOptions
             GROUP BY CC_Category__r.Name
-            LIMIT :remainingQueries
+            LIMIT 10000
         ]) {
             if (result.get('CategoryName') != null) {
                 caseClassificationValuesByLabel.put(
@@ -764,7 +762,7 @@ public class AdvisorPortalFilterSectionController {
 
             queryString += ' AND SG_Effective_Date__c < TODAY';
             queryString += ' AND SG_Status__c = TRUE';
-            queryString += ' GROUP BY SG_Contact__c LIMIT 2000';
+            queryString += ' GROUP BY SG_Contact__c LIMIT 4000';
         }
         // make query to filter - or return intial set of contactIds if no filtering is needed
         if (useQueryString) {
@@ -870,7 +868,7 @@ public class AdvisorPortalFilterSectionController {
             }
         }
 
-        queryString += ' GROUP BY Contact__c LIMIT 2000';
+        queryString += ' GROUP BY Contact__c LIMIT 4000';
         // make query to filter - or return intial set of contactIds if no filtering is needed
         if (useQueryString) {
             for (AggregateResult studentPlanResult : Database.query(queryString)) {

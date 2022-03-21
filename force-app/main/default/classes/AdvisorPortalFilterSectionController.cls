@@ -1079,27 +1079,37 @@ public class AdvisorPortalFilterSectionController {
             if (filter.career == 'GRD') {
                 if (!String.isBlank(filter.specialPopulation)) {
                     List<String> specialPopulations = filter.specialPopulation.split(';');
-                    if (specialPopulations.contains('provivisional admits, not met yet')) {
-                        String currentPSCode = getCurrentPeoplesoftTermCode();
-                        List<AggregateResult> serviceIndicators = new List<AggregateResult>(
-                            [
-                                SELECT SI_Contact__c
-                                FROM Service_Indicator__c
-                                WHERE
-                                    SI_Contact__c IN :contactIds
-                                    AND ((SI_Code__c = 'AD4'
-                                    AND SI_Reason__c = 'PROV'
-                                    AND SI_Positive_Service_Indicator__c = TRUE)
-                                    OR (Enrollment_Impact__c = TRUE
-                                    AND SI_Positive_Service_Indicator__c = FALSE))
-                                    AND SI_Start_Term__r.PeopleSoft_Code__c >= :currentPSCode
-                                    AND SI_End_Term__r.PeopleSoft_Code__c <= :currentPSCode
-                                GROUP BY SI_Contact__c
-                                LIMIT 2000
-                            ]
-                        );
 
-                        for (AggregateResult serviceIndicator : serviceIndicators) {
+                    Boolean makeQuery = false;
+                    String currentPSCode = getCurrentPeoplesoftTermCode();
+
+                    String queryString = 'SELECT SI_Contact__c FROM Service_Indicator__c';
+                    queryString += ' WHERE SI_Contact__c IN :contactIds';
+                    queryString += ' AND SI_Start_Term__r.PeopleSoft_Code__c >= :currentPSCode';
+                    queryString += ' AND SI_End_Term__r.PeopleSoft_Code__c <= :currentPSCode';
+
+                    List<String> extraWhereClauseComponents = new List<String>();
+
+                    if (specialPopulations.contains('provivisional admits, not met yet')) {
+                        makeQuery = true;
+                        extraWhereClauseComponents.add(
+                            '(SI_Code__c = \'AD4\' AND SI_Reason__c = \'PROV\' AND SI_Positive_Service_Indicator__c = TRUE)'
+                        );
+                    }
+                    if (specialPopulations.contains('active students with registation hold')) {
+                        makeQuery = true;
+                        extraWhereClauseComponents.add(
+                            '(Enrollment_Impact__c = TRUE AND SI_Positive_Service_Indicator__c = FALSE)'
+                        );
+                    }
+
+                    queryString += ' AND (' + String.join(extraWhereClauseComponents, ' OR ') + ')';
+
+                    queryString += ' GROUP BY SI_Contact__c';
+                    queryString += ' LIMIT 2000';
+
+                    if (makeQuery) {
+                        for (AggregateResult serviceIndicator : Database.query(queryString)) {
                             filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
                         }
                     }

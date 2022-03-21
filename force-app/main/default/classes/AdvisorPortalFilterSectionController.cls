@@ -176,7 +176,7 @@ public class AdvisorPortalFilterSectionController {
                     AND Program__r.Career__c = 'Graduate'
                     AND Program__r.Program_Code__c NOT IN ('GRPR', 'GCNV')
                 GROUP BY Program__c
-                HAVING MAX(Plan_Effective_Date__c) < TODAY
+                HAVING MAX(Plan_Effective_Date__c) <= TODAY
                 ORDER BY MAX(Program__r.Name) ASC
             ]
         );
@@ -216,7 +216,8 @@ public class AdvisorPortalFilterSectionController {
             ' FROM Plan__c' +
             ' WHERE Plan_Status__c = TRUE' +
             ' AND Plan_Effective_Date__c <= TODAY' +
-            ' AND Program__r.Career__c = \'Graduate\'';
+            ' AND Program__r.Career__c = \'Graduate\'' +
+            ' AND Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')';
 
         if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
             AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
@@ -325,22 +326,17 @@ public class AdvisorPortalFilterSectionController {
                     filteredContactIds
                 );
                 Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(filter, filteredContactIds);
-                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmits(
+                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
                     filter,
                     filteredContactIds
                 );
-                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationRegistrationHold(
-                    filter,
-                    filteredContactIds
-                );
-                Set<Id> filteredContactIds5 = getMatchesForSpecialPopulationStudentGroups(filter, filteredContactIds);
+                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationStudentGroups(filter, filteredContactIds);
 
                 filteredContactIds.clear();
                 filteredContactIds.addAll(filteredContactIds1);
                 filteredContactIds.addAll(filteredContactIds2);
                 filteredContactIds.addAll(filteredContactIds3);
                 filteredContactIds.addAll(filteredContactIds4);
-                filteredContactIds.addAll(filteredContactIds5);
             }
         }
 
@@ -637,16 +633,17 @@ public class AdvisorPortalFilterSectionController {
             if (!String.isBlank(filter.specialPopulation)) {
                 Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(filter, contactIds);
                 Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(filter, contactIds);
-                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmits(filter, contactIds);
-                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationRegistrationHold(filter, contactIds);
-                Set<Id> filteredContactIds5 = getMatchesForSpecialPopulationStudentGroups(filter, contactIds);
+                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
+                    filter,
+                    contactIds
+                );
+                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationStudentGroups(filter, contactIds);
 
                 contactIds.clear();
                 contactIds.addAll(filteredContactIds1);
                 contactIds.addAll(filteredContactIds2);
                 contactIds.addAll(filteredContactIds3);
                 contactIds.addAll(filteredContactIds4);
-                contactIds.addAll(filteredContactIds5);
             }
         }
 
@@ -787,7 +784,7 @@ public class AdvisorPortalFilterSectionController {
     private static Set<Id> filterStudentPlans(AdvisorPortalFilter filter, Set<Id> contactIds) {
         Boolean useQueryString = false;
         Set<Id> filteredContactIds = new Set<Id>();
-        String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE Contact__c IN :contactIds';
+        String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE Contact__c IN :contactIds AND Status__c = \'Active in Program\' AND Effective_Date__c <= TODAY';
 
         if (filter.career != null) {
             // if statement for using either grad level or undergrad level filtering
@@ -895,7 +892,8 @@ public class AdvisorPortalFilterSectionController {
             'SELECT SG_Contact__c' +
             ' FROM Student_Group__c' +
             ' WHERE SG_Contact__c IN :contactIds' +
-            ' AND SG_Status__c = TRUE';
+            ' AND SG_Status__c = TRUE' +
+            ' AND SG_Effective_Date__c <= TODAY';
 
         if (filter.career != null) {
             // if statement for using either grad level or undergrad level filtering
@@ -925,8 +923,6 @@ public class AdvisorPortalFilterSectionController {
                         List<String> acceptablePeoplesoftCodesList = new List<String>(acceptablePeoplesoftCodesSet);
                         queryString += ' AND SG_PeopleSoft_Code__c IN :acceptablePeoplesoftCodesList';
 
-                        queryString += ' AND SG_Effective_Date__c < TODAY';
-                        queryString += ' AND SG_Status__c = TRUE';
                         queryString += ' GROUP BY SG_Contact__c LIMIT 2000';
 
                         for (AggregateResult studentPlanResult : Database.query(queryString)) {
@@ -960,14 +956,14 @@ public class AdvisorPortalFilterSectionController {
 
         // Query for both applied to graduate and dual enrollment
         List<Student_Program_Plan__c> potentialMatches = [
-            SELECT Contact__c, Program_Code__c
+            SELECT Contact__c, Career__c, Status__c, Degree_Chkout_Stat_Code__c
             FROM Student_Program_Plan__c
             WHERE
                 Contact__c IN :contactIds
                 AND (Career__c IN :dualEnrollmentCareers
                 OR (Career__c = 'Graduate'
-                AND Status__c = 'Active in Program'
                 AND Degree_Chkout_Stat_Code__c IN :appliedToGraduateCodes))
+                AND Status__c = 'Active in Program'
                 AND Effective_Date__c <= TODAY
             ORDER BY Contact__c, Effective_Date__c, Plan_Sequence__c DESC NULLS LAST
             LIMIT 2000
@@ -1073,7 +1069,7 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
      */
-    private static Set<Id> getMatchesForSpecialPopulationProvisionalAdmits(
+    private static Set<Id> getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
         AdvisorPortalFilter filter,
         Set<Id> contactIds
     ) {
@@ -1084,51 +1080,6 @@ public class AdvisorPortalFilterSectionController {
                 if (!String.isBlank(filter.specialPopulation)) {
                     List<String> specialPopulations = filter.specialPopulation.split(';');
                     if (specialPopulations.contains('provivisional admits, not met yet')) {
-                        List<AggregateResult> serviceIndicators = new List<AggregateResult>(
-                            [
-                                SELECT SI_Contact__c
-                                FROM Service_Indicator__c
-                                WHERE
-                                    SI_Contact__c IN :contactIds
-                                    AND SI_Code__c = 'AD4'
-                                    AND SI_Reason__c = 'PROV'
-                                    AND SI_Positive_Service_Indicator__c = TRUE
-                                GROUP BY SI_Contact__c
-                                LIMIT 2000
-                            ]
-                        );
-
-                        for (AggregateResult serviceIndicator : serviceIndicators) {
-                            filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
-                        }
-                    }
-                }
-            }
-        }
-
-        return filteredContactIds;
-    }
-
-    /**
-     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that need to query
-     * both Service_Indicator__c and Student_Program_Plan__c
-     *
-     * @param filter, the AdvisorPortalFilter to use.
-     * @param contactIds, a Set of Contact Ids to use in the query.
-     *
-     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
-     */
-    private static Set<Id> getMatchesForSpecialPopulationRegistrationHold(
-        AdvisorPortalFilter filter,
-        Set<Id> contactIds
-    ) {
-        Set<Id> filteredContactIds = new Set<Id>();
-
-        if (filter.career != null) {
-            if (filter.career == 'GRD') {
-                if (!String.isBlank(filter.specialPopulation)) {
-                    List<String> specialPopulations = filter.specialPopulation.split(';');
-                    if (specialPopulations.contains('active students with registation hold')) {
                         String currentPSCode = getCurrentPeoplesoftTermCode();
                         List<AggregateResult> serviceIndicators = new List<AggregateResult>(
                             [
@@ -1136,32 +1087,20 @@ public class AdvisorPortalFilterSectionController {
                                 FROM Service_Indicator__c
                                 WHERE
                                     SI_Contact__c IN :contactIds
-                                    AND Enrollment_Impact__c = TRUE
-                                    AND SI_Positive_Service_Indicator__c = FALSE
+                                    AND ((SI_Code__c = 'AD4'
+                                    AND SI_Reason__c = 'PROV'
+                                    AND SI_Positive_Service_Indicator__c = TRUE)
+                                    OR (Enrollment_Impact__c = TRUE
+                                    AND SI_Positive_Service_Indicator__c = FALSE))
                                     AND SI_Start_Term__r.PeopleSoft_Code__c >= :currentPSCode
                                     AND SI_End_Term__r.PeopleSoft_Code__c <= :currentPSCode
                                 GROUP BY SI_Contact__c
                                 LIMIT 2000
                             ]
                         );
+
                         for (AggregateResult serviceIndicator : serviceIndicators) {
                             filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
-                        }
-
-                        List<AggregateResult> ensureStudentIsActive = [
-                            SELECT Contact__c
-                            FROM Student_Program_Plan__c
-                            WHERE
-                                Contact__c IN :filteredContactIds
-                                AND Career__c = 'Graduate'
-                                AND Status__c = 'Active in Program'
-                                AND Effective_Date__c <= TODAY
-                            GROUP BY Contact__c
-                            LIMIT 2000
-                        ];
-                        filteredContactIds.clear();
-                        for (AggregateResult studentIsActiveCheck : ensureStudentIsActive) {
-                            filteredContactIds.add((Id) studentIsActiveCheck.get('Contact__c'));
                         }
                     }
                 }

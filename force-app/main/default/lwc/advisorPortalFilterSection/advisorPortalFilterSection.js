@@ -327,9 +327,8 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             this.sendChangeFilterEvent(field, '');
         }
 
-        // Visually clear all the standard lightning-inputs
-        // all the comboboxes auto update though, so don't need to change those
-        const lightningInputs = this.template.querySelectorAll('lightning-input');
+        // Visually clear all the fields
+        const lightningInputs = this.template.querySelectorAll('lightning-input, c-lightning-combo-box');
         for (let i = 0; i < lightningInputs.length; i++) {
             lightningInputs[i].value = '';
         }

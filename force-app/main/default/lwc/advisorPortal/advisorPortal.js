@@ -53,6 +53,7 @@ export default class AdvisorPortal extends LightningElement {
 
     // Should only run once on page load
     setDefaultFilter(e) {
+        console.log('setDefaultFilter', e);
         this.defaultFilter = JSON.parse(e.detail.filter);
         this.currentFilter = this.defaultFilter;
     }
@@ -61,7 +62,6 @@ export default class AdvisorPortal extends LightningElement {
         console.log('updateFilter', e);
         this.currentFilter[e.detail.name] = e.detail.value;
         this.triggerCurrentFilterChanges();
-        this.printCurrentFilter();
     }
 
     updateResults(e) {
@@ -85,10 +85,6 @@ export default class AdvisorPortal extends LightningElement {
 
     triggerCurrentFilterChanges() {
         this.currentFilter = {...this.currentFilter};
-    }
-
-    printCurrentFilter() {
-        console.log(this.currentFilter);
     }
 
     filterVisibility = true;
@@ -144,7 +140,7 @@ export default class AdvisorPortal extends LightningElement {
                 );
                 break;
             default:
-                console.log('navagation location unsupported', event);
+                console.error('navagation location unsupported', event);
                 break;
         }
     }

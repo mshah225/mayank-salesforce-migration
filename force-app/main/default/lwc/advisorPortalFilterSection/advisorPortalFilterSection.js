@@ -10,61 +10,117 @@ import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterS
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 
 export default class AdvisorPortalFilterSection extends LightningElement {
+    // only load the default filter once
     @api set defaultFilter(val) {
-        if (val != null) {
+        if (val != null && this._defaultFilter == null) {
             this._defaultFilter = val;
-            this.copyChanges(this.currentFilter, val);
-
-            if (val.degreeLevel != null) this.updateConditionalFields('degreeLevel');
-            if (val.academicProgram != null) this.updateConditionalFields('academicProgram');
-            if (val.schoolDepartment != null) this.updateConditionalFields('schoolDepartment');
-            if (val.admitTermFrom != null) this.updateValidityChecks('admitTermFrom');
-            if (val.admitTermTo != null) this.updateValidityChecks('admitTermTo');
-
-            this.applyFilters();
+            if (!this.hasDoneInitialAsyncLoad) {
+                this.loadAfterAsyncComponents();
+            }
         }
     }
     get defaultFilter() {
         return this._defaultFilter;
     }
-    _defaultFilter;
+    _defaultFilter = null;
 
     @api set viewAsUsers(val) {
         this._viewAsUsers = [...val];
-        this.loadingCaseStatus = true;
-        this.refreshCaseSubjectPicklistValues().then(() => {
-            this.loadingCaseStatus = false;
-        });
-        this.loadingCaseCategory = true;
-        this.refreshCaseClassificationPicklistValues().then(() => {
-            this.loadingCaseCategory = false;
-        });
-        this.forceRefresh();
+        if (!this.hasDoneInitialAsyncLoad) {
+            // if first time
+            this.loadAfterAsyncComponents();
+        } else {
+            // subsequent times
+            this.loadingCaseStatus = true;
+            this.refreshCaseSubjectPicklistValues().then(() => {
+                this.loadingCaseStatus = false;
+            });
+            this.loadingCaseCategory = true;
+            this.refreshCaseClassificationPicklistValues().then(() => {
+                this.loadingCaseCategory = false;
+            });
+        }
     }
     get viewAsUsers() {
         return this._viewAsUsers;
     }
-    _viewAsUsers = [];
+    _viewAsUsers = null;
+
+    // will run once all async components are laoded in
+    hasDoneInitialAsyncLoad = false;
+    loadAfterAsyncComponents() {
+        if (this.hasDoneInitialAsyncLoad) return;
+        if (this.viewAsUsers === null) return;
+        if (this.defaultFilter === null) return;
+        // Set filter as the default
+        if (this.filterIsDifferent(this.currentFilter, this.defaultFilter))
+            this.copyChanges(this.currentFilter, this.defaultFilter);
+        this.isGraduateOnly = this.currentFilter.career === 'GRD';
+
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        this.sendLoadingEvent(true);
+        Promise.all([
+            this.refreshResidencyPicklistValues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshCaseStatusSettings().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshCampusValues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshCaseSubjectPicklistValues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshCaseClassificationPicklistValues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshAcademicProgramPicklistValues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshSchoolDepartmentPicklistVaues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+            this.refreshAcademicPlanPicklistValues().then(() => {
+                this.sendLoadingEvent(false);
+            }),
+        ]).then(() => {
+            this.hasDoneInitialAsyncLoad = true;
+            this.sendLoadingEvent(false); // stop general loading from connectedCallback
+            this.applyFilters();
+        });
+    }
 
     @api set currentFilter(val) {
+        // don't allow set current until all async's have loaded
+        if (!this.hasDoneInitialAsyncLoad) return;
+        // copy changes
         if (this.filterIsDifferent(this.currentFilter, val)) {
+            const oldCareer = this.currentFilter.career;
+            const oldStateType = this.currentFilter.caseTypeState;
             this.copyChanges(this.currentFilter, val);
+            const newCareer = this.currentFilter.career;
+            const newStateType = this.currentFilter.caseTypeState;
 
-            const newIsGraduateOnly = this.currentFilter.career === 'GRD';
-            if (this.isGraduateOnly !== newIsGraduateOnly) {
+            if (oldCareer !== newCareer) {
+                // throw change back a cycle to get rendering order nice
                 this.sendLoadingEvent(true);
-                // take the grad toggle change back a rendering cycle to ensure parent LWC can re-render and show loading circle while this completes
-                // since this might take a bit if "Academic Plan" is rendering all options (700-ish)
                 this.throwBackARenderCycle(() => {
-                    this.isGraduateOnly = newIsGraduateOnly;
-                    this.applyFilters();
+                    this.isGraduateOnly = newCareer === 'GRD';
                     this.sendLoadingEvent(false);
                 });
-
-                this.loadingCampusValues = true;
-                this.refreshCampusValues().then(() => {
-                    this.loadingCampusValues = false;
-                });
+                // apply change
+                this.applyFilters();
+                // update conditionals
+                this.updateConditionalFields('career');
+            } else if (oldStateType !== newStateType) {
+                this.applyFilters();
             }
         }
     }
@@ -226,50 +282,15 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         {label: 'Active Students with Registation Hold', value: 'active students with registation hold'},
     ];
 
-    connectedCallback() {
-        this.sendLoadingEvent(true);
-        this.refreshResidencyPicklistValues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshCaseStatusSettings().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshCampusValues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshCaseSubjectPicklistValues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshCaseClassificationPicklistValues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshAcademicProgramPicklistValues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshSchoolDepartmentPicklistVaues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-        this.sendLoadingEvent(true);
-        this.refreshAcademicPlanPicklistValues().then(() => {
-            this.sendLoadingEvent(false);
-        });
-    }
-
     /**
      * Handle an change field event - update filter object to contain new value and trigger and conditional fields
      * @param {changeEvent} event
      */
     changeField(event) {
+        console.log(event, event.currentTarget);
         const fieldChanged = event.currentTarget.dataset.name;
         const newValue = event.currentTarget.value;
         const oldValue = this.currentFilter[fieldChanged];
-
         if (oldValue !== newValue) {
             this.currentFilter[fieldChanged] = newValue;
             this.updateConditionalFields(fieldChanged);
@@ -277,9 +298,13 @@ export default class AdvisorPortalFilterSection extends LightningElement {
             this.sendChangeFilterEvent(fieldChanged, newValue);
         }
 
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        event.preventDefault();
+        this.stopEvent(event);
+    }
+
+    stopEvent(e) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        e.preventDefault();
     }
 
     /**
@@ -485,7 +510,12 @@ export default class AdvisorPortalFilterSection extends LightningElement {
      * @param {String} changedField
      */
     updateConditionalFields(changedField) {
-        if (changedField === 'degreeLevel') {
+        if (changedField === 'career') {
+            this.loadingCampusValues = true;
+            this.refreshCampusValues().then(() => {
+                this.loadingCampusValues = false;
+            });
+        } else if (changedField === 'degreeLevel') {
             this.loadingAcadPlan = true;
             this.refreshAcademicPlanPicklistValues().then(() => {
                 this.loadingAcadPlan = false;

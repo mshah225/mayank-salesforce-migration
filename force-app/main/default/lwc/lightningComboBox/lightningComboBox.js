@@ -79,6 +79,17 @@ export default class LightningComboBox extends LightningElement {
         this.placard = this.placeholder;
     }
 
+    hasRendered = false;
+    queuedEvents = [];
+    renderedCallback() {
+        for (let i = 0; i < this.queuedEvents.length; i++) {
+            let evnt = this.queuedEvents[i];
+            this.dispatchEvent(evnt);
+        }
+        this.queuedEvents = [];
+        this.hasRendered = true;
+    }
+
     /**
      * Select this value (semi-colon separated) but don't raise related events
      * @param {string} val
@@ -314,7 +325,11 @@ export default class LightningComboBox extends LightningElement {
 
         if (madeAChange) {
             this._value = newValues.join(';');
-            this.sendCommitEvent();
+            if (this.hasRendered) {
+                this.sendCommitEvent();
+            } else {
+                this.queueCommitEvent();
+            }
         }
 
         this.updatePlacard();
@@ -416,13 +431,26 @@ export default class LightningComboBox extends LightningElement {
      * Send a commit event (usually when dropdown closes)
      */
     sendCommitEvent() {
-        this.dispatchEvent(
-            new CustomEvent('commit', {
-                detail: {
-                    value: this.value,
-                },
-            })
-        );
+        this.dispatchEvent(this.getCommitEvent());
+    }
+
+    /**
+     * Queue a commit event (usually during the initial load of default value)
+     */
+    queueCommitEvent() {
+        this.queuedEvents.push(this.getCommitEvent());
+    }
+
+    /**
+     * Generate a commit event
+     * @returns {commitevent}
+     */
+    getCommitEvent() {
+        return new CustomEvent('commit', {
+            detail: {
+                value: this.value,
+            },
+        });
     }
 
     /**

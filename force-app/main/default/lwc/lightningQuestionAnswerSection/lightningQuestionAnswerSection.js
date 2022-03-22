@@ -25,6 +25,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      *          'label'
      *              'bold'
      *              'plain' (default)
+     *              'center'
      */
     @api set questions(val) {
         let newQuestions = [];
@@ -33,6 +34,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
             q.isSpacer = q.type === 'spacer';
             q.isLabel = q.type === 'label';
             if (q.isLabel) q.isBoldLabel = q.subtype === 'bold';
+            if (q.isLabel) q.isCenterLabel = q.subtype === 'center';
             if (q.isLabel) q.isPlainLabel = q.subtype === 'plain' || q.subtype == null;
             q.isTextArea = q.type === 'textarea';
             q.isComboBox = q.type === 'combobox';

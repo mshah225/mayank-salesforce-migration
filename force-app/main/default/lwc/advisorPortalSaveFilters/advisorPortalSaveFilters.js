@@ -10,6 +10,23 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
     saveButtons = [];
     resetButtons = [];
 
+    saveQuestions = [
+        {
+            key: 'A',
+            question: 'Save your current selection as your default filters?',
+            type: 'label',
+            subtype: 'center',
+        },
+    ];
+    resetQuestions = [
+        {
+            key: 'B',
+            question: 'Reset my default filters?',
+            type: 'label',
+            subtype: 'center',
+        },
+    ];
+
     connectedCallback() {
         this.sendLoadingEvent(true);
         getDefaultFilter()
@@ -39,7 +56,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                 this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
-                this.template.querySelector('c-lightning-design-modal.save-modal').closeModal();
+                this.template.querySelector('c-lightning-question-answer-modal.save-modal').closeModal();
             });
     }
 
@@ -58,12 +75,12 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                 this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
-                this.template.querySelector('c-lightning-design-modal.reset-modal').closeModal();
+                this.template.querySelector('c-lightning-question-answer-modal.reset-modal').closeModal();
             });
     }
 
     openSaveModal() {
-        const modalSelector = 'c-lightning-design-modal.save-modal';
+        const modalSelector = 'c-lightning-question-answer-modal.save-modal';
 
         if (this.saveButtons.length === 0) {
             // add buttons for save modal
@@ -87,7 +104,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         this.template.querySelector(modalSelector).openModal();
     }
     openResetModal() {
-        const modalSelector = 'c-lightning-design-modal.reset-modal';
+        const modalSelector = 'c-lightning-question-answer-modal.reset-modal';
         if (this.resetButtons.length === 0) {
             // add buttons for reset modal
             this.resetButtons = [

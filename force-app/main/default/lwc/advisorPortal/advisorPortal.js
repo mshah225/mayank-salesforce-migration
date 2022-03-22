@@ -53,33 +53,27 @@ export default class AdvisorPortal extends LightningElement {
 
     // Should only run once on page load
     setDefaultFilter(e) {
-        console.log('setDefaultFilter', e);
         this.defaultFilter = JSON.parse(e.detail.filter);
         this.currentFilter = this.defaultFilter;
     }
 
     updateFilter(e) {
-        console.log('updateFilter', e);
         this.currentFilter[e.detail.name] = e.detail.value;
         this.triggerCurrentFilterChanges();
     }
 
     updateResults(e) {
-        console.log('updateResults', e);
         this.allResults = e.detail;
     }
 
     changeAllUsers(e) {
-        console.log('changeAllUsers', e);
         this.allUsers = [...e.detail];
     }
     changeSelectedUsers(e) {
-        console.log('changeSelectedUsers', e);
         this.selectedUsers = [...e.detail];
     }
 
     updateSelectedResults(e) {
-        console.log('updateSelectedResults', e);
         this.selectedResults = [...e.detail];
     }
 

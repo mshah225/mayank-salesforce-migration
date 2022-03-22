@@ -32,12 +32,17 @@ export default class AdvisorPortalFilterSection extends LightningElement {
         } else {
             // subsequent times
             this.loadingCaseStatus = true;
-            this.refreshCaseSubjectPicklistValues().then(() => {
-                this.loadingCaseStatus = false;
-            });
             this.loadingCaseCategory = true;
-            this.refreshCaseClassificationPicklistValues().then(() => {
-                this.loadingCaseCategory = false;
+
+            Promise.all([
+                this.refreshCaseSubjectPicklistValues().then(() => {
+                    this.loadingCaseStatus = false;
+                }),
+                this.refreshCaseClassificationPicklistValues().then(() => {
+                    this.loadingCaseCategory = false;
+                }),
+            ]).then(() => {
+                this.applyFilters();
             });
         }
     }

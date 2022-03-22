@@ -1,7 +1,7 @@
 import {LightningElement, api} from 'lwc';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
 
-export default class AdvisorPortalPredictionLevel extends LightningElement {
+export default class AdvisorPortalTableContactPredLevel extends LightningElement {
     @api set predictionLevel(val) {
         let newVal = val;
         if (typeof newVal === 'string') newVal = parseInt(newVal, 10);

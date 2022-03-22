@@ -3,7 +3,7 @@ import checkIfAllowedToUse from '@salesforce/apex/AdvisorPortalMassTransferContr
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 
-export default class AdvisorPortal extends LightningElement {
+export default class AdvisorPortalA extends LightningElement {
     defaultFilter = null;
     currentFilter = {};
     allUsers = [];
@@ -204,7 +204,7 @@ export default class AdvisorPortal extends LightningElement {
     }
 
     reloadContacts() {
-        this.template.querySelector('c-advisor-portal-filter-section').forceRefresh();
+        this.template.querySelector('c-advisor-portal-filters-section').forceRefresh();
     }
 
     openModalMassEmail() {

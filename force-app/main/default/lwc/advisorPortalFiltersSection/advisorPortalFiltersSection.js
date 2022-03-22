@@ -9,7 +9,7 @@ import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilt
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 
-export default class AdvisorPortalFilterSection extends LightningElement {
+export default class AdvisorPortalFiltersSection extends LightningElement {
     // only load the default filter once
     @api set defaultFilter(val) {
         if (val != null && this._defaultFilter == null) {
@@ -292,7 +292,6 @@ export default class AdvisorPortalFilterSection extends LightningElement {
      * @param {changeEvent} event
      */
     changeField(event) {
-        console.log(event, event.currentTarget);
         const fieldChanged = event.currentTarget.dataset.name;
         const newValue = event.currentTarget.value;
         const oldValue = this.currentFilter[fieldChanged];

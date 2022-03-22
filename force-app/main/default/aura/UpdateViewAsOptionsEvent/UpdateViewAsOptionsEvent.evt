@@ -1,3 +1,0 @@
-<aura:event type="COMPONENT" description="Update 'view-as' users">
-    <aura:attribute name="viewAsUsersList" type="List" />
-</aura:event>

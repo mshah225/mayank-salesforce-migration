@@ -1,0 +1,15 @@
+:host .no-padding {
+    --lwc-spacingXSmall: 0px;
+    --lwc-spacingXxSmall: 0px;
+}
+
+:host .px-xxsm {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+:host .fieldLoadingCircle {
+    position: relative;
+    top: -24px;
+    left: calc(100% - 48px);
+}

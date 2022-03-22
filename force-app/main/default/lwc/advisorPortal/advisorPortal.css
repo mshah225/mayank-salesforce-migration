@@ -1,0 +1,21 @@
+:host .light-blue-background {
+    background-color: rgba(0, 112, 210, 0.1);
+}
+
+:host .mr-2 {
+    margin-right: 0.8rem;
+}
+
+:host .d-none {
+    display: none;
+}
+
+:host .advanced-filter-button {
+    /** cheaty way to align at bottom of div but still have spacing above when vertical layout */
+    padding-top: 1rem;
+    margin-top: auto;
+}
+
+:host lightning-spinner {
+    position: fixed;
+}

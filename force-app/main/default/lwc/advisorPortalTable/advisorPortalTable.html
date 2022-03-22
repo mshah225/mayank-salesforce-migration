@@ -1,0 +1,99 @@
+<template>
+    <template if:false={allResultsIsEmpty}>
+        <div class="slds-var-p-vertical_x-small">
+            <div class="slds-var-p-bottom_small">
+                <lightning-icon
+                    class="outreach-icn"
+                    icon-name="utility:record"
+                    variant="success"
+                    size="x-small"
+                ></lightning-icon>
+                = Indicates a case that needs attention because it has the status Outreach Required or Customer Replied.
+                <br /><img
+                    src={persistenceIconVeryLow}
+                    alt="very low"
+                    title="Very Low"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Very Low
+                <img
+                    src={persistenceIconLow}
+                    alt="low"
+                    title="Low"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Low
+                <img
+                    src={persistenceChartModerate}
+                    alt="moderate"
+                    title="Moderate"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Moderate
+                <img
+                    src={persistenceIconHigh}
+                    alt="high"
+                    title="High"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = High
+                <img
+                    src={persistenceIconVeryHigh}
+                    alt="very high"
+                    title="Very High"
+                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                />
+                = Very High
+            </div>
+            <div class="slds-checkbox_button-group" style="border: none">
+                <lightning-input
+                    type="checkbox"
+                    label="Select All"
+                    checked={selectedAll}
+                    class="top-level-select"
+                    onchange={updateSelectedAll}
+                ></lightning-input>
+                <lightning-input
+                    type="checkbox"
+                    label="Expand All"
+                    checked={expandedAll}
+                    class="top-level-select"
+                    onchange={updateExpandedAll}
+                ></lightning-input>
+            </div>
+        </div>
+
+        <div class="light-gray-background px-2 py-1">
+            <c-lightning-pagination-navigator
+                results-count={sizeOfResults}
+                page-size={pageSize}
+                current-page={currentPage}
+                item-type="Contacts"
+                onchangepage={changePage}
+            ></c-lightning-pagination-navigator>
+        </div>
+
+        <ul class="slds-accordion">
+            <template for:each={shownContactWrappers} for:item="contactWrapper">
+                <c-advisor-portal-table-contact
+                    key={contactWrapper.portalContact.Id}
+                    contact-wrapper={contactWrapper}
+                    onnavigate={bubbleEvent}
+                    onchangeselected={updateSelected}
+                    onchangeopentoggle={updateToggleAccordian}
+                ></c-advisor-portal-table-contact>
+            </template>
+        </ul>
+
+        <div class="light-gray-background px-2 py-1 mt-1">
+            <c-lightning-pagination-navigator
+                results-count={sizeOfResults}
+                page-size={pageSize}
+                item-type="Contacts"
+                current-page={currentPage}
+                onchangepage={changePage}
+                extended="true"
+            ></c-lightning-pagination-navigator>
+        </div>
+    </template>
+</template>

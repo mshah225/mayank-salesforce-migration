@@ -8,13 +8,47 @@ public class AdvisorPortalMassEmailModalController {
     private static final Id ADVISOR_PORTAL_EMAIL_RTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
 
     @AuraEnabled
-    public static user fetchUser() {
-        User userDetail = [SELECT Name FROM User WHERE id = :userInfo.getUserId()];
+    public static User fetchUser() {
+        User userDetail = [SELECT Name FROM User WHERE id = :UserInfo.getUserId()];
         return userDetail;
     }
 
     @AuraEnabled
-    public static void createPortalEmails(Map<Id, Case[]> contactIdToCasesMap, String subject, String body) {
+    public static void createPortalEmailsStr(List<String> contactWrappersJSONList, String subject, String body) {
+        List<AdvisorPortalContact> contactWrappersList = new List<AdvisorPortalContact>();
+
+        for (String contactWrapperJSON : contactWrappersJSONList) {
+            contactWrappersList.add(
+                (AdvisorPortalContact) JSON.deserialize(contactWrapperJSON, AdvisorPortalContact.class)
+            );
+        }
+
+        // Get all case ids
+        List<Id> allCaseIds = new List<Id>();
+        for (AdvisorPortalContact contactWrapper : contactWrappersList) {
+            for (AdvisorPortalCase caseWrapper : contactWrapper.cases) {
+                allCaseIds.add(caseWrapper.portalCase.Id);
+            }
+        }
+
+        // Get needed details
+        List<Case> cases = new List<Case>(
+            [SELECT Id, ContactId, OwnerId, Most_Recent_Queue__c, CreatedDate FROM Case WHERE Id IN :allCaseIds]
+        );
+
+        // Construct map
+        Map<Id, Case[]> contactIdToCasesMap = new Map<Id, List<Case>>();
+        for (Case c : cases) {
+            if (!contactIdToCasesMap.containsKey(c.ContactId)) {
+                contactIdToCasesMap.put(c.ContactId, new List<Case>());
+            }
+            contactIdToCasesMap.get(c.ContactId).add(c);
+        }
+
+        createPortalEmails(contactIdToCasesMap, subject, body);
+    }
+
+    public static void createPortalEmails(Map<Id, List<Case>> contactIdToCasesMap, String subject, String body) {
         if (contactIdToCasesMap.keySet().isEmpty()) {
             return;
         }

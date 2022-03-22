@@ -1,0 +1,27 @@
+<template>
+    <div
+        onclick={openModal}
+        onkeydown={openModalKeyboard}
+        role="button"
+        tabindex="0"
+        aria-label="Provide Feedback"
+        class="openButton"
+    >
+        <lightning-icon
+            icon-name="utility:anywhere_chat"
+            alternative-text="Provide Feedback"
+            variant="inverse"
+            size="xx-small"
+        ></lightning-icon>
+        <span>Feedback</span>
+    </div>
+
+    <div class="slds-text-align_left">
+        <c-lightning-question-answer-modal
+            title="Feedback"
+            questions={questions}
+            onchange={changeFeedback}
+            buttons={feedbackModalButtons}
+        ></c-lightning-question-answer-modal>
+    </div>
+</template>

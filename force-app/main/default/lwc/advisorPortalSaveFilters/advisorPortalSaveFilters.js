@@ -1,16 +1,17 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
-import {LightningElement} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import getDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.getDefaultFilter';
 import setDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.setDefaultFilter';
 import clearDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.clearDefaultFilter';
 
 export default class AdvisorPortalSaveFilters extends LightningElement {
+    @api currentFilter;
     saveButtons = [];
     resetButtons = [];
 
     connectedCallback() {
-        this.incrementProcessingCounter();
+        this.sendLoadingEvent(true);
         getDefaultFilter()
             .then((val) => {
                 this.dispatchEvent(
@@ -20,41 +21,37 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
                 );
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 this.makeToast('error', 'Error', err.body.message);
             })
             .finally(() => {
-                this.decrementProcessingCounter();
+                this.sendLoadingEvent(false);
             });
     }
 
     saveFilters() {
-        this.dispatchEvent(
-            new CustomEvent('requestcurrentfilter', {
-                detail: {
-                    callback: (json) => {
-                        this.makeToast('loading', '', '');
-                        setDefaultFilter({json})
-                            .then(() => {
-                                this.makeToast('success', 'Success', 'Filters saved as default.');
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                this.makeToast('error', 'Error', err.body.message);
-                            })
-                            .finally(() => {
-                                this.template.querySelector('c-lightning-design-modal.save-modal').closeModal();
-                            });
-                    },
-                },
+        setDefaultFilter({json: JSON.stringify(this.currentFilter)})
+            .then(() => {
+                this.makeToast('success', 'Success', 'Filters saved as default.');
             })
-        );
+            .catch((err) => {
+                console.error(err);
+                this.makeToast('error', 'Error', err.body.message);
+            })
+            .finally(() => {
+                this.template.querySelector('c-lightning-design-modal.save-modal').closeModal();
+            });
     }
 
     resetSavedFilters() {
         this.makeToast('loading', '', '');
         clearDefaultFilter()
             .then(() => {
+                this.dispatchEvent(
+                    new CustomEvent('clearappliedfilters', {
+                        detail: {},
+                    })
+                );
                 this.makeToast('success', 'Success', 'Default filter cleared.');
             })
             .catch((err) => {
@@ -73,14 +70,14 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             this.saveButtons = [
                 {
                     label: 'Cancel',
-                    callback: () => {
+                    onClick: () => {
                         this.template.querySelector(modalSelector).closeModal();
                     },
                     classes: 'slds-button slds-button_neutral',
                 },
                 {
                     label: 'Save my Default Filters',
-                    callback: () => {
+                    onClick: () => {
                         this.saveFilters();
                     },
                     classes: 'slds-button slds-button_brand',
@@ -96,14 +93,14 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             this.resetButtons = [
                 {
                     label: 'Cancel',
-                    callback: () => {
+                    onClick: () => {
                         this.template.querySelector(modalSelector).closeModal();
                     },
                     classes: 'slds-button slds-button_neutral',
                 },
                 {
                     label: 'Reset my Default Filters',
-                    callback: () => {
+                    onClick: () => {
                         this.resetSavedFilters();
                     },
                     classes: 'slds-button slds-button_brand',
@@ -126,10 +123,7 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         );
     }
 
-    incrementProcessingCounter() {
-        this.dispatchEvent(new CustomEvent('incrementprocessingcounterevent'));
-    }
-    decrementProcessingCounter() {
-        this.dispatchEvent(new CustomEvent('decrementprocessingcounterevent'));
+    sendLoadingEvent(loadMore) {
+        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }
 }

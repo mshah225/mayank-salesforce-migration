@@ -40,6 +40,11 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             .catch((err) => {
                 console.error(err);
                 this.makeToast('error', 'Error', err.body.message);
+                this.dispatchEvent(
+                    new CustomEvent('setdefaultfilter', {
+                        detail: {filter: '{}'},
+                    })
+                );
             })
             .finally(() => {
                 this.sendLoadingEvent(false);

@@ -771,11 +771,11 @@ public class AdvisorPortalFilterSectionController {
             if (filter.career != 'GRD') {
                 if (!String.isBlank(filter.studentGroupCode)) {
                     useQueryString = true;
-                    queryString += ' AND SG_PeopleSoft_Code__c = :filter.studentGroupCode';
+                    queryString += ' AND SG_PeopleSoft_Code__c = \'' + filter.studentGroupCode + '\'';
                 }
             }
 
-            queryString += ' AND SG_Effective_Date__c < TODAY';
+            queryString += ' AND SG_Effective_Date__c <= TODAY';
             queryString += ' AND SG_Status__c = TRUE';
             queryString += ' GROUP BY SG_Contact__c LIMIT 4000';
         }
@@ -802,7 +802,7 @@ public class AdvisorPortalFilterSectionController {
     private static Set<Id> filterStudentPlans(AdvisorPortalFilter filter, Set<Id> contactIds) {
         Boolean useQueryString = false;
         Set<Id> filteredContactIds = new Set<Id>();
-        String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE Contact__c IN :contactIds AND Status__c = \'Active in Program\' AND Effective_Date__c <= TODAY';
+        String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE Contact__c IN :contactIds';
 
         if (filter.career != null) {
             // if statement for using either grad level or undergrad level filtering

@@ -2,7 +2,7 @@
 private class AdvisorPortalFilterSectionControllerTest {
     @TestSetup
     static void setUpTest() {
-        TestDataFactory.createAdvisorStudents(TestDataFactory.createAdvisorPods(1), 1);
+        createAdvisorStudent(createAdvisorPod());
     }
 
     @IsTest
@@ -47,7 +47,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         String queueId = [SELECT QueueId FROM QueueSobject WHERE SobjectType = 'Case' LIMIT 1].QueueId;
 
-        List<Case> testCases = TestDataFactory.createCases(3);
+        List<Case> testCases = createCases(3);
         Integer i = 0;
         for (Case c : testCases) {
             c.ContactId = testContact.Id;
@@ -74,7 +74,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         // Arrange
         Contact testContact = [SELECT Id FROM Contact LIMIT 1];
 
-        List<Case> testCases = TestDataFactory.createCases(3);
+        List<Case> testCases = createCases(3);
         Integer i = 0;
         for (Case c : testCases) {
             c.ContactId = testContact.Id;
@@ -125,30 +125,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testNoFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -174,32 +174,32 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testNameFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
+        Contact testContact1 = createContact('test-contact-ap-r1');
         testContact1.EmplId__c = '0011221100';
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         testContact2.ASURite_ID__c = 'testid_1';
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -237,36 +237,36 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testCampusFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
         Location__c testCampus1 = new Location__c(Location_Code__c = '0011221100', Name = 'test-loc-ap-r1');
         Location__c testCampus2 = new Location__c(Location_Code__c = '0011221101', Name = 'test-loc-ap-r2');
         insert new List<Location__c>{ testCampus1, testCampus2 };
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
+        Contact testContact1 = createContact('test-contact-ap-r1');
         testContact1.EmplId__c = '0011221100';
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         testContact2.ASURite_ID__c = 'testid_1';
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -285,8 +285,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Student_Program_Plan__c>{ studentProgramPlan1, studentProgramPlan2 };
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+        filter.campus = testCampus2.Location_Code__c;
 
-        filter.campus = 'test-loc-ap-r2';
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -299,30 +300,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testAcademicLevelFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -341,8 +342,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Student_Program_Plan__c>{ studentProgramPlan1, studentProgramPlan2 };
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-
+        filter.career = 'UGRD';
         filter.academicLevel = 'test-cohort-1';
+
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -362,51 +364,64 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testStudentGroupFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
 
         insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
 
+        Student_Program_Plan__c studentProgramPlan1 = new Student_Program_Plan__c(
+            Contact__c = testContact1.Id,
+            Career__c = 'Undergraduate'
+        );
+        Student_Program_Plan__c studentProgramPlan2 = new Student_Program_Plan__c(
+            Contact__c = testContact2.Id,
+            Career__c = 'Undergraduate'
+        );
+        insert new List<Student_Program_Plan__c>{studentProgramPlan1, studentProgramPlan2};
+
         Student_Group__c testSG1 = new Student_Group__c(
             SG_Contact__c = testContact1.Id,
             SG_PeopleSoft_Code__c = 'testapr1',
+            SG_Effective_Date__c = Date.newInstance(2020, 7, 21),
             SG_Status__c = true
         );
         Student_Group__c testSG2 = new Student_Group__c(
             SG_Contact__c = testContact2.Id,
             SG_PeopleSoft_Code__c = 'testapr2',
+            SG_Effective_Date__c = Date.newInstance(2020, 7, 21),
             SG_Status__c = true
         );
         insert new List<Student_Group__c>{ testSG1, testSG2 };
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-
+        filter.career = 'UGRD';
         filter.studentGroupCode = 'testapr1';
+
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -419,30 +434,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testMajorFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -463,8 +478,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Student_Program_Plan__c>{ studentProgramPlan1, studentProgramPlan2 };
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-
+        filter.career = 'UGRD';
         filter.major = 'test-code-ap-r1';
+
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -485,30 +501,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testResidencyFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -527,8 +543,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Student_Program_Plan__c>{ studentProgramPlan1, studentProgramPlan2 };
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-
+        filter.career = 'UGRD';
         filter.residency = 'International';
+
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
             new List<Id>{ testUser.Id },
             filter
@@ -541,34 +558,34 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testCaseStatusFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Status = 'New';
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.Status = 'Outreach Required';
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Status = 'New';
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.Status = 'Outreach Required';
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.Status = 'New';
@@ -595,11 +612,11 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testCaseCategoryFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
         Case_Classification__c parent = new Case_Classification__c(
@@ -634,27 +651,27 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         insert new List<Case_Classification__c>{ testClassification1, testClassification2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.CC_Functional_Group__c = parent.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.CC_Functional_Group__c = parent.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.CC_Functional_Group__c = parent.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.CC_Functional_Group__c = parent.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.CC_Functional_Group__c = parent.Id;
@@ -689,34 +706,34 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testCaseSubjectFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Subject = 'test-subject-ap-r1';
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.Subject = 'test-subject-ap-r2';
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Subject = 'test-subject-ap-r1';
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.Subject = 'test-subject-ap-r2';
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.Subject = 'test-subject-ap-r1';
@@ -743,30 +760,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testOutlookScoreFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -799,30 +816,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testOutlookChangeFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -855,30 +872,30 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testCaseCountFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -900,31 +917,31 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testCreatedDateFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.CreatedDate = System.now().addDays(-2);
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.CreatedDate = System.now().addDays(-2);
@@ -953,32 +970,32 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testFollowupDateFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Followup_Date__c = System.today().addDays(1);
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Followup_Date__c = System.today().addDays(1);
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -1010,32 +1027,32 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testAllStudentsFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
-        Contact testContact3 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact4 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
+        Contact testContact3 = createContact('test-contact-ap-r1');
+        Contact testContact4 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2, testContact3, testContact4 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -1075,11 +1092,11 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testWatchlistCasesFilter() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2 };
 
         Case_Classification__c parent = new Case_Classification__c(
@@ -1105,27 +1122,27 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         insert new List<Case_Classification__c>{ testClassification1 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.CC_Functional_Group__c = parent.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.CC_Functional_Group__c = parent.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.CC_Functional_Group__c = parent.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.CC_Functional_Group__c = parent.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.CC_Functional_Group__c = parent.Id;
@@ -1158,36 +1175,36 @@ private class AdvisorPortalFilterSectionControllerTest {
     static void testMutlipleFiltersAtOnce() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
+        Contact testContact1 = createContact('test-contact-ap-r1');
         testContact1.EmplId__c = '0011221100';
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact2 = createContact('test-contact-ap-r2');
         testContact2.ASURite_ID__c = 'testid_1';
         insert new List<Contact>{ testContact1, testContact2 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.Subject = 'test-subject-ap-r1';
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.Subject = 'test-subject-ap-r2';
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.Subject = 'test-subject-ap-r1';
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.Subject = 'test-subject-ap-r2';
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.Subject = 'test-subject-ap-r1';
@@ -1216,32 +1233,32 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testFiltersAndAllStudents() {
         Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
 
-        User testUser = TestDataFactory.createUser('text-user-ap-r1', p.Id);
+        User testUser = createUser('text-user-ap-r1', p.Id);
         insert testUser;
 
-        Contact testContact1 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact2 = TestDataFactory.createContact('test-contact-ap-r2');
-        Contact testContact3 = TestDataFactory.createContact('test-contact-ap-r1');
-        Contact testContact4 = TestDataFactory.createContact('test-contact-ap-r2');
+        Contact testContact1 = createContact('test-contact-ap-r1');
+        Contact testContact2 = createContact('test-contact-ap-r2');
+        Contact testContact3 = createContact('test-contact-ap-r1');
+        Contact testContact4 = createContact('test-contact-ap-r2');
         insert new List<Contact>{ testContact1, testContact2, testContact3, testContact4 };
 
-        Case testCase1 = TestDataFactory.createCase('test-case-ap-r1');
+        Case testCase1 = createCase('test-case-ap-r1');
         testCase1.ContactId = testContact1.Id;
         testCase1.ownerId = testUser.Id;
         testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = TestDataFactory.createCase('test-case-ap-r2');
+        Case testCase2 = createCase('test-case-ap-r2');
         testCase2.ContactId = testContact1.Id;
         testCase2.ownerId = testUser.Id;
         testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = TestDataFactory.createCase('test-case-ap-r3');
+        Case testCase3 = createCase('test-case-ap-r3');
         testCase3.ContactId = testContact2.Id;
         testCase3.ownerId = testUser.Id;
         testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = TestDataFactory.createCase('test-case-ap-r4');
+        Case testCase4 = createCase('test-case-ap-r4');
         testCase4.ContactId = testContact2.Id;
         testCase4.ownerId = testUser.Id;
         testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = TestDataFactory.createCase('test-case-ap-r5');
+        Case testCase5 = createCase('test-case-ap-r5');
         testCase5.ContactId = testContact2.Id;
         testCase5.ownerId = testUser.Id;
         testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -1305,6 +1322,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             new Student_Group__c(
                 SG_Contact__c = listOfContacts[0].Id,
                 SG_PeopleSoft_Code__c = 'TESTGRP-r1',
+                SG_Effective_Date__c = Date.newInstance(2020, 7, 21),
                 SG_Status__c = true
             )
         );
@@ -1312,6 +1330,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             new Student_Group__c(
                 SG_Contact__c = listOfContacts[0].Id,
                 SG_PeopleSoft_Code__c = 'TESTGRP-r2',
+                SG_Effective_Date__c = Date.newInstance(2020, 7, 21),
                 SG_Status__c = true
             )
         );
@@ -1319,6 +1338,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             new Student_Group__c(
                 SG_Contact__c = listOfContacts[1].Id,
                 SG_PeopleSoft_Code__c = 'TESTGRP-r1',
+                SG_Effective_Date__c = Date.newInstance(2020, 7, 21),
                 SG_Status__c = true
             )
         );
@@ -1326,15 +1346,18 @@ private class AdvisorPortalFilterSectionControllerTest {
             new Student_Group__c(
                 SG_Contact__c = listOfContacts[1].Id,
                 SG_PeopleSoft_Code__c = 'TESTGRP-r2',
+                SG_Effective_Date__c = Date.newInstance(2020, 7, 21),
                 SG_Status__c = false
             )
         );
         insert listOfStudentGroups;
 
         AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
+        filter1.career = 'UGRD';
         filter1.studentGroupCode = 'testgrp-r1';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
         filter2.studentGroupCode = 'testgrp-r2';
 
         // Act
@@ -1425,12 +1448,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert listOfStudentPrograms;
 
         AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
+        filter1.career = 'UGRD';
         filter1.academicLevel = 'senior;junior';
-        filter1.campus = 'test-r1;test-r2';
+        filter1.campus = 'TEST-R1;TEST-R2';
         filter1.residency = 'resident;international';
         filter1.major = 'computer';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
         filter2.major = 'law';
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
@@ -1453,10 +1478,10 @@ private class AdvisorPortalFilterSectionControllerTest {
         Test.stopTest();
 
         // Assert
-        System.assertEquals(2, results1.size());
+        System.assertEquals(1, results1.size());
         System.assert(
-            results1.contains(listOfContacts[0].Id),
-            'The first contact should be in the first set of results.'
+            !results1.contains(listOfContacts[0].Id),
+            'The first contact should not be in the first set of results.'
         );
         System.assert(
             results1.contains(listOfContacts[1].Id),
@@ -1482,5 +1507,83 @@ private class AdvisorPortalFilterSectionControllerTest {
             !results3.contains(listOfContacts[1].Id),
             'The second contact should not be in the third set of results.'
         );
+    }
+
+    private static User createUser(String suffix, Id profileId) {
+        return new User(
+            FirstName = 'Mister',
+            LastName = suffix,
+            Email = suffix + '@test.asu.edu',
+            Username = suffix + '@test.asu.edu',
+            Alias = 'testUsr1',
+            ProfileId = profileId,
+            TimeZoneSidKey = 'America/Phoenix',
+            EmailEncodingKey = 'ISO-8859-1',
+            LanguageLocaleKey = 'en_US',
+            LocaleSidKey = 'en_US',
+            UserRoleId = null
+        );
+    }
+
+    private static Contact createContact(String suffix) {
+        return new Contact(FirstName = 'Mister', LastName = suffix);
+    }
+
+    private static List<Case> createCases(Integer numberOfCases) {
+        List<Case> result = new List<Case>();
+
+        for (Integer x = 0; x < numberOfCases; x++) {
+            result.add(createCase('Test Case: ' + string.valueOf(x)));
+        }
+
+        return result;
+    }
+
+    private static Case createCase(String suffix) {
+        return new Case(Subject = suffix, Status = 'new');
+    }
+
+    private static Success_Student__c createAdvisorStudent(Success_Pod__c pod) {
+        Contact con = new Contact(FirstName = 'TestContact', LastName = pod.Name);
+        insert con;
+
+        // Now that we have contact id's, create junction objects
+        Success_Student__c result = new Success_Student__c(
+            Is_Active__c = true,
+            Success_Pod__c = pod.Id,
+            Student__c = con.Id,
+            Coaching_Student__c = false
+        );
+        insert result;
+
+        return result;
+    }
+
+    private static Success_Pod__c createAdvisorPod() {
+        Id advisorPodRTID = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Advisor');
+        List<Group> groups = new List<Group>();
+        List<QueueSobject> queues = new List<QueueSobject>();
+
+        // Create list of groups
+        Group g = new Group(Name = 'TestGroupName1', Type = 'Queue');
+        insert g;
+
+        // And make the queues
+        queues.add(new QueueSobject(QueueId = g.Id, SobjectType = 'Success_Pod__c'));
+        queues.add(new QueueSobject(QueueId = g.Id, SobjectType = 'Case'));
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert queues;
+        }
+
+        Success_Pod__c result = new Success_Pod__c(
+            OwnerId = g.Id,
+            RecordTypeId = advisorPodRTID,
+            Primary_Email__c = g.name + '@test.asu.edu',
+            Name = 'Test Pod ',
+            Committee__c = 'tp'
+        );
+        insert result;
+
+        return result;
     }
 }

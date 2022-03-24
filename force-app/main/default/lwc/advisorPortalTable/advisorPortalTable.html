@@ -9,41 +9,44 @@
                     size="x-small"
                 ></lightning-icon>
                 = Indicates a case that needs attention because it has the status Outreach Required or Customer Replied.
-                <br /><img
-                    src={persistenceIconVeryLow}
-                    alt="very low"
-                    title="Very Low"
-                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
-                />
-                = Very Low
-                <img
-                    src={persistenceIconLow}
-                    alt="low"
-                    title="Low"
-                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
-                />
-                = Low
-                <img
-                    src={persistenceChartModerate}
-                    alt="moderate"
-                    title="Moderate"
-                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
-                />
-                = Moderate
-                <img
-                    src={persistenceIconHigh}
-                    alt="high"
-                    title="High"
-                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
-                />
-                = High
-                <img
-                    src={persistenceIconVeryHigh}
-                    alt="very high"
-                    title="Very High"
-                    class="persistence-icon legend slds-var-m-horizontal_xx-small"
-                />
-                = Very High
+
+                <template if:true={showPersistenceLegend}>
+                    <br /><img
+                        src={persistenceIconVeryLow}
+                        alt="very low"
+                        title="Very Low"
+                        class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                    />
+                    = Very Low
+                    <img
+                        src={persistenceIconLow}
+                        alt="low"
+                        title="Low"
+                        class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                    />
+                    = Low
+                    <img
+                        src={persistenceChartModerate}
+                        alt="moderate"
+                        title="Moderate"
+                        class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                    />
+                    = Moderate
+                    <img
+                        src={persistenceIconHigh}
+                        alt="high"
+                        title="High"
+                        class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                    />
+                    = High
+                    <img
+                        src={persistenceIconVeryHigh}
+                        alt="very high"
+                        title="Very High"
+                        class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                    />
+                    = Very High
+                </template>
             </div>
             <div class="slds-checkbox_button-group" style="border: none">
                 <lightning-input

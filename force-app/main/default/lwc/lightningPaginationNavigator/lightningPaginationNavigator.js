@@ -59,7 +59,7 @@ export default class LightningPaginationNavigator extends LightningElement {
         return 0;
     }
     get lastPage() {
-        return Math.ceil(this.resultsCount / this.pageSize) - 1;
+        return Math.max(Math.ceil(this.resultsCount / this.pageSize) - 1, 0);
     }
 
     get onFirstPage() {
@@ -77,6 +77,7 @@ export default class LightningPaginationNavigator extends LightningElement {
     }
 
     get startIndexOfViewingResults() {
+        if (this.resultsCount === 0) return 0;
         return this.pageSize * this.currentPage + 1;
     }
     get endIndexOfViewingResults() {

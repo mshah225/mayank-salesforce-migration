@@ -2,6 +2,18 @@ import {LightningElement, api} from 'lwc';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
 
 export default class AdvisorPortalTable extends LightningElement {
+    @api set currentFilter(val) {
+        this._currentFilter = val;
+
+        // Only really care about this one field
+        if (this._currentFilter.career === 'GRD') this.showPersistenceLegend = false;
+        else this.showPersistenceLegend = true;
+    }
+    get currentFilter() {
+        return this._currentFilter;
+    }
+    _currentFilter = null;
+
     @api set allResults(val) {
         // deep copy the results to allow us to modify our copy
         const newVal = JSON.parse(JSON.stringify(val));
@@ -59,6 +71,7 @@ export default class AdvisorPortalTable extends LightningElement {
 
     expandedAll = true;
     selectedAll = false;
+    showPersistenceLegend = true;
 
     shownContactWrappers = [];
 

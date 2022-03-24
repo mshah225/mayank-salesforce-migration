@@ -377,6 +377,15 @@ public class AdvisorPortalFilterSectionController {
 
             AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
 
+            // Mark if in grad or ugrad mode
+            if (!String.isBlank(filter.career)) {
+                if (filter.career == 'GRD') {
+                    contactWrapper.isGradStudent = true;
+                } else {
+                    contactWrapper.isGradStudent = false;
+                }
+            }
+
             if (casesByContactIds.containsKey(contact.Id)) {
                 // Skip Contact if we filter by Case count and it has less than we want.
                 if (
@@ -698,6 +707,15 @@ public class AdvisorPortalFilterSectionController {
             }
 
             AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
+
+            // Mark if in grad or ugrad mode
+            if (!String.isBlank(filter.career)) {
+                if (filter.career == 'GRD') {
+                    contactWrapper.isGradStudent = true;
+                } else {
+                    contactWrapper.isGradStudent = false;
+                }
+            }
 
             if (casesByContactIds.containsKey(contact.Id)) {
                 // Skip Contact if we filter by Case count and it has less than we want.

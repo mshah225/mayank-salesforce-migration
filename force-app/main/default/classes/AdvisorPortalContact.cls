@@ -12,6 +12,9 @@ public class AdvisorPortalContact {
     public Boolean isOutreachCustomer { get; set; }
 
     @AuraEnabled
+    public Boolean isGradStudent { get; set; }
+
+    @AuraEnabled
     public Contact portalContact { get; set; }
 
     public List<AdvisorPortalCase> cases;
@@ -19,6 +22,7 @@ public class AdvisorPortalContact {
     public AdvisorPortalContact(Contact theContact) {
         this.isSelected = false;
         this.isOutreachCustomer = false;
+        this.isGradStudent = false;
         this.portalContact = theContact;
         this.cases = new List<AdvisorPortalCase>();
     }

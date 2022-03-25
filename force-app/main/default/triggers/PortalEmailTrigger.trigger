@@ -1,4 +1,4 @@
-trigger PortalEmailTrigger2 on Portal_Email__c(
+trigger PortalEmailTrigger on Portal_Email__c(
     after delete,
     after insert,
     after undelete,

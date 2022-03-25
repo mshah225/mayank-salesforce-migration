@@ -1603,7 +1603,7 @@
                                                     <tr>
                                                         <th>Cumulative GPA</th>
                                                         <td id="ugap_gpa">
-                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">                                                            
+                                                            <a href="https://students.asu.edu/gpa-calculator" target="_blank">
                                                                 <c:sp_GPA gpa="{!undergradGPA}" />
                                                             </a>
                                                             <a href="https://students.asu.edu/gpa-calculator" target="_blank" class="fa fa-calculator" aria-hidden="true"></a>
@@ -1875,7 +1875,7 @@
                                                         <th>Financial Aid Issue</th>
                                                         <td id="sr_finAid_issue">
                                                             <apex:repeat value="{!financialAidIndicators}" var="indicator">
-                                                            	<p>
+                                                                <p>
                                                                     {!indicator}
                                                                 </p>
                                                             </apex:repeat>
@@ -2836,7 +2836,7 @@
             $j(this).attr('src', '{!$Resource.blankAvatar}');
         });
 
-        $j(document).ready(function () {          
+        $j(document).ready(function () {
 
             maskPhoneNumbers();
             filterFinancialAid();
@@ -3034,12 +3034,12 @@
         function loadUGIndicatorTab() {
             getGeneralIndicators();
             getTranscripts();
-            if ('{!theContact.Average_MyASU_Cohort__c}' == '' ){ 
+            if ('{!theContact.Average_MyASU_Cohort__c}' == '') {
                 document.getElementById('sr_below_mean_myasu_usage').innerHTML = '--';
             } else {
                 document.getElementById('sr_below_mean_myasu_usage').innerHTML = Math.floor(0.7 * '{!theContact.Average_MyASU_Cohort__c}');
             }
-            
+
         }
 
         function loadCommentsTab() {
@@ -3056,12 +3056,12 @@
                 element.innerHTML = element.innerHTML.replace(/undefined/g, '--');
                 element.innerHTML = element.innerHTML.replace(/NaN/g, '--');
             }
-        }        
+        }
 
         // Method to load the Undergraduate Indicators tab
         function getGeneralIndicators() {
             if (!indicatorTabLoaded) {
-                var errorHtml = '';                
+                var errorHtml = '';
 
                 var financialAidUnresolvedQuery =
                     'SELECT Aid_Year__c, Checklist_Code__c, Checklist_Item_Code__c, Item_Description__c, Checklist_Item_Status_Date__c, ' +
@@ -3127,10 +3127,10 @@
                 );
 
                 var asrInformationQuery =
-                    'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
-                    'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
-                    'EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c ' +
-                    'FROM PS_ASU_SR_ASR_INDV__x ' +
+                    "SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, " +
+                    "CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, " +
+                    "EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c " +
+                    "FROM PS_ASU_SR_ASR_INDV__x " +
                     "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                     "AND STRM__c = '{!currentTerm}'";
                 conn.query(
@@ -3141,8 +3141,10 @@
                             document.getElementById('sr_asr_errors').className = '';
                             document.getElementById('sr_asr_errors').innerHTML = 'An Error has occured trying to load the data for this object';
                         } else {
-                            if (!response.totalSize == 0) {
-                                result = response.records;
+                            result = response.records.filter(element => {
+                                return element.CRSE_GRADE_INPUT__c != null || element.COMMENT1__c != null || element.ASU_GRADE_RSN_LIST__c != null || element.ASU_GRADE_INST_LST__c != null;
+                            });
+                            if (result.length > 0) {
                                 var html =
                                     '' +
                                     '<thead>' +
@@ -3199,12 +3201,15 @@
                                 html += '</tbody>';
 
                                 document.getElementById('sr_asr_errors').innerHTML = '';
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + response.totalSize;
+                                document.getElementById('sr_asr').innerHTML = "<span style='color:red'>" + result.length;
                                 document.getElementById('sr_asr_info_table').innerHTML = html;
                                 document.getElementById('sr_asr_info_tr').style.display = 'table-row';
-
                                 cleanUpUndefined('sr_asr_info_tr');
+                            } else {
+                                document.getElementById('sr_asr_errors').innerHTML = '';
+                                document.getElementById('sr_asr').innerHTML = "<span style='color:black'>" + '--';
+                                document.getElementById('sr_asr_info_table').style.display = 'none';
+                                document.getElementById('sr_asr_info_tr').style.display = 'none';
                             }
                         }
                     },
@@ -3253,8 +3258,8 @@
                                     "<tbody style='font-weight:normal;'>";
                                 for (var i = 0; i < result.length; i++) {
                                     if (result[i].SI_Start_Term__c != null) {
-                                    	startTerm = result[i].SI_Start_Term__r.Name;
-                                	} else {
+                                        startTerm = result[i].SI_Start_Term__r.Name;
+                                    } else {
                                         startTerm = '--';
                                     }
                                     html +=
@@ -3413,7 +3418,7 @@
                     { buffer: false, escape: true, timeout: 120000 }
                 );
             }
-        }        
+        }
 
         // Method to load the advisor comments.
         function getPSAdvisorNotes() {
@@ -4566,7 +4571,7 @@
 
                             for (var i = 0; i < result.length; i++) {
                                 if (result[i].Name == null) {
-                                	result[i].Name = '--';
+                                    result[i].Name = '--';
                                 }
                                 if (result[i].Course_Taken__c == null) {
                                     result[i].Course_Taken__c = '--';

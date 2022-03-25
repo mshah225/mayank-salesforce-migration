@@ -3163,18 +3163,10 @@
                                     "<tbody style='font-weight:normal;'>";
 
                                 for (var i = 0; i < result.length; i++) {
-                                    if (result[i].CRSE_GRADE_INPUT__c === null) {
-                                        result[i].CRSE_GRADE_INPUT__c = '--';
-                                    }
-                                    if (result[i].COMMENT1__c === null) {
-                                        result[i].COMMENT1__c = '--';
-                                    }
-                                    if (result[i].ASU_GRADE_RSN_LIST__c === null) {
-                                        result[i].ASU_GRADE_RSN_LIST__c = '--';
-                                    }
-                                    if (result[i].ASU_GRADE_INST_LST__c === null) {
-                                        result[i].ASU_GRADE_INST_LST__c = '--';
-                                    }
+                                    if (result[i].CRSE_GRADE_INPUT__c === null) result[i].CRSE_GRADE_INPUT__c = '--';
+                                    if (result[i].COMMENT1__c === null) result[i].COMMENT1__c = '--';
+                                    if (result[i].ASU_GRADE_RSN_LIST__c === null) result[i].ASU_GRADE_RSN_LIST__c = '--';
+                                    if (result[i].ASU_GRADE_INST_LST__c === null) result[i].ASU_GRADE_INST_LST__c = '--';
 
                                     html +=
                                         '<tr>' +

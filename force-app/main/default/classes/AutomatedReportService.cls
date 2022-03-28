@@ -7,8 +7,8 @@ public without sharing class AutomatedReportService {
     private  String csvFileForBulk = BULK_HEADERS;
     private  Boolean hasHeaderRow = true;
     private  Map<Integer, String> columnMap; // Mapping of the csv headers
-    private Blob reportData;
-
+    
+    public Blob reportData;
     public  BulkApiManager bulkManager; // Bulk API
     public  Automated_Report_Processing_Options__c report;
 

@@ -10,12 +10,23 @@ public without sharing class AutomatedReportNightlyJobTest {
         String currentDayOfWeek = dt.format('EEEE');
         String notCurrentDayOfWeek = dt.addDays(1).format('EEEE');
 
-        reportsToCreate.add(createReport('Weekly', 8, currentDayOfWeek, 'Weekly')); 
-        reportsToCreate.add(createReport('Bi-Weekly', 15, currentDayOfWeek, 'Bi-Weekly')); 
-        reportsToCreate.add(createReport('Monthly', 32, currentDayOfWeek, 'Monthly')); 
+        reportsToCreate.add(createReport('Weekly', -8, currentDayOfWeek, 'Weekly')); 
+        reportsToCreate.add(createReport('Bi-Weekly', -15, currentDayOfWeek, 'Bi-Weekly')); 
+        reportsToCreate.add(createReport('Monthly', -32, currentDayOfWeek, 'Monthly')); 
 
-        insert reportsToCreate;
+        insert reportsToCreate;        
+    }
+    
+    @isTest
+    static void updateReports() {
+        AutomatedReportNightlyJob nightlyJob = new AutomatedReportNightlyJob();
+        nightlyJob.execute(null);
         
+        List<Automated_Report_Processing_Options__c> reports = [SELECT Id, Schedule_Day__c, Schedule_Frequency__c, Last_Run__c
+            FROM Automated_Report_Processing_Options__c
+            WHERE Active__c = TRUE AND Run_Required__c = TRUE];
+        
+        System.assertEquals(3, reports.size());
     }
 
     private static Automated_Report_Processing_Options__c createReport (String reportName, Integer offset, String scheduledDay, String scheduleFrequency) {
@@ -33,7 +44,5 @@ public without sharing class AutomatedReportNightlyJobTest {
 
         reportId += 1;
         return newReport;
-    }
-
-    
+    }    
 }

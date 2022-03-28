@@ -44,7 +44,9 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
 
             update reportsToRun;
 
-            System.enqueueJob(new AutomatedReportProcessing(null));
+            if(!Test.isRunningTest()) {
+            	System.enqueueJob(new AutomatedReportProcessing(null));
+            }
         }
     }    
     

@@ -1,4 +1,4 @@
-public without sharing class AutomatedReportNightlyJob implements Schedulable {
+global without sharing class AutomatedReportNightlyJob implements Schedulable {
 
     global void execute(SchedulableContext sc) {
         List<Automated_Report_Processing_Options__c> reportsToRun = new List<Automated_Report_Processing_Options__c>();

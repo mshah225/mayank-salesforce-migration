@@ -797,155 +797,181 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert testCases;
     }
 
-    @IsTest
-    static void testGetPicklistValues() {
+    @isTest
+    private static void testGetResidencyOptions() {
         Test.startTest();
-        Map<String, String> picklistValuesMap = AdvisorPortalFilterSectionController.getPicklistValues(
+        Map<String, String> options = AdvisorPortalFilterSectionController.getPicklistValues(
             'Student_Program_Plan__c',
             'Residency__c'
         );
         Test.stopTest();
 
-        System.assert(
-            picklistValuesMap.size() > 0,
-            'Controller should have returned values for the Residency picklist.'
-        );
-        System.assert(
-            picklistValuesMap.keySet().contains('Resident'),
-            'Ensure the picklist map contains at least one valid picklist value.'
-        );
+        System.assert(!options.isEmpty(), 'There should be SOME residency options.');
+        System.assert(options.keySet().contains('Resident'), 'Residency options should contain "Resident".');
+        System.assert(options.keySet().contains('Non-Resident'), 'Residency options should contain "Non-Resident".');
+        System.assert(options.keySet().contains('International'), 'Residency options should contain "International".');
     }
 
     @IsTest
     static void testGetCaseStatusOptions() {
+        List<Advisor_Portal_Case_Status__mdt> validStatuses = [
+            SELECT Label, Value__c
+            FROM Advisor_Portal_Case_Status__mdt
+            WHERE Active__c = TRUE
+            ORDER BY Label ASC
+        ];
+
         Test.startTest();
         Map<String, String> caseStatusMap = AdvisorPortalFilterSectionController.getCaseStatusSettings();
         Test.stopTest();
 
-        System.assert(
-            caseStatusMap.size() > 0,
+        System.assertEquals(
+            validStatuses.size(),
+            caseStatusMap.size(),
             'Controller should have returned values for the Case Status picklist based upon the custom metadata type.'
         );
-        System.assert(
-            caseStatusMap.keySet().contains('In Progress'),
-            'Ensure the picklist map contains at least one valid picklist value.'
-        );
+        for (Advisor_Portal_Case_Status__mdt status : validStatuses) {
+            System.assert(
+                caseStatusMap.keySet().contains(status.Label),
+                'Ensure the picklist map contains all statuses.'
+            );
+        }
     }
 
     @IsTest
-    private static void testCaseSubjectPicklistValues() {
-        // Arrange
-        Contact testContact = [SELECT Id FROM Contact LIMIT 1];
+    private static void testGetCaseSubjectPicklistValues() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        String queueId = [SELECT QueueId FROM QueueSobject WHERE SobjectType = 'Case' LIMIT 1].QueueId;
-
-        List<Case> testCases = createCases(3);
-        Integer i = 0;
-        for (Case c : testCases) {
-            c.ContactId = testContact.Id;
-            c.Subject = 'Subject ' + i;
-            c.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-            c.OwnerId = queueId;
-            i++;
-        }
-        insert testCases;
+        List<Case> testCases = [SELECT Id, Subject FROM Case WHERE OwnerId = :testUser.Id];
 
         // Act
         Test.startTest();
         Map<String, String> subjectMap = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(
-            new List<String>{ queueId }
+            new List<String>{ testUser.Id }
         );
         Test.stopTest();
 
-        // Assert
-        System.assertEquals(3, subjectMap.size(), 'Three subjects should have been found.');
+        for (Case c : testCases) {
+            System.assert(
+                subjectMap.keySet().contains(c.Subject),
+                'Should contain all subjects that this user has cases for'
+            );
+        }
     }
 
     @IsTest
-    private static void testCaseCategoryPicklistValues() {
-        // Arrange
-        Contact testContact = [SELECT Id FROM Contact LIMIT 1];
+    private static void testGetCaseCategoryPicklistValues() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        List<Case> testCases = createCases(3);
-        Integer i = 0;
-        for (Case c : testCases) {
-            c.ContactId = testContact.Id;
-            c.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-            i++;
-        }
-        insert testCases;
+        List<Case> testCases = [
+            SELECT Id, CC_Category__r.Name
+            FROM Case
+            WHERE
+                OwnerId = :testUser.Id
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+        ];
 
-        CaseClassificationFactory caseClassificationsMaker = new CaseClassificationFactory();
-        List<Case_Classification__c> classifications = caseClassificationsMaker.createAndInsertSetOfAdvisorOutreachCaseClassification();
-        Id functionalGroupId = classifications[0].Id;
-        Id categoryWatchlistId = classifications[2].Id;
-
-        update new List<Case_Classification__c>{
-            new Case_Classification__c(Id = categoryWatchlistId, Name = 'Watchlist'),
-            new Case_Classification__c(Id = functionalGroupId, Name = 'ASU Advisor Outreach')
-        };
-
-        String queueId = [SELECT QueueId FROM QueueSobject WHERE SobjectType = 'Case' LIMIT 1].QueueId;
-
-        CaseFactory.AdvisorOutreachCase watchlistCaseMaker = new CaseFactory.AdvisorOutreachCase(
-            UserInfo.getUserId(),
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
-            'Outreach Required',
-            functionalGroupId,
-            categoryWatchlistId,
-            testContact.Id,
-            null
-        );
-        Case caseToFind = (Case) watchlistCaseMaker.create(1)[0];
-        caseToFind.Subject = 'Test Subject';
-        caseToFind.Followup_Date__c = System.today().addDays(10);
-        caseToFind.ownerId = queueId;
-        insert caseToFind;
-
-        // Act
         Test.startTest();
         Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
-            new List<String>{ queueId }
+            new List<String>{ testUser.Id }
         );
         Test.stopTest();
 
-        // Assert
-        System.assertEquals(1, classificationMap.size(), 'The one Case Category should have been found.');
+        for (Case c : testCases) {
+            System.assert(
+                classificationMap.keySet().contains(c.CC_Category__r.Name),
+                'Should contain all categories that this user has cases for'
+            );
+        }
     }
 
     @IsTest
-    private static void testNoFilter() {
-        Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
+    private static void testGetAcademicProgramPicklistValues() {
+        List<Program__c> testPrograms = [SELECT Id, Name, Program_Code__c FROM Program__c WHERE Career__c = 'Graduate'];
 
-        User testUser = createUser('text-user-ap-r1', p.Id);
-        insert testUser;
+        Test.startTest();
+        Map<String, String> programMap = AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues();
+        Test.stopTest();
 
-        Contact testContact1 = createContact('test-contact-ap-r1');
-        Contact testContact2 = createContact('test-contact-ap-r2');
-        insert new List<Contact>{ testContact1, testContact2 };
+        for (Program__c p : testPrograms) {
+            String expectedKey = p.Name;
+            System.assert(
+                programMap.keySet().contains(expectedKey),
+                'Should contain all active programs (which is ALL programs for our test data) but "' +
+                expectedKey +
+                '" is missing from ' +
+                programMap.keySet()
+            );
+        }
+    }
 
-        Case testCase1 = createCase('test-case-ap-r1');
-        testCase1.ContactId = testContact1.Id;
-        testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = createCase('test-case-ap-r2');
-        testCase2.ContactId = testContact1.Id;
-        testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = createCase('test-case-ap-r3');
-        testCase3.ContactId = testContact2.Id;
-        testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = createCase('test-case-ap-r4');
-        testCase4.ContactId = testContact2.Id;
-        testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = createCase('test-case-ap-r5');
-        testCase5.ContactId = testContact2.Id;
-        testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+    @IsTest
+    private static void testGetAcademicPlanPicklistValues() {
+        List<Plan__c> testPlans = [
+            SELECT Id, Name, Plan_Code__c, Program__r.Program_Code__c
+            FROM Plan__c
+            WHERE Program__r.Career__c = 'Graduate'
+        ];
 
-        insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
+        Test.startTest();
+        Map<String, String> planMap = AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues('{}');
+        Map<String, String> limitedPlanMap = AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues(
+            '{"academicProgram":"IRAAFUL"}'
+        );
+        Test.stopTest();
+
+        for (Plan__c p : testPlans) {
+            String expectedKey = p.Plan_Code__c + ' / ' + p.Name;
+            System.assert(
+                planMap.keySet().contains(expectedKey),
+                'Should contain all active plans (which is ALL plans for our test data) but "' +
+                expectedKey +
+                '" is missing from ' +
+                planMap.keySet()
+            );
+
+            if (p.Program__r.Program_Code__c == 'IRAAFUL') {
+                System.assert(
+                    limitedPlanMap.keySet().contains(expectedKey),
+                    'Should contain only plans under the IRAAFUL program and it is missing "' +
+                    expectedKey +
+                    '" from ' +
+                    limitedPlanMap.keySet()
+                );
+            } else {
+                System.assert(
+                    !limitedPlanMap.keySet().contains(expectedKey),
+                    'Should contain only plans under the IRAAFUL program but it contains "' +
+                    expectedKey +
+                    '" in ' +
+                    limitedPlanMap.keySet()
+                );
+            }
+        }
+    }
+
+    @IsTest
+    private static void testUndergraduateFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'AllCasesState';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.debug(results);
+    }
 
     @IsTest
     private static void testNoFilter() {
@@ -1044,51 +1070,6 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testMajorFilter() {
-        Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
-
-        User testUser = createUser('text-user-ap-r1', p.Id);
-        insert testUser;
-
-        Contact testContact1 = createContact('test-contact-ap-r1');
-        Contact testContact2 = createContact('test-contact-ap-r2');
-        insert new List<Contact>{ testContact1, testContact2 };
-
-        Case testCase1 = createCase('test-case-ap-r1');
-        testCase1.ContactId = testContact1.Id;
-        testCase1.ownerId = testUser.Id;
-        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = createCase('test-case-ap-r2');
-        testCase2.ContactId = testContact1.Id;
-        testCase2.ownerId = testUser.Id;
-        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = createCase('test-case-ap-r3');
-        testCase3.ContactId = testContact2.Id;
-        testCase3.ownerId = testUser.Id;
-        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = createCase('test-case-ap-r4');
-        testCase4.ContactId = testContact2.Id;
-        testCase4.ownerId = testUser.Id;
-        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = createCase('test-case-ap-r5');
-        testCase5.ContactId = testContact2.Id;
-        testCase5.ownerId = testUser.Id;
-        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-
-        insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
-
-        Student_Program_Plan__c studentProgramPlan1 = new Student_Program_Plan__c(
-            Contact__c = testContact1.Id,
-            Plan_Type_Text__c = 'MAJ',
-            Plan_Code__c = 'test-code-ap-r1'
-        );
-        Student_Program_Plan__c studentProgramPlan2 = new Student_Program_Plan__c(
-            Contact__c = testContact2.Id,
-            Plan_Type_Text__c = 'MAJ',
-            Plan_Description__c = 'test-description-ap-r2'
-        );
-
-        insert new List<Student_Program_Plan__c>{ studentProgramPlan1, studentProgramPlan2 };
-
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.major = 'test-code-ap-r1';

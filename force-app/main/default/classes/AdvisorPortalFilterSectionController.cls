@@ -23,23 +23,7 @@ public class AdvisorPortalFilterSectionController {
      */
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getPicklistValues(String objectName, String fieldName) {
-        Map<String, String> picklistValuesByLabel = new Map<String, String>();
-
-        for (
-            Schema.PicklistEntry picklistValue : Schema.getGlobalDescribe()
-                .get(objectName)
-                .getDescribe()
-                .fields.getMap()
-                .get(fieldName)
-                .getDescribe()
-                .getPicklistValues()
-        ) {
-            if (picklistValue.isActive()) {
-                picklistValuesByLabel.put(picklistValue.getLabel(), picklistValue.getValue());
-            }
-        }
-
-        return picklistValuesByLabel;
+        return ObjectService.getPicklistChoicesMap(objectName, fieldName);
     }
 
     /**

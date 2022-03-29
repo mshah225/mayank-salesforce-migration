@@ -956,7 +956,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
-            SELECT Contact__c
+            SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE Career__c != 'Graduate'
             GROUP BY Contact__c
@@ -988,7 +988,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
-            SELECT Contact__c
+            SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE Career__c = 'Graduate'
             GROUP BY Contact__c
@@ -1097,14 +1097,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
-            SELECT Contact__c
+            SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE Career__c != 'Graduate' AND Campus__r.Location_Code__c = '0011221101'
             GROUP BY Contact__c
         ];
 
         List<AggregateResult> expectedStudents2 = [
-            SELECT Contact__c
+            SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE Career__c != 'Graduate' AND Campus__r.Location_Code__c IN ('0011221101', '0011221102')
             GROUP BY Contact__c
@@ -1156,13 +1156,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
-            SELECT Contact__c
+            SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE Career__c != 'Graduate' AND Cohort__c = 'Freshman'
             GROUP BY Contact__c
         ];
         List<AggregateResult> expectedStudents2 = [
-            SELECT Contact__c
+            SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE Career__c != 'Graduate' AND Cohort__c IN ('Freshman', 'Junior')
             GROUP BY Contact__c
@@ -1210,21 +1210,61 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testStudentGroupFilter() {
+    private static void testFilterStudentGroup() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        Contact testContact1 = null;
+        List<AggregateResult> expectedStudents = [
+            SELECT SG_Contact__c ContactId__alias
+            FROM Student_Group__c
+            WHERE SG_PeopleSoft_Code__c = 'STGRP1'
+            GROUP BY SG_Contact__c
+        ];
+        List<AggregateResult> expectedStudents2 = [
+            SELECT SG_Contact__c ContactId__alias
+            FROM Student_Group__c
+            WHERE SG_PeopleSoft_Code__c = 'STGRP2'
+            GROUP BY SG_Contact__c
+        ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
-        filter.studentGroupCode = 'testapr1';
+        filter.caseTypeState = 'AllCasesState';
+        filter.studentGroupCode = 'STGRP1';
 
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.studentGroupCode = 'STGRP2';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact1.Id, results[0].portalContact.Id, 'Should get first test contact');
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
     }
 
     @IsTest
@@ -1700,7 +1740,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         for (AggregateResult expectedStudent : aggreagteStudentProgramPlans) {
             boolean found = false;
             for (AdvisorPortalContact retrievedResult : advisorPortalContacts) {
-                if (retrievedResult.portalContact.Id == expectedStudent.get('Contact__c'))
+                if (retrievedResult.portalContact.Id == expectedStudent.get('ContactId__alias'))
                     found = true;
             }
             if (!found) {

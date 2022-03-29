@@ -71,7 +71,7 @@ private class AdvisorPortalFilterSectionControllerTest {
      * |   Sean Phillips      |   UGRAD  |  CAMP6   |  Graduate |  STGRP4  | TVFILM  |  RES  |             |           |             |            |            |           |                        |
      * |   Anna Phillips      |   GRAD   |  CAMP1   |           |          |         |       |   Masters   |  IRAAFUL  |             |  ELECENG   |    2161    |    2201   |  4+1 Accel, ApplGrd    |
      * |   Carl Porter        |   GRAD   |  CAMP1   |           |          |         |       |  Doctorate  |  IRAAFUL  |             |  CIVLENG   |    2201    |    2241   |  4+1 Intl Accel        |
-     * |   Devin McCain       |   LAW    |  CAMP5   |           |          |         |       |   Masters   |  LAW      |             |  LAWYER    |    2191    |    2231   |                        |
+     * |   Devin McCain       |   LAW    |  CAMP1   |           |          |         |       |   Masters   |  LAW      |             |  LAWYER    |    2191    |    2231   |                        |
      * |   Devin McCain       |   LAW    |  CAMP5   |           |          |         |       | Certificate |  LAW      |             |  JUDGE     |    2191    |    2231   |                        |
      * |   Anya Simms         |   GRAD   |  CAMP2   |           |          |         |       |  Doctorate  |  SCL_SOC  |             |  SOCWORK   |    2201    |    2241   |  ProvAd, ConCur        |
      * |   Anya Simms         |   GRAD   |  CAMP2   |           |          |         |       |  Doctorate  |  WP_CAR   |             |  BUSNESS   |    2204    |    2244   |  ProvAd, ConCur        |
@@ -480,7 +480,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         Student_Program_Plan__c devinMcCainProgramPlan1 = new Student_Program_Plan__c(
             Contact__c = devinMcCain.Id,
             Career__c = 'Law',
-            Campus__c = testCampus5.Id,
+            Campus__c = testCampus1.Id,
             Plan_Type_Text__c = 'MAJ',
             Education_Level__c = '17',
             Program_Code__c = 'LAW',
@@ -1158,25 +1158,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Undergraduate' AND Cohort__c = 'Freshman'
+            WHERE Career__c != 'Graduate' AND Cohort__c = 'Freshman'
             GROUP BY Contact__c
         ];
         List<AggregateResult> expectedStudents2 = [
             SELECT Contact__c
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Undergraduate' AND Campus__r.Location_Code__c IN ('CAMP2', 'CAMP3')
+            WHERE Career__c != 'Graduate' AND Cohort__c IN ('Freshman', 'Junior')
             GROUP BY Contact__c
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
-        filter.campus = 'CAMP3';
+        filter.academicLevel = 'Freshman';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter.career = 'UGRD';
-        filter.caseTypeState = 'AllCasesState';
-        filter.campus = 'CAMP3;CAMP2';
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.academicLevel = 'Freshman;Junior';
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
@@ -1200,36 +1200,13 @@ private class AdvisorPortalFilterSectionControllerTest {
             List<AdvisorPortalContact>.class
         );
 
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
         assertCorrectReturned(expectedStudents, results);
 
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents2.size(), results2.size());
         assertCorrectReturned(expectedStudents2, results2);
-    }
-
-    @IsTest
-    private static void testAcademicLevelFilter() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
-
-        Contact testContact1 = null;
-
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.career = 'UGRD';
-        filter.academicLevel = 'test-cohort-1';
-
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
-            new List<Id>{ testUser.Id },
-            filter
-        );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact1.Id, results[0].portalContact.Id, 'Should get first test contact');
-
-        filter.academicLevel = 'test-cohort-1;test-cohort-2';
-        results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
-            new List<Id>{ testUser.Id },
-            filter
-        );
-        System.assertEquals(2, results.size(), 'Should get 2 contact-case wrapper returned');
     }
 
     @IsTest

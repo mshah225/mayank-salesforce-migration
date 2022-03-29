@@ -257,6 +257,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         Contact devinMcCain = newContact('Devin', 'McCain');
         testContacts.add(devinMcCain);
         Contact anyaSimms = newContact('Anya', 'Simms');
+        anyaSimms.PS_Preferred_First_Name__c = 'Anastasia';
+        anyaSimms.EmplId__c = '1200889090';
+        anyaSimms.ASURite_ID__c = 'asimms4';
         testContacts.add(anyaSimms);
         Contact coreyNickolette = newContact('Corey', 'Nickolette');
         testContacts.add(coreyNickolette);
@@ -997,7 +1000,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
         Test.stopTest();
 
@@ -1011,36 +1014,80 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testNameFilter() {
+    private static void testFilterName() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        Contact testContact1 = null, testContact2 = null;
-
+        // Search name
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.studentString = 'Anya Simms';
 
-        filter.studentString = 'Mister test-contact-ap-r2';
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
-            new List<Id>{ testUser.Id },
-            filter
-        );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact2.Id, results[0].portalContact.Id, 'Should get second test contact');
+        // Search preferred name
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.studentString = 'Anastasia Simms';
 
-        filter.studentString = '0011221100';
-        results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
-            new List<Id>{ testUser.Id },
-            filter
-        );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact1.Id, results[0].portalContact.Id, 'Should get first test contact');
+        // Search emplid
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.career = 'GRD';
+        filter3.caseTypeState = 'AllCasesState';
+        filter3.studentString = '1200889090';
 
-        filter.studentString = 'testid_1';
-        results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        // Search asurite
+        AdvisorPortalFilter filter4 = new AdvisorPortalFilter();
+        filter4.career = 'GRD';
+        filter4.caseTypeState = 'AllCasesState';
+        filter4.studentString = 'asimms4';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter3)
+        );
+        String resultsJSON4 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter4)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON3,
+            List<AdvisorPortalContact>.class
+        );
+        List<AdvisorPortalContact> results4 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON4,
+            List<AdvisorPortalContact>.class
+        );
+
         System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact2.Id, results[0].portalContact.Id, 'Should get second test contact');
+        System.assertEquals('Anya Simms', results[0].portalContact.Name, 'Should get second test contact');
+
+        System.assertEquals(1, results2.size(), 'Should get 1 contact-case wrapper returned');
+        System.assertEquals('Anya Simms', results2[0].portalContact.Name, 'Should get second test contact');
+
+        System.assertEquals(1, results3.size(), 'Should get 1 contact-case wrapper returned');
+        System.assertEquals('Anya Simms', results3[0].portalContact.Name, 'Should get second test contact');
+
+        System.assertEquals(1, results4.size(), 'Should get 1 contact-case wrapper returned');
+        System.assertEquals('Anya Simms', results4[0].portalContact.Name, 'Should get second test contact');
     }
 
     @IsTest
@@ -1569,5 +1616,26 @@ private class AdvisorPortalFilterSectionControllerTest {
             Student__c = con.Id,
             Coaching_Student__c = false
         );
+    }
+
+    private static void assertCorrectReturned(
+        List<AggregateResult> aggreagteStudentProgramPlans,
+        List<AdvisorPortalContact> advisorPortalContacts
+    ) {
+        for (AggregateResult expectedStudent : aggreagteStudentProgramPlans) {
+            boolean found = false;
+            for (AdvisorPortalContact retrievedResult : advisorPortalContacts) {
+                if (retrievedResult.portalContact.Id == expectedStudent.get('Contact__c'))
+                    found = true;
+            }
+            if (!found) {
+                System.assert(
+                    false,
+                    'Missing contact from results.  ' +
+                    expectedStudent.get('Contact__c') +
+                    ' was expected but not returned.'
+                );
+            }
+        }
     }
 }

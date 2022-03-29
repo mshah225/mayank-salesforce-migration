@@ -350,7 +350,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus1.Id,
             Cohort__c = 'freshman',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'COMPSCI',
+            Plan_Description__c = 'Computer Science',
             Residency__c = 'Non-Resident'
         );
         testStudentProgramPlans.add(ryanCastelliProgramPlan);
@@ -359,7 +361,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus1.Id,
             Cohort__c = 'freshman',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'BUSNESS',
+            Plan_Description__c = 'Business Boss',
             Residency__c = 'Non-Resident'
         );
         testStudentProgramPlans.add(chaseBurgessProgramPlan);
@@ -368,7 +372,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus2.Id,
             Cohort__c = 'sophmore',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'AEROSPC',
+            Plan_Description__c = 'Aerospace Engineering',
             Residency__c = 'Resident'
         );
         testStudentProgramPlans.add(morganStraussProgramPlan);
@@ -377,7 +383,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus2.Id,
             Cohort__c = 'freshman',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'BUSNESS',
+            Plan_Description__c = 'Business Boss',
             Residency__c = 'Non-Resident'
         );
         testStudentProgramPlans.add(benHellsigProgramPlan);
@@ -386,7 +394,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus3.Id,
             Cohort__c = 'sophmore',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'PREMED',
+            Plan_Description__c = 'Premedical',
             Residency__c = 'Non-Resident'
         );
         testStudentProgramPlans.add(marisaBarillaProgramPlan);
@@ -395,7 +405,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus3.Id,
             Cohort__c = 'junior',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'PREMED',
+            Plan_Description__c = 'Premedical',
             Residency__c = 'Resident'
         );
         testStudentProgramPlans.add(sarahDurisekProgramPlan);
@@ -404,7 +416,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus4.Id,
             Cohort__c = 'sophmore',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
+            Plan_Description__c = 'Videography',
             Residency__c = 'International'
         );
         testStudentProgramPlans.add(jamesBairProgramPlan);
@@ -413,7 +427,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus4.Id,
             Cohort__c = 'junior',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
+            Plan_Description__c = 'Videography',
             Residency__c = 'Non-Resident'
         );
         testStudentProgramPlans.add(zacharyNoellerProgramPlan);
@@ -422,7 +438,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus5.Id,
             Cohort__c = 'senior',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'COMPSCI',
+            Plan_Description__c = 'Computer Science',
             Residency__c = 'International'
         );
         testStudentProgramPlans.add(morganDiegelProgramPlan);
@@ -431,7 +449,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus5.Id,
             Cohort__c = 'senior',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'ELECENG',
+            Plan_Description__c = 'Electrical Engineering',
             Residency__c = 'International'
         );
         testStudentProgramPlans.add(aaronAssafProgramPlan);
@@ -440,7 +460,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus6.Id,
             Cohort__c = 'junior',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'PURMATH',
+            Plan_Description__c = 'Absoluti Mathematica',
             Residency__c = 'Non-Resident'
         );
         testStudentProgramPlans.add(simonKirkseyProgramPlan);
@@ -449,7 +471,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Career__c = 'Undergraduate',
             Campus__c = testCampus6.Id,
             Cohort__c = 'graduate',
+            Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
+            Plan_Description__c = 'Videography',
             Residency__c = 'Resident'
         );
         testStudentProgramPlans.add(seanPhillipsProgramPlan);
@@ -1268,29 +1292,55 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testMajorFilter() {
+    private static void testFilterMajor() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        Contact testContact1 = null, testContact2 = null;
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Career__c != 'Graduate' AND Plan_Code__c = 'COMPSCI'
+            GROUP BY Contact__c
+        ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
-        filter.major = 'test-code-ap-r1';
+        filter.caseTypeState = 'AllCasesState';
+        filter.major = 'COMPSCI';
 
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
-            new List<Id>{ testUser.Id },
-            filter
-        );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact1.Id, results[0].portalContact.Id, 'Should get first test contact');
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.major = 'Computer Science';
 
-        filter.major = 'test-description-ap-r2';
-        results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact2.Id, results[0].portalContact.Id, 'Should get second test contact');
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results2.size());
+        assertCorrectReturned(expectedStudents, results2);
     }
 
     @IsTest

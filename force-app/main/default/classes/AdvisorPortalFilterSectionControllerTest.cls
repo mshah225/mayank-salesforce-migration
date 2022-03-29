@@ -978,6 +978,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             List<AdvisorPortalContact>.class
         );
 
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
         assertCorrectReturned(expectedStudents, results);
     }
@@ -1009,6 +1010,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             List<AdvisorPortalContact>.class
         );
 
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
         assertCorrectReturned(expectedStudents, results);
     }

@@ -1971,7 +1971,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                 System.assert(
                     false,
                     'Missing contact from results.  ' +
-                    expectedStudent.get('Contact__c') +
+                    expectedStudent.get('ContactId__alias') +
                     ' was expected but not returned.'
                 );
             }

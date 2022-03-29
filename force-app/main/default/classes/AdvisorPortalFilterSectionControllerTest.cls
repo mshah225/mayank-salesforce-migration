@@ -103,7 +103,7 @@ private class AdvisorPortalFilterSectionControllerTest {
      * +---------+
      *
      *
-     * 7 cases
+     * 10 cases
      * +----------------------+-------------+----------------------------------+----------+------------------+------------+
      * |         Who          |  Subject    |                Status            |  Owner   |  Follow Up Date  |  Category  |
      * +----------------------+-------------+----------------------------------+----------+------------------+------------+
@@ -111,9 +111,12 @@ private class AdvisorPortalFilterSectionControllerTest {
      * |  Ryan Castelli       |  Found bug  |  Busy Signal                     | McKinnon |  TODAY - 9d      |  CAT-1     |
      * |  Ryan Castelli       |  Send help  |  Customer Replied                | McKinnon |  TODAY - 10d     |  CAT-2     |
      * |  Ryan Castelli       |  Ant man    |  Email Sent                      | McKinnon |  TODAY - 2d      |  CAT-2     |
-     * |  Maddy Thomas        |  Enrollment |  Outreach Required               | McKinnon |  TODAY - 2d      |  CAT-3     |
-     * |  Corey Nickolette    |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY - 1d      |  CAT-3     |
-     * |  Anna Phillips       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY - 1d      |  CAT-4     |
+     * |  Chase Burgess       |  Battery    |  New                             | McKinnon |  TODAY - 2d      |  CAT-4     |
+     * |  Ben Hellsig         |  Tailwind   |  New                             | McKinnon |  TODAY - 2d      |  CAT-4     |
+     * |  Marisa Barilla      |  Paperclip  |  New                             | McKinnon |  TODAY - 2d      |  CAT-4     |
+     * |  Sarah Durisek       |  Enrollment |  Outreach Required               | McKinnon |  TODAY - 2d      |  CAT-3     |
+     * |  James Bair          |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY - 1d      |  CAT-3     |
+     * |  Morgan Diegel       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY - 1d      |  CAT-4     |
      * +----------------------+-------------+----------------------------------+----------+------------------+------------+
      */
     @TestSetup
@@ -789,7 +792,37 @@ private class AdvisorPortalFilterSectionControllerTest {
         );
         testCases.add(testCase4);
         Case testCase5 = new Case(
-            ContactId = maddyThomas.Id,
+            ContactId = chaseBurgess.Id,
+            Subject = 'Battery',
+            Status = 'New',
+            CC_Category__c = category4.Id,
+            Followup_Date__c = tPlus2d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseRecordTypeId
+        );
+        testCases.add(testCase5);
+        Case testCase6 = new Case(
+            ContactId = benHellsig.Id,
+            Subject = 'Tailwind',
+            Status = 'New',
+            CC_Category__c = category4.Id,
+            Followup_Date__c = tPlus2d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseRecordTypeId
+        );
+        testCases.add(testCase6);
+        Case testCase7 = new Case(
+            ContactId = marisaBarilla.Id,
+            Subject = 'Paperclip',
+            Status = 'New',
+            CC_Category__c = category4.Id,
+            Followup_Date__c = tPlus2d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseRecordTypeId
+        );
+        testCases.add(testCase7);
+        Case testCase8 = new Case(
+            ContactId = sarahDurisek.Id,
             Subject = 'Enrollment',
             Status = 'Outreach Required',
             CC_Category__c = category3.Id,
@@ -797,9 +830,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
-        testCases.add(testCase5);
-        Case testCase6 = new Case(
-            ContactId = coreyNickolette.Id,
+        testCases.add(testCase8);
+        Case testCase9 = new Case(
+            ContactId = jamesBair.Id,
             Subject = 'Enrollment',
             Status = 'Outreach Required - Transferred',
             CC_Category__c = category3.Id,
@@ -807,9 +840,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
-        testCases.add(testCase6);
-        Case testCase7 = new Case(
-            ContactId = annaPhillips.Id,
+        testCases.add(testCase9);
+        Case testCase10 = new Case(
+            ContactId = morganDiegel.Id,
             Subject = 'Bee girl',
             Status = 'Email Sent',
             CC_Category__c = category4.Id,
@@ -817,7 +850,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
-        testCases.add(testCase7);
+        testCases.add(testCase10);
 
         insert testCases;
     }
@@ -1474,7 +1507,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CC_Category__r.Name = 'CAT-3'
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
             GROUP BY ContactId
         ];
 
@@ -1482,20 +1515,20 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT ContactId ContactId__alias
             FROM Case
             WHERE
-                CC_Category__r.Name IN ('CAT-1', 'CAT-3')
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+                CC_Category__r.Name IN ('CAT-4', 'CAT-3')
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
             GROUP BY ContactId
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.career = 'GRD';
+        filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCategory = 'CAT-3';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.career = 'GRD';
+        filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
-        filter2.caseCategory = 'CAT-1;CAT-3';
+        filter2.caseCategory = 'CAT-4;CAT-3';
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
@@ -1536,8 +1569,8 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT ContactId ContactId__alias
             FROM Case
             WHERE
-                Subject = 'Enrollment'
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+                Subject = 'Tailwind'
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
             GROUP BY ContactId
         ];
 
@@ -1545,20 +1578,20 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT ContactId ContactId__alias
             FROM Case
             WHERE
-                Subject IN ('Enrollment', 'Bee girl')
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+                Subject IN ('Tailwind', 'Bee girl')
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
             GROUP BY ContactId
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.career = 'GRD';
+        filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
-        filter.caseSubject = 'Enrollment';
+        filter.caseSubject = 'Tailwind';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.career = 'GRD';
+        filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
-        filter2.caseSubject = 'Enrollment;Bee girl';
+        filter2.caseSubject = 'Tailwind;Bee girl';
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
@@ -1592,19 +1625,74 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testOutlookScoreFilter() {
+    private static void testFilterOutlookScore() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        Contact testContact1 = null;
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                ContactId IN (
+                    SELECT Contact__c
+                    FROM Persistence_Outlook__c
+                    WHERE Curr_Cont_Prediction_Level__c IN (0, 1, 2, 3)
+                )
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
 
-        filter.outlookScore = 'low';
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                ContactId IN (
+                    SELECT Contact__c
+                    FROM Persistence_Outlook__c
+                    WHERE Curr_Cont_Prediction_Level__c IN (0, 1, 2, 3, 4, 5)
+                )
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.outlookScore = 'very low';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.outlookScore = 'very low;low';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact1.Id, results[0].portalContact.Id, 'Should get first test contact');
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
     }
 
     @IsTest

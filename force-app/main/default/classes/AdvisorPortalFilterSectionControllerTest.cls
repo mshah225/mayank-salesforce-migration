@@ -1466,22 +1466,66 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testCaseCategoryFilter() {
+    private static void testFilterCaseCategory() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name = 'CAT-3'
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+            GROUP BY ContactId
+        ];
 
-        filter.caseCategory = 'test-category-ap-r1';
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name IN ('CAT-1', 'CAT-3')
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.caseCategory = 'CAT-3';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.caseCategory = 'CAT-1;CAT-3';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(2, results.size(), 'Should get 2 contact-case wrapper returned');
-        Integer caseCount = 0;
-        for (AdvisorPortalContact apContact : results) {
-            caseCount += apContact.cases.size();
-        }
-        System.assertEquals(3, caseCount, 'Should get 3 total cases');
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
     }
 
     @IsTest

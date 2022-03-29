@@ -118,8 +118,6 @@ private class AdvisorPortalFilterSectionControllerTest {
      */
     @TestSetup
     public static void setup() {
-        createAdvisorStudent(createAdvisorPod());
-
         // Common date obejcts
         Date tMinus1d = System.today().addDays(-1);
         Date tMinus2d = System.today().addDays(-2);
@@ -975,6 +973,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testNoFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
@@ -992,6 +992,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testNameFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null, testContact2 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.studentString = 'Mister test-contact-ap-r2';
@@ -1021,6 +1025,11 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testCampusFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Location__c testCampus2 = null;
+        Contact testContact2 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.campus = testCampus2.Location_Code__c;
@@ -1035,6 +1044,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testAcademicLevelFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.academicLevel = 'test-cohort-1';
@@ -1056,6 +1069,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testStudentGroupFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.studentGroupCode = 'testapr1';
@@ -1070,6 +1087,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testMajorFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null, testContact2 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.major = 'test-code-ap-r1';
@@ -1092,6 +1113,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testResidencyFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
         filter.residency = 'International';
@@ -1106,6 +1131,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testCaseStatusFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.caseStatus = 'Outreach Required';
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
@@ -1122,6 +1149,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testCaseCategoryFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.caseCategory = 'test-category-ap-r1';
@@ -1139,6 +1168,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testCaseSubjectFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.caseSubject = 'test-subject-ap-r1';
@@ -1156,6 +1187,9 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testOutlookScoreFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null;
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.outlookScore = 'low';
@@ -1169,6 +1203,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testOutlookChangeFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact2 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.outlookChange = 'down';
@@ -1182,6 +1220,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testCaseCountFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact1 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.caseCount = '2';
@@ -1195,6 +1237,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testCreatedDateFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact2 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.createdFromDate = System.now().addDays(-3).format('yyyy-MM-dd');
@@ -1214,6 +1260,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFollowupDateFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.followUpFromDate = String.valueof(System.today());
@@ -1237,6 +1285,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testAllStudentsFilter() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getAllContactsAndRespectiveCases(
@@ -1253,71 +1303,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testWatchlistCasesFilter() {
-        Profile p = [SELECT Id FROM Profile WHERE Profile.Name = 'ASU Read Only'];
-
-        User testUser = createUser('text-user-ap-r1', p.Id);
-        insert testUser;
-
-        Contact testContact1 = createContact('test-contact-ap-r1');
-        Contact testContact2 = createContact('test-contact-ap-r2');
-        insert new List<Contact>{ testContact1, testContact2 };
-
-        Case_Classification__c parent = new Case_Classification__c(
-            Name = 'ASU Advisor Outreach',
-            Active__c = true,
-            Visible__c = true,
-            Record_Types_String__c = 'wer',
-            RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
-                .get('Functional Group')
-                .getRecordTypeId()
-        );
-        insert parent;
-
-        Case_Classification__c testClassification1 = new Case_Classification__c(
-            Name = 'Watchlist',
-            Active__c = true,
-            Visible__c = true,
-            Parent__c = parent.Id,
-            RecordTypeId = Schema.SObjectType.Case_Classification__c.getRecordTypeInfosByName()
-                .get('Category')
-                .getRecordTypeId()
-        );
-
-        insert new List<Case_Classification__c>{ testClassification1 };
-
-        Case testCase1 = createCase('test-case-ap-r1');
-        testCase1.ContactId = testContact1.Id;
-        testCase1.ownerId = testUser.Id;
-        testCase1.CC_Functional_Group__c = parent.Id;
-        testCase1.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase2 = createCase('test-case-ap-r2');
-        testCase2.ContactId = testContact1.Id;
-        testCase2.ownerId = testUser.Id;
-        testCase2.CC_Functional_Group__c = parent.Id;
-        testCase2.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase3 = createCase('test-case-ap-r3');
-        testCase3.ContactId = testContact2.Id;
-        testCase3.ownerId = testUser.Id;
-        testCase3.CC_Functional_Group__c = parent.Id;
-        testCase3.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase4 = createCase('test-case-ap-r4');
-        testCase4.ContactId = testContact2.Id;
-        testCase4.ownerId = testUser.Id;
-        testCase4.CC_Functional_Group__c = parent.Id;
-        testCase4.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Case testCase5 = createCase('test-case-ap-r5');
-        testCase5.ContactId = testContact2.Id;
-        testCase5.ownerId = testUser.Id;
-        testCase5.CC_Functional_Group__c = parent.Id;
-        testCase5.RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-
-        insert new List<Case>{ testCase1, testCase2, testCase3, testCase4, testCase5 };
-
-        testCase1.CC_Category__c = testClassification1.Id;
-        testCase3.CC_Category__c = testClassification1.Id;
-        testCase5.CC_Category__c = testClassification1.Id;
-
-        update new List<Case>{ testCase1, testCase3, testCase5 };
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
@@ -1336,6 +1322,10 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     static void testMutlipleFiltersAtOnce() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact2 = null;
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.studentString = 'Mister test-contact-ap-r2';
@@ -1355,6 +1345,8 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFiltersAndAllStudents() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
 
         filter.studentString = 'Mister test-contact-ap-r2';
@@ -1372,6 +1364,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     static void testFilterStudentGroups() {
+        List<Contact> listOfContacts = new List<Contact>();
         AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
         filter1.career = 'UGRD';
         filter1.studentGroupCode = 'testgrp-r1';
@@ -1406,6 +1399,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     static void testFilterStudentPlans() {
+        List<Contact> listOfContacts = new List<Contact>();
         AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
         filter1.career = 'UGRD';
         filter1.academicLevel = 'senior;junior';

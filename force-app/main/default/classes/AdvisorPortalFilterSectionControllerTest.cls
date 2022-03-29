@@ -949,8 +949,15 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testUndergraduateFilter() {
+    private static void testFilterUndergraduate() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c
+            FROM Student_Program_Plan__c
+            WHERE Career__c != 'Graduate'
+            GROUP BY Contact__c
+        ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.career = 'UGRD';
@@ -968,26 +975,39 @@ private class AdvisorPortalFilterSectionControllerTest {
             List<AdvisorPortalContact>.class
         );
 
-        System.debug(results);
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
     }
 
     @IsTest
-    private static void testNoFilter() {
+    private static void testFilterGraduate() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c
+            FROM Student_Program_Plan__c
+            WHERE Career__c = 'Graduate'
+            GROUP BY Contact__c
+        ];
 
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             filter
         );
+        Test.stopTest();
 
-        System.assertEquals(2, results.size(), 'Should get 2 contact-case wrapper returned');
-        Integer countCases = 0;
-        for (AdvisorPortalContact apContact : results) {
-            countCases += apContact.cases.size();
-        }
-        System.assertEquals(5, countCases, 'Should get 5 total cases returned');
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
     }
 
     @IsTest

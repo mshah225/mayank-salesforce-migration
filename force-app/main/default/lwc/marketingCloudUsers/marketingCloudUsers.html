@@ -1,0 +1,28 @@
+<template>
+    <lightning-card title="Marketing Cloud User List" icon-name="custom:custom63">
+        <div class="slds-m-around_medium">
+            <template if:true={loading} class="slds-is-relative">
+                <lightning-spinner alternative-text="Loading..."> </lightning-spinner>
+            </template>
+
+            <template if:false={loading}>
+                <lightning-input type="search" label="Search" onchange={handleKeyChange} class="searchControl">
+                </lightning-input>
+                <lightning-button variant="brand" label="Export" title="Export Records" onclick={exportCSV}>
+                </lightning-button>
+                <br />
+                <c-lightning-datatable-pagination
+                    key-field="id"
+                    source-data={data}
+                    columns={columns}
+                    display-amount={pagesize}
+                    default-sort-direction={defaultSortDirection}
+                    sorted-direction={sortDirection}
+                    sorted-by={sortedBy}
+                    onsort={onHandleSort}
+                >
+                </c-lightning-datatable-pagination>
+            </template>
+        </div>
+    </lightning-card>
+</template>

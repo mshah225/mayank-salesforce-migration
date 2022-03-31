@@ -117,6 +117,7 @@ private class AdvisorPortalFilterSectionControllerTest {
      * |  Sarah Durisek       |  Enrollment |  Outreach Required               | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-3     |
      * |  James Bair          |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-3     |
      * |  Morgan Diegel       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-4     |
+     * |  Morgan Diegel       |  Spyglass   |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  Watchlist |
      * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
      */
     @TestSetup
@@ -861,6 +862,18 @@ private class AdvisorPortalFilterSectionControllerTest {
             RecordTypeId = caseRecordTypeId
         );
         testCases.add(testCase10);
+        Case testCase11 = new Case(
+            ContactId = morganDiegel.Id,
+            Subject = 'Spyglass',
+            Status = 'New',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
+            CC_Category__c = watchlistCategory.Id,
+            Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseRecordTypeId
+        );
+        testCases.add(testCase11);
 
         insert testCases;
     }
@@ -2195,26 +2208,41 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents2.size(), results2.size());
-        assertCorrectReturned(expectedStudents2, results2); 
+        assertCorrectReturned(expectedStudents2, results2);
     }
 
     @IsTest
-    private static void testWatchlistCasesFilter() {
+    private static void testFilterWatchlistCases() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name = 'Watchlist'
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
 
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
         filter.caseTypeState = 'WatchlistCasesState';
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(2, results.size(), 'Should get 2 contact-case wrapper returned');
-        Integer caseCount = 0;
-        for (AdvisorPortalContact apContact : results) {
-            caseCount += apContact.cases.size();
-        }
-        System.assertEquals(3, caseCount, 'Should get 3 total cases');
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
     }
 
     @IsTest

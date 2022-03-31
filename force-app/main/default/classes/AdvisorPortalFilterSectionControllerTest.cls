@@ -966,6 +966,42 @@ private class AdvisorPortalFilterSectionControllerTest {
         }
     }
 
+    @isTest
+    private static void testGetCampusPicklistValues() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<Location__c> ugradCampuses = [SELECT Name FROM Location__c];
+        List<Location__c> gradCampuses = [SELECT Name FROM Location__c WHERE Graduate_Enabled__c = TRUE];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+
+        Test.startTest();
+        Map<String, String> campusMap = AdvisorPortalFilterSectionController.getCampusValues(JSON.serialize(filter));
+
+        Map<String, String> campusMap2 = AdvisorPortalFilterSectionController.getCampusValues(JSON.serialize(filter2));
+        Test.stopTest();
+
+        System.assertEquals(ugradCampuses.size(), campusMap.size(), 'Should contain correct number of campuses');
+        for (Location__c l : ugradCampuses) {
+            System.assert(
+                campusMap.keySet().contains(l.Name),
+                'Should contain all locations'
+            );
+        }
+
+        System.assertEquals(gradCampuses.size(), campusMap2.size(), 'Should contain correct number of campuses');
+        for (Location__c l : gradCampuses) {
+            System.assert(
+                campusMap2.keySet().contains(l.Name),
+                'Should contain all grad locations'
+            );
+        }
+    }
+
     @IsTest
     private static void testGetAcademicProgramPicklistValues() {
         List<Program__c> testPrograms = [SELECT Id, Name, Program_Code__c FROM Program__c WHERE Career__c = 'Graduate'];
@@ -2309,125 +2345,6 @@ private class AdvisorPortalFilterSectionControllerTest {
         System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents2.size(), results2.size());
         assertCorrectReturned(expectedStudents2, results2);
-    }
-
-    @IsTest
-    private static void testFiltersAndAllStudents() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
-
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
-
-        filter.studentString = 'Mister test-contact-ap-r2';
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getAllContactsAndRespectiveCases(
-            new List<Id>{ testUser.Id },
-            filter
-        );
-        System.assertEquals(1, results.size(), 'Should get 2 contact-case wrapper returned');
-        Integer caseCount = 0;
-        for (AdvisorPortalContact apContact : results) {
-            caseCount += apContact.cases.size();
-        }
-        System.assertEquals(3, caseCount, 'Should get 3 total cases');
-    }
-
-    @IsTest
-    static void testFilterStudentGroups() {
-        List<Contact> listOfContacts = new List<Contact>();
-        AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
-        filter1.career = 'UGRD';
-        filter1.studentGroupCode = 'testgrp-r1';
-
-        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.career = 'UGRD';
-        filter2.studentGroupCode = 'testgrp-r2';
-
-        // Act
-        Test.startTest();
-        Set<Id> results1 = AdvisorPortalFilterSectionController.filterStudentGroups(
-            filter1,
-            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
-        );
-        Set<Id> results2 = AdvisorPortalFilterSectionController.filterStudentGroups(
-            filter2,
-            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
-        );
-        Test.stopTest();
-
-        // Assert
-        System.assertEquals(2, results1.size());
-        System.assertEquals(1, results2.size());
-        System.assert(results1.contains(listOfContacts[0].Id), 'The first contact has an active TESTGRP-r1 plan.');
-        System.assert(results1.contains(listOfContacts[1].Id), 'The second contact has an active TESTGRP-r1 plan.');
-        System.assert(results2.contains(listOfContacts[0].Id), 'The first contact has an active TESTGRP-r2 plan.');
-        System.assert(
-            !results2.contains(listOfContacts[1].Id),
-            'The second contact does not have an active TESTGRP-r2 plan.'
-        );
-    }
-
-    @IsTest
-    static void testFilterStudentPlans() {
-        List<Contact> listOfContacts = new List<Contact>();
-        AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
-        filter1.career = 'UGRD';
-        filter1.academicLevel = 'senior;junior';
-        filter1.campus = 'TEST-R1;TEST-R2';
-        filter1.residency = 'resident;international';
-        filter1.major = 'computer';
-
-        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.career = 'UGRD';
-        filter2.major = 'law';
-
-        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.career = 'GRD';
-
-        // Act
-        Test.startTest();
-        Set<Id> results1 = AdvisorPortalFilterSectionController.filterStudentPlans(
-            filter1,
-            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
-        );
-        Set<Id> results2 = AdvisorPortalFilterSectionController.filterStudentPlans(
-            filter2,
-            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
-        );
-        Set<Id> results3 = AdvisorPortalFilterSectionController.filterStudentPlans(
-            filter3,
-            new Set<Id>{ listOfContacts[0].Id, listOfContacts[1].Id }
-        );
-        Test.stopTest();
-
-        // Assert
-        System.assertEquals(1, results1.size());
-        System.assert(
-            !results1.contains(listOfContacts[0].Id),
-            'The first contact should not be in the first set of results.'
-        );
-        System.assert(
-            results1.contains(listOfContacts[1].Id),
-            'The second contact should be in the first set of results.'
-        );
-
-        System.assertEquals(1, results2.size());
-        System.assert(
-            !results2.contains(listOfContacts[0].Id),
-            'The first contact should not be in the second set of results.'
-        );
-        System.assert(
-            results2.contains(listOfContacts[1].Id),
-            'The second contact should be in the second set of results.'
-        );
-
-        System.assertEquals(1, results3.size());
-        System.assert(
-            results3.contains(listOfContacts[0].Id),
-            'The first contact should be in the third set of results.'
-        );
-        System.assert(
-            !results3.contains(listOfContacts[1].Id),
-            'The second contact should not be in the third set of results.'
-        );
     }
 
     private static Location__c newLocation(String name, String code, Boolean gradEnabled) {

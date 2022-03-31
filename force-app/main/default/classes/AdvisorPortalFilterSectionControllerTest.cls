@@ -104,20 +104,20 @@ private class AdvisorPortalFilterSectionControllerTest {
      *
      *
      * 10 cases
-     * +----------------------+-------------+----------------------------------+----------+------------------+------------+
-     * |         Who          |  Subject    |                Status            |  Owner   |  Follow Up Date  |  Category  |
-     * +----------------------+-------------+----------------------------------+----------+------------------+------------+
-     * |  Ryan Castelli       |  New car    |  New                             | McKinnon |  TODAY - 5d      |  CAT-1     |
-     * |  Ryan Castelli       |  Found bug  |  Busy Signal                     | McKinnon |  TODAY - 9d      |  CAT-1     |
-     * |  Ryan Castelli       |  Send help  |  Customer Replied                | McKinnon |  TODAY - 10d     |  CAT-2     |
-     * |  Ryan Castelli       |  Ant man    |  Email Sent                      | McKinnon |  TODAY - 2d      |  CAT-2     |
-     * |  Chase Burgess       |  Battery    |  New                             | McKinnon |  TODAY - 2d      |  CAT-4     |
-     * |  Ben Hellsig         |  Tailwind   |  New                             | McKinnon |  TODAY - 2d      |  CAT-4     |
-     * |  Marisa Barilla      |  Paperclip  |  New                             | McKinnon |  TODAY - 2d      |  CAT-4     |
-     * |  Sarah Durisek       |  Enrollment |  Outreach Required               | McKinnon |  TODAY - 2d      |  CAT-3     |
-     * |  James Bair          |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY - 1d      |  CAT-3     |
-     * |  Morgan Diegel       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY - 1d      |  CAT-4     |
-     * +----------------------+-------------+----------------------------------+----------+------------------+------------+
+     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
+     * |         Who          |  Subject    |                Status            |  Owner   |  Follow Up Date  |  Created Date  |  Category  |
+     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
+     * |  Ryan Castelli       |  New car    |  New                             | McKinnon |  TODAY + 5d      |  TODAY - 5d    |  CAT-1     |
+     * |  Ryan Castelli       |  Found bug  |  Busy Signal                     | McKinnon |  TODAY + 9d      |  TODAY - 9d    |  CAT-1     |
+     * |  Ryan Castelli       |  Send help  |  Customer Replied                | McKinnon |  TODAY + 10d     |  TODAY - 10d   |  CAT-2     |
+     * |  Ryan Castelli       |  Ant man    |  Email Sent                      | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-2     |
+     * |  Chase Burgess       |  Battery    |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |
+     * |  Ben Hellsig         |  Tailwind   |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |
+     * |  Marisa Barilla      |  Paperclip  |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |
+     * |  Sarah Durisek       |  Enrollment |  Outreach Required               | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-3     |
+     * |  James Bair          |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-3     |
+     * |  Morgan Diegel       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-4     |
+     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
      */
     @TestSetup
     public static void setup() {
@@ -757,6 +757,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'New',
             CC_Category__c = category1.Id,
             Followup_Date__c = tPlus5d,
+            CreatedDate = tMinus5d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -767,6 +768,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'Busy Signal',
             CC_Category__c = category1.Id,
             Followup_Date__c = tPlus9d,
+            CreatedDate = tMinus9d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -777,6 +779,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'Customer Replied',
             CC_Category__c = category2.Id,
             Followup_Date__c = tPlus10d,
+            CreatedDate = tMinus10d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -787,6 +790,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'Email Sent',
             CC_Category__c = category2.Id,
             Followup_Date__c = tPlus2d,
+            CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -797,6 +801,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'New',
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus2d,
+            CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -807,6 +812,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'New',
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus2d,
+            CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -817,6 +823,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'New',
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus2d,
+            CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -827,6 +834,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'Outreach Required',
             CC_Category__c = category3.Id,
             Followup_Date__c = tPlus2d,
+            CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -837,6 +845,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'Outreach Required - Transferred',
             CC_Category__c = category3.Id,
             Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -847,6 +856,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Status = 'Email Sent',
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
             OwnerId = testUser.Id,
             RecordTypeId = caseRecordTypeId
         );
@@ -1820,26 +1830,120 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testCreatedDateFilter() {
+    private static void testFilterCreatedDate() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        Contact testContact2 = null;
+        Datetime startOftMinus3d = System.now().addDays(-3);
+        startOftMinus3d = startOftMinus3d.addHours(-1 * startOftMinus3d.hour())
+            .addMinutes(-1 * startOftMinus3d.minute())
+            .addSeconds(-1 * startOftMinus3d.second());
+        Datetime endOftMinus3d = System.now().addDays(-3);
+        endOftMinus3d = endOftMinus3d.addSeconds(60 - 1 * endOftMinus3d.second())
+            .addMinutes(60 - 1 * endOftMinus3d.minute())
+            .addHours(24 - 1 * endOftMinus3d.hour());
+        Datetime startOftMinus9d = System.now().addDays(-9);
+        startOftMinus9d = startOftMinus9d.addHours(-1 * startOftMinus9d.hour())
+            .addMinutes(-1 * startOftMinus9d.minute())
+            .addSeconds(-1 * startOftMinus9d.second());
+        Datetime endOftMinus9d = System.now().addDays(-9);
+        endOftMinus9d = endOftMinus9d.addSeconds(60 - 1 * endOftMinus9d.second())
+            .addMinutes(60 - 1 * endOftMinus9d.minute())
+            .addHours(24 - 1 * endOftMinus9d.hour());
+
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CreatedDate <= :endOftMinus3d
+                AND CreatedDate >= :startOftMinus9d
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CreatedDate >= :startOftMinus3d
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents3 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CreatedDate <= :endOftMinus3d
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        // Offset datetimes for timezone - AdvisorPortalFilterSectionController expects the date to be the date in Arizona
+        // and then converts it to GMT for comparing to CreatedDate
+        startOftMinus3d = startOftMinus3d.addHours(-7);
+        endOftMinus3d = endOftMinus3d.addHours(-7);
+        startOftMinus9d = startOftMinus9d.addHours(-7);
+        endOftMinus9d = endOftMinus9d.addHours(-7);
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.createdFromDate = startOftMinus9d.format('yyyy-MM-dd');
+        filter.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
 
-        filter.createdFromDate = System.now().addDays(-3).format('yyyy-MM-dd');
-        filter.createdToDate = System.now().addDays(-1).format('yyyy-MM-dd');
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.createdFromDate = startOftMinus3d.format('yyyy-MM-dd');
+
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.career = 'UGRD';
+        filter3.caseTypeState = 'ProactiveCasesState';
+        filter3.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
-        System.assertEquals(testContact2.Id, results[0].portalContact.Id, 'Should get second test contact');
-        Integer caseCount = 0;
-        for (AdvisorPortalContact apContact : results) {
-            caseCount += apContact.cases.size();
-        }
-        System.assertEquals(2, caseCount, 'Should get 2 total cases');
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+
+        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter3)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON3,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+
+        System.assert(!expectedStudents3.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents3.size(), results3.size());
+        assertCorrectReturned(expectedStudents3, results3);
     }
 
     @IsTest

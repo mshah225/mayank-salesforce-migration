@@ -1,6 +1,12 @@
 import {LightningElement, api} from 'lwc';
 
 export default class LightningDatatablePagination extends LightningElement {
+    // Incoming sorting vars
+    @api defaultSortDirection;
+    @api sortDirection;
+    @api sortedBy;
+    @api handleSort;
+
     // The key column for the data table
     @api keyField;
 

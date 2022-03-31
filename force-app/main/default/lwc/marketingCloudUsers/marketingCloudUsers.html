@@ -1,27 +1,55 @@
 <template>
-    <lightning-card title="Marketing Cloud User List" icon-name="custom:custom63">
+    <lightning-card title="Marketing Cloud Users" icon-name="standard:customers">
+        <!-- Actions -->
+        <lightning-button-menu
+            alternative-text="Show menu"
+            variant="border-filled"
+            icon-name="utility:settings"
+            if:true={hasData}
+            slot="actions"
+            menu-alignment="right"
+        >
+            <lightning-menu-item label="Export Records" onclick={exportCSV}></lightning-menu-item>
+        </lightning-button-menu>
+        <!-- Actions -->
+
         <div class="slds-m-around_medium">
+            <!-- Loading Indicator -->
             <template if:true={loading} class="slds-is-relative">
                 <lightning-spinner alternative-text="Loading..."> </lightning-spinner>
             </template>
+            <!-- Loading Indicator -->
 
             <template if:false={loading}>
-                <lightning-input type="search" label="Search" onchange={handleKeyChange} class="searchControl">
-                </lightning-input>
-                <lightning-button variant="brand" label="Export" title="Export Records" onclick={exportCSV}>
-                </lightning-button>
-                <br />
-                <c-lightning-datatable-pagination
-                    key-field="id"
-                    source-data={data}
-                    columns={columns}
-                    display-amount={pagesize}
-                    default-sort-direction={defaultSortDirection}
-                    sorted-direction={sortDirection}
-                    sorted-by={sortedBy}
-                    onsort={onHandleSort}
-                >
-                </c-lightning-datatable-pagination>
+                <template if:true={hasData}>
+                    <!-- Search Input -->
+                    <lightning-input
+                        type="search"
+                        onchange={handleKeyChange}
+                        class="searchControl"
+                        placeholder="Search Users"
+                        variant="label-hidden"
+                    >
+                    </lightning-input>
+                    <!-- Search Input -->
+
+                    <br />
+
+                    <!-- Pagination / Datatable -->
+                    <c-lightning-datatable-pagination
+                        key-field="id"
+                        source-data={data}
+                        columns={columns}
+                        display-amount={pagesize}
+                        default-sort-direction={defaultSortDirection}
+                        sorted-direction={sortDirection}
+                        sorted-by={sortedBy}
+                        handle-sort={onHandleSort}
+                    >
+                    </c-lightning-datatable-pagination>
+                    <!-- Pagination / Datatable -->
+                </template>
+                <template if:false={hasData}> No Data Found </template>
             </template>
         </div>
     </lightning-card>

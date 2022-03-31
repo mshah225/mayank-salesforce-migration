@@ -6,10 +6,13 @@ export default class MarketingCloudUsers extends LightningElement {
     @track data = [];
     pagesize = 100;
     loading = true;
+
+    // Sorting
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
 
+    // Datatable
     columns = [
         {
             label: 'Created Date',
@@ -121,6 +124,13 @@ export default class MarketingCloudUsers extends LightningElement {
         },
     ];
 
+    get hasData() {
+        return this._allData.length > 0 ? true : false;
+    }
+
+    /**
+     * Get users
+     */
     @wire(getUsers)
     wiredUsers({error, data}) {
         if (data) {
@@ -134,19 +144,20 @@ export default class MarketingCloudUsers extends LightningElement {
         }
     }
 
-    // On requested change of page size
-    handlePageSizeChange(event) {
-        var newPageSize = event.detail.value;
-
-        if (newPageSize) {
-            this.pagesize = newPageSize;
-        }
-    }
-
+    /**
+     * On key event for search box
+     * @param {*} event
+     */
     handleKeyChange(event) {
         this.data = this.filterByValue(this._allData, event.target.value);
     }
 
+    /**
+     * Filter array of objects by value
+     * @param {*} array
+     * @param {*} string
+     * @returns
+     */
     filterByValue(array, string) {
         return array.filter(function (o) {
             return Object.keys(o).some(function (k) {
@@ -155,6 +166,9 @@ export default class MarketingCloudUsers extends LightningElement {
         });
     }
 
+    /**
+     * Export data to csv download
+     */
     exportCSV() {
         let csv = '';
         let header = Object.keys(this._allData[0]).join(',');
@@ -172,6 +186,13 @@ export default class MarketingCloudUsers extends LightningElement {
         downloadElement.click();
     }
 
+    /**
+     * Sort contents of table column
+     * @param {*} field
+     * @param {*} reverse
+     * @param {*} primer
+     * @returns
+     */
     sortBy(field, reverse, primer) {
         const key = primer
             ? function (x) {
@@ -188,8 +209,10 @@ export default class MarketingCloudUsers extends LightningElement {
         };
     }
 
-    onHandleSort(event) {
-        console.log(JSON.stringify(event.detail));
+    /**
+     * Callback function for sorting columns
+     */
+    onHandleSort = (event) => {
         const {fieldName: sortedBy, sortDirection} = event.detail;
         const cloneData = [...this.data];
 
@@ -197,5 +220,5 @@ export default class MarketingCloudUsers extends LightningElement {
         this.data = cloneData;
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
-    }
+    };
 }

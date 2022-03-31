@@ -1,3 +1,14 @@
+/**
+ * Potential improvement for performance - will need to do performance testing to determine if better
+ * SELECT Id
+            FROM Case
+            WHERE
+                Status IN ('Email Sent', 'Busy Signal')
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE)
+                AND ContactId IN (SELECT SG_Contact__c FROM Student_Group__c WHERE)
+            GROUP BY ContactId
+ * 
+ */
 public class AdvisorPortalFilterSectionController {
     private static Map<String, Set<Decimal>> outlookScoresByLabels = new Map<String, Set<Decimal>>{
         'very low' => new Set<Decimal>{ 0, 1, 2, 3 },
@@ -1087,8 +1098,8 @@ public class AdvisorPortalFilterSectionController {
 
                     String queryString = 'SELECT SI_Contact__c FROM Service_Indicator__c';
                     queryString += ' WHERE SI_Contact__c IN :contactIds';
-                    queryString += ' AND SI_Start_Term__r.PeopleSoft_Code__c >= :currentPSCode';
-                    queryString += ' AND SI_End_Term__r.PeopleSoft_Code__c <= :currentPSCode';
+                    queryString += ' AND SI_Start_Term__r.PeopleSoft_Code__c <= :currentPSCode';
+                    queryString += ' AND SI_End_Term__r.PeopleSoft_Code__c >= :currentPSCode';
 
                     List<String> extraWhereClauseComponents = new List<String>();
 

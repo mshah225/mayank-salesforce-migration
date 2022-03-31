@@ -1947,23 +1947,99 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testFollowupDateFilter() {
+    private static void testFilterFollowupDate() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        Date tPlus3d = System.today().addDays(3);
+        Date tPlus9d = System.today().addDays(9);
 
-        filter.followUpFromDate = String.valueof(System.today());
-        filter.followUpToDate = String.valueof(System.today().addDays(2));
-        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getContactCaseWrappersWithLessQueries(
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                Followup_Date__c <= :tPlus9d
+                AND Followup_Date__c >= :tPlus3d
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                Followup_Date__c >= :tPlus3d
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents3 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                Followup_Date__c <= :tPlus3d
+                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.followUpFromDate = String.valueof(tPlus3d);
+        filter.followUpToDate = String.valueof(tPlus9d);
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.followUpFromDate = String.valueof(tPlus3d);
+
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.career = 'UGRD';
+        filter3.caseTypeState = 'ProactiveCasesState';
+        filter3.followUpToDate = String.valueof(tPlus3d);
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
-            filter
+            JSON.serialize(filter)
         );
-        System.assertEquals(2, results.size(), 'Should get 2 contact-case wrapper returned');
-        Integer caseCount = 0;
-        for (AdvisorPortalContact apContact : results) {
-            caseCount += apContact.cases.size();
-        }
-        System.assertEquals(2, caseCount, 'Should get 2 total cases');
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+
+        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter3)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON3,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+
+        System.assert(!expectedStudents3.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents3.size(), results3.size());
+        assertCorrectReturned(expectedStudents3, results3);
     }
 
     @IsTest

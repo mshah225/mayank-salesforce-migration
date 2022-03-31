@@ -987,18 +987,12 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         System.assertEquals(ugradCampuses.size(), campusMap.size(), 'Should contain correct number of campuses');
         for (Location__c l : ugradCampuses) {
-            System.assert(
-                campusMap.keySet().contains(l.Name),
-                'Should contain all locations'
-            );
+            System.assert(campusMap.keySet().contains(l.Name), 'Should contain all locations');
         }
 
         System.assertEquals(gradCampuses.size(), campusMap2.size(), 'Should contain correct number of campuses');
         for (Location__c l : gradCampuses) {
-            System.assert(
-                campusMap2.keySet().contains(l.Name),
-                'Should contain all grad locations'
-            );
+            System.assert(campusMap2.keySet().contains(l.Name), 'Should contain all grad locations');
         }
     }
 
@@ -1433,6 +1427,69 @@ private class AdvisorPortalFilterSectionControllerTest {
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results2.size());
         assertCorrectReturned(expectedStudents, results2);
+    }
+
+    @isTest
+    private static void testFilterDegreeLevel() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Career__c = 'Graduate' AND Plan_Type_Text__c = 'MAJ' AND Education_Level__c = '17'
+            GROUP BY Contact__c
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Career__c = 'Graduate'
+                AND ((Plan_Type_Text__c = 'MAJ'
+                AND Education_Level__c = '17')
+                OR Plan_Type_Text__c = 'CER')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.degreeLevel = 'masters';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.degreeLevel = 'masters;certificate';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
     }
 
     @IsTest

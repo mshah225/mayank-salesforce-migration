@@ -2043,8 +2043,102 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testPersistanceChangeDateFilter() {
-        // Can't really check because impossible to change Change_Date__c field
+    private static void testFilterPersistanceChangeDate() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Date tMinus4d = System.today().addDays(-4);
+        Date tMinus6d = System.today().addDays(-6);
+
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND ContactId IN (
+                    SELECT Contact__c
+                    FROM Persistence_Outlook__c
+                    WHERE Change_Date__c >= :tMinus6d AND Change_Date__C <= :tMinus4d
+                )
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND ContactId IN (SELECT Contact__c FROM Persistence_Outlook__c WHERE Change_Date__c >= :tMinus4d)
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents3 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND ContactId IN (SELECT Contact__c FROM Persistence_Outlook__c WHERE Change_Date__C <= :tMinus4d)
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.persistenceFromDate = String.valueof(tMinus6d);
+        filter.persistenceToDate = String.valueof(tMinus4d);
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.persistenceFromDate = String.valueof(tMinus4d);
+
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.career = 'UGRD';
+        filter3.caseTypeState = 'ProactiveCasesState';
+        filter3.persistenceToDate = String.valueof(tMinus4d);
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+
+        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter3)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON3,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+
+        System.assert(!expectedStudents3.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents3.size(), results3.size());
+        assertCorrectReturned(expectedStudents3, results3);
     }
 
     @IsTest

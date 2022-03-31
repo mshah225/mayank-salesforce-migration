@@ -1551,6 +1551,65 @@ private class AdvisorPortalFilterSectionControllerTest {
         assertCorrectReturned(expectedStudents2, results2);
     }
 
+    @isTest
+    private static void testFilterAcademicPlan() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Career__c = 'Graduate' AND Plan_Code__c = 'TVFILM'
+            GROUP BY Contact__c
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Career__c = 'Graduate' AND Plan_Code__c IN ('BUSNESS', 'TVFILM')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.academicPlan = 'TVFILM';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.academicPlan = 'BUSNESS;TVFILM';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+    }
+
     @IsTest
     private static void testFilterResidency() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];

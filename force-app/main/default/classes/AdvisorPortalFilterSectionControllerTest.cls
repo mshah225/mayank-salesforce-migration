@@ -1552,6 +1552,11 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @isTest
+    private static void testFilterSchoolDepartment() {
+        // Needs to be written after Integrations pulls in this data
+    }
+
+    @isTest
     private static void testFilterAcademicPlan() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 

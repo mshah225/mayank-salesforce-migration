@@ -1615,6 +1615,103 @@ private class AdvisorPortalFilterSectionControllerTest {
         assertCorrectReturned(expectedStudents2, results2);
     }
 
+    @isTest
+    private static void testFilterAdmitTerm() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Career__c = 'Graduate'
+                AND (Admit_Term__r.PeopleSoft_Code__c <= '2187'
+                OR Requirement_Term__c <= '2187')
+                AND (Admit_Term__r.PeopleSoft_Code__c >= '2144'
+                OR Requirement_Term__c >= '2144')
+            GROUP BY Contact__c
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Career__c = 'Graduate'
+                AND (Admit_Term__r.PeopleSoft_Code__c <= '2191'
+                OR Requirement_Term__c <= '2191')
+            GROUP BY Contact__c
+        ];
+
+        List<AggregateResult> expectedStudents3 = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Career__c = 'Graduate'
+                AND (Admit_Term__r.PeopleSoft_Code__c >= '2191'
+                OR Requirement_Term__c >= '2191')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.admitTermFrom = '2144';
+        filter.admitTermTo = '2187';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.admitTermTo = '2191';
+
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.career = 'GRD';
+        filter3.caseTypeState = 'AllCasesState';
+        filter3.admitTermFrom = '2191';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+
+        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter3)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON3,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+
+        System.assert(!expectedStudents3.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents3.size(), results3.size());
+        assertCorrectReturned(expectedStudents3, results3);
+    }
+
     @IsTest
     private static void testFilterResidency() {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];

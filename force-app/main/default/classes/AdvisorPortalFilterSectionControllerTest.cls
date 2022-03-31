@@ -490,7 +490,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'IRAAFUL',
             Plan_Code__c = 'ELECENG',
             Admit_Term__c = term2161.Id,
-            Requirement_Term__c = '2201'
+            Requirement_Term__c = '2201',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(annaPhillipsProgramPlan);
         Student_Program_Plan__c carlPorterProgramPlan = new Student_Program_Plan__c(
@@ -502,7 +504,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'IRAAFUL',
             Plan_Code__c = 'CIVLENG',
             Admit_Term__c = term2201.Id,
-            Requirement_Term__c = '2241'
+            Requirement_Term__c = '2241',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(carlPorterProgramPlan);
         Student_Program_Plan__c devinMcCainProgramPlan1 = new Student_Program_Plan__c(
@@ -514,7 +518,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'LAW',
             Plan_Code__c = 'LAWYER',
             Admit_Term__c = term2191.Id,
-            Requirement_Term__c = '2231'
+            Requirement_Term__c = '2231',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(devinMcCainProgramPlan1);
         Student_Program_Plan__c devinMcCainProgramPlan2 = new Student_Program_Plan__c(
@@ -525,7 +531,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'LAW',
             Plan_Code__c = 'JUDGE',
             Admit_Term__c = term2191.Id,
-            Requirement_Term__c = '2231'
+            Requirement_Term__c = '2231',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(devinMcCainProgramPlan2);
         Student_Program_Plan__c anyaSimmsProgramPlan1 = new Student_Program_Plan__c(
@@ -537,7 +545,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'SCL_SOC',
             Plan_Code__c = 'SOCWORK',
             Admit_Term__c = term2201.Id,
-            Requirement_Term__c = '2241'
+            Requirement_Term__c = '2241',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(anyaSimmsProgramPlan1);
         Student_Program_Plan__c anyaSimmsProgramPlan2 = new Student_Program_Plan__c(
@@ -549,7 +559,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'WP_CAR',
             Plan_Code__c = 'BUSNESS',
             Admit_Term__c = term2204.Id,
-            Requirement_Term__c = '2244'
+            Requirement_Term__c = '2244',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(anyaSimmsProgramPlan2);
         Student_Program_Plan__c coreyNickoletteProgramPlan = new Student_Program_Plan__c(
@@ -561,7 +573,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'CRONKITE',
             Plan_Code__c = 'TVFILM',
             Admit_Term__c = term2167.Id,
-            Requirement_Term__c = '2207'
+            Requirement_Term__c = '2207',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(coreyNickoletteProgramPlan);
         Student_Program_Plan__c maddyThomasProgramPlan1 = new Student_Program_Plan__c(
@@ -572,7 +586,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'IRAAFUL',
             Plan_Code__c = 'COMPSCI',
             Admit_Term__c = term2144.Id,
-            Requirement_Term__c = '2184'
+            Requirement_Term__c = '2184',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(maddyThomasProgramPlan1);
         Student_Program_Plan__c maddyThomasProgramPlan2 = new Student_Program_Plan__c(
@@ -583,7 +599,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'CRONKITE',
             Plan_Code__c = 'JOURNAL',
             Admit_Term__c = term2147.Id,
-            Requirement_Term__c = '2187'
+            Requirement_Term__c = '2187',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(maddyThomasProgramPlan2);
         Student_Program_Plan__c maddyThomasProgramPlan3 = new Student_Program_Plan__c(
@@ -594,7 +612,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'PREMED',
             Plan_Code__c = 'PREMED',
             Admit_Term__c = term2141.Id,
-            Requirement_Term__c = '2181'
+            Requirement_Term__c = '2181',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(maddyThomasProgramPlan3);
         Student_Program_Plan__c charlieDorseyWardProgramPlan = new Student_Program_Plan__c(
@@ -606,7 +626,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'WP_CAR',
             Plan_Code__c = 'BUSNESS',
             Admit_Term__c = term2191.Id,
-            Requirement_Term__c = '2231'
+            Requirement_Term__c = '2231',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(charlieDorseyWardProgramPlan);
         Student_Program_Plan__c mitchKeaneProgramPlan = new Student_Program_Plan__c(
@@ -876,6 +898,20 @@ private class AdvisorPortalFilterSectionControllerTest {
         testCases.add(testCase11);
 
         insert testCases;
+
+        // nsert a test term
+        insert new StudentTerm__c();
+        Term__c termInDB = new Term__c(
+            PeopleSoft_Code__c = '2221',
+            Year__c = '2221',
+            Session_A_C_Close_Date__c = Date.Today()
+        );
+        insert termInDB;
+
+        UpdateTerm classToUpdateCurrentTerm = new UpdateTerm();
+        classToUpdateCurrentTerm.execute(null);
+
+        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
     }
 
     @isTest
@@ -2092,6 +2128,266 @@ private class AdvisorPortalFilterSectionControllerTest {
         System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents2.size(), results2.size());
         assertCorrectReturned(expectedStudents2, results2);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulation() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Career__c = 'Graduate'
+                AND Contact__c IN (
+                    SELECT SG_Contact__c
+                    FROM Student_Group__c
+                    WHERE SG_PeopleSoft_Code__c IN ('GRAH', 'GRAI', 'ADIP', 'SR1B', 'SR1D')
+                )
+            GROUP BY Contact__c
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Career__c = 'Graduate'
+                AND Contact__c IN (
+                    SELECT SG_Contact__c
+                    FROM Student_Group__c
+                    WHERE SG_PeopleSoft_Code__c IN ('SRKY', 'ADAD', 'ADAM', 'SRSA')
+                )
+            GROUP BY Contact__c
+        ];
+
+        List<String> appliedToGraduateCodes = new List<String>{ 'AG', 'AP', 'GD', 'IR', 'PN' };
+        List<AggregateResult> expectedStudents3a = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Contact__c IN (
+                    SELECT SG_Contact__c
+                    FROM Student_Group__c
+                    WHERE SG_PeopleSoft_Code__c IN ('ADAD', 'ADAM', 'SRSA')
+                )
+            GROUP BY Contact__c
+        ];
+        List<AggregateResult> expectedStudents3b = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Degree_Chkout_Stat_Code__c IN :appliedToGraduateCodes
+            GROUP BY Contact__c
+        ];
+        List<AggregateResult> expectedStudents3c = new List<AggregateResult>();
+        expectedStudents3c.addAll(expectedStudents3a);
+        expectedStudents3c.addAll(expectedStudents3b);
+
+        // UNION the two lists (can't do in SOQL query because not allowed to use OR wtih Semi-Join sub-selects)
+        List<AggregateResult> expectedStudents3 = new List<AggregateResult>();
+        for (AggregateResult aggRes : expectedStudents3c) {
+            Boolean foundMatch = false;
+            for (AggregateResult aggRes2 : expectedStudents3) {
+                if (aggRes.get('ContactId__alias') == aggRes2.get('ContactId__alias')) {
+                    foundMatch = true;
+                    break;
+                }
+            }
+
+            if (!foundMatch) {
+                expectedStudents3.add(aggRes);
+            }
+        }
+
+        List<AggregateResult> expectedStudents4 = [
+            SELECT Contact__c ContactId__alias, Count(Id)
+            FROM Student_Program_Plan__c
+            WHERE Career__c = 'Graduate'
+            GROUP BY Contact__c
+            HAVING Count(Id) > 1
+        ];
+
+        String currentPSCode = StudentTerm__c.getOrgDefaults().CurrTerm__c;
+        List<AggregateResult> expectedStudents5a = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Contact__c IN (
+                    SELECT Contact__c
+                    FROM Student_Milestone__c
+                    WHERE
+                        Milestone__c = 'GRFORMAT'
+                        AND Effdt__c <= TODAY
+                        AND Term_Required__r.PeopleSoft_Code__c >= :currentPSCode
+                )
+            GROUP BY Contact__c
+        ];
+        List<AggregateResult> expectedStudents5b = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Contact__c IN (
+                    SELECT SI_Contact__c
+                    FROM Service_Indicator__c
+                    WHERE
+                        SI_Start_Term__r.PeopleSoft_Code__c <= :currentPSCode
+                        AND SI_End_Term__r.PeopleSoft_Code__c >= :currentPSCode
+                        AND SI_Code__c = 'AD4'
+                        AND SI_Reason__c = 'PROV'
+                        AND SI_Positive_Service_Indicator__c = TRUE
+                )
+            GROUP BY Contact__c
+        ];
+        List<AggregateResult> expectedStudents5c = new List<AggregateResult>();
+        expectedStudents5c.addAll(expectedStudents5a);
+        expectedStudents5c.addAll(expectedStudents5b);
+
+        // UNION the two lists (can't do in SOQL query because not allowed to use OR wtih Semi-Join sub-selects)
+        List<AggregateResult> expectedStudents5 = new List<AggregateResult>();
+        for (AggregateResult aggRes : expectedStudents5c) {
+            Boolean foundMatch = false;
+            for (AggregateResult aggRes2 : expectedStudents5) {
+                if (aggRes.get('ContactId__alias') == aggRes2.get('ContactId__alias')) {
+                    foundMatch = true;
+                    break;
+                }
+            }
+
+            if (!foundMatch) {
+                expectedStudents5.add(aggRes);
+            }
+        }
+
+        List<AggregateResult> expectedStudents6 = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE
+                Contact__c IN (
+                    SELECT SI_Contact__c
+                    FROM Service_Indicator__c
+                    WHERE
+                        SI_Start_Term__r.PeopleSoft_Code__c <= :currentPSCode
+                        AND SI_End_Term__r.PeopleSoft_Code__c >= :currentPSCode
+                        AND Enrollment_Impact__c = TRUE
+                        AND SI_Positive_Service_Indicator__c = FALSE
+                )
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'accelerated 4+1 degrees;veterans';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'AllCasesState';
+        filter2.specialPopulation = 'mayo students;cintana students';
+
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.career = 'GRD';
+        filter3.caseTypeState = 'AllCasesState';
+        filter3.specialPopulation = 'applied to graduate;cintana students';
+
+        AdvisorPortalFilter filter4 = new AdvisorPortalFilter();
+        filter4.career = 'GRD';
+        filter4.caseTypeState = 'AllCasesState';
+        filter4.specialPopulation = 'concurrent enrollment';
+
+        AdvisorPortalFilter filter5 = new AdvisorPortalFilter();
+        filter5.career = 'GRD';
+        filter5.caseTypeState = 'AllCasesState';
+        filter5.specialPopulation = 'format students;provivisional admits, not met yet';
+
+        AdvisorPortalFilter filter6 = new AdvisorPortalFilter();
+        filter6.career = 'GRD';
+        filter6.caseTypeState = 'AllCasesState';
+        filter6.specialPopulation = 'active students with registation hold';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+
+        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter3)
+        );
+
+        String resultsJSON4 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter4)
+        );
+
+        String resultsJSON5 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter5)
+        );
+
+        String resultsJSON6 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter6)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON3,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results4 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON4,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results5 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON5,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results6 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON6,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+
+        System.assert(!expectedStudents3.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents3.size(), results3.size());
+        assertCorrectReturned(expectedStudents3, results3);
+
+        System.assert(!expectedStudents4.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents4.size(), results4.size());
+        assertCorrectReturned(expectedStudents4, results4);
+
+        System.assert(!expectedStudents5.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents5.size(), results5.size());
+        assertCorrectReturned(expectedStudents5, results5);
+
+        System.assert(!expectedStudents6.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents6.size(), results6.size());
+        assertCorrectReturned(expectedStudents6, results6);
     }
 
     @IsTest

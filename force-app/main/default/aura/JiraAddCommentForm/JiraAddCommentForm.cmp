@@ -12,12 +12,14 @@
     <aura:attribute name="questionFour" type="String" />
     <aura:attribute name="questionFive" type="String" />
     <aura:attribute name="questionSix" type="String" />
+    <aura:attribute name="questionSeven" type="String" />
     <aura:attribute name="answerOne" type="String" />
     <aura:attribute name="answerTwo" type="String" />
     <aura:attribute name="answerThree" type="String" />
     <aura:attribute name="answerFour" type="String" />
     <aura:attribute name="answerFive" type="String" />
     <aura:attribute name="answerSix" type="String" />
+    <aura:attribute name="answerSeven" type="String" />
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
     <aura:registerEvent name="statusChange" type="c.JiraIssueChange" />
     <div aura:id="qaModal" style="position: absolute; height: 640px">
@@ -73,6 +75,13 @@
                         label="{!v.questionSix}"
                         class="field"
                         value="{!v.answerSix}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionSeven"
+                        label="{!v.questionSeven}"
+                        class="field"
+                        value="{!v.answerSeven}"
                         updateOn="keyup"
                     />
                 </div>

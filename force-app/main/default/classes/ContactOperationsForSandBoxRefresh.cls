@@ -3,9 +3,9 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
 
     public ContactOperationsForSandBoxRefresh() {
         query =
-            'SELECT Id, Name, email, Birthdate, ASU_Email__c, Corporate_Relations_Email__c, ' +
-            'EPO_Email__c, Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, ' +
-            'Parent_Email__c, Personal_Email__c, silverpop__Silverpop_RecipientID__c ' +
+            'SELECT Id, Name, Email, Birthdate, ASU_Email__c, Corporate_Relations_Email__c, ' +
+            'Organization_Relations_Secondary_Email__c, EPO_Email__c, Last_Case_Email_Used__c, ' +
+            'Lead_Email__c, Lead_Secondary_Email__c, Parent_Email__c, Personal_Email__c, silverpop__Silverpop_RecipientID__c ' +
             'FROM Contact';
     }
 
@@ -21,8 +21,9 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
         for (Contact contactToScrub : scope) {
             if (!String.isEmpty(orgType)) {
                 List<String> fieldList = new List<String>{
-                    'email',
+                    'Email',
                     'Corporate_Relations_Email__c',
+                    'Organization_Relations_Secondary_Email__c',
                     'EPO_Email__c',
                     'ASU_Email__c',
                     'Last_Case_Email_Used__c',

@@ -1,4 +1,4 @@
-public with sharing class IndividualEmailResultDispatcher implements IDispatch {
+public with sharing class IndividualEmailResultDispatcher implements TriggerDispatcherInterface {
     private List<et4ae5__IndividualEmailResult__c> newList;
     private Map<Id, et4ae5__IndividualEmailResult__c> newMap;
     private List<et4ae5__IndividualEmailResult__c> oldList;

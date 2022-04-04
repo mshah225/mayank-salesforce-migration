@@ -18,8 +18,7 @@
         $A.enqueueAction(caseStatusAction);
 
         component.getEvent('incrementProcessingCounterEvent').fire();
-        let campusOptionsAction = component.get('c.getPicklistValues');
-        campusOptionsAction.setParams({objectName: 'Case', fieldName: 'Campus__c'});
+        let campusOptionsAction = component.get('c.getCampusValues');
         campusOptionsAction.setCallback(this, function (response) {
             component.set('v.CampusPicklistValues', this.buildPicklistOptionsArray(response.getReturnValue()));
             component.getEvent('decrementProcessingCounterEvent').fire();

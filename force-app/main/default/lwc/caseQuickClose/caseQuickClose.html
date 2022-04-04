@@ -1,0 +1,135 @@
+<template>
+    <lightning-card>
+        <h3 slot="title">
+            <lightning-icon icon-name="standard:case" size="small"></lightning-icon>
+            &nbsp;&nbsp;{lwcComponentName}
+        </h3>
+
+        <p class="slds-p-horizontal_small">
+            <!-- Has Global Error -->
+            <template if:false={hasError}>
+                <!-- Case Close Button -->
+                <lightning-button
+                    variant={lwcCloseButtonVariant}
+                    label={lwcCloseButtonLabel}
+                    onclick={handleOnCaseCloseButton}
+                    if:true={isButtonVisible}
+                ></lightning-button>
+
+                <!-- Loading -->
+                <template if:true={loading}>
+                    <template if:false={formVisible}> <br /><br /> </template>
+                    <div class="slds-spinner_container">
+                        <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
+                            <span class="slds-assistive-text">Loading...</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                            <br />
+                            <br />
+                        </div>
+                    </div>
+                    <template if:false={formVisible}> <br /><br /> </template>
+                </template>
+
+                <!-- On Form Visible -->
+                <template if:true={formVisible}>
+                    <!-- Record Edit Form -->
+                    <lightning-record-edit-form
+                        object-api-name="Case"
+                        onsuccess={handleOnCaseCloseSuccess}
+                        record-id={recordId}
+                        onsubmit={handleOnSubmit}
+                        onload={handleOnFormLoad}
+                        onerror={handleOnFormError}
+                    >
+                        <!-- Validation Error -->
+                        <template if:true={hasValidationError}>
+                            <div class="slds-notify_container slds-is-relative toastzindex">
+                                <div
+                                    class="slds-notify slds-notify_toast slds-theme_error toastnominwidth"
+                                    role="alert"
+                                >
+                                    <div class="slds-notify__content">
+                                        <h2 class="slds-text-heading_small">{validationError.message}</h2>
+                                        <p if:true={validationError.detail}>{validationError.detail}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Hidden status field - This needs to exist to handle dependent fields using the input-field updateDependentField method  -->
+                        <lightning-input-field
+                            field-name="Status"
+                            data-id="statusField"
+                            class="slds-hidden displaynone"
+                        ></lightning-input-field>
+                        <!-- /Hidden status field -->
+
+                        <!-- For Each Input Field (BEFORE Status) -->
+                        <template for:each={inputFieldsBefore} for:item="item">
+                            <lightning-input-field
+                                field-name={item.path}
+                                name={item.path}
+                                key={item.path}
+                                id={item.path}
+                                required={item.required}
+                            >
+                            </lightning-input-field>
+                        </template>
+
+                        <!-- Status Dropdown -->
+                        <lightning-combobox
+                            name="Status"
+                            label={statusInputLabel}
+                            placeholder={statusInputPlaceholder}
+                            value={currentStatus}
+                            options={statusOptions}
+                            onchange={handleOnStatusChange}
+                            class="customStatusBox"
+                            required
+                        ></lightning-combobox>
+
+                        <!-- For Each Input Field (AFTER Status) -->
+                        <template for:each={inputFieldsAfter} for:item="item">
+                            <lightning-input-field
+                                field-name={item.path}
+                                name={item.path}
+                                key={item.path}
+                                id={item.path}
+                                required={item.required}
+                            >
+                            </lightning-input-field>
+                        </template>
+
+                        <!-- Action Buttons -->
+                        <div class="slds-align_absolute-center" if:true={formVisible}>
+                            <lightning-button
+                                label="Cancel"
+                                variant="neutral"
+                                onclick={handleOnCancel}
+                            ></lightning-button
+                            >&nbsp;
+                            <lightning-button
+                                label={lwcRecordSubmitButtonLabel}
+                                type="submit"
+                                variant={lwcRecordSubmitButtonVariant}
+                            ></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </template>
+            </template>
+            <!-- Error Message -->
+            <template if:true={hasError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>
+                        {errorMessage}
+                        <br />
+                        Contact Salesforce Support:
+                        <lightning-formatted-email value={errorContactEmail} hide-icon></lightning-formatted-email>
+                    </h2>
+                </div>
+            </template>
+        </p>
+    </lightning-card>
+</template>

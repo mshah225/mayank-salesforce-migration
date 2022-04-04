@@ -43,6 +43,23 @@ public class AdvisorPortalFilterSectionController {
     }
 
     /**
+     * Gets active picklist values for the Campus.
+     *     
+     *
+     * @return picklistValuesByLabel, a Map of picklist values by their labels.
+     */
+    @AuraEnabled
+    public static Map<String, String> getCampusValues() {
+        Map<String, String> picklistValuesByLabel = new Map<String, String>();
+        List<Location__c> campusLocations = [SELECT Name FROM Location__c ORDER BY CreatedDate, Name];
+        for (Location__c campus : campusLocations) {
+            picklistValuesByLabel.put(campus.Name, campus.Name);
+        }
+
+        return picklistValuesByLabel;
+    }
+
+    /**
      * Gets active Custom Metadata Case Status values to display on the filter section in the Advisor Portal.
      *
      * @return caseStatusValuesByLabel, a Map of Advisor_Portal_Case_Status__mdt record values by label.
@@ -73,7 +90,7 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
-        Id recordType = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
 
         for (AggregateResult result : [
@@ -101,7 +118,7 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
-        Id recordType = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
 
         for (AggregateResult result : [
@@ -271,7 +288,7 @@ public class AdvisorPortalFilterSectionController {
             'FROM Case ' +
             'WHERE IsClosed = FALSE ' +
             'AND RecordTypeId = \'' +
-            IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') +
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') +
             '\'';
 
         if (!String.isBlank(filter.caseCategory)) {

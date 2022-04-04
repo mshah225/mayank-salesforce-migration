@@ -1,4 +1,4 @@
-public class RelationshipDispatcher implements IDispatch {
+public class RelationshipDispatcher implements TriggerDispatcherInterface {
     private List<Relationship__c> newList;
     private List<Relationship__c> oldList;
     private Map<Id, Relationship__c> newMap;

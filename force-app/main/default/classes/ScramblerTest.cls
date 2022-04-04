@@ -5,7 +5,19 @@ private class ScramblerTest {
         String testEmail = 'testEmail@test.com';
         testEmail = Scrambler.scrambleEmailOrUsername(testEmail);
 
-        System.assertEquals('"testEmail@test.com.' + UserInfo.getUserName().substringAfterLast('.') + '"', testEmail);
+        System.assertEquals('"testEmail@test.com.' + Scrambler.getSandboxDomain() + '"', testEmail);
+    }
+
+    @isTest
+    private static void testCarefulEmailScramble() {
+        String testEmail = 'testEmail@test.com';
+        testEmail = Scrambler.carefullyScrambleEmailOrUsername(testEmail).replace('"', '');
+
+        System.assertEquals('testEmail@test.com.' + Scrambler.getSandboxDomain(), testEmail);
+
+        testEmail = Scrambler.carefullyScrambleEmailOrUsername(testEmail).replace('"', '');
+
+        System.assertEquals('testEmail@test.com.' + Scrambler.getSandboxDomain(), testEmail);
     }
 
     @isTest

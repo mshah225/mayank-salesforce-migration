@@ -5,8 +5,8 @@ public class PortalEmailService {
      * to future methods for processing in bulk.
      */
     public static void setFromAddress(Map<Id, Portal_Email__c> emailsToUpdate) {
-        Id advisorRTID = IDHelper.getRTID('Portal_Email__c', 'Advisor');
-        Id coachRTID = IDHelper.getRTID('Portal_Email__c', 'Coach');
+        Id advisorRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
+        Id coachRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
         Set<Id> advisorEmails = new Set<Id>();
         Set<Id> coachEmails = new Set<Id>();
 
@@ -144,7 +144,7 @@ public class PortalEmailService {
         }
     }
 
-    public static void verifiySubject(List<Portal_Email__c> emailsToValidate) {
+    public static void verifySubject(List<Portal_Email__c> emailsToValidate) {
         for (Portal_Email__c pe : emailsToValidate) {
             if (pe.Subject__c == '' || pe.Subject__c == null) {
                 pe.Subject__c = 'A Message from your College and Department';

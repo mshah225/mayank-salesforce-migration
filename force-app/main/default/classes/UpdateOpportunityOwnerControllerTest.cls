@@ -23,7 +23,7 @@ private class UpdateOpportunityOwnerControllerTest {
         insert testContacts;
 
         // Two test users
-        Id standardUserProfileId = IDHelper.getProfileId('Standard User');
+        Id standardUserProfileId = RecordIdHelper.getProfileId('Standard User');
         User testUser = new User(
             FirstName = 'Test',
             LastName = 'User',
@@ -53,7 +53,7 @@ private class UpdateOpportunityOwnerControllerTest {
         insert new List<User>{ testUser, testUser2 };
 
         // Create the opportunities
-        Id undergradOpportunity = IDHelper.getRecordTypeId('Opportunity', 'Undergraduate_Prospect');
+        Id undergradOpportunity = RecordIdHelper.getRecordTypeId('Opportunity', 'Undergraduate_Prospect');
         List<Opportunity> opps = new List<Opportunity>();
         for (Integer i = 0; i < testContacts.size(); i++) {
             opps.add(

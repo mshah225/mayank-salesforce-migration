@@ -68,22 +68,28 @@ public class ContactScrambler implements ObjectScramble {
     }
 
     private void scrambleEmails() {
-        contactToScramble.email = Scrambler.scrambleEmailOrUsername(contactToScramble.email);
-        contactToScramble.Corporate_Relations_Email__c = Scrambler.scrambleEmailOrUsername(
+        contactToScramble.email = Scrambler.carefullyScrambleEmailOrUsername(contactToScramble.email);
+        contactToScramble.Corporate_Relations_Email__c = Scrambler.carefullyScrambleEmailOrUsername(
             contactToScramble.Corporate_Relations_Email__c
         );
-        contactToScramble.EPO_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.EPO_Email__c);
-        contactToScramble.ASU_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.ASU_Email__c);
-        contactToScramble.Last_Case_Email_Used__c = Scrambler.scrambleEmailOrUsername(
+        contactToScramble.EPO_Email__c = Scrambler.carefullyScrambleEmailOrUsername(contactToScramble.EPO_Email__c);
+        contactToScramble.ASU_Email__c = Scrambler.carefullyScrambleEmailOrUsername(contactToScramble.ASU_Email__c);
+        contactToScramble.Last_Case_Email_Used__c = Scrambler.carefullyScrambleEmailOrUsername(
             contactToScramble.Last_Case_Email_Used__c
         );
-        contactToScramble.Lead_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Lead_Email__c);
-        contactToScramble.Lead_Secondary_Email__c = Scrambler.scrambleEmailOrUsername(
+        contactToScramble.Lead_Email__c = Scrambler.carefullyScrambleEmailOrUsername(contactToScramble.Lead_Email__c);
+        contactToScramble.Lead_Secondary_Email__c = Scrambler.carefullyScrambleEmailOrUsername(
             contactToScramble.Lead_Secondary_Email__c
         );
-        contactToScramble.me3hs_User_ID__c = Scrambler.scrambleEmailOrUsername(contactToScramble.me3hs_User_ID__c);
-        contactToScramble.Parent_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Parent_Email__c);
-        contactToScramble.Personal_Email__c = Scrambler.scrambleEmailOrUsername(contactToScramble.Personal_Email__c);
+        contactToScramble.me3hs_User_ID__c = Scrambler.carefullyScrambleEmailOrUsername(
+            contactToScramble.me3hs_User_ID__c
+        );
+        contactToScramble.Parent_Email__c = Scrambler.carefullyScrambleEmailOrUsername(
+            contactToScramble.Parent_Email__c
+        );
+        contactToScramble.Personal_Email__c = Scrambler.carefullyScrambleEmailOrUsername(
+            contactToScramble.Personal_Email__c
+        );
     }
 
     private void scrambleDates() {

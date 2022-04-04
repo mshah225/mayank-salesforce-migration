@@ -22,7 +22,7 @@ public with sharing class EdPlusAggregatedNotesController {
         this.parentId = theContact.Id;
         List<Id> Contacts = EdPlusUtilities.getExternalContacts(this.parentId);
 
-        List<EdPlusTask__x> tasks = Query.records(
+        List<EdPlusTask__x> tasks = ExternalObjectQueryService.getRecords(
             [
                 SELECT
                     Owner_Id_edpl__r.Name_edpl__c,

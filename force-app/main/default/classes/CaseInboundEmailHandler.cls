@@ -784,7 +784,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
 
             // If this filter is an email address, check the fromAddress only
-            if (Pattern.matches('.+\\@.+\\..+', filter.Name)) {
+            if (Pattern.matches('\\S*\\@\\S+\\.\\S+', filter.Name)) {
                 if (emailSectionContainsTerm(inboundEmail.fromAddress, filter)) {
                     updateFilterRejectionCount(filter);
                     return filter.Name;

@@ -16,29 +16,37 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
         ];
 
         for (Automated_Report_Processing_Options__c report : listOfReports) {
-            switch on report.Schedule_Frequency__c {
-                when 'Weekly' {
-                    DateTime comparisonDate = today.addDays(-6);
-                    if (comparisonDate >= report.Last_Run__c) {
-                        report.Run_Required__c = true;
-                        reportsToRun.add(report);
-                    }
-                }
-                when 'Bi-Weekly' {
-                    DateTime comparisonDate = today.addDays(-13);
-                    if (comparisonDate >= report.Last_Run__c) {
-                        report.Run_Required__c = true;
-                        reportsToRun.add(report);
-                    }
 
-                }
-                when 'Monthly' {
-                    DateTime comparisonDate = today.addDays(-27);
-                    if (comparisonDate >= report.Last_Run__c) {
-                        report.Run_Required__c = true;
-                        reportsToRun.add(report);
-                    }
+            if (report.Last_Run__c == null) {
+                report.Run_Required__c = true;
+                reportsToRun.add(report);
+            }
 
+            else {
+                switch on report.Schedule_Frequency__c {
+                    when 'Weekly' {
+                        DateTime comparisonDate = today.addDays(-6);
+                        if (comparisonDate >= report.Last_Run__c) {
+                            report.Run_Required__c = true;
+                            reportsToRun.add(report);
+                        }
+                    }
+                    when 'Bi-Weekly' {
+                        DateTime comparisonDate = today.addDays(-13);
+                        if (comparisonDate >= report.Last_Run__c) {
+                            report.Run_Required__c = true;
+                            reportsToRun.add(report);
+                        }
+
+                    }
+                    when 'Monthly' {
+                        DateTime comparisonDate = today.addDays(-27);
+                        if (comparisonDate >= report.Last_Run__c) {
+                            report.Run_Required__c = true;
+                            reportsToRun.add(report);
+                        }
+
+                    }
                 }
             }
 

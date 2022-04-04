@@ -24,7 +24,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     private Email_Logging__c loggingSettings = Email_Logging__c.getValues('Current_Settings');
     protected Case theCase = null;
     protected Messaging.InboundEmail inboundEmail;
-    protected String defaultCaseOwnerId;
 
     public CaseInboundEmailHandler() {
     }
@@ -111,7 +110,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     if (caseStatusIsNotNull && (caseStatusIsNotClosed || caseCanBeReopened)) {
                         this.theCase = caseSearch;
 
-                        Id serviceRecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service'].Id;
+                        Id serviceRecordType = RecordIDHelper.getRecordTypeId('Case', 'ASU_Service');
 
                         // Assign service cases back to the most recently associated Queue
                         if (this.theCase.RecordTypeId == serviceRecordType) {
@@ -138,7 +137,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                                     WHERE
                                         RecordType.Name = 'Functional Group'
                                         AND Active__c = TRUE
-                                        AND name = 'External Unit'
+                                        AND Name = 'External Unit'
                                     LIMIT 1
                                 ]
                                 .Id
@@ -849,6 +848,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         if (defaultCaseRecordType != null) {
             defaultCaseRecordTypeId = defaultCaseRecordType.Id;
         }
+        defaultCaseRecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Service');
     }
 
     private String getConfigurationSetting(String settingName) {

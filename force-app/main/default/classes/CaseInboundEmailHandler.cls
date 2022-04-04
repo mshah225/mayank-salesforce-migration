@@ -66,6 +66,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 lName = newLname;
             }
 
+            // Trim spaces from name
+            fName = fName.trim();
+            lName = lName.trim();
+
             // Check the inbound email for filtered terms; if found, no do nothing
             String filteredTerm = filteredTermFound();
             if (filteredTerm != null) {

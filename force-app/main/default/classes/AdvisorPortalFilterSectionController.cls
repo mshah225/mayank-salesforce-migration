@@ -974,6 +974,8 @@ public class AdvisorPortalFilterSectionController {
 
         queryString += ' ' + String.join(andStatements, ' AND ');
 
+        queryString += ' ORDER BY LastName, Preferred_First_Name__c ASC';
+
         return queryString;
     }
 

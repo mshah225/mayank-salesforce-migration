@@ -1,14 +1,3 @@
-/**
- * Potential improvement for performance - will need to do performance testing to determine if better
- * SELECT Id
-            FROM Case
-            WHERE
-                Status IN ('Email Sent', 'Busy Signal')
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE)
-                AND ContactId IN (SELECT SG_Contact__c FROM Student_Group__c WHERE)
-            GROUP BY ContactId
- * 
- */
 public class AdvisorPortalFilterSectionController {
     private static Map<String, Set<Decimal>> outlookScoresByLabels = new Map<String, Set<Decimal>>{
         'very low' => new Set<Decimal>{ 0, 1, 2, 3 },
@@ -289,7 +278,6 @@ public class AdvisorPortalFilterSectionController {
     ) {
         // Generate query string
         String caseQueryString = generateCaseSearchString(filter, viewAsOptions);
-        System.debug(caseQueryString);
 
         // Get all possible results
         List<Case> allCases = Database.query(caseQueryString);

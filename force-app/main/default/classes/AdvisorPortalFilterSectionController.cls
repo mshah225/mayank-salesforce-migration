@@ -96,7 +96,7 @@ public class AdvisorPortalFilterSectionController {
             FROM Case
             WHERE IsClosed = FALSE AND RecordTypeId = :recordType AND Subject != NULL AND OwnerId IN :viewAsOptions
             GROUP BY Subject
-            LIMIT 10000
+            LIMIT 2000
         ]) {
             if (result.get('Subject') != null) {
                 caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
@@ -127,7 +127,7 @@ public class AdvisorPortalFilterSectionController {
                 AND CC_Category__c != NULL
                 AND OwnerId IN :viewAsOptions
             GROUP BY CC_Category__r.Name
-            LIMIT 10000
+            LIMIT 2000
         ]) {
             if (result.get('CategoryName') != null) {
                 caseClassificationValuesByLabel.put(
@@ -895,8 +895,15 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return Query String for mostly filtered results
      */
+
     private static String generateStudentSearchString(AdvisorPortalFilter filter, List<Id> ownerIds) {
-        String queryString = 'SELECT Id, Name, (SELECT Id, Subject, Status FROM Cases) FROM Contact WHERE';
+        String queryString =
+            'SELECT Id, Name ' +
+            '(SELECT Id, CaseNumber, Subject, Status, Followup_Date__c, OwnerId, Owner.Name, ' +
+            'CreatedDate, CC_Category__r.Name CC_Category__r.Parent__r.Name, RecordType.Name, ' +
+            'Change_Date__c, Curr_Cont_Prediction_Level__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, Most_Recent_Queue__c, Priority FROM Cases)' +
+            'FROM Contact WHERE';
 
         List<String> andStatements = new List<String>();
 

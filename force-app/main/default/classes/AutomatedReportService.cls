@@ -57,9 +57,12 @@ public without sharing class AutomatedReportService {
     /**
      * Create rows
      */
-    public void recreateRowsFromReport() {
+    public void recreateRowsFromReport() {        
         // Get report export
         reportData = new PageReference('/' + report.Report_ID__c + '?export=1&isdtp=p1').getContent();
+        HttpRequest reportWrapper = new HttpRequest();
+        reportWrapper.setBodyAsBlob(reportData);
+        String reportDataAsString = reportWrapper.getBody(); 
 
         // Check size
         if (reportData.size() == 0) {
@@ -67,7 +70,7 @@ public without sharing class AutomatedReportService {
             return;
         }
 
-        CsvIterator fileIterator = new CsvIterator(reportData.toString(), '\n');
+        CsvIterator fileIterator = new CsvIterator(reportDataAsString, '\n');
         List<String> allRows = new List<String>();
         while (fileIterator.hasNext()) {
             allRows.add(fileIterator.next());

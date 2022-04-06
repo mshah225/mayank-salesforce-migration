@@ -49,13 +49,18 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
                     }
                 }
             }
+        }        
 
-            update reportsToRun;
+        update reportsToRun;
 
-            if(!Test.isRunningTest()) {
-            	System.enqueueJob(new AutomatedReportProcessing(null));
-            }
+        if (!Test.isRunningTest()) {
+            startAutomatedProcess();
         }
-    }    
+    }
+
+    @future(callout=true)
+    private static void startAutomatedProcess() {
+        System.enqueueJob(new AutomatedReportProcessing(null));
+    } 
     
 }

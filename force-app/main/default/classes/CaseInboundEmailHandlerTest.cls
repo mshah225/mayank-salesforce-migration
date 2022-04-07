@@ -334,12 +334,12 @@ public with sharing class CaseInboundEmailHandlerTest {
         Contact createdContact = [SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1];
 
         System.assert(createdContact != null);
-        System.assert(createdContact.FirstName == '012345678901234567890123456789012345678');
-        System.assert(
-            createdContact.LastName ==
-            '01234567890123456789012345678901234567890123456789012345678901234567890123456789'
+        System.assertEquals('0123456789012345678901234567890123456789', createdContact.FirstName);
+        System.assertEquals(
+            '01234567890123456789012345678901234567890123456789012345678901234567890123456789',
+            createdContact.LastName
         );
-        System.assert(createdContact.Email == 'user@acme.com.test');
+        System.assertEquals('user@acme.com.test', createdContact.Email);
 
         Case createdCase = [
             SELECT Id, Subject, Description, Status, Functional_Group__c

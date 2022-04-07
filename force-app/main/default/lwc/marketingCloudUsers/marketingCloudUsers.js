@@ -1,5 +1,5 @@
 import {LightningElement, wire, track} from 'lwc';
-import getUsers from '@salesforce/apex/MarketingCloudUserWebService.getUsers';
+import getUsers from '@salesforce/apex/MarketingCloudUtilitiesController.getUsersFromMarketingCloud';
 
 export default class MarketingCloudUsers extends LightningElement {
     _allData = [];
@@ -16,7 +16,7 @@ export default class MarketingCloudUsers extends LightningElement {
     columns = [
         {
             label: 'Created Date',
-            fieldName: 'CreatedDate',
+            fieldName: 'createdDate',
             type: 'date',
             sortable: true,
             typeAttributes: {
@@ -31,61 +31,61 @@ export default class MarketingCloudUsers extends LightningElement {
         },
         {
             label: 'Id',
-            fieldName: 'Id',
+            fieldName: 'id',
             type: 'string',
             sortable: true,
         },
         {
             label: 'Customer Key',
-            fieldName: 'CustomerKey',
+            fieldName: 'customerKey',
             type: 'string',
             sortable: false,
         },
         {
             label: 'Account User Id',
-            fieldName: 'AccountUserId',
+            fieldName: 'accountUserId',
             type: 'string',
             sortable: true,
         },
         {
             label: 'User Id',
-            fieldName: 'UserId',
+            fieldName: 'userId',
             type: 'string',
             sortable: true,
         },
         {
             label: 'Name',
-            fieldName: 'Name',
+            fieldName: 'name',
             type: 'string',
             sortable: true,
         },
         {
             label: 'Email',
-            fieldName: 'Email',
+            fieldName: 'email',
             type: 'email',
             sortable: true,
         },
         {
             label: 'Must Change Password',
-            fieldName: 'MustChangePassword',
+            fieldName: 'mustChangePassword',
             type: 'boolean',
             sortable: true,
         },
         {
             label: 'Is Active',
-            fieldName: 'ActiveFlag',
+            fieldName: 'activeFlag',
             type: 'boolean',
             sortable: true,
         },
         {
             label: 'Is Deleted',
-            fieldName: 'Deleted',
+            fieldName: 'deleted',
             type: 'boolean',
             sortable: true,
         },
         {
             label: 'Last Successful Login',
-            fieldName: 'LastSuccessfulLogin',
+            fieldName: 'lastSuccessfulLogin',
             type: 'date',
             sortable: true,
             typeAttributes: {
@@ -100,25 +100,25 @@ export default class MarketingCloudUsers extends LightningElement {
         },
         {
             label: 'Is API User',
-            fieldName: 'IsAPIUser',
+            fieldName: 'isAPIUser',
             type: 'boolean',
             sortable: true,
         },
         {
             label: 'Notification Email Address',
-            fieldName: 'NotificationEmailAddress',
+            fieldName: 'notificationEmailAddress',
             type: 'email',
             sortable: true,
         },
         {
             label: 'Is Locked',
-            fieldName: 'IsLocked',
+            fieldName: 'isLocked',
             type: 'boolean',
             sortable: true,
         },
         {
             label: 'Default Business Unit',
-            fieldName: 'DefaultBusinessUnit',
+            fieldName: 'defaultBusinessUnit',
             type: 'string',
             sortable: true,
         },

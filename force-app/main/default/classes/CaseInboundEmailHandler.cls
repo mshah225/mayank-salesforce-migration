@@ -906,13 +906,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 if (inboundEmail.fromAddress.containsIgnoreCase(filter.Name)) {
                     filter.Rejection_Count__c += 1;
                     filtersToUpdate.add(filter);
-                    return filter.Name;
+                    break;
                 }
             } else if (inboundEmail.subject != null) {
                 if (inboundEmail.subject.containsIgnoreCase(filter.Name)) {
                     filter.Rejection_Count__c += 1;
                     filtersToUpdate.add(filter);
-                    return filter.Name;
+                    break;
                 }
             }
 
@@ -920,12 +920,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 if (inboundEmail.htmlBody.containsIgnoreCase(filter.Name)) {
                     filter.Rejection_Count__c += 1;
                     filtersToUpdate.add(filter);
-                    return filter.Name;
+                    break;
                 }
             }
         }
         if (!filtersToUpdate.isEmpty()) {
             update filtersToUpdate;
+            return filtersToUpdate.get(0).Name;
         }
         return null;
     }

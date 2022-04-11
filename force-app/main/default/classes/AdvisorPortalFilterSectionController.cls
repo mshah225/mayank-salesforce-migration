@@ -1175,7 +1175,9 @@ public class AdvisorPortalFilterSectionController {
         Set<Id> contactIds
     ) {
         String queryString =
-            'SELECT Id, Name, ' +
+            'SELECT Id, Name, FirstName, Preferred_Full_Name__c, Preferred_First_Name__c ' +
+            'LastName, EmplId__c, ASURite_Id__c, US_Citizen__c, Change_Date__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, Curr_Cont_Prediction_Level__c, ' +
             '(SELECT Id, CaseNumber, Subject, Status, Followup_Date__c, OwnerId, Owner.Name, ' +
             'CreatedDate, CC_Category__r.Name, CC_Category__r.Parent__r.Name, RecordType.Name, ' +
             'Change_Date__c, Curr_Cont_Prediction_Level__c, ' +
@@ -1387,5 +1389,8 @@ public class AdvisorPortalFilterSectionController {
     private static String getCurrentPeoplesoftTermCode() {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         return currentTermData.CurrTerm__c;
+    }
+
+    public class AdvisorPortalException extends Exception {
     }
 }

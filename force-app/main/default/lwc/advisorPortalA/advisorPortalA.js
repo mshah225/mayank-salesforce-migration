@@ -93,6 +93,13 @@ export default class AdvisorPortalA extends LightningElement {
             // eslint-disable-next-line no-console
             console.error(error);
         }
+
+        if (this.currentFilter != null) {
+            // default filter settings if none exists
+            if (this.currentFilter.caseTypeState == null) this.currentFilter.caseTypeState = 'ProactiveCasesState';
+            if (this.currentFilter.career == null) this.currentFilter.career = 'UGRD';
+        }
+
         this.loadLess();
     }
 
@@ -119,6 +126,7 @@ export default class AdvisorPortalA extends LightningElement {
 
     getCases() {
         this.loadMore();
+        console.log(this.currentFilter);
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
                 this.allResults = JSON.parse(val);

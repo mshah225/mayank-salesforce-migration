@@ -1,5 +1,6 @@
 import {LightningElement, wire} from 'lwc';
 import checkIfAllowedToUse from '@salesforce/apex/AdvisorPortalMassTransferController.checkIfAllowedToUse';
+import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 
@@ -7,6 +8,7 @@ export default class AdvisorPortalA extends LightningElement {
     defaultFilter = null;
     currentFilter = {};
     allUsers = [];
+    myQueueId = null;
     selectedUsers = [];
     allResults = [];
     selectedResults = [];
@@ -37,9 +39,49 @@ export default class AdvisorPortalA extends LightningElement {
         this.loadLess();
     }
 
+    // Retrieve all user options
+    @wire(viewAsOptions, {})
+    gotViewAsOptions(result) {
+        let {data, error} = result;
+        if (data != null) {
+            let firstSelectionFound = false;
+            let allUsers = [];
+
+            const keys = Object.keys(data);
+
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                let option = {label: key, value: data[key], isHeader: false, isSelected: false};
+
+                if (key.includes('--')) {
+                    option.label = option.label.replace(/--/g, '');
+                    option.isHeader = true;
+                }
+
+                if (!option.isHeader) {
+                    if (!firstSelectionFound) {
+                        this.myQueueId = option.value;
+                        option.isSelected = true;
+                        firstSelectionFound = true;
+                    }
+                }
+
+                allUsers.push(option);
+            }
+
+            this.allUsers = allUsers;
+            this.loadLess();
+        } else if (error != null) {
+            // eslint-disable-next-line no-console
+            console.error(error);
+            this.loadLess();
+        }
+    }
+
     // One loading for each wire
     connectedCallback() {
-        this.loadMore();
+        this.loadMore(); // loadMore for retrieving user options
+        this.loadMore(); // loadMore for retrieving allowed to use mass transfer
 
         loadScript(this, integration_v54_js)
             .then(() => {
@@ -71,6 +113,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
     changeSelectedUsers(e) {
         this.selectedUsers = [...e.detail];
+        console.log(this.selectedUsers);
     }
 
     updateSelectedResults(e) {

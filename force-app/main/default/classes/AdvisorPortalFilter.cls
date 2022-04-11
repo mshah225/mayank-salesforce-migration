@@ -27,4 +27,8 @@ public class AdvisorPortalFilter {
     public String admitTermFrom;
     public String admitTermTo;
     public String specialPopulation;
+    // trackers for pagination
+    public String pageSize;
+    public String equalOrAfterLastName;
+    public String afterPrefFirstName;
 }

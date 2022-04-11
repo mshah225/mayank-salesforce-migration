@@ -302,7 +302,7 @@ export default class LightningComboBox extends LightningElement {
      * and make sure the value only contains values from the options
      */
     forceSelectedStatesToMatchValue() {
-        const parentDeclaredValues = this._value.split(';');
+        const parentDeclaredValues = this._value == null ? [] : this._value.split(';');
         const options = JSON.parse(JSON.stringify(this._options));
         const newValues = [];
         let madeAChange = false;

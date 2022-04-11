@@ -7,25 +7,49 @@ import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalF
 import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
 import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
-import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 
 export default class AdvisorPortalFiltersSection extends LightningElement {
     // only load the default filter once
-    @api set defaultFilter(val) {
-        if (val != null && this._defaultFilter == null) {
-            this._defaultFilter = val;
+    @api set currentFilter(val) {
+        if (val != null) {
+            const newFilter = JSON.parse(JSON.stringify(val));
             if (!this.hasDoneInitialAsyncLoad) {
+                // if first time
+                this._currentFilter = newFilter;
                 this.loadAfterAsyncComponents();
+            } else {
+                // subsequent times
+                const oldCareer = this.currentFilter.career;
+                const oldStateType = this.currentFilter.caseTypeState;
+                const newCareer = newFilter.career;
+                const newStateType = newFilter.caseTypeState;
+
+                this._currentFilter = newFilter;
+
+                if (oldCareer !== newCareer) {
+                    // throw change back a cycle to get rendering order nice
+                    this.sendLoadingEvent(true);
+                    this.throwBackARenderCycle(() => {
+                        this.isGraduateOnly = newCareer === 'GRD';
+                        this.sendLoadingEvent(false);
+                    });
+                    // apply change
+                    this.applyFilters();
+                    // update conditionals
+                    this.updateConditionalFields('career');
+                } else if (oldStateType !== newStateType) {
+                    this.applyFilters();
+                }
             }
         }
     }
-    get defaultFilter() {
-        return this._defaultFilter;
+    get currentFilter() {
+        return this._currentFilter;
     }
-    _defaultFilter = null;
+    _currentFilter = null;
 
     @api set viewAsUsers(val) {
-        this._viewAsUsers = [...val];
+        this._viewAsUsers = JSON.parse(JSON.stringify(val));
         if (!this.hasDoneInitialAsyncLoad) {
             // if first time
             this.loadAfterAsyncComponents();
@@ -51,15 +75,13 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     }
     _viewAsUsers = null;
 
-    // will run once all async components are laoded in
+    // will run once all async components are loaded in
     hasDoneInitialAsyncLoad = false;
     loadAfterAsyncComponents() {
         if (this.hasDoneInitialAsyncLoad) return;
         if (this.viewAsUsers === null) return;
-        if (this.defaultFilter === null) return;
+        if (this.currentFilter === null) return;
         // Set filter as the default
-        if (this.filterIsDifferent(this.currentFilter, this.defaultFilter))
-            this.copyChanges(this.currentFilter, this.defaultFilter);
         this.isGraduateOnly = this.currentFilter.career === 'GRD';
 
         this.sendLoadingEvent(true);
@@ -97,43 +119,9 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
             }),
         ]).then(() => {
             this.hasDoneInitialAsyncLoad = true;
-            this.sendLoadingEvent(false); // stop general loading from connectedCallback
             this.applyFilters();
         });
     }
-
-    @api set currentFilter(val) {
-        // don't allow set current until all async's have loaded
-        if (!this.hasDoneInitialAsyncLoad) return;
-        // copy changes
-        if (this.filterIsDifferent(this.currentFilter, val)) {
-            const oldCareer = this.currentFilter.career;
-            const oldStateType = this.currentFilter.caseTypeState;
-            this.copyChanges(this.currentFilter, val);
-            const newCareer = this.currentFilter.career;
-            const newStateType = this.currentFilter.caseTypeState;
-
-            if (oldCareer !== newCareer) {
-                // throw change back a cycle to get rendering order nice
-                this.sendLoadingEvent(true);
-                this.throwBackARenderCycle(() => {
-                    this.isGraduateOnly = newCareer === 'GRD';
-                    this.sendLoadingEvent(false);
-                });
-                // apply change
-                this.applyFilters();
-                // update conditionals
-                this.updateConditionalFields('career');
-            } else if (oldStateType !== newStateType) {
-                this.applyFilters();
-            }
-        }
-    }
-    get currentFilter() {
-        if (this._currentFilter == null) this._currentFilter = this.getEmptyFilter();
-        return this._currentFilter;
-    }
-    _currentFilter;
 
     isGraduateOnly = false;
 
@@ -357,59 +345,13 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         return valid;
     }
 
-    /**
-     * Reload the previously applied filter (don't regenerate the JSON, use whichever JSON more recent request was used with)
-     */
-    cachedFitlerJSON = null;
-    @api forceRefresh() {
-        if (this.cachedFitlerJSON === null) return;
-
-        let viewAsOptions = this.viewAsUsers;
-
-        this.sendLoadingEvent(true);
-        getFilteredCases({viewAsOptions, filterJSON: this.cachedFitlerJSON})
-            .then((val) => {
-                this.sendChangeResultsEvent(JSON.parse(val));
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error(err);
-            })
-            .finally(() => {
-                this.sendLoadingEvent(false);
-            });
-    }
-
-    /**
-     * Apply the current filters
-     */
     applyFilters() {
-        if (!this.reportValidity()) {
-            return; // don't apply if not valid
-        }
-
-        let viewAsOptions = this.viewAsUsers;
-        let filterJSON = JSON.stringify(this.currentFilter);
-        this.cachedFitlerJSON = filterJSON;
-
-        this.sendLoadingEvent(true);
-        getFilteredCases({viewAsOptions, filterJSON})
-            .then((val) => {
-                this.sendChangeResultsEvent(JSON.parse(val));
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error(err);
-            })
-            .finally(() => {
-                this.sendLoadingEvent(false);
-            });
+        this.dispatchEvent(new CustomEvent('submit', {detail: {}}));
     }
 
     /**
      * Helper functions
      */
-
     admitTermFromPattern = '[0-2][0-9]{2}[1,4,7]';
     admitTermFromPatternMismatchError = 'Should be a valid Peoplesoft term code.';
     admitTermToPattern = '[0-2][0-9]{2}[1,4,7]';
@@ -621,18 +563,6 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         this.dispatchEvent(
             new CustomEvent('change', {
                 detail: {name, value},
-            })
-        );
-    }
-
-    /**
-     * Raise an event of the matched AdvisorPortalContacts
-     * @param {List<AdvisorPortalContact>} results
-     */
-    sendChangeResultsEvent(results) {
-        this.dispatchEvent(
-            new CustomEvent('setresults', {
-                detail: results,
             })
         );
     }

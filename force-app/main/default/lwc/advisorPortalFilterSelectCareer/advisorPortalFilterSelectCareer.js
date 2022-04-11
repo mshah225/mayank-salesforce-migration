@@ -2,14 +2,16 @@ import {LightningElement, api} from 'lwc';
 
 export default class AdvisorPortalFilterSelectCareer extends LightningElement {
     @api
-    get defaultFilter() {
-        return null; // no getting needed
+    get currentFilter() {
+        return this._currentFilter;
     }
-    set defaultFilter(val) {
+    set currentFilter(val) {
+        this._currentFilter = val;
         if (val != null && val.career != null && val.career !== '') {
             this.quietSelect(val.career);
         }
     }
+    _currentFilter = null;
 
     options = [
         {label: 'Undergraduate', value: 'UGRD'},

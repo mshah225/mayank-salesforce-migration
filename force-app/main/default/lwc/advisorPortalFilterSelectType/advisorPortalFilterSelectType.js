@@ -2,14 +2,16 @@ import {LightningElement, api} from 'lwc';
 
 export default class AdvisorPortalFilterSelectType extends LightningElement {
     @api
-    get defaultFilter() {
-        return null; // no getting needed
+    get currentFilter() {
+        return this._currentFilter;
     }
-    set defaultFilter(val) {
+    set currentFilter(val) {
+        this._currentFilter = val;
         if (val != null && val.caseTypeState != null) {
             this.quietSelect(val.caseTypeState);
         }
     }
+    _currentFilter = null;
 
     options = [
         {label: 'All Students', value: 'AllCasesState'},

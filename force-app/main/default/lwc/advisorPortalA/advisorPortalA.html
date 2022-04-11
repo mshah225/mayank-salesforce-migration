@@ -27,8 +27,8 @@
                 <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
                     <div class="slds-card slds-var-p-around_small">
                         <c-advisor-portal-filter-select-career
+                            current-filter={currentFilter}
                             onchange={updateFilter}
-                            default-filter={defaultFilter}
                         ></c-advisor-portal-filter-select-career>
                     </div>
                 </div>
@@ -36,7 +36,6 @@
                     <div class="slds-card slds-var-p-around_small">
                         <c-advisor-portal-save-filters
                             current-filter={currentFilter}
-                            onsetdefaultfilter={setDefaultFilter}
                             onloading={handleLoading}
                             onshowtoast={handleToast}
                         ></c-advisor-portal-save-filters>
@@ -52,8 +51,8 @@
                 <div class="slds-grid slds-wrap slds-gutters">
                     <div class="slds-col slds-grow-none slds-max-large-size_1-of-1">
                         <c-advisor-portal-filter-select-type
+                            current-filter={currentFilter}
                             onchange={updateFilter}
-                            default-filter={defaultFilter}
                         ></c-advisor-portal-filter-select-type>
                     </div>
                     <div class="slds-col slds-grow slds-max-large-size_1-of-1"></div>
@@ -111,11 +110,10 @@
         <div class="slds-col">
             <div class="slds-card slds-var-p-around_small">
                 <c-advisor-portal-filters-section
-                    onchange={updateFilter}
-                    onsetresults={updateResults}
                     view-as-users={selectedUsers}
                     current-filter={currentFilter}
-                    default-filter={defaultFilter}
+                    onchange={updateFilter}
+                    onsubmit={getCases}
                     onloading={handleLoading}
                 ></c-advisor-portal-filters-section>
             </div>

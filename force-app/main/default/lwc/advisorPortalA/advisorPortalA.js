@@ -1,15 +1,18 @@
 import {LightningElement, wire} from 'lwc';
 import checkIfAllowedToUse from '@salesforce/apex/AdvisorPortalMassTransferController.checkIfAllowedToUse';
 import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
+import getDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.getDefaultFilter';
+import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 
 export default class AdvisorPortalA extends LightningElement {
-    defaultFilter = null;
-    currentFilter = {};
     allUsers = [];
     myQueueId = null;
     selectedUsers = [];
+
+    currentFilter = null;
+
     allResults = [];
     selectedResults = [];
 
@@ -63,6 +66,7 @@ export default class AdvisorPortalA extends LightningElement {
                         this.myQueueId = option.value;
                         option.isSelected = true;
                         firstSelectionFound = true;
+                        this.selectedUsers = [this.myQueueId];
                     }
                 }
 
@@ -78,10 +82,25 @@ export default class AdvisorPortalA extends LightningElement {
         }
     }
 
+    // Retrieve default filter
+    @wire(getDefaultFilter, {})
+    gotDefaultFilter(result) {
+        let {data, error} = result;
+        if (data != null) {
+            this.currentFilter = JSON.parse(data);
+        } else if (error != null) {
+            this.currentFilter = {};
+            // eslint-disable-next-line no-console
+            console.error(error);
+        }
+        this.loadLess();
+    }
+
     // One loading for each wire
     connectedCallback() {
         this.loadMore(); // loadMore for retrieving user options
         this.loadMore(); // loadMore for retrieving allowed to use mass transfer
+        this.loadMore(); // loadMore for retrieving default filter
 
         loadScript(this, integration_v54_js)
             .then(() => {
@@ -93,27 +112,31 @@ export default class AdvisorPortalA extends LightningElement {
             });
     }
 
-    // Should only run once on page load
-    setDefaultFilter(e) {
-        this.defaultFilter = JSON.parse(e.detail.filter);
-        this.currentFilter = this.defaultFilter;
-    }
-
     updateFilter(e) {
         this.currentFilter[e.detail.name] = e.detail.value;
         this.triggerCurrentFilterChanges();
+    }
+
+    getCases() {
+        this.loadMore();
+        getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
+            .then((val) => {
+                console.log(val);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(() => {
+                this.loadLess();
+            });
     }
 
     updateResults(e) {
         this.allResults = e.detail;
     }
 
-    changeAllUsers(e) {
-        this.allUsers = [...e.detail];
-    }
     changeSelectedUsers(e) {
         this.selectedUsers = [...e.detail];
-        console.log(this.selectedUsers);
     }
 
     updateSelectedResults(e) {

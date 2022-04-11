@@ -121,18 +121,15 @@ export default class AdvisorPortalA extends LightningElement {
         this.loadMore();
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
-                console.log(val);
+                this.allResults = JSON.parse(val);
             })
             .catch((err) => {
+                // eslint-disable-next-line no-console
                 console.error(err);
             })
             .finally(() => {
                 this.loadLess();
             });
-    }
-
-    updateResults(e) {
-        this.allResults = e.detail;
     }
 
     changeSelectedUsers(e) {

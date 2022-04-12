@@ -107,6 +107,12 @@ export default class AdvisorPortalTable extends LightningElement {
         this.determineShownContactWrappers();
     }
 
+    changePageSize(e) {
+        const newSize = e.detail;
+        this.pageSize = newSize;
+        this.determineShownContactWrappers();
+    }
+
     updateExpandedAll(e) {
         this.expandedAll = e.detail.checked;
 
@@ -159,7 +165,7 @@ export default class AdvisorPortalTable extends LightningElement {
             const result = this.allResults[i];
             if (i < this.currentPage * this.pageSize) {
                 continue; // these are on a previous page
-            } else if (i > (this.currentPage + 1) * this.pageSize) {
+            } else if (i >= (this.currentPage + 1) * this.pageSize) {
                 continue; // these are on a next page
             } else {
                 shownResults.push(result);

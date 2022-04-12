@@ -14,7 +14,7 @@ public with sharing class AdvisorPortalFilterSavingServiceTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IdHelper.getProfileID('Standard User')
+            ProfileId = RecordIdHelper.getProfileID('Standard User')
         );
         insert testUser;
 
@@ -22,7 +22,7 @@ public with sharing class AdvisorPortalFilterSavingServiceTest {
             Role__c = 'User',
             Resource__c = testUser.Id,
             IsActive__c = true,
-            RecordTypeId = IDHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor')
         );
         insert testSuccessResource;
     }

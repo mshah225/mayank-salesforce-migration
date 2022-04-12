@@ -126,7 +126,6 @@ export default class AdvisorPortalA extends LightningElement {
 
     getCases() {
         this.loadMore();
-        console.log(this.currentFilter);
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
                 this.allResults = JSON.parse(val);
@@ -275,7 +274,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     reloadContacts() {
-        this.template.querySelector('c-advisor-portal-filters-section').forceRefresh();
+        this.getCases();
     }
 
     openModalMassEmail() {

@@ -11,8 +11,20 @@ public class AdvisorPortalCase {
     @AuraEnabled
     public Case portalCase { get; set; }
 
+    public String formattedFollowupDate;
+    public String formattedCreatedDate;
+
     public AdvisorPortalCase(Case theCase) {
         this.isSelected = false;
         this.portalCase = theCase;
+
+        if (theCase.Followup_Date__c != null) {
+            Datetime followUp = Datetime.newInstance(theCase.Followup_Date__c, Time.newInstance(0, 0, 0, 0));
+            this.formattedFollowupDate = followUp.format('yyyy-MM-dd');
+        }
+
+        if (theCase.CreatedDate != null) {
+            this.formattedCreatedDate = theCase.CreatedDate.format('yyyy-MM-dd');
+        }
     }
 }

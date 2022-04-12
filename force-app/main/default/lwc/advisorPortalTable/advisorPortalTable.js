@@ -5,9 +5,11 @@ export default class AdvisorPortalTable extends LightningElement {
     @api set currentFilter(val) {
         this._currentFilter = val;
 
-        // Only really care about this one field
-        if (this._currentFilter.career === 'GRD') this.showPersistenceLegend = false;
-        else this.showPersistenceLegend = true;
+        if (this._currentFilter != null) {
+            // Only really care about this one field
+            if (this._currentFilter.career === 'GRD') this.showPersistenceLegend = false;
+            else this.showPersistenceLegend = true;
+        }
     }
     get currentFilter() {
         return this._currentFilter;

@@ -140,7 +140,7 @@
                                     <div class="slds-truncate" title="Followup Date">
                                         <template if:true={caseWrapper.hasFollowupDate}>
                                             <lightning-formatted-date-time
-                                                value={caseWrapper.portalCase.Followup_Date__c}
+                                                value={caseWrapper.formattedFollowupDate}
                                             ></lightning-formatted-date-time>
                                         </template>
                                     </div>
@@ -151,7 +151,7 @@
                                 <td data-label="Created Date">
                                     <div class="slds-truncate" title="Created Date">
                                         <lightning-formatted-date-time
-                                            value={caseWrapper.portalCase.CreatedDate}
+                                            value={caseWrapper.formattedCreatedDate}
                                         ></lightning-formatted-date-time>
                                     </div>
                                 </td>

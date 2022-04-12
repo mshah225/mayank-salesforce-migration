@@ -1,7 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
 import {LightningElement, api} from 'lwc';
-import getDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.getDefaultFilter';
 import setDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.setDefaultFilter';
 import clearDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.clearDefaultFilter';
 
@@ -26,30 +25,6 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
             subtype: 'center',
         },
     ];
-
-    connectedCallback() {
-        this.sendLoadingEvent(true);
-        getDefaultFilter()
-            .then((val) => {
-                this.dispatchEvent(
-                    new CustomEvent('setdefaultfilter', {
-                        detail: {filter: val},
-                    })
-                );
-            })
-            .catch((err) => {
-                console.error(err);
-                this.makeToast('error', 'Error', err.body.message);
-                this.dispatchEvent(
-                    new CustomEvent('setdefaultfilter', {
-                        detail: {filter: '{}'},
-                    })
-                );
-            })
-            .finally(() => {
-                this.sendLoadingEvent(false);
-            });
-    }
 
     saveFilters() {
         setDefaultFilter({json: JSON.stringify(this.currentFilter)})

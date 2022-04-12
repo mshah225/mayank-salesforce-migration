@@ -1,12 +1,21 @@
-import {LightningElement, wire, track} from 'lwc';
-import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
+import {LightningElement, api, track} from 'lwc';
 
 export default class AdvisorPortalUserSelect extends LightningElement {
+    @api set allUserOptions(options) {
+        this._allUserOptions = JSON.parse(JSON.stringify(options));
+        this.filterResults = this._allUserOptions;
+    }
+    get allUserOptions() {
+        return this._allUserOptions;
+    }
     @track
-    allUserOptions = [];
+    _allUserOptions = [];
+
+    @api
+    myQueueId = null;
+
     @track
     filterResults = [];
-    myQueueId = null;
 
     get selectedUserOptions() {
         const selectedUserOptions = [];
@@ -87,60 +96,19 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         return placeholder;
     }
 
-    connectedCallback() {
-        this.sendLoadingEvent(true);
-    }
-
-    // Retrieve all options
-    @wire(viewAsOptions, {})
-    gotViewAsOptions(result) {
-        let {data, error} = result;
-        if (data != null) {
-            let firstSelectionFound = false;
-            let allUserOptions = [];
-
-            const keys = Object.keys(data);
-
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                let option = {label: key, value: data[key], isHeader: false};
-
-                if (key.includes('--')) {
-                    option.label = option.label.replace(/--/g, '');
-                    option.isHeader = true;
-                }
-
-                if (!option.isHeader) {
-                    if (!firstSelectionFound) {
-                        this.myQueueId = option.value;
-                        option.isSelected = true;
-                        firstSelectionFound = true;
-                    }
-                }
-
-                allUserOptions.push(option);
-            }
-
-            this.allUserOptions = allUserOptions;
-            this.filterResults = allUserOptions;
-
-            this.applyChanges();
-            this.sendLoadingEvent(false);
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error(error);
-            this.sendLoadingEvent(false);
-        }
-    }
-
     // Limit results to match search
+    filterValue = '';
     previousFilterValue = '';
     onChangeNameSearch(e) {
-        let filterValue = e.detail.value;
+        this.filterValue = e.detail.value;
+        this.refreshFilterResults();
+    }
+    refreshFilterResults() {
+        let filterValue = this.filterValue;
         let previousFilterValue = this.previousFilterValue;
 
         if (filterValue === '') {
-            this.filterResults = this.allUserOptions;
+            this.filterResults = JSON.parse(JSON.stringify(this.allUserOptions));
         } else {
             let optionsToConsider = [];
             let optionsToUse = [];
@@ -172,6 +140,7 @@ export default class AdvisorPortalUserSelect extends LightningElement {
             const opt = this.allUserOptions[i];
             opt.isSelected = true;
         }
+        this.refreshFilterResults();
     }
     selectMyQueue() {
         if (this.myQueueId === null) return;
@@ -183,12 +152,14 @@ export default class AdvisorPortalUserSelect extends LightningElement {
                 opt.isSelected = false;
             }
         }
+        this.refreshFilterResults();
     }
     clearSelection() {
         for (let i = 0; i < this.allUserOptions.length; i++) {
             const opt = this.allUserOptions[i];
             opt.isSelected = false;
         }
+        this.refreshFilterResults();
     }
     toggleOption(e) {
         const key = e.detail.key;
@@ -200,11 +171,13 @@ export default class AdvisorPortalUserSelect extends LightningElement {
                 opt.isSelected = isSelected;
             }
         }
+        this.refreshFilterResults();
     }
     unselectByPill(e) {
         const removedIndex = e.detail.index;
         const elem = this.selectedUserOptions[removedIndex];
         elem.isSelected = false;
+        this.refreshFilterResults();
     }
 
     // Close modal when clicking out - must make sure click wasn't another item in modal
@@ -251,8 +224,9 @@ export default class AdvisorPortalUserSelect extends LightningElement {
     // Raise changeusers event
     applyChanges() {
         const userIds = [];
-        for (let i = 0; i < this.selectedUserOptions.length; i++) {
-            const opt = this.selectedUserOptions[i];
+        const selectedUserOptions = this.selectedUserOptions;
+        for (let i = 0; i < selectedUserOptions.length; i++) {
+            const opt = selectedUserOptions[i];
             userIds.push(opt.value);
         }
         this.dispatchEvent(new CustomEvent('changeusers', {detail: userIds}));

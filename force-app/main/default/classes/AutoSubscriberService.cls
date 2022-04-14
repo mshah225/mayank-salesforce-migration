@@ -1,6 +1,8 @@
 public with sharing class AutoSubscriberService {
     List<sObject> recordsToProcess { get; set; }
     AutoSubscriberHelper helper;
+    @TestVisible
+    List<Database.UpsertResult> results;
 
     public AutoSubscriberService(List<sObject> recordsToProcess, String typeOfObject) {
         this.recordsToProcess = recordsToProcess;
@@ -30,7 +32,7 @@ public with sharing class AutoSubscriberService {
         }
 
         if (!subsToCreate.isEmpty()) {
-            Database.upsert(subsToCreate, false);
+            results = Database.upsert(subsToCreate, false);
         }
     }
 
@@ -58,7 +60,7 @@ public with sharing class AutoSubscriberService {
         }
 
         if (!subsToCreate.isEmpty()) {
-            Database.upsert(subsToCreate, false);
+            results = Database.upsert(subsToCreate, false);
         }
     }
 }

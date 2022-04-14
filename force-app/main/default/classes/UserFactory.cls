@@ -62,7 +62,7 @@ public class UserFactory {
         Integer numberOfStudents,
         Success_Resource__c myAdvisorResource
     ) {
-        Id advisorOutReachId = IDHelper.getRTID('Case', 'ASU_Advisor_Outreach');
+        Id advisorOutReachId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         SuccessPodFactory advisorPodMaker = new SuccessPodFactory();
         SuccessStudentFactory successStudentMaker = new SuccessStudentFactory();
         SuccessResourcePodAssociationFactory successResourcePodAssociationMaker = new SuccessResourcePodAssociationFactory();

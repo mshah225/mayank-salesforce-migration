@@ -20,7 +20,7 @@ private with sharing class FeedbackButtonServiceTest {
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
-            ProfileId = IDHelper.getPID('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             LanguageLocaleKey = 'en_US',
             EmployeeNumber = emplNum
         );
@@ -31,7 +31,7 @@ private with sharing class FeedbackButtonServiceTest {
             Active__c = true,
             Visible__c = true,
             Record_Types_String__c = 'wer',
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
         );
         insert functionalGroup;
         Case_Classification__c category = new Case_Classification__c(
@@ -39,7 +39,7 @@ private with sharing class FeedbackButtonServiceTest {
             Active__c = true,
             Visible__c = true,
             Parent__c = functionalGroup.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
         );
         insert category;
 
@@ -79,7 +79,7 @@ private with sharing class FeedbackButtonServiceTest {
             System.assert(false, 'Should have thrown an error and not reached this line');
         } catch (FeedbackButtonService.LWCFeedbackException e) {
             System.assertEquals(
-                'Feedback must contain some text. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.',
+                'Feedback must contain some text. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).',
                 e.getMessage()
             );
         }
@@ -95,7 +95,7 @@ private with sharing class FeedbackButtonServiceTest {
             System.assert(false, 'Should have thrown an error and not reached this line');
         } catch (FeedbackButtonService.LWCFeedbackException e) {
             System.assertEquals(
-                'Invalid carName parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.',
+                'Invalid carName parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).',
                 e.getMessage()
             );
         }
@@ -108,7 +108,7 @@ private with sharing class FeedbackButtonServiceTest {
             System.assert(false, 'Should have thrown an error and not reached this line');
         } catch (FeedbackButtonService.LWCFeedbackException e) {
             System.assertEquals(
-                'Invalid contactId parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080.',
+                'Invalid contactId parameter. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).',
                 e.getMessage()
             );
         }

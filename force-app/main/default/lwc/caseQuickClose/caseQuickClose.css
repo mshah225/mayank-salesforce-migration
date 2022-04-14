@@ -1,0 +1,21 @@
+.slds-spinner_container {
+    content: 'Please wait.....!';
+    text-align: center;
+    z-index: 10000;
+    background-color: rgba(0, 0, 0, 0.002);
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.customStatusBox {
+    margin-bottom: var(--lwc-spacingXSmall, 0.5rem);
+}
+
+.toastzindex {
+    z-index: 1;
+}
+.toastnominwidth {
+    min-width: 0;
+}
+.displaynone {
+    display: none;
+}

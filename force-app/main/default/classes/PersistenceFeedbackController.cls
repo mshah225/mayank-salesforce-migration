@@ -62,13 +62,13 @@ public without sharing class PersistenceFeedbackController {
                 alertHandler.newAlert(
                     customAlert.FATAL,
                     'Form submission after initialization error. Our support team has been notified of this error. ' +
-                    'If you require immediate assistance please call 1-855-ASU-5080.'
+                    'If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080).'
                 );
 
                 throw new dynamicFeedbackException('Error: Form submission after initialization error');
             }
 
-            if (caseDescription == '') {
+            if (caseDescription.replaceAll('\\s', '') == '') {
                 proceed = false;
 
                 alertHandler.newAlert(customAlert.WARNING, 'Feedback comments are required.');

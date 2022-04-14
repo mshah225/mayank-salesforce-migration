@@ -98,7 +98,7 @@ public with sharing class CampaignMemberManagementController {
         campaignMemberMap = new Map<String, List<CampaignMember>>();
         activeCRCamMap = new Map<String, List<CampaignMember>>();
         activeCRCamMap.put(null, new List<CampaignMember>());
-        List<CampaignMember> contactCamMems = CampaignMemberService.getCampaignMembers(contactId);
+        List<CampaignMember> contactCamMems = getCampaignMembers(contactId);
         List<CampaignMember> tempCrActiveList = new List<CampaignMember>();
         List<CampaignMember> tempCrInactiveList = new List<CampaignMember>();
         List<CampaignMember> tempEventList = new List<CampaignMember>();
@@ -150,6 +150,23 @@ public with sharing class CampaignMemberManagementController {
         campaignMemberMap.put('Other Source', tempOtherList);
         campaignMemberMap.put('Communication', tempCommList);
         campaignMemberMap.put('Course', tempCourseList);
+    }
+
+    private List<CampaignMember> getCampaignMembers(Id contactId) {
+        String camFields = ObjectService.objectFieldsToString(ObjectService.getObjectFieldMap('CampaignMember'));
+        String soql =
+            '' +
+            'SELECT ' +
+            camFields +
+            ', Campaign.RecordType.Name, Campaign.Name, ' +
+            'Campaign.ParentId, Campaign.Type, Campaign.Requested__c, Campaign.Parent.Name, ' +
+            'Campaign.Event_Start_Date__c, Campaign.Event_End_Date__c, ' +
+            'Campaign.Interest_PeopleSoft_Major__c, Campaign.StartDate, Campaign.EndDate ' +
+            'FROM CampaignMember ' +
+            'WHERE ContactId = :contactId ';
+        List<CampaignMember> camMems = Database.query(soql);
+
+        return camMems;
     }
 
     public List<Subscriber__c> getSubscriberList() {
@@ -698,36 +715,27 @@ public with sharing class CampaignMemberManagementController {
             WHERE Id = :inActivateCMId
         ];
 
-        User currentUser = [SELECT Id, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
+        
+        inActivateCamMem.Status = 'Inactive';
 
-        if (inActivateCamMem.CreatedBy.UserRole.Name == currentUser.UserRole.Name) {
-            inActivateCamMem.Status = 'Inactive';
+        if (inActivateCamMem.Campaign.ParentId == null) {
+            List<CampaignMember> ChildKillList = new List<CampaignMember>();
 
-            if (inActivateCamMem.Campaign.ParentId == null) {
-                List<CampaignMember> ChildKillList = new List<CampaignMember>();
-
-                for (CampaignMember ck : [
-                    SELECT Id, Status
-                    FROM Campaignmember
-                    WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
-                ]) {
-                    ck.status = 'Inactive';
-                    ChildKillList.add(ck);
-                }
-
-                update ChildKillList;
+            for (CampaignMember ck : [
+                SELECT Id, Status
+                FROM Campaignmember
+                WHERE Campaign.ParentId = :inActivateCamMem.CampaignId
+                AND ContactId = :contactId
+            ]) {
+                ck.status = 'Inactive';
+                ChildKillList.add(ck);
             }
 
-            update inActivateCamMem;
-        } else {
-            ApexPages.addmessage(
-                new ApexPages.message(
-                    ApexPages.severity.ERROR,
-                    'You do not have access to remove this Affiliation, only a ' +
-                    'member of the Department that created it can.'
-                )
-            );
+            update ChildKillList;
         }
+
+        update inActivateCamMem;
+        
 
         buildCampaignMemberMap();
         renderedTab = 'crTab';

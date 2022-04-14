@@ -1,0 +1,9 @@
+:host a:hover {
+    color: #d23153 !important;
+}
+.alert-close .btn {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 0.5rem;
+    font-size: 18px;
+}

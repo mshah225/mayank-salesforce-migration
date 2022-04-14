@@ -1,4 +1,4 @@
-public with sharing class CampaignDispatcher implements IDispatch {
+public with sharing class CampaignDispatcher implements TriggerDispatcherInterface {
     private static final Boolean debug = false; // Toggle debug error reporting
     private List<Campaign> newList; // trigger.new
     private Map<Id, Campaign> newMap; // trigger.newMap

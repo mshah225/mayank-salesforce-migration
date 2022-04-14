@@ -101,6 +101,7 @@ public class showMyCoachCasesController extends ListViewController {
     /**
      *  Gets a list of Contact IDs associated with the given list of Cases.
      */
+    @TestVisible
     private List<Id> getContactIds(List<Case> cases) {
         List<Id> contactIds = new List<Id>();
         for (Case c : cases) {

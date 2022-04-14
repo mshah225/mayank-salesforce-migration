@@ -2,14 +2,14 @@ public class JiraViewAllIssuesController {
     @AuraEnabled
     public static List<JiraIssue> getIssuesForUser() {
         String asurite = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Alias;
-        String jiraResponse = JiraWebserviceCallout.getIssues(asurite);
+        String jiraResponse = JiraCallout.getIssues(asurite);
         return createMapFromResponse(jiraResponse);
     }
 
     @AuraEnabled
     public static List<JiraIssue> getWatchedIssuesForUser() {
         String asurite = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Alias;
-        String jiraResponse = JiraWebserviceCallout.getWatchedIssues(asurite);
+        String jiraResponse = JiraCallout.getWatchedIssues(asurite);
         return createMapFromResponse(jiraResponse);
     }
 

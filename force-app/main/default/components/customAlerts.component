@@ -1,15 +1,118 @@
-<apex:component>
+<apex:component id="alius-format923">
     <apex:attribute name="alerts" description="The alert to be displayed" type="customAlert[]" />
+    <apex:attribute name="captureSalesforceErrors" description="Should we capture and show all Salesforce created errors as well?"
+        type="boolean" default="true" />
+
+    <script> 
+        var allAlertsJS = [];
+        var alreadyAddedErrorTexts = [];
+    </script>
+    <style>
+        .pageMessageWrapper {
+            display: none
+        }
+    </style>
+
+    <apex:outputPanel rendered="{!captureSalesforceErrors}" styleClass="pageMessageWrapper">
+        <apex:pageMessages />
+    </apex:outputPanel>
+
     <apex:repeat value="{!alerts}" var="alert" rendered="{!NOT(ISBLANK(alerts))}">
-        <div class="alert alert-block {!if(alert.severity = 'CONFIRM', 'alert-success', IF(alert.severity = 'INFO', 'alert-info', IF(alert.severity = 'WARNING', 'alert-warning', 'alert-danger')))}"
-            style="border-radius: 4px !important">
-            <a class="close" href="#" data-dismiss="alert">x</a>
-            <p style="margin: 0px !important">&nbsp;</p>
-            <p style="margin: 0px !important">
-                <strong>{!if(alert.severity = 'CONFIRM', 'Success', IF(alert.severity = 'INFO', 'Info', IF(alert.severity = 'WARNING',
-                    'Warning', 'Danger')))}!</strong>
-                {!alert.message}
-            </p>
-        </div>
+        <script>
+            allAlertsJS.push({
+                severity: "{!alert.severity}",
+                title: "{!if(alert.title != null, alert.title, if(alert.severity = 'CONFIRM', 'Success! ', IF(alert.severity = 'INFO', 'Information! ', IF(alert.severity = 'WARNING', 'Alert! ', 'Error! '))))}",
+                message: "{!alert.message}",
+                link: "{!alert.link}"
+            });
+        </script>
     </apex:repeat>
+
+    <div id="ASUBrandAlertWrapper" class="no-slds-scope"> </div>
+
+    <script>
+        var alertCmp;
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandAlert",
+                    {},
+                    "ASUBrandAlertWrapper",
+                    function (cmp) {
+                        alertCmp = cmp;
+                        for (let i = 0; i < allAlertsJS.length; i++) {
+                            cmp.addAlert(
+                                allAlertsJS[i].severity,
+                                allAlertsJS[i].title,
+                                allAlertsJS[i].message,
+                                allAlertsJS[i].link
+                            );
+                        }
+                    }
+                );
+
+
+                const observer = new MutationObserver(function (mutations) {
+                    // Hide errors that appear seemingly randomly from LWC
+                    const invalidErrorDiv = document.querySelector('#auraErrorMessage');
+                    if (invalidErrorDiv != null && invalidErrorDiv.innerHTML.length > 0) {
+                        console.error(invalidErrorDiv.innerText);
+                        invalidErrorDiv.innerHTML = '';
+                    }
+
+                    // Capture errors from apex:pageMessages component and display them using our custom component
+                    const validErrorDiv = document.querySelector('.pageMessageWrapper');
+                    if (validErrorDiv != null) {
+                        const errorTable = validErrorDiv.querySelector('table');
+                        if (errorTable != null) {
+                            const allErrors = errorTable.querySelectorAll('li');
+                            if (allErrors != null && allErrors.length > 0) {
+                                // Add each
+                                for (let i = 0; i < allErrors.length; i++) {
+                                    let alreadyAdded = false;
+                                    for (let j = 0; j < alreadyAddedErrorTexts.length; j++) {
+                                        if (allErrors[i].innerText == alreadyAddedErrorTexts[j]) {
+                                            alreadyAdded = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!alreadyAdded && alertCmp != null) {
+                                        alertCmp.addAlert('FATAL', 'Error! ', allErrors[i].innerText, null);
+                                        alreadyAddedErrorTexts.push(allErrors[i].innerText);
+                                    }
+                                }
+                            } else {
+                                // Check if only one Salesforce error (formatted differently thn when multiple)
+                                const singleError = errorTable.querySelector('.messageText').innerText;
+                                let msg = singleError.substr(singleError.indexOf('Error:') + 6);
+
+                                let alreadyAdded = false;
+                                for (let j = 0; j < alreadyAddedErrorTexts.length; j++) {
+                                    if (msg == alreadyAddedErrorTexts[j]) {
+                                        alreadyAdded = true;
+                                        break;
+                                    }
+                                }
+                                if (!alreadyAdded && alertCmp != null) {
+                                    alertCmp.addAlert('FATAL', 'Error! ', msg, null);
+                                    alreadyAddedErrorTexts.push(msg);
+                                }
+                            }
+                        }
+                    }
+                });
+                observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+            }
+        );
+
+        function visualforceAddCustomAlert(severity, title, message, link) {
+            alertCmp.addAlert(severity, title, message, link);
+        }
+
+        function visualforceClearCustomAlerts() {
+            alertCmp.clearAlerts();
+        }
+
+    </script>
 </apex:component>

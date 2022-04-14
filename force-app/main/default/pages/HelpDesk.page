@@ -86,6 +86,11 @@
             white-space: nowrap;
         }
 
+        .btn.customBtn.disabled {
+            pointer-events: none;
+            color: #747474;
+        }
+
         .btn.customBtn {
             min-width: 60px;
             padding: 5px 10px;
@@ -156,10 +161,6 @@
     </style>
     <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
             'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
-    <!--<c:asu_responsive_header_section />
-    <div id="bgWrapper">
-           <c:customAlerts alerts="{!alerts.alerts}" />
-    </div>-->
     <apex:outputPanel layout="block" style="margin-top: 10px; min-width: 1300px; overflow: auto; padding: 10px">
         <apex:form id="myform" html-novalidate="novalidate">
             <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />
@@ -170,12 +171,12 @@
                         <apex:pageBlock title="{!IF(isContactSet, 'Contact Details', 'Contact Search')}" id="criteria">
                             <apex:pageBlockButtons id="duoAuthStatus" location="top">
                                 <div style="text-align: right;">
-                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}"/>
-                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}"/>
+                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}" />
+                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}" />
                                     <strong>Duo Authentication</strong>
                                 </div>
                             </apex:pageBlockButtons>
-                            <apex:outputPanel>
+                            <apex:outputPanel id="alius-format178">
                                 <apex:pageMessage severity="warning" title="Duo Authentication" summary="The Caller did not complete DUO Authentication."
                                     rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}" />
                                 <apex:pageMessage severity="warning" title="Duo Authentication" summary="Phone Number was not provided, so an authentication check was not made."
@@ -256,7 +257,7 @@
                                         <apex:outputText id="detailLink"> Select a contact </apex:outputText>
                                     </apex:pageBlockSectionItem>
 
-                                    <apex:pageBlockSectionItem>
+                                    <apex:pageBlockSectionItem id="alius-format179">
                                         <apex:outputLabel for="snLink" value="Service Now" />
 
                                         <apex:outputLink id="snLink" target="_blank" onclick="openPage('https://asu.service-now.com/navpage.do'); return false;"
@@ -386,7 +387,7 @@
 
                                     <apex:column value="{!case.Ca.Subject}" />
 
-                                    <apex:column headerValue="Description" value="{!case.shortDescr}" title="{!case.fullDescr}" />
+                                    <apex:column headerValue="Description" value="{!case.shortDescr}" />
 
                                     <apex:column value="{!case.Ca.ClosedDate}" />
                                 </apex:pageBlockTable>
@@ -426,11 +427,11 @@
 
                                         <apex:inputField value="{!mycase.Affiliation__c}" />
 
-                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
+                                        <apex:inputField value="{!mycase.Case_Term__c}" />
 
-                                        <apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem id="alius-format180">
                                             <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
-                                            <apex:actionRegion>
+                                            <apex:actionRegion id="alius-format181">
                                                 <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
                                                     size="1">
                                                     <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:pageSection:categorySectionItem:categoryOptions, mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions"
@@ -440,11 +441,11 @@
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:inputField value="{!mycase.Reason_for_Escalation__c}" />
+                                        <apex:inputField value="{!mycase.Reporting_Category__c}" />
 
                                         <apex:pageBlockSectionItem id="categorySectionItem">
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
-                                            <apex:actionRegion>
+                                            <apex:actionRegion id="alius-format182">
                                                 <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
                                                     <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions, mypage:myform:case:pageSection:descriptionBox"
                                                     />
@@ -453,20 +454,24 @@
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
+                                        <apex:inputField value="{!mycase.Reason_for_Escalation__c}" />
+
+                                        <apex:inputField value="{!mycase.Status}">
+                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
+                                        </apex:inputField>
+
                                         <apex:pageBlockSectionItem id="subCategorySectionItem">
                                             <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
-                                            <apex:actionRegion>
+                                            <apex:actionRegion id="alius-format183">
                                                 <apex:selectList id="subCategoryOptions" label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
                                                     <apex:selectOptions value="{!ccPicklist.subCategoryOptions}" />
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:inputField value="{!mycase.Status}">
-                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
-                                        </apex:inputField>
+                                        <br/>
 
-                                        <apex:pageBlockSectionItem>
+                                        <apex:pageBlockSectionItem id="alius-format184">
                                             <apex:outputLabel for="originSelect" value="Origin" />
                                             <apex:selectList id="originSelect" value="{!mycase.Origin__c}" size="1">
                                                 <apex:selectOptions value="{!originOptions}" />
@@ -512,14 +517,16 @@
                                     styleClass="customBtn" status="loadingStatus4" />
 
                                 <apex:commandButton id="saveCaseButton" action="{!saveCase}" value="Save" reRender="messages" styleClass="customBtn" status="loadingStatus4"
+                                    onclick="event.target.classList.add('disabled')" oncomplete="event.target.classList.remove('disabled')"
                                 />
 
                                 <apex:commandButton id="saveAndTransferCaseButton" action="{!saveAndTransferCase}" value="Save & Transfer" styleClass="customBtn"
-                                    status="loadingStatus4" />
+                                    status="loadingStatus4" onclick="event.target.classList.add('disabled')" oncomplete="event.target.classList.remove('disabled')"
+                                />
 
                                 <apex:commandButton id="saveAndCloseCaseButton" action="{!saveAndCloseCase}" value="Save & Close" rerender="innersecond,messages"
-                                    styleClass="customBtn" status="loadingStatus4" oncomplete="closeTab('{!savedAndClosed}');"
-                                />
+                                    styleClass="customBtn" status="loadingStatus4" onclick="event.target.classList.add('disabled')"
+                                    oncomplete="closeTab('{!savedAndClosed}');" />
 
                                 <apex:commandButton id="cancelCaseButton" action="{!cancelCase}" value="Cancel" immediate="true" reRender="innersecond,results,messages"
                                     styleClass="customBtn" status="loadingStatus4" />
@@ -565,7 +572,7 @@
                                     </apex:commandLink>
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format185">
                                     <apex:facet name="header">
                                         <apex:commandLink value="First Name" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="firstName" assignTo="{!sortField}" />
@@ -575,7 +582,7 @@
                                     <apex:outputField value="{!contact.firstName}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format186">
                                     <apex:facet name="header">
                                         <apex:commandLink value="Last Name" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="lastName" assignTo="{!sortField}" />
@@ -585,7 +592,7 @@
                                     <apex:outputField value="{!contact.lastName}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format187">
                                     <apex:facet name="header">
                                         <apex:commandLink value="Phone" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="Phone" assignTo="{!sortField}" />
@@ -595,7 +602,7 @@
                                     <apex:outputField value="{!contact.Phone}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format188">
                                     <apex:facet name="header">
                                         <apex:commandLink value="Help Desk Provided Phone" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="Help_Desk_Provided_Phone__c" assignTo="{!sortField}" />
@@ -605,7 +612,7 @@
                                     <apex:outputField value="{!contact.Help_Desk_Provided_Phone__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format189">
                                     <apex:facet name="header">
                                         <apex:commandLink value="Birthdate" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="birthdate" assignTo="{!sortField}" />
@@ -615,7 +622,7 @@
                                     <apex:outputField value="{!contact.Birthdate}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format190">
                                     <apex:facet name="header">
                                         <apex:commandLink value="ASURITE" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="ASURite_ID__c" assignTo="{!sortField}" />
@@ -625,7 +632,7 @@
                                     <apex:outputField value="{!contact.ASURite_ID__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format191">
                                     <apex:facet name="header">
                                         <apex:commandLink value="EMPLID" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="EMPLID__c" assignTo="{!sortField}" />
@@ -635,7 +642,7 @@
                                     <apex:outputField value="{!contact.EMPLID__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format192">
                                     <apex:facet name="header">
                                         <apex:commandLink value="Directory Email" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="ASU_Email__c" assignTo="{!sortField}" />
@@ -644,7 +651,7 @@
                                     <apex:outputField value="{!contact.ASU_Email__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format193">
                                     <apex:facet name="header">
                                         <apex:commandLink value="Personal Email" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="Personal_Email__c" assignTo="{!sortField}" />
@@ -654,7 +661,7 @@
                                     <apex:outputField value="{!contact.Personal_Email__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format194">
                                     <apex:facet name="header">
                                         <apex:commandLink value="CAP" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="CAP__c" assignTo="{!sortField}" />
@@ -664,7 +671,7 @@
                                     <apex:outputField value="{!contact.CAP__c}" />
                                 </apex:column>
 
-                                <apex:column>
+                                <apex:column id="alius-format195">
                                     <apex:facet name="header">
                                         <apex:commandLink value="FERPA Hold" onClick="doSearch(true); return false;" rerender="results">
                                             <apex:param name="sortField" value="FERPA" assignTo="{!sortField}" />
@@ -712,7 +719,7 @@
                                         </apex:commandLink>
                                     </apex:column>
 
-                                    <apex:column>
+                                    <apex:column id="alius-format196">
                                         <apex:commandLink action="{!articleDetails}" rerender="results" status="knowStatus1" style="font-weight: bold">
                                             <apex:param name="selectedKnowledgeArticleId" value="{!af.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}" />
                                             <apex:param name="isAttached" value="true" assignTo="{!isAttached}" /> {!af.Title}

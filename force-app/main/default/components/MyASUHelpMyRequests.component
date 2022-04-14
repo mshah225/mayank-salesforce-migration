@@ -1,60 +1,61 @@
 <apex:component controller="MyASUHelpController" allowDML="true">
-    <apex:outputPanel>
-        <div class="myasu-help-region-my-requests">
-            <div class="myasu-help-region-header">My Requests</div>
+    <apex:outputPanel id="alius-format913">
+        <div class="border myasu-help-scope">
+            <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">My Requests</h2>
 
-            <div class="myasu-help-region-my-requests-content">
-                <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
+            <div class="p-2">
+                <p class="mb-4 {!IF(myCases.size > 0 || closedCases.size > 0, 'd-block', 'd-none')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
                     through a webform.</p>
-                <apex:form>
-                    <div class="myasu-help-region-my-requests-sub-header">Pending Requests</div>
+                <apex:form styleClass="mb-4">
+                    <strong>Pending Requests</strong>
                     <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable rendered="{!myCases.size > 0}" value="{!myCases}" var="case" styleClass="">
-                            <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'" />
-                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'" />
-                            <apex:column onmousemove="this.style.backgroundColor='white'" width="10%" style="background-color: white" onmouseout="this.style.backgroundColor ='white'">
-                                <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
+                        <apex:pageBlockTable headerClass="bg-f5f5f5" rowClasses="border-top bg-white" styleClass="border" rendered="{!myCases.size > 0}"
+                            value="{!myCases}" var="case">
+                            <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1" value="{!case.Subject}" />
+                            <apex:column headerValue="Status" width="30%" headerClass="p-1" styleClass="p-1" value="{!case.Status}" />
+                            <apex:column headerClass="p-1" styleClass="p-1" width="10%">
+                                <apex:commandLink value="View" styleClass="btn btn-light btn-md text-dark" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
                             </apex:column>
                         </apex:pageBlockTable>
                         <apex:outputText rendered="{!myCases.size == 0}">
-                            <p class="myasu-help-region-my-requests-no-cases">
+                            <p class="mt-2">
                                 You do not currently have any open requests.
                             </p>
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
-                <apex:form>
-                    <div class="myasu-help-region-my-requests-sub-header">Completed Requests</div>
+                <apex:form id="alius-format914">
+                    <strong>Completed Requests</strong>
                     <apex:pageBlock mode="maindetail">
-                        <apex:pageBlockTable rendered="{!closedCases.size > 0}" value="{!closedCases}" var="case" styleClass="">
-                            <apex:column headerValue="Subject" width="60%" styleClass="" value="{!case.Subject}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'" />
-                            <apex:column headerValue="Status" width="30%" value="{!case.Status}" style="background-color: white" onmousemove="this.style.backgroundColor='white'"
-                                onmouseout="this.style.backgroundColor ='white'" />
-                            <apex:column width="10%" style="background-color: white" onmousemove="this.style.backgroundColor='white'" onmouseout="this.style.backgroundColor ='white'">
-                                <apex:commandLink value="View" styleClass="btn btn-secondary" action="{!viewCase}">
+                        <apex:pageBlockTable headerClass="bg-f5f5f5 border-bottom" rowClasses="border-top bg-white" styleClass="border" rendered="{!closedCases.size > 0}"
+                            value="{!closedCases}" var="case">
+                            <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1" value="{!case.Subject}" />
+                            <apex:column headerValue="Status" width="30%" headerClass="p-1" styleClass="p-1" value="{!case.Status}" />
+                            <apex:column headerClass="p-1" styleClass="p-1" width="10%">
+                                <apex:commandLink value="View" styleClass="btn btn-light btn-md text-dark" action="{!viewCase}">
                                     <apex:param name="caseId" value="{!case.Id}" />
                                 </apex:commandLink>
                             </apex:column>
                         </apex:pageBlockTable>
                         <apex:outputText rendered="{!closedCases.size == 0}">
-                            <p class="myasu-help-region-my-requests-no-cases">
+                            <p class="mt-2">
                                 You do not currently have any completed requests.
                             </p>
                         </apex:outputText>
                     </apex:pageBlock>
                 </apex:form>
-                <p class="myasu-help-region-requests-text" style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;', 'display:none;')}">Click the View All button to see a history of your request(s), including chat and email history.</p>
-                <div style="{!IF(myCases.size > 0 || closedCases.size > 0, 'display:block;text-align:right;margin-bottom:1em;', 'display:none;')}">
-                    <apex:form>
-                        <apex:pageBlock mode="maindetail">
-                            <a href="/viewAllCases?source=studentSC" class="btn btn-secondary"> View All </a>
-                        </apex:pageBlock>
-                    </apex:form>
+                <div class="mt-4 {!IF(myCases.size > 0 || closedCases.size > 0, 'd-block', 'd-none')}">
+                    <p class='d-block'>Click the View All button to see a history of your request(s), including chat and email history.</p>
+                    <div class="d-block text-right">
+                        <apex:form id="alius-format915">
+                            <apex:pageBlock mode="maindetail">
+                                <a href="/viewAllCases?source=studentSC" class="btn btn-light btn-md"> View All </a>
+                            </apex:pageBlock>
+                        </apex:form>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ public with sharing class ViewCaseController {
     private MyASUHelpViewAsService viewAsService;
     public AlertHandler alertHandler { get; set; } // Use the custom alerting component
 
+    public Case caseDetailsCache { get; set; }
     public Id caseId { get; set; }
     public String firstName { get; set; }
     public String lastName { get; set; }
@@ -43,8 +44,9 @@ public with sharing class ViewCaseController {
         checkForViewAs();
         popUserContact();
         popTerms();
-        setCaseId();
+        this.caseId = ApexPages.currentPage().getParameters().get('id');
         retrieveAttachmentList();
+        retrieveCaseDetails(); // Must occur after retrieveAttachmentList or tests will fail for some reason
         showOpenNewCaseAlert = displayOpenNewCaseAlert();
     }
 
@@ -52,11 +54,10 @@ public with sharing class ViewCaseController {
         if (String.isEmpty(caseId)) {
             return false;
         }
-        Case caseOnPage = getCaseDetails();
-        if (caseOnPage.ClosedDate == null) {
+        if (caseDetailsCache.ClosedDate == null) {
             return false;
         }
-        Date caseClosedDate = caseOnPage.ClosedDate.date();
+        Date caseClosedDate = caseDetailsCache.ClosedDate.date();
         if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
             return true;
         }
@@ -133,15 +134,16 @@ public with sharing class ViewCaseController {
         asurite = userContact.ASURite_ID__c;
     }
 
-    public void setCaseId() {
-        caseId = ApexPages.currentPage().getParameters().get('id');
+    public Case getCaseDetails() {
+        return caseDetailsCache;
     }
 
-    public Case getCaseDetails() {
+    @TestVisible
+    private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
-            return viewAsService.getCaseDetails(ApexPages.currentPage().getParameters().get('Id'));
+            caseDetailsCache = viewAsService.getCaseDetails(caseId);
         } else {
-            Case returnCase = [
+            List<Case> caseDetailsOptions = [
                 SELECT
                     Id,
                     CaseNumber,
@@ -157,18 +159,20 @@ public with sharing class ViewCaseController {
                     Created_By_Name__c,
                     ClosedDate
                 FROM Case
-                WHERE Id = :ApexPages.currentPage().getParameters().get('Id')
+                WHERE Id = :caseId
                 LIMIT 1
             ];
 
-            if (returnCase.CreatedDate != null) {
-                formattedCreatedDate = ((DateTime) returnCase.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
-            }
-            if (returnCase.ClosedDate != null) {
-                formattedClosedDate = ((DateTime) returnCase.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
-            }
+            if (!caseDetailsOptions.isEmpty()) {
+                caseDetailsCache = caseDetailsOptions[0];
 
-            return returnCase;
+                if (caseDetailsCache.CreatedDate != null) {
+                    formattedCreatedDate = ((DateTime) caseDetailsCache.CreatedDate).format('MMMM d, yyyy, hh:mm a z');
+                }
+                if (caseDetailsCache.ClosedDate != null) {
+                    formattedClosedDate = ((DateTime) caseDetailsCache.ClosedDate).format('MMMM d, yyyy, hh:mm a z');
+                }
+            }
         }
     }
 
@@ -196,17 +200,9 @@ public with sharing class ViewCaseController {
         emailAddresses.add(userContact.Lead_Secondary_Email__c);
 
         if (viewAsService != null) {
-            return viewAsService.getCaseEmails(
-                EMAIL_VISIBILITY_DATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                emailAddresses
-            );
+            return viewAsService.getCaseEmails(EMAIL_VISIBILITY_DATE, caseId, emailAddresses);
         } else {
-            return CaseService.getCaseEmailMessages(
-                EMAIL_VISIBILITY_DATE,
-                ApexPages.currentPage().getParameters().get('id'),
-                emailAddresses
-            );
+            return CaseService.getCaseEmailMessages(EMAIL_VISIBILITY_DATE, caseId, emailAddresses);
         }
     }
     public EmailMessageWithFormattedDateTime[] getEmailMessagesWithFormattedDateTime() {
@@ -254,7 +250,7 @@ public with sharing class ViewCaseController {
                 OwnerId
             FROM bomgar__Event__c
             WHERE
-                bomgar__BomgarSession__r.bomgar__relatedcase__c = :ApexPages.currentPage().getParameters().get('Id')
+                bomgar__BomgarSession__r.bomgar__relatedcase__c = :caseId
                 AND (bomgar__PerformedByType__c = 'representative'
                 OR bomgar__PerformedByType__c = 'customer')
                 AND bomgar__DestinationValue__c = 'everyone'
@@ -269,11 +265,7 @@ public with sharing class ViewCaseController {
     }
 
     private List<ChatMessage> getLiveChatMessages() {
-        List<Chat_Message__c> chatMessages = [
-            SELECT Body__c
-            FROM Chat_Message__c
-            WHERE Case__c = :ApexPages.currentPage().getParameters().get('Id')
-        ];
+        List<Chat_Message__c> chatMessages = [SELECT Body__c FROM Chat_Message__c WHERE Case__c = :caseId];
         List<ChatMessage> liveChatMessages = new List<ChatMessage>();
         for (Chat_Message__c message : chatMessages) {
             liveChatMessages.add(new ChatMessage(message));
@@ -353,6 +345,7 @@ public with sharing class ViewCaseController {
             if (restStatusAndInfo.isSuccessfull()) {
                 alertHandler.newAlert(customAlert.CONFIRM, 'Your response was submitted successfully.');
                 retrieveAttachmentList();
+                retrieveCaseDetails();
             } else {
                 alertHandler.newAlert(
                     customAlert.FATAL,
@@ -482,6 +475,7 @@ public with sharing class ViewCaseController {
         }
     }
 
+    @TestVisible
     private class EmailMessageWithFormattedDateTime {
         public String CreatedDate { get; set; }
         public String LastModifiedDate { get; set; }

@@ -209,9 +209,7 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
     }
 
     closeCases() {
-        console.log(this.questions);
         if (this.template.querySelector('c-lightning-question-answer-modal').reportValidity()) {
-            console.log(this.selectedContactWrappers);
             let cases = [];
             for (let i = 0; i < this.selectedContactWrappers.length; i++) {
                 const contact = this.selectedContactWrappers[i];
@@ -270,7 +268,6 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
                     cases.push(JSON.stringify(updatedCase));
                 }
             }
-            console.log(cases);
 
             if (cases.length > 0) {
                 this.sendLoadingEvent(true);

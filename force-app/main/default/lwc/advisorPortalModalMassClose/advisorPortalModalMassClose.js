@@ -4,6 +4,7 @@ import populateReturnTermOptions from '@salesforce/apex/AdvisorPortalMassUpdateC
 import populateStudentRiskOptions from '@salesforce/apex/AdvisorPortalMassUpdateController.populateStudentRiskOptions';
 import populateReasonNotReturningOptions from '@salesforce/apex/AdvisorPortalMassUpdateController.populateReasonNotReturningOptions';
 import getCustomMetadata from '@salesforce/apex/AdvisorPortalMassUpdateController.getCustomMetadata';
+import updateCasesStr from '@salesforce/apex/AdvisorPortalMassUpdateController.updateCasesStr';
 
 export default class AdvisorPortalModalMassClose extends LightningElement {
     @api selectedContactWrappers = [];
@@ -114,6 +115,29 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
 
     buttons = [];
 
+    connectedCallback() {
+        this.buttons = [
+            {
+                key: 'close',
+                ariaLabel: 'Cancel',
+                label: 'Cancel',
+                onClick: () => {
+                    this.closeModal();
+                },
+                classes: 'slds-button slds-button_neutral',
+            },
+            {
+                key: 'submit',
+                ariaLabel: 'Close',
+                label: 'Close',
+                onClick: () => {
+                    this.closeCases();
+                },
+                classes: 'slds-button slds-button_brand',
+            },
+        ];
+    }
+
     updateDynamicRequirements(e) {
         /* Update value */
         const key = e.detail.key;
@@ -182,6 +206,86 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
     }
     @api closeModal() {
         this.template.querySelector('c-lightning-question-answer-modal').closeModal();
+    }
+
+    closeCases() {
+        if (this.template.querySelector('c-lightning-question-answer-modal').reportValidity()) {
+            let cases = [];
+            for (let i = 0; i < this.selectedContactWrappers.length; i++) {
+                const contact = this.selectedContactWrappers[i];
+                for (let j = 0; j < contact.cases.length; j++) {
+                    const c = contact.cases[j];
+
+                    const updatedCase = {
+                        Id: c.caseId,
+                    };
+
+                    const statusQuestion = this.getQuestion('caseStatus');
+                    if (statusQuestion != null && statusQuestion.answer != null) {
+                        updatedCase.Status = statusQuestion.answer;
+                    }
+
+                    const recommendedActions = this.getQuestion('recommendedActions');
+                    if (recommendedActions != null && recommendedActions.answer != null) {
+                        updatedCase.Recommended_Actions__c = recommendedActions.answer.join(';');
+                    }
+
+                    const recommendedActionOther = this.getQuestion('recommendedActionOther');
+                    if (recommendedActionOther != null && recommendedActionOther.answer != null) {
+                        updatedCase.Recommended_Actions_Other__c = recommendedActionOther.answer;
+                    }
+
+                    const studentIntent = this.getQuestion('studentIntent');
+                    if (studentIntent != null && studentIntent.answer != null) {
+                        updatedCase.Student_Intention__c = studentIntent.answer;
+                    }
+
+                    const notReturning = this.getQuestion('notReturning');
+                    if (notReturning != null && notReturning.answer != null) {
+                        updatedCase.Reasons_Not_Returning__c = notReturning.answer.join(';');
+                    }
+
+                    const notReturningOther = this.getQuestion('notReturningOther');
+                    if (notReturningOther != null && notReturningOther.answer != null) {
+                        updatedCase.Reasons_Not_Returning_Other__c = notReturningOther.answer;
+                    }
+
+                    const returnTerm = this.getQuestion('returnTerm');
+                    if (returnTerm != null && returnTerm.answer != null) {
+                        updatedCase.What_term_is_the_student_planning_to_ret__c = returnTerm.answer;
+                    }
+
+                    const studentRisk = this.getQuestion('studentRisk');
+                    if (studentRisk != null && studentRisk.answer != null) {
+                        updatedCase.Student_Presented_Risk_for__c = studentRisk.answer;
+                    }
+
+                    const studentRiskOther = this.getQuestion('studentRiskOther');
+                    if (studentRiskOther != null && studentRiskOther.answer != null) {
+                        updatedCase.Student_Presented_Risk_for_Other__c = studentRiskOther.answer;
+                    }
+
+                    cases.push(JSON.stringify(updatedCase));
+                }
+            }
+
+            if (cases.length > 0) {
+                this.sendLoadingEvent(true);
+                updateCasesStr({caseStrsToUpdate: cases})
+                    .then(() => {
+                        this.makeToast('success', 'Success!', 'Closed cases.');
+                    })
+                    .catch((err) => {
+                        this.makeToast('error', 'Failure!', 'Unable to close cases.');
+                        // eslint-disable-next-line no-console
+                        console.error(err);
+                    })
+                    .finally(() => {
+                        this.template.querySelector('c-lightning-question-answer-modal').closeModal();
+                        this.sendLoadingEvent(false);
+                    });
+            }
+        }
     }
 
     // Send a loading event

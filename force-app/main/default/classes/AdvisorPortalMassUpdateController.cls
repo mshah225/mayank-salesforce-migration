@@ -100,6 +100,15 @@ public class AdvisorPortalMassUpdateController {
     }
 
     @AuraEnabled
+    public static void updateCasesStr(List<String> caseStrsToUpdate) {
+        List<Case> cases = new List<Case>();
+        for (String caseStr : caseStrsToUpdate)
+            cases.add((Case) JSON.deserialize(caseStr, Case.class));
+        if (!cases.isEmpty())
+            updateCases(cases);
+    }
+
+    @AuraEnabled
     public static void updateCases(List<Case> casesToUpdate) {
         update casesToUpdate;
     }

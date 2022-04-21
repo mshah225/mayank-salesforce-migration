@@ -1,19 +1,23 @@
 public without sharing class AutomatedReportService {    
     private  FINAL Integer JOB_SIZE = 10000;
     private  FINAL String BULK_HEADERS = 'ContactId,CampaignId,Status\n';
+    private FINAL Id FROM_EMAIL_ID = System.Label.Automated_Report_From_Email;
 
     private  List<List<String>> parsedCSV; // Parsed CSV data
     private  Integer currentBatchSize = 0;
     private  String csvFileForBulk = BULK_HEADERS;
     private  Boolean hasHeaderRow = true;
     private  Map<Integer, String> columnMap; // Mapping of the csv headers
+    private Id fromEmailAddress;
     
     public Blob reportData;
     public  BulkApiManager bulkManager; // Bulk API
     public  Automated_Report_Processing_Options__c report;
 
+    
+
     public AutomatedReportService(BulkApiManager bulkManagerToUse) {
-        bulkManager = bulkManagerToUse;
+        bulkManager = bulkManagerToUse;    
     }
     
     public Boolean nextAvailableReport() {
@@ -145,6 +149,7 @@ public without sharing class AutomatedReportService {
         message.setSubject(subject);
         message.setPlainTextBody('The report is attached.');
         message.setToAddresses(toAddress);
+        message.setOrgWideEmailAddressId(FROM_EMAIL_ID);
         Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ message });
     }
 

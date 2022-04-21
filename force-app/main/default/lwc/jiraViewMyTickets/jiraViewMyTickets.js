@@ -17,7 +17,8 @@ export default class JiraViewMyTickets extends LightningElement {
                 myTickets.push(this.createTicketWrapper(issue));
             }
         } else {
-            console.log(err);
+            // eslint-disable-next-line no-console
+            console.error(err);
         }
         this.myTickets = myTickets;
     }
@@ -33,7 +34,8 @@ export default class JiraViewMyTickets extends LightningElement {
                 watchedTickets.push(this.createTicketWrapper(issue));
             }
         } else {
-            console.log(err);
+            // eslint-disable-next-line no-console
+            console.error(err);
         }
         this.watchedTickets = watchedTickets;
     }

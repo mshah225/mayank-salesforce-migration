@@ -58,7 +58,8 @@ export default class JiraTicketTable extends LightningElement {
         submitForm({jiraKey: issueKey, ticketComment: comment, status: 'In Testing'})
             .then(() => {})
             .catch((err) => {
-                console.log(err);
+                // eslint-disable-next-line no-console
+                console.error(err);
             })
             .finally(() => {});
     }

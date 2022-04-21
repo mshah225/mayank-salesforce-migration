@@ -22,13 +22,14 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
         if (data != null) {
             this.hasPermission = data;
         } else {
-            console.log(error);
+            // eslint-disable-next-line no-console
+            console.error(err);
         }
     }
 
     @wire(getCategoriesIdToName)
     gotCategoriesIdToName(result) {
-        let {data, error} = result;
+        let {data, err} = result;
         if (data) {
             const keys = Object.keys(data);
             const newOptions = [];
@@ -40,7 +41,8 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
             }
             this.getQAFor('caseCategory').options = newOptions;
         } else {
-            console.log(error);
+            // eslint-disable-next-line no-console
+            console.error(err);
         }
     }
 
@@ -59,7 +61,8 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
                 subCategoriesQA.options = newOptions;
             })
             .catch((err) => {
-                console.log(err);
+                // eslint-disable-next-line no-console
+                console.error(err);
                 subCategoriesQA.options = [];
             })
             .finally(() => {
@@ -83,7 +86,8 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
                 this.foundStudent = val;
             })
             .catch((err) => {
-                console.log(err);
+                // eslint-disable-next-line no-console
+                console.error(err);
                 this.foundStudent = false;
             })
             .finally(() => {});
@@ -191,7 +195,8 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
+                    // eslint-disable-next-line no-console
+                    console.error(err);
                     this.alert = 'There was a problem trying to create the case!';
                 })
                 .finally(() => {

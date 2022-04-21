@@ -89,5 +89,18 @@ export default class LightningQuestionAnswerSection extends LightningElement {
         firstInput.focus();
     }
 
+    // inject styles for anything that .css can't modify
+    firstRender = true;
+    renderedCallback() {
+        if (this.firstRender) {
+            this.firstRender = false;
+
+            const styleElem = document.createElement('style');
+            styleElem.innerText =
+                '.slds-input.slds-combobox__input.slds-input_faux label {font-weight:normal; font-size:1em; margin-bottom:0px;}' +
+                this.template.querySelector('.styleWrapper').appendChild(styleElem);
+        }
+    }
+
     allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box';
 }

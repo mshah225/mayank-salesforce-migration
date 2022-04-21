@@ -6,18 +6,41 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      * {
      *   key: 'A unique key to identify this question'
      *   question: 'The question',
-     *   type: 'text'|'textarea'|'combobox'
-     *   options: [{label, value}, ...]  only allowed if type is combobox
+     *     sourceLabel: the source label (only allowed for dual-listboxes)
+     *     selectedLabel: the selected label (only allowed for dual-listboxes)
+     *   type: 'text'|'textarea'|'combobox'|'dual-listbox'|'label'
+     *   subtype:  should specify sub type of type if multiple are possible
+     *   options: [{label, value}, ...]  only allowed if type is combobox, or dual-listbox
      *   subnote: 'note to go under the input field',
      *   required: true|false,
      * }
+     *
+     *
+     * types:   'text'
+     *          'textarea'
+     *          'combobox'
+     *              'single' (default)
+     *              'multi'
+     *          'dual-listbox'
+     *          'label'
+     *              'bold'
+     *              'plain' (default)
+     *              'center'
      */
     @api set questions(val) {
         let newQuestions = [];
         for (let i = 0; i < val.length; i++) {
             let q = {...val[i]};
+            q.isSpacer = q.type === 'spacer';
+            q.isLabel = q.type === 'label';
+            if (q.isLabel) q.isBoldLabel = q.subtype === 'bold';
+            if (q.isLabel) q.isCenterLabel = q.subtype === 'center';
+            if (q.isLabel) q.isPlainLabel = q.subtype === 'plain' || q.subtype == null;
             q.isTextArea = q.type === 'textarea';
             q.isComboBox = q.type === 'combobox';
+            if (q.isComboBox) q.isMultiSelect = q.subtype === 'multi';
+            q.isDualListbox = q.type === 'dual-listbox';
+            q.isInput = !(q.isTextArea || q.isComboBox || q.isLabel || q.isDualListbox || q.isSpacer);
             q.hasSubnote = q.subnote != null && q.subnote !== '';
             if (q.required == null) q.required = false;
             if (q.answer == null) q.answer = '';
@@ -31,7 +54,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
     _questions = [];
 
     @api reportValidity() {
-        let allInputs = this.template.querySelectorAll('lightning-input, lightning-textarea, lightning-combobox');
+        let allInputs = this.template.querySelectorAll(this.allInputTypes);
         let valid = true;
         for (let i = 0; i < allInputs.length; i++) {
             valid &= allInputs[i].reportValidity();
@@ -39,9 +62,8 @@ export default class LightningQuestionAnswerSection extends LightningElement {
         return valid;
     }
 
-    @api
-    clearAll() {
-        let allInputs = this.template.querySelectorAll('lightning-input, lightning-textarea, lightning-combobox');
+    @api clearAll() {
+        let allInputs = this.template.querySelectorAll(this.allInputTypes);
         for (let i = 0; i < allInputs.length; i++) {
             allInputs[i].value = '';
         }
@@ -52,7 +74,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
     }
 
     changeAnswer(e) {
-        const key = e.originalTarget.name;
+        const key = e.currentTarget.name;
         const ans = e.detail.value;
         this.dispatchEvent(
             new CustomEvent('change', {
@@ -63,7 +85,9 @@ export default class LightningQuestionAnswerSection extends LightningElement {
     }
 
     @api focus() {
-        let firstInput = this.template.querySelector('lightning-input, lightning-textarea, lightning-combobox');
+        let firstInput = this.template.querySelector(this.allInputTypes);
         firstInput.focus();
     }
+
+    allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box';
 }

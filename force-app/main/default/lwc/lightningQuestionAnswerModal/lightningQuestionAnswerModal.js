@@ -3,22 +3,8 @@ import {LightningElement, api} from 'lwc';
 export default class LightningQuestionAnswerModal extends LightningElement {
     @api title = '';
 
-    /**
-     * Expected format for each question:
-     * {
-     *   key: 'A unique key to identify this question'
-     *   question: 'The question',
-     *   type: 'text'|'textarea'
-     * }
-     */
     @api set questions(val) {
-        let newQuestions = [];
-        for (let i = 0; i < val.length; i++) {
-            let q = {...val[i]};
-            q.isTextArea = q.type === 'textarea';
-            newQuestions.push(q);
-        }
-        this._questions = newQuestions;
+        this._questions = JSON.parse(JSON.stringify(val));
     }
     get questions() {
         return this._questions;
@@ -81,7 +67,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
 
     killTabKeyPressEvent(e) {
         if (e.which === 9) {
-            e.stopPropogation();
+            e.stopPropagation();
         }
     }
 
@@ -91,9 +77,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
             if (!this.noEscape) this.closeModal();
         } else if (e.which === 9) {
             // Pressed tab - must keep within modal
-            const allFocusableInModal = this.template.querySelectorAll(
-                'button, c-lightning-question-answer-section, lightning-button-icon'
-            );
+            const allFocusableInModal = this.template.querySelectorAll('button, lightning-button-icon');
             const firstFocusableInModal = allFocusableInModal[0];
             const finalFocusableInModal = allFocusableInModal[allFocusableInModal.length - 1];
 
@@ -109,7 +93,7 @@ export default class LightningQuestionAnswerModal extends LightningElement {
         }
     }
 
-    recordChange(e) {
+    changeAnswer(e) {
         const key = e.detail.key;
         const ans = e.detail.answer;
         for (let i = 0; i < this.questions.length; i++) {
@@ -118,17 +102,31 @@ export default class LightningQuestionAnswerModal extends LightningElement {
                 q.answer = ans;
             }
         }
+        this.dispatchEvent(
+            new CustomEvent('change', {
+                detail: {key: key, answer: ans},
+            })
+        );
+    }
 
-        console.log(this.questions);
+    @api reportValidity() {
+        const qaSection = this.template.querySelector('c-lightning-question-answer-section');
+        return qaSection.reportValidity();
     }
 
     submitModal() {
+        if (!this.reportValidity()) {
+            return; // Cannot complete if required fields aren't filled in
+        }
+
+        // Fill in empty strings for all optional questions
         for (let i = 0; i < this.questions.length; i++) {
             const q = this.questions[i];
-            if (q.answer == null) {
+            if (q.answer == null && q.type != null) {
                 q.answer = '';
             }
         }
+
         this.dispatchEvent(new CustomEvent('complete', {detail: JSON.stringify(this.questions)}));
     }
 }

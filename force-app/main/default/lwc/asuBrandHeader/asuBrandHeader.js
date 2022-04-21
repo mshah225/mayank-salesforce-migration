@@ -47,10 +47,6 @@ export default class AsuBrandHeader extends LightningElement {
                 this.baseUrl = 'https://www.asu.edu/';
             }
         }
-        // append / if needed
-        if (this.baseUrl[this.baseUrl.length - 1] != '/') {
-            this.baseUrl = this.baseUrl + '/';
-        }
 
         // Nav Tree
         if (this.navTreeStr === undefined) {

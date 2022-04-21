@@ -45,9 +45,7 @@ export default class JiraTicketTable extends LightningElement {
         let comment = '';
         for (let i = 0; i < formDetails.length; i++) {
             const formDetail = formDetails[i];
-            comment += `*${formDetail.question}*\\n${formDetail.answer
-                .replace(/\r\n]/g, '\\r')
-                .replace(new RegExp('"', 'g'), '\\"')}\\n\n`;
+            comment += this.addToTicketComment(formDetail.question, formDetail.answer);
         }
 
         console.log(issueKey);
@@ -81,9 +79,7 @@ export default class JiraTicketTable extends LightningElement {
         let comment = '';
         for (let i = 0; i < formDetails.length; i++) {
             const formDetail = formDetails[i];
-            comment += `*${formDetail.question}*\\n${formDetail.answer
-                .replace(/\r\n]/g, '\\r')
-                .replace(new RegExp('"', 'g'), '\\"')}\\n\n`;
+            comment += this.addToTicketComment(formDetail.question, formDetail.answer);
         }
 
         console.log(issueKey);
@@ -94,6 +90,20 @@ export default class JiraTicketTable extends LightningElement {
             .then(() => {})
             .catch(() => {})
             .finally(() => {});
+    }
+
+    addToTicketComment(question, answer) {
+        if (question != null && answer != null) {
+            return (
+                '*' +
+                question +
+                '*' +
+                '\\n' +
+                answer.replace(/[\r\n]/g, '\\r').replace(new RegExp('"', 'g'), '\\"') +
+                '\\n\\n'
+            );
+        }
+        return '';
     }
 
     isSelectionKey(code) {

@@ -18,7 +18,7 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
     hasPermission;
     @wire(checkIfCurrentUserHasPermissions)
     checkedIfCurrentUserHasPermissions(result) {
-        let {data, error} = result;
+        let {data, err} = result;
         if (data != null) {
             this.hasPermission = data;
         } else {

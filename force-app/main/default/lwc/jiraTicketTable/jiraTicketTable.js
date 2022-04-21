@@ -21,6 +21,7 @@ export default class JiraTicketTable extends LightningElement {
             question: 'What configuration and security changes need to be made before or after deploy?',
             type: 'textarea',
         },
+        {key: 'documentation', question: 'Future state documentaion (with explanation of changes):', type: 'textarea'},
     ];
 
     currentlyHasFocus;

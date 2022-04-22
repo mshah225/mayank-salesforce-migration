@@ -1,6 +1,5 @@
 import {LightningElement, wire, track} from 'lwc';
 import getUsers from '@salesforce/apex/MarketingCloudUtilitiesController.getUsersFromMarketingCloud';
-
 export default class MarketingCloudUsers extends LightningElement {
     _allData = [];
     @track data = [];
@@ -124,6 +123,9 @@ export default class MarketingCloudUsers extends LightningElement {
         },
     ];
 
+    /**
+     * Check for data
+     */
     get hasData() {
         return this._allData.length > 0 ? true : false;
     }

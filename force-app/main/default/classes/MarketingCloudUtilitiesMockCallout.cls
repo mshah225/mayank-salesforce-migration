@@ -9,18 +9,18 @@ public class MarketingCloudUtilitiesMockCallout implements HttpCalloutMock {
         HttpResponse response;
         if (isAuthorizationCallout()) {
             response = getMockAuthorizationResponse();
-        } else if (isGetLinkCallout()) {
-            response = getMockGetViewEmailLinkResponse();
+        } else if (isGetUsersCallout()) {
+            response = getMockGetUsersResponse();
         }
 
         return response;
     }
 
     private Boolean isAuthorizationCallout() {
-        return request.getBody().contains('accessToken');
+        return request.getBody().contains('client_id');
     }
 
-    private Boolean isGetLinkCallout() {
+    private Boolean isGetUsersCallout() {
         return request.getHeader('SOAPAction').equals('Retrieve');
     }
 
@@ -36,7 +36,7 @@ public class MarketingCloudUtilitiesMockCallout implements HttpCalloutMock {
         HttpResponse response = new HttpResponse();
         response.setStatusCode(200);
         response.setStatus('Success');
-        response.setBody('{"accessToken" : "authorizationToken"}');
+        response.setBody('{"access_token" : "authorizationToken"}');
         return response;
     }
 
@@ -47,7 +47,7 @@ public class MarketingCloudUtilitiesMockCallout implements HttpCalloutMock {
         return response;
     }
 
-    private HttpResponse getMockGetViewEmailLinkResponse() {
+    private HttpResponse getMockGetUsersResponse() {
         HttpResponse response = new HttpResponse();
         response.setStatusCode(200);
         response.setStatus('Success');
@@ -72,14 +72,14 @@ public class MarketingCloudUtilitiesMockCallout implements HttpCalloutMock {
             '<RequestID>7dd364c7-a84b-4535-85ff-76cc19f9c5d5</RequestID>' +
             '<Results xsi:type="AccountUser">' +
             '<Client>' +
-            '<ID>7275894</ID>' +
+            '<ID>1234567</ID>' +
             '</Client>' +
             '<PartnerKey xsi:nil="true" />' +
             '<CreatedDate>2016-05-10T07:00:32.94</CreatedDate>' +
-            '<ID>7442409</ID>' +
+            '<ID>1234567</ID>' +
             '<ObjectID xsi:nil="true" />' +
             '<CustomerKey>45372cbb-06e0-438e-88d8-008981f7a18b</CustomerKey>' +
-            '<AccountUserID>7442409</AccountUserID>' +
+            '<AccountUserID>8675309</AccountUserID>' +
             '<UserID>421ddbac-cc4e-4d0f-80b1-b8b831ad16bf</UserID>' +
             '<Name>app user</Name>' +
             '<Email />' +
@@ -93,7 +93,7 @@ public class MarketingCloudUtilitiesMockCallout implements HttpCalloutMock {
             '<DefaultBusinessUnit>7275894</DefaultBusinessUnit>' +
             '<DefaultBusinessUnitObject>' +
             '<PartnerKey xsi:nil="true" />' +
-            '<ID>7275894</ID>' +
+            '<ID>1234567</ID>' +
             '<ObjectID xsi:nil="true" />' +
             '<AccountType>None</AccountType>' +
             '<Subscription xsi:nil="true" />' +

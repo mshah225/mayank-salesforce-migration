@@ -1,12 +1,12 @@
 public with sharing class MarketingCloudUtilitiesWebService {
     private final static String PARTNER_NS = 'http://exacttarget.com/wsdl/partnerAPI';
-    public ExactTargetApiConfig__c apiConfiguration { get; private set; }
+    public Marketing_Cloud_Utilities_Config__c apiConfiguration { get; private set; }
 
     /**
      * API Config
      */
     public MarketingCloudUtilitiesWebService(String appName) {
-        apiConfiguration = ExactTargetApiConfig__c.getValues(appName);
+        apiConfiguration = Marketing_Cloud_Utilities_Config__c.getValues(appName);
     }
 
     /**

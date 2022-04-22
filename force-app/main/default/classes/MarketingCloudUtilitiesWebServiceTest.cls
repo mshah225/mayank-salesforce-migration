@@ -5,16 +5,16 @@ private class MarketingCloudUtilitiesWebServiceTest {
 
     @testSetup
     private static void insertTestData() {
-        ExactTargetApiConfig__c testingConfiguration = new ExactTargetApiConfig__c();
-        testingConfiguration.Name = MarketingCloudUserController.CUSTOM_SETTING_BY_NAME;
+        Marketing_Cloud_Utilities_Config__c testingConfiguration = new Marketing_Cloud_Utilities_Config__c();
+        testingConfiguration.Name = MarketingCloudUtilitiesController.CUSTOM_SETTING_BY_NAME;
         testingConfiguration.AccountId__c = MarketingCloudUtilitiesMockCallout.ACCOUNT_ID;
         testingConfiguration.Endpoint__c = 'https://test.example.com';
         insert testingConfiguration;
 
-        ExactTargetApiConfig__c invalidConfiguration = new ExactTargetApiConfig__c();
+        Marketing_Cloud_Utilities_Config__c invalidConfiguration = new Marketing_Cloud_Utilities_Config__c();
         invalidConfiguration.Name = INVALID_CONFIGURATION_NAME;
-        testingConfiguration.AccountId__c = '';
-        testingConfiguration.Endpoint__c = 'https://test.example.com';
+        invalidConfiguration.AccountId__c = 'xyz';
+        invalidConfiguration.Endpoint__c = 'https://test.example.com';
         insert invalidConfiguration;
     }
 
@@ -29,6 +29,14 @@ private class MarketingCloudUtilitiesWebServiceTest {
     }
 
     @isTest
+    private static void constructorInvalidConfigValue() {
+        Test.startTest();
+        MarketingCloudUtilitiesWebService service = new MarketingCloudUtilitiesWebService('testValue');
+        Test.stopTest();
+        System.assertEquals(null, service.apiConfiguration);
+    }
+
+    @isTest
     private static void errorCalloutForBadAuthorization() {
         MarketingCloudUtilitiesWebService service = new MarketingCloudUtilitiesWebService(INVALID_CONFIGURATION_NAME);
         Test.setMock(HttpCalloutMock.class, new MarketingCloudUtilitiesMockCallout());
@@ -36,7 +44,7 @@ private class MarketingCloudUtilitiesWebServiceTest {
         String errorMessage;
         Test.startTest();
         try {
-            String retrievedUsers = service.getUsers();
+            List<MarketingCloudUtilitiesWebService.MarketingCloudUser> retrievedUsers = service.getUsers();
         } catch (Exception e) {
             Test.stopTest();
             errorMessage = e.getMessage();
@@ -45,7 +53,6 @@ private class MarketingCloudUtilitiesWebServiceTest {
         System.assertEquals('Error: Status Code: 400 Unauthorized', errorMessage);
     }
 
-    /*
     @isTest
     private static void successfulCalloutForUsers() {
         MarketingCloudUtilitiesWebService service = new MarketingCloudUtilitiesWebService(
@@ -54,29 +61,9 @@ private class MarketingCloudUtilitiesWebServiceTest {
         Test.setMock(HttpCalloutMock.class, new MarketingCloudUtilitiesMockCallout());
 
         Test.startTest();
-        String retrievedUsers = service.getUsers();
+        List<MarketingCloudUtilitiesWebService.MarketingCloudUser> retrievedUsers = service.getUsers();
         Test.stopTest();
 
-        System.assertEquals(MarketingCloudUtilitiesMockCallout.VIEW_EMAIL_URL, retrievedEmailLink);
+        System.assertEquals(MarketingCloudUtilitiesMockCallout.ACCOUNT_ID, String.valueOf(retrievedUsers.get(0).Id));
     }
-
-    @isTest
-    private static void errorCalloutForNoUnitRecordsFound() {
-        MarketingCloudEmailLinkWebService service = new MarketingCloudEmailLinkWebService(
-            MarketingCloudViewEmailController.CUSTOM_SETTING_BY_NAME
-        );
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
-
-        String errorMessage;
-        Test.startTest();
-        try {
-            String retrievedEmailLink = service.retrieveViewEmailUrl('aWrongJobId', 'ThisIsTheSubscriberKey');
-        } catch (Exception e) {
-            Test.stopTest();
-            errorMessage = e.getMessage();
-        }
-
-        System.assertEquals('Error: List has no rows for assignment to SObject', errorMessage);
-    }
-    */
 }

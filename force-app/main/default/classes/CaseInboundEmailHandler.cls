@@ -278,7 +278,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         OR Lead_Email__c = :cleanFromAddress
                         OR Lead_Secondary_Email__c = :cleanFromAddress
                         OR Personal_Email__c = :cleanFromAddress
-                        OR Preferred_Email__c = :cleanFromAddress
                         OR Corporate_Relations_Email__c = :cleanFromAddress)
                         AND FirstName = :fname
                         AND LastName = :lname

@@ -144,7 +144,7 @@ public class PortalEmailService {
         }
     }
 
-    public static void verifiySubject(List<Portal_Email__c> emailsToValidate) {
+    public static void verifySubject(List<Portal_Email__c> emailsToValidate) {
         for (Portal_Email__c pe : emailsToValidate) {
             if (pe.Subject__c == '' || pe.Subject__c == null) {
                 pe.Subject__c = 'A Message from your College and Department';

@@ -7,24 +7,37 @@ trigger SuccessStudentTrigger on Success_Student__c(
     before insert,
     before update
 ) {
-    SuccessStudentDispatcher dispatcher = new SuccessStudentDispatcher(Trigger.newMap, Trigger.oldMap);
+    SuccessStudentDispatcher dispatcher = new SuccessStudentDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
 
     if (Trigger.isBefore) {
-        if (Trigger.isUpdate)
-            dispatcher.beforeUpdate();
-        if (Trigger.isInsert)
+        if (Trigger.isInsert) {
             dispatcher.beforeInsert();
-        if (Trigger.isDelete)
+        }
+        if (Trigger.isUpdate) {
+            dispatcher.beforeUpdate();
+        }
+        if (Trigger.isDelete) {
             dispatcher.beforeDelete();
+        }
     }
+
     if (Trigger.isAfter) {
-        if (Trigger.isUpdate)
-            dispatcher.afterUpdate();
-        if (Trigger.isInsert)
+        if (Trigger.isInsert) {
             dispatcher.afterInsert();
-        if (Trigger.isDelete)
+        }
+        if (Trigger.isUpdate) {
+            dispatcher.afterUpdate();
+        }
+        if (Trigger.isDelete) {
             dispatcher.afterDelete();
-        if (Trigger.isUnDelete)
-            dispatcher.afterUnDelete();
+        }
+        if (Trigger.isUndelete) {
+            dispatcher.afterUndelete();
+        }
     }
 }

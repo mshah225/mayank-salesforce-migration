@@ -634,12 +634,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         theEmail.HtmlBody = limitLength(email.htmlBody, EmailMessage.HtmlBody.getDescribe().getLength());
         theEmail.TextBody = limitLength(email.plainTextBody, EmailMessage.TextBody.getDescribe().getLength());
 
+        List<String> toAddresses = new List<String>();
+
         /* **** To */
         if (email.toAddresses != null) {
             value = '';
             Boolean seenOne = false;
 
-            List<String> toAddresses = new List<String>();
             for (String to : email.toAddresses) {
                 toAddresses.add(extractAddress(to));
             }

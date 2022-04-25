@@ -654,18 +654,19 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         EmailTransformer cleanFromTransformer = new EmailTransformer();
         theEmail.FromAddress = cleanFromTransformer.trimReplyFromSuffix(email.fromAddress);
 
+        value = '';
         /* **** CC */
         if (email.ccAddresses != null) {
-            value = '';
             Boolean seenOne = false;
 
             List<String> ccAddresses = new List<String>();
             for (String cc : email.ccAddresses) {
-                ccAddresses.add(extractAddress(cc));
+                if (!toAddresses.contains(cc)) {
+                    ccAddresses.add(extractAddress(cc));
+                }
             }
             value = String.join(ccAddresses, ';\n');
         }
-
         theEmail.CcAddress = limitLength(value, EmailMessage.CcAddress.getDescribe().getLength());
 
         if (loggingSettings.Header_Logging__c) {

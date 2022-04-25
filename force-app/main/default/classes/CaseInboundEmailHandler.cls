@@ -406,7 +406,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 // Set the case subject before trying to find a recent case in case there is an exception
-                if (this.theCase.Subject == null || this.theCase.Subject == '') {
+                if (this.theCase.Subject == null || this.theCase.Subject.deleteWhitespace() == '') {
                     this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
                 }
 

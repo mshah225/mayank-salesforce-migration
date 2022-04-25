@@ -61,8 +61,7 @@ checkFilesForTerm() {
 checkFileForTerm() {
     filepath=$1
     searchTerm=$2
-    num="$(grep -o "$searchTerm" "$filepath" | wc -l | tr -d ' ')"
-    >&2 echo "$searchTerm in $filepath #$num"
+    num="$(grep --ignore-case -o "$searchTerm" "$filepath" | wc -l | tr -d ' ')"
     echo "$num"
 }
 

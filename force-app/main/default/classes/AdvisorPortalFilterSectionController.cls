@@ -181,6 +181,37 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getSchoolDepartmentPicklistVaues(String filterJSON) {
         Map<String, String> labelToValueMap = new Map<String, String>();
+
+        // Find organizations that have active plans and which are active themselves
+        // looking at all active plans and taking each unique organization from there
+        String queryString =
+            'SELECT MAX(Organization__r.Name), MAX(Organization__r.Organization_Code__c)' +
+            ' FROM Plan__c' +
+            ' WHERE Plan_Status__c = TRUE' +
+            ' AND Program__r.Career__c = \'Graduate\'' +
+            ' AND Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')' +
+            ' AND Organization__r.Organization_Status__c = TRUE';
+
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+            if (!String.isBlank(filter.academicProgram)) {
+                List<String> academicPrograms = filter.academicProgram.split(';');
+                queryString += ' AND Program__r.Program_Code__c IN :academicPrograms';
+            }
+        }
+
+        queryString +=
+            ' GROUP BY Organization__c' +
+            ' HAVING MAX(Plan_Effective_Date__c) <= TODAY AND MAX(Organization__r.Effective_Date__c) <= TODAY' +
+            ' ORDER BY MAX(Organization__r.Organization_Code__c) ASC';
+
+        for (AggregateResult plan : Database.query(queryString)) {
+            String label = (String) plan.get('expr1') + ' / ' + (String) plan.get('expr0');
+            String value = (String) plan.get('expr1');
+            labelToValueMap.put(label, value);
+        }
+
         return labelToValueMap;
     }
 
@@ -236,7 +267,7 @@ public class AdvisorPortalFilterSectionController {
 
             if (!String.isBlank(filter.schoolDepartment)) {
                 List<String> schoolDepartments = filter.schoolDepartment.split(';');
-                queryString += ' AND Program__r.Academic_Group__r.Academic_Group_Code__c IN :schoolDepartments';
+                queryString += ' AND Organization__r.Organization_Code__c IN :schoolDepartments';
             }
         }
 
@@ -1315,6 +1346,11 @@ public class AdvisorPortalFilterSectionController {
         if (!String.isBlank(filter.academicProgram)) {
             List<String> academicPrograms = filter.academicProgram.split(';');
             queryString += ' AND Program_Code__c IN ' + getSoqlListString(academicPrograms);
+        }
+
+        if (!String.isBlank(filter.schoolDepartment)) {
+            List<String> schoolDepartments = filter.schoolDepartment.split(';');
+            queryString += ' AND Organization_Code__c IN ' + getSoqlListString(schoolDepartments);
         }
 
         if (!String.isBlank(filter.academicPlan)) {

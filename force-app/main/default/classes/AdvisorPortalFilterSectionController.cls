@@ -181,6 +181,29 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getSchoolDepartmentPicklistVaues(String filterJSON) {
         Map<String, String> labelToValueMap = new Map<String, String>();
+        String queryString =
+            'SELECT Name, Organization_Code__c' +
+            ' FROM Organization__c' +
+            ' WHERE Organization_Status__c = TRUE' +
+            ' AND Effective_Date__c <= TODAY'; // +
+        // ' AND Program__r.Career__c = \'Graduate\'' +
+        // ' AND Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')';
+
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+            if (!String.isBlank(filter.academicProgram)) {
+                List<String> academicPrograms = filter.academicProgram.split(';');
+                queryString += ' AND Program__r.Program_Code__c IN :academicPrograms';
+            }
+        }
+
+        queryString += ' ORDER BY Organization_Code__c ASC';
+
+        for (Organization__c org : Database.query(queryString)) {
+            labelToValueMap.put(org.Organization_Code__c + ' / ' + org.Name, org.Organization_Code__c);
+        }
+
         return labelToValueMap;
     }
 
@@ -236,7 +259,7 @@ public class AdvisorPortalFilterSectionController {
 
             if (!String.isBlank(filter.schoolDepartment)) {
                 List<String> schoolDepartments = filter.schoolDepartment.split(';');
-                queryString += ' AND Program__r.Academic_Group__r.Academic_Group_Code__c IN :schoolDepartments';
+                queryString += ' AND Organization__r.Organization_Code__c IN :schoolDepartments';
             }
         }
 
@@ -1315,6 +1338,11 @@ public class AdvisorPortalFilterSectionController {
         if (!String.isBlank(filter.academicProgram)) {
             List<String> academicPrograms = filter.academicProgram.split(';');
             queryString += ' AND Program_Code__c IN ' + getSoqlListString(academicPrograms);
+        }
+
+        if (!String.isBlank(filter.schoolDepartment)) {
+            List<String> schoolDepartments = filter.schoolDepartment.split(';');
+            queryString += ' AND Organization_Code__c IN ' + getSoqlListString(schoolDepartments);
         }
 
         if (!String.isBlank(filter.academicPlan)) {

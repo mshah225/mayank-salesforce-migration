@@ -14,7 +14,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     private String origin;
     private String campus;
     private String replyToAddress;
-    private String emailFromName;
     private Id defaultCaseRecordTypeId;
     private Id caseRecordTypeId;
     private Id fallbackQueueId;
@@ -871,7 +870,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     CC_Sub_Category__c,
                     Email_Address__c,
                     Case_Feed_Email_Template_Id__c,
-                    Customer_Notice_Email_From_Name__c,
                     Reply_To_Email_Address__c,
                     Email_Template_ID__c,
                     CC_Functional_Group__c,
@@ -911,7 +909,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         CC_Sub_Category__c,
                         Email_Address__c,
                         Case_Feed_Email_Template_Id__c,
-                        Customer_Notice_Email_From_Name__c,
                         Reply_To_Email_Address__c,
                         Email_Template_ID__c,
                         CC_Functional_Group__c,
@@ -936,7 +933,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         CC_Sub_Category__c,
                         Email_Address__c,
                         Case_Feed_Email_Template_Id__c,
-                        Customer_Notice_Email_From_Name__c,
                         Reply_To_Email_Address__c,
                         Email_Template_ID__c,
                         CC_Functional_Group__c,
@@ -991,8 +987,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 replyToAddress = assignmentRuleList[0].Email_Address__c;
             }
 
-            emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
-
             if (assignmentRuleList[0].Case_Record_Type_ID__c != null) {
                 caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
             }
@@ -1011,7 +1005,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     CC_Category__c,
                     CC_Sub_Category__c,
                     Email_Address__c,
-                    Customer_Notice_Email_From_Name__c,
                     Reply_To_Email_Address__c,
                     Email_Template_ID__c,
                     Case_Feed_Email_Template_Id__c,
@@ -1060,8 +1053,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     replyToAddress = assignmentRuleList[0].Email_Address__c;
                 }
 
-                emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
-
                 if (assignmentRuleList[0].Case_Record_Type_ID__c != null) {
                     caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);
                 }
@@ -1088,7 +1079,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         CC_Category__c,
                         CC_Sub_Category__c,
                         Email_Address__c,
-                        Customer_Notice_Email_From_Name__c,
                         Reply_To_Email_Address__c,
                         Email_Template_ID__c,
                         Case_Feed_Email_Template_Id__c,
@@ -1136,8 +1126,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 } else {
                     replyToAddress = assignmentRuleListDefault[0].Email_Address__c;
                 }
-
-                emailFromName = assignmentRuleListDefault[0].Customer_Notice_Email_From_Name__c;
 
                 if (assignmentRuleListDefault[0].Case_Record_Type_ID__c != null) {
                     caseRecordTypeId = ID.valueOf(assignmentRuleListDefault[0].Case_Record_Type_ID__c);

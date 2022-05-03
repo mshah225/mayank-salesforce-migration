@@ -18,13 +18,11 @@ global class EmailAPIService {
                 SELECT
                     Email_Address__c,
                     Reply_To_Email_Address__c,
-                    Customer_Notice_Email_From_Name__c,
                     Email_Template_ID__c
                 FROM Case_Assignment_Rule__c
                 WHERE Id = :carId
             ];
             replyToAddress = assignmentRule[0].Reply_To_Email_Address__c;
-            emailFromName = assignmentRule[0].Customer_Notice_Email_From_Name__c;
             emailTemplateId = assignmentRule[0].Email_Template_ID__c;
         } catch (Exception e) {
             res.statusCode = 400;

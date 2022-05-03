@@ -49,7 +49,6 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c();
         car.Email_Address__c = 'service12345123451234512345@test.test';
-        car.Customer_notice_email_from_name__c = 'Test Service';
         car.Email_template_id__c = templateId;
         car.Queue_id__c = queueId;
         car.Fallback_Queue_Id__c = fallbackQueueId;
@@ -84,7 +83,6 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Case_Assignment_Rule__c rmmCar1 = new Case_Assignment_Rule__c();
         rmmCar1.Email_Address__c = 'reply-fec817737361077e-10607_html-31250844-7204971-0@e.asu.edu';
-        rmmCar1.Customer_notice_email_from_name__c = 'Test RMM Service 1';
         rmmCar1.Email_template_id__c = templateId;
         rmmCar1.Queue_id__c = queueId;
         rmmCar1.Fallback_Queue_Id__c = fallbackQueueId;
@@ -119,7 +117,6 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Case_Assignment_Rule__c rmmCar2 = new Case_Assignment_Rule__c();
         rmmCar2.Email_Address__c = 'reply-fdf1234-9999_html-foobar12345-1234567-0@e.asu.edu';
-        rmmCar2.Customer_notice_email_from_name__c = 'Test RMM Service 2';
         rmmCar2.Email_template_id__c = templateId;
         rmmCar2.Queue_id__c = queueId;
         rmmCar2.Fallback_Queue_Id__c = fallbackQueueId;
@@ -145,16 +142,12 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ]
         .Id;
-        rmmCar2.Functional_Group__c = 'Test RMM Group 2';
-        rmmCar2.Category__c = 'Test RMM Category 2';
-        rmmCar2.Sub_Category__c = 'Test RMM Subcategory 2';
         rmmCar2.Priority__c = 997;
 
         insert rmmCar2;
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c();
         carDefault.Email_Address__c = 'default@test.test';
-        carDefault.Customer_notice_email_from_name__c = 'Default Test Service';
         carDefault.Email_template_id__c = templateId;
         carDefault.Queue_Id__c = queueId;
         carDefault.Fallback_Queue_Id__c = fallbackQueueId;
@@ -180,9 +173,6 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ]
         .Id;
-        carDefault.Functional_Group__c = 'Test Group 2';
-        carDefault.Category__c = 'Test Category 2';
-        carDefault.Sub_Category__c = 'Test Subcategory 2';
         carDefault.Priority__c = 999;
 
         insert carDefault;

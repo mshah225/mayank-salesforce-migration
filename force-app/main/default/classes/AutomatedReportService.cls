@@ -155,7 +155,7 @@ public without sharing class AutomatedReportService {
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ message });
         } catch (Exception ex) {
             List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('Email', message));
+            vars.add(ErrorLogger.convertStringToJSON('Exception: ', ex.getMessage()));
             ErrorLogger.log(ex, vars, true);
         }
     }

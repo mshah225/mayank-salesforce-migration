@@ -56,7 +56,7 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
             update reportsToRun;
         } catch (Exception ex) {
             List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertStringToJSON('Reports To Update', reportsToRun));
+            vars.add(ErrorLogger.convertStringToJSON('Exception: ', ex.getMessage()));
             ErrorLogger.log(ex, vars, debug);
         }
 

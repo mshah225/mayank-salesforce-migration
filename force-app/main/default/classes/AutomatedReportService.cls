@@ -150,7 +150,14 @@ public without sharing class AutomatedReportService {
         message.setPlainTextBody('The report is attached.');
         message.setToAddresses(toAddress);
         message.setOrgWideEmailAddressId(FROM_EMAIL_ID);
-        Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ message });
+
+        try {
+            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ message });
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('Email', message));
+            ErrorLogger.log(ex, vars, true);
+        }
     }
 
     /**

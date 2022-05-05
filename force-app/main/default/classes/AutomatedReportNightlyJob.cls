@@ -1,4 +1,5 @@
 global without sharing class AutomatedReportNightlyJob implements Schedulable {
+    private static final boolean debug = false; // Toggle debug error reporting
 
     global void execute(SchedulableContext sc) {
         List<Automated_Report_Processing_Options__c> reportsToRun = new List<Automated_Report_Processing_Options__c>();
@@ -51,7 +52,13 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
             }
         }        
 
-        update reportsToRun;
+        try {        
+            update reportsToRun;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('Reports To Update', reportsToRun));
+            ErrorLogger.log(ex, vars, debug);
+        }
 
         if (!Test.isRunningTest()) {
             startAutomatedProcess();

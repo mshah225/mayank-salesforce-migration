@@ -13,7 +13,7 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
         List<Automated_Report_Processing_Options__c> listOfReports = [
             SELECT Id, Schedule_Day__c, Schedule_Frequency__c, Last_Run__c
             FROM Automated_Report_Processing_Options__c
-            WHERE Active__c = TRUE AND Schedule_Day__c IN: currentDays
+            WHERE Active__c = TRUE AND (Schedule_Day__c IN: currentDays OR Schedule_Day__c = '' OR Schedule_Day__c = null)
         ];
 
         for (Automated_Report_Processing_Options__c report : listOfReports) {

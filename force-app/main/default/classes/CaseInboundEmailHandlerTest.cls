@@ -74,9 +74,6 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ]
         .Id;
-        car.Functional_Group__c = 'Test Group';
-        car.Category__c = 'Test Category';
-        car.Sub_Category__c = 'Test Subcategory';
         car.Priority__c = 99;
 
         insert car;
@@ -108,9 +105,6 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ]
         .Id;
-        rmmCar1.Functional_Group__c = 'Test RMM Group 1';
-        rmmCar1.Category__c = 'Test RMM Category 1';
-        rmmCar1.Sub_Category__c = 'Test RMM Subcategory 1';
         rmmCar1.Priority__c = 998;
 
         insert rmmCar1;

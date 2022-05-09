@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Default</fullName>
+    <columns>Active__c</columns>
+    <columns>NAME</columns>
+    <columns>College__c</columns>
+    <columns>ECOMM__c</columns>
+    <columns>Report_ID__c</columns>
+    <columns>Campaign_ID__c</columns>
+    <columns>Distribution_List__c</columns>
+    <columns>Last_Run__c</columns>
+    <columns>Schedule_Frequency__c</columns>
+    <columns>Schedule_Day__c</columns>
+    <columns>Run_Required__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>Default</label>
+</ListView>

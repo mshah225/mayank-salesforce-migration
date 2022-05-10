@@ -27,8 +27,8 @@ public class CarScrambler implements ObjectScramble {
     }
 
     private void scrambleEmails() {
-        carToScramble.Email_Address__c = Scrambler.scrambleEmailOrUsername(carToScramble.Email_Address__c);
-        carToScramble.Reply_To_Email_Address__c = Scrambler.scrambleEmailOrUsername(
+        carToScramble.Email_Address__c = Scrambler.carefullyScrambleEmailOrUsername(carToScramble.Email_Address__c);
+        carToScramble.Reply_To_Email_Address__c = Scrambler.carefullyScrambleEmailOrUsername(
             carToScramble.Reply_To_Email_Address__c
         );
     }

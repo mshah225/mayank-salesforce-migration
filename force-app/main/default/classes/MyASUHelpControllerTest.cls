@@ -640,7 +640,7 @@ private class MyASUHelpControllerTest {
             checkCase = vcc.getCaseDetails();
 
             vcc.viewingAs = true;
-            vcc.getCaseDetails();
+            vcc.retrieveCaseDetails();
         }
         Test.stopTest();
 

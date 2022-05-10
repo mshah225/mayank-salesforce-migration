@@ -58,6 +58,9 @@ code --install-extension fabiospampinato.vscode-commands --force &>/dev/null
 code --install-extension fabiospampinato.vscode-terminals --force &>/dev/null
 code --install-extension ms-python.python --force &>/dev/null
 
+# Install ratcher script
+bash ../ratchet/install.sh
+
 echo " ██████ ██       ██████  ███████ ██ ███    ██  ██████      ██ ███    ██     ██████   ██████      ███████ ███████  ██████  ██████  ███    ██ ██████  ███████    "
 echo "██      ██      ██    ██ ██      ██ ████   ██ ██           ██ ████   ██          ██ ██  ████     ██      ██      ██      ██    ██ ████   ██ ██   ██ ██         "
 echo "██      ██      ██    ██ ███████ ██ ██ ██  ██ ██   ███     ██ ██ ██  ██      █████  ██ ██ ██     ███████ █████   ██      ██    ██ ██ ██  ██ ██   ██ ███████    "

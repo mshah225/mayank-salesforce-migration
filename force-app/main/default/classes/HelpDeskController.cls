@@ -133,6 +133,7 @@ public with sharing class HelpDeskController {
         isPageLoaded = false;
         isDuoAuthenticated = false;
         hasANIPresent = false;
+        hasSourcePresent = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();

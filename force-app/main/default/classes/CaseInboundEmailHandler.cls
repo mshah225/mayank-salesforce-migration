@@ -45,6 +45,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 lName = newLname;
             }
 
+            // Trim spaces from name
+            fName = fName.trim();
+            lName = lName.trim();
+
             // Check the inbound email for filtered terms; if found, no do nothing
             String filteredTerm = filteredTermFound();
             if (filteredTerm != null) {
@@ -116,7 +120,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                                     WHERE
                                         RecordType.Name = 'Functional Group'
                                         AND Active__c = TRUE
-                                        AND name = 'External Unit'
+                                        AND Name = 'External Unit'
                                     LIMIT 1
                                 ]
                                 .Id
@@ -267,7 +271,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         Preferred_Full_Name__c
                     FROM Contact
                     WHERE
-                        Email = :cleanFromAddress
+                        (Email = :cleanFromAddress
                         OR ASU_Gmail__c = :cleanFromAddress
                         OR EPO_Email__c = :cleanFromAddress
                         OR ASU_Email__c = :cleanFromAddress
@@ -275,31 +279,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         OR Lead_Secondary_Email__c = :cleanFromAddress
                         OR Personal_Email__c = :cleanFromAddress
                         OR Preferred_Email__c = :cleanFromAddress
-                        OR Corporate_Relations_Email__c = :cleanFromAddress
+                        OR Corporate_Relations_Email__c = :cleanFromAddress)
+                        AND FirstName = :fname
+                        AND LastName = :lname
                     ORDER BY RecordType.Name
                 ];
-
-                if (contacts.size() > 1) {
-                    Contact[] filteredContacts;
-
-                    for (Contact c : contacts) {
-                        if (
-                            (c.FirstName != null &&
-                            c.LastName != null) &&
-                            c.FirstName.toLowerCase() == fname.toLowerCase() &&
-                            c.LastName.toLowerCase() == lname.toLowerCase()
-                        ) {
-                            filteredContacts.add(c);
-                        }
-                    }
-
-                    if (filteredContacts != null) {
-                        if (filteredContacts.size() > 0 && filteredContacts.size() < contacts.size()) {
-                            contacts.clear();
-                            contacts = filteredContacts.clone();
-                        }
-                    }
-                }
 
                 if (contacts.size() > 0) {
                     Contact theContact = contacts[0];

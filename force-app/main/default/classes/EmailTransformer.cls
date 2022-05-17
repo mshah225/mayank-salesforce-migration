@@ -1,4 +1,6 @@
 public class EmailTransformer {
+    private static final Boolean debug = false;
+
     public List<EmailReplySuffix__mdt> emailSuffixes {
         get {
             if (emailSuffixes == null) {
@@ -11,11 +13,25 @@ public class EmailTransformer {
 
     public String cleanEmailAddress(String emailAddress) {
         String cleanEmailAddress = emailAddress;
-        for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
-            if (cleanEmailAddress.contains(suffixToCheckFor.MasterLabel)) {
-                cleanEmailAddress = removeSuffixFromEmail(cleanEmailAddress, suffixToCheckFor.MasterLabel);
-                cleanEmailAddress = findAndReplaceSecondToLastPeriod(cleanEmailAddress);
+        try {
+            for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
+                if (cleanEmailAddress.contains(suffixToCheckFor.MasterLabel)) {
+                    try {
+                        cleanEmailAddress = removeSuffixFromEmail(cleanEmailAddress, suffixToCheckFor.MasterLabel);
+                        cleanEmailAddress = findAndReplaceSecondToLastPeriod(cleanEmailAddress);
+                    } catch (Exception e) {
+                        throw new EmailTransformerException('Email does not match expected format:\n' + e.getMessage());
+                    }
+                }
             }
+            cleanEmailAddress = cleanEmailAddress.toLowerCase();
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emailAddress', emailAddress));
+            vars.add(ErrorLogger.convertStringToJSON('cleanEmailAddress', cleanEmailAddress));
+            ErrorLogger.log(e, vars, debug);
+
+            cleanEmailAddress = emailAddress;
         }
 
         return cleanEmailAddress.toLowerCase();
@@ -33,5 +49,8 @@ public class EmailTransformer {
         reverseEmail = reverseEmail.subString(0, posOfPeriod) + '@' + reverseEmail.subString(posOfPeriod + 1);
         reverseEmail = reverseEmail.reverse();
         return reverseEmail;
+    }
+
+    public class EmailTransformerException extends Exception {
     }
 }

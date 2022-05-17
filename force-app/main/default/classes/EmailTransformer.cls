@@ -9,16 +9,16 @@ public class EmailTransformer {
         set;
     }
 
-    public String trimReplyFromSuffix(String emailToClean) {
-        String cleanedEmail = emailToClean;
+    public String cleanEmailAddress(String emailAddress) {
+        String cleanEmailAddress = emailAddress;
         for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
-            if (cleanedEmail.contains(suffixToCheckFor.MasterLabel)) {
-                cleanedEmail = removeSuffixFromEmail(cleanedEmail, suffixToCheckFor.MasterLabel);
-                cleanedEmail = findAndReplaceSecondToLastPeriod(cleanedEmail);
+            if (cleanEmailAddress.contains(suffixToCheckFor.MasterLabel)) {
+                cleanEmailAddress = removeSuffixFromEmail(cleanEmailAddress, suffixToCheckFor.MasterLabel);
+                cleanEmailAddress = findAndReplaceSecondToLastPeriod(cleanEmailAddress);
             }
         }
 
-        return cleanedEmail.toLowerCase();
+        return cleanEmailAddress.toLowerCase();
     }
 
     private String removeSuffixFromEmail(String emailWithSuffix, String suffixToRemove) {

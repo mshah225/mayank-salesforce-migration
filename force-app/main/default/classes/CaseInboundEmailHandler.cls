@@ -257,7 +257,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 EmailTransformer transformer = new EmailTransformer();
-                String cleanFromAddress = transformer.trimReplyFromSuffix(email.fromAddress);
+                String cleanFromAddress = transformer.cleanEmailAddress(email.fromAddress);
                 Contact[] contacts = [
                     SELECT
                         Id,
@@ -349,6 +349,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     emailContact = insertedContact;
                 }
 
+                // Set the case subject before trying to find a recent case in case there is an exception
+                if (this.theCase.Subject == null || this.theCase.Subject.deleteWhitespace() == '') {
+                    this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
+                }
+
                 // Check to make sure we are not about to spawn an auto reply loop
                 try {
                     recentCase = [
@@ -363,16 +368,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         recentCase.Description = '';
                     }
 
-                    String currentCaseDescription = theCase.Description;
-                    currentCaseDescription = currentCaseDescription.trim();
-
-                    String currentCaseSubject = theCase.Subject;
-                    if (currentCaseSubject == null || currentCaseSubject == '') {
-                        currentCaseSubject = 'Email Received From: ' + email.fromAddress;
-                    }
-                    currentCaseSubject = currentCaseSubject.trim();
-                    theCase.Subject = currentCaseSubject;
-
                     Boolean hasAttachments =
                         (email.textAttachments != null && email.textAttachments.size() > 0) ||
                         (email.binaryAttachments != null &&
@@ -380,27 +375,28 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                     // If we catch an auto reply loop, do not create the case and discard this email
                     if (
-                        recentCase.Description.equals(currentCaseDescription) &&
+                        recentCase.Description.equals(theCase.Description.trim()) &&
                         recentCase.OwnerId == theCase.OwnerID &&
                         !hasAttachments
                     ) {
-                        Integer currentCasePos = currentCaseSubject.indexOf('Case Number');
+                        Integer currentCasePos = theCase.Subject.indexOf('Case Number');
                         Integer prevCasePos = recentCase.Subject.indexOf('Case Number');
                         if (currentCasePos >= 0 && prevCasePos >= 0) {
                             if (
-                                currentCaseSubject.substring(0, currentCasePos)
+                                theCase.Subject.substring(0, currentCasePos)
                                     .equals(recentCase.Subject.substring(0, prevCasePos))
                             ) {
                                 return result;
                             }
                         } else {
-                            if (recentCase.Subject.equals(currentCaseSubject)) {
+                            if (recentCase.Subject.equals(theCase.Subject)) {
                                 return result;
                             }
                         }
                     }
                 } catch (QueryException e) {
                 }
+
                 insert this.theCase;
             } else {
                 // Grab the contact record from the existing case
@@ -653,7 +649,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         theEmail.FromName = email.fromName;
         // Clean from address (Remove @reply.asu.edu)
         EmailTransformer cleanFromTransformer = new EmailTransformer();
-        theEmail.FromAddress = cleanFromTransformer.trimReplyFromSuffix(email.fromAddress);
+        theEmail.FromAddress = cleanFromTransformer.cleanEmailAddress(email.fromAddress);
 
         value = '';
         /* **** CC */

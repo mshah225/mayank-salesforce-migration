@@ -8,7 +8,7 @@
     <script>$ = jQuery.noConflict();</script>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
 
-    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js" />
+    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/55.0/deployment.js" />
 
     <script type="text/javascript">
         function disableOnSubmit() {
@@ -27,9 +27,10 @@
     <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';
-        var chatDeploymentId = '{!deploymentId}';
+        var financeDeploymentId = '{!financeDeploymentId}';
         var financesChatId = '{!financeChatButton}';
         var studentServiceChatId = '{!studentServicesChatButton}';
+        var techSupportDeploymentId = '{!technicalSupportDeploymentId}';
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
         liveagent.init(chatEndpoint, chatDeploymentId, orgId);
@@ -112,10 +113,10 @@
                                     </script>
                                 </div>
                                 <div class="mb-1">
-                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
                                         {!technicalSupportDisplayName}
                                     </a>
-                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
                                         {!technicalSupportDisplayName}
                                     </a>
                                     <script type="text/javascript">

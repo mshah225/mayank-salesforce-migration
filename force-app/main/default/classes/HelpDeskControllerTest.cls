@@ -697,7 +697,7 @@ private class HelpDeskControllerTest {
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
-        ApexPages.currentPage().getParameters().put('dnis', '4802291234');
+        ApexPages.currentPage().getParameters().put('DNIS', '4802291234');
         ApexPages.currentPage().getParameters().put('phone', '');
         ApexPages.currentPage().getParameters().put('birthdate', '');
         ApexPages.currentPage().getParameters().put('firstname', '');

@@ -90,10 +90,10 @@ public with sharing class HelpDeskController {
 
     // This stores the incoming phone number (ANI parameter)
     public String callerID { get; set; }
-    public String sourceID { get; set; }
+    public String dnisID { get; set; }
     public Boolean isDuoAuthenticated { get; set; }
     public Boolean hasANIPresent { get; set; }
-    public Boolean hasSourcePresent { get; set; }
+    public Boolean hasDNISPresent { get; set; }
 
     // the current sort direction. defaults to asc
     public String sortDir {
@@ -133,7 +133,7 @@ public with sharing class HelpDeskController {
         isPageLoaded = false;
         isDuoAuthenticated = false;
         hasANIPresent = false;
-        hasSourcePresent = false;
+        hasDNISPresent = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
@@ -168,12 +168,12 @@ public with sharing class HelpDeskController {
                     ' LIMIT 25' +
                     ')';
 
-                // Caller Source Check
-                if (ApexPages.currentPage().getParameters().containsKey('source')) {
-                    if (ApexPages.currentPage().getParameters().get('source') != '') {
-                        hasSourcePresent = true;
-                        String sourceNumber = ApexPages.currentPage().getParameters().get('source');
-                        sourceID = formatPhone(sourceNumber);
+                // Caller DNIS Check
+                if (ApexPages.currentPage().getParameters().containsKey('dnis')) {
+                    if (ApexPages.currentPage().getParameters().get('dnis') != '') {
+                        hasDNISPresent = true;
+                        String dnis = ApexPages.currentPage().getParameters().get('dnis');
+                        dnisID = formatPhone(dnis);
                     }
                 }
 
@@ -204,12 +204,12 @@ public with sharing class HelpDeskController {
         callerConfig = new Map<String, String>();
 
         List<Help_Desk_Caller_Settings__mdt> config = [
-            SELECT Label, Destination__c, Source__c
+            SELECT Label, Destination__c, DNIS__c
             FROM Help_Desk_Caller_Settings__mdt
         ];
 
         for (Help_Desk_Caller_Settings__mdt mdt : config) {
-            callerConfig.put(mdt.Source__c, mdt.Destination__c);
+            callerConfig.put(mdt.DNIS__c, mdt.Destination__c);
         }
     }
 
@@ -886,12 +886,12 @@ public with sharing class HelpDeskController {
 
     /**
      * Precheck for caller to override help desk page
-     * If we were passed a source and it matches our expected value stored in
+     * If we were passed a dnis and it matches our expected value stored in
      * the custom meta, redirect to the defined destination.
      */
     public PageReference preCheck() {
-        if (hasSourcePresent && callerConfig.keySet().contains(sourceID)) {
-            PageReference page = new PageReference(callerConfig.get(sourceID));
+        if (hasDNISPresent && callerConfig.keySet().contains(dnisID)) {
+            PageReference page = new PageReference(callerConfig.get(dnisID));
             page.setRedirect(true);
             return page;
         }

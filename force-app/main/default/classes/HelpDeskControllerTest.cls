@@ -656,13 +656,13 @@ private class HelpDeskControllerTest {
         // Populate config for custom meta
         Help_Desk_Caller_Settings__mdt metadata1 = new Help_Desk_Caller_Settings__mdt(
             Label = 'DEI Participant',
-            Source__c = '4801234567',
+            DNIS__c = '4801234567',
             Destination__c = '/lightning/o/Program_Participant__c/list?filterName=00B4C000001iGIpUAM'
         );
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
-        ApexPages.currentPage().getParameters().put('source', metadata1.Source__c);
+        ApexPages.currentPage().getParameters().put('DNIS', metadata1.DNIS__c);
         ApexPages.currentPage().getParameters().put('phone', '');
         ApexPages.currentPage().getParameters().put('birthdate', '');
         ApexPages.currentPage().getParameters().put('firstname', '');
@@ -691,13 +691,13 @@ private class HelpDeskControllerTest {
         // Populate config for custom meta
         Help_Desk_Caller_Settings__mdt metadata1 = new Help_Desk_Caller_Settings__mdt(
             Label = 'DEI Participant',
-            Source__c = '4801234567',
+            DNIS__c = '4801234567',
             Destination__c = '/lightning/o/Program_Participant__c/list?filterName=00B4C000001iGIpUAM'
         );
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
-        ApexPages.currentPage().getParameters().put('source', '4802291234');
+        ApexPages.currentPage().getParameters().put('dnis', '4802291234');
         ApexPages.currentPage().getParameters().put('phone', '');
         ApexPages.currentPage().getParameters().put('birthdate', '');
         ApexPages.currentPage().getParameters().put('firstname', '');
@@ -709,8 +709,6 @@ private class HelpDeskControllerTest {
 
         HelpDeskController controller = new HelpDeskController();
         PageReference pre;
-
-        System.debug(controller);
 
         Test.startTest();
         pre = controller.preCheck();

@@ -33,7 +33,7 @@
         var techSupportDeploymentId = '{!technicalSupportDeploymentId}';
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
-        liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+        liveagent.init(chatEndpoint, financeDeploymentId, orgId);
     </script>
 
     <div class="border myasu-help-scope">
@@ -90,10 +90,10 @@
                         <div id="myasu-help-contact-us-chat-link" class="collapse p-2 bg-f5f5f5 border-top" aria-labelledby="headingChat" data-parent="#accordion">
                             <div class="panel-body">
                                 <div class="mb-1">
-                                    <a id="liveagent_button_finances_online" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_finances_online" class="underline c-text-black" href="#" onclick="openFinanceChatbot()">
                                         {!financeDisplayName}
                                     </a>
-                                    <a id="liveagent_button_finances_offline" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_finances_offline" class="underline c-text-black" href="#" onclick="openFinanceChatbot()">
                                         {!financeDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -110,13 +110,17 @@
                                                 document.getElementById('liveagent_button_finances_offline')
                                             );
                                         });
+
+                                        function openFinanceChatbot() {
+                                            window.open('{!$Label.MyASU_Help_Finance_Chatbot}', 'NewButtonWindowName', 'width=450,height=500,scrollbars=yes');
+                                        }
                                     </script>
                                 </div>
                                 <div class="mb-1">
-                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="openTechnicalSupportChatbot()">
                                         {!technicalSupportDisplayName}
                                     </a>
-                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="openTechnicalSupportChatbot()">
                                         {!technicalSupportDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -135,6 +139,11 @@
                                                 )
                                             );
                                         });
+
+                                        function openTechnicalSupportChatbot() {
+                                            liveagent.init(chatEndpoint, techSupportDeploymentId, orgId);
+                                            window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}', 'NewButtonWindowName', 'width=450,height=500,scrollbars=yes');
+                                        }
                                     </script>
                                 </div>
                                 <div>

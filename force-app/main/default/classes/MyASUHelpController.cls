@@ -123,7 +123,7 @@ public with sharing class MyASUHelpController {
         financeChatButton = financeChatLAB.Chat_Button_Id__c;
         financeDisplayName = financeChatLAB.Display_Name__c;
 
-        technicalSupporDeploymentId = technicalSupporChatLAB.Chat_Deployment__c;
+        technicalSupportDeploymentId = technicalSupporChatLAB.Chat_Deployment__c;
         technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
         technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
 

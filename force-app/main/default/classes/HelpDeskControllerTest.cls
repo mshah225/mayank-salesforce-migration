@@ -37,7 +37,7 @@ private class HelpDeskControllerTest {
         ApexPages.currentPage().getParameters().put('directoryemail', '');
         ApexPages.currentPage().getParameters().put('personalemail', '');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -99,7 +99,7 @@ private class HelpDeskControllerTest {
 
         Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -233,7 +233,7 @@ private class HelpDeskControllerTest {
 
         Contact testContact = [SELECT Id, Name, Phone, EMPLID__c FROM Contact WHERE EMPLID__c = '1111111111'];
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -342,7 +342,7 @@ private class HelpDeskControllerTest {
         insert art;
 
         // Set the results for the SOSL search to the contact and FAQ
-        Id[] fixedSearchResults = new List<Id>(2);
+        Id[] fixedSearchResults = new Id[2];
         fixedSearchResults[0] = testContact.Id;
         fixedSearchResults[1] = faqArticle.Id;
         Test.setFixedSearchResults(fixedSearchResults);
@@ -387,7 +387,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -430,7 +430,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -474,7 +474,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -514,7 +514,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -543,7 +543,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -573,7 +573,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -613,7 +613,7 @@ private class HelpDeskControllerTest {
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = testContact.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -645,5 +645,75 @@ private class HelpDeskControllerTest {
 
         List<Case> totalCases = [SELECT Id FROM Case];
         System.assertEquals(numberOfCases, totalCases.size());
+    }
+
+    @isTest
+    private static void redirectedByCustomConfiguration() {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        // Populate config for custom meta
+        Help_Desk_Caller_Settings__mdt metadata1 = new Help_Desk_Caller_Settings__mdt(
+            Label = 'DEI Participant',
+            DNIS__c = '4801234567',
+            Destination__c = '/lightning/o/Program_Participant__c/list?filterName=00B4C000001iGIpUAM'
+        );
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('DNIS', metadata1.DNIS__c);
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        HelpDeskController controller = new HelpDeskController();
+        PageReference pre;
+
+        Test.startTest();
+        pre = controller.preCheck();
+        Test.stopTest();
+
+        System.assertEquals(metadata1.Destination__c, pre.getUrl());
+    }
+
+    @isTest
+    private static void notRedirectedByCustomConfiguration() {
+        setUpTest();
+        PageReference pageRef = Page.HelpDesk;
+        Test.setCurrentPage(pageRef);
+
+        // Populate config for custom meta
+        Help_Desk_Caller_Settings__mdt metadata1 = new Help_Desk_Caller_Settings__mdt(
+            Label = 'DEI Participant',
+            DNIS__c = '4801234567',
+            Destination__c = '/lightning/o/Program_Participant__c/list?filterName=00B4C000001iGIpUAM'
+        );
+
+        // Populate some initial Contact search parameters/set empty fields.
+        ApexPages.currentPage().getParameters().put('ANI', '1111111111');
+        ApexPages.currentPage().getParameters().put('DNIS', '4802291234');
+        ApexPages.currentPage().getParameters().put('phone', '');
+        ApexPages.currentPage().getParameters().put('birthdate', '');
+        ApexPages.currentPage().getParameters().put('firstname', '');
+        ApexPages.currentPage().getParameters().put('lastname', '');
+        ApexPages.currentPage().getParameters().put('asuriteid', '');
+        ApexPages.currentPage().getParameters().put('emplid', '');
+        ApexPages.currentPage().getParameters().put('directoryemail', '');
+        ApexPages.currentPage().getParameters().put('personalemail', '');
+
+        HelpDeskController controller = new HelpDeskController();
+        PageReference pre;
+
+        Test.startTest();
+        pre = controller.preCheck();
+        Test.stopTest();
+
+        System.assertEquals(null, pre);
     }
 }

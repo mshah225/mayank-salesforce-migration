@@ -653,16 +653,15 @@ private class HelpDeskControllerTest {
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
 
-        // Populate config for custom meta
-        Help_Desk_Caller_Settings__mdt metadata1 = new Help_Desk_Caller_Settings__mdt(
-            Label = 'DEI Participant',
-            DNIS__c = '4801234567',
-            Destination__c = '/lightning/o/Program_Participant__c/list?filterName=00B4C000001iGIpUAM'
-        );
+        List<Help_Desk_Caller_Settings__mdt> config = [
+            SELECT Destination__c, DNIS__c
+            FROM Help_Desk_Caller_Settings__mdt
+            WHERE MasterLabel = 'DEI Participant'
+        ];
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');
-        ApexPages.currentPage().getParameters().put('DNIS', metadata1.DNIS__c);
+        ApexPages.currentPage().getParameters().put('DNIS', config[0].DNIS__c);
         ApexPages.currentPage().getParameters().put('phone', '');
         ApexPages.currentPage().getParameters().put('birthdate', '');
         ApexPages.currentPage().getParameters().put('firstname', '');
@@ -679,7 +678,7 @@ private class HelpDeskControllerTest {
         pre = controller.preCheck();
         Test.stopTest();
 
-        System.assertEquals(metadata1.Destination__c, pre.getUrl());
+        System.assertEquals(config[0].Destination__c, pre.getUrl());
     }
 
     @isTest
@@ -687,13 +686,6 @@ private class HelpDeskControllerTest {
         setUpTest();
         PageReference pageRef = Page.HelpDesk;
         Test.setCurrentPage(pageRef);
-
-        // Populate config for custom meta
-        Help_Desk_Caller_Settings__mdt metadata1 = new Help_Desk_Caller_Settings__mdt(
-            Label = 'DEI Participant',
-            DNIS__c = '4801234567',
-            Destination__c = '/lightning/o/Program_Participant__c/list?filterName=00B4C000001iGIpUAM'
-        );
 
         // Populate some initial Contact search parameters/set empty fields.
         ApexPages.currentPage().getParameters().put('ANI', '1111111111');

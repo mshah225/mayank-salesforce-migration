@@ -391,6 +391,6 @@ public without sharing class UserDeprovisioner {
 
         if (cronTypeNameMap.containsKey(key))
             return cronTypeNameMap.get(key);
-        return key;
+        return 'UNKNOWN';
     }
 }

@@ -25,30 +25,6 @@ public without sharing class UserDeprovisioner {
     private static Boolean debug = false;
     private static Boolean allowRepeatCases = true;
 
-    private static Map<String, String> cronTypeNameMap;
-    private static String getCronTypeNameFromType(String key) {
-        if (cronTypeNameMap == null) {
-            cronTypeNameMap = new Map<String, String>();
-
-            // Get from picklist
-            Map<String, String> nameToKey = ObjectService.getPicklistChoicesMap('CronJobDetail', 'JobType');
-            for (String name : nameToKey.keySet()) {
-                cronTypeNameMap.put(nameToKey.get(name), name);
-            }
-            // Add any others that we know from experience
-            if (!cronTypeNameMap.containsKey('E'))
-                cronTypeNameMap.put('E', 'Sitemap SEO Generation Job');
-            if (!cronTypeNameMap.containsKey('G'))
-                cronTypeNameMap.put('G', 'Sitemap SEO Incremental Job');
-            if (!cronTypeNameMap.containsKey('K'))
-                cronTypeNameMap.put('K', 'Autonomous Data Loader Job');
-        }
-
-        if (cronTypeNameMap.containsKey(key))
-            return cronTypeNameMap.get(key);
-        return key;
-    }
-
     public UserDeprovisioner(
         Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
         User userToDeprovision
@@ -392,5 +368,29 @@ public without sharing class UserDeprovisioner {
     }
 
     public class DeprovisionUserException extends Exception {
+    }
+
+    private static Map<String, String> cronTypeNameMap;
+    private static String getCronTypeNameFromType(String key) {
+        if (cronTypeNameMap == null) {
+            cronTypeNameMap = new Map<String, String>();
+
+            // Get from picklist
+            Map<String, String> nameToKey = ObjectService.getPicklistChoicesMap('CronJobDetail', 'JobType');
+            for (String name : nameToKey.keySet()) {
+                cronTypeNameMap.put(nameToKey.get(name), name);
+            }
+            // Add any others that we know from experience
+            if (!cronTypeNameMap.containsKey('E'))
+                cronTypeNameMap.put('E', 'Sitemap SEO Generation Job');
+            if (!cronTypeNameMap.containsKey('G'))
+                cronTypeNameMap.put('G', 'Sitemap SEO Incremental Job');
+            if (!cronTypeNameMap.containsKey('K'))
+                cronTypeNameMap.put('K', 'Autonomous Data Loader Job');
+        }
+
+        if (cronTypeNameMap.containsKey(key))
+            return cronTypeNameMap.get(key);
+        return key;
     }
 }

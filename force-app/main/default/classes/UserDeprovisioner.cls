@@ -194,12 +194,14 @@ public without sharing class UserDeprovisioner {
             List<String> removedJobStrs = new List<String>();
             for (CronTrigger job : cronJobs) {
                 toAbortCronJobs.add(job);
-                removedJobStrs.add(
-                    job.CronJobDetail.Name +
-                    ' (type: ' +
-                    getCronTypeNameFromType(job.CronJobDetail.JobType) +
-                    ')'
-                );
+                String name = job.CronJobDetail.Name;
+
+                // if type 8 (a Report Run) - then the name is actually an id, and we need to get the name of the Report from fieldIdToNameMap
+                if (job.CronJobDetail.JobType == '8') {
+                    name = fieldIdToNameMap.get(name);
+                }
+
+                removedJobStrs.add(name + ' (type: ' + getCronTypeNameFromType(job.CronJobDetail.JobType) + ')');
             }
             removedStr += String.join(removedJobStrs, ', ');
             addToProcessingNotes(removedStr);

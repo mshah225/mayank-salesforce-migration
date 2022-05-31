@@ -263,6 +263,8 @@ public without sharing class UserDeprovisionOrganizer {
     private void populateFieldIdToNameMap() {
         Set<Id> profileIds = new Set<Id>();
         Set<Id> userRoleIds = new Set<Id>();
+        Set<Id> reportIds = new Set<Id>();
+
         for (UserDeprovisioner toDepro : userDeprovisionersList) {
             User toDeproUser = toDepro.getUserToDeprovision();
             if ((toDeproUser.get('ProfileId')) != null) {
@@ -270,6 +272,15 @@ public without sharing class UserDeprovisionOrganizer {
             }
             if ((toDeproUser.get('UserRoleId')) != null) {
                 userRoleIds.add(Id.valueOf((String) (toDeproUser.get('UserRoleId'))));
+            }
+
+            List<CronTrigger> jobsForThisUser = userToCronJobsMap.get(toDeproUser.Id);
+            if (jobsForThisUser != null) {
+                for (CronTrigger job : jobsForThisUser) {
+                    if (job.CronJobDetail.JobType == '8') {
+                        reportIds.add(job.CronJobDetail.Name);
+                    }
+                }
             }
         }
 
@@ -279,6 +290,10 @@ public without sharing class UserDeprovisionOrganizer {
 
         for (Profile pro : [SELECT Id, Name FROM Profile WHERE Id IN :profileIds]) {
             fieldIdToNameMap.put(pro.Id, pro.Name);
+        }
+
+        for (Report rep : [SELECT Id, Name FROM Report WHERE Id IN :reportIds]) {
+            fieldIdToNameMap.put(rep.Id, rep.Name);
         }
     }
 

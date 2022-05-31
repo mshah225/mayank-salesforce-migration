@@ -12,15 +12,23 @@ public class UserDeprovisionOrganizerTest {
     @TestSetup
     private static void setupTestData() {
         // 5 Users
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        List<User> usersToDeprovision = (List<User>) userCreator.create(5);
-        Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
-        for (Integer i = 0; i < usersToDeprovision.size(); i++) {
-            User user = usersToDeprovision[i];
-            user.ProfileId = standardProfile;
-            user.FirstName = 'userDepro.testUser' + i;
-            user.Username = 'userDepro.testUser' + i + '@test.example.com';
-            user.CommunityNickname = 'userDepro.testUser' + i;
+        String standardProfile = RecordIdHelper.getProfileId('Standard User');
+        List<User> usersToDeprovision = new List<User>();
+        for (Integer i = 0; i < 5; i++) {
+            User user = new User(
+                FirstName = 'userDepro.testUser' + i,
+                LastName = 'User-' + i,
+                Username = 'userDepro.testUser' + i + '@test.example.com',
+                Email = 'test.user.' + i + '@test.example.com',
+                Alias = 'testuser',
+                CommunityNickname = 'userDepro.testUser' + i,
+                TimeZoneSidKey = 'America/Phoenix',
+                LocaleSidKey = 'en_US',
+                EmailEncodingKey = 'ISO-8859-1',
+                ProfileId = standardProfile,
+                LanguageLocaleKey = 'en_US'
+            );
+            usersToDeprovision.add(user);
         }
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert usersToDeprovision;
@@ -164,6 +172,15 @@ public class UserDeprovisionOrganizerTest {
             insert casesToAdd;
         }
 
+        // And scheduled jobs - one every 15 minutes
+        for (Integer i = -0; i < 4; i++) {
+            System.runAs(usersToDeprovision[0]) {
+                Schedulable job = new ScheduledStalledSMSDetector();
+                String sch = '0 ' + 15 * i + ' * * * ?';
+                System.Schedule('UserDeproJob-' + i, sch, job);
+            }
+        }
+
         UserLogin freezeFirstUserLogin = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = :uids[0]][0];
         freezeFirstUserLogin.IsFrozen = true;
         System.runAs(new User(Id = UserInfo.getUserId())) {
@@ -279,6 +296,38 @@ public class UserDeprovisionOrganizerTest {
         System.assert(
             theUserPostDeprovision.Processing_Notes__c.contains('Removed user from permissionSets:'),
             'The deletion of permission set assignments should have been recorded on the user'
+        );
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithScheduledJobs() {
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
+
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        List<CronTrigger> scheduledJobs = [SELECT Id FROM CronTrigger WHERE OwnerId = :theUser.Id];
+        System.assert(!scheduledJobs.isEmpty(), 'This user should have some scheduled jobs pre-deprovision');
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        scheduledJobs = [SELECT Id FROM CronTrigger WHERE OwnerId = :theUser.Id];
+        System.assert(scheduledJobs.isEmpty(), 'Should have aborted user\'s jobs');
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(
+            theUserPostDeprovision.Processing_Notes__c.contains('Aborting scheduled jobs:'),
+            'The aborting of scheduled jobs should have been recorded on the user'
         );
     }
 

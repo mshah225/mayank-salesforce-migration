@@ -125,7 +125,7 @@ public without sharing class UserDeprovisionOrganizer {
             }
 
             if (!toAbortCronJobs.isEmpty()) {
-                abortCronJobs('UserId', toAbortCronJobs, userToProcessingNotesMap);
+                abortCronJobs('OwnerId', toAbortCronJobs, userToProcessingNotesMap);
             }
 
             if (!toUpdateUsers.isEmpty()) {
@@ -313,69 +313,81 @@ public without sharing class UserDeprovisionOrganizer {
         Map<Id, String> userToProcessingNotes
     ) {
         Map<Id, String> usersWithErrors = new Map<Id, String>();
+        Map<Id, List<String>> errorsForUser = new Map<Id, List<String>>();
 
         Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
 
+        Boolean thereWasAnError = false;
+        List<String> errorLoggerVars = new List<String>();
+        String errorNote =
+            'Error while updating the ' +
+            String.valueOf(recordListToOperate[0]).split(':')[0] +
+            ' objects during user deprovisioning.\n';
+
         for (Integer i = 0; i < saveResult.size(); i++) {
-            if (!saveResult[i].isSuccess()) {
-                String processingNotes = '';
-                String errorNote = 'The following errors have occurred:';
+            Id userId = (Id) recordListToOperate[i].get(userIdField);
+            Map<String, String> stringToStringMapForThisResult = new Map<String, String>();
+
+            // Error log details about this object
+            stringToStringMapForThisResult.put('userId', userId);
+            if (saveResult[i] != null)
+                stringToStringMapForThisResult.put('getId()', saveResult[i].getId());
+
+            if (saveResult[i].isSuccess()) {
+                // this object was successful
+                stringToStringMapForThisResult.put('Status', 'Successful');
+            } else {
+                // this object was a failure
+                thereWasAnError = true;
+                stringToStringMapForThisResult.put('Status', 'Failure');
+
+                // record all errors for this object
+                List<String> allErrorStrs = new List<String>();
                 for (Database.Error err : saveResult[i].getErrors()) {
-                    errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
-                    errorNote += '\nUser fields that affected this error: ' + err.getFields();
+                    String errorStr =
+                        '{err.getStatusCode(): ' +
+                        err.getStatusCode() +
+                        ', err.getMessage(): ' +
+                        err.getMessage() +
+                        ', err.getFields(): ' +
+                        err.getFields() +
+                        '}';
+                    allErrorStrs.add(errorStr);
                 }
+                String bigErrorStr = String.join(allErrorStrs, ', ');
+                stringToStringMapForThisResult.put('Errors', bigErrorStr);
 
-                Id userId = (Id) recordListToOperate[i].get(userIdField);
-
-                errorNote +=
-                    'Failed Update: Error while updating the ' +
-                    String.valueOf(recordListToOperate[0]).split(':')[0] +
-                    ' objects.';
-
-                // Append to exisiting processing notes / other errors for this user
-                if (usersWithErrors.keySet().contains(userId)) {
-                    processingNotes = usersWithErrors.get(userId) + '---\n';
-                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
-                }
-                processingNotes += errorNote + '\n';
-
-                usersWithErrors.put(userId, processingNotes);
-
-                // Error log it
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertIdToJSON('userId', userId));
-                if (saveResult[i] != null) {
-                    vars.add(ErrorLogger.convertIdToJSON('saveResult[i].getId()', saveResult[i].getId()));
-                }
-                if (saveResult[i].getId() != null) {
-                    vars.add(
-                        ErrorLogger.convertStringToJSON(
-                            'saveResult[i].getId().getSObjectType()',
-                            '' + saveResult[i].getId().getSObjectType()
-                        )
-                    );
-                }
-                vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                try {
-                    ErrorLogger.log(dbException, vars, debug, allowRepeatCases);
-                } catch (System.DmlException dmle) {
-                    if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
-                        ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
-                            dbException,
-                            vars,
-                            debug,
-                            allowRepeatCases
-                        );
-                        System.enqueueJob(logQueue);
-                    } else {
-                        throw dmle;
-                    }
-                }
+                // We will record this on the user
+                if (!errorsForUser.containsKey(userId))
+                    errorsForUser.put(userId, new List<String>());
+                errorsForUser.get(userId)
+                    .add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
             }
+
+            errorLoggerVars.add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
         }
 
+        // make a single error message for each user with some errors
+        for (Id userId : errorsForUser.keySet()) {
+            String newProcessingNotes =
+                getCurUserProcessingNotes(userId, userToProcessingNotes) +
+                errorNote +
+                String.join(errorsForUser.get(userId), '\n');
+            usersWithErrors.put(userId, newProcessingNotes);
+        }
+
+        // actually make the error log
+        if (thereWasAnError) {
+            Id userId = (Id) recordListToOperate[0].get(userIdField);
+            String userProcessingNotes = usersWithErrors.get(userId);
+
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('processingNotes', userProcessingNotes));
+
+            DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
+            carefulErrorLog(dbException, errorLoggerVars);
+        }
+
+        // and update the users processing note
         if (!usersWithErrors.isEmpty()) {
             updateUsersProcessingNotes(usersWithErrors);
         }
@@ -387,68 +399,83 @@ public without sharing class UserDeprovisionOrganizer {
         Map<Id, String> userToProcessingNotes
     ) {
         Map<Id, String> usersWithErrors = new Map<Id, String>();
+        Map<Id, List<String>> errorsForUser = new Map<Id, List<String>>();
 
         Database.DeleteResult[] deleteResult = Database.delete(recordListToOperate, false);
 
+        Boolean thereWasAnError = false;
+        List<String> errorLoggerVars = new List<String>();
+        String errorNote =
+            'Error while deleting the ' +
+            String.valueOf(recordListToOperate[0]).split(':')[0] +
+            ' objects during user deprovisioning.\n';
+
         for (Integer i = 0; i < deleteResult.size(); i++) {
-            if (!deleteResult[i].isSuccess()) {
-                String processingNotes = '';
-                String errorNote = 'The following errors have occurred:';
+            Id userId = (Id) recordListToOperate[i].get(userIdField);
+            Map<String, String> stringToStringMapForThisResult = new Map<String, String>();
+
+            // Error log details about this object
+            stringToStringMapForThisResult.put('userId', userId);
+            if (deleteResult[i] != null)
+                stringToStringMapForThisResult.put('getId()', deleteResult[i].getId());
+
+            if (deleteResult[i].isSuccess()) {
+                // this object was successful
+                stringToStringMapForThisResult.put('Status', 'Successful');
+            } else {
+                // this object was a failure
+                thereWasAnError = true;
+                stringToStringMapForThisResult.put('Status', 'Failure');
+
+                // record all errors for this object
+                List<String> allErrorStrs = new List<String>();
                 for (Database.Error err : deleteResult[i].getErrors()) {
-                    errorNote += '\n' + err.getStatusCode() + ': ' + err.getMessage();
-                    errorNote += '\nUser fields that affected this error: ' + err.getFields();
+                    String errorStr =
+                        '{err.getStatusCode(): ' +
+                        err.getStatusCode() +
+                        ', err.getMessage(): ' +
+                        err.getMessage() +
+                        ', err.getFields(): ' +
+                        err.getFields() +
+                        '}';
+                    allErrorStrs.add(errorStr);
                 }
+                String bigErrorStr = String.join(allErrorStrs, ', ');
+                stringToStringMapForThisResult.put('Errors', bigErrorStr);
 
-                Id userId = (Id) recordListToOperate[i].get(userIdField);
-
-                errorNote +=
-                    'Failed Deletion: Error while updating the ' +
-                    String.valueOf(recordListToOperate[0]).split(':')[0] +
-                    ' objects.';
-
-                // Append to exisiting processing notes / other errors for this user
-                if (usersWithErrors.keySet().contains(userId)) {
-                    processingNotes = usersWithErrors.get(userId) + '---\n';
-                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
-                }
-                processingNotes += errorNote + '\n';
-
-                // Error log it
-                usersWithErrors.put(userId, processingNotes);
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertIdToJSON('userId', userId));
-                if (deleteResult[i] != null) {
-                    vars.add(ErrorLogger.convertIdToJSON('deleteResult[i].getId()', deleteResult[i].getId()));
-                }
-                if (deleteResult[i].getId() != null) {
-                    vars.add(
-                        ErrorLogger.convertStringToJSON(
-                            'deleteResult[i].getId().getSObjectType()',
-                            '' + deleteResult[i].getId().getSObjectType()
-                        )
-                    );
-                }
-                vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-                try {
-                    ErrorLogger.log(dbException, vars, debug, allowRepeatCases);
-                } catch (System.DmlException dmle) {
-                    if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
-                        ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
-                            dbException,
-                            vars,
-                            debug,
-                            allowRepeatCases
-                        );
-                        System.enqueueJob(logQueue);
-                    } else {
-                        throw dmle;
-                    }
-                }
+                // We will record this on the user
+                if (!errorsForUser.containsKey(userId))
+                    errorsForUser.put(userId, new List<String>());
+                errorsForUser.get(userId)
+                    .add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
             }
+
+            errorLoggerVars.add(
+                ErrorLogger.convertMapToJSON('deleteResult[' + i + ']', stringToStringMapForThisResult)
+            );
         }
 
+        // make a single error message for each user with some errors
+        for (Id userId : errorsForUser.keySet()) {
+            String newProcessingNotes =
+                getCurUserProcessingNotes(userId, userToProcessingNotes) +
+                errorNote +
+                String.join(errorsForUser.get(userId), '\n');
+            usersWithErrors.put(userId, newProcessingNotes);
+        }
+
+        // actually make the error log
+        if (thereWasAnError) {
+            Id userId = (Id) recordListToOperate[0].get(userIdField);
+            String userProcessingNotes = usersWithErrors.get(userId);
+
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('processingNotes', userProcessingNotes));
+
+            DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
+            carefulErrorLog(dbException, errorLoggerVars);
+        }
+
+        // and update the users processing note
         if (!usersWithErrors.isEmpty()) {
             updateUsersProcessingNotes(usersWithErrors);
         }
@@ -460,48 +487,74 @@ public without sharing class UserDeprovisionOrganizer {
         Map<Id, String> userToProcessingNotes
     ) {
         Map<Id, String> usersWithErrors = new Map<Id, String>();
+        Map<Id, List<String>> errorsForUser = new Map<Id, List<String>>();
+        Exception ex = null;
 
-        for (CronTrigger job : cronJobs) {
+        Boolean thereWasAnError = false;
+        List<String> errorLoggerVars = new List<String>();
+
+        String errorNote = 'Error while aborting the cron jobs during user deprovisioning.\n';
+
+        for (Integer i = 0; i < cronJobs.size(); i++) {
+            CronTrigger job = cronJobs[i];
+            Id userId = (Id) job.get(userIdField);
+            Map<String, String> stringToStringMapForThisResult = new Map<String, String>();
+
+            // Error log details about this object
+            stringToStringMapForThisResult.put('userId', userId);
+            stringToStringMapForThisResult.put('Id', job.Id);
+
             try {
                 System.abortJob(job.Id);
+                // this object was successful
+                stringToStringMapForThisResult.put('Status', 'Successful');
             } catch (Exception e) {
-                String processingNotes = '';
-                String errorNote = 'The following exception has occurred:';
-                errorNote += e.getTypeName() + '\n' + e.getMessage() + '\n' + e.getCause();
+                // this object was a failure
+                thereWasAnError = true;
+                ex = e;
+                stringToStringMapForThisResult.put('Status', 'Failure');
 
-                Id userId = (Id) job.get(userIdField);
+                String errorStr =
+                    '{e.getTypeName(): ' +
+                    e.getTypeName() +
+                    ', e.getMessage(): ' +
+                    e.getMessage() +
+                    ', e.getCause(): ' +
+                    e.getCause() +
+                    '}';
 
-                // Append to exisiting processing notes / other errors for this user
-                if (usersWithErrors.keySet().contains(userId)) {
-                    processingNotes = usersWithErrors.get(userId) + '---\n';
-                } else if (userToProcessingNotes != null && userToProcessingNotes.get(userId) != null) {
-                    processingNotes = userToProcessingNotes.get(userId) + '---\n';
-                }
-                processingNotes += errorNote + '\n';
+                stringToStringMapForThisResult.put('errorStr', errorStr);
 
-                usersWithErrors.put(userId, processingNotes);
-
-                // Error log it
-                List<String> vars = new List<String>();
-                vars.add(ErrorLogger.convertIdToJSON('userId', userId));
-                if (job != null) {
-                    vars.add(ErrorLogger.convertSObjectToJSON('job', job));
-                }
-                vars.add(ErrorLogger.convertStringToJSON('processingNotes', processingNotes));
-                try {
-                    ErrorLogger.log(e, vars, debug, allowRepeatCases);
-                } catch (Exception e2) {
-                    ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
-                        e,
-                        vars,
-                        debug,
-                        allowRepeatCases
-                    );
-                    System.enqueueJob(logQueue);
-                }
+                // We will record this on the user
+                if (!errorsForUser.containsKey(userId))
+                    errorsForUser.put(userId, new List<String>());
+                errorsForUser.get(userId)
+                    .add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
             }
+
+            errorLoggerVars.add(ErrorLogger.convertMapToJSON('cronJobs[' + i + ']', stringToStringMapForThisResult));
         }
 
+        // make a single error message for each user with some errors
+        for (Id userId : errorsForUser.keySet()) {
+            String newProcessingNotes =
+                getCurUserProcessingNotes(userId, userToProcessingNotes) +
+                errorNote +
+                String.join(errorsForUser.get(userId), '\n');
+            usersWithErrors.put(userId, newProcessingNotes);
+        }
+
+        // actually make the error log
+        if (thereWasAnError) {
+            Id userId = (Id) cronJobs[0].get(userIdField);
+            String userProcessingNotes = usersWithErrors.get(userId);
+
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('processingNotes', userProcessingNotes));
+
+            carefulErrorLog(ex, errorLoggerVars);
+        }
+
+        // and update the users processing note
         if (!usersWithErrors.isEmpty()) {
             updateUsersProcessingNotes(usersWithErrors);
         }
@@ -514,6 +567,36 @@ public without sharing class UserDeprovisionOrganizer {
             users.add(new User(Id = uid, Processing_Notes__c = uidToNewNotesMap.get(uid), Deprovision_User__c = false));
         }
         update users;
+    }
+
+    private static void carefulErrorLog(Exception ex, List<String> vars) {
+        try {
+            ErrorLogger.log(ex, vars, debug, allowRepeatCases);
+        } catch (System.DmlException dmle) {
+            if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
+                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
+                    ex,
+                    vars,
+                    debug,
+                    allowRepeatCases
+                );
+                System.enqueueJob(logQueue);
+            } else {
+                throw dmle;
+            }
+        }
+    }
+
+    private static String getCurUserProcessingNotes(String userId, Map<Id, String> userToProcessingNotes) {
+        String userProcessingNotes = '';
+        if (
+            userToProcessingNotes != null &&
+            userToProcessingNotes.containsKey(userId) &&
+            userToProcessingNotes.get(userId) != null
+        ) {
+            userProcessingNotes = userToProcessingNotes.get(userId) + '---\n';
+        }
+        return userProcessingNotes;
     }
 
     private class DatabaseErrorException extends Exception {

@@ -66,6 +66,9 @@ public class UserDeprovisionOrganizerTest {
                 Id__c = icAgentConsoleId
             )
         );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(Name = 'AbortCronJob_Schuduled_Apex', Name__c = '7')
+        );
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert deproivisionConfigurations;
         }
@@ -540,7 +543,7 @@ public class UserDeprovisionOrganizerTest {
 
         List<Case> usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
 
-        usersCases = [SELECT Id FROM Case WHERE OwnerId = :theUser.Id];
+        usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
         System.assert(!usersCases.isEmpty(), 'Should have some cases');
 
         Test.startTest();
@@ -574,14 +577,20 @@ public class UserDeprovisionOrganizerTest {
         Test.stopTest();
 
         User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
-        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('The following errors have occurred:'));
+        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('Errors'));
 
         List<Case> generatedErrorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
             WHERE Subject LIKE '%DatabaseErrorException%'
         ];
-        System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
+        System.assertEquals(
+            1,
+            generatedErrorLoggerCases.size(),
+            'Should have added a single ErrorLogger case for all errors'
+        );
+        System.assert(generatedErrorLoggerCases[0].Description.contains('deleteResult[0]'));
+        System.assert(generatedErrorLoggerCases[0].Description.contains('deleteResult[1]'));
     }
 
     @isTest
@@ -607,14 +616,20 @@ public class UserDeprovisionOrganizerTest {
         Test.stopTest();
 
         User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
-        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('The following errors have occurred:'));
+        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('Errors'));
 
         List<Case> generatedErrorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
             WHERE Subject LIKE '%DatabaseErrorException%'
         ];
-        System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
+        System.assertEquals(
+            1,
+            generatedErrorLoggerCases.size(),
+            'Should have added a single ErrorLogger case for all errors'
+        );
+        System.assert(generatedErrorLoggerCases[0].Description.contains('saveResult[0]'));
+        System.assert(generatedErrorLoggerCases[0].Description.contains('saveResult[1]'));
     }
 
     @isTest

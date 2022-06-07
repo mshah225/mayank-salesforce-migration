@@ -193,15 +193,18 @@ public without sharing class UserDeprovisioner {
             String removedStr = 'Aborting scheduled jobs: ';
             List<String> removedJobStrs = new List<String>();
             for (CronTrigger job : cronJobs) {
-                toAbortCronJobs.add(job);
-                String name = job.CronJobDetail.Name;
-
-                // if type 8 (a Report Run) - then the name is actually an id, and we need to get the name of the Report from fieldIdToNameMap
+                // We are only aborting Report Runs right now - so we only want to abort jobType 8
                 if (job.CronJobDetail.JobType == '8') {
-                    name = fieldIdToNameMap.get(name);
-                }
+                    toAbortCronJobs.add(job);
+                    String name = job.CronJobDetail.Name;
 
-                removedJobStrs.add(name + ' (type: ' + getCronTypeNameFromType(job.CronJobDetail.JobType) + ')');
+                    // if type 8 (a Report Run) - then the name is actually an id, and we need to get the name of the Report from fieldIdToNameMap
+                    if (job.CronJobDetail.JobType == '8') {
+                        name = fieldIdToNameMap.get(name);
+                    }
+
+                    removedJobStrs.add(name + ' (type: ' + getCronTypeNameFromType(job.CronJobDetail.JobType) + ')');
+                }
             }
             removedStr += String.join(removedJobStrs, ', ');
             addToProcessingNotes(removedStr);

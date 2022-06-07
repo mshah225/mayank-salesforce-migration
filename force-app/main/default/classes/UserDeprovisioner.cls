@@ -189,12 +189,22 @@ public without sharing class UserDeprovisioner {
         }
     }
     private void abortCronJobs() {
+        Set<String> abortTypesSet = new Set<String>();
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            if (deprovisionConfigurationName.contains('AbortCronJob')) {
+                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
+                    deprovisionConfigurationName
+                );
+                abortTypesSet.add(configuration.Name__c);
+            }
+        }
+
         if (cronJobs != null && !cronJobs.isEmpty()) {
             String removedStr = 'Aborting scheduled jobs: ';
             List<String> removedJobStrs = new List<String>();
             for (CronTrigger job : cronJobs) {
-                // We are only aborting Report Runs right now - so we only want to abort jobType 8
-                if (job.CronJobDetail.JobType == '8') {
+                // Abort types form the configuration settings
+                if (abortTypesSet.contains(job.CronJobDetail.JobType)) {
                     toAbortCronJobs.add(job);
                     String name = job.CronJobDetail.Name;
 
@@ -206,7 +216,14 @@ public without sharing class UserDeprovisioner {
                     removedJobStrs.add(name + ' (type: ' + getCronTypeNameFromType(job.CronJobDetail.JobType) + ')');
                 }
             }
-            removedStr += String.join(removedJobStrs, ', ');
+
+            // only note if there were aborted jobs
+            if (!toAbortCronJobs.isEmpty()) {
+                removedStr += String.join(removedJobStrs, ', ');
+            } else {
+                removedStr += 'No jobs to abort';
+            }
+
             addToProcessingNotes(removedStr);
         }
     }

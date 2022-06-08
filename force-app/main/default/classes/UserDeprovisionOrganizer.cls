@@ -570,21 +570,8 @@ public without sharing class UserDeprovisionOrganizer {
     }
 
     private static void carefulErrorLog(Exception ex, List<String> vars) {
-        try {
-            ErrorLogger.log(ex, vars, debug, allowRepeatCases);
-        } catch (System.DmlException dmle) {
-            if (dmle.getMessage().contains('MIXED_DML_OPERATION')) {
-                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(
-                    ex,
-                    vars,
-                    debug,
-                    allowRepeatCases
-                );
-                System.enqueueJob(logQueue);
-            } else {
-                throw dmle;
-            }
-        }
+        ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(ex, vars, debug, allowRepeatCases);
+        System.enqueueJob(logQueue);
     }
 
     private static String getCurUserProcessingNotes(String userId, Map<Id, String> userToProcessingNotes) {

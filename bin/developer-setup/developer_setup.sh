@@ -48,6 +48,7 @@ npm list | grep @lwc/eslint-plugin-lwc &>/dev/null || npm install --save-dev @lw
 npm list | grep @salesforce/eslint-plugin-aura &>/dev/null || npm install --save-dev @salesforce/eslint-plugin-aura &>/dev/null
 npm list | grep husky &>/dev/null && [ $? -eq 0 ] && npm uninstall husky &>/dev/null && npm install -D husky@4 &>/dev/null || npm install -D husky@4 &>/dev/null
 npm update &>/dev/null
+npm update --location=global &>/dev/null
 
 # Force Visual Studio Code to install or update the extensions
 code --install-extension salesforce.salesforcedx-vscode --force &>/dev/null

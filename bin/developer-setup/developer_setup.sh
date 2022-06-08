@@ -36,10 +36,9 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 # Keep npm up-to-date
-npm config set prefix /usr/local &>/dev/null
-npm list -g | grep sfdx-cli &>/dev/null || npm install -g sfdx-cli &>/dev/null
-npm list -g | grep prettier &>/dev/null || npm install -g -D -E prettier &>/dev/null
-npm list -g | grep prettier-plugin-apex &>/dev/null || npm install -g -D -E prettier-plugin-apex &>/dev/null
+npm list --location=global | grep sfdx-cli &>/dev/null || npm install --location=global sfdx-cli &>/dev/null
+npm list --location=global | grep prettier &>/dev/null || npm install --location=global -D -E prettier &>/dev/null
+npm list --location=global | grep prettier-plugin-apex &>/dev/null || npm install --location=global -D -E prettier-plugin-apex &>/dev/null
 npm list | grep prettier &>/dev/null || npm install --save-dev --save-exact prettier &>/dev/null
 npm list | grep prettier-plugin-apex &>/dev/null || npm install --save-dev --save-exact prettier-plugin-apex &>/dev/null
 npm list | grep eslint &>/dev/null || npm install --save-dev eslint &>/dev/null
@@ -58,8 +57,8 @@ code --install-extension fabiospampinato.vscode-commands --force &>/dev/null
 code --install-extension fabiospampinato.vscode-terminals --force &>/dev/null
 code --install-extension ms-python.python --force &>/dev/null
 
-# Install ratcher script
-bash ../ratchet/install.sh
+# Install ratchet script
+./../ratchet/install.sh
 
 echo " ██████ ██       ██████  ███████ ██ ███    ██  ██████      ██ ███    ██     ██████   ██████      ███████ ███████  ██████  ██████  ███    ██ ██████  ███████    "
 echo "██      ██      ██    ██ ██      ██ ████   ██ ██           ██ ████   ██          ██ ██  ████     ██      ██      ██      ██    ██ ████   ██ ██   ██ ██         "

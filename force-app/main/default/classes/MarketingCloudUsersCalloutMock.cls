@@ -1,5 +1,5 @@
 @isTest
-public class MarketingCloudUtilitiesMockCallout implements HttpCalloutMock {
+public class MarketingCloudUsersCalloutMock implements HttpCalloutMock {
     private HttpRequest request;
     public static final String ACCOUNT_ID = '1234567';
 

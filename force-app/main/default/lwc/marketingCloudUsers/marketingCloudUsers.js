@@ -1,5 +1,5 @@
 import {LightningElement, wire, track} from 'lwc';
-import getUsers from '@salesforce/apex/MarketingCloudUtilitiesController.getUsersFromMarketingCloud';
+import getUsers from '@salesforce/apex/MarketingCloudUsersController.getUsersFromMarketingCloud';
 export default class MarketingCloudUsers extends LightningElement {
     _allData = [];
     @track data = [];

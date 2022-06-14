@@ -1350,7 +1350,7 @@ public class AdvisorPortalFilterSectionController {
 
         if (!String.isBlank(filter.schoolDepartment)) {
             List<String> schoolDepartments = filter.schoolDepartment.split(';');
-            queryString += ' AND Organization_Code__c IN ' + getSoqlListString(schoolDepartments);
+            queryString += ' AND Organization_Code__r.Organization_Code__c IN ' + getSoqlListString(schoolDepartments);
         }
 
         if (!String.isBlank(filter.academicPlan)) {

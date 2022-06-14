@@ -24,7 +24,7 @@
     "prettier.bracketSpacing": false,
     "prettier.jsxSingleQuote": true,
     "prettier.singleQuote": true,
-    "prettier.prettierPath": "/usr/local/lib/node_modules/prettier",
+    "prettier.prettierPath": "/opt/homebrew/lib/node_modules/prettier",
     "prettier.requireConfig": true,
     "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
     "search.exclude": {

@@ -8,7 +8,7 @@ public class DeferredTABatchSchedulerTest {
         User testUser = new User(
             FirstName = 'Test',
             LastName = 'User',
-            Username = 'test.user@test.test',
+            Username = 'test.ta.user@test.test',
             Email = 'test.user@test.test',
             Alias = testUserAlias,
             CommunityNickname = testUserAlias,
@@ -21,7 +21,7 @@ public class DeferredTABatchSchedulerTest {
         User testUser2 = new User(
             FirstName = 'Test 2',
             LastName = 'User',
-            Username = 'test.user.2@test.test',
+            Username = 'test.ta.user.2@test.test',
             Email = 'test.user.2@test.test',
             Alias = testUserAlias2,
             CommunityNickname = testUserAlias2,

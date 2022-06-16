@@ -62,6 +62,9 @@ public without sharing class UserDeprovisioner {
             if (matchDelegatedAdmin()) {
                 throw new DeprovisionUserException('Could not deprovision user. Matched Delegated Adminstrator.');
             }
+            if (matchPermSetToIgnore()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched Permission Set.');
+            }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
             transferCases();
@@ -297,22 +300,48 @@ public without sharing class UserDeprovisioner {
         return false;
     }
     private Boolean matchDelegatedAdmin() {
-        Boolean hasPermSet = false;
-        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
-            for (PermissionSetAssignment permSet : permissionSetAssignments) {
-                if (permSet.PermissionSetId == Id.valueOf('0PSd0000000qzf4GAA')) {
-                    hasPermSet = true;
-                    break;
-                }
-            }
-        }
-
-        if (userToDeprovision.Sandbox_Delagated_Administrator__c || hasPermSet) {
+        if (userToDeprovision.Sandbox_Delagated_Administrator__c) {
             addToProcessingNotes('Detected Delegated Administrator. Stopping User Deprovision');
             return true;
         } else {
             return false;
         }
+    }
+    private Boolean matchPermSetToIgnore() {
+        Boolean hasPermSet = false;
+
+        // Get a map of all the perm sets that should cause abort
+        Map<Id, String> permSetToIgnoreIdToName = new Map<Id, String>();
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            Deprovision_User_Configuration__c customSetting = deprovisionUserConfiguration.get(
+                deprovisionConfigurationName
+            );
+            if (customSetting.Name.contains('PermissionSetToIgnore')) {
+                permSetToIgnoreIdToName.put(customSetting.Id__c, customSetting.Name__c);
+            }
+        }
+
+        System.debug('=======================');
+        System.debug(permSetToIgnoreIdToName);
+        System.debug(permissionSetAssignments);
+
+        // Check if this user has at least one of these
+        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
+            for (PermissionSetAssignment permSet : permissionSetAssignments) {
+                // this perm set is one of the abort-causing perm sets
+                if (permSetToIgnoreIdToName.keySet().contains(permSet.PermissionSetId)) {
+                    hasPermSet = true;
+                    // record this in the notes
+                    addToProcessingNotes(
+                        'Permission set matched to: ' +
+                        permSetToIgnoreIdToName.get(permSet.PermissionSetId) +
+                        ', Stopping User Deprovision'
+                    );
+                    break;
+                }
+            }
+        }
+        return hasPermSet;
     }
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(

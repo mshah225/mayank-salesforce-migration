@@ -456,13 +456,20 @@ public class UserDeprovisionOrganizerTest {
         List<User> newUsers = new List<User>();
 
         Id standardProfile = RecordIdHelper.getProfileId('Standard User');
+        PermissionSet permSet = [SELECT Id FROM PermissionSet WHERE Name = 'View_Setup_And_Configuration'];
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Deprovision_User_Configuration__c deproConfig = new Deprovision_User_Configuration__c(
                 Name = 'ProfileToIgnore',
                 Id__c = standardProfile,
-                Name__c = ''
+                Name__c = 'Standard User'
             );
-            insert deproConfig;
+
+            Deprovision_User_Configuration__c deproConfig2 = new Deprovision_User_Configuration__c(
+                Name = 'PermissionSetToIgnore',
+                Id__c = permSet.Id,
+                Name__c = 'View Setup And Configuration'
+            );
+            insert new List<Deprovision_User_Configuration__c>{ deproConfig, deproConfig2 };
         }
 
         Integer counter = 0;
@@ -482,9 +489,14 @@ public class UserDeprovisionOrganizerTest {
                 newUsers.add(
                     new User(Id = user.Id, Role_Administrator_Developer__c = true, Deprovision_User__c = true)
                 );
-            } else {
+            } else if (counter < 4) {
                 // Stop on Delegated Admin users
-                psas.add(new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = '0PSd0000000qzf4GAA'));
+                newUsers.add(
+                    new User(Id = user.Id, Sandbox_Delagated_Administrator__c = true, Deprovision_User__c = true)
+                );
+            } else {
+                // Stop on perm set matches
+                psas.add(new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = permSet.Id));
                 newUsers.add(new User(Id = user.Id, Deprovision_User__c = true));
             }
             user.Deprovision_User__c = false;
@@ -520,6 +532,8 @@ public class UserDeprovisionOrganizerTest {
             ) {
                 properException = true;
             } else if (user.Processing_Notes__c.contains('Detected Delegated Administrator')) {
+                properException = true;
+            } else if (user.Processing_Notes__c.contains('Permission set matched to')) {
                 properException = true;
             }
             System.assert(properException, 'Error was of incorrect type');

@@ -108,6 +108,17 @@ function is_in_upstream() {
     fi
 }
 
+function is_protected_branch() {
+    local branch="$@"
+    local protected_branches=("dev main master sync sync-pr qa uat")
+
+    if [[ " ${protected_branches[*]} " =~ " ${branch} " ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
 # Create progress spinner when waiting on a task
 start_spinner() {
     spinner="/|\\-/|\\-"
@@ -124,6 +135,13 @@ start_spinner() {
 function execute_changes() {
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
+            if [[ $(is_protected_branch "$branch") == "1" ]]; then
+                if [[ $VERBOSE -eq 1 ]]; then
+                    echo "--> $branch is listed as protected, skipping"
+                fi
+                break
+            fi
+
             if [[ $(is_in_upstream "$branch") == "1" ]]; then
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch exists in upstream"

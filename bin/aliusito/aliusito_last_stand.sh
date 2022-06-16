@@ -174,7 +174,7 @@ function main() {
 
     # Fetch branch updates
     print_typed_text "Adding ASU as a remote........................" && echo -ne
-    git remote add ASU https://github.com/ASU/crm-salesforce-enterpise 
+    git remote add ASU https://github.com/ASU/crm-salesforce-enterpise &>/dev/null
     print_typed_text_green " Remoted " && echo -ne && print_checkmark
 
     # Fetch branch updates

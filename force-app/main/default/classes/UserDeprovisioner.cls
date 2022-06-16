@@ -321,10 +321,6 @@ public without sharing class UserDeprovisioner {
             }
         }
 
-        System.debug('=======================');
-        System.debug(permSetToIgnoreIdToName);
-        System.debug(permissionSetAssignments);
-
         // Check if this user has at least one of these
         if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
             for (PermissionSetAssignment permSet : permissionSetAssignments) {

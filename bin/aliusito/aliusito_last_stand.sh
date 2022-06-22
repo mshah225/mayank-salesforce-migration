@@ -278,12 +278,12 @@ function execute_changes() {
         branchesToPushText="$branchesToPushText- $value\n"
     done
 
-    print_typed_text "--- BRANCHES TO SKIP ---" && echo
-    print_typed_text "$branchesToSkipText" && echo && echo
-    print_typed_text "--- BRANCHES TO CREATE PR ---" && echo
-    print_typed_text "$branchesToCreatePullRequestText" && echo && echo
-    print_typed_text "--- BRANCHES TO PUSH ---" && echo
-    print_typed_text "$branchesToPushText" && echo && echo
+    print_typed_text_green "--- BRANCHES TO SKIP ---" && echo
+    print_typed_text_red "$branchesToSkipText" && echo && echo
+    print_typed_text_green "--- BRANCHES TO CREATE PR ---" && echo
+    print_typed_text_yellow "$branchesToCreatePullRequestText" && echo && echo
+    print_typed_text_green "--- BRANCHES TO PUSH ---" && echo
+    print_typed_text_blue "$branchesToPushText" && echo && echo
 
     print_typed_text "Closing terminal instance in two minutes." && echo
 }

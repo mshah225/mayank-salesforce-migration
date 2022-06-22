@@ -226,7 +226,7 @@ function execute_changes() {
 
 function main() {
     # Title screen
-    reset && tput setaf 27 && print_title_screen && sleep 3
+    reset && tput setaf 27 && print_title_screen && sleep 5
 
     # Completely necessary narrative to begin script
     reset && tput setaf 27 && print_alius_text_logo && tput sgr0

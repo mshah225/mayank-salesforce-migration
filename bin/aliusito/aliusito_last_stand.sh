@@ -111,7 +111,7 @@ function is_in_upstream() {
 function is_ignored_branch() {
     local local branch="$@"
 
-    if [[ "$branch" == *"migration"* ]] || [[ "$branch" == *"merge"* ]]; then
+    if [[ "$branch" == *"migration"* ]] || [[ "$branch" == *"merge"* ]] || [[ "$branch" == *"sync"* ]] || [[ "$branch" == *"bridge"* ]] || [[ "$branch" == *"revert"* ]]; then
         echo 1
     else
         echo 0
@@ -141,14 +141,34 @@ start_spinner() {
     done
 }
 
+# skipped (protected, ignored, no file changes)
+# existed in upstream, created a pull request
+# does not exist in upstream, pushed branch
+
 # Execute all major logic
 function execute_changes() {
+    branchesToSkipCount=0
+    branchesToSkipArray=()
+    branchesToSkipText=""
+
+    branchesToCreatePullRequestCount=0
+    branchesToCreatePullRequestArray=()
+    branchesToCreatePullRequestText=""
+
+    branchesToPushCount=0
+    branchesToPushArray=()
+    branchesToPushText=""
+
     if [[ $VERBOSE -eq 1 ]]; then
         printf "\n"
     fi
+
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
+                branchesToSkipArray+=("$branch")
+                branchesToSkipCount=$((branchesToSkipCount + 1))
+                
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch is listed as protected or ignored, skipping"
                     printf "\n"
@@ -162,6 +182,9 @@ function execute_changes() {
             aheadMainCount=${mainComparisonArray[1]}
 
             if [[ $aheadMainCount -eq 0 ]]; then
+                branchesToSkipArray+=("$branch")
+                branchesToSkipCount=$((branchesToSkipCount + 1))
+
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch does not have any file changes compared to main, skipping"
                     printf "\n"
@@ -186,6 +209,9 @@ function execute_changes() {
                 aheadUpstreamCount=${upstreamComparisonArray[1]}
 
                 if [[ $aheadUpstreamCount -eq 0 ]]; then
+                    branchesToSkipArray+=("$branch")
+                    branchesToSkipCount=$((branchesToSkipCount + 1))
+
                     if [[ $VERBOSE -eq 1 ]]; then
                         echo "--> $branch does not have any file changes compared to upstream, skipping"
                         printf "\n"
@@ -205,23 +231,25 @@ function execute_changes() {
 
                 #hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
 
+                branchesToCreatePullRequestArray+=("$branch")
+                branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
+
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch has file changes and also exists in upstream, creating a pull request for review"
                 fi
             else
+                #git push ASU $branch &>/dev/null
+
+                branchesToCreatePullRequestArray+=("$branch")
+                branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
+
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch does not exist in upstream, attempting to push to ASU"
                 fi
-                #git push ASU $branch &>/dev/null
             fi
 
             if [[ $VERBOSE -eq 1 ]]; then
                 printf "\n"
-            fi
-        else
-            if [[ $VERBOSE -eq 1 ]]; then
-                echo "$branch exists, but it has a forward slash in it"
-                # git branch -D $branch
             fi
         fi
     done
@@ -232,7 +260,30 @@ function execute_changes() {
 
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Ignored branches that were in the ASU upstream" && echo
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Updated branches if not conflicts were present" && echo
+    print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Created pull requests if a branch already existed" && echo
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Pushed branches to the ASU upstream" && echo && echo
+
+    print_typed_text "The Aliusito CI job completed with the following results:" && echo
+    print_typed_text "-- Number of branches to skip: $branchesToSkipCount" && echo
+    print_typed_text "-- Number of branches to create a pull request for: $branchesToCreatePullRequestCount" && echo
+    print_typed_text "-- Number of branches to contribute: $branchesToPushCount" && echo
+
+    for value in "${branchesToSkipArray[@]}"; do
+        branchesToSkipText="$branchesToSkipText- $value\n"
+    done
+    for value in "${branchesToCreatePullRequestArray[@]}"; do
+        branchesToCreatePullRequestText="$branchesToCreatePullRequestText- $value\n"
+    done
+    for value in "${branchesToPushArray[@]}"; do
+        branchesToPushText="$branchesToPushText- $value\n"
+    done
+
+    print_typed_text "--- BRANCHES TO SKIP ---" && echo
+    print_typed_text "$branchesToSkipText" && echo && echo
+    print_typed_text "--- BRANCHES TO CREATE PR ---" && echo
+    print_typed_text "$branchesToCreatePullRequestText" && echo && echo
+    print_typed_text "--- BRANCHES TO PUSH ---" && echo
+    print_typed_text "$branchesToPushText" && echo && echo
 
     print_typed_text "Closing terminal instance in two minutes." && echo
 }

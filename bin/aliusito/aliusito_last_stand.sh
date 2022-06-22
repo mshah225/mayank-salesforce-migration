@@ -260,7 +260,7 @@ function main() {
 
     # hub authentication check
     print_typed_text "Checking hub authentication..................." && echo -ne
-    hub pull-request --head dev --message "AUTHENTICATION CHECK" &>/dev/null
+    hub checkout http://github.com/apple/swift/pull/862 &>/dev/null
     print_typed_text_green " Checked " && echo -ne && print_checkmark
 
     # Iterate over all branches and attempt to update them from their upstream counterpart

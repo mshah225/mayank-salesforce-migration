@@ -1,10 +1,10 @@
 {
     "commands.commands": [
         {
-            "text": "$(terminal) Aliusito Fork Sync",
+            "text": "$(terminal) Aliusito's Last Stand",
             "command": "terminals.runTerminalByName",
-            "arguments": ["Aliusito Fork Sync"],
-            "tooltip": "A script to safely update all branches from the upstream"
+            "arguments": ["Aliusito's Last Stand"],
+            "tooltip": "A script to safely move all relevant forked branches to the upstream"
         },
         {
             "text": "$(play) SF Developer Setup",
@@ -35,10 +35,10 @@
     "terminal.integrated.cwd": "force-app/main/default",
     "terminals.terminals": [
         {
-            "name": "Aliusito Fork Sync",
-            "description": "A script to safely update all branches from the upstream",
+            "name": "Aliusito's Last Stand",
+            "description": "A script to safely move all relevant forked branches to the upstream",
             "icon": "code",
-            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito.sh", "sleep 120", "exit"],
+            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito-last-stand.sh", "sleep 120", "exit"],
             "recycle": true,
             "open": true,
             "focus": true

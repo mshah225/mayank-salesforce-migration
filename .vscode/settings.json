@@ -38,7 +38,7 @@
             "name": "Aliusito's Last Stand",
             "description": "A script to safely move all relevant forked branches to the upstream",
             "icon": "code",
-            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito-last-stand.sh", "sleep 120", "exit"],
+            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito_last_stand.sh", "sleep 120", "exit"],
             "recycle": true,
             "open": true,
             "focus": true

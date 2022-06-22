@@ -1,4 +1,6 @@
 public class EmailTransformer {
+    private static final Boolean debug = false;
+
     public List<EmailReplySuffix__mdt> emailSuffixes {
         get {
             if (emailSuffixes == null) {
@@ -9,16 +11,30 @@ public class EmailTransformer {
         set;
     }
 
-    public String trimReplyFromSuffix(String emailToClean) {
-        String cleanedEmail = emailToClean;
-        for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
-            if (cleanedEmail.contains(suffixToCheckFor.MasterLabel)) {
-                cleanedEmail = removeSuffixFromEmail(cleanedEmail, suffixToCheckFor.MasterLabel);
-                cleanedEmail = findAndReplaceSecondToLastPeriod(cleanedEmail);
+    public String cleanEmailAddress(String emailAddress) {
+        String cleanEmailAddress = emailAddress;
+        try {
+            for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
+                if (cleanEmailAddress.contains(suffixToCheckFor.MasterLabel)) {
+                    try {
+                        cleanEmailAddress = removeSuffixFromEmail(cleanEmailAddress, suffixToCheckFor.MasterLabel);
+                        cleanEmailAddress = findAndReplaceSecondToLastPeriod(cleanEmailAddress);
+                    } catch (Exception e) {
+                        throw new EmailTransformerException('Email does not match expected format:\n' + e.getMessage());
+                    }
+                }
             }
+            cleanEmailAddress = cleanEmailAddress.toLowerCase();
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emailAddress', emailAddress));
+            vars.add(ErrorLogger.convertStringToJSON('cleanEmailAddress', cleanEmailAddress));
+            ErrorLogger.log(e, vars, debug);
+
+            cleanEmailAddress = emailAddress;
         }
 
-        return cleanedEmail.toLowerCase();
+        return cleanEmailAddress.toLowerCase();
     }
 
     private String removeSuffixFromEmail(String emailWithSuffix, String suffixToRemove) {
@@ -33,5 +49,8 @@ public class EmailTransformer {
         reverseEmail = reverseEmail.subString(0, posOfPeriod) + '@' + reverseEmail.subString(posOfPeriod + 1);
         reverseEmail = reverseEmail.reverse();
         return reverseEmail;
+    }
+
+    public class EmailTransformerException extends Exception {
     }
 }

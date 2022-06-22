@@ -108,6 +108,16 @@ function is_in_upstream() {
     fi
 }
 
+function is_ignored_branch() {
+    local local branch="$@"
+
+    if [[ "$branch" == *"migration"* ]] || [[ "$branch" == *"merge"* ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
 function is_protected_branch() {
     local branch="$@"
     local protected_branches=("dev main master sync sync-pr qa uat")
@@ -138,9 +148,9 @@ function execute_changes() {
     fi
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
-            if [[ $(is_protected_branch "$branch") == "1" ]]; then
+            if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
                 if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch is listed as protected, skipping"
+                    echo "--> $branch is listed as protected or ignored, skipping"
                     printf "\n"
                 fi
                 continue

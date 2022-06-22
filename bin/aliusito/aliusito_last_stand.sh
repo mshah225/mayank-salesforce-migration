@@ -140,7 +140,7 @@ function execute_changes() {
         if [[ "$branch" != *\/* ]]; then
             if [[ $(is_protected_branch "$branch") == "1" ]]; then
                 if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch is listed as protected, skipping"
+                    echo "--> $branch is listed as protected, skipping\n"
                 fi
                 continue
             fi
@@ -152,7 +152,7 @@ function execute_changes() {
 
             if [[ $aheadMainCount -eq 0 ]]; then
                 if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch does not have any file changes compared to main, skipping"
+                    echo "--> $branch does not have any file changes compared to main, skipping\n"
                 fi
                 continue
             fi
@@ -175,7 +175,7 @@ function execute_changes() {
 
                 if [[ $aheadUpstreamCount -eq 0 ]]; then
                     if [[ $VERBOSE -eq 1 ]]; then
-                        echo "--> $branch does not have any file changes compared to upstream, skipping"
+                        echo "--> $branch does not have any file changes compared to upstream, skipping\n"
                     fi
                     continue
                 fi

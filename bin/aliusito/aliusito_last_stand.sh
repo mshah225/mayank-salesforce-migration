@@ -240,8 +240,8 @@ function execute_changes() {
             else
                 #git push ASU $branch &>/dev/null
 
-                branchesToCreatePullRequestArray+=("$branch")
-                branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
+                branchesToPushArray+=("$branch")
+                branchesToPushCount=$((branchesToPushCount + 1))
 
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch does not exist in upstream, attempting to push to ASU"
@@ -266,7 +266,7 @@ function execute_changes() {
     print_typed_text "The Aliusito CI job completed with the following results:" && echo
     print_typed_text "-- Number of branches to skip: $branchesToSkipCount" && echo
     print_typed_text "-- Number of branches to create a pull request for: $branchesToCreatePullRequestCount" && echo
-    print_typed_text "-- Number of branches to contribute: $branchesToPushCount" && echo
+    print_typed_text "-- Number of branches to contribute: $branchesToPushCount" && echo && echo
 
     for value in "${branchesToSkipArray[@]}"; do
         branchesToSkipText="$branchesToSkipText- $value\n"
@@ -278,12 +278,12 @@ function execute_changes() {
         branchesToPushText="$branchesToPushText- $value\n"
     done
 
-    print_typed_text_green "--- BRANCHES TO SKIP ---" && echo
+    print_typed_text_blue "--- BRANCHES TO SKIP ---" && echo
     print_typed_text_red "$branchesToSkipText" && echo && echo
-    print_typed_text_green "--- BRANCHES TO CREATE PR ---" && echo
+    print_typed_text_blue "--- BRANCHES TO CREATE PR ---" && echo
     print_typed_text_yellow "$branchesToCreatePullRequestText" && echo && echo
-    print_typed_text_green "--- BRANCHES TO PUSH ---" && echo
-    print_typed_text_blue "$branchesToPushText" && echo && echo
+    print_typed_text_blue "--- BRANCHES TO PUSH ---" && echo
+    print_typed_text_green "$branchesToPushText" && echo && echo
 
     print_typed_text "Closing terminal instance in two minutes." && echo
 }

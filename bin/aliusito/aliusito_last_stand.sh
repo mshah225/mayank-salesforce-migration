@@ -139,25 +139,63 @@ function execute_changes() {
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch is listed as protected, skipping"
                 fi
-                break
+                continue
+            fi
+
+            mainComparison="$(git rev-list --left-right --count ASU/main...origin/$branch)"
+            mainComparisonArray=($mainComparison)
+            behindMainCount=${mainComparisonArray[0]}
+            aheadMainCount=${mainComparisonArray[1]}
+
+            if [[ $aheadMainCount -eq 0 ]]; then
+                if [[ $VERBOSE -eq 1 ]]; then
+                    echo "--> $branch does not have any file changes compared to main, skipping"
+                fi
+                continue
+            fi
+
+            if [[ $behindMainCount -gt 0 ]]; then
+                # Attempt to pull from ASU:main to keep branch up-to-date if there are no conflicts
+                git pull --no-edit ASU main &>/dev/null
+                if [ $? -eq 0 ]; then
+                    git push origin $branch &>/dev/null
+                else
+                    git merge --abort &>/dev/null
+                fi
             fi
 
             if [[ $(is_in_upstream "$branch") == "1" ]]; then
+                upstreamComparison="$(git rev-list --left-right --count ASU/$branch...origin/$branch)"
+                upstreamComparisonArray=($upstreamComparison)
+                behindUpstreamCount=${upstreamComparisonArray[0]}
+                aheadUpstreamCount=${upstreamComparisonArray[1]}
+
+                if [[ $aheadUpstreamCount -eq 0 ]]; then
+                    if [[ $VERBOSE -eq 1 ]]; then
+                        echo "--> $branch does not have any file changes compared to upstream, skipping"
+                    fi
+                    continue
+                fi
+
+                if [[ $behindUpstreamCount -gt 0 ]]; then
+                    # Attempt to pull from ASU upstream to keep branch up-to-date if there are no conflicts
+                    git pull --no-edit ASU $branch &>/dev/null
+                    if [ $? -eq 0 ]; then
+                        git push origin $branch &>/dev/null
+                    else
+                        git merge --abort &>/dev/null
+                    fi
+                fi
+
+                hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
+
                 if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch exists in upstream"
+                    echo "--> $branch has file changes and also exists in upstream, creating a pull request for review"
                 fi
             else
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch does not exist in upstream, attempting to push to ASU"
                 fi
-
-                # Attempt to pull from ASU:main to keep branch up-to-date if there are no conflicts
-                # git pull --no-edit ASU main &>/dev/null
-                # if [ $? -eq 0 ]; then
-                #     git push origin $branch &>/dev/null
-                # else
-                #     git merge --abort &>/dev/null
-                # fi
                 #git push ASU $branch &>/dev/null
             fi
 
@@ -219,6 +257,11 @@ function main() {
         fi
     done
     print_typed_text_green " Tracked " && echo -ne && print_checkmark
+
+    # hub authentication check
+    print_typed_text "Checking hub authentication..................." && echo -ne
+    hub pull-request --head dev --message "AUTHENTICATION CHECK" &>/dev/null
+    print_typed_text_green " Checked " && echo -ne && print_checkmark
 
     # Iterate over all branches and attempt to update them from their upstream counterpart
     print_typed_text "Analyzing local branches...................... "

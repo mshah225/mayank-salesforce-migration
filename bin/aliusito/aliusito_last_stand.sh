@@ -133,6 +133,9 @@ start_spinner() {
 
 # Execute all major logic
 function execute_changes() {
+    if [[ $VERBOSE -eq 1 ]]; then
+        printf "\n"
+    fi
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
             if [[ $(is_protected_branch "$branch") == "1" ]]; then
@@ -187,7 +190,7 @@ function execute_changes() {
                     fi
                 fi
 
-                hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
+                #hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
 
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch has file changes and also exists in upstream, creating a pull request for review"

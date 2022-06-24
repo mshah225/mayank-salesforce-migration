@@ -6,11 +6,12 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      * {
      *   key: 'A unique key to identify this question'
      *   question: 'The question',
-     *     sourceLabel: the source label (only allowed for dual-listboxes)
-     *     selectedLabel: the selected label (only allowed for dual-listboxes)
      *   type: 'text'|'textarea'|'combobox'|'dual-listbox'|'label'
      *   subtype:  should specify sub type of type if multiple are possible
      *   options: [{label, value}, ...]  only allowed if type is combobox, or dual-listbox
+     *   sourceLabel: the source label (only allowed for dual-listboxes)
+     *   selectedLabel: the selected label (only allowed for dual-listboxes)
+     *   href: the link the url should go to (inly allowed for label's with subtype link)
      *   subnote: 'note to go under the input field',
      *   required: true|false,
      * }
@@ -26,6 +27,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      *              'bold'
      *              'plain' (default)
      *              'center'
+     *              'link'
      */
     @api set questions(val) {
         let newQuestions = [];
@@ -36,6 +38,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
             if (q.isLabel) q.isBoldLabel = q.subtype === 'bold';
             if (q.isLabel) q.isCenterLabel = q.subtype === 'center';
             if (q.isLabel) q.isPlainLabel = q.subtype === 'plain' || q.subtype == null;
+            if (q.isLabel) q.isLink = q.subtype === 'link';
             q.isTextArea = q.type === 'textarea';
             q.isComboBox = q.type === 'combobox';
             if (q.isComboBox) q.isMultiSelect = q.subtype === 'multi';

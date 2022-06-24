@@ -9,6 +9,9 @@
                 <template if:true={q.isCenterLabel}>
                     <div class="slds-text-align_center">{q.question}</div>
                 </template>
+                <template if:true={q.isLink}>
+                    <a target="_blank" href={q.href}>{q.question}</a>
+                </template>
             </template>
             <template if:true={q.isSpacer}>
                 <div class={q.subtype}></div>

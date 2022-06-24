@@ -13,9 +13,6 @@ export default class JiraReportIssueForm extends LightningElement {
         return this.alertHref != null && this.alertHref !== '';
     }
 
-    @api question1;
-    @api question2;
-    @api question3;
     @api type;
     @api questionListJSON;
 
@@ -62,25 +59,34 @@ export default class JiraReportIssueForm extends LightningElement {
 
     submit() {
         if (this.isValid()) {
-            let title = '';
-
+            let title = null;
             let qaList = [];
-            let watchers = '';
+            let watchers = null;
+            let reqForm = null;
+
             for (let i = 0; i < this.configurableQuestions.length; i++) {
                 const q = this.configurableQuestions[i];
                 const thisQA = '*' + q.question + '*\\n' + q.answer;
                 if (q.type === 'label') continue; // don't add labels to the body
-                if (q.action !== null) {
+                if (q.action != null) {
                     // is action is specified - then we need to do something special
                     if (q.action === 'title') if (q.answer.length > 0) title = q.answer;
                     if (q.action === 'watcherList') if (q.answer.length > 0) watchers = q.answer;
+                    if (q.action === 'requestForm') if (q.answer.length > 0) reqForm = q.answer;
                     continue;
                 }
                 // for each question and answer - we add it to the qaList
                 qaList.push(thisQA);
             }
 
+            if (reqForm != null) qaList.push('*Request Form:*\\n' + reqForm);
+
             let description = qaList.join('\\n\\n'); // combine to make mega string
+            description = description
+                .replaceAll('\r\n', '\\n')
+                .replaceAll('\n\r', '\\n')
+                .replaceAll('\n', '\\n')
+                .replaceAll('\r', '\\n'); // remove any newlines
 
             let type = this.type;
 
@@ -98,6 +104,7 @@ export default class JiraReportIssueForm extends LightningElement {
                     this.clearInputs();
                 })
                 .catch((err) => {
+                    console.error(err);
                     this.alert =
                         'Cannot create JIRA ticket, please email your request to salesforce.development@asu.edu';
                     this.alertHref = null;

@@ -17,62 +17,18 @@ export default class JiraReportIssueForm extends LightningElement {
     @api question2;
     @api question3;
     @api type;
+    @api questionListJSON;
 
     configurableQuestions = [];
-    alwaysQuestions = [
-        {
-            key: 'requestFormLink',
-            question:
-                'Please include the link to your shared document with your request details. A template for your request details is above.',
-            answer: '',
-            type: 'textarea',
-        },
-        {
-            key: 'watchers',
-            question: 'Watchers for the ticket:',
-            answer: '',
-            type: 'textarea',
-            subnote:
-                'Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma.',
-        },
-    ];
     disabledButton = false;
 
     connectedCallback() {
-        this.configurableQuestions = [
-            {
-                key: 'title',
-                question: 'Summary of the issue (Title):',
-                answer: '',
-                type: 'textarea',
-                subnote: 'FIELD LIMIT: This field must be less than 255 characters.',
-                required: true,
-            },
-            {
-                key: 'question1',
-                question: this.question1,
-                answer: '',
-                type: 'textarea',
-                subnote: 'FIELD LIMIT: This field must be less than 3000 characters.',
-                required: true,
-            },
-            {
-                key: 'question2',
-                question: this.question2,
-                answer: '',
-                type: 'textarea',
-                subnote: 'FIELD LIMIT: This field must be less than 3000 characters.',
-                required: true,
-            },
-            {
-                key: 'question3',
-                question: this.question3,
-                answer: '',
-                type: 'textarea',
-                subnote: 'FIELD LIMIT: This field must be less than 3000 characters.',
-                required: true,
-            },
-        ];
+        this.configurableQuestions = JSON.parse(this.questionListJSON);
+        for (let i = 0; i < this.configurableQuestions.length; i++) {
+            const question = this.configurableQuestions[i];
+            question.key = 'key-' + i;
+            question.answer = '';
+        }
     }
 
     changeAnswers(e) {
@@ -106,34 +62,25 @@ export default class JiraReportIssueForm extends LightningElement {
 
     submit() {
         if (this.isValid()) {
-            let title = this.configurableQuestions[0].answer;
+            let title = '';
 
-            let description =
-                '*' +
-                this.question1 +
-                '*' +
-                '\\n' +
-                this.configurableQuestions[1].answer +
-                '\\n\\n' +
-                '*' +
-                this.question2 +
-                '*' +
-                '\\n' +
-                this.configurableQuestions[2].answer +
-                '\\n\\n' +
-                '*' +
-                this.question3 +
-                '*' +
-                '\\n' +
-                this.configurableQuestions[3].answer +
-                '\\n\\n';
-
-            if (this.alwaysQuestions[0].answer.length > 0) {
-                description += '*Request Form:*\\n' + this.alwaysQuestions[0].answer + '\\n\\n';
+            let qaList = [];
+            let watchers = '';
+            for (let i = 0; i < this.configurableQuestions.length; i++) {
+                const q = this.configurableQuestions[i];
+                const thisQA = '*' + q.question + '*\\n' + q.answer;
+                if (q.type === 'label') continue; // don't add labels to the body
+                if (q.action !== null) {
+                    // is action is specified - then we need to do something special
+                    if (q.action === 'title') if (q.answer.length > 0) title = q.answer;
+                    if (q.action === 'watcherList') if (q.answer.length > 0) watchers = q.answer;
+                    continue;
+                }
+                // for each question and answer - we add it to the qaList
+                qaList.push(thisQA);
             }
 
-            let watchers = '';
-            if (this.alwaysQuestions[1].answer.length > 0) watchers = this.alwaysQuestions[1].answer;
+            let description = qaList.join('\\n\\n'); // combine to make mega string
 
             let type = this.type;
 

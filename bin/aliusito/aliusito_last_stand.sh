@@ -141,10 +141,6 @@ start_spinner() {
     done
 }
 
-# skipped (protected, ignored, no file changes)
-# existed in upstream, created a pull request
-# does not exist in upstream, pushed branch
-
 # Execute all major logic
 function execute_changes() {
     branchesToSkipCount=0
@@ -163,8 +159,18 @@ function execute_changes() {
         printf "\n"
     fi
 
+    branchTotalCount=0
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
+            branchTotalCount=$((branchTotalCount + 1))
+        fi
+    done
+
+    for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
+        if [[ "$branch" != *\/* ]]; then
+
+            echo -ne "Current branch: $branch\033[0K\r"
+
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
                 branchesToSkipArray+=("$branch")
                 branchesToSkipCount=$((branchesToSkipCount + 1))
@@ -274,13 +280,13 @@ function execute_changes() {
          printf "\n"
     done
 
-    print_typed_text_blue "--- BRANCHES TO CREATE PR ---" && echo
+    echo && print_typed_text_blue "--- BRANCHES TO CREATE PR ---" && echo
     for value in "${branchesToCreatePullRequestArray[@]}"; do
         print_typed_text_yellow "- $value"
         printf "\n"
     done
 
-    print_typed_text_blue "--- BRANCHES TO PUSH ---" && echo
+    echo && print_typed_text_blue "--- BRANCHES TO PUSH ---" && echo
     for value in "${branchesToPushArray[@]}"; do
         print_typed_text_green "- $value"
         printf "\n"
@@ -340,11 +346,7 @@ function main() {
 }
 
 # Set to 1 for verbose mode
-reset && reset && reset
-VERBOSE=1
-# print_checkmark
-# print_checkmark_no_newline
-# print_checkmark
-print_typed_text "test\ntest"
-sleep 5
+VERBOSE=0
+
+reset && reset
 main

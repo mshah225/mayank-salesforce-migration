@@ -269,7 +269,7 @@ function main() {
     hub sync &>/dev/null
     print_typed_text_green " Aligned " && echo -ne && print_checkmark
 
-    # Switch to main and update from origin
+    # Switch to main and update from upstream
     print_typed_text "Updating main from upstream..................." && echo -ne
     git reset --hard ASU/main &>/dev/null
     git push -f origin main &>/dev/null

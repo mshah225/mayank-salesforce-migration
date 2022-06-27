@@ -268,22 +268,23 @@ function execute_changes() {
     print_typed_text "-- Number of branches to create a pull request for: $branchesToCreatePullRequestCount" && echo
     print_typed_text "-- Number of branches to contribute: $branchesToPushCount" && echo && echo
 
+    print_typed_text_blue "--- BRANCHES TO SKIP ---" && echo
     for value in "${branchesToSkipArray[@]}"; do
-        branchesToSkipText="$branchesToSkipText- $value\n"
-    done
-    for value in "${branchesToCreatePullRequestArray[@]}"; do
-        branchesToCreatePullRequestText="$branchesToCreatePullRequestText- $value\n"
-    done
-    for value in "${branchesToPushArray[@]}"; do
-        branchesToPushText="$branchesToPushText- $value\n"
+         print_typed_text_red "- $value"
+         printf "\n"
     done
 
-    print_typed_text_blue "--- BRANCHES TO SKIP ---" && echo
-    print_typed_text_red "$branchesToSkipText" && echo && echo
     print_typed_text_blue "--- BRANCHES TO CREATE PR ---" && echo
-    print_typed_text_yellow "$branchesToCreatePullRequestText" && echo && echo
+    for value in "${branchesToCreatePullRequestArray[@]}"; do
+        print_typed_text_yellow "- $value"
+        printf "\n"
+    done
+
     print_typed_text_blue "--- BRANCHES TO PUSH ---" && echo
-    print_typed_text_green "$branchesToPushText" && echo && echo
+    for value in "${branchesToPushArray[@]}"; do
+        print_typed_text_green "- $value"
+        printf "\n"
+    done
 
     print_typed_text "Closing terminal instance in two minutes." && echo
 }
@@ -339,6 +340,11 @@ function main() {
 }
 
 # Set to 1 for verbose mode
+reset && reset && reset
 VERBOSE=1
-
+# print_checkmark
+# print_checkmark_no_newline
+# print_checkmark
+print_typed_text "test\ntest"
+sleep 5
 main

@@ -108,6 +108,7 @@ function is_in_upstream() {
     fi
 }
 
+# Check if a branch contains an undesirable keyword
 function is_ignored_branch() {
     local local branch="$@"
 
@@ -118,6 +119,7 @@ function is_ignored_branch() {
     fi
 }
 
+# Check if a branch is protected
 function is_protected_branch() {
     local branch="$@"
     local protected_branches=("dev main master sync sync-pr qa uat")
@@ -152,7 +154,7 @@ function execute_changes() {
         if [[ "$branch" != *\/* ]]; then
         branchIndex=$((branchIndex + 1))
 
-            echo -ne "--> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
+            echo -ne "  --> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
 
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
                 branchesToSkipArray+=("$branch")
@@ -171,8 +173,8 @@ function execute_changes() {
                 continue
             fi
 
+            # Attempt to pull from ASU:main to keep branch up-to-date if there are no conflicts
             if [[ $behindMainCount -gt 0 ]]; then
-                # Attempt to pull from ASU:main to keep branch up-to-date if there are no conflicts
                 git pull --no-edit ASU main &>/dev/null
                 if [ $? -eq 0 ]; then
                     git push origin $branch &>/dev/null
@@ -193,8 +195,8 @@ function execute_changes() {
                     continue
                 fi
 
+                # Attempt to pull from ASU upstream to keep branch up-to-date if there are no conflicts
                 if [[ $behindUpstreamCount -gt 0 ]]; then
-                    # Attempt to pull from ASU upstream to keep branch up-to-date if there are no conflicts
                     git pull --no-edit ASU $branch &>/dev/null
                     if [ $? -eq 0 ]; then
                         git push origin $branch &>/dev/null
@@ -217,13 +219,9 @@ function execute_changes() {
     # Switch back to main because it looks cleaner at the end
     git checkout -f main &>/dev/null
     git reset --hard origin/main &>/dev/null
+    print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Completed branch analyzation" && echo && echo
 
-    print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Ignored branches that were in the ASU upstream" && echo
-    print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Updated branches if not conflicts were present" && echo
-    print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Created pull requests if a branch already existed" && echo
-    print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Pushed branches to the ASU upstream" && echo && echo
-
-    print_typed_text "Aliusito completed with the following results:" && echo
+    print_typed_text "Aliusito succeeded with the following results:" && echo
     print_typed_text "-- Number of branches to contribute upstream: $branchesToPushCount" && echo
     print_typed_text "-- Number of branches to create PR for review: $branchesToCreatePullRequestCount" && echo
     print_typed_text "-- Number of branches to skip due to irrelevancy: $branchesToSkipCount" && echo && echo

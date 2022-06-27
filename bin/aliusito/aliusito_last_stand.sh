@@ -169,7 +169,7 @@ function execute_changes() {
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
 
-            echo -ne "Current branch: $branch\033[0K\r"
+            echo -ne "Current branch: \033[1m$branch\033[0m\033[0K\r"
 
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
                 branchesToSkipArray+=("$branch")
@@ -338,10 +338,10 @@ function main() {
     print_typed_text_green " Checked " && echo -ne && print_checkmark
 
     # Iterate over all branches and attempt to update them from their upstream counterpart
-    print_typed_text "Analyzing local branches...................... "
-    start_spinner &
-    SPIN_PID=$!
-    trap "kill -9 $SPIN_PID" $(seq 0 15)
+    print_typed_text "Analyzing local branches...................... " && echo
+    # start_spinner &
+    # SPIN_PID=$!
+    # trap "kill -9 $SPIN_PID" $(seq 0 15)
     execute_changes
 }
 

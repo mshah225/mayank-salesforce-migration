@@ -152,8 +152,7 @@ function execute_changes() {
     branchIndex=0
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
-        branchIndex=$((branchIndex + 1))
-
+            branchIndex=$((branchIndex + 1))
             echo -ne "  --> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
 
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then

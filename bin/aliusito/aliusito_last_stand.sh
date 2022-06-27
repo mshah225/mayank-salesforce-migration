@@ -34,15 +34,15 @@ function print_title_screen() {
 }
 
 function print_alius_text_logo() {
-    echo "                                                      "
-    echo "    ██   █    ▄█   ▄      ▄▄▄▄▄   ▄█    ▄▄▄▄▀ ████▄   "
-    echo "    █ █  █    ██    █    █     ▀▄ ██ ▀▀▀ █    █   █   "
-    echo "    █▄▄█ █    ██ █   █ ▄  ▀▀▀▀▄   ██     █    █   █   "
-    echo "    █  █ ███▄ ▐█ █   █  ▀▄▄▄▄▀    ▐█    █     ▀████   "
-    echo "       █     ▀ ▐ █▄ ▄█             ▐   ▀              "
-    echo "      █           ▀▀▀                                 "
-    echo "     ▀                                                "
-    echo "                                                      "
+    echo "                                                       "
+    echo "    ██   █    ▄█   ▄      ▄▄▄▄▄   ▄█    ▄▄▄▄▀ ████▄    "
+    echo "    █ █  █    ██    █    █     ▀▄ ██ ▀▀▀ █    █   █    "
+    echo "    █▄▄█ █    ██ █   █ ▄  ▀▀▀▀▄   ██     █    █   █    "
+    echo "    █  █ ███▄ ▐█ █   █  ▀▄▄▄▄▀    ▐█    █     ▀████    "
+    echo "       █     ▀ ▐ █▄ ▄█             ▐   ▀               "
+    echo "      █           ▀▀▀                                  "
+    echo "     ▀                                                 "
+    echo "                                                       "
 }
 
 # Print text as if it's being typed live
@@ -139,8 +139,8 @@ function execute_changes() {
     branchesToCreatePullRequestCount=0
     branchesToCreatePullRequestArray=()
 
-    branchesToPushCount=0
-    branchesToPushArray=()
+    branchesToContributeCount=0
+    branchesToContributeArray=()
 
     branchTotalCount=0
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
@@ -210,8 +210,8 @@ function execute_changes() {
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
             else
                 #git push ASU $branch &>/dev/null
-                branchesToPushArray+=("$branch")
-                branchesToPushCount=$((branchesToPushCount + 1))
+                branchesToContributeArray+=("$branch")
+                branchesToContributeCount=$((branchesToContributeCount + 1))
             fi
         fi
     done
@@ -222,12 +222,12 @@ function execute_changes() {
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Completed branch analyzation" && echo && echo
 
     print_typed_text "Aliusito succeeded with the following results:" && echo
-    print_typed_text "-- Number of branches to contribute upstream: $branchesToPushCount" && echo
+    print_typed_text "-- Number of branches to contribute upstream: $branchesToContributeCount" && echo
     print_typed_text "-- Number of branches to create PR for review: $branchesToCreatePullRequestCount" && echo
     print_typed_text "-- Number of branches to skip due to irrelevancy: $branchesToSkipCount" && echo && echo
 
-    print_typed_text_blue "--- PUSHED BRANCHES ---" && echo
-    for value in "${branchesToPushArray[@]}"; do
+    print_typed_text_blue "--- CONTRIBUTED BRANCHES ---" && echo
+    for value in "${branchesToContributeArray[@]}"; do
         print_typed_text_green "- $value"
         printf "\n"
     done

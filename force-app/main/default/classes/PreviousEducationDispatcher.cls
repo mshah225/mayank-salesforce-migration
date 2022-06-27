@@ -26,14 +26,14 @@ public class PreviousEducationDispatcher implements TriggerDispatcherInterface {
         // Update Contact's Last HS and Last College if needed
         PreviousEducationService.updateContactsLastEducations(newList);
         // Territory Assignment
-        TerritoryAssignmentPreviousEducation ta = new TerritoryAssignmentPreviousEducation();
+        TerritoryAssignmentPreviousEducation ta = new TerritoryAssignmentPreviousEducation(newList);
         ta.assignTerritory();
     }
     public void afterUpdate() {
         // Update Contact's Last HS and Last College if needed
         PreviousEducationService.updateContactsLastEducations(newList);
         // Territory Assignment
-        TerritoryAssignmentPreviousEducation ta = new TerritoryAssignmentPreviousEducation();
+        TerritoryAssignmentPreviousEducation ta = new TerritoryAssignmentPreviousEducation(newList);
         ta.assignTerritory();
     }
     public void afterDelete() {

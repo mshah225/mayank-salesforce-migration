@@ -169,12 +169,14 @@ function execute_changes() {
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
 
-            echo -ne "Current branch: \033[1m$branch\033[0m\033[0K\r"
+            echo -ne "--> \033[1m$branch\033[0m\033[0K\r"
 
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
                 branchesToSkipArray+=("$branch")
                 branchesToSkipCount=$((branchesToSkipCount + 1))
                 
+                echo " [SKIP]"
+
                 if [[ $VERBOSE -eq 1 ]]; then
                     echo "--> $branch is listed as protected or ignored, skipping"
                     printf "\n"

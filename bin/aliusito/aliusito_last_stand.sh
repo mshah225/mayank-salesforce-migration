@@ -129,18 +129,6 @@ function is_protected_branch() {
     fi
 }
 
-# Create progress spinner when waiting on a task
-start_spinner() {
-    spinner="/|\\-/|\\-"
-    while :; do
-        for i in $(seq 0 7); do
-            echo -n "${spinner:$i:1}"
-            echo -en "\010"
-            sleep 1
-        done
-    done
-}
-
 # Execute all major logic
 function execute_changes() {
     branchesToSkipCount=0
@@ -272,26 +260,26 @@ function execute_changes() {
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Pushed branches to the ASU upstream" && echo && echo
 
     print_typed_text "The Aliusito CI job completed with the following results:" && echo
-    print_typed_text "-- Number of branches to skip: $branchesToSkipCount" && echo
-    print_typed_text "-- Number of branches to create a pull request for: $branchesToCreatePullRequestCount" && echo
-    print_typed_text "-- Number of branches to contribute: $branchesToPushCount" && echo && echo
+    print_typed_text "-- Number of branches to contribute upstream: $branchesToPushCount" && echo
+    print_typed_text "-- Number of branches to create PR for review: $branchesToCreatePullRequestCount" && echo
+    print_typed_text "-- Number of branches to skip due to irrelevancy: $branchesToSkipCount" && echo && echo
 
-    print_typed_text_blue "--- BRANCHES TO SKIP ---" && echo
-    for value in "${branchesToSkipArray[@]}"; do
-         print_typed_text_red "- $value"
-         printf "\n"
+    print_typed_text_blue "--- PUSHED BRANCHES ---" && echo
+    for value in "${branchesToPushArray[@]}"; do
+        print_typed_text_green "- $value"
+        printf "\n"
     done
 
-    echo && print_typed_text_blue "--- BRANCHES TO CREATE PR ---" && echo
+    echo && print_typed_text_blue "--- PULL REQUESTED BRANCHES ---" && echo
     for value in "${branchesToCreatePullRequestArray[@]}"; do
         print_typed_text_yellow "- $value"
         printf "\n"
     done
 
-    echo && print_typed_text_blue "--- BRANCHES TO PUSH ---" && echo
-    for value in "${branchesToPushArray[@]}"; do
-        print_typed_text_green "- $value"
-        printf "\n"
+    echo && print_typed_text_blue "--- SKIPPED BRANCHES ---" && echo
+    for value in "${branchesToSkipArray[@]}"; do
+         print_typed_text_red "- $value"
+         printf "\n"
     done
 
     print_typed_text "Closing terminal instance in two minutes." && echo
@@ -341,9 +329,6 @@ function main() {
 
     # Iterate over all branches and attempt to update them from their upstream counterpart
     print_typed_text "Analyzing local branches...................... " && echo
-    # start_spinner &
-    # SPIN_PID=$!
-    # trap "kill -9 $SPIN_PID" $(seq 0 15)
     execute_changes
 }
 

@@ -133,19 +133,12 @@ function is_protected_branch() {
 function execute_changes() {
     branchesToSkipCount=0
     branchesToSkipArray=()
-    branchesToSkipText=""
 
     branchesToCreatePullRequestCount=0
     branchesToCreatePullRequestArray=()
-    branchesToCreatePullRequestText=""
 
     branchesToPushCount=0
     branchesToPushArray=()
-    branchesToPushText=""
-
-    if [[ $VERBOSE -eq 1 ]]; then
-        printf "\n"
-    fi
 
     branchTotalCount=0
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
@@ -154,21 +147,16 @@ function execute_changes() {
         fi
     done
 
+    branchIndex=0
     for branch in $(git for-each-ref --format='%(refname:short)' --sort='*refname:short' refs/heads/); do
         if [[ "$branch" != *\/* ]]; then
+        branchIndex=$((branchIndex + 1))
 
-            echo -ne "--> \033[1m$branch\033[0m"
+            echo -ne "--> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
 
             if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
                 branchesToSkipArray+=("$branch")
                 branchesToSkipCount=$((branchesToSkipCount + 1))
-                
-                echo -ne " [SKIP]\033[0K\r"
-
-                if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch is listed as protected or ignored, skipping"
-                    printf "\n"
-                fi
                 continue
             fi
 
@@ -180,11 +168,6 @@ function execute_changes() {
             if [[ $aheadMainCount -eq 0 ]]; then
                 branchesToSkipArray+=("$branch")
                 branchesToSkipCount=$((branchesToSkipCount + 1))
-
-                if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch does not have any file changes compared to main, skipping"
-                    printf "\n"
-                fi
                 continue
             fi
 
@@ -207,11 +190,6 @@ function execute_changes() {
                 if [[ $aheadUpstreamCount -eq 0 ]]; then
                     branchesToSkipArray+=("$branch")
                     branchesToSkipCount=$((branchesToSkipCount + 1))
-
-                    if [[ $VERBOSE -eq 1 ]]; then
-                        echo "--> $branch does not have any file changes compared to upstream, skipping"
-                        printf "\n"
-                    fi
                     continue
                 fi
 
@@ -226,26 +204,12 @@ function execute_changes() {
                 fi
 
                 #hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
-
                 branchesToCreatePullRequestArray+=("$branch")
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
-
-                if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch has file changes and also exists in upstream, creating a pull request for review"
-                fi
             else
                 #git push ASU $branch &>/dev/null
-
                 branchesToPushArray+=("$branch")
                 branchesToPushCount=$((branchesToPushCount + 1))
-
-                if [[ $VERBOSE -eq 1 ]]; then
-                    echo "--> $branch does not exist in upstream, attempting to push to ASU"
-                fi
-            fi
-
-            if [[ $VERBOSE -eq 1 ]]; then
-                printf "\n"
             fi
         fi
     done
@@ -259,7 +223,7 @@ function execute_changes() {
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Created pull requests if a branch already existed" && echo
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Pushed branches to the ASU upstream" && echo && echo
 
-    print_typed_text "The Aliusito CI job completed with the following results:" && echo
+    print_typed_text "Aliusito completed with the following results:" && echo
     print_typed_text "-- Number of branches to contribute upstream: $branchesToPushCount" && echo
     print_typed_text "-- Number of branches to create PR for review: $branchesToCreatePullRequestCount" && echo
     print_typed_text "-- Number of branches to skip due to irrelevancy: $branchesToSkipCount" && echo && echo
@@ -331,9 +295,6 @@ function main() {
     print_typed_text "Analyzing local branches...................... " && echo
     execute_changes
 }
-
-# Set to 1 for verbose mode
-VERBOSE=0
 
 reset && reset
 main

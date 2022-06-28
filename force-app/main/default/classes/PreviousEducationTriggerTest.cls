@@ -70,12 +70,13 @@ private with sharing class PreviousEducationTriggerTest {
 
         // Contact will have multiple HS Prev Educations
         Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS1.Id);
-        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
+        insert hsPrevEd; // this will set the contact's Last HS to testHS1
 
-        insert hsPrevEd; // sets contact's Last HS to testHS1
+        ObjectService.wait(2000); // need to ensure the update timestamp on hsPrevEd2 is later than the timestamp on hsPrevEd
 
         // Should update the contact's Last HS to testHS2
         Test.startTest();
+        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
         insert hsPrevEd2;
         Test.stopTest();
 
@@ -97,10 +98,12 @@ private with sharing class PreviousEducationTriggerTest {
 
         // Contact will have multiple HS Prev Educations
         Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS1.Id);
-        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
+        insert hsPrevEd; // this will set the contact's Last HS to testHS1
+        ObjectService.wait(2000); // need to ensure the update timestamp on hsPrevEd2 is later than the timestamp on hsPrevEd
 
-        insert hsPrevEd; // sets contact's Last HS to testHS1
-        insert hsPrevEd2; // sets contact's Last HS to testHS2
+        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
+        insert hsPrevEd2; // this will set the contact's Last HS to testHS2
+        ObjectService.wait(2000); // need to ensure the update timestamp on hsPrevEd is later than the timestamp on hsPrevEd2
 
         // Should update the contact's Last HS back to testHS1
         Test.startTest();

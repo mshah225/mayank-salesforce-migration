@@ -165,6 +165,15 @@ public class ObjectServiceTest {
     }
 
     @isTest
+    private static void testWait() {
+        Long startSecond = System.now().getTime();
+        ObjectService.wait(5000);
+        Long endSecond = System.now().getTime();
+
+        System.assert(endSecond - startSecond >= 5, 'Should have waited at least 5 seconds');
+    }
+
+    @isTest
     private static void testGetPicklistOptionsMap() {
         List<Schema.PicklistEntry> expectedTimeZones = User.getSObjectType()
             .getDescribe()

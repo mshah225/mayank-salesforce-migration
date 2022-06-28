@@ -210,6 +210,20 @@ public class ObjectService {
     }
 
     /**
+     * Waits a given number of milliseconds - this should only be used in test code when we need
+     * to ensure certain timestamps are certain times apart. Production code should not use
+     * waiting for any reason.
+     */
+    public static void wait(Integer millisecondsToWait) {
+        Long startTime = DateTime.now().getTime();
+        Long finalTime = DateTime.now().getTime();
+
+        while (finalTime - startTime < millisecondsToWait) {
+            finalTime = DateTime.now().getTime();
+        }
+    }
+
+    /**
      * Get the map of the active picklist values from the picklist field of some object
      * this maps the label of each entry to it's respective value (repeated labels would cause issues)
      */

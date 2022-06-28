@@ -1,118 +1,117 @@
-@istest
+@isTest
 private with sharing class PreviousEducationTriggerTest {
-    // Need to update with the correct test user
-    private static User TestUser;
-    private static Account HS = new Account();
-    private static Account College = new Account();
+    @TestSetup
+    private static void setup() {
+        Contact testCon = new Contact(FirstName = 'PreviousEducation Trigger', LastName = 'Test Contact');
+        Contact testCon2 = new Contact(FirstName = 'PreviousEducation Trigger', LastName = 'Test Contact 2');
+        insert new List<Contact>{ testCon, testCon2 };
 
-    @testSetup
-    static void setup() {
-        TestUser = [SELECT Id FROM User WHERE Profile.Name = 'System Administrator' AND isActive = TRUE LIMIT 1];
+        Account highSchool1 = new Account(Name = 'Test HS 1', Institution_Type__c = 'HS');
+        Account highSchool2 = new Account(Name = 'Test HS 2', Institution_Type__c = 'HS');
+        Account college1 = new Account(Name = 'Test College 1', Institution_Type__c = '4YR');
+        Account college2 = new Account(Name = 'Test College 2', Institution_Type__c = '2YR');
+        insert new List<Account>{ highSchool1, highSchool2, college1, college2 };
     }
 
-    private static testMethod void testContactInsertFromPreviousEducationHS() {
-        HS.Name = 'Test High School';
-        HS.Institution_Type__c = 'HS';
-        insert HS;
+    @isTest
+    private static void testUpdateContactLastHS() {
+        // Retrieve setup data
+        Contact testCon = [SELECT Id FROM Contact LIMIT 1];
+        Account testHs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS' LIMIT 1];
 
-        Contact Con = new Contact();
-        Con.FirstName = 'TestFirstName';
-        Con.LastName = 'TestLastName';
-        Con.Last_HS_Attended__c = null;
-        Con.Last_College_Attended__c = null;
-        insert Con;
+        // Contact will has a HS Prev Education
+        Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHs.Id);
 
-        //Test inserting a High School. The trigger updates the contact accordingly.
-        Previous_Education__c PEHS = new Previous_Education__c();
-        PEHS.Contact__c = Con.Id;
-        PEHS.Account__c = HS.Id;
-
+        // Should update the contact's Last HS
         Test.startTest();
-        insert PEHS;
+        insert hsPrevEd;
         Test.stopTest();
 
-        // Assertions
-        Id HSId = [SELECT Last_HS_Attended__c FROM Contact WHERE Id = :Con.Id LIMIT 1].Last_HS_Attended__c;
-        System.Assert(HSId == PEHS.Account__c, 'Contact Last High School Attended did not update correctly.');
+        // Retrieve updated contact
+        testCon = [SELECT Id, Last_HS_Attended__c, Last_College_Attended__c FROM Contact WHERE Id = :testCon.Id];
+
+        // Assert
+        System.assertEquals(testHs.Id, testCon.Last_HS_Attended__c);
+        System.assertEquals(null, testCon.Last_College_Attended__c);
     }
 
-    private static testMethod void testContactInsertFromPreviousEducationCollege() {
-        College.Name = 'Test College';
-        College.Institution_Type__c = '4YR';
-        insert College;
+    @isTest
+    private static void testUpdateContactLastCollege() {
+        // Retrieve setup data
+        Contact testCon = [SELECT Id FROM Contact LIMIT 1];
+        Account testCollege = [SELECT Id FROM Account WHERE Institution_Type__c = '4YR' LIMIT 1];
 
-        Contact Con = new Contact();
-        Con.FirstName = 'TestFirstName';
-        Con.LastName = 'TestLastName';
-        Con.Last_HS_Attended__c = null;
-        Con.Last_College_Attended__c = null;
-        insert Con;
+        // Contact will has a College Prev Education
+        Previous_Education__c collegePrevEd = new Previous_Education__c(
+            Contact__c = testCon.Id,
+            Account__c = testCollege.Id
+        );
 
-        //Test Inserting a College. The trigger updates the contact accordingly.
-        Previous_Education__c PEC = new Previous_Education__c();
-        PEC.Contact__c = Con.Id;
-        PEC.Account__c = College.Id;
+        // Should update the contact's Last College
         Test.startTest();
-        insert PEC;
+        insert collegePrevEd;
         Test.stopTest();
 
-        Id CollegeId = [SELECT Last_College_Attended__c FROM Contact WHERE Id = :Con.Id LIMIT 1]
-        .Last_College_Attended__c;
-        System.Assert(CollegeId == PEC.Account__c, 'Contact Last College Attended did not update correctly.');
+        // Retrieve updated contact
+        testCon = [SELECT Id, Last_HS_Attended__c, Last_College_Attended__c FROM Contact WHERE Id = :testCon.Id];
+
+        // Assert
+        System.assertEquals(null, testCon.Last_HS_Attended__c);
+        System.assertEquals(testCollege.Id, testCon.Last_College_Attended__c);
     }
 
-    private static testMethod void testContactUpdateFromPreviousEducationHS() {
-        HS.Name = 'Test High School';
-        HS.Institution_Type__c = 'HS';
-        insert HS;
+    @isTest
+    private static void testUpdateContactMultipleInsertLastHS() {
+        // Retrieve setup data
+        Contact testCon = [SELECT Id FROM Contact LIMIT 1];
+        List<Account> testHSs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS'];
+        Account testHS1 = testHSs[0];
+        Account testHS2 = testHSs[1];
 
-        Contact Con = new Contact();
-        Con.FirstName = 'TestFirstName';
-        Con.LastName = 'TestLastName';
-        Con.Last_HS_Attended__c = null;
-        Con.Last_College_Attended__c = null;
-        insert Con;
+        // Contact will have multiple HS Prev Educations
+        Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS1.Id);
+        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
 
-        //Test inserting a High School. The trigger updates the contact accordingly.
-        Previous_Education__c PEHS = new Previous_Education__c();
-        PEHS.Contact__c = Con.Id;
-        PEHS.Account__c = HS.Id;
+        insert hsPrevEd; // sets contact's Last HS to testHS1
 
-        insert PEHS;
-
+        // Should update the contact's Last HS to testHS2
         Test.startTest();
-        update PEHS;
+        insert hsPrevEd2;
         Test.stopTest();
 
-        // Assertions
-        Id HSId = [SELECT Last_HS_Attended__c FROM Contact WHERE Id = :Con.Id LIMIT 1].Last_HS_Attended__c;
-        System.Assert(HSId == PEHS.Account__c, 'Contact Last High School Attended did not update correctly.');
+        // Retrieve updated contact
+        testCon = [SELECT Id, Last_HS_Attended__c, Last_College_Attended__c FROM Contact WHERE Id = :testCon.Id];
+
+        // Assert
+        System.assertEquals(testHS2.Id, testCon.Last_HS_Attended__c);
+        System.assertEquals(null, testCon.Last_College_Attended__c);
     }
 
-    private static testMethod void testContactUpdateFromPreviousEducationCollege() {
-        College.Name = 'Test College';
-        College.Institution_Type__c = '4YR';
-        insert College;
+    @isTest
+    private static void testUpdateContactMultipleUpdateLastHS() {
+        // Retrieve setup data
+        Contact testCon = [SELECT Id FROM Contact LIMIT 1];
+        List<Account> testHSs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS'];
+        Account testHS1 = testHSs[0];
+        Account testHS2 = testHSs[1];
 
-        Contact Con = new Contact();
-        Con.FirstName = 'TestFirstName';
-        Con.LastName = 'TestLastName';
-        Con.Last_HS_Attended__c = null;
-        Con.Last_College_Attended__c = null;
-        insert Con;
+        // Contact will have multiple HS Prev Educations
+        Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS1.Id);
+        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
 
-        //Test Inserting a College. The trigger updates the contact accordingly.
-        Previous_Education__c PEC = new Previous_Education__c();
-        PEC.Contact__c = Con.Id;
-        PEC.Account__c = College.Id;
-        insert PEC;
+        insert hsPrevEd; // sets contact's Last HS to testHS1
+        insert hsPrevEd2; // sets contact's Last HS to testHS2
 
+        // Should update the contact's Last HS back to testHS1
         Test.startTest();
-        update PEC;
+        update hsPrevEd;
         Test.stopTest();
 
-        Id CollegeId = [SELECT Last_College_Attended__c FROM Contact WHERE Id = :Con.Id LIMIT 1]
-        .Last_College_Attended__c;
-        System.Assert(CollegeId == PEC.Account__c, 'Contact Last College Attended did not update correctly.');
+        // Retrieve updated contact
+        testCon = [SELECT Id, Last_HS_Attended__c, Last_College_Attended__c FROM Contact WHERE Id = :testCon.Id];
+
+        // Assert
+        System.assertEquals(testHS1.Id, testCon.Last_HS_Attended__c);
+        System.assertEquals(null, testCon.Last_College_Attended__c);
     }
 }

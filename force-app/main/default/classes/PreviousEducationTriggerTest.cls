@@ -61,7 +61,7 @@ private with sharing class PreviousEducationTriggerTest {
     }
 
     @isTest
-    private static void testUpdateContactMultipleInsertLastHS() {
+    private static void testUpdateContactMultipleInsert() {
         // Retrieve setup data
         Contact testCon = [SELECT Id FROM Contact LIMIT 1];
         List<Account> testHSs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS'];
@@ -89,7 +89,7 @@ private with sharing class PreviousEducationTriggerTest {
     }
 
     @isTest
-    private static void testUpdateContactMultipleUpdateLastHS() {
+    private static void testUpdateContactMultipleUpdate() {
         // Retrieve setup data
         Contact testCon = [SELECT Id FROM Contact LIMIT 1];
         List<Account> testHSs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS'];
@@ -115,6 +115,66 @@ private with sharing class PreviousEducationTriggerTest {
 
         // Assert
         System.assertEquals(testHS1.Id, testCon.Last_HS_Attended__c);
+        System.assertEquals(null, testCon.Last_College_Attended__c);
+    }
+
+    @isTest
+    private static void testUpdateContactMultipleDelete() {
+        // Retrieve setup data
+        Contact testCon = [SELECT Id FROM Contact LIMIT 1];
+        List<Account> testHSs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS'];
+        Account testHS1 = testHSs[0];
+        Account testHS2 = testHSs[1];
+
+        // Contact will have multiple HS Prev Educations
+        Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS1.Id);
+        insert hsPrevEd; // this will set the contact's Last HS to testHS1
+        ObjectService.wait(2000); // need to ensure the update timestamp on hsPrevEd2 is later than the timestamp on hsPrevEd
+
+        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
+        insert hsPrevEd2; // this will set the contact's Last HS to testHS2
+
+        // Should update the contact's Last HS to testHS1
+        Test.startTest();
+        delete hsPrevEd2;
+        Test.stopTest();
+
+        // Retrieve updated contact
+        testCon = [SELECT Id, Last_HS_Attended__c, Last_College_Attended__c FROM Contact WHERE Id = :testCon.Id];
+
+        // Assert
+        System.assertEquals(testHS1.Id, testCon.Last_HS_Attended__c);
+        System.assertEquals(null, testCon.Last_College_Attended__c);
+    }
+
+    @isTest
+    private static void testUpdateContactMultipleUnDelete() {
+        // Retrieve setup data
+        Contact testCon = [SELECT Id FROM Contact LIMIT 1];
+        List<Account> testHSs = [SELECT Id FROM Account WHERE Institution_Type__c = 'HS'];
+        Account testHS1 = testHSs[0];
+        Account testHS2 = testHSs[1];
+
+        // Contact will have multiple HS Prev Educations
+        Previous_Education__c hsPrevEd = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS1.Id);
+        insert hsPrevEd; // this will set the contact's Last HS to testHS1
+        ObjectService.wait(2000); // need to ensure the update timestamp on hsPrevEd2 is later than the timestamp on hsPrevEd
+
+        Previous_Education__c hsPrevEd2 = new Previous_Education__c(Contact__c = testCon.Id, Account__c = testHS2.Id);
+        insert hsPrevEd2; // this will set the contact's Last HS to testHS2
+
+        delete hsPrevEd2; // this will set the contact's Last HS to testHS1
+
+        // Should update the contact's Last HS to testHS2
+        Test.startTest();
+        undelete hsPrevEd2;
+        Test.stopTest();
+
+        // Retrieve updated contact
+        testCon = [SELECT Id, Last_HS_Attended__c, Last_College_Attended__c FROM Contact WHERE Id = :testCon.Id];
+
+        // Assert
+        System.assertEquals(testHS2.Id, testCon.Last_HS_Attended__c);
         System.assertEquals(null, testCon.Last_College_Attended__c);
     }
 }

@@ -524,25 +524,27 @@
 
                             <div class="hide">
                                 <apex:form>
-                                    <apex:selectList value="{!serviceIndicatorTerm}" size="1">
-                                        <apex:selectOptions value="{!serviceIndicatorTermOptions}" />
-                                        <apex:actionSupport event="onchange" reRender="serviceIndicatorTable" />
-                                    </apex:selectList>
+                                    <div style="margin-bottom: 10px">
+                                        <apex:selectList value="{!serviceIndicatorTerm}" size="1">
+                                            <apex:selectOptions value="{!serviceIndicatorTermOptions}" />
+                                            <apex:actionSupport event="onchange" reRender="serviceIndicatorTable" />
+                                        </apex:selectList>
+                                    </div>
                                     <apex:dataTable id="serviceIndicatorTable" value="{!filteredServiceIndicatorsForStudent}" var="serviceIndicator" styleClass="table table-striped table-bordered">
                                         <apex:column>
-                                            <apex:facet name="header ">Start Date</apex:facet>
+                                            <apex:facet name="header">Start Date</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorActiveDate}
                                         </apex:column>
                                         <apex:column>
-                                            <apex:facet name="header ">Code</apex:facet>
+                                            <apex:facet name="header">Code</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorCode}
                                         </apex:column>
                                         <apex:column>
-                                            <apex:facet name="header ">Description</apex:facet>
+                                            <apex:facet name="header">Description</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorCodeDescr}
                                         </apex:column>
                                         <apex:column>
-                                            <apex:facet name="header ">Reason</apex:facet>
+                                            <apex:facet name="header">Reason</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorReason}
                                         </apex:column>
                                     </apex:dataTable>

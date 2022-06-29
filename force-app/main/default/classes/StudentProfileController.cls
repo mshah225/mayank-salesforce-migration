@@ -40,6 +40,7 @@ global with sharing class StudentProfileController {
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
+    public String serviceIndicatorTerm { get; set; }
     public Decimal undergradGPA {get; set; }
     public Decimal gradGPA {get; set; }
     public List<String> financialAidIndicators { get; set; }
@@ -89,6 +90,60 @@ global with sharing class StudentProfileController {
             }
             return completedAcadmicIntegrity;
         }
+        set;
+    }
+
+    public Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>> serviceIndicatorsForStudent {
+        get {
+            if (serviceIndicatorsForStudent == null) {                
+                serviceIndicatorsForStudent = StudentProfileCalloutService.getServiceIndicators(theContact.EmplId__c);
+            }
+
+            return serviceIndicatorsForStudent;
+        }
+
+        set;
+    }
+
+    public List<ServiceIndicatorWrapper.ServiceIndicators> filteredServiceIndicatorsForStudent {
+        get {
+            List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsToDisplay = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+
+            if (serviceIndicatorsForStudent == null) {
+                return null;
+            }
+
+            if (serviceIndicatorTerm != 'All' && serviceIndicatorTerm != null) {                
+                serviceIndicatorsToDisplay = serviceIndicatorsForStudent.get(serviceIndicatorTerm);
+            } else {
+                for (String key : serviceIndicatorsForStudent.keyset()) {
+                    serviceIndicatorsToDisplay.addAll(serviceIndicatorsForStudent.get(key));
+                }
+            }
+            
+            return serviceIndicatorsToDisplay;
+        }
+
+        set;
+    }
+
+    public List<SelectOption> serviceIndicatorTermOptions {
+        get {
+            List<SelectOption> serviceIndicatorTermOptions = new List<SelectOption>();
+            
+            if (serviceIndicatorsForStudent == null) {
+                serviceIndicatorTermOptions.add(new SelectOption('--', '--'));
+                return serviceIndicatorTermOptions;
+            }
+            
+            serviceIndicatorTermOptions.add(new SelectOption('All','All'));
+            for (String serviceTerm : serviceIndicatorsForStudent.keySet()) {
+                serviceIndicatorTermOptions.add(new SelectOption(serviceTerm,serviceTerm));
+            }
+            
+            return serviceIndicatorTermOptions;
+        }
+        
         set;
     }
 

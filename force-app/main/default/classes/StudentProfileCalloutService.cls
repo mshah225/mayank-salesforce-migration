@@ -24,19 +24,31 @@ public with sharing class StudentProfileCalloutService {
             return null;
         }
 
+        
+        List<ServiceIndicatorWrapper.ServiceIndicators> wildCardTermIndicators = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+
         for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
             if (siw.ServiceImpact.ServiceImpactCode.contains('SF') || siw.ServiceImpact.ServiceImpactCode.contains('B')) {
                 String term = siw.ServiceIndicatorActiveTerm;
-                if (serviceIndicatorMap.get(term) == null) {
-                    List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
-                    serviceIndicatorList.add(siw);
-                    serviceIndicatorMap.put(term, serviceIndicatorList);
+                if (term == '0000') {
+                    wildCardTermIndicators.add(siw);
                 } else {
-                    List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
-                    serviceIndicatorList.add(siw);
-                    serviceIndicatorMap.put(term, serviceIndicatorList);
-                }
+                    if (serviceIndicatorMap.get(term) == null) {
+                        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+                        serviceIndicatorList.add(siw);
+                        serviceIndicatorMap.put(term, serviceIndicatorList);
+                    } else {
+                        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
+                        serviceIndicatorList.add(siw);
+                        serviceIndicatorMap.put(term, serviceIndicatorList);
+                    }
+                }                
             }
+        }
+
+        for (String serviceTerm : serviceIndicatorMap.keySet()) {
+            serviceIndicatorMap.get(serviceTerm).addAll(wildCardTermIndicators);
+            serviceIndicatorMap.get(serviceTerm).sort();
         }
 
         System.debug(dataWrapper);

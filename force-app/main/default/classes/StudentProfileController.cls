@@ -143,10 +143,12 @@ global with sharing class StudentProfileController {
                 peopleSoftToTermName.put(termForCode.PeopleSoft_Code__c, termForCode.Name);
             }
 
-            serviceIndicatorTermOptions.add(new SelectOption('All','All'));
-            for (String serviceTerm : serviceIndicatorsForStudent.keySet()) {
-                if (peopleSoftToTermName.get(serviceTerm) != null) {
-                    serviceIndicatorTermOptions.add(new SelectOption(serviceTerm,peopleSoftToTermName.get(serviceTerm)));
+            List<String> keysForMap =new List<String> (serviceIndicatorsForStudent.keySet());
+            keysForMap.sort();
+
+            for (Integer i = keysForMap.size()-1; i >= 0; i--) {
+                if (peopleSoftToTermName.get(keysForMap[i]) != null) {
+                    serviceIndicatorTermOptions.add(new SelectOption(keysForMap[i],peopleSoftToTermName.get(keysForMap[i])));
                 }
             }
             

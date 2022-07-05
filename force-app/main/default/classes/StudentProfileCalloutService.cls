@@ -16,7 +16,6 @@ public with sharing class StudentProfileCalloutService {
         String responseBody = res.getBody();
         
         if (responseBody != null) {
-           responseBody = responseBody.replace('Service indicators', 'ServiceIndicators'); 
            dataWrapper =  ServiceIndicatorWrapper.parse(responseBody);
         }
 
@@ -28,22 +27,25 @@ public with sharing class StudentProfileCalloutService {
         List<ServiceIndicatorWrapper.ServiceIndicators> wildCardTermIndicators = new List<ServiceIndicatorWrapper.ServiceIndicators>();
 
         for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
-            if (siw.ServiceImpact.ServiceImpactCode.contains('SF') || siw.ServiceImpact.ServiceImpactCode.contains('B')) {
-                String term = siw.ServiceIndicatorActiveTerm;
-                if (term == '0000') {
-                    wildCardTermIndicators.add(siw);
-                } else {
-                    if (serviceIndicatorMap.get(term) == null) {
-                        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
-                        serviceIndicatorList.add(siw);
-                        serviceIndicatorMap.put(term, serviceIndicatorList);
+            for (ServiceIndicatorWrapper.ServiceIndicators.ServiceImpact impact : siw.ServiceImpacts) {
+                if (impact.ServiceImpactCode.contains('SF') || impact.ServiceImpactCode.contains('B')) {
+                    String term = siw.ServiceIndicatorActiveTerm;
+                    if (term == '0000') {
+                        wildCardTermIndicators.add(siw);
                     } else {
-                        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
-                        serviceIndicatorList.add(siw);
-                        serviceIndicatorMap.put(term, serviceIndicatorList);
-                    }
-                }                
-            }
+                        if (serviceIndicatorMap.get(term) == null) {
+                            List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+                            serviceIndicatorList.add(siw);
+                            serviceIndicatorMap.put(term, serviceIndicatorList);
+                        } else {
+                            List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
+                            serviceIndicatorList.add(siw);
+                            serviceIndicatorMap.put(term, serviceIndicatorList);
+                        }
+                    }                
+                }
+                break;
+            }            
         }
 
         for (String serviceTerm : serviceIndicatorMap.keySet()) {

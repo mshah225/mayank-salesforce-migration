@@ -18,7 +18,7 @@ public class ServiceIndicatorWrapper {
 		public String DisplayInSS;
 		public String ServiceIndReasonCodeDescr;
 		public String ServiceIndReasonCodeDescrLong;
-		public ServiceImpact ServiceImpact;
+		public List<ServiceImpact> ServiceImpacts;
         
         public Integer compareTo (Object comparison) {
             ServiceIndicators compareToSI = (ServiceIndicators)comparison;

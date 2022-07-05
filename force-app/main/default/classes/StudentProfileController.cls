@@ -135,10 +135,19 @@ global with sharing class StudentProfileController {
                 serviceIndicatorTermOptions.add(new SelectOption('--', '--'));
                 return serviceIndicatorTermOptions;
             }
-            
+
+            List<Term__c> termsUsed = [SELECT PeopleSoft_Code__c, Name FROM Term__c WHERE PeopleSoft_Code__c IN: serviceIndicatorsForStudent.keySet()];
+            Map<String, String> peopleSoftToTermName = new Map<String, String>();
+
+            for (Term__c termForCode : termsUsed) {
+                peopleSoftToTermName.put(termForCode.PeopleSoft_Code__c, termForCode.Name);
+            }
+
             serviceIndicatorTermOptions.add(new SelectOption('All','All'));
             for (String serviceTerm : serviceIndicatorsForStudent.keySet()) {
-                serviceIndicatorTermOptions.add(new SelectOption(serviceTerm,serviceTerm));
+                if (peopleSoftToTermName.get(serviceTerm) != null) {
+                    serviceIndicatorTermOptions.add(new SelectOption(serviceTerm,peopleSoftToTermName.get(serviceTerm)));
+                }
             }
             
             return serviceIndicatorTermOptions;

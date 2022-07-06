@@ -516,10 +516,6 @@
                                         aria-hidden="true"></a>
                                 </h4>
 
-                                <h4>
-
-                                </h4>
-
                                 <div class="pull-right">
                                     <a href="https://cs.oasis.asu.edu/psp/asucsprd/EMPLOYEE/CAMP/c/MAINTAIN_SERVICE_IND_STDNT.ACTIVE_SRVC_INDICA.GBL?EMPLID={!theContact.EMPLID__c}"
                                         class="pull-right sideBoxMoreLink" target="_blank" style="font-size: 11pt; margin-top: 2px">

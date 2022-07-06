@@ -27,7 +27,7 @@ public with sharing class StudentProfileCalloutService {
         List<ServiceIndicatorWrapper.ServiceIndicators> wildCardTermIndicators = new List<ServiceIndicatorWrapper.ServiceIndicators>();
 
         for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
-            for (ServiceIndicatorWrapper.ServiceIndicators.ServiceImpact impact : siw.ServiceImpacts) {
+            for (ServiceIndicatorWrapper.ServiceIndicators.ServiceImpacts impact : siw.ServiceImpacts) {
                 if (impact.ServiceImpactCode.contains('SF') || impact.ServiceImpactCode.contains('B')) {
                     String term = siw.ServiceIndicatorActiveTerm;
                     if (term == '0000') {

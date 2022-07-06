@@ -47,7 +47,11 @@ public with sharing class StudentProfileCalloutService {
             serviceIndicatorMap.get(serviceTerm).addAll(wildCardTermIndicators);
             serviceIndicatorMap.get(serviceTerm).sort();
         }
-        
+
+        if (serviceIndicatorMap.keySet().size() == 0) {
+            serviceIndicatorMap.put('0000', wildCardTermIndicators);
+        }
+
         return serviceIndicatorMap;
     }
 }

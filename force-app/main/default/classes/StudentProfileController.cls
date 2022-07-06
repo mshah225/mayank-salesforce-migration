@@ -151,6 +151,10 @@ global with sharing class StudentProfileController {
                     serviceIndicatorTermOptions.add(new SelectOption(keysForMap[i],peopleSoftToTermName.get(keysForMap[i])));
                 }
             }
+
+            if (keysForMap.size() == 1 && keysforMap[0] == '0000') {
+                serviceIndicatorTermOptions.add(new SelectOption('0000','No Term'));
+            }
             
             return serviceIndicatorTermOptions;
         }

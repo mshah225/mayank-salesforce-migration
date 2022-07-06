@@ -27,25 +27,20 @@ public with sharing class StudentProfileCalloutService {
         List<ServiceIndicatorWrapper.ServiceIndicators> wildCardTermIndicators = new List<ServiceIndicatorWrapper.ServiceIndicators>();
 
         for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
-            for (ServiceIndicatorWrapper.ServiceImpact impact : siw.ServiceImpacts) {
-                if (impact.ServiceImpactCode.contains('SF') || impact.ServiceImpactCode.contains('B')) {
-                    String term = siw.ServiceIndicatorActiveTerm;
-                    if (term == '0000') {
-                        wildCardTermIndicators.add(siw);
-                    } else {
-                        if (serviceIndicatorMap.get(term) == null) {
-                            List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
-                            serviceIndicatorList.add(siw);
-                            serviceIndicatorMap.put(term, serviceIndicatorList);
-                        } else {
-                            List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
-                            serviceIndicatorList.add(siw);
-                            serviceIndicatorMap.put(term, serviceIndicatorList);
-                        }
-                    }                
+            String term = siw.ServiceIndicatorActiveTerm;
+            if (term == '0000') {
+                wildCardTermIndicators.add(siw);
+            } else {
+                if (serviceIndicatorMap.get(term) == null) {
+                    List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+                    serviceIndicatorList.add(siw);
+                    serviceIndicatorMap.put(term, serviceIndicatorList);
+                } else {
+                    List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
+                    serviceIndicatorList.add(siw);
+                    serviceIndicatorMap.put(term, serviceIndicatorList);
                 }
-                break;
-            }            
+            }       
         }
 
         for (String serviceTerm : serviceIndicatorMap.keySet()) {

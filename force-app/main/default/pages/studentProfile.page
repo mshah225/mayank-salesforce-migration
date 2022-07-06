@@ -512,6 +512,12 @@
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
                                     &nbsp;Service Indicators
+                                    <a style="{!IF(filteredServiceIndicatorsForStudent.size == null, 'display: none;', '')}" class="fa fa-exclamation-circle"
+                                        aria-hidden="true"></a>
+                                </h4>
+
+                                <h4>
+
                                 </h4>
 
                                 <div class="pull-right">
@@ -524,13 +530,14 @@
 
                             <div class="hide">
                                 <apex:form>
-                                    <div style="margin-bottom: 10px">
+                                    <div style="margin-bottom: 10px; {!IF(filteredServiceIndicatorsForStudent.size == null, 'display: none;', '')}">
                                         <apex:selectList value="{!serviceIndicatorTerm}" size="1">
                                             <apex:selectOptions value="{!serviceIndicatorTermOptions}" />
                                             <apex:actionSupport event="onchange" reRender="serviceIndicatorTable" />
                                         </apex:selectList>
                                     </div>
-                                    <apex:dataTable id="serviceIndicatorTable" value="{!filteredServiceIndicatorsForStudent}" var="serviceIndicator" styleClass="table table-striped table-bordered">
+                                    <apex:dataTable id="serviceIndicatorTable" rendered="{!filteredServiceIndicatorsForStudent.size != null}" value="{!filteredServiceIndicatorsForStudent}"
+                                        var="serviceIndicator" styleClass="table table-striped table-bordered">
                                         <apex:column>
                                             <apex:facet name="header">Start Date</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorActiveDate}
@@ -548,6 +555,9 @@
                                             {!serviceIndicator.ServiceIndicatorReason}
                                         </apex:column>
                                     </apex:dataTable>
+                                    <div style="{!IF(filteredServiceIndicatorsForStudent.size != null, 'display: none;', '')}">
+                                        There are no service indicators available for this student.
+                                    </div>
                                 </apex:form>
                             </div>
                         </div>

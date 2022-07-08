@@ -107,19 +107,22 @@ global with sharing class StudentProfileController {
 
     public List<ServiceIndicatorWrapper.ServiceIndicators> filteredServiceIndicatorsForStudent {
         get {
-            List<ServiceIndicatorWrapper.ServiceIndicators> filteredServiceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();
-
+            List<ServiceIndicatorWrapper.ServiceIndicators> filteredServiceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();            
+            
             if (serviceIndicatorsForStudent == null) {
                 return null;
             }
-
-            if (serviceIndicatorTerm != 'All' && serviceIndicatorTerm != null) {                
-                filteredServiceIndicatorsForStudent = serviceIndicatorsForStudent.get(serviceIndicatorTerm);
-            } else {
-                for (String key : serviceIndicatorsForStudent.keyset()) {
-                    filteredServiceIndicatorsForStudent.addAll(serviceIndicatorsForStudent.get(key));
+            
+            if (serviceIndicatorTerm == null) {
+                if (serviceIndicatorTermOptions != null && serviceIndicatorTermOptions.size() > 0) {
+                    serviceIndicatorTerm = serviceIndicatorTermOptions[0].getValue();
+                } else {
+                    return null;
                 }
             }
+            
+            
+            filteredServiceIndicatorsForStudent = serviceIndicatorsForStudent.get(serviceIndicatorTerm);
             
             return filteredServiceIndicatorsForStudent;
         }

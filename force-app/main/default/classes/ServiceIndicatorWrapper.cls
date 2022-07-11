@@ -26,9 +26,9 @@ public class ServiceIndicatorWrapper {
             Date otherDate = date.parse(compareToSI.ServiceIndicatorActiveDate);
             
             if(thisDate > otherDate) {
-                return 1;
-            } else if (thisDate < otherDate) {
                 return -1;
+            } else if (thisDate < otherDate) {
+                return 1;
             } else {
                 return 0;
             }

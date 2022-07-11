@@ -1,6 +1,8 @@
 @IsTest
 public class StudentProfileCalloutServiceTest {
-    public static HttpResponse getServiceIndicatorsFromCallout() {
+
+    @isTest
+    public static void getServiceIndicatorsFromCallout() {
         Test.setMock(HttpCalloutMock.class, new StudentProfileServiceIndicatorMock());
 
         Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>> serviceIndicators = StudentProfileCalloutService.getServiceIndicators('1206104779');
@@ -9,7 +11,7 @@ public class StudentProfileCalloutServiceTest {
 
         System.assert(serviceIndicators.get('2201') != null);
 
-        ServiceIndicatorWrapper.ServiceIndicators specificRecord = serviceIndicators.get('2201');
+        ServiceIndicatorWrapper.ServiceIndicators specificRecord = serviceIndicators.get('2201')[0];
 
         System.assertEquals(specificRecord.ServiceIndicatorCode, 'A15');
     }

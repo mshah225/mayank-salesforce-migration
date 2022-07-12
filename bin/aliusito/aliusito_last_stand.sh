@@ -208,11 +208,14 @@ function execute_changes() {
                 branchesToCreatePullRequestArray+=("$branch")
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
             else
+                git checkout $branch
                 if git diff-index --quiet ASU/main --; then
+                    git checkout -f main
                     branchesToSkipArray+=("$branch")
                     branchesToSkipCount=$((branchesToSkipCount + 1))
                     continue
                 else
+                    git checkout -f main
                     git push ASU $branch
                     branchesToContributeArray+=("$branch")
                     branchesToContributeCount=$((branchesToContributeCount + 1))

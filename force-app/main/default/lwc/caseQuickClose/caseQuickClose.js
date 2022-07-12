@@ -17,6 +17,7 @@ import DESCRIPTION_FIELD from '@salesforce/schema/Case.Description';
 import RECORD_TYPE_DEVELOPER_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
+import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 
 // Vars
 const FIELDSET_PREFIX = 'CQC_RT_';
@@ -35,7 +36,8 @@ export default class CaseQuickClose extends LightningElement {
     isButtonVisible = true;
     errorDetail = '';
     errorContact = 'salesforce.support@asu.edu';
-    selectedStatus = '';
+    selectedStatus = null;
+    defaultStatus = null;
     inputFieldsBefore = [];
     inputFieldsAfter = [];
     statusFieldLabel;
@@ -44,7 +46,14 @@ export default class CaseQuickClose extends LightningElement {
     // Case Record
     @wire(getRecord, {
         recordId: '$recordId',
-        fields: [SUBJECT_FIELD, DESCRIPTION_FIELD, RECORD_TYPE_DEVELOPER_NAME_FIELD, STATUS_FIELD, CASE_NUMBER_FIELD],
+        fields: [
+            SUBJECT_FIELD,
+            DESCRIPTION_FIELD,
+            RECORD_TYPE_DEVELOPER_NAME_FIELD,
+            STATUS_FIELD,
+            CASE_NUMBER_FIELD,
+            IS_CLOSED_FIELD,
+        ],
     })
     wiredCase({error, data}) {
         if (error) {
@@ -172,9 +181,16 @@ export default class CaseQuickClose extends LightningElement {
         return this.statusFieldRequired;
     }
 
-    // Get the current status
+    /**
+     * Get the current status
+     *
+     * This value set on the status input field.
+     * We don't want to pass its status on a non-closed case,
+     * since the option will not be available in the dropdown for setting.
+     */
     get currentStatus() {
-        return getFieldValue(this.record, STATUS_FIELD);
+        let isClosed = getFieldValue(this.record, IS_CLOSED_FIELD);
+        return isClosed ? getFieldValue(this.record, STATUS_FIELD) : this.defaultStatus;
     }
 
     // Build Status Options Array

@@ -7,24 +7,37 @@ trigger EmailMessageTrigger on EmailMessage(
     before insert,
     before update
 ) {
-    EmailMessageDispatcher d = new EmailMessageDispatcher(Trigger.newMap, Trigger.oldMap);
+    EmailMessageDispatcher dispatcher = new EmailMessageDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
 
     if (Trigger.isBefore) {
-        if (Trigger.isUpdate)
-            d.beforeUpdate();
-        if (Trigger.isInsert)
-            d.beforeInsert();
-        if (Trigger.isDelete)
-            d.beforeDelete();
+        if (Trigger.isInsert) {
+            dispatcher.beforeInsert();
+        }
+        if (Trigger.isUpdate) {
+            dispatcher.beforeUpdate();
+        }
+        if (Trigger.isDelete) {
+            dispatcher.beforeDelete();
+        }
     }
+
     if (Trigger.isAfter) {
-        if (Trigger.isUpdate)
-            d.afterUpdate();
-        if (Trigger.isInsert)
-            d.afterInsert();
-        if (Trigger.isDelete)
-            d.afterDelete();
-        if (Trigger.isUnDelete)
-            d.afterUnDelete();
+        if (Trigger.isInsert) {
+            dispatcher.afterInsert();
+        }
+        if (Trigger.isUpdate) {
+            dispatcher.afterUpdate();
+        }
+        if (Trigger.isDelete) {
+            dispatcher.afterDelete();
+        }
+        if (Trigger.isUndelete) {
+            dispatcher.afterUndelete();
+        }
     }
 }

@@ -1,11 +1,9 @@
 public class CivitasPersistenceController {
     private static final Integer CENSUS_OFFSET = 22;
 
-    public Integer endMonth;
     public String nextTerm;
     public String prevTerm;
     public String currentTerm;
-    public Integer startMonth;
     public String contactEmplId;
 
     public static final Date TODAY = System.today();
@@ -71,10 +69,10 @@ public class CivitasPersistenceController {
         set;
     }
 
-    public Date startDate {
+    public Integer startMonth {
         get {
-            if (startDate == null) {
-                startDate = [
+            if (startMonth == null) {
+                Date startDate = [
                     SELECT Session_A_C_Start_Date__c
                     FROM Term__c
                     WHERE PeopleSoft_Code__c = :currentTerm
@@ -83,26 +81,28 @@ public class CivitasPersistenceController {
                 .Session_A_C_Start_Date__c;
                 startMonth = startDate.month();
             }
-            return startDate;
+            return startMonth;
         }
         set;
     }
 
-    public Date endDate {
+    public Integer endMonth {
         get {
-            if (endDate == null) {
-                endDate = [SELECT Session_A_C_Start_Date__c FROM Term__c WHERE PeopleSoft_Code__c = :nextTerm LIMIT 1]
+            if (endMonth == null) {
+                Date endDate = [SELECT Session_A_C_Start_Date__c FROM Term__c WHERE PeopleSoft_Code__c = :nextTerm LIMIT 1]
                 .Session_A_C_Start_Date__c;
                 endMonth = endDate.month();
             }
-            return endDate;
+            return endMonth;
         }
         set;
     }
 
     private List<CivitasWrapper> getCivitasData() {
         civitasData = new List<CivitasWrapper>();
-        List<CivitasWrapper> rejected = new List<CivitasWrapper>();
+        Persistence_Outlook__c prevData;
+        Integer dateIncr;
+
         List<Contact> contacts = [
             SELECT Id, FirstName, LastName, EmplId__c
             FROM Contact
@@ -111,9 +111,8 @@ public class CivitasPersistenceController {
         ];
 
         Contact thisContact = contacts.isEmpty() ? new Contact() : contacts[0];
-        Persistence_Outlook__c prevData;
-        Integer dateIncr = startDate.day();
-        for (Persistence_Outlook__c outlook : [
+
+        List<Persistence_Outlook__c> studentOutlooks = [
             SELECT
                 Change_Date__c,
                 Change_Direction__c,
@@ -129,7 +128,9 @@ public class CivitasPersistenceController {
             FROM Persistence_Outlook__c
             WHERE Contact__c = :thisContact.Id
             ORDER BY Snap_Date__c ASC
-        ]) {
+        ];
+
+        for (Persistence_Outlook__c outlook : studentOutlooks) {
             Persistence_Outlook__c trm = new Persistence_Outlook__c(
                 Snap_Date__c = outlook.Snap_Date__c,
                 Curr_Cont_Prediction_Level__c = outlook.Curr_Cont_Prediction_Level__c,
@@ -139,82 +140,52 @@ public class CivitasPersistenceController {
                 Career_Segment__c = outlook.Career_Segment__c,
                 Change_Direction__c = outlook.Change_Direction__c
             );
-            System.debug(trm);
-            Persistence_Outlook__c startSemesterData;
-            if (trm.Snap_Date__c < startDate) {
-                startSemesterData = trm;
+
+                        
+            if (prevData == null) {
+                prevData = trm;
+                dateIncr = (prevData.Snap_Date__c.month() - startMonth)*30 + prevData.Snap_Date__c.day();
             }
-            if (trm.Snap_Date__c >= startDate && trm.Snap_Date__c <= endDate) {
-                if (trm.Snap_Date__c > startDate && startSemesterData != null) {
-                    /** [UNUSED] This never runs? (Found while writing test code)
-                     * startSemesterData is null UNLESS trm.Snap_Date__c < startDate
-                     * But for trm.Snap_Date__c must be greater than startDate as well.
-                     */
-                    Date tempStart = startDate;
-                    while (tempStart < trm.Snap_Date__c) {
-                        civitasData.add(
-                            new CivitasWrapper(
-                                thisContact,
-                                tempStart,
-                                startSemesterData.Curr_Cont_Prediction_Level__c,
-                                startSemesterData.Current_Level_Descr__c,
-                                startSemesterData.Change_Flg__c,
-                                dateIncr,
-                                startSemesterData.Change_Direction__c
-                            )
-                        );
-                        dateIncr++;
-                        tempStart = tempStart.addDays(1);
-                    }
-                    startSemesterData = null;
-                }
-                if (prevData == null) {
-                    prevData = trm;
-                }
-                Date prevDate = prevData.Snap_Date__c;
-                prevDate = prevDate.addDays(1);
-                while (prevDate < trm.Snap_Date__c) {
-                    civitasData.add(
-                        new CivitasWrapper(
-                            thisContact,
-                            prevDate,
-                            prevData.Curr_Cont_Prediction_Level__c,
-                            prevData.Current_Level_Descr__c,
-                            prevData.Change_Flg__c,
-                            dateIncr,
-                            prevData.Change_Direction__c
-                        )
-                    );
-                    dateIncr++;
-                    prevDate = prevDate.addDays(1);
-                }
+            
+            Date prevDate = prevData.Snap_Date__c;
+            prevDate = prevDate.addDays(1);
+            while (prevDate < trm.Snap_Date__c) {
                 civitasData.add(
                     new CivitasWrapper(
                         thisContact,
-                        trm.Snap_Date__c,
-                        trm.Curr_Cont_Prediction_Level__c,
-                        trm.Current_Level_Descr__c,
-                        trm.Change_Flg__c,
+                        prevDate,
+                        prevData.Curr_Cont_Prediction_Level__c,
+                        prevData.Current_Level_Descr__c,
+                        prevData.Change_Flg__c,
                         dateIncr,
-                        trm.Change_Direction__c
+                        prevData.Change_Direction__c
                     )
                 );
                 dateIncr++;
+                prevDate = prevDate.addDays(1);
             }
 
-            prevData = trm;
-        }
+            civitasData.add(
+                new CivitasWrapper(
+                    thisContact,
+                    trm.Snap_Date__c,
+                    trm.Curr_Cont_Prediction_Level__c,
+                    trm.Current_Level_Descr__c,
+                    trm.Change_Flg__c,
+                    dateIncr,
+                    trm.Change_Direction__c
+                )
+            );
 
-        if (rejected.size() > 0) {
-            return rejected;
+            dateIncr++;
+            prevData = trm;
         }
 
         if (civitasData.size() > 0) {
             CivitasWrapper tmpEndPoint = civitasData[civitasData.size() - 1];
-            System.debug(tmpEndPoint.levelDesc);
             String lastUpdatedDate = civitasData[civitasData.size() - 1].fullDate;
             Integer dayValue = tmpEndPoint.day;
-            while ((endDate < TODAY && tmpEndPoint.snapDate < endDate) || tmpEndPoint.snapDate < TODAY) {
+            while (tmpEndPoint.snapDate < TODAY) {
                 tmpEndPoint.snapDate = tmpEndPoint.snapDate.addDays(1);
                 dayValue++;
                 Boolean flagVal = tmpEndPoint.flag == 'Y' ? true : false;

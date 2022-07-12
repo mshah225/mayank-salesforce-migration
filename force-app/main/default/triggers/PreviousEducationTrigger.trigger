@@ -10,7 +10,7 @@ trigger PreviousEducationTrigger on Previous_Education__c(
     TriggerFactory.createAndExecuteHandler(PreviousEducationHandler.class);
 
     if (Trigger.isAfter && (Trigger.isInsert || Trigger.isUpdate)) {
-        TerritoryAssignmentHelper tah = new TerritoryAssignmentHelper();
-        tah.PreviousEducationTA();
+        TerritoryAssignmentPreviousEducation ta = new TerritoryAssignmentPreviousEducation();
+        ta.assignTerritory();
     }
 }

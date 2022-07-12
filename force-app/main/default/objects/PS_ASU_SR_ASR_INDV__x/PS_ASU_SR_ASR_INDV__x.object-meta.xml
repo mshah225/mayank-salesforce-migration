@@ -119,8 +119,8 @@
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
-    <externalDataSource>MuleOdataApi</externalDataSource>
-    <externalName>PS_ASU_SR_ASR_INDVs</externalName>
+    <externalDataSource>crm_student_profile_odata</externalDataSource>
+    <externalName>PS_ASU_SR_ASR_INDV</externalName>
     <label>Academic Status Report Info (external)</label>
     <pluralLabel>Academic Status Report Info (external)</pluralLabel>
     <searchLayouts></searchLayouts>

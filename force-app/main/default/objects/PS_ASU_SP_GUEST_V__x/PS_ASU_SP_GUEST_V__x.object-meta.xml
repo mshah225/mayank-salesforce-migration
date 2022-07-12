@@ -119,8 +119,8 @@
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
-    <externalDataSource>MuleOdataApi</externalDataSource>
-    <externalName>PS_ASU_SP_GUEST_Vs</externalName>
+    <externalDataSource>crm_student_profile_odata</externalDataSource>
+    <externalName>PS_ASU_SP_GUEST_V</externalName>
     <label>Guest Comment (external)</label>
     <pluralLabel>Guest Comment (external)</pluralLabel>
     <searchLayouts></searchLayouts>

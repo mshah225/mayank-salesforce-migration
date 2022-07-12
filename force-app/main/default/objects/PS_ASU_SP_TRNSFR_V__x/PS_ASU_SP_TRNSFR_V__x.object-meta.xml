@@ -119,8 +119,8 @@
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
-    <externalDataSource>MuleOdataApi</externalDataSource>
-    <externalName>PS_ASU_SP_TRNSFR_Vs</externalName>
+    <externalDataSource>crm_student_profile_odata</externalDataSource>
+    <externalName>PS_ASU_SP_TRNSFR_V</externalName>
     <label>Transfer Class By Exam (external)</label>
     <pluralLabel>Transfer Class By Exam (external)</pluralLabel>
     <searchLayouts></searchLayouts>

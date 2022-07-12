@@ -119,8 +119,8 @@
     <enableLicensing>false</enableLicensing>
     <enableReports>false</enableReports>
     <enableSearch>false</enableSearch>
-    <externalDataSource>MuleOdataApi</externalDataSource>
-    <externalName>PS_ASU_SP_ASR_CLSVs</externalName>
+    <externalDataSource>crm_student_profile_odata</externalDataSource>
+    <externalName>PS_ASU_SP_ASR_CLSV</externalName>
     <label>Class Academic Student Record (external)</label>
     <pluralLabel>Class Academic Student Record (external)</pluralLabel>
     <searchLayouts></searchLayouts>

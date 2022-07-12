@@ -112,11 +112,12 @@ function execute_changes() {
                 git checkout $branch &>/dev/null
                 if git diff-index --quiet origin/main --; then
                     git checkout -f main &>/dev/null
-                    # git branch -D $branch
-                    # git push origin --delete $branch
+                    git branch -D $branch
+                    git push origin --delete $branch
                     branchesToDeleteArray+=("$branch")
                     branchesToDeleteCount=$((branchesToDeleteCount + 1))
                 fi
+                git checkout -f main &>/dev/null
             fi
         fi
     done

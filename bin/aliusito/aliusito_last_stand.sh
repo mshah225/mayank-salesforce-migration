@@ -174,11 +174,11 @@ function execute_changes() {
 
             # Attempt to pull from ASU:main to keep branch up-to-date if there are no conflicts
             if [[ $behindMainCount -gt 0 ]]; then
-                git pull --no-edit ASU main &>/dev/null
+                git pull --no-edit ASU main
                 if [ $? -eq 0 ]; then
-                    git push origin $branch &>/dev/null
+                    git push origin $branch
                 else
-                    git merge --abort &>/dev/null
+                    git merge --abort
                 fi
             fi
 
@@ -196,19 +196,19 @@ function execute_changes() {
 
                 # Attempt to pull from ASU upstream to keep branch up-to-date if there are no conflicts
                 if [[ $behindUpstreamCount -gt 0 ]]; then
-                    git pull --no-edit ASU $branch &>/dev/null
+                    git pull --no-edit ASU $branch
                     if [ $? -eq 0 ]; then
-                        git push origin $branch &>/dev/null
+                        git push origin $branch
                     else
-                        git merge --abort &>/dev/null
+                        git merge --abort
                     fi
                 fi
 
-                hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
+                hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?"
                 branchesToCreatePullRequestArray+=("$branch")
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
             else
-                git push ASU $branch &>/dev/null
+                git push ASU $branch
                 branchesToContributeArray+=("$branch")
                 branchesToContributeCount=$((branchesToContributeCount + 1))
             fi
@@ -216,8 +216,8 @@ function execute_changes() {
     done
 
     # Switch back to main because it looks cleaner at the end
-    git checkout -f main &>/dev/null
-    git reset --hard origin/main &>/dev/null
+    git checkout -f main
+    git reset --hard origin/main
     print_typed_text "  " && print_checkmark_no_newline && print_typed_text_green " Completed branch analyzation" && echo && echo
 
     print_typed_text "Aliusito succeeded with the following results:" && echo
@@ -255,37 +255,37 @@ function main() {
 
     # Fetch branch updates
     print_typed_text "Adding ASU as a remote........................" && echo -ne
-    git remote add ASU https://github.com/ASU/crm-salesforce-enterpise &>/dev/null
+    git remote add ASU https://github.com/ASU/crm-salesforce-enterpise
     print_typed_text_green " Remoted " && echo -ne && print_checkmark
 
     # Fetch branch updates
     print_typed_text "Fetching all branch updates..................." && echo -ne
-    git checkout -f main &>/dev/null && git fetch --prune ASU &>/dev/null && git fetch --prune origin &>/dev/null
+    git checkout -f main && git fetch --prune ASU && git fetch --prune origin
     print_typed_text_green " Fetched " && echo -ne && print_checkmark
 
     # Fast-foward all local branches to match the latest state on the remote
     print_typed_text "Aligning all branch states...................." && echo -ne
-    hub sync &>/dev/null
+    hub sync
     print_typed_text_green " Aligned " && echo -ne && print_checkmark
 
     # Switch to main and update from upstream
     print_typed_text "Updating main from upstream..................." && echo -ne
-    git reset --hard ASU/main &>/dev/null
-    git push -f origin main &>/dev/null
+    git reset --hard ASU/main
+    git push -f origin main
     print_typed_text_green " Updated " && echo -ne && print_checkmark
 
     # Check over all origin branches and track any new ones
     print_typed_text "Tracking new remote origin branches..........." && echo -ne
     for remote in $(git branch -r); do
         if [[ ${remote} == "origin/"* ]]; then
-            git branch --track ${remote#origin/} $remote &>/dev/null
+            git branch --track ${remote#origin/} $remote
         fi
     done
     print_typed_text_green " Tracked " && echo -ne && print_checkmark
 
     # hub authentication check
     print_typed_text "Checking hub authentication..................." && echo -ne
-    hub checkout http://github.com/apple/swift/pull/862 &>/dev/null
+    hub checkout http://github.com/apple/swift/pull/862
     print_typed_text_green " Checked " && echo -ne && print_checkmark
 
     # Iterate over all branches and attempt to update them from their upstream counterpart

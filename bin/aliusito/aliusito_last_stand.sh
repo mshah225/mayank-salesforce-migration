@@ -204,11 +204,11 @@ function execute_changes() {
                     fi
                 fi
 
-                #hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
+                hub pull-request --base ASU:$branch --message "ASU/$branch: do we want these changes?" &>/dev/null
                 branchesToCreatePullRequestArray+=("$branch")
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
             else
-                #git push ASU $branch &>/dev/null
+                git push ASU $branch &>/dev/null
                 branchesToContributeArray+=("$branch")
                 branchesToContributeCount=$((branchesToContributeCount + 1))
             fi

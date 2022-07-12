@@ -208,9 +208,15 @@ function execute_changes() {
                 branchesToCreatePullRequestArray+=("$branch")
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
             else
-                git push ASU $branch
-                branchesToContributeArray+=("$branch")
-                branchesToContributeCount=$((branchesToContributeCount + 1))
+                if git diff-index --quiet ASU/main --; then
+                    branchesToSkipArray+=("$branch")
+                    branchesToSkipCount=$((branchesToSkipCount + 1))
+                    continue
+                else
+                    git push ASU $branch
+                    branchesToContributeArray+=("$branch")
+                    branchesToContributeCount=$((branchesToContributeCount + 1))
+                fi
             fi
         fi
     done
@@ -255,37 +261,37 @@ function main() {
 
     # Fetch branch updates
     print_typed_text "Adding ASU as a remote........................" && echo -ne
-    git remote add ASU https://github.com/ASU/crm-salesforce-enterpise
+    git remote add ASU https://github.com/ASU/crm-salesforce-enterpise &>/dev/null
     print_typed_text_green " Remoted " && echo -ne && print_checkmark
 
     # Fetch branch updates
     print_typed_text "Fetching all branch updates..................." && echo -ne
-    git checkout -f main && git fetch --prune ASU && git fetch --prune origin
+    git checkout -f main &>/dev/null && git fetch --prune ASU &>/dev/null && git fetch --prune origin &>/dev/null
     print_typed_text_green " Fetched " && echo -ne && print_checkmark
 
     # Fast-foward all local branches to match the latest state on the remote
     print_typed_text "Aligning all branch states...................." && echo -ne
-    hub sync
+    hub sync &>/dev/null
     print_typed_text_green " Aligned " && echo -ne && print_checkmark
 
     # Switch to main and update from upstream
     print_typed_text "Updating main from upstream..................." && echo -ne
-    git reset --hard ASU/main
-    git push -f origin main
+    git reset --hard ASU/main &>/dev/null
+    git push -f origin main &>/dev/null
     print_typed_text_green " Updated " && echo -ne && print_checkmark
 
     # Check over all origin branches and track any new ones
     print_typed_text "Tracking new remote origin branches..........." && echo -ne
     for remote in $(git branch -r); do
         if [[ ${remote} == "origin/"* ]]; then
-            git branch --track ${remote#origin/} $remote
+            git branch --track ${remote#origin/} $remote &>/dev/null
         fi
     done
     print_typed_text_green " Tracked " && echo -ne && print_checkmark
 
     # hub authentication check
     print_typed_text "Checking hub authentication..................." && echo -ne
-    hub checkout http://github.com/apple/swift/pull/862
+    hub checkout http://github.com/apple/swift/pull/862 &>/dev/null
     print_typed_text_green " Checked " && echo -ne && print_checkmark
 
     # Iterate over all branches and attempt to update them from their upstream counterpart

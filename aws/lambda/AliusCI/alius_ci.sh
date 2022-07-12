@@ -27,8 +27,15 @@ function handler() {
                 cleanMergeCount=$((cleanMergeCount + 1))
             else
                 git merge --abort &>/dev/null
-                abortedMergeArray+=("$branch")
-                abortedMergeCount=$((abortedMergeCount + 1))
+                if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
+                    git reset --hard origin/main &>/dev/null
+                    git push -f origin $branch &>/dev/null
+                    cleanMergeArray+=("$branch")
+                    cleanMergeCount=$((cleanMergeCount + 1))
+                else
+                    abortedMergeArray+=("$branch")
+                    abortedMergeCount=$((abortedMergeCount + 1))
+                fi
             fi
 
         fi

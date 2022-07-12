@@ -155,7 +155,7 @@ public with sharing class CoachPortalMainPageController {
     private Id CoachResourceRTID {
         get {
             if (CoachResourceRTID == null) {
-                CoachResourceRTID = IDHelper.getRTID('Success_Resource__c', 'Coach');
+                CoachResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach');
             }
 
             return CoachResourceRTID;
@@ -169,7 +169,7 @@ public with sharing class CoachPortalMainPageController {
     public Id CoachCaseRTID {
         get {
             if (CoachCaseRTID == null) {
-                CoachCaseRTID = IDHelper.getRTID('Case', 'ASU_Coach_Outreach');
+                CoachCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             }
 
             return CoachCaseRTID;
@@ -183,7 +183,7 @@ public with sharing class CoachPortalMainPageController {
     public Id CoachEmailRTID {
         get {
             if (CoachEmailRTID == null) {
-                CoachEmailRTID = IDHelper.getRTID('Portal_Email__c', 'Coach');
+                CoachEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
             }
 
             return CoachEmailRTID;

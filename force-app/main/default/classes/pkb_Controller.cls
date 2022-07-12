@@ -532,16 +532,6 @@ public without sharing class pkb_Controller {
     }
 
     /* ***** FEEDBACK AND CASE DEFERRAL CONDITIONALS AND PROCESSING ***** */
-    public Boolean displayFeedbackYesNo {
-        get {
-            return ApexPages.currentPage().getParameters().get(FEEDBACK_PARAM) == FEEDBACK_SHOW_YESNO;
-        }
-    }
-    public Boolean displayFeedbackDialog {
-        get {
-            return ApexPages.currentPage().getParameters().get(FEEDBACK_PARAM) == FEEDBACK_SHOW_DIALOG;
-        }
-    }
     public String sessionId { get; set; }
     public String feedbackComments { get; set; }
     public String createCaseErrorMsg { get; set; }

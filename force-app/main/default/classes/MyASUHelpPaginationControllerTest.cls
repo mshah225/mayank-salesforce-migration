@@ -60,7 +60,7 @@ private class MyASUHelpPaginationControllerTest {
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
-        Decimal pageNum1, pageNum2, pageNum3, pageNum4, pageNum5, pageNum6;
+        Decimal pageNum1, pageNum2, pageNum3, pageNum4, pageNum5;
         Test.startTest();
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
         pageNum1 = vf.getCurrentPageNumber();
@@ -70,20 +70,17 @@ private class MyASUHelpPaginationControllerTest {
         pageNum3 = vf.getCurrentPageNumber();
         vf.next();
         pageNum4 = vf.getCurrentPageNumber();
-        vf.next();
-        pageNum5 = vf.getCurrentPageNumber();
         vf.previous();
-        pageNum6 = vf.getCurrentPageNumber();
+        pageNum5 = vf.getCurrentPageNumber();
         Test.stopTest();
 
         System.assertEquals(10, vf.getPageSize(), 'These tests expect the page size to be 10');
-        System.assertEquals(4, vf.lastPage, '30 results / 10 per page means should have 3+1 pages');
+        System.assertEquals(3, vf.lastPage, '30 results / 10 per page means we should have 3 pages');
         System.assertEquals(1, pageNum1);
         System.assertEquals(2, pageNum2);
         System.assertEquals(3, pageNum3);
-        System.assertEquals(4, pageNum4);
-        System.assertEquals(4, pageNum5);
-        System.assertEquals(3, pageNum6);
+        System.assertEquals(3, pageNum4);
+        System.assertEquals(2, pageNum5);
     }
 
     @isTest
@@ -212,7 +209,7 @@ private class MyASUHelpPaginationControllerTest {
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
             ContactId = testContact.Id,
-            ProfileId = IDHelper.getProfileId('ASU Community')
+            ProfileId = RecordIdHelper.getProfileId('ASU Community')
         );
         insert testUser;
         // Need terms for MyASUHelpController constructor

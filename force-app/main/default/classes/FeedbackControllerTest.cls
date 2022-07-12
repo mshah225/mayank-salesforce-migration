@@ -38,7 +38,7 @@ private class FeedbackControllerTest {
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            ProfileId = IDHelper.getProfileId('ASU Community'),
+            ProfileId = RecordIdHelper.getProfileId('ASU Community'),
             ContactId = testContact.Id
         );
 
@@ -74,14 +74,14 @@ private class FeedbackControllerTest {
         Case_Classification__c testFuncGroup = new Case_Classification__c(
             Name = 'Student Success Innovations',
             Active__c = true,
-            RecordTypeId = IdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
         );
         insert testFuncGroup;
         Case_Classification__c testClassification = new Case_Classification__c(
             Name = 'Service Center Feedback',
             Active__c = true,
             Parent__c = testFuncGroup.Id,
-            RecordTypeId = IdHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
         );
         insert testClassification;
     }
@@ -143,7 +143,7 @@ private class FeedbackControllerTest {
         Case_Classification__c testClassification = [
             SELECT Id
             FROM Case_Classification__c
-            WHERE RecordTypeId = :IdHelper.getRecordTypeId('Case_Classification__c', 'Category')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
         ];
         delete testClassification;
 

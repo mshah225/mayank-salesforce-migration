@@ -1,6 +1,7 @@
 trigger RelationshipTrigger on Relationship__c(
     after delete,
     after insert,
+    after undelete,
     after update,
     before delete,
     before insert,
@@ -33,6 +34,8 @@ trigger RelationshipTrigger on Relationship__c(
         }
         if (Trigger.isDelete) {
             dispatcher.afterDelete();
+        }
+        if (Trigger.isUndelete) {
             dispatcher.afterUndelete();
         }
     }

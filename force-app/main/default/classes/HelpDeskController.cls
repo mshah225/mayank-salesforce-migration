@@ -44,6 +44,8 @@ public with sharing class HelpDeskController {
     public String contactName { get; set; }
     public String knowString { get; set; }
     public Boolean savedAndClosed { get; set; }
+    public Map<String, String> queryConfig { get; set; }
+    public Map<String, String> callerConfig { get; set; }
 
     // This method returns a list of Close statuses for Cases
     public List<SelectOption> getcloseCaseStatusOptions() {
@@ -61,7 +63,7 @@ public with sharing class HelpDeskController {
 
     public List<SelectOption> getOriginOptions() {
         List<SelectOption> origins = new List<SelectOption>();
-    
+
         for (Help_Desk_Case_Origin__mdt statusSetting : [
             SELECT Label, Value__c, Display_Order__c
             FROM Help_Desk_Case_Origin__mdt
@@ -70,7 +72,7 @@ public with sharing class HelpDeskController {
         ]) {
             origins.add(new SelectOption(statusSetting.Label, statusSetting.Value__c));
         }
-    
+
         return origins;
     }
 
@@ -88,8 +90,10 @@ public with sharing class HelpDeskController {
 
     // This stores the incoming phone number (ANI parameter)
     public String callerID { get; set; }
+    public String dnisID { get; set; }
     public Boolean isDuoAuthenticated { get; set; }
     public Boolean hasANIPresent { get; set; }
+    public Boolean hasDNISPresent { get; set; }
 
     // the current sort direction. defaults to asc
     public String sortDir {
@@ -129,11 +133,14 @@ public with sharing class HelpDeskController {
         isPageLoaded = false;
         isDuoAuthenticated = false;
         hasANIPresent = false;
+        hasDNISPresent = false;
         knowString = '';
         faqList = new List<FAQ__kav>();
         attachedFAQs = new List<FAQ__kav>();
         contacts = new List<Contact>();
         ccPicklist = new CaseClassificationPicklistService();
+        loadQueryConfig();
+        loadCallerConfig();
         setCallerID();
         isPageLoaded = true;
     }
@@ -161,6 +168,15 @@ public with sharing class HelpDeskController {
                     ' LIMIT 25' +
                     ')';
 
+                // Caller DNIS Check
+                if (ApexPages.currentPage().getParameters().containsKey('dnis')) {
+                    if (ApexPages.currentPage().getParameters().get('dnis') != '') {
+                        hasDNISPresent = true;
+                        String dnis = ApexPages.currentPage().getParameters().get('dnis');
+                        dnisID = formatPhone(dnis);
+                    }
+                }
+
                 runSearch(false);
                 setDuoAuthenticatedStatus();
             } else {
@@ -168,6 +184,32 @@ public with sharing class HelpDeskController {
             }
         } else {
             populateNonAffiliate();
+        }
+    }
+
+    private void loadQueryConfig() {
+        queryConfig = new Map<String, String>();
+
+        List<Help_Desk_Query_Configuration__mdt> config = [
+            SELECT Label, Value__c
+            FROM Help_Desk_Query_Configuration__mdt
+        ];
+
+        for (Help_Desk_Query_Configuration__mdt mdt : config) {
+            queryConfig.put(mdt.Label, mdt.Value__c);
+        }
+    }
+
+    private void loadCallerConfig() {
+        callerConfig = new Map<String, String>();
+
+        List<Help_Desk_Caller_Settings__mdt> config = [
+            SELECT Label, Destination__c, DNIS__c
+            FROM Help_Desk_Caller_Settings__mdt
+        ];
+
+        for (Help_Desk_Caller_Settings__mdt mdt : config) {
+            callerConfig.put(mdt.DNIS__c, mdt.Destination__c);
         }
     }
 
@@ -181,10 +223,7 @@ public with sharing class HelpDeskController {
         Integer numberOfAuthenticatedMatches = [
             SELECT COUNT()
             FROM DUO_Authentication__c
-            WHERE
-                ANI__c = :callerID
-                AND Status__c = 'Authenticated'
-                AND Call_Object_Identifier__c = :callMasterId
+            WHERE ANI__c = :callerID AND Status__c = 'Authenticated' AND Call_Object_Identifier__c = :callMasterId
             LIMIT 1
         ];
         if (numberOfAuthenticatedMatches >= 1) {
@@ -212,7 +251,7 @@ public with sharing class HelpDeskController {
                 CAP__c,
                 FERPA_Directory_Hold__c
             FROM Contact
-            WHERE Name = 'Non-Affiliate Caller'
+            WHERE Id = :queryConfig.get('Non-Affiliate Caller Contact')
         ];
 
         if (nonAffiliateList.size() > 0) {
@@ -601,7 +640,7 @@ public with sharing class HelpDeskController {
             myCase.clear();
         }
 
-        ID functionalTypeId = IDHelper.getRTID('Case_Classification__c', 'Functional_Group');
+        ID functionalTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group');
         myCase.ContactId = selectedContactId;
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';
@@ -756,6 +795,7 @@ public with sharing class HelpDeskController {
 
         Case orignalCase = (Case) caseWrappers.get(selectedCaseId).Ca;
         myCase = orignalCase.clone(true, true, true, true);
+        myCase.Description = [SELECT Description FROM Case WHERE Id = :selectedCaseId LIMIT 1].Description;
 
         ccPicklist.selectedFunctionalGroup = myCase.CC_Functional_Group__c;
 
@@ -844,6 +884,20 @@ public with sharing class HelpDeskController {
         return page;
     }
 
+    /**
+     * Precheck for caller to override help desk page
+     * If we were passed a dnis and it matches our expected value stored in
+     * the custom meta, redirect to the defined destination.
+     */
+    public PageReference preCheck() {
+        if (hasDNISPresent && callerConfig.keySet().contains(dnisID)) {
+            PageReference page = new PageReference(callerConfig.get(dnisID));
+            page.setRedirect(true);
+            return page;
+        }
+        return null;
+    }
+
     public void cancelCase() {
         isNewCaseSelected = false;
         isExistingCaseSelected = false;
@@ -903,7 +957,6 @@ public with sharing class HelpDeskController {
     public class CaseWrapper {
         public Case Ca { get; set; }
         public String shortDescr { get; set; }
-        public String fullDescr { get; set; }
 
         public CaseWrapper(Case c) {
             Ca = c;
@@ -914,7 +967,7 @@ public with sharing class HelpDeskController {
                 shortDescr = ' ';
             }
 
-            fullDescr = c.Description;
+            c.Description = null;
         }
     }
 

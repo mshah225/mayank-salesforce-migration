@@ -1,4 +1,4 @@
-<apex:page showHeader="true" sidebar="true" controller="NewCorporateRelationsContactController">
+<apex:page showHeader="true" sidebar="true" controller="NewCorporateRelationsController">
     <apex:form id="alius-format1118">
         <apex:actionFunction name="checkClick" action="{!click}" reRender="accountHelpPanel" />
     </apex:form>
@@ -7,15 +7,15 @@
         <apex:pageBlock id="page1" title="New Corporate Relations Contact" rendered="{!page == 1}">
             <apex:pageMessages />
             <apex:pageBlockButtons id="alius-format1119">
-                <apex:commandButton value="Continue" action="{!validateContact}" />
+                <apex:commandButton value="Continue" action="{!page2}" />
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="Contact Information">
-                <i>You must fill out these required fields in order to save the contact: First Name, Last Name, Email, and one
-                    of these two fields: Phone or Zip Code</i>
+                <i>You must fill out these required fields in order to save the contact: First Name, Last Name and one of these
+                    two fields: Phone or Email</i>
                 <br />
                 <apex:outputText value="" />
-                <apex:inputField value="{!contact.FirstName}" required="true" />
-                <apex:inputField value="{!contact.LastName}" required="true" />
+                <apex:inputField value="{!contact.FirstName}" />
+                <apex:inputField value="{!contact.LastName}" />
                 <apex:inputField value="{!contact.Middle_Name__c}" />
                 <apex:inputField value="{!contact.Contact_Preference__c}" />
                 <apex:inputField value="{!contact.MobilePhone}" />
@@ -23,8 +23,9 @@
                 <apex:inputField value="{!contact.Phone}" />
                 <apex:inputField value="{!contact.Suffix__c}" />
                 <apex:inputField value="{!contact.Work_Phone__c}" />
-                <apex:inputField value="{!contact.Email}" required="true" />
+                <apex:inputField value="{!contact.Email}" label="Org Rel Email" />
                 <apex:inputField value="{!contact.LinkedIn__c}" />
+                <apex:inputField value="{!contact.Organization_Relations_Secondary_Email__c}" label="Org Rel Secondary Email" />
                 <apex:inputField value="{!contact.Birthdate}" />
                 <apex:inputField value="{!contact.Marital_Status__c}" />
             </apex:pageBlockSection>

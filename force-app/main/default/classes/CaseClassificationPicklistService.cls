@@ -118,7 +118,7 @@ public class CaseClassificationPicklistService {
     }
 
     private Map<String, Case_Classification__c> fetchAllFunctionalGroups() {
-        Id functionalGroupRecordType = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group');
+        Id functionalGroupRecordType = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group');
         List<Case_Classification__c> functionalGroups = [
             SELECT Name
             FROM Case_Classification__c
@@ -134,7 +134,7 @@ public class CaseClassificationPicklistService {
 
     private Map<String, Map<String, Case_Classification__c>> fetchAllCategoriesAndMapToFunctionalGroup() {
         Map<String, Map<String, Case_Classification__c>> categoryToFunctionalGroup = new Map<String, Map<String, Case_Classification__c>>();
-        Id categoryRecordType = IDHelper.getRecordTypeId('Case_Classification__c', 'Category');
+        Id categoryRecordType = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category');
         List<Case_Classification__c> categories = [
             SELECT Name, Parent__c, Parent__r.Id, Default_Case_Description__c
             FROM Case_Classification__c
@@ -174,7 +174,7 @@ public class CaseClassificationPicklistService {
 
     private Map<String, Map<String, Case_Classification__c>> fetchAllSubCategoriesAndMapToCategories() {
         Map<String, Map<String, Case_Classification__c>> subCategoriesToCategory = new Map<String, Map<String, Case_Classification__c>>();
-        Id subCategoryRecordType = IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category');
+        Id subCategoryRecordType = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category');
         List<Case_Classification__c> subCategories = [
             SELECT Name, Parent__c, Parent__r.Name
             FROM Case_Classification__c

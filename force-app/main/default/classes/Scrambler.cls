@@ -1,10 +1,20 @@
 public class Scrambler {
+    public static String carefullyScrambleEmailOrUsername(String emailOrUsername) {
+        if (String.isBlank(emailOrUsername)) {
+            return '';
+        } else if (emailOrUsername.substringAfterLast('.').equals(getSandboxDomain())) {
+            return emailOrUsername;
+        } else {
+            return scrambleEmailOrUsername(emailOrUsername);
+        }
+    }
+
     public static String scrambleEmailOrUsername(String emailOrUsername) {
         if (String.isBlank(emailOrUsername)) {
             return '';
         }
 
-        emailOrUsername += '.' + UserInfo.getUserName().substringAfterLast('.');
+        emailOrUsername += '.' + getSandboxDomain();
         emailOrUsername = '"' + emailOrUsername.replace('"', '\'') + '"';
         return emailOrUsername;
     }
@@ -22,5 +32,9 @@ public class Scrambler {
         dateToScramble = dateToScramble.addDays(randomOffset);
 
         return dateToScramble;
+    }
+
+    public static String getSandboxDomain() {
+        return UserInfo.getUserName().substringAfterLast('.');
     }
 }

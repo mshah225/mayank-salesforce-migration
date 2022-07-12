@@ -1,23 +1,23 @@
 public class JiraViewAllIssuesController {
     @AuraEnabled
     public static List<JiraIssue> getIssuesForUser(String asurite) {
-        String jiraResponse = JiraWebserviceCallout.getIssues(asurite);
+        String jiraResponse = JiraCallout.getIssues(asurite);
         return createMapFromResponse(jiraResponse);
     }
 
     @AuraEnabled
     public static List<JiraIssue> getWatchedIssuesForUser(String asurite) {
-        String jiraResponse = JiraWebserviceCallout.getWatchedIssues(asurite);
+        String jiraResponse = JiraCallout.getWatchedIssues(asurite);
         return createMapFromResponse(jiraResponse);
     }
 
     @AuraEnabled(cacheable=true)
     public static String getIssuesForCurrentUser() {
-        return JiraWebserviceCallout.getIssues(getJiraUserId());
+        return JiraCallout.getIssues(getJiraUserId());
     }
     @AuraEnabled(cacheable=true)
     public static String getWatchedIssuesForCurrentUser() {
-        return JiraWebserviceCallout.getWatchedIssues(getJiraUserId());
+        return JiraCallout.getWatchedIssues(getJiraUserId());
     }
 
     public static String getJiraUserId() {

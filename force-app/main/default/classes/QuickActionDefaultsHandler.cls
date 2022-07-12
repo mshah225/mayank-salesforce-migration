@@ -1,6 +1,7 @@
-global class QADefaultHandler implements QuickAction.QuickActionDefaultsHandler {
+global class QuickActionDefaultsHandler implements QuickAction.QuickActionDefaultsHandler {
     private static boolean debug = false;
-    global QADefaultHandler() {
+
+    global QuickActionDefaultsHandler() {
     }
 
     global void onInitDefaults(QuickAction.QuickActionDefaults[] defaults) {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SCH_DAILY_TIME__c</fullName>
+    <description>Data sourced from PS_CLASS_MTG_PAT.MEETING_TIME_START, MEETING_TIME_END</description>
+    <externalDeveloperName>SCH_DAILY_TIME</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Class Time</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

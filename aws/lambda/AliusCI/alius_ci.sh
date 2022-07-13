@@ -2,7 +2,7 @@ function handler() {
     EVENT_DATA=$1
 
     set +e
-    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":zap: Starting an Alius CI run","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"*Notice:* This was automatically triggered by a push to `ASU:main` or manually run by a repository administrator."}},{"type":"section","text":{"type":"mrkdwn","text":"Please *do not* make any changes to feature branches until this is complete. Alius processes about 25 branches per minute."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":zap: Starting an Alius CI run","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"*Notice:* This was automatically triggered by a push to `ASU:main` or manually run by a repository administrator."}},{"type":"section","text":{"type":"mrkdwn","text":"Please *do not* make any changes to feature branches until this is complete. Alius processes roughly 25 branches per minute."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
     cd /tmp && git clone https://GITHUB_USERNAME:ghp_TOKEN@github.com/ASU/crm-salesforce-enterprise && cd crm-salesforce-enterprise && git config pull.rebase false && git config user.email "alius@asu.edu" && git config user.name "Alius CI" && git fetch --prune &>/dev/null
 
     cleanMergeCount=0

@@ -155,7 +155,7 @@ function execute_changes() {
             branchIndex=$((branchIndex + 1))
             echo -ne "  --> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
 
-            if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
+            if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]]; then
                 branchesToSkipArray+=("$branch")
                 branchesToSkipCount=$((branchesToSkipCount + 1))
                 continue
@@ -248,8 +248,8 @@ function execute_changes() {
 
     echo && print_typed_text_blue "--- SKIPPED BRANCHES ---" && echo
     for value in "${branchesToSkipArray[@]}"; do
-         print_typed_text_red "- $value"
-         printf "\n"
+        print_typed_text_red "- $value"
+        printf "\n"
     done
 
     print_typed_text "Closing terminal instance in two minutes." && echo

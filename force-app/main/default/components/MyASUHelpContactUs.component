@@ -33,6 +33,7 @@
         var techSupportDeploymentId = '{!technicalSupportDeploymentId}';
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
+        liveagent.init(chatEndpoint, financeDeploymentId, orgId);
     </script>
 
     <div class="border myasu-help-scope">
@@ -111,7 +112,6 @@
                                         });
 
                                         function openFinanceChatbot() {
-                                            liveagent.init(chatEndpoint, financeDeploymentId, orgId);
                                             window.open('{!$Label.MyASU_Help_Finance_Chatbot}', 'NewButtonWindowName', 'width=450,height=500,scrollbars=yes');
                                         }
                                     </script>

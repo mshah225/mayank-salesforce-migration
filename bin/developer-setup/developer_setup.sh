@@ -61,6 +61,7 @@ code --install-extension esbenp.prettier-vscode --force &>/dev/null
 code --install-extension fabiospampinato.vscode-commands --force &>/dev/null
 code --install-extension fabiospampinato.vscode-terminals --force &>/dev/null
 code --install-extension ms-python.python --force &>/dev/null
+code --install-extension foxundermoon.shell-format --force &>/dev/null
 
 # Install ratchet script
 ./../ratchet/install.sh

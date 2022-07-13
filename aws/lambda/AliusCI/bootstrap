@@ -7,8 +7,7 @@ set -euo pipefail
 # function's deployment package, alongside this bootstrap executable.
 source $(dirname "$0")/"$(echo $_HANDLER | cut -d. -f1).sh"
 
-while true
-do
+while true; do
     # Request the next event from the Lambda runtime
     HEADERS="$(mktemp)"
     EVENT_DATA=$(curl -v -sS -LD "$HEADERS" -X GET "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/next")

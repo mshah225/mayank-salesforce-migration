@@ -8,7 +8,7 @@ export default class JiraViewMyTickets extends LightningElement {
 
     @wire(getIssuesForCurrentUser)
     gotIssuesForUser(result) {
-        let {data, err} = result;
+        let {data, error} = result;
         const myTickets = [];
         if (data) {
             let parsedData = JSON.parse(data);
@@ -16,16 +16,16 @@ export default class JiraViewMyTickets extends LightningElement {
                 const issue = parsedData.issues[i];
                 myTickets.push(this.createTicketWrapper(issue));
             }
-        } else {
+        } else if (error) {
             // eslint-disable-next-line no-console
-            console.error(err);
+            console.error(error);
         }
         this.myTickets = myTickets;
     }
 
     @wire(getWatchedIssuesForCurrentUser)
     gotWatchedIssuesForUser(result) {
-        let {data, err} = result;
+        let {data, error} = result;
         const watchedTickets = [];
         if (data) {
             let parsedData = JSON.parse(data);
@@ -33,9 +33,9 @@ export default class JiraViewMyTickets extends LightningElement {
                 const issue = parsedData.issues[i];
                 watchedTickets.push(this.createTicketWrapper(issue));
             }
-        } else {
+        } else if (error) {
             // eslint-disable-next-line no-console
-            console.error(err);
+            console.error(error);
         }
         this.watchedTickets = watchedTickets;
     }

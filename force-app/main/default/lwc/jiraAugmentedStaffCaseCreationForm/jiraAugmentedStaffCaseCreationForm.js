@@ -1,4 +1,5 @@
 import {LightningElement, wire} from 'lwc';
+import {refreshApex} from '@salesforce/apex';
 import checkIfCurrentUserHasPermissions from '@salesforce/apex/AugmentedStaffCaseController.doesUserHavePermission';
 import verifyStudentId from '@salesforce/apex/AugmentedStaffCaseController.verifyStudentId';
 import getCategoriesIdToName from '@salesforce/apex/AugmentedStaffCaseController.getCategoriesIdToName';
@@ -15,21 +16,24 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
         return this.alertHref != null && this.alertHref !== '';
     }
 
-    hasPermission;
+    hasPermission = false;
     @wire(checkIfCurrentUserHasPermissions)
     checkedIfCurrentUserHasPermissions(result) {
-        let {data, err} = result;
+        let {data, error} = result;
         if (data != null) {
             this.hasPermission = data;
-        } else {
+            if (this.getCategoriesWire != null) refreshApex(this.getCategoriesWire);
+        } else if (error) {
             // eslint-disable-next-line no-console
-            console.error(err);
+            console.error(error);
         }
     }
 
+    getCategoriesWire = null;
     @wire(getCategoriesIdToName)
     gotCategoriesIdToName(result) {
-        let {data, err} = result;
+        this.getCategoriesWire = result;
+        let {data, error} = result;
         if (data) {
             const keys = Object.keys(data);
             const newOptions = [];
@@ -40,9 +44,9 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
                 newOptions.push({label, value});
             }
             this.getQAFor('caseCategory').options = newOptions;
-        } else {
+        } else if (error) {
             // eslint-disable-next-line no-console
-            console.error(err);
+            console.error(error);
         }
     }
 

@@ -32,7 +32,6 @@ public with sharing class ContactDispatcher implements TriggerDispatcherInterfac
     public void afterInsert() {
         ContactService.afterTriggerSyncAccounts(newList);
         ContactService.setHashIds(newList);
-        ContactService.createBizcardRelationships(newList);
     }
     public void afterUpdate() {
         ContactService.afterTriggerSyncAccounts(newList);

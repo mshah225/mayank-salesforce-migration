@@ -300,7 +300,7 @@ public class ContactService {
     /**
      * The first half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
      * and creating a new account if needed.  Should be run in the before trigger since it'll set the AccountId
-     * lookup on the Contact (and the Bizcard_Account__c/Corporate_Relations_Contact_Owner__c lookups)
+     * lookup on the Contact
      *
      * @param contacts The new list of contacts
      */
@@ -316,16 +316,6 @@ public class ContactService {
         /** Preparation complete - now let's do the sync */
 
         for (Contact con : contacts) {
-            // If the Contact was created using the VisionE/Scan application...
-            if (con.eContacts__Created_By_eContacts__c) {
-                // Setup the bizcard account lookup
-                if (con.Bizcard_Account__c == null) {
-                    con.Bizcard_Account__c = con.AccountId; // Store the Contact's Account lookup as the Business Card Account
-                    con.AccountId = null;
-                    con.Corporate_Relations_Contact_Owner__c = UserInfo.getUserId(); // Populate the Corporate Relations Account Owner
-                }
-            }
-
             // Make a new account if needed
             if (con.AccountId == null || con.AccountId == bucketAccountId)
                 contactToNewAccountMap.put(con, createAccount(con)); // Create an Account for the Contact
@@ -399,97 +389,6 @@ public class ContactService {
 
         if (!accountsToUpdate.isEmpty())
             update accountsToUpdate;
-    }
-
-    /**
-     * Create Relationships to link contact's and the bizcard account and
-     * Campaign Members to associate the Contact with the Campaign for the Bizcard Campaigns
-     *
-     * @param contacts The list of contacts
-     */
-    public static void createBizcardRelationships(List<Contact> contacts) {
-        Id relationshipContactToAccountRTID = RecordIdHelper.getRecordTypeId('Relationship__c', 'Contact_to_Account');
-        Set<Id> bizcardContactIds = new Set<Id>();
-        List<Relationship__c> bizcardRelationships = new List<Relationship__c>();
-        Map<String, List<CampaignMember>> bizcardCampaignMembers = new Map<String, List<CampaignMember>>();
-
-        for (Contact con : contacts)
-            if (con.eContacts__Created_By_eContacts__c)
-                bizcardContactIds.add(con.Id);
-
-        // need to query to get the names of the Creators' UserRoles
-        if (!bizcardContactIds.isEmpty()) {
-            List<Contact> bizcardContacts = [
-                SELECT Id, Bizcard_Account__c, Title, CreatedBy.UserRole.Name
-                FROM Contact
-                WHERE Id IN :bizcardContactIds
-            ];
-
-            for (Contact c : bizcardContacts) {
-                // Create a Relationship between the Contact and its Account, and add it to our
-                // list of Business Card Relationships.
-                if (c.Bizcard_Account__c != null) {
-                    bizcardRelationships.add(
-                        new Relationship__c(
-                            Related_Account__c = c.Bizcard_Account__c,
-                            Contact__c = c.Id,
-                            Relationship_Type__c = 'Employee',
-                            RecordTypeId = relationshipContactToAccountRTID,
-                            Title__c = c.Title
-                        )
-                    );
-                }
-
-                // Create a Campaign Member object and assign it the ID of the Contact
-                CampaignMember cm = new CampaignMember(ContactId = c.Id);
-
-                // If the map of Business Card Campaign Members is empty, add the Name of the User
-                // who created the Contact to the map, and map it to an empty list of Campaign Members.
-                if (bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name) == null)
-                    bizcardCampaignMembers.put(c.CreatedBy.UserRole.Name, new List<CampaignMember>());
-
-                // Add the existing Campaign Member to the empty list we just created in the
-                // Business Card Campaign Members map
-                bizcardCampaignMembers.get(c.CreatedBy.UserRole.Name).add(cm);
-            }
-        }
-
-        // If any Relationship objects were created linking a Contact to an Account (because a
-        // Contact was created by the VisionE/Scan application), insert those Relationships.
-        if (!bizcardRelationships.isEmpty())
-            insert bizcardRelationships;
-
-        // If there are any Business Card Campaign Members...
-        if (!bizcardCampaignMembers.isEmpty()) {
-            // Create a set of roles from the map
-            Set<String> roleNames = bizcardCampaignMembers.keySet();
-
-            // Create a list of Campaign Members to insert
-            List<CampaignMember> cmsToInsert = new List<CampaignMember>();
-
-            // Create a list of Business Card Campaign Links whose roles match those in the map of
-            // Business Card Campaign Members
-            List<Bizcard_Campaign_Link__c> campaignLinks = [
-                SELECT Id, Role__c, Campaign__c
-                FROM Bizcard_Campaign_Link__c
-                WHERE Role__c IN :roleNames
-            ];
-
-            // For each Business Card Campaign Link...
-            for (Bizcard_Campaign_Link__c bcl : campaignLinks) {
-                // ...iterate through the Business Card Campaign Members associated with it, and
-                // set the CampaignID of the Campaign Member to the Campaign ID of the Campaign
-                // Link, and then add it to the list of Campaign Members to Insert
-                for (CampaignMember cm : bizcardCampaignMembers.get(bcl.Role__c)) {
-                    cm.CampaignId = bcl.Campaign__c;
-                    cmsToInsert.add(cm);
-                }
-            }
-
-            // If there are any Campaign Members to insert, insert them.
-            if (!cmsToInsert.isEmpty())
-                insert cmsToInsert;
-        }
     }
 
     /**

@@ -27,7 +27,7 @@ private class UpdateOpportunityOwnerControllerTest {
         User testUser = new User(
             FirstName = 'Test',
             LastName = 'User',
-            Username = 'username@test.test',
+            Username = 'usernameopptest@test.test',
             Email = 'test@nomail.com',
             Alias = testUserAlias,
             CommunityNickname = testUserAlias,
@@ -40,7 +40,7 @@ private class UpdateOpportunityOwnerControllerTest {
         User testUser2 = new User(
             FirstName = 'Test2',
             LastName = 'User',
-            Username = 'username2@test.test',
+            Username = 'username2opptest@test.test',
             Email = 'test2@nomail.com',
             Alias = testUserAlias2,
             CommunityNickname = testUserAlias2,

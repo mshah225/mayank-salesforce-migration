@@ -20,8 +20,7 @@ public without sharing class TerritoryAssignmentRuleDispatcher implements Trigge
     }
 
     public void beforeUpdate() {
-        TerritoryAssignmentRule ta = new TerritoryAssignmentRule();
-        ta.assignTerritory();
+        TerritoryAssignmentRuleService.deferTerritoryReassignments(newList, oldMap);
     }
 
     public void beforeDelete() {

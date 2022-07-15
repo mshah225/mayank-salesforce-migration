@@ -46,69 +46,6 @@ public class LeadService {
     }
 
     /**
-     * Generates a list of lead interests that should be updated as a result of conversion
-     * @param  leadIds A set of Lead Ids
-     * @return leadInterestList A list of lead interests
-     */
-    public static List<Lead_Interest__c> reparentRelatedLeadInterests(Set<Id> leadIds) {
-        List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>();
-
-        if (leadIds.size() == 0) {
-            return leadInterestList;
-        }
-
-        leadInterestList = [
-            SELECT
-                Id,
-                OwnerId,
-                IsDeleted,
-                Name,
-                RecordType.Name,
-                CreatedDate,
-                CreatedById,
-                LastModifiedDate,
-                LastModifiedById,
-                SystemModstamp,
-                LastActivityDate,
-                LastViewedDate,
-                LastReferencedDate,
-                Leads__c,
-                Eligibility__c,
-                Plan__c,
-                Contact__c,
-                Status__c,
-                Term__c,
-                Primary_Source__c,
-                Secondary_Source__c,
-                Type__c,
-                College__c,
-                Academic_Interest__c,
-                Test_Record__c,
-                Qualifying__c,
-                Send_Email__c,
-                External_Application_Number__c,
-                Send_Email_ID__c
-            FROM Lead_Interest__c
-            WHERE Leads__c IN :leadIds
-        ];
-
-        if (leadInterestList.size() == 0) {
-            return leadInterestList;
-        }
-
-        // Need to requery to get the Converted Contact Ids
-        Map<Id, Lead> leadToContactIdMap = new Map<Id, Lead>(
-            [SELECT Id, ConvertedContactId FROM Lead WHERE Id IN :leadIds]
-        );
-
-        for (Lead_Interest__c li : leadInterestList) {
-            li.Contact__c = leadToContactIdMap.get(li.leads__c).ConvertedContactId;
-        }
-
-        return leadInterestList;
-    }
-
-    /**
      * Generates a list of previous education records that should be inserted as a result of conversion
      * @param  leadIds A set of Lead Ids
      * @return peList A list of previous education records

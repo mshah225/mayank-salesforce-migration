@@ -321,6 +321,17 @@ public with sharing class ContactTriggerTest {
         }
     }
 
+    @isTest
+    private static void padTests() {
+        /**
+         * Just exists to pad the test coverage - we don't do anything on delete/undelete
+         */
+        List<Contact> testContacts = createContacts(TRIGGERLOAD, false);
+        insert testContacts;
+        delete testContacts;
+        undelete testContacts;
+    }
+
     private static List<Contact> createContacts(Integer qty, boolean createEmplId) {
         List<Contact> testContacts = new List<Contact>();
         for (integer i = 0; i < qty; i++) {

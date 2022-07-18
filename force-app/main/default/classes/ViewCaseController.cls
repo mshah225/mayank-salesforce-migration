@@ -386,11 +386,16 @@ public with sharing class ViewCaseController {
             WHERE Id = :UserInfo.getUserId()
             LIMIT 1
         ];
-        Case currentCase = [SELECT Id, Owner.Email, Intended_Recipient__c FROM Case WHERE Id = :caseId LIMIT 1];
+        Case currentCase = [
+            SELECT Id, Owner.Email, Initial_Request_Sent_To_Addresses__c
+            FROM Case
+            WHERE Id = :caseId
+            LIMIT 1
+        ];
 
         String ownerEmail = '';
-        if (currentCase.Intended_Recipient__c != null) {
-            ownerEmail = currentCase.Intended_Recipient__c;
+        if (currentCase.Initial_Request_Sent_To_Addresses__c != null) {
+            ownerEmail = currentCase.Initial_Request_Sent_To_Addresses__c;
         } else {
             Email_To_Case_Configuration__c defaultEmail = Email_To_Case_Configuration__c.getValues(
                 'Default Org Wide Email Address'

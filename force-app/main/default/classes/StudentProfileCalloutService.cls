@@ -5,7 +5,6 @@ public with sharing class StudentProfileCalloutService {
 
     public static Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>> getServiceIndicators(String emplid) {
         ServiceIndicatorWrapper dataWrapper;
-        Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>> serviceIndicatorMap = new Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>>();
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Service_Indicator/serviceindicators?emplid=' + emplid);
@@ -24,34 +23,14 @@ public with sharing class StudentProfileCalloutService {
         }
 
         
-        List<ServiceIndicatorWrapper.ServiceIndicators> wildCardTermIndicators = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();
 
         for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
-            String term = siw.ServiceIndicatorActiveTerm;
-            if (term == '0000') {
-                wildCardTermIndicators.add(siw);
-            } else {
-                if (serviceIndicatorMap.get(term) == null) {
-                    List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = new List<ServiceIndicatorWrapper.ServiceIndicators>();
-                    serviceIndicatorList.add(siw);
-                    serviceIndicatorMap.put(term, serviceIndicatorList);
-                } else {
-                    List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorList = serviceIndicatorMap.get(term);
-                    serviceIndicatorList.add(siw);
-                    serviceIndicatorMap.put(term, serviceIndicatorList);
-                }
-            }       
+            serviceIndicatorsForStudent.add(siw);
         }
 
-        for (String serviceTerm : serviceIndicatorMap.keySet()) {
-            serviceIndicatorMap.get(serviceTerm).addAll(wildCardTermIndicators);
-            serviceIndicatorMap.get(serviceTerm).sort();
-        }
+        serviceIndicatorsForStudent.sort();
 
-        if (serviceIndicatorMap.keySet().size() == 0) {
-            serviceIndicatorMap.put('0000', wildCardTermIndicators);
-        }
-
-        return serviceIndicatorMap;
+        return serviceIndicatorsForStudent;
     }
 }

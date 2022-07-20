@@ -93,7 +93,7 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>> serviceIndicatorsForStudent {
+    public List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent {
         get {
             if (serviceIndicatorsForStudent == null) {                
                 serviceIndicatorsForStudent = StudentProfileCalloutService.getServiceIndicators(theContact.EmplId__c);
@@ -102,66 +102,6 @@ global with sharing class StudentProfileController {
             return serviceIndicatorsForStudent;
         }
 
-        set;
-    }
-
-    public List<ServiceIndicatorWrapper.ServiceIndicators> filteredServiceIndicatorsForStudent {
-        get {
-            List<ServiceIndicatorWrapper.ServiceIndicators> filteredServiceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();            
-            
-            if (serviceIndicatorsForStudent == null) {
-                return null;
-            }
-            
-            if (serviceIndicatorTerm == null) {
-                if (serviceIndicatorTermOptions != null && serviceIndicatorTermOptions.size() > 0) {
-                    serviceIndicatorTerm = serviceIndicatorTermOptions[0].getValue();
-                } else {
-                    return null;
-                }
-            }
-            
-            
-            filteredServiceIndicatorsForStudent = serviceIndicatorsForStudent.get(serviceIndicatorTerm);
-            
-            return filteredServiceIndicatorsForStudent;
-        }
-
-        set;
-    }
-
-    public List<SelectOption> serviceIndicatorTermOptions {
-        get {
-            List<SelectOption> serviceIndicatorTermOptions = new List<SelectOption>();
-            
-            if (serviceIndicatorsForStudent == null) {
-                serviceIndicatorTermOptions.add(new SelectOption('--', '--'));
-                return serviceIndicatorTermOptions;
-            }
-
-            List<Term__c> termsUsed = [SELECT PeopleSoft_Code__c, Name FROM Term__c WHERE PeopleSoft_Code__c IN: serviceIndicatorsForStudent.keySet()];
-            Map<String, String> peopleSoftToTermName = new Map<String, String>();
-
-            for (Term__c termForCode : termsUsed) {
-                peopleSoftToTermName.put(termForCode.PeopleSoft_Code__c, termForCode.Name);
-            }
-
-            List<String> keysForMap =new List<String> (serviceIndicatorsForStudent.keySet());
-            keysForMap.sort();
-
-            for (Integer i = keysForMap.size()-1; i >= 0; i--) {
-                if (peopleSoftToTermName.get(keysForMap[i]) != null) {
-                    serviceIndicatorTermOptions.add(new SelectOption(keysForMap[i],peopleSoftToTermName.get(keysForMap[i])));
-                }
-            }
-
-            if (keysForMap.size() == 1 && keysforMap[0] == '0000') {
-                serviceIndicatorTermOptions.add(new SelectOption('0000','No Term'));
-            }
-            
-            return serviceIndicatorTermOptions;
-        }
-        
         set;
     }
 

@@ -3,7 +3,7 @@ public with sharing class StudentProfileCalloutService {
 
     }
 
-    public static Map<String, List<ServiceIndicatorWrapper.ServiceIndicators>> getServiceIndicators(String emplid) {
+    public static List<ServiceIndicatorWrapper.ServiceIndicators> getServiceIndicators(String emplid) {
         ServiceIndicatorWrapper dataWrapper;
 
         HttpRequest req = new HttpRequest();

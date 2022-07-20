@@ -11,12 +11,12 @@ public class ServiceIndicatorWrapper {
 		public String ServiceIndicatorActiveDate {get; set;}
 		public String ServiceIndicatorEndTerm;
 		public String ServiceIndicatorEndDate;
-		public String PositiveServiceIndicator;
+		public String PositiveServiceIndicator {get; set;}
 		public String Comments;
 		public String ServiceIndicatorDateTime;
 		public String ServiceIndicatorCodeDescr {get; set;}
 		public String DisplayInSS;
-		public String ServiceIndReasonCodeDescr;
+		public String ServiceIndReasonCodeDescr {get; set;}
 		public String ServiceIndReasonCodeDescrLong;
 		public List<ServiceImpact> ServiceImpacts;
         

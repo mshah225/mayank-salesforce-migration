@@ -541,7 +541,11 @@
                                         </apex:column>
                                         <apex:column>
                                             <apex:facet name="header">Reason</apex:facet>
-                                            {!serviceIndicator.ServiceIndicatorReason}
+                                            {!serviceIndicator.ServiceIndReasonCodeDescr}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Positive Indicator</apex:facet>
+                                            {!serviceIndicator.PositiveServiceIndicator}
                                         </apex:column>
                                     </apex:dataTable>
                                     <div style="{!IF(serviceIndicatorsForStudent.size != null, 'display: none;', '')}">

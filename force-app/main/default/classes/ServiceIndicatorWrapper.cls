@@ -22,16 +22,8 @@ public class ServiceIndicatorWrapper {
         
         public Integer compareTo (Object comparison) {
             ServiceIndicators compareToSI = (ServiceIndicators)comparison;
-            Date thisDate = date.parse(ServiceIndicatorActiveDate);
-            Date otherDate = date.parse(compareToSI.ServiceIndicatorActiveDate);
             
-            if(thisDate > otherDate) {
-                return -1;
-            } else if (thisDate < otherDate) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return ServiceIndicatorCode.compareTo(compareToSI.ServiceIndicatorCode);
         }
 	}
 

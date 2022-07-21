@@ -27,13 +27,12 @@
     <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';
-        var financeDeploymentId = '{!financeDeploymentId}';
+        var deploymentId = '{!deploymentId}';
         var financesChatId = '{!financeChatButton}';
         var studentServiceChatId = '{!studentServicesChatButton}';
-        var techSupportDeploymentId = '{!technicalSupportDeploymentId}';
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
-        liveagent.init(chatEndpoint, financeDeploymentId, orgId);
+        liveagent.init(chatEndpoint, deploymentId, orgId);
     </script>
 
     <div class="border myasu-help-scope">
@@ -141,7 +140,7 @@
                                         });
 
                                         function openTechnicalSupportChatbot() {
-                                            liveagent.init(chatEndpoint, techSupportDeploymentId, orgId);
+                                            liveagent.init(chatEndpoint, deploymentId, orgId);
                                             window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}', '_blank', 'width=450,height=500,scrollbars=yes');
                                         }
                                     </script>

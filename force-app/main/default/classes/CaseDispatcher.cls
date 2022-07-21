@@ -27,6 +27,7 @@ public class CaseDispatcher implements TriggerDispatcherInterface {
     }
     public void afterUpdate() {
         CaseService.forwardInsertedCaseEmail(newList);
+        // CaseService.updateContactOnAccount(newList);
     }
     public void afterDelete() {
     }

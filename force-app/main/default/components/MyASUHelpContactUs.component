@@ -112,7 +112,7 @@
                                         });
 
                                         function openFinanceChatbot() {
-                                            window.open('{!$Label.MyASU_Help_Finance_Chatbot}', 'NewButtonWindowName', 'width=450,height=500,scrollbars=yes');
+                                            window.open('{!$Label.MyASU_Help_Finance_Chatbot}', '_blank', 'width=450,height=500,scrollbars=yes');
                                         }
                                     </script>
                                 </div>
@@ -142,7 +142,7 @@
 
                                         function openTechnicalSupportChatbot() {
                                             liveagent.init(chatEndpoint, techSupportDeploymentId, orgId);
-                                            window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}', 'NewButtonWindowName', 'width=450,height=500,scrollbars=yes');
+                                            window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}', '_blank', 'width=450,height=500,scrollbars=yes');
                                         }
                                     </script>
                                 </div>

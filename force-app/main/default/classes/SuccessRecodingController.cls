@@ -22,6 +22,7 @@ public class SuccessRecodingController {
     public List<StudentWrapper> studentsResults { get; set; }
     public List<StudentWrapper> selectedStudents { get; set; }
     public List<Contact> contactResults { get; set; }
+    public String coachProfile = System.Label.Success_Coach_Recode_Profile;
 
     public SuccessRecodingController() {
         page = 1;
@@ -46,7 +47,7 @@ public class SuccessRecodingController {
             [
                 SELECT Name, ASURITE_Id__c, Alias, EmplId__c, Email
                 FROM User
-                WHERE Profile.Name = 'ASU Service - Success Coach' AND IsActive = TRUE
+                WHERE Profile.Name = :coachProfile AND IsActive = TRUE
                 ORDER BY Name ASC
                 LIMIT 50
             ]
@@ -74,7 +75,7 @@ public class SuccessRecodingController {
                     ASURITE_Id__c,
                     EMPLID__c,
                     Email
-                    WHERE Profile.Name = 'ASU Service - Success Coach' AND IsActive = TRUE AND Id != :selectedCoachId
+                    WHERE Profile.Name = :coachProfile AND IsActive = TRUE AND Id != :selectedCoachId
                     LIMIT 50)
         ];
         if (!results[0].isEmpty()) {

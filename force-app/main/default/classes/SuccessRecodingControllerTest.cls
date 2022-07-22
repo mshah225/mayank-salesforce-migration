@@ -9,7 +9,7 @@ private class SuccessRecodingControllerTest {
     static void setUpTest() {
         TestDataFactory.createFunctionalGroupWithCategory('ASU Coach Outreach', 'Ad Hoc', 'N/A');
 
-        Profile p = [SELECT Id FROM Profile WHERE Name = :System.Label.Success_Coach_Recode_Profile];
+        Profile p = [SELECT Id FROM Profile WHERE Name IN :System.Label.Success_Coach_Recode_Profile.split(',')];
 
         // Test Users
         User testUser1 = TestDataFactory.createUser('test1', p.Id);

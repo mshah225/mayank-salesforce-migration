@@ -21,10 +21,11 @@ public class RecordIdHelperTest {
 
     public static testMethod void Test_RecordIdHelperRebuildCache() {
         integer numberOfProfiles = (integer) [SELECT Count(Id) c FROM Profile][0].get('c');
-        integer numberOfRecordTypes = (integer) [SELECT Count(Id) c FROM RecordType][0].get('c');
+
+        List<RecordType> allRecordTypes =  [SELECT Id FROM RecordType];
 
         system.assertEquals(numberOfProfiles, RecordIdHelper.ProfileIdsRecordCount);
-        system.assertEquals(numberOfRecordTypes, RecordIdHelper.RecordTypeIdsRecordCount);
+        system.assertEquals(allRecordTypes.size(), RecordIdHelper.RecordTypeIdsRecordCount);
     }
 
     public static testMethod void Test_getRecordTypeId() {

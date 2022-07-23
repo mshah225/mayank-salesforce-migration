@@ -20,7 +20,6 @@ public with sharing class LeadTriggerTest {
         return leadList;
     }
 
-    // Build Lead Interests
     static Id insertProgram(String programName, String programCode) {
         Program__c testProgram = new Program__c(Name = programName, Program_Code__c = programCode);
         insert testProgram;
@@ -38,27 +37,10 @@ public with sharing class LeadTriggerTest {
         return testPlan.Id;
     }
 
-    static List<Lead_Interest__c> createLeadInterests(List<Lead> associatedLeads) {
-        List<Lead_Interest__c> liList = new List<Lead_Interest__c>();
-
-        Id program1 = insertProgram('Program1', 'P1');
-        Id plan1 = insertPlan('Plan1', 'PL1', program1);
-
-        for (Lead l : associatedLeads) {
-            Lead_Interest__c li = new Lead_Interest__c(College__c = program1, Plan__c = plan1, Leads__c = l.Id);
-            liList.add(li);
-        }
-
-        return liList;
-    }
-
     @isTest
     static void testManualLeadConversion() {
         Lead[] leadList = createLeads(TRIGGERLOAD);
         insert leadList;
-
-        Lead_Interest__c[] liList = createLeadInterests(leadList);
-        insert liList;
 
         Set<Id> leadIds = new Set<Id>();
 

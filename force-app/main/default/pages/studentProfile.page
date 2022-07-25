@@ -311,9 +311,9 @@
                                 </td>
                                 <td>
                                     <a href="https://appx.asu.edu/AppXtender/DataSources/AX-SFA/ISubmitQuery?AutoLogoutOnClose=False&DocNavBlocked=True&DispMode=11&AppName=STUDENT&SearchAllRevisions=True&PublicQuery=False&UpdateAvlFieldsOnly=True&EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank">
-                                        AppXtender
-                                    </a>
+                                        target="_blank">AppXtender (SFA)</a> -
+                                    <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
+                                        target="_blank">(GRAD)</a>
                                 </td>
                             </tr>
 

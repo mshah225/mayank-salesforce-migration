@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
-    <labels>
-        <fullName>Success_Coach_Recode_Profile</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>Success Coach Recode Profile</shortDescription>
-        <value>ASU Service - Success Coach,ASU Service - Help Desk Rush Support</value>
-    </labels>
-</CustomLabels>

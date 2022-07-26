@@ -19,3 +19,10 @@
 :host lightning-spinner {
     position: fixed;
 }
+
+@media (max-width: 64em){
+    :host .slds-max-large-wrap {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+}

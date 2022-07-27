@@ -31,6 +31,6 @@ trigger OpportunityTrigger on Opportunity(
         if (Trigger.isDelete)
             dispatcher.afterDelete();
         if (Trigger.isUndelete)
-            dispatcher.afterUnDelete();
+            dispatcher.afterUndelete();
     }
 }

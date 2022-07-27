@@ -452,12 +452,27 @@ public class AdvisorPortalFilterSectionController {
      */
     @TestVisible
     private static Set<Id> filterStudentGroups(AdvisorPortalFilter filter, List<Id> ownerIds, Set<Id> contactIds) {
-        if (contactIds == null)
-            return getContactsFromStudentGroups(filter, ownerIds);
+        String contactConstrictingStatement;
+
+        if (contactIds == null) {
+            // contacts restricted by which students are owned
+            contactConstrictingStatement = '(' + generateSuccessStudentFilterString(ownerIds) + ')';
+        } else {
+            // use specified contactIds constriction
+            List<String> contactIdList = new List<String>();
+            for (Id contactId : contactIds)
+                contactIdList.add(contactId);
+            contactConstrictingStatement = getSoqlListString(contactIdList);
+        }
+
+        insert new Case(Subject = 'Prood case', Description = contactConstrictingStatement);
 
         Boolean useQueryString = false;
         Set<Id> filteredContactIds = new Set<Id>();
-        String queryString = 'SELECT SG_Contact__c FROM Student_Group__c WHERE SG_Contact__c IN :contactIds';
+        String queryString =
+            'SELECT SG_Contact__c FROM Student_Group__c WHERE SG_Contact__c IN ' +
+            contactConstrictingStatement +
+            '';
 
         if (filter.career != null) {
             // if statement for using either undergrad filtering
@@ -483,35 +498,6 @@ public class AdvisorPortalFilterSectionController {
             return filteredContactIds;
         } else {
             return contactIds;
-        }
-    }
-
-    /**
-     * Get contacts from student groups
-     */
-    private static Set<Id> getContactsFromStudentGroups(AdvisorPortalFilter filter, List<Id> ownerIds) {
-        if (filter.career != 'GRD' && !String.isBlank(filter.studentGroupCode)) {
-            Set<Id> contactIds = new Set<Id>();
-
-            String queryString =
-                'SELECT SG_Contact__c FROM Student_Group__c WHERE' +
-                ' SG_PeopleSoft_Code__c = \'' +
-                filter.studentGroupCode +
-                '\'' +
-                ' AND SG_Contact__c IN (' +
-                generateSuccessStudentFilterString(ownerIds) +
-                ')' +
-                ' AND SG_Effective_Date__c <= TODAY' +
-                ' AND SG_Status__c = TRUE' +
-                ' GROUP BY SG_Contact__c LIMIT 4000';
-
-            for (AggregateResult studentPlanResult : Database.query(queryString)) {
-                contactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
-            }
-
-            return contactIds;
-        } else {
-            return null;
         }
     }
 
@@ -1077,7 +1063,12 @@ public class AdvisorPortalFilterSectionController {
         List<String> andStatements = new List<String>();
 
         andStatements.add('IsClosed = FALSE');
-        andStatements.add('RecordTypeId = \'' + RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') + '\'');
+
+        List<String> recordTypeIds = new List<String>{
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
+        };
+        andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
 
         if (!String.isBlank(filter.caseCategory)) {
             List<String> categories = filter.caseCategory.split(';');

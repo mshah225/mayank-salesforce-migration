@@ -1,4 +1,4 @@
-public class AdvisorPortalTopLevelFilterController { 
+public class AdvisorPortalTopLevelFilterController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> viewAsOptions() {
         Map<String, String> viewAsOptions = new Map<String, String>();
@@ -151,7 +151,7 @@ public class AdvisorPortalTopLevelFilterController {
                     WHERE
                         Resource__c = :UserInfo.getUserId()
                         AND IsActive__c = TRUE
-                        AND RecordTypeId = :AdvisorResourceRTID
+                        AND RecordTypeId IN :new List<String>{ AdvisorResourceRTID, GradAdvisorResourceRTID }
                 ];
             }
 
@@ -183,16 +183,21 @@ public class AdvisorPortalTopLevelFilterController {
     private static Id AdvisorResourceRTID {
         get {
             if (AdvisorResourceRTID == null) {
-                AdvisorResourceRTID = [
-                    SELECT Id
-                    FROM RecordType
-                    WHERE SobjectType = 'Success_Resource__c' AND Name = 'Advisor'
-                    LIMIT 1
-                ]
-                .Id;
+                AdvisorResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor');
             }
 
             return AdvisorResourceRTID;
+        }
+        set;
+    }
+
+    private static Id GradAdvisorResourceRTID {
+        get {
+            if (GradAdvisorResourceRTID == null) {
+                GradAdvisorResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Grad');
+            }
+
+            return GradAdvisorResourceRTID;
         }
         set;
     }

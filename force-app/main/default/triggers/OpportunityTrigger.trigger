@@ -8,8 +8,29 @@ trigger OpportunityTrigger on Opportunity(
 ) {
     TriggerFactory.createAndExecuteHandler(OpportunityHandler.class);
 
-    if (Trigger.isBefore && (Trigger.isInsert || Trigger.isUpdate)) {
-        TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
-        ta.assignTerritory();
+    OpportunityDispatcher dispatcher = new OpportunityDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
+
+    if (Trigger.isBefore) {
+        if (Trigger.isInsert)
+            dispatcher.beforeInsert();
+        if (Trigger.isUpdate)
+            dispatcher.beforeUpdate();
+        if (Trigger.isDelete)
+            dispatcher.beforeDelete();
+    }
+    if (Trigger.isAfter) {
+        if (Trigger.isInsert)
+            dispatcher.afterInsert();
+        if (Trigger.isUpdate)
+            dispatcher.afterUpdate();
+        if (Trigger.isDelete)
+            dispatcher.afterDelete();
+        if (Trigger.isUndelete)
+            dispatcher.afterUnDelete();
     }
 }

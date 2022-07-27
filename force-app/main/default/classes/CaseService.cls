@@ -618,11 +618,6 @@ public class CaseService {
         }
     }
 
-    public static void updateContactOnAccount(List<Case> newList) {
-        for (Case updatedCase : newList) {
-        }
-    }
-
     private static void assignRecordType(Case caseRecord, Map<Id, String> mapCCIdToName) {
         if (mapCCIdToName.containsKey(caseRecord.CC_Functional_Group__c)) {
             if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Advisor Outreach')) {

@@ -136,6 +136,7 @@
                             <div class="spinner-border text-maroon" role="status">
                                 <span class="sr-only">Loading...</span>
                             </div>
+                            <liveAgent:clientChatQueuePosition label="Queue position is: " />
                             <div>
                                 <liveAgent:clientChatCancelButton />
                             </div>

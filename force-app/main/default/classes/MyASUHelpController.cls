@@ -38,9 +38,9 @@ public with sharing class MyASUHelpController {
     public String viewAllHousingArticlesUrl;
 
     public String orgId { get; set; }
-    public String deploymentId { get; set; }
     public String chatEndpoint { get; set; }
     public String scriptEndpointUrl { get; set; }
+    public String deploymentId { get; set; }
     public String financeChatButton { get; set; }
     public String financeDisplayName { get; set; }
     public String studentServicesChatButton { get; set; }
@@ -117,20 +117,22 @@ public with sharing class MyASUHelpController {
 
     private void setLiveAgentSettings() {
         Live_Agent_Button__c financeChatLAB = Live_Agent_Button__c.getInstance('Finances_Live_Chat');
+        Live_Agent_Button__c technicalSupportChatLAB = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');
+        Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
+
         orgId = financeChatLAB.Org_Id__c;
-        deploymentId = financeChatLAB.Chat_Deployment__c;
         chatEndpoint = financeChatLAB.Chat_Endpoint__c;
         scriptEndpointUrl = chatEndpoint.replace('https://d', 'https://c').replace('/chat', '');
+        deploymentId = studentServicesChatLAB.Chat_Deployment__c;
+
         financeChatButton = financeChatLAB.Chat_Button_Id__c;
         financeDisplayName = financeChatLAB.Display_Name__c;
 
-        Live_Agent_Button__c studentServicesChatLAB = Live_Agent_Button__c.getInstance('ASU_Services_Live_Chat');
-        studentServicesChatButton = studentServicesChatLAB.Chat_Button_Id__c;
-        studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
-
-        Live_Agent_Button__c technicalSupportChatLAB = Live_Agent_Button__c.getInstance('Technical_Support_Live_Chat');
         technicalSupportChatButton = technicalSupportChatLAB.Chat_Button_Id__c;
         technicalSupportDisplayName = technicalSupportChatLAB.Display_Name__c;
+
+        studentServicesChatButton = studentServicesChatLAB.Chat_Button_Id__c;
+        studentServicesDisplayName = studentServicesChatLAB.Display_Name__c;
     }
 
     public void checkForViewAs() {

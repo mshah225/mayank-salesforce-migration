@@ -2,9 +2,9 @@ public with sharing class AccountService {
     public static void updateCorrespondingContact(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
         Map<Id, Id> accountsToNewContacts = new Map<Id, Id>();
         for (Case updatedCase : updatedCases) {
-            Case previousOpportunity = previousCasesMap.get(updatedCase.Id);
+            Case previousCase = previousCasesMap.get(updatedCase.Id);
 
-            if (previousOpportunity.ContactId != updatedCase.ContactId) {
+            if (previousCase.ContactId != updatedCase.ContactId) {
                 accountsToNewContacts.put(updatedCase.AccountId, updatedCase.ContactId);
             }
         }

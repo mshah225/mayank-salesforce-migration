@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
-    <labels>
-        <fullName>MyASU_Help_Technical_Support_Chatbot</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>MyASU Help Technical Support Chatbot</shortDescription>
-        <value>https://chatbotweb-test.m.asu.edu/it-bot.html</value>
-    </labels>
-</CustomLabels>

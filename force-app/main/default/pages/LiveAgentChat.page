@@ -16,9 +16,17 @@
                 height: 100vh;
             }
 
-            /* Hide queue position when no one in queue */
+            /* Hide queue position when no one in queue and show loading label */
 
             #liveAgentQueuePosition.hide_queuePos {
+                display: none;
+            }
+
+            #liveAgentQueuePosition.hide_queuePos+.loadingQueueDetailsLabel {
+                display: block;
+            }
+
+            #liveAgentQueuePosition:not(.hide_queuePos)+.loadingQueueDetailsLabel {
                 display: none;
             }
 
@@ -199,6 +207,13 @@
                 n.classList.add('btn-maroon');
                 n.classList.add('my-1');
             });
+
+            document.querySelectorAll('#liveAgentQueuePosition').forEach(n => {
+                const loadingLabel = document.createElement('span');
+                loadingLabel.classList.add('loadingQueueDetailsLabel');
+                loadingLabel.innerText = 'Loading queue information';
+                n.parentNode.appendChild(loadingLabel);
+            })
 
             // Automatically add/remove details for chat as chat happens
             const chatLog = document.querySelector('#liveAgentChatLogText');

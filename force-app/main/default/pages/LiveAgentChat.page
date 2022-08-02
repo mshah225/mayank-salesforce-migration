@@ -16,6 +16,12 @@
                 height: 100vh;
             }
 
+            /* Hide queue position when no one in queue */
+
+            #liveAgentQueuePosition.hide_queuePos {
+                display: none;
+            }
+
             /* Operator respsones on left in blue bubble */
 
             #liveAgentChatLogText .operator {

@@ -3,12 +3,9 @@ reviewers:
         repository-maintainers:
             - jdsanch8
             - mgilardi
+            - rnordmanASU
     per_author:
         carlhussey-asu:
-            - repository-maintainers
-        jahami10:
-            - repository-maintainers
-        rnordmanASU:
             - repository-maintainers
         ShahanaASU:
             - repository-maintainers

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Case Quick Close</masterLabel>
+    <description>This component brings back familiar case close process.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property label="Component Header" name="componentName" type="String" default="Case Quick Close" />
+            <property label="Button Label" name="closeButtonLabel" type="String" default="Close Case" />
+            <property label="Button Variant" name="closeButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
+            <property label="Submit Button Label" name="recordSubmitButtonLabel" type="String" default="Submit" />
+            <property label="Submit Button Variant" name="recordSubmitButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
+            <objects>
+                <object>Case</object>
+            </objects>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

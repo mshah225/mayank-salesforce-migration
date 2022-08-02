@@ -334,12 +334,12 @@ public with sharing class CaseInboundEmailHandlerTest {
         Contact createdContact = [SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 1];
 
         System.assert(createdContact != null);
-        System.assert(createdContact.FirstName == '012345678901234567890123456789012345678');
-        System.assert(
-            createdContact.LastName ==
-            '01234567890123456789012345678901234567890123456789012345678901234567890123456789'
+        System.assertEquals('0123456789012345678901234567890123456789', createdContact.FirstName);
+        System.assertEquals(
+            '01234567890123456789012345678901234567890123456789012345678901234567890123456789',
+            createdContact.LastName
         );
-        System.assert(createdContact.Email == 'user@acme.com.test');
+        System.assertEquals('user@acme.com.test', createdContact.Email);
 
         Case createdCase = [
             SELECT Id, Subject, Description, Status, Functional_Group__c
@@ -779,21 +779,6 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
         System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
-    }
-
-    @isTest
-    static void testDebugLog() {
-        Id id = null;
-        List<String> strings = new List<String>();
-        List<Long> longs = new List<Long>();
-        Long num = 0;
-
-        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
-        Test.startTest();
-        LostEmail__c result = emailServiceObj.logDebugLostEmail(id, strings, num, strings, longs, strings, strings);
-        Test.stopTest();
-
-        System.assertNotEquals(result.Id, null, 'An error occurred when logging the failure');
     }
 
     @isTest

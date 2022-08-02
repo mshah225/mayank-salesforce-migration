@@ -8,31 +8,31 @@
     <script>$ = jQuery.noConflict();</script>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
 
-    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/44.0/deployment.js" />
-    
+    <script type="text/javascript" src="{!scriptEndpointUrl}/content/g/js/55.0/deployment.js" />
+
     <script type="text/javascript">
         function disableOnSubmit() {
             let submissionFields = document.getElementsByClassName('w-100');
-        	let buttonField = document.getElementsByClassName('b-100');
-        
+            let buttonField = document.getElementsByClassName('b-100');
+
             if (submissionFields[0].value == '' || submissionFields[1].value == '') {
                 return false;
             }
-            
-        	buttonField[0].classList.add('disabled');
+
+            buttonField[0].classList.add('disabled');
             return true;
         }
     </script>
-    
+
     <script type="text/javascript">
         var orgId = '{!orgId}';
         var chatEndpoint = '{!chatEndpoint}';
-        var chatDeploymentId = '{!deploymentId}';
+        var deploymentId = '{!deploymentId}';
         var financesChatId = '{!financeChatButton}';
         var studentServiceChatId = '{!studentServicesChatButton}';
         var techSupportChatId = '{!technicalSupportChatButton}';
         liveagent.setName('{!JSENCODE($User.FirstName)} {!JSENCODE($User.LastName)}');
-        liveagent.init(chatEndpoint, chatDeploymentId, orgId);
+        liveagent.init(chatEndpoint, deploymentId, orgId);
     </script>
 
     <div class="border myasu-help-scope">
@@ -68,7 +68,8 @@
                                     <apex:inputField id="myasu-help-contact-us-email-message" styleClass="w-100" value="{!newCase.Description}" required="true"
                                     />
                                     <div>
-                                        <apex:commandButton onclick="disableOnSubmit();" styleClass="btn btn-maroon btn-md mt-1 b-100"  action="{!submitCase}" value="Submit"/>
+                                        <apex:commandButton onclick="disableOnSubmit();" styleClass="btn btn-maroon btn-md mt-1 b-100" action="{!submitCase}" value="Submit"
+                                        />
                                     </div>
                                 </apex:form>
                             </div>
@@ -88,10 +89,10 @@
                         <div id="myasu-help-contact-us-chat-link" class="collapse p-2 bg-f5f5f5 border-top" aria-labelledby="headingChat" data-parent="#accordion">
                             <div class="panel-body">
                                 <div class="mb-1">
-                                    <a id="liveagent_button_finances_online" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_finances_online" class="underline c-text-black" href="#" onclick="openFinanceChatbot()">
                                         {!financeDisplayName}
                                     </a>
-                                    <a id="liveagent_button_finances_offline" class="underline c-text-black" href="#" onclick="window.open('{!$Label.MyASU_Help_Finance_Chatbot}','NewButtonWindowName','width=450,height=500,scrollbars=yes');">
+                                    <a id="liveagent_button_finances_offline" class="underline c-text-black" href="#" onclick="openFinanceChatbot()">
                                         {!financeDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -108,13 +109,17 @@
                                                 document.getElementById('liveagent_button_finances_offline')
                                             );
                                         });
+
+                                        function openFinanceChatbot() {
+                                            window.open('{!$Label.MyASU_Help_Finance_Chatbot}', '_blank', 'width=450,height=500,scrollbars=yes');
+                                        }
                                     </script>
                                 </div>
                                 <div class="mb-1">
-                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                    <a id="liveagent_button_technical_support_online" class="underline c-text-black" href="#" onclick="openTechnicalSupportChatbot()">
                                         {!technicalSupportDisplayName}
                                     </a>
-                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="liveagent.startChat(techSupportChatId);">
+                                    <a id="liveagent_button_technical_support_offline" class="underline c-text-black" href="#" onclick="openTechnicalSupportChatbot()">
                                         {!technicalSupportDisplayName}
                                     </a>
                                     <script type="text/javascript">
@@ -133,6 +138,11 @@
                                                 )
                                             );
                                         });
+
+                                        function openTechnicalSupportChatbot() {
+                                            liveagent.init(chatEndpoint, deploymentId, orgId);
+                                            window.open('{!$Label.MyASU_Help_Technical_Support_Chatbot}', '_blank', 'width=450,height=500,scrollbars=yes');
+                                        }
                                     </script>
                                 </div>
                                 <div>
@@ -178,7 +188,7 @@
                                 <h3 class="m-0 h6 p-2">
                                     <i class="fa fa-phone myasu-help-contact-us-phone-icon c-text-maroon" aria-hidden="true" />
                                     <span class="c-text-black">Call 1-844-ASU-6693</span>
-                                    <span class="c-text-black">(1-855-278-6693)</span>
+                                    <span class="c-text-black">(1-844-278-6693)</span>
                                 </h3>
                             </div>
                             <div id="myasu-help-contact-us-phone-link" class="collapse" data-parent="#accordion"></div>

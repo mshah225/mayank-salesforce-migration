@@ -84,7 +84,6 @@ function print_checkmark_no_newline() {
     printf "\033[1;32m\xE2\x9C\x94\033[0m"
 }
 
-
 # Execute all major logic
 function execute_changes() {
     branchesToDeleteCount=0
@@ -103,7 +102,7 @@ function execute_changes() {
             branchIndex=$((branchIndex + 1))
             echo -ne "  --> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
 
-            mainComparison="$(git rev-list --left-right --count ASU/main...origin/$branch)"
+            mainComparison="$(git rev-list --left-right --count origin/main...origin/$branch)"
             mainComparisonArray=($mainComparison)
             behindMainCount=${mainComparisonArray[0]}
             aheadMainCount=${mainComparisonArray[1]}

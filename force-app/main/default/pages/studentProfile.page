@@ -524,7 +524,7 @@
 
                             <div class="hide">
                                 <apex:form>
-                                    <apex:dataTable id="serviceIndicatorTable" rendered="{!serviceIndicatorsForStudent.size != null}" value="{!serviceIndicatorsForStudent}"
+                                    <apex:dataTable id="serviceIndicatorTable" rendered="{!serviceIndicatorsForStudent.size != 0}" value="{!serviceIndicatorsForStudent}"
                                         var="serviceIndicator" styleClass="table table-striped table-bordered">
                                         <apex:column>
                                             <apex:facet name="header">Start Date</apex:facet>
@@ -547,7 +547,7 @@
                                             {!serviceIndicator.PositiveServiceIndicator}
                                         </apex:column>
                                     </apex:dataTable>
-                                    <div style="{!IF(serviceIndicatorsForStudent.size != null, 'display: none;', '')}">
+                                    <div style="{!IF(serviceIndicatorsForStudent.size != 0, 'display: none;', '')}">
                                         There are no service indicators available for this student.
                                     </div>
                                 </apex:form>

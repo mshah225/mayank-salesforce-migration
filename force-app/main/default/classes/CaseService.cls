@@ -1,19 +1,5 @@
 public class CaseService {
     /**
-     * Returns all the fields on Case in a String
-     * @return A string containing all the Case fields
-     */
-    public static String caseFieldsToString() {
-        String caseFields = null;
-
-        Map<String, SObjectField> caseFieldMap = ObjectService.getObjectFieldMap('Case');
-
-        caseFields = ObjectService.objectFieldsToString(caseFieldMap);
-
-        return caseFields;
-    }
-
-    /**
      * Returns the fields needed on the Service Center for a given case
      * @param The Case Id to look up
      * @return The Case Object
@@ -84,7 +70,7 @@ public class CaseService {
      */
     public static Map<Id, List<Case>> getVisibleOpenCases(List<Contact> listOfContacts, Integer queryLimit) {
         List<Case> openCases = null;
-        String caseFields = caseFieldsToString();
+        String caseFields = ObjectService.objectFieldsToString('Case');
 
         // Create a set of contactIds from our listOfContacts
         Set<Id> contactIds = new Set<Id>();
@@ -149,7 +135,7 @@ public class CaseService {
     public static Map<Id, List<Case>> getVisibleClosedCases(List<Contact> listOfContacts, Integer queryLimit) {
         List<Case> closedCases = null;
 
-        String caseFields = caseFieldsToString();
+        String caseFields = ObjectService.objectFieldsToString('Case');
 
         // Create a set of contactIds from our listOfContacts
         Set<Id> contactIds = new Set<Id>();
@@ -204,7 +190,7 @@ public class CaseService {
      */
     public static List<Case> getAllOpenCases(Id contactId) {
         List<Case> openCases = null;
-        String caseFields = caseFieldsToString();
+        String caseFields = ObjectService.objectFieldsToString('Case');
 
         String selectOpenVisibleCases =
             'SELECT ' +
@@ -218,33 +204,6 @@ public class CaseService {
         openCases = Database.query(selectOpenVisibleCases);
 
         return openCases;
-    }
-
-    /**
-     * Get all of the information pertaining to the provided case Id
-     * @param caseId A Case ID
-     * @return caseInfo The corresponding Case
-     */
-    public static Case getCaseInformation(Id caseId) {
-        Case caseInfo = null;
-        String caseFields = caseFieldsToString();
-
-        // Get the list of cases associated with our set of contacts
-        try {
-            String caseInfoQuery = 'SELECT ' + caseFields + ' ' + 'FROM Case ' + 'WHERE Id = :caseId';
-
-            System.debug('!!!FINE: caseInfoQuery is ' + caseInfoQuery);
-
-            caseInfo = Database.query(caseInfoQuery);
-        } catch (Exception e) {
-            throw new CaseServiceException(
-                '!!!ERROR!!!: An error occurred trying to get ' +
-                'the Case\'s information\n' +
-                e.getMessage()
-            );
-        }
-
-        return caseInfo;
     }
 
     /**

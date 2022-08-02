@@ -206,41 +206,5 @@ public without sharing class OpportunityHandler implements ITrigger {
      * method to accomplish any final operations such as creation or updates of other records.
      */
     public void andFinally() {
-        if (Trigger.isAfter && Trigger.isInsert) {
-            cleanUpLeadInterests(Trigger.new);
-        }
-    }
-
-    private void cleanUpLeadInterests(List<Opportunity> opportunityList) {
-        if (opportunityList.size() == 0) {
-            return;
-        }
-
-        Set<Id> contactIds = new Set<Id>();
-        Set<Id> leadIds = new Set<Id>();
-
-        for (Opportunity o : opportunityList) {
-            if (o.converted_lead_id__c != null) {
-                leadIds.add(ID.valueOf(o.converted_lead_id__c));
-            }
-        }
-
-        if (leadIds.size() > 0) {
-            List<Lead_Interest__c> leadInterestList = new List<Lead_Interest__c>(
-                [SELECT Id, Status__c, leads__c FROM Lead_Interest__c WHERE leads__c IN :leadIds]
-            );
-
-            for (Lead_Interest__c li : leadInterestList) {
-                if (leadToContactMap.containsKey(li.leads__c)) {
-                    li.Contact__c = leadToContactMap.get(li.leads__c);
-                }
-            }
-
-            if (leadInterestList.size() > 0) {
-                update leadInterestList;
-            }
-        }
-
-        return;
     }
 }

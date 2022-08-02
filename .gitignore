@@ -39,3 +39,4 @@ $RECYCLE.BIN/
 .vim-force.com/
 scripts/
 package-lock.json
+.sf/

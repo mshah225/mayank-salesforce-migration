@@ -5,11 +5,11 @@ public class UpdateTerm implements Schedulable {
             SELECT PeopleSoft_Code__c
             FROM Term__c
             WHERE
-                Term_End_Date__c >= TODAY
+                Term_Begin_Date__c  <= TODAY
                 AND (PeopleSoft_Code__c LIKE '%1'
                 OR PeopleSoft_Code__c LIKE '%4'
                 OR PeopleSoft_Code__c LIKE '%7')
-            ORDER BY PeopleSoft_Code__c ASC
+            ORDER BY PeopleSoft_Code__c DESC
             LIMIT 1
         ];
 

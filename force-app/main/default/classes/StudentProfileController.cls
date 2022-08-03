@@ -40,6 +40,7 @@ global with sharing class StudentProfileController {
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
+    public String serviceIndicatorTerm { get; set; }
     public Decimal undergradGPA {get; set; }
     public Decimal gradGPA {get; set; }
     public List<String> financialAidIndicators { get; set; }
@@ -89,6 +90,18 @@ global with sharing class StudentProfileController {
             }
             return completedAcadmicIntegrity;
         }
+        set;
+    }
+
+    public List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent {
+        get {
+            if (serviceIndicatorsForStudent == null) {                
+                serviceIndicatorsForStudent = StudentProfileCalloutService.getServiceIndicators(theContact.EmplId__c);
+            }
+
+            return serviceIndicatorsForStudent;
+        }
+
         set;
     }
 

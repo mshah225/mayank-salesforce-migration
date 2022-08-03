@@ -511,7 +511,7 @@
                             <div class="page-header-smaller" style="margin: 0 0 -5px 0; border: none">
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
-                                    &nbsp;Service Indicators ({!serviceIndicators.size})
+                                    &nbsp;Service Indicators ({!serviceIndicatorsForStudent.size})
                                 </h4>
 
                                 <div class="pull-right">
@@ -522,40 +522,35 @@
                                 </div>
                             </div>
 
-                            <div id="serviceIndicatorsDiv" class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <div class="col-sm-12" style="padding: 0px">
-                                    <apex:outputPanel rendered="{!serviceIndicators.size > 0}">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Start Date</th>
-                                                        <th>Code</th>
-                                                        <th>Description</th>
-                                                        <th>Reason</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <apex:repeat value="{!serviceIndicators}" var="indicator">
-                                                        <tr>
-                                                            <td>
-                                                                <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                    <apex:param value="{!indicator.SI_Start_Date__c}" />
-                                                                </apex:outputText>
-                                                            </td>
-                                                            <td>{!indicator.SI_Code__c}</td>
-                                                            <td>{!indicator.SI_Description__c}</td>
-                                                            <td>{!indicator.SI_Reason__c}</td>
-                                                        </tr>
-                                                    </apex:repeat>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </apex:outputPanel>
-                                    <apex:outputText rendered="{!serviceIndicators.size == 0}">
-                                        No service holds found for {!theContact.Preferred_First_Name__c}.
-                                    </apex:outputText>
-                                </div>
+                            <div class="hide">
+                                <apex:form>
+                                    <apex:dataTable id="serviceIndicatorTable" rendered="{!serviceIndicatorsForStudent.size != 0}" value="{!serviceIndicatorsForStudent}"
+                                        var="serviceIndicator" styleClass="table table-striped table-bordered">
+                                        <apex:column>
+                                            <apex:facet name="header">Start Date</apex:facet>
+                                            {!serviceIndicator.ServiceIndicatorActiveDate}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Code</apex:facet>
+                                            {!serviceIndicator.ServiceIndicatorCode}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Description</apex:facet>
+                                            {!serviceIndicator.ServiceIndicatorCodeDescr}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Reason</apex:facet>
+                                            {!serviceIndicator.ServiceIndReasonCodeDescr}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Positive Indicator</apex:facet>
+                                            {!serviceIndicator.PositiveServiceIndicator}
+                                        </apex:column>
+                                    </apex:dataTable>
+                                    <div style="{!IF(serviceIndicatorsForStudent.size != 0, 'display: none;', '')}">
+                                        There are no service indicators available for this student.
+                                    </div>
+                                </apex:form>
                             </div>
                         </div>
                     </div>

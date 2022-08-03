@@ -1,11 +1,12 @@
 public class UpdateTerm implements Schedulable {
     public void execute(SchedulableContext sc) {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        Date adjustedStartOfTerm = Date.today().addDays(7);
         Term__c currentTermInfo = [
             SELECT PeopleSoft_Code__c
             FROM Term__c
             WHERE
-                Term_Begin_Date__c  <= TODAY
+                Term_Begin_Date__c  <= :adjustedStartOfTerm
                 AND (PeopleSoft_Code__c LIKE '%1'
                 OR PeopleSoft_Code__c LIKE '%4'
                 OR PeopleSoft_Code__c LIKE '%7')

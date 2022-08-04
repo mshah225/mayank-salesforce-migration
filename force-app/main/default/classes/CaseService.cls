@@ -657,12 +657,20 @@ public class CaseService {
     }
 
     public static void updateCaseAccount(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
-        List<Case> casesToUpdate = new List<Case>();
+        Set<Id> casesToUpdate = new Set<Id>();
         for (Case updatedCase : updatedCases) {
             Case previousCase = previousCasesMap.get(updatedCase.Id);
             if (previousCase.ContactId != updatedCase.ContactId) {
-                updatedCase.AccountId = updatedCase.Contact__r.AccountId;
+                casesToUpdate.add(updatedCase.Id);
             }
+        }
+
+        for (Case caseToUpdate : [
+            SELECT Id, AccountId, (SELECT Id, AccountId FROM Contact__c)
+            FROM Case
+            WHERE Id IN :casesToUpdate
+        ]) {
+            caseToUpdate.AccountId = caseToUpdate.Contact__r.AccountId;
         }
     }
 }

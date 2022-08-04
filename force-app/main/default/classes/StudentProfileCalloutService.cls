@@ -9,7 +9,7 @@ public with sharing class StudentProfileCalloutService {
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Service_Indicator/serviceindicators?emplid=' + emplid);
-        req.setHeader('x-asu-ps-app-id', 'ASU_SF_STDNT_PROFILE_NP'); // Prod will be ASU_SF_STDNT_PROFILE (handle this in a setting?)
+        req.setHeader('x-asu-ps-app-id', 'ASU_SF_STDNT_PROFILE'); 
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);

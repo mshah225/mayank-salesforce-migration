@@ -666,7 +666,7 @@ public class CaseService {
         }
 
         for (Case caseToUpdate : [
-            SELECT Id, AccountId, (SELECT Id, AccountId FROM Contact__c)
+            SELECT Id, AccountId, (SELECT Id, AccountId FROM Contact__r)
             FROM Case
             WHERE Id IN :casesToUpdate
         ]) {

@@ -665,12 +665,8 @@ public class CaseService {
             }
         }
 
-        for (Case caseToUpdate : [
-            SELECT Id, AccountId, (SELECT Id, AccountId FROM Contact__r)
-            FROM Case
-            WHERE Id IN :casesToUpdate
-        ]) {
-            caseToUpdate.AccountId = caseToUpdate.Contact__r.AccountId;
+        for (Case caseToUpdate : [SELECT Id, AccountId, Contact.AccountId FROM Case WHERE Id IN :casesToUpdate]) {
+            caseToUpdate.AccountId = caseToUpdate.Contact.AccountId;
         }
     }
 }

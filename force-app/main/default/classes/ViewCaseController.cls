@@ -445,14 +445,18 @@ public with sharing class ViewCaseController {
             );
             return restStatusAndInfo;
         } catch (Exception e) {
-            String httpResponseBody = httpEmailResponse.getBody();
+            String httpResponseBody = httpEmailResponse == null ? null : httpEmailResponse.getBody();
+            String httpResponseCode = httpEmailResponse == null ? null : httpEmailResponse.getStatus();
             List<String> errorCaseVariables = new List<String>();
-            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Rest Status: ', httpEmailResponse.getStatus()));
+            errorCaseVariables.add(ErrorLogger.convertStringToJSON('Rest Status: ', httpResponseCode));
             errorCaseVariables.add(ErrorLogger.convertStringToJSON('Error Info: ', httpResponseBody));
             errorCaseVariables.add(ErrorLogger.convertStringToJSON('Case Id: ', caseId));
             ErrorLogger.log(e, errorCaseVariables, false);
 
-            RestCallResponse restStatusAndInfo = new RestCallResponse(httpEmailResponse.getStatus(), httpResponseBody);
+            RestCallResponse restStatusAndInfo = new RestCallResponse(
+                httpResponseCode == null ? '500' : httpResponseCode,
+                httpResponseBody
+            );
             return restStatusAndInfo;
         }
     }

@@ -1070,33 +1070,6 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<SortableTransferWork> sortTransfers(
-        String paramToSortBy,
-        List<JBT_RET_CLASS_XFER__x> listOfTransfer,
-        Boolean sortDirection
-    ) {
-        List<SortableTransferWork> transferList = new List<SortableTransferWork>();
-        for (JBT_RET_CLASS_XFER__x transferClass : listOfTransfer) {
-            transferList.add(new SortableTransferWork(transferClass, paramToSortBy));
-        }
-
-        transferList.sort();
-        if (sortDirection) {
-            return transferList;
-        }
-
-        List<SortableTransferWork> reversedList = new List<SortableTransferWork>();
-        for (SortableTransferWork sc : transferList) {
-            if (reversedList.size() == 0) {
-                reversedList.add(sc);
-            } else {
-                reversedList.add(0, sc);
-            }
-        }
-        return reversedList;
-    }
-
-    @RemoteAction
     global static ClassesWrapper getClassesData(String classListJson, String asrListJson) {
         List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
             classListJson,

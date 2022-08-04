@@ -656,17 +656,25 @@ public class CaseService {
         }
     }
 
-    public static void updateCaseAccount(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
-        Set<Id> casesToUpdate = new Set<Id>();
+    public static void updateAccountIdFromContact(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
+        Map<Id, Id> contactsToTrackMap = new Map<Id, Id>();
+        Map<Id, Id> casesToUpdateMap = new Map<Id, Id>();
+
         for (Case updatedCase : updatedCases) {
             Case previousCase = previousCasesMap.get(updatedCase.Id);
             if (previousCase.ContactId != updatedCase.ContactId) {
-                casesToUpdate.add(updatedCase.Id);
+                contactsToTrackMap.put(updatedCase.ContactId, updatedCase.Id);
             }
         }
 
-        for (Case caseToUpdate : [SELECT Id, AccountId, Contact.AccountId FROM Case WHERE Id IN :casesToUpdate]) {
-            caseToUpdate.AccountId = caseToUpdate.Contact.AccountId;
+        for (Contact contactToTrack : [SELECT Id, AccountId FROM Contact WHERE Id IN :contactsToTrackMap.keySet()]) {
+            casesToUpdateMap.put(contactsToTrackMap.get(contactToTrack.Id), contactToTrack.AccountId);
+        }
+
+        for (Case updatedCase : updatedCases) {
+            if (casesToUpdateMap.keySet().contains(updatedCase.Id)) {
+                updatedCase.AccountId = casesToUpdateMap.get(updatedCase.Id);
+            }
         }
     }
 }

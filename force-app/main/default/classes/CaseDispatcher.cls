@@ -19,7 +19,7 @@ public class CaseDispatcher implements TriggerDispatcherInterface {
     public void beforeUpdate() {
         CaseService.assignClassificationsAndRecordType(newList, oldMap);
         CaseService.assignRecentGroupAndQueue(newList, oldMap);
-        CaseService.updateCaseAccount(newList, oldMap);
+        CaseService.updateAccountIdFromContact(newList, oldMap);
     }
     public void beforeDelete() {
     }

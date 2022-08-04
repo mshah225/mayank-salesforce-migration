@@ -23,7 +23,7 @@ public class OpportunityDispatcher implements TriggerDispatcherInterface {
     public void beforeUpdate() {
         TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
         ta.assignTerritory();
-        AccountService.updateCorrespondingContact(newList, oldMap);
+        // AccountService.updateCorrespondingContact(newList, oldMap);
     }
     public void beforeDelete() {
     }

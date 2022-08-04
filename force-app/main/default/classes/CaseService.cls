@@ -655,4 +655,14 @@ public class CaseService {
             }
         }
     }
+
+    public static void updateCaseAccount(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
+        List<Case> casesToUpdate = new List<Case>();
+        for (Case updatedCase : updatedCases) {
+            Case previousCase = previousCasesMap.get(updatedCase.Id);
+            if (previousCase.ContactId != updatedCase.ContactId) {
+                updatedCase.AccountId = updatedCase.Contact__r.AccountId;
+            }
+        }
+    }
 }

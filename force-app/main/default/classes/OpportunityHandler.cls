@@ -151,6 +151,8 @@ public without sharing class OpportunityHandler implements ITrigger {
         if (oppToContactMap.containsKey(o.Id)) {
             o.contact__c = oppToContactMap.get(o.Id);
         }
+
+        OpportunityService.updateAccountIdFromContact(Trigger.new, Trigger.oldMap);
     }
 
     /**

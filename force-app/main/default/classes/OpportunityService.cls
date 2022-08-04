@@ -180,16 +180,17 @@ public class OpportunityService {
     }
 
     public static void updateAccountIdFromContact(
-        List<Opportunity> updatedOpportunities,
-        Map<Id, Opportunity> previousOpportunitiesMap
+        List<SObject> updatedOpportunities,
+        Map<Id, SObject> previousOpportunitiesMap
     ) {
         Map<Id, Id> contactsToTrackMap = new Map<Id, Id>();
         Map<Id, Id> opportunitiesToUpdateMap = new Map<Id, Id>();
 
-        for (Opportunity updatedOpportunity : updatedOpportunities) {
-            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
-            if (previousOpportunity.ContactId != updatedOpportunity.ContactId) {
-                contactsToTrackMap.put(updatedOpportunity.ContactId, updatedOpportunity.Id);
+        for (SObject updatedOpportunityObj : updatedOpportunities) {
+            Opportunity updatedOpportunity = (Opportunity) updatedOpportunityObj;
+            Opportunity previousOpportunity = (Opportunity) previousOpportunitiesMap.get(updatedOpportunity.Id);
+            if (previousOpportunity.Contact__c != updatedOpportunity.Contact__c) {
+                contactsToTrackMap.put(updatedOpportunity.Contact__c, updatedOpportunity.Id);
             }
         }
 
@@ -197,7 +198,8 @@ public class OpportunityService {
             opportunitiesToUpdateMap.put(contactsToTrackMap.get(contactToTrack.Id), contactToTrack.AccountId);
         }
 
-        for (Opportunity updatedOpportunity : updatedOpportunities) {
+        for (SObject updatedOpportunityObj : updatedOpportunities) {
+            Opportunity updatedOpportunity = (Opportunity) updatedOpportunityObj;
             if (opportunitiesToUpdateMap.keySet().contains(updatedOpportunity.Id)) {
                 updatedOpportunity.AccountId = opportunitiesToUpdateMap.get(updatedOpportunity.Id);
             }

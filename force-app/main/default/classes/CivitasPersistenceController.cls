@@ -73,12 +73,14 @@ public class CivitasPersistenceController {
         get {
             if (startMonth == null) {
                 Date startDate = [
-                    SELECT Session_A_C_Start_Date__c
+                    SELECT Term_Begin_Date__c
                     FROM Term__c
                     WHERE PeopleSoft_Code__c = :currentTerm
                     LIMIT 1
                 ]
-                .Session_A_C_Start_Date__c;
+                .Term_Begin_Date__c;
+
+                startDate = startDate.addDays(-7);
                 startMonth = startDate.month();
             }
             return startMonth;
@@ -89,8 +91,10 @@ public class CivitasPersistenceController {
     public Integer endMonth {
         get {
             if (endMonth == null) {
-                Date endDate = [SELECT Session_A_C_Start_Date__c FROM Term__c WHERE PeopleSoft_Code__c = :nextTerm LIMIT 1]
-                .Session_A_C_Start_Date__c;
+                Date endDate = [SELECT Term_Begin_Date__c FROM Term__c WHERE PeopleSoft_Code__c = :nextTerm LIMIT 1]
+                .Term_Begin_Date__c;
+
+                endDate = endDate.addDays(-7);
                 endMonth = endDate.month();
             }
             return endMonth;

@@ -12,26 +12,31 @@ public with sharing class CivitasPersistenceControllerTest {
 
         Term__c prevTerm = new Term__c( // fall (previous year)
             Session_A_C_Start_Date__c = Date.newInstance(2019, 8, 1),
+            Term_Begin_Date__c = Date.newInstance(2019, 8, 1),
             Year__c = '2020',
             PeopleSoft_Code__c = term.PrevTerm__c
         );
         Term__c springTerm = new Term__c( // spring
             Session_A_C_Start_Date__c = Date.newInstance(2020, 1, 1),
+            Term_Begin_Date__c = Date.newInstance(2020, 1, 1),
             Year__c = '2020',
             PeopleSoft_Code__c = term.CurrTerm__c
         );
         Term__c summerTerm = new Term__c( // fall
             Session_A_C_Start_Date__c = Date.newInstance(2020, 5, 1),
+            Term_Begin_Date__c = Date.newInstance(2020, 5, 1),
             Year__c = '2020',
             PeopleSoft_Code__c = term.NextTerm__c
         );
         Term__c fallTerm = new Term__c( // fall
             Session_A_C_Start_Date__c = Date.newInstance(2020, 8, 1),
+            Term_Begin_Date__c = Date.newInstance(2020, 8, 1),
             Year__c = '2020',
             PeopleSoft_Code__c = term.FutureTerm__c
         );
         Term__c futureTerm = new Term__c( // spring (next year)
             Session_A_C_Start_Date__c = Date.newInstance(2021, 1, 1),
+            Term_Begin_Date__c = Date.newInstance(2021, 1, 1),
             Year__c = '2020',
             PeopleSoft_Code__c = '2211'
         );
@@ -94,11 +99,10 @@ public with sharing class CivitasPersistenceControllerTest {
 
         System.assertEquals(oldestPO.Snap_Date__c.daysBetween(System.today()) + 1, controller.civitasData.size()); // One for each day between oldest PO and today
         System.assertEquals(5, controller.civitasData[0].allMonths.size());
-        System.assertEquals('Jan', controller.civitasData[0].allMonths[0]);
-        System.assertEquals('Feb', controller.civitasData[0].allMonths[1]);
-        System.assertEquals('Mar', controller.civitasData[0].allMonths[2]);
-        System.assertEquals('Apr', controller.civitasData[0].allMonths[3]);
-        System.assertEquals('May', controller.civitasData[0].allMonths[4]);
+        System.assertEquals('Dec', controller.civitasData[0].allMonths[0]);
+        System.assertEquals('Jan', controller.civitasData[0].allMonths[1]);
+        System.assertEquals('Feb', controller.civitasData[0].allMonths[2]);
+        System.assertEquals('Mar', controller.civitasData[0].allMonths[3]);
         System.assertEquals(oldestPO.Contact__c, controller.civitasData[0].contactId);
         System.assertEquals('Spring', controller.civitasData[0].termInfo);
     }
@@ -136,10 +140,9 @@ public with sharing class CivitasPersistenceControllerTest {
 
         System.assertEquals(oldestPO.Snap_Date__c.daysBetween(System.today()) + 1, controller.civitasData.size()); // One for each day between oldest PO and today
         System.assertEquals(4, controller.civitasData[0].allMonths.size());
-        System.assertEquals('May', controller.civitasData[0].allMonths[0]);
-        System.assertEquals('Jun', controller.civitasData[0].allMonths[1]);
-        System.assertEquals('Jul', controller.civitasData[0].allMonths[2]);
-        System.assertEquals('Aug', controller.civitasData[0].allMonths[3]);
+        System.assertEquals('Apr', controller.civitasData[0].allMonths[0]);
+        System.assertEquals('May', controller.civitasData[0].allMonths[1]);
+        System.assertEquals('Jun', controller.civitasData[0].allMonths[2]);
         System.assertEquals(oldestPO.Contact__c, controller.civitasData[0].contactId);
         System.assertEquals('Summer', controller.civitasData[0].termInfo);
     }
@@ -177,12 +180,11 @@ public with sharing class CivitasPersistenceControllerTest {
 
         System.assertEquals(oldestPO.Snap_Date__c.daysBetween(System.today()) + 1, controller.civitasData.size()); // One for each day between oldest PO and today
         System.assertEquals(6, controller.civitasData[0].allMonths.size());
-        System.assertEquals('Aug', controller.civitasData[0].allMonths[0]);
-        System.assertEquals('Sep', controller.civitasData[0].allMonths[1]);
-        System.assertEquals('Oct', controller.civitasData[0].allMonths[2]);
-        System.assertEquals('Nov', controller.civitasData[0].allMonths[3]);
-        System.assertEquals('Dec', controller.civitasData[0].allMonths[4]);
-        System.assertEquals('Jan', controller.civitasData[0].allMonths[5]);
+        System.assertEquals('Jul', controller.civitasData[0].allMonths[0]);
+        System.assertEquals('Aug', controller.civitasData[0].allMonths[1]);
+        System.assertEquals('Sep', controller.civitasData[0].allMonths[2]);
+        System.assertEquals('Oct', controller.civitasData[0].allMonths[3]);
+        System.assertEquals('Nov', controller.civitasData[0].allMonths[4]);
         System.assertEquals(oldestPO.Contact__c, controller.civitasData[0].contactId);
         System.assertEquals('Fall', controller.civitasData[0].termInfo);
     }

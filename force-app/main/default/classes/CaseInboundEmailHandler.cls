@@ -271,18 +271,35 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                         Preferred_Full_Name__c
                     FROM Contact
                     WHERE
-                        (Email = :cleanFromAddress
+                        Email = :cleanFromAddress
                         OR ASU_Gmail__c = :cleanFromAddress
                         OR EPO_Email__c = :cleanFromAddress
                         OR ASU_Email__c = :cleanFromAddress
                         OR Lead_Email__c = :cleanFromAddress
                         OR Lead_Secondary_Email__c = :cleanFromAddress
                         OR Personal_Email__c = :cleanFromAddress
-                        OR Corporate_Relations_Email__c = :cleanFromAddress)
-                        AND FirstName = :fname
-                        AND LastName = :lname
+                        OR Corporate_Relations_Email__c = :cleanFromAddress
                     ORDER BY RecordType.Name
                 ];
+
+                // Multiple matches - require further filtering using name
+                if (contacts.size() > 1) {
+                    List<Contact> filteredContacts = new List<Contact>();
+
+                    for (Contact c : contacts) {
+                        if (
+                            (c.FirstName != null &&
+                            c.LastName != null) &&
+                            c.FirstName.toLowerCase() == fname.toLowerCase() &&
+                            c.LastName.toLowerCase() == lname.toLowerCase()
+                        ) {
+                            filteredContacts.add(c);
+                        }
+                    }
+
+                    contacts.clear();
+                    contacts.addAll(filteredContacts);
+                }
 
                 if (contacts.size() > 0) {
                     Contact theContact = contacts[0];

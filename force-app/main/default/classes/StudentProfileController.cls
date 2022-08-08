@@ -40,6 +40,7 @@ global with sharing class StudentProfileController {
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
+    public String serviceIndicatorTerm { get; set; }
     public Decimal undergradGPA {get; set; }
     public Decimal gradGPA {get; set; }
     public List<String> financialAidIndicators { get; set; }
@@ -89,6 +90,18 @@ global with sharing class StudentProfileController {
             }
             return completedAcadmicIntegrity;
         }
+        set;
+    }
+
+    public List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent {
+        get {
+            if (serviceIndicatorsForStudent == null) {                
+                serviceIndicatorsForStudent = StudentProfileCalloutService.getServiceIndicators(theContact.EmplId__c);
+            }
+
+            return serviceIndicatorsForStudent;
+        }
+
         set;
     }
 
@@ -1047,33 +1060,6 @@ global with sharing class StudentProfileController {
 
         List<SortableCreditByExam> reversedList = new List<SortableCreditByExam>();
         for (SortableCreditByExam sc : examList) {
-            if (reversedList.size() == 0) {
-                reversedList.add(sc);
-            } else {
-                reversedList.add(0, sc);
-            }
-        }
-        return reversedList;
-    }
-
-    @RemoteAction
-    global static List<SortableTransferWork> sortTransfers(
-        String paramToSortBy,
-        List<JBT_RET_CLASS_XFER__x> listOfTransfer,
-        Boolean sortDirection
-    ) {
-        List<SortableTransferWork> transferList = new List<SortableTransferWork>();
-        for (JBT_RET_CLASS_XFER__x transferClass : listOfTransfer) {
-            transferList.add(new SortableTransferWork(transferClass, paramToSortBy));
-        }
-
-        transferList.sort();
-        if (sortDirection) {
-            return transferList;
-        }
-
-        List<SortableTransferWork> reversedList = new List<SortableTransferWork>();
-        for (SortableTransferWork sc : transferList) {
             if (reversedList.size() == 0) {
                 reversedList.add(sc);
             } else {

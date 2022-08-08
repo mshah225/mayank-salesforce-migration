@@ -302,65 +302,6 @@ private class StudentProfileControllerTest {
     }
 
     @IsTest
-    private static void testSortTransfers() {
-        List<SortableTransferWork> sortedTransfers;
-        String transferListJSON =
-            '[' +
-            '{' +
-            '"DisplayUrl":"www.exampleurl1.example", ' +
-            '"TITLE__c":"aaa Title 1", ' +
-            '"COURSE__c":"bbb Course 2", ' +
-            '"INSTITUTION__c":"ccc Institution 3"' +
-            '}, ' +
-            '{' +
-            '"DisplayUrl":"www.exampleurl2.example", ' +
-            '"TITLE__c":"bbb Title 2", ' +
-            '"COURSE__c":"ccc Course 3", ' +
-            '"INSTITUTION__c":"aaa Institution 1"' +
-            '}, ' +
-            '{' +
-            '"DisplayUrl":"www.exampleurl3.example", ' +
-            '"TITLE__c":"ccc Title 3", ' +
-            '"COURSE__c":"aaa Course 1", ' +
-            '"INSTITUTION__c":"bbb Institution 2"' +
-            '}' +
-            ']';
-
-        List<JBT_RET_CLASS_XFER__x> transferList = (List<JBT_RET_CLASS_XFER__x>) JSON.deserialize(
-            transferListJSON,
-            List<JBT_RET_CLASS_XFER__x>.class
-        );
-
-        // Sort properly by Title
-        sortedTransfers = StudentProfileController.sortTransfers('Title', transferList, true);
-        System.assertEquals(3, sortedTransfers.size());
-        System.assertEquals('www.exampleurl1.example', sortedTransfers[0].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl2.example', sortedTransfers[1].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl3.example', sortedTransfers[2].transferInfo.DisplayUrl);
-
-        // Sort properly by Title Reversed
-        sortedTransfers = StudentProfileController.sortTransfers('Title', transferList, false);
-        System.assertEquals(3, sortedTransfers.size());
-        System.assertEquals('www.exampleurl3.example', sortedTransfers[0].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl2.example', sortedTransfers[1].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl1.example', sortedTransfers[2].transferInfo.DisplayUrl);
-
-        // Sort properly by Title
-        sortedTransfers = StudentProfileController.sortTransfers('Course', transferList, true);
-        System.assertEquals(3, sortedTransfers.size());
-        System.assertEquals('www.exampleurl3.example', sortedTransfers[0].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl1.example', sortedTransfers[1].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl2.example', sortedTransfers[2].transferInfo.DisplayUrl);
-
-        // Sort properly by Title
-        sortedTransfers = StudentProfileController.sortTransfers('Institution', transferList, true);
-        System.assertEquals(3, sortedTransfers.size());
-        System.assertEquals('www.exampleurl2.example', sortedTransfers[0].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl3.example', sortedTransfers[1].transferInfo.DisplayUrl);
-        System.assertEquals('www.exampleurl1.example', sortedTransfers[2].transferInfo.DisplayUrl);
-    }
-
-    @IsTest
     private static void testGetClassesData() {
         String classListJson =
             '[' +

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Today_going_forwar</fullName>
+    <columns>NAME</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>PeopleSoft_Code__c</columns>
+    <columns>Semester__c</columns>
+    <columns>Session_A_C_Close_Date__c</columns>
+    <columns>Session_A_C_Start_Date__c</columns>
+    <columns>Session_B_Close_Date__c</columns>
+    <columns>Session_B_Start_Date__c</columns>
+    <columns>Term_Status__c</columns>
+    <columns>Year__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Session_A_C_Close_Date__c</field>
+        <operation>greaterOrEqual</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>Future Terms</label>
+</ListView>

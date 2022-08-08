@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Term_Status__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[Peoplesoft] - Checkbox for status of term</description>
+    <externalId>false</externalId>
+    <label>Term Status</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

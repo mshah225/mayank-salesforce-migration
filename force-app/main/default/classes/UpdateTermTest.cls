@@ -6,7 +6,8 @@ private class UpdateTermTest {
         Term__c termInDB = new Term__c(
             PeopleSoft_Code__c = '2001',
             Year__c = '2001',
-            Session_A_C_Close_Date__c = Date.Today()
+            Session_A_C_Close_Date__c = Date.Today(),
+            Term_Begin_Date__c= Date.Today()            
         );
         insert termInDB;
 
@@ -27,7 +28,8 @@ private class UpdateTermTest {
         Term__c termInDB = new Term__c(
             PeopleSoft_Code__c = '2004',
             Year__c = '2004',
-            Session_A_C_Close_Date__c = Date.Today()
+            Session_A_C_Close_Date__c = Date.Today(),
+            Term_Begin_Date__c= Date.Today()     
         );
         insert termInDB;
 
@@ -48,7 +50,8 @@ private class UpdateTermTest {
         Term__c termInDB = new Term__c(
             PeopleSoft_Code__c = '2007',
             Year__c = '2007',
-            Session_A_C_Close_Date__c = Date.Today()
+            Session_A_C_Close_Date__c = Date.Today(),
+            Term_Begin_Date__c= Date.Today()    
         );
         insert termInDB;
 

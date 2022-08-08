@@ -17,6 +17,8 @@
     "files.associations": {
         "*.json": "jsonc"
     },
+    "git.mergeEditor": false,
+    "merge-conflict.autoNavigateNextConflict.enabled": true,
     "prettier.configPath": ".prettierrc",
     "prettier.ignorePath": ".prettierignore",
     "prettier.printWidth": 120,

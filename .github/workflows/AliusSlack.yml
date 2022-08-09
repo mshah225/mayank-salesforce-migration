@@ -14,11 +14,11 @@ jobs:
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v4
               with:
-                python-version: ${{ matrix.python-version }}
+                  python-version: ${{ matrix.python-version }}
             - name: Install dependencies
-                run: |
-                    python -m pip install --upgrade pip
-                    pip install pygithub
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install pygithub
             - name: Run Alius Slack
-                run: |
-                    python ./.github/workflows/AliusSlack/alius_slack.py
+              run: |
+                  python ./.github/workflows/AliusSlack/alius_slack.py

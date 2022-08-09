@@ -1,16 +1,18 @@
-name: Alius Slack
+name: Pull Request Slack Notification
 
 on:
     workflow_dispatch:
-    # push:
-    #     branches:
-    #         - main
+    # schedule:
+    #     - cron: '0/5 8-17 * * MON-FRI'
 
 jobs:
-    run-alius-ci:
+    run-pull-request-slack-notification:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+            - name: Set the value
+                run: |
+                    echo "action_state=yellow" >> $GITHUB_ENV
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v4
               with:
@@ -19,6 +21,6 @@ jobs:
               run: |
                   python -m pip install --upgrade pip
                   pip install pygithub
-            - name: Run Alius Slack
+            - name: Run Pull Request Slack Notification
               run: |
-                  python ./.github/workflows/AliusSlack/alius_slack.py
+                  python ./.github/workflows/PullRequestSlackNotification/pull_request_slack_notification.py

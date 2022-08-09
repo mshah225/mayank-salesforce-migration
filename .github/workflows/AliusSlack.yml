@@ -1,0 +1,24 @@
+name: Alius Slack
+
+on:
+    workflow_dispatch:
+    # push:
+    #     branches:
+    #         - main
+
+jobs:
+    run-alius-ci:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python ${{ matrix.python-version }}
+                uses: actions/setup-python@v4
+                with:
+                python-version: ${{ matrix.python-version }}
+            - name: Install dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                    pip install pygithub
+            - name: Run Alius Slack
+                run: |
+                    python ./.github/workflows/AliusSlack/alius_slack.py

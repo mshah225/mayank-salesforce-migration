@@ -1,0 +1,19 @@
+name: Feature Branch Sync
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+
+jobs:
+    run-feature-branch-sync:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run Feature Branch Sync
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - run: |
+                  chmod +x "${GITHUB_WORKSPACE}/.github/workflows/FeatureBranchSync/feature_branch_sync.sh"
+                  "${GITHUB_WORKSPACE}/.github/workflows/FeatureBranchSync/feature_branch_sync.sh"

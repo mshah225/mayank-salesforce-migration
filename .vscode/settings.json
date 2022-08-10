@@ -4,7 +4,13 @@
             "text": "$(play) Salesforce Developer Setup",
             "command": "terminals.runTerminalByName",
             "arguments": ["Salesforce Developer Setup"],
-            "tooltip": "A script to initialize or refresh an Salesforce developer's setup"
+            "tooltip": "A script to initialize or refresh a Salesforce developer's setup"
+        },
+        {
+            "text": "$(play) Ratchet",
+            "command": "terminals.runTerminalByName",
+            "arguments": ["Ratchet"],
+            "tooltip": "A script to list factory classes"
         }
     ],
     "editor.formatOnSave": true,
@@ -38,6 +44,15 @@
                 "[ -d 'bin/salesforce-developer-setup' ] && cd bin/salesforce-developer-setup",
                 "./salesforce_developer_setup.sh"
             ],
+            "recycle": true,
+            "open": true,
+            "focus": true
+        },
+        {
+            "name": "Ratchet",
+            "description": "A script to list factory classes",
+            "icon": "code",
+            "commands": ["[ -d 'bin/ratchet' ] && cd bin/ratchet", "./install.sh", "exit"],
             "recycle": true,
             "open": true,
             "focus": true

@@ -155,7 +155,7 @@ function execute_changes() {
             branchIndex=$((branchIndex + 1))
             echo -ne "  --> \033[1m$branch\033[0m ($branchIndex/$branchTotalCount)\033[0K\r"
 
-            if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]] ; then
+            if [[ $(is_protected_branch "$branch") == "1" ]] || [[ $(is_ignored_branch "$branch") == "1" ]]; then
                 branchesToSkipArray+=("$branch")
                 branchesToSkipCount=$((branchesToSkipCount + 1))
                 continue
@@ -208,11 +208,14 @@ function execute_changes() {
                 branchesToCreatePullRequestArray+=("$branch")
                 branchesToCreatePullRequestCount=$((branchesToCreatePullRequestCount + 1))
             else
+                git checkout $branch
                 if git diff-index --quiet ASU/main --; then
+                    git checkout -f main
                     branchesToSkipArray+=("$branch")
                     branchesToSkipCount=$((branchesToSkipCount + 1))
                     continue
                 else
+                    git checkout -f main
                     git push ASU $branch
                     branchesToContributeArray+=("$branch")
                     branchesToContributeCount=$((branchesToContributeCount + 1))
@@ -245,8 +248,8 @@ function execute_changes() {
 
     echo && print_typed_text_blue "--- SKIPPED BRANCHES ---" && echo
     for value in "${branchesToSkipArray[@]}"; do
-         print_typed_text_red "- $value"
-         printf "\n"
+        print_typed_text_red "- $value"
+        printf "\n"
     done
 
     print_typed_text "Closing terminal instance in two minutes." && echo

@@ -1,8 +1,6 @@
 public without sharing class LeadHandler implements ITrigger {
     private static LeadStatus convertedStatus;
     private List<Lead> leadsToConvert = new List<Lead>();
-    private Set<Id> leadIdsCleanUpLeadInterests = new Set<Id>();
-    private boolean LeadInterestsConverted = false;
     public static boolean ranLeadConversion = false;
 
     /**
@@ -140,7 +138,6 @@ public without sharing class LeadHandler implements ITrigger {
          * Primary lead conversion logic
          */
         List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
-        Set<Id> LeadsRequiringLIReparenting = new Set<Id>();
         Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
         Integer count = 0;
 
@@ -185,21 +182,6 @@ public without sharing class LeadHandler implements ITrigger {
                 if (l.Last_Institution_Attended__c != null) {
                     leadsNeedingPreviousEducation.add(l.Id);
                 }
-
-                // Reparent related Lead Interests if we're not creating an Opportunity
-                // Deactivate related Lead Interests if we are creating an Opportunity
-                if (!l.Convert_Create_Opportunity__c) {
-                    LeadsRequiringLIReparenting.add(l.Id);
-                } else {
-                    leadIdsCleanUpLeadInterests.add(l.Id);
-                }
-            }
-
-            if (LeadsRequiringLIReparenting.size() > 0) {
-                List<Lead_Interest__c> leadInterestList = LeadService.reparentRelatedLeadInterests(
-                    LeadsRequiringLIReparenting
-                );
-                update leadInterestList;
             }
 
             if (leadsNeedingPreviousEducation.size() > 0) {

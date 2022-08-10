@@ -13,17 +13,7 @@ start_spinner() {
     done
 }
 
-reset
-reset
-echo "                                                                                                                                                               "
-echo "███████ ████████  █████  ██████  ████████ ██ ███    ██  ██████      ███████ ███████ ████████ ██    ██ ██████      "
-echo "██         ██    ██   ██ ██   ██    ██    ██ ████   ██ ██           ██      ██         ██    ██    ██ ██   ██     "
-echo "███████    ██    ███████ ██████     ██    ██ ██ ██  ██ ██   ███     ███████ █████      ██    ██    ██ ██████      "
-echo "     ██    ██    ██   ██ ██   ██    ██    ██ ██  ██ ██ ██    ██          ██ ██         ██    ██    ██ ██          "
-echo "███████    ██    ██   ██ ██   ██    ██    ██ ██   ████  ██████      ███████ ███████    ██     ██████  ██ ██ ██ ██ "
-echo "                                                                                                                                                               "
-sleep 3
-reset
+reset && reset
 
 # Start spinner while waiting for tasks to finish
 start_spinner &
@@ -67,5 +57,4 @@ code --install-extension foxundermoon.shell-format --force &>/dev/null
 # Install ratchet script
 ./../ratchet/install.sh
 
-reset
-exit
+reset && exit

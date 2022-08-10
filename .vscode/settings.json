@@ -34,7 +34,10 @@
             "name": "Salesforce Developer Setup",
             "description": "A script to initialize or refresh a Salesforce developer's setup",
             "icon": "code",
-            "commands": ["[ -d 'bin/developer-setup' ] && cd bin/developer-setup", "./developer_setup.sh"],
+            "commands": [
+                "[ -d 'bin/salesforce-developer-setup' ] && cd bin/salesforce-developer-setup",
+                "./salesforce_developer_setup.sh"
+            ],
             "recycle": true,
             "open": true,
             "focus": true

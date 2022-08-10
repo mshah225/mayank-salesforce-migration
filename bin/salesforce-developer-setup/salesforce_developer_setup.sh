@@ -2,7 +2,7 @@
 
 # Create progress spinner when waiting on a task
 start_spinner() {
-    echo -n "DEVELOPER SETUP IN PROGRESS "
+    echo -n "[SALESFORCE DEVELOPER SETUP] IN PROGRESS "
     spinner="/|\\-/|\\-"
     while :; do
         for i in $(seq 0 7); do
@@ -68,12 +68,4 @@ code --install-extension foxundermoon.shell-format --force &>/dev/null
 ./../ratchet/install.sh
 
 reset
-echo "                                                                                                                                                               "
-echo " ██████ ██       ██████  ███████ ██ ███    ██  ██████      ██ ███    ██     ██████   ██████      ███████ ███████  ██████  ██████  ███    ██ ██████  ███████    "
-echo "██      ██      ██    ██ ██      ██ ████   ██ ██           ██ ████   ██          ██ ██  ████     ██      ██      ██      ██    ██ ████   ██ ██   ██ ██         "
-echo "██      ██      ██    ██ ███████ ██ ██ ██  ██ ██   ███     ██ ██ ██  ██      █████  ██ ██ ██     ███████ █████   ██      ██    ██ ██ ██  ██ ██   ██ ███████    "
-echo "██      ██      ██    ██      ██ ██ ██  ██ ██ ██    ██     ██ ██  ██ ██          ██ ████  ██          ██ ██      ██      ██    ██ ██  ██ ██ ██   ██      ██    "
-echo " ██████ ███████  ██████  ███████ ██ ██   ████  ██████      ██ ██   ████     ██████   ██████      ███████ ███████  ██████  ██████  ██   ████ ██████  ███████ ██ "
-echo "                                                                                                                                                               "
-echo "                                                                                                                                                               "
-sleep 3
+exit

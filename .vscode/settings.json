@@ -1,4 +1,7 @@
 {
+    "[apex]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "commands.commands": [
         {
             "text": "$(play) Salesforce Developer Setup",
@@ -18,6 +21,18 @@
         "*.json": "jsonc"
     },
     "git.mergeEditor": false,
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "merge-conflict.autoNavigateNextConflict.enabled": true,
     "prettier.configPath": ".prettierrc",
     "prettier.ignorePath": ".prettierignore",
@@ -26,8 +41,13 @@
     "prettier.bracketSpacing": false,
     "prettier.jsxSingleQuote": true,
     "prettier.singleQuote": true,
+    "prettier.documentSelectors": ["**/*.page", "**/*.component", "**/*.cmp"],
     "prettier.prettierPath": "/opt/homebrew/lib/node_modules/prettier",
     "prettier.requireConfig": true,
+    "python.formatting.provider": "black",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
     "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
     "search.exclude": {
         "**/node_modules": true,
@@ -58,23 +78,7 @@
             "focus": true
         }
     ],
-    "[apex]": {
+    "[visualforce]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
-    },
-    "python.formatting.provider": "black"
+    }
 }

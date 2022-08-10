@@ -1,4 +1,4 @@
-name: Auto Request Review
+name: Pull Request Auto Review
 
 on:
     pull_request_target:
@@ -12,12 +12,12 @@ on:
             - 'main'
 
 jobs:
-    auto-request-review:
-        name: Auto Request Review
+    pull-request-auto-review:
+        name: Pull Request Auto Review
         runs-on: ubuntu-latest
         steps:
             - name: Request review based on set criteria
               uses: necojackarc/auto-request-review@v0.7.0
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  config: .github/workflows/AutoRequestReview/reviewers.yml
+                  config: .github/workflows/PullRequestAutoReview/reviewers.yml

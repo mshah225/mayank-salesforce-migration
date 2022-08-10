@@ -310,10 +310,11 @@
                                     </a>
                                 </td>
                                 <td>
+                                    AppXtender
                                     <a href="https://appx.asu.edu/AppXtender/DataSources/AX-SFA/ISubmitQuery?AutoLogoutOnClose=False&DocNavBlocked=True&DispMode=11&AppName=STUDENT&SearchAllRevisions=True&PublicQuery=False&UpdateAvlFieldsOnly=True&EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank">
-                                        AppXtender
-                                    </a>
+                                        target="_blank">(SFA)</a> -
+                                    <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
+                                        target="_blank">(GRAD)</a>
                                 </td>
                             </tr>
 
@@ -3059,12 +3060,11 @@
                 var errorHtml = '';
 
                 var financialAidUnresolvedQuery =
-                    'SELECT Aid_Year__c, Checklist_Code__c, Checklist_Item_Code__c, Item_Description__c, Checklist_Item_Status_Date__c, ' +
+                    'SELECT Checklist_Code__c, Checklist_Item_Code__c, Item_Description__c, Checklist_Item_Status_Date__c, ' +
                     'Checklist_Item_Status__c ' +
                     'FROM Checklist_Item__c ' +
                     "WHERE Contact__c = '{!theContact.Id}' " +
-                    "AND Administrative_Function__c = \'FINA\' " +
-                    'ORDER BY AID_YEAR__c DESC';
+                    "AND Administrative_Function__c = \'FINA\' ";
                 var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
                 conn.query(
                     financialAidUnresolvedQuery,
@@ -3077,7 +3077,6 @@
                                 var html =
                                     '' +
                                     '<thead>' +
-                                    '<th>Aid Year</th>' +
                                     '<th>Checklist Code</th>' +
                                     '<th>Checklist Item Code</th>' +
                                     '<th>Description</th>' +
@@ -3088,11 +3087,14 @@
                                     "<tbody style='font-weight:normal;'>";
 
                                 for (var i = 0; i < result.length; i++) {
+                                    if (result[i].Checklist__Item_Status_Date__c == null) {
+                                        result[i].Checklist__Item_Status_Date__c = '--';
+                                    }
+                                    if (result[i].Checklist_Item_Status__c == null) {
+                                        result[i].Checklist_Item_Status__c = '--';
+                                    }
                                     html +=
                                         '<tr>' +
-                                        '<td>' +
-                                        result[i].Aid_Year__c +
-                                        '</td>' +
                                         '<td>' +
                                         result[i].Checklist_Code__c +
                                         '</td>' +

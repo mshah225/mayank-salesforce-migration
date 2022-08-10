@@ -1,0 +1,48 @@
+set +e
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":zap: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"*Notice:* This was automatically triggered by a push to `ASU:main` or manually run by a repository administrator."}},{"type":"section","text":{"type":"mrkdwn","text":"Please *do not* make any changes to feature branches until this is complete, and then make sure to update your local copy of the repository. Feature Branch Sync processes roughly 25 branches per minute."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
+
+cleanMergeCount=0
+abortedMergeCount=0
+
+cleanMergeArray=()
+abortedMergeArray=()
+
+cleanBranchText=""
+abortedBranchText=""
+
+for remote in $(git branch -r); do
+    if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
+        branch="${remote#origin/}"
+        git checkout $branch &>/dev/null
+
+        git pull --no-edit origin main &>/dev/null
+        if [ $? -eq 0 ]; then
+            git push origin $branch &>/dev/null
+            cleanMergeArray+=("$branch")
+            cleanMergeCount=$((cleanMergeCount + 1))
+        else
+            git merge --abort &>/dev/null
+            if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
+                git reset --hard origin/main &>/dev/null
+                git push -f origin $branch &>/dev/null
+                cleanMergeArray+=("$branch")
+                cleanMergeCount=$((cleanMergeCount + 1))
+            else
+                abortedMergeArray+=("$branch")
+                abortedMergeCount=$((abortedMergeCount + 1))
+            fi
+        fi
+
+    fi
+done
+
+for value in "${cleanMergeArray[@]}"; do
+    cleanBranchText="$cleanBranchText- $value\n"
+done
+
+for value in "${abortedMergeArray[@]}"; do
+    abortedBranchText="$abortedBranchText- $value\n"
+done
+
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":partywizardasu: Finished Syncing Feature Branches","emoji":true}},{"type":"section","fields":[{"type":"mrkdwn","text":":canvas-check: *merges:* '"$cleanMergeCount"'"},{"type":"mrkdwn","text":":x: *merges:* '"$abortedMergeCount"'"}]},{"type":"section","fields":[{"type":"mrkdwn","text":"'"$cleanBranchText"'"},{"type":"mrkdwn","text":"'"$abortedBranchText"'"}]},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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

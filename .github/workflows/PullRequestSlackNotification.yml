@@ -3,7 +3,7 @@ name: Pull Request Slack Notification
 on:
     workflow_dispatch:
     schedule:
-        - cron: '0/5 8-17 * * MON-FRI'
+        - cron: '*/5 8-17 * * 1-5'
 
 jobs:
     run-pull-request-slack-notification:

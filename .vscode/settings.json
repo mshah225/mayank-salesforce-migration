@@ -1,16 +1,16 @@
 {
     "commands.commands": [
         {
-            "text": "$(terminal) Aliusito's Last Stand",
+            "text": "$(play) Salesforce Developer Setup",
             "command": "terminals.runTerminalByName",
-            "arguments": ["Aliusito's Last Stand"],
-            "tooltip": "A script to safely move all relevant forked branches to the upstream"
+            "arguments": ["Salesforce Developer Setup"],
+            "tooltip": "A script to initialize or refresh a Salesforce developer's setup"
         },
         {
-            "text": "$(play) SF Developer Setup",
+            "text": "$(play) Ratchet",
             "command": "terminals.runTerminalByName",
-            "arguments": ["SF Developer Setup"],
-            "tooltip": "A script to initialize or refresh a developer's setup"
+            "arguments": ["Ratchet"],
+            "tooltip": "A script to list factory classes"
         }
     ],
     "editor.formatOnSave": true,
@@ -37,24 +37,22 @@
     "terminal.integrated.cwd": "force-app/main/default",
     "terminals.terminals": [
         {
-            "name": "Aliusito's Last Stand",
-            "description": "A script to safely move all relevant forked branches to the upstream",
+            "name": "Salesforce Developer Setup",
+            "description": "A script to initialize or refresh a Salesforce developer's setup",
             "icon": "code",
-            "commands": ["[ -d 'bin/aliusito' ] && cd bin/aliusito", "./aliusito_last_stand.sh", "sleep 120", "exit"],
+            "commands": [
+                "[ -d 'bin/salesforce-developer-setup' ] && cd bin/salesforce-developer-setup",
+                "./salesforce_developer_setup.sh"
+            ],
             "recycle": true,
             "open": true,
             "focus": true
         },
         {
-            "name": "SF Developer Setup",
-            "description": "A script to initialize or refresh a Salesforce developer's setup",
+            "name": "Ratchet",
+            "description": "A script to list factory classes",
             "icon": "code",
-            "commands": [
-                "[ -d 'bin/developer-setup' ] && cd bin/developer-setup",
-                "./developer_setup.sh",
-                "sleep 30",
-                "pkill Code"
-            ],
+            "commands": ["[ -d 'bin/ratchet' ] && cd bin/ratchet", "./install.sh", "exit"],
             "recycle": true,
             "open": true,
             "focus": true

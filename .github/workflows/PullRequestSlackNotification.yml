@@ -1,0 +1,26 @@
+name: Pull Request Slack Notification
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: '0/5 8-17 * * MON-FRI'
+
+jobs:
+    run-pull-request-slack-notification:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set the value
+              run: |
+                  echo "github_token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v4
+              with:
+                  python-version: ${{ matrix.python-version }}
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install pygithub
+            - name: Run Pull Request Slack Notification
+              run: |
+                  python ./.github/workflows/PullRequestSlackNotification/pull_request_slack_notification.py

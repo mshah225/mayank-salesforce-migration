@@ -34,6 +34,10 @@ public class ServiceIndicatorWrapper {
 
 	
 	public static ServiceIndicatorWrapper parse(String json) {
-		return (ServiceIndicatorWrapper) System.JSON.deserialize(json, ServiceIndicatorWrapper.class);
+		try {
+			return (ServiceIndicatorWrapper) System.JSON.deserialize(json, ServiceIndicatorWrapper.class);
+        } catch (Exception e) {
+            return new ServiceIndicatorWrapper();
+        }
 	}
 }

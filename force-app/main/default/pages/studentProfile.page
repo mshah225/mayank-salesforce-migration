@@ -310,7 +310,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
+                                    <a href="https://appx.asu.edu/AppXtender/DataSources/AX-SFA/ISubmitQuery?AutoLogoutOnClose=False&DocNavBlocked=True&DispMode=11&AppName=STUDENT&SearchAllRevisions=True&PublicQuery=False&UpdateAvlFieldsOnly=True&EMPLID={!theContact.EMPLID__c}"
                                         target="_blank">
                                         AppXtender
                                     </a>
@@ -511,7 +511,7 @@
                             <div class="page-header-smaller" style="margin: 0 0 -5px 0; border: none">
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
-                                    &nbsp;Service Indicators ({!serviceIndicators.size})
+                                    &nbsp;Service Indicators ({!serviceIndicatorsForStudent.size})
                                 </h4>
 
                                 <div class="pull-right">
@@ -522,40 +522,35 @@
                                 </div>
                             </div>
 
-                            <div id="serviceIndicatorsDiv" class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <div class="col-sm-12" style="padding: 0px">
-                                    <apex:outputPanel rendered="{!serviceIndicators.size > 0}">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Start Date</th>
-                                                        <th>Code</th>
-                                                        <th>Description</th>
-                                                        <th>Reason</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <apex:repeat value="{!serviceIndicators}" var="indicator">
-                                                        <tr>
-                                                            <td>
-                                                                <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                    <apex:param value="{!indicator.SI_Start_Date__c}" />
-                                                                </apex:outputText>
-                                                            </td>
-                                                            <td>{!indicator.SI_Code__c}</td>
-                                                            <td>{!indicator.SI_Description__c}</td>
-                                                            <td>{!indicator.SI_Reason__c}</td>
-                                                        </tr>
-                                                    </apex:repeat>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </apex:outputPanel>
-                                    <apex:outputText rendered="{!serviceIndicators.size == 0}">
-                                        No service holds found for {!theContact.Preferred_First_Name__c}.
-                                    </apex:outputText>
-                                </div>
+                            <div class="hide">
+                                <apex:form>
+                                    <apex:dataTable id="serviceIndicatorTable" rendered="{!serviceIndicatorsForStudent.size != 0}" value="{!serviceIndicatorsForStudent}"
+                                        var="serviceIndicator" styleClass="table table-striped table-bordered">
+                                        <apex:column>
+                                            <apex:facet name="header">Start Date</apex:facet>
+                                            {!serviceIndicator.ServiceIndicatorActiveDate}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Code</apex:facet>
+                                            {!serviceIndicator.ServiceIndicatorCode}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Description</apex:facet>
+                                            {!serviceIndicator.ServiceIndicatorCodeDescr}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Reason</apex:facet>
+                                            {!serviceIndicator.ServiceIndReasonCodeDescr}
+                                        </apex:column>
+                                        <apex:column>
+                                            <apex:facet name="header">Positive Indicator</apex:facet>
+                                            {!serviceIndicator.PositiveServiceIndicator}
+                                        </apex:column>
+                                    </apex:dataTable>
+                                    <div style="{!IF(serviceIndicatorsForStudent.size != 0, 'display: none;', '')}">
+                                        There are no service indicators available for this student.
+                                    </div>
+                                </apex:form>
                             </div>
                         </div>
                     </div>
@@ -3747,7 +3742,6 @@
                 ascDirTransfer = true;
                 currSortTransfer = name;
             }
-            sortTransferList(name, ascDirTransfer);
         }
 
         var enrolledWrapper;
@@ -4624,86 +4618,6 @@
                         } else {
                             document.getElementById('psTransferWorkErrors').innerHTML = 'No transfer work found.';
                         }
-                    }
-                },
-                { buffer: false, escape: true, timeout: 120000 }
-            );
-        }
-
-        //Method to Sort Dropped Class List
-        function sortTransferList(paramToSort, direction) {
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortTransfers}',
-                paramToSort,
-                transferWrapper,
-                direction,
-                function (result, event) {
-                    if (result.length > 0) {
-                        document.getElementById('ps_transfer_work').style.display = 'initial';
-
-                        var html =
-                            '' +
-                            "<div class='table-responsive'>" +
-                            "<table class='table table-striped table-bordered'> " +
-                            '<thead>' +
-                            '<tr style="cursor:pointer">' +
-                            '<th onclick="sortTransferOnClick(\'Term\')">Term</th>' +
-                            '<th onclick="sortTransferOnClick(\'Institution\')">Institution</th>' +
-                            '<th onclick="sortTransferOnClick(\'Course\')">Course</th>' +
-                            '<th onclick="sortTransferOnClick(\'Title\')">Title</th>' +
-                            '<th onclick="sortTransferOnClick(\'Topic\')">Topic</th>' +
-                            '<th onclick="sortTransferOnClick(\'Grade\')">Grade</th>' +
-                            '<th onclick="sortTransferOnClick(\'RCredit\')">R Credit</th>' +
-                            '<th onclick="sortTransferOnClick(\'ECredit\')">E Credit</th>' +
-                            '<th onclick="sortTransferOnClick(\'Hours\')">GPA Hours</th>' +
-                            '<th onclick="sortTransferOnClick(\'Points\')">GPA Points</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>';
-
-                        for (var i = 0; i < result.length; i++) {
-                            html +=
-                                '' +
-                                '<tr>' +
-                                '<td>' +
-                                result[i].transferInfo.TERM__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.INSTITUTION__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.COURSE__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.TITLE__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.TOPIC__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.GRADE__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.RCREDIT__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.ECREDIT__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.GPAHRS__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].transferInfo.GPAPTS__c +
-                                '</td>' +
-                                '</tr>';
-                        }
-
-                        html += '</tbody></table></div>';
-
-                        document.getElementById('ps_transfer_work').innerHTML = html;
-                        cleanUpUndefined('ps_transfer_work');
-                    } else {
-                        document.getElementById('psTransferWorkErrors').innerHTML = 'No transfer work found.';
                     }
                 },
                 { buffer: false, escape: true, timeout: 120000 }

@@ -1,0 +1,333 @@
+@isTest
+public class QuickActionDefaultsHandlerTest {
+    private static final String userAlias = 'testusr';
+    private static final String groupName = 'TestGroupName1';
+
+    @TestSetup
+    public static void setup() {
+        User runAsUser = new User(Id = UserInfo.getUserId());
+
+        User testUser = new User(
+            FirstName = 'Test',
+            LastName = 'User',
+            Username = 'test.user.Emperor.Of.Byzantium@test.test',
+            Email = 'test.user@test.test',
+            Recruiter_Email__c = 'recruit.email@test.test',
+            Alias = userAlias,
+            TimeZoneSidKey = 'America/Phoenix',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'ISO-8859-1',
+            ProfileId = RecordIdHelper.getProfileID('System Administrator'),
+            LanguageLocaleKey = 'en_US'
+        );
+        insert testUser;
+
+        Case_Classification__c testAdvFuncGroup = new Case_Classification__c(
+            Name = 'ASU Advisor Outreach',
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
+            Active__c = true,
+            Visible__c = true
+        );
+        Case_Classification__c testCoachFuncGroup = new Case_Classification__c(
+            Name = 'ASU Coach Outreach',
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
+            Active__c = true,
+            Visible__c = true
+        );
+        insert new List<Case_Classification__c>{ testAdvFuncGroup, testCoachFuncGroup };
+
+        Case_Classification__c testAdvCategory = new Case_Classification__c(
+            Name = 'Test Outreach Category',
+            Parent__c = testAdvFuncGroup.Id,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category'),
+            Active__c = true,
+            Visible__c = true
+        );
+        Case_Classification__c testCoachCategory = new Case_Classification__c(
+            Name = 'Test Outreach Category',
+            Parent__c = testCoachFuncGroup.Id,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category'),
+            Active__c = true,
+            Visible__c = true
+        );
+        insert new List<Case_Classification__c>{ testAdvCategory, testCoachCategory };
+
+        Group testGroup = new Group(Name = groupName, Type = 'Queue');
+        insert testGroup;
+
+        List<QueueSobject> testQueues = new List<QueueSobject>{
+            new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Success_Pod__c'),
+            new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Case')
+        };
+        System.runAs(runAsUser) {
+            // Separate transaction to avoid mixed DML
+            insert testQueues;
+        }
+
+        Success_Pod__c testPod = new Success_Pod__c(
+            OwnerId = testGroup.Id,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Advisor'),
+            Primary_Email__c = testGroup.Name + '@test.asu.edu',
+            Name = 'Test Pod 1',
+            Committee__c = 'tp1'
+        );
+        insert testPod;
+
+        List<Contact> testContacts = new List<Contact>();
+        for (Integer i = 0; i < 5; i++) {
+            testContacts.add(
+                new contact(
+                    FirstName = 'TestContact' + i,
+                    LastName = testPod.Name,
+                    Email = 'test.contact.' + i + '@email.test'
+                )
+            );
+        }
+        insert testContacts;
+
+        Id advisorOutReachId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        Id coachOutReachId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+        List<Case> testCases = new List<Case>();
+        // Advisor Case, Group owned
+        testCases.add(
+            new Case(
+                OwnerId = testGroup.Id,
+                RecordTypeId = advisorOutReachId,
+                Status = 'Outreach Required',
+                CC_Functional_Group__c = testAdvFuncGroup.Id,
+                CC_Category__c = testAdvCategory.Id,
+                Origin__c = 'Outreach',
+                Subject = 'Case Bloat 1',
+                Description = 'Case Bloat',
+                ContactId = testContacts[0].Id
+            )
+        );
+        // Advisor Case, User owned
+        testCases.add(
+            new Case(
+                OwnerId = testUser.Id,
+                RecordTypeId = advisorOutReachId,
+                Status = 'Outreach Required',
+                CC_Functional_Group__c = testAdvFuncGroup.Id,
+                CC_Category__c = testAdvCategory.Id,
+                Origin__c = 'Outreach',
+                Subject = 'Case Bloat 2',
+                Description = 'Case Bloat',
+                ContactId = testContacts[1].Id,
+                Most_Recent_Queue__c = testGroup.Name
+            )
+        );
+        // Coach Case, User owned
+        testCases.add(
+            new Case(
+                OwnerId = testUser.Id,
+                RecordTypeId = coachOutReachId,
+                Status = 'Outreach Required',
+                CC_Functional_Group__c = testCoachFuncGroup.Id,
+                CC_Category__c = testCoachCategory.Id,
+                Origin__c = 'Outreach',
+                Subject = 'Case Bloat 2',
+                Description = 'Case Bloat',
+                ContactId = testContacts[2].Id
+            )
+        );
+
+        insert testCases;
+    }
+
+    @isTest
+    private static void testOnInitDefaultsForCaseEmail() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
+        Case testCase = [
+            SELECT Id, OwnerId
+            FROM Case
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
+        ];
+
+        // Must store as map and then use serialize/deserialize because
+        // normally can't set attributes of this object
+        Map<String, Object> caseEmailDefaults = new Map<String, Object>{
+            'targetSObject' => new EmailMessage(),
+            'contextId' => testCase.Id,
+            'actionType' => 'Email',
+            'actionName' => 'Case.Email',
+            'fromAddressList' => new List<String>{ 'salesforce@test.com' }
+        };
+        QuickAction.SendEmailQuickActionDefaults defaultsSettingEmail = (QuickAction.SendEmailQuickActionDefaults) JSON.deserialize(
+            JSON.serialize(caseEmailDefaults),
+            QuickAction.SendEmailQuickActionDefaults.class
+        );
+
+        System.runAs(testUser) {
+            Test.startTest();
+            defaultsHandler.onInitDefaults(new List<QuickAction.SendEmailQuickActionDefaults>{ defaultsSettingEmail });
+            Test.stopTest();
+        }
+
+        System.assertEquals(
+            testUser.Recruiter_Email__c,
+            ((EmailMessage) defaultsSettingEmail.getTargetSObject()).FromAddress
+        );
+    }
+
+    @isTest
+    private static void testOnInitDefaultsForCaseSendEmail() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
+        Case testCase = [
+            SELECT Id, OwnerId
+            FROM Case
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
+        ];
+
+        // Must store as map and then use serialize/deserialize because
+        // normally can't set attributes of this object
+        Map<String, Object> caseEmailDefaults = new Map<String, Object>{
+            'targetSObject' => new EmailMessage(),
+            'contextId' => testCase.Id,
+            'actionType' => 'SendEmail',
+            'actionName' => 'Case.New_Send_Email',
+            'fromAddressList' => new List<String>{ 'salesforce@test.com' }
+        };
+        QuickAction.SendEmailQuickActionDefaults defaultsSettingEmail = (QuickAction.SendEmailQuickActionDefaults) JSON.deserialize(
+            JSON.serialize(caseEmailDefaults),
+            QuickAction.SendEmailQuickActionDefaults.class
+        );
+
+        System.runAs(testUser) {
+            Test.startTest();
+            defaultsHandler.onInitDefaults(new List<QuickAction.SendEmailQuickActionDefaults>{ defaultsSettingEmail });
+            Test.stopTest();
+        }
+
+        System.assertEquals(
+            testUser.Recruiter_Email__c,
+            ((EmailMessage) defaultsSettingEmail.getTargetSObject()).FromAddress
+        );
+    }
+
+    @isTest
+    private static void testGetEmailFromAddressGroupAdvisorCase() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        EmailMessage em = new EmailMessage();
+        Case testCase = [
+            SELECT Id, OwnerId
+            FROM Case
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                AND Owner.Name = :groupName
+        ];
+        Success_Pod__c testPod = [SELECT Primary_Email__c FROM Success_Pod__c WHERE OwnerId = :testCase.OwnerId];
+
+        Test.startTest();
+        defaultsHandler.setEmailFromAndToAddress(testCase.Id, em);
+        Test.stopTest();
+
+        System.assertEquals(testPod.Primary_Email__c, em.FromAddress);
+    }
+
+    @isTest
+    private static void testGetEmailFromAddressUserAdvisorCase() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        EmailMessage em = new EmailMessage();
+        Case testCase = [
+            SELECT Id, Most_Recent_Queue__c
+            FROM Case
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                AND Owner.Alias = :userAlias
+        ];
+        Success_Pod__c testPod = [
+            SELECT Primary_Email__c
+            FROM Success_Pod__c
+            WHERE Owner_Name__c = :testCase.Most_Recent_Queue__c
+        ];
+
+        Test.startTest();
+        defaultsHandler.setEmailFromAndToAddress(testCase.Id, em);
+        Test.stopTest();
+
+        System.assertEquals(testPod.Primary_Email__c, em.FromAddress);
+    }
+
+    @isTest
+    private static void testGetEmailFromAddressCoachCase() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        EmailMessage em = new EmailMessage();
+        User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
+        Case testCase = [
+            SELECT Id, Most_Recent_Queue__c
+            FROM Case
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
+        ];
+
+        System.runAs(testUser) {
+            Test.startTest();
+            defaultsHandler.setEmailFromAndToAddress(testCase.Id, em);
+            Test.stopTest();
+        }
+
+        System.assertEquals(testUser.Recruiter_Email__c, em.FromAddress);
+    }
+
+    @isTest
+    private static void testNullCcAddress() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        EmailMessage em = new EmailMessage();
+        User testUser = [SELECT Recruiter_Email__c FROM User WHERE Alias = :userAlias];
+        Case testCase = [
+            SELECT Id, Most_Recent_Queue__c
+            FROM Case
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
+        ];
+
+        em.CcAddress = testUser.Recruiter_Email__c;
+        System.runAs(testUser) {
+            Test.startTest();
+            defaultsHandler.setEmailFromAndToAddress(testCase.Id, em);
+            Test.stopTest();
+        }
+
+        System.assertEquals(null, em.CcAddress);
+    }
+
+    @isTest
+    private static void testIsAdvisorCase() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        Case advisorCase = new Case(
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
+            Subject = 'Advisor Case',
+            Description = 'Advisor Case'
+        );
+        Case notAdvisorCase = new Case(
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach'),
+            Subject = 'Not Advisor Case',
+            Description = 'Not Advisor Case'
+        );
+
+        System.assert(defaultsHandler.isAdvisorCase(advisorCase));
+        System.assert(!defaultsHandler.isAdvisorCase(notAdvisorCase));
+    }
+
+    @isTest
+    private static void testCaseOwnedByGroup() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        User testUser = [SELECT Id FROM User WHERE Alias = :userAlias];
+        Group testGroup = [SELECT Id FROM Group WHERE Name = :groupName];
+
+        Case userCase = new Case(OwnerId = testUser.Id, Subject = 'User Case', Description = 'User Case');
+        Case groupCase = new Case(OwnerId = testGroup.Id, Subject = 'Group Case', Description = 'Group Case');
+
+        System.assert(!defaultsHandler.caseOwnedByGroup(userCase));
+        System.assert(defaultsHandler.caseOwnedByGroup(groupCase));
+    }
+
+    @isTest
+    private static void testNullContextId() {
+        QuickActionDefaultsHandler defaultsHandler = new QuickActionDefaultsHandler();
+        defaultsHandler.setEmailFromAndToAddress(null, null);
+        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+        System.assertEquals(1, errorList.size());
+    }
+}

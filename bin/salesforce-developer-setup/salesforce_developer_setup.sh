@@ -54,7 +54,4 @@ code --install-extension ms-python.python --force &>/dev/null
 code --install-extension ms-python.black-formatter --force &>/dev/null
 code --install-extension foxundermoon.shell-format --force &>/dev/null
 
-# Install ratchet script
-./../ratchet/install.sh
-
 reset && exit

@@ -199,15 +199,15 @@
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                <apex:column headerValue="Time Zone" value="{!c.obj.Contact.EdPlus_Student_Reported_Timezone__c}" rendered="{! showTimeZone}"
-                    headerClass="ASUColumnHead" styleClass="ASUColumn">
+                <apex:column headerValue="Time Zone" value="{!c.obj.Contact.tz__Local_Time_Short__c}" rendered="{! showTimeZone}" headerClass="ASUColumnHead"
+                    styleClass="ASUColumn">
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param name="TimeZone" value="Contact.EdPlus_Student_Reported_Timezone__c" assignTo="{!sortField}" /> Time Zone&nbsp;
-                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.EdPlus_Student_Reported_Timezone__c'}">
+                            <apex:param name="TimeZone" value="Contact.tz__Local_Time_Short__c " assignTo="{!sortField}" /> Time Zone&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.tz__Local_Time_Short__c'}">
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.EdPlus_Student_Reported_Timezone__c'}">
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.tz__Local_Time_Short__c'}">
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>

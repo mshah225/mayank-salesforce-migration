@@ -89,12 +89,15 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
 
-        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        List<String> recordTypeIds = new List<String>{
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
+        };
 
         for (AggregateResult result : [
             SELECT Subject
             FROM Case
-            WHERE IsClosed = FALSE AND RecordTypeId = :recordType AND Subject != NULL AND OwnerId IN :viewAsOptions
+            WHERE IsClosed = FALSE AND RecordTypeId IN :recordTypeIds AND Subject != NULL AND OwnerId IN :viewAsOptions
             GROUP BY Subject
             LIMIT 2000
         ]) {
@@ -116,14 +119,16 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
 
-        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-
+        List<String> recordTypeIds = new List<String>{
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
+        };
         for (AggregateResult result : [
             SELECT CC_Category__r.Name CategoryName
             FROM Case
             WHERE
                 IsClosed = FALSE
-                AND RecordTypeId = :recordType
+                AND RecordTypeId IN :recordTypeIds
                 AND CC_Category__c != NULL
                 AND OwnerId IN :viewAsOptions
             GROUP BY CC_Category__r.Name

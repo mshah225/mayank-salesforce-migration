@@ -353,8 +353,6 @@ public class LeadService {
     }
 
     public static void convertLeads(List<Lead> leadsToConvert) {
-        LeadStatus convertedStatus = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted = TRUE LIMIT 1];
-
         if (leadsToConvert.size() == 0) {
             return;
         }
@@ -362,6 +360,7 @@ public class LeadService {
         /*
          * Primary lead conversion logic
          */
+        LeadStatus convertedStatus = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted = TRUE LIMIT 1];
         List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
         Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
         Integer count = 0;

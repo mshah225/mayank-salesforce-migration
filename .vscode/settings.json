@@ -1,63 +1,4 @@
 {
-    "commands.commands": [
-        {
-            "text": "$(play) Salesforce Developer Setup",
-            "command": "terminals.runTerminalByName",
-            "arguments": ["Salesforce Developer Setup"],
-            "tooltip": "A script to initialize or refresh a Salesforce developer's setup"
-        },
-        {
-            "text": "$(play) Ratchet",
-            "command": "terminals.runTerminalByName",
-            "arguments": ["Ratchet"],
-            "tooltip": "A script to list factory classes"
-        }
-    ],
-    "editor.formatOnSave": true,
-    "files.associations": {
-        "*.json": "jsonc"
-    },
-    "git.mergeEditor": false,
-    "merge-conflict.autoNavigateNextConflict.enabled": true,
-    "prettier.configPath": ".prettierrc",
-    "prettier.ignorePath": ".prettierignore",
-    "prettier.printWidth": 120,
-    "prettier.tabWidth": 4,
-    "prettier.bracketSpacing": false,
-    "prettier.jsxSingleQuote": true,
-    "prettier.singleQuote": true,
-    "prettier.prettierPath": "/opt/homebrew/lib/node_modules/prettier",
-    "prettier.requireConfig": true,
-    "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/.sfdx": true
-    },
-    "terminal.integrated.cwd": "force-app/main/default",
-    "terminals.terminals": [
-        {
-            "name": "Salesforce Developer Setup",
-            "description": "A script to initialize or refresh a Salesforce developer's setup",
-            "icon": "code",
-            "commands": [
-                "[ -d 'bin/salesforce-developer-setup' ] && cd bin/salesforce-developer-setup",
-                "./salesforce_developer_setup.sh"
-            ],
-            "recycle": true,
-            "open": true,
-            "focus": true
-        },
-        {
-            "name": "Ratchet",
-            "description": "A script to list factory classes",
-            "icon": "code",
-            "commands": ["[ -d 'bin/ratchet' ] && cd bin/ratchet", "./install.sh", "exit"],
-            "recycle": true,
-            "open": true,
-            "focus": true
-        }
-    ],
     "[apex]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -76,5 +17,68 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.python"
     },
-    "python.formatting.provider": "black"
+    "[visualforce]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "commands.commands": [
+        {
+            "arguments": ["Salesforce Developer Setup"],
+            "command": "terminals.runTerminalByName",
+            "text": "$(play) Salesforce Developer Setup",
+            "tooltip": "A script to initialize or refresh a Salesforce developer's setup"
+        },
+        {
+            "arguments": ["Ratchet"],
+            "command": "terminals.runTerminalByName",
+            "text": "$(play) Ratchet",
+            "tooltip": "A script to list factory classes"
+        }
+    ],
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.json": "jsonc"
+    },
+    "git.mergeEditor": false,
+    "merge-conflict.autoNavigateNextConflict.enabled": true,
+    "prettier.bracketSpacing": false,
+    "prettier.configPath": ".prettierrc",
+    "prettier.documentSelectors": ["**/*.page", "**/*.component", "**/*.cmp"],
+    "prettier.ignorePath": ".prettierignore",
+    "prettier.jsxSingleQuote": true,
+    "prettier.prettierPath": "/opt/homebrew/lib/node_modules/prettier",
+    "prettier.printWidth": 120,
+    "prettier.requireConfig": true,
+    "prettier.singleQuote": true,
+    "prettier.tabWidth": 4,
+    "python.formatting.provider": "black",
+    "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
+    "search.exclude": {
+        "**/.sfdx": true,
+        "**/bower_components": true,
+        "**/node_modules": true
+    },
+    "terminal.integrated.cwd": "force-app/main/default",
+    "terminals.terminals": [
+        {
+            "commands": [
+                "[ -d 'bin/salesforce-developer-setup' ] && cd bin/salesforce-developer-setup",
+                "./salesforce_developer_setup.sh"
+            ],
+            "description": "A script to initialize or refresh a Salesforce developer's setup",
+            "focus": true,
+            "icon": "code",
+            "name": "Salesforce Developer Setup",
+            "open": true,
+            "recycle": true
+        },
+        {
+            "commands": ["[ -d 'bin/ratchet' ] && cd bin/ratchet", "./install.sh", "exit"],
+            "description": "A script to list factory classes",
+            "focus": true,
+            "icon": "code",
+            "name": "Ratchet",
+            "open": true,
+            "recycle": true
+        }
+    ]
 }

@@ -325,7 +325,7 @@ public class LeadService {
         update leadsToUpdate;
     }
 
-    public static List<Lead> determineLeadsToConvert(List<Lead> newLeads) {
+    public static void determineLeadsToConvert(List<Lead> newLeads) {
         List<Lead> leadsToConvert = new List<Lead>();
 
         for (Lead newLead : newLeads) {
@@ -338,7 +338,7 @@ public class LeadService {
         }
     }
 
-    public static List<Lead> determineLeadsToConvert(List<Lead> updatedLeads, Map<Id, Lead> previousLeadsMap) {
+    public static void determineLeadsToConvert(List<Lead> updatedLeads, Map<Id, Lead> previousLeadsMap) {
         List<Lead> leadsToConvert = new List<Lead>();
 
         for (Lead updatedLead : updatedLeads) {

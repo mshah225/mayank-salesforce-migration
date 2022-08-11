@@ -203,14 +203,14 @@ public class OpportunityService {
     }
 
     public static void updateCollegeIfPlanChanged(
-        List<Opportunity> newOpportunities,
-        Map<Id, Opportunity> oldOpportunitiesMap
+        List<Opportunity> updatedOpportunities,
+        Map<Id, Opportunity> previousOpportunitiesMap
     ) {
         List<Id> planIds = new List<Id>();
         Map<Id, Id> programColleges = new Map<Id, Id>();
 
-        for (Opportunity newOpportunity : newOpportunities) {
-            Opportunity oldOpportunity = oldOpportunitiesMap.get(newOpportunity.Id);
+        for (Opportunity newOpportunity : updatedOpportunities) {
+            Opportunity oldOpportunity = previousOpportunitiesMap.get(newOpportunity.Id);
             if (
                 newOpportunity.Academic_Plan__c != oldOpportunity.Academic_Plan__c ||
                 newOpportunity.Admitted_Plan__c != oldOpportunity.Admitted_Plan__c
@@ -229,8 +229,8 @@ public class OpportunityService {
             programColleges.put(plan.Id, plan.Program__c);
         }
 
-        for (Opportunity newOpportunity : newOpportunities) {
-            Opportunity oldOpportunity = oldOpportunitiesMap.get(newOpportunity.Id);
+        for (Opportunity newOpportunity : updatedOpportunities) {
+            Opportunity oldOpportunity = previousOpportunitiesMap.get(newOpportunity.Id);
             if (
                 newOpportunity.Academic_Plan__c != oldOpportunity.Academic_Plan__c ||
                 newOpportunity.Admitted_Plan__c != oldOpportunity.Admitted_Plan__c

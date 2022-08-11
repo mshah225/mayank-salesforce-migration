@@ -17,8 +17,12 @@ public class OpportunityDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
+        TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
+        ta.assignTerritory();
     }
     public void beforeUpdate() {
+        TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
+        ta.assignTerritory();
     }
     public void beforeDelete() {
     }

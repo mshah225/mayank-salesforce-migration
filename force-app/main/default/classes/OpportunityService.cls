@@ -211,17 +211,11 @@ public class OpportunityService {
 
         for (Opportunity updatedOpportunity : updatedOpportunities) {
             Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
-            if (
-                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c ||
-                updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
-            ) {
-                if (updatedOpportunity.Academic_Plan__c != oldAcademicPlan) {
-                    planIds.add(updatedOpportunity.Academic_Plan__c);
-                }
-
-                if (updatedOpportunity.Admitted_Plan__c != oldAdmittedPlan) {
-                    planIds.add(updatedOpportunity.Admitted_Plan__c);
-                }
+            if (updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c) {
+                planIds.add(updatedOpportunity.Academic_Plan__c);
+            }
+            if (updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c) {
+                planIds.add(updatedOpportunity.Admitted_Plan__c);
             }
         }
 
@@ -232,14 +226,15 @@ public class OpportunityService {
         for (Opportunity updatedOpportunity : updatedOpportunities) {
             Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
             if (
-                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c ||
+                updatedOpportunity.Admitted_Plan__c != null &&
                 updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
             ) {
-                if (updatedOpportunity.Admitted_Plan__c != null) {
-                    updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Admitted_Plan__c);
-                } else if (updatedOpportunity.Academic_Plan__c != null) {
-                    updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
-                }
+                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Admitted_Plan__c);
+            } else if (
+                updatedOpportunity.Academic_Plan__c != null &&
+                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c
+            ) {
+                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
             }
         }
     }

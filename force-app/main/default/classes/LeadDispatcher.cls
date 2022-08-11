@@ -12,6 +12,7 @@ public class LeadDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
+        LeadService.setLeadAssignmentNumber(newList);
         TerritoryAssignmentLead ta = new TerritoryAssignmentLead();
         ta.assignTerritory();
     }
@@ -22,8 +23,15 @@ public class LeadDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
+        LeadService.queueHashIdAssignment(newMap);
+        if (CheckRecursion.runCount < 1) {
+            LeadService.determineLeadsToConvert(newList);
+        }
     }
     public void afterUpdate() {
+        if (CheckRecursion.runCount < 1) {
+            LeadService.determineLeadsToConvert(newList, oldMap);
+        }
     }
     public void afterDelete() {
     }

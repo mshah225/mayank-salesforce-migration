@@ -209,18 +209,18 @@ public class OpportunityService {
         List<Id> planIds = new List<Id>();
         Map<Id, Id> programColleges = new Map<Id, Id>();
 
-        for (Opportunity newOpportunity : updatedOpportunities) {
-            Opportunity oldOpportunity = previousOpportunitiesMap.get(newOpportunity.Id);
+        for (Opportunity updatedOpportunity : updatedOpportunities) {
+            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
             if (
-                newOpportunity.Academic_Plan__c != oldOpportunity.Academic_Plan__c ||
-                newOpportunity.Admitted_Plan__c != oldOpportunity.Admitted_Plan__c
+                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c ||
+                updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
             ) {
-                if (newOpportunity.Academic_Plan__c != oldAcademicPlan) {
-                    planIds.add(newOpportunity.Academic_Plan__c);
+                if (updatedOpportunity.Academic_Plan__c != oldAcademicPlan) {
+                    planIds.add(updatedOpportunity.Academic_Plan__c);
                 }
 
-                if (newOpportunity.Admitted_Plan__c != oldAdmittedPlan) {
-                    planIds.add(newOpportunity.Admitted_Plan__c);
+                if (updatedOpportunity.Admitted_Plan__c != oldAdmittedPlan) {
+                    planIds.add(updatedOpportunity.Admitted_Plan__c);
                 }
             }
         }
@@ -229,16 +229,16 @@ public class OpportunityService {
             programColleges.put(plan.Id, plan.Program__c);
         }
 
-        for (Opportunity newOpportunity : updatedOpportunities) {
-            Opportunity oldOpportunity = previousOpportunitiesMap.get(newOpportunity.Id);
+        for (Opportunity updatedOpportunity : updatedOpportunities) {
+            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
             if (
-                newOpportunity.Academic_Plan__c != oldOpportunity.Academic_Plan__c ||
-                newOpportunity.Admitted_Plan__c != oldOpportunity.Admitted_Plan__c
+                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c ||
+                updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
             ) {
-                if (newOpportunity.Admitted_Plan__c != null) {
-                    newOpportunity.College__c = programColleges.get(newOpportunity.Admitted_Plan__c);
-                } else if (newOpportunity.Academic_Plan__c != null) {
-                    newOpportunity.College__c = programColleges.get(newOpportunity.Academic_Plan__c);
+                if (updatedOpportunity.Admitted_Plan__c != null) {
+                    updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Admitted_Plan__c);
+                } else if (updatedOpportunity.Academic_Plan__c != null) {
+                    updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
                 }
             }
         }

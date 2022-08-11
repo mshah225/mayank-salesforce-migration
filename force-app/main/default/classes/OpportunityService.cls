@@ -194,7 +194,7 @@ public class OpportunityService {
         }
 
         for (Opportunity newOpportunity : newOpportunities) {
-            o.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
+            newOpportunity.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
             if (newOpportunity.Contact__c == null) {
                 Account oppsAccount = accountMap.get(newOpportunity.AccountId);
                 newOpportunity.Contact__c = oppsAccount.Contact__c;

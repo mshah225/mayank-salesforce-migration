@@ -4,4 +4,9 @@
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <label>CoachPortalMainPage</label>
+    <packageVersions>
+        <majorNumber>2</majorNumber>
+        <minorNumber>24</minorNumber>
+        <namespace>tz</namespace>
+    </packageVersions>
 </ApexPage>

@@ -524,26 +524,26 @@
                             </div>
 
                             <div class="hide">
-                                <apex:form>
+                                <apex:form >
                                     <apex:dataTable id="serviceIndicatorTable" rendered="{!serviceIndicatorsForStudent.size != 0}" value="{!serviceIndicatorsForStudent}"
                                         var="serviceIndicator" styleClass="table table-striped table-bordered">
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Start Date</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorActiveDate}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Code</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorCode}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Description</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorCodeDescr}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Reason</apex:facet>
                                             {!serviceIndicator.ServiceIndReasonCodeDescr}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Positive Indicator</apex:facet>
                                             {!serviceIndicator.PositiveServiceIndicator}
                                         </apex:column>

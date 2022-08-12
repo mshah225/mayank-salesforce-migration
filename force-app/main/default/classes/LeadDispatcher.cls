@@ -24,14 +24,10 @@ public class LeadDispatcher implements TriggerDispatcherInterface {
     }
     public void afterInsert() {
         LeadService.queueHashIdAssignment(newMap);
-        if (CheckRecursion.runCount < 1) {
-            LeadService.determineLeadsToConvert(newList);
-        }
+        LeadService.determineLeadsToConvert(newList);
     }
     public void afterUpdate() {
-        if (CheckRecursion.runCount < 1) {
-            LeadService.determineLeadsToConvert(newList, oldMap);
-        }
+        LeadService.determineLeadsToConvert(newList, oldMap);
     }
     public void afterDelete() {
     }

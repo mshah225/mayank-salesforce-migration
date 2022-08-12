@@ -1,4 +1,6 @@
 public class LeadService {
+    public static boolean ranLeadConversion = false;
+
     /**
      * Creates a Lead with all required fields, usually for unit testing
      * @return testLead A lead with all required fields
@@ -340,15 +342,16 @@ public class LeadService {
 
     public static void determineLeadsToConvert(List<Lead> updatedLeads, Map<Id, Lead> previousLeadsMap) {
         List<Lead> leadsToConvert = new List<Lead>();
-
         for (Lead updatedLead : updatedLeads) {
             Lead previousLead = previousLeadsMap.get(updatedLead.Id);
             if (updatedLead.Convert_Perform_Conversion__c && previousLead.Convert_Perform_Conversion__c == false) {
                 leadsToConvert.add(updatedLead);
             }
         }
-        if (leadsToConvert.size() > 0) {
+        if (leadsToConvert.size() > 0 && !ranLeadConversion) {
+            ranLeadConversion = true;
             convertLeads(leadsToConvert);
+            ranLeadConversion = false;
         }
     }
 

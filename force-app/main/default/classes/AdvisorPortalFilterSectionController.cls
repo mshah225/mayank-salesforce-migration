@@ -1461,55 +1461,55 @@ public class AdvisorPortalFilterSectionController {
         }
 
         /** Check if filter is actually set */
-        if (filter == 'studentString')
+        if (filterName == 'studentString')
             useThisFilter &= !String.isBlank(filter.studentString);
-        else if (filter == 'campus')
+        else if (filterName == 'campus')
             useThisFilter &= !String.isBlank(filter.campus);
-        else if (filter == 'academicLevel')
+        else if (filterName == 'academicLevel')
             useThisFilter &= !String.isBlank(filter.academicLevel);
-        else if (filter == 'studentGroupCode')
+        else if (filterName == 'studentGroupCode')
             useThisFilter &= !String.isBlank(filter.studentGroupCode);
-        else if (filter == 'major')
+        else if (filterName == 'major')
             useThisFilter &= !String.isBlank(filter.major);
-        else if (filter == 'degreeLevel')
+        else if (filterName == 'degreeLevel')
             useThisFilter &= !String.isBlank(filter.degreeLevel);
-        else if (filter == 'academicProgram')
+        else if (filterName == 'academicProgram')
             useThisFilter &= !String.isBlank(filter.academicProgram);
-        else if (filter == 'schoolDepartment')
+        else if (filterName == 'schoolDepartment')
             useThisFilter &= !String.isBlank(filter.schoolDepartment);
-        else if (filter == 'academicPlan')
+        else if (filterName == 'academicPlan')
             useThisFilter &= !String.isBlank(filter.academicPlan);
-        else if (filter == 'admitTermFrom')
+        else if (filterName == 'admitTermFrom')
             useThisFilter &= !String.isBlank(filter.admitTermFrom);
-        else if (filter == 'admitTermTo')
+        else if (filterName == 'admitTermTo')
             useThisFilter &= !String.isBlank(filter.admitTermTo);
-        else if (filter == 'residency')
+        else if (filterName == 'residency')
             useThisFilter &= !String.isBlank(filter.residency);
-        else if (filter == 'caseStatus')
+        else if (filterName == 'caseStatus')
             useThisFilter &= !String.isBlank(filter.caseStatus);
-        else if (filter == 'caseCategory')
+        else if (filterName == 'caseCategory')
             useThisFilter &= !String.isBlank(filter.caseCategory);
-        else if (filter == 'caseSubject')
+        else if (filterName == 'caseSubject')
             useThisFilter &= !String.isBlank(filter.caseSubject);
-        else if (filter == 'specialPopulation')
+        else if (filterName == 'specialPopulation')
             useThisFilter &= !String.isBlank(filter.specialPopulation);
-        else if (filter == 'outlookScore')
+        else if (filterName == 'outlookScore')
             useThisFilter &= !String.isBlank(filter.outlookScore);
-        else if (filter == 'outlookChange')
+        else if (filterName == 'outlookChange')
             useThisFilter &= !String.isBlank(filter.outlookChange);
-        else if (filter == 'caseCount')
+        else if (filterName == 'caseCount')
             useThisFilter &= !String.isBlank(filter.caseCount) && Integer.valueOf(filter.caseCount) > 0;
-        else if (filter == 'createdFromDate')
+        else if (filterName == 'createdFromDate')
             useThisFilter &= !String.isBlank(filter.createdFromDate);
-        else if (filter == 'createdToDate')
+        else if (filterName == 'createdToDate')
             useThisFilter &= !String.isBlank(filter.createdToDate);
-        else if (filter == 'followUpFromDate')
+        else if (filterName == 'followUpFromDate')
             useThisFilter &= !String.isBlank(filter.followUpFromDate);
-        else if (filter == 'followUpToDate')
+        else if (filterName == 'followUpToDate')
             useThisFilter &= !String.isBlank(filter.followUpToDate);
-        else if (filter == 'persistenceFromDate')
+        else if (filterName == 'persistenceFromDate')
             useThisFilter &= !String.isBlank(filter.persistenceFromDate);
-        else if (filter == 'persistenceFromDate')
+        else if (filterName == 'persistenceFromDate')
             useThisFilter &= !String.isBlank(filter.persistenceToDate);
 
         return useThisFilter;

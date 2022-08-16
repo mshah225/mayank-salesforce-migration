@@ -1509,7 +1509,7 @@ public class AdvisorPortalFilterSectionController {
             useThisFilter &= !String.isBlank(filter.followUpToDate);
         else if (filterName == 'persistenceFromDate')
             useThisFilter &= !String.isBlank(filter.persistenceFromDate);
-        else if (filterName == 'persistenceFromDate')
+        else if (filterName == 'persistenceToDate')
             useThisFilter &= !String.isBlank(filter.persistenceToDate);
 
         return useThisFilter;

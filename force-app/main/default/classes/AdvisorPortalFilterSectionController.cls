@@ -342,12 +342,9 @@ public class AdvisorPortalFilterSectionController {
                 break;
 
             // Skip contact if we filter by Case count, but there aren't correct amount
-            if (
-                !String.isBlank(filter.caseCount) &&
-                Integer.valueOf(filter.caseCount) > 0 &&
-                contactIdToCasesMap.get(contactId).size() != Integer.valueOf(filter.caseCount)
-            )
-                continue;
+            if (shouldUseFilter('caseCount', filter))
+                if (contactIdToCasesMap.get(contactId).size() != Integer.valueOf(filter.caseCount))
+                    continue;
 
             // Create the corresponding contact object from the contact of this case
             Contact contact = contactIdToCasesMap.get(contactId)[0].Contact;
@@ -416,12 +413,9 @@ public class AdvisorPortalFilterSectionController {
                 break;
 
             // Skip contact if we filter by Case count, but there aren't correct amount
-            if (
-                !String.isBlank(filter.caseCount) &&
-                Integer.valueOf(filter.caseCount) > 0 &&
-                contact.cases.size() != Integer.valueOf(filter.caseCount)
-            )
-                continue;
+            if (shouldUseFilter('caseCount', filter))
+                if (contact.cases.size() != Integer.valueOf(filter.caseCount))
+                    continue;
 
             AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
 
@@ -482,11 +476,9 @@ public class AdvisorPortalFilterSectionController {
             // if grad filtering, there still might be some of student group filters to apply
             // (for special populations), but they happen in a different place since they
             // need to be applied as a UNION rather than an INTERSECTION
-            if (filter.career != 'GRD') {
-                if (!String.isBlank(filter.studentGroupCode)) {
-                    useQueryString = true;
-                    queryString += ' AND SG_PeopleSoft_Code__c = \'' + filter.studentGroupCode + '\'';
-                }
+            if (shouldUseFilter('studentGroupCode', filter)) {
+                useQueryString = true;
+                queryString += ' AND SG_PeopleSoft_Code__c = \'' + filter.studentGroupCode + '\'';
             }
 
             queryString += ' AND SG_Effective_Date__c <= TODAY';
@@ -511,32 +503,26 @@ public class AdvisorPortalFilterSectionController {
         Boolean didFiltering = false;
         Set<Id> filteredContactIds = new Set<Id>();
         // note, these are all aditive, so we should UNION the results of all the special population filters
-        if (filter.career == 'GRD') {
-            if (!String.isBlank(filter.specialPopulation)) {
-                didFiltering = true;
+        if (shouldUseFilter('specialPopulation', filter)) {
+            didFiltering = true;
 
-                Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(
-                    filter,
-                    ownerIds,
-                    contactIds
-                );
-                Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(
-                    filter,
-                    ownerIds,
-                    contactIds
-                );
-                Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
-                    filter,
-                    ownerIds,
-                    contactIds
-                );
-                Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationStudentGroups(filter, ownerIds, contactIds);
+            Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(
+                filter,
+                ownerIds,
+                contactIds
+            );
+            Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(filter, ownerIds, contactIds);
+            Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
+                filter,
+                ownerIds,
+                contactIds
+            );
+            Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationStudentGroups(filter, ownerIds, contactIds);
 
-                filteredContactIds.addAll(filteredContactIds1);
-                filteredContactIds.addAll(filteredContactIds2);
-                filteredContactIds.addAll(filteredContactIds3);
-                filteredContactIds.addAll(filteredContactIds4);
-            }
+            filteredContactIds.addAll(filteredContactIds1);
+            filteredContactIds.addAll(filteredContactIds2);
+            filteredContactIds.addAll(filteredContactIds3);
+            filteredContactIds.addAll(filteredContactIds4);
         }
 
         if (didFiltering) {
@@ -1073,30 +1059,30 @@ public class AdvisorPortalFilterSectionController {
         };
         andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
 
-        if (!String.isBlank(filter.caseCategory)) {
+        if (shouldUseFilter('caseCategory', filter)) {
             List<String> categories = filter.caseCategory.split(';');
             andStatements.add('CC_Category__r.Name IN ' + getSoqlListString(categories));
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.caseSubject)) {
+        if (shouldUseFilter('caseSubject', filter)) {
             List<String> subjects = filter.caseSubject.split(';');
             andStatements.add('Subject IN ' + getSoqlListString(subjects));
         }
 
-        if (!String.isBlank(filter.caseStatus)) {
+        if (shouldUseFilter('caseStatus', filter)) {
             List<String> statuses = filter.caseStatus.split(';');
             andStatements.add('Status IN ' + getSoqlListString(statuses));
         }
 
         andStatements.add('OwnerId IN ' + getSoqlListString(ownerIds));
 
-        if (!String.isBlank(filter.caseTypeState) && filter.caseTypeState == 'WatchlistCasesState') {
+        if (filter.caseTypeState == 'WatchlistCasesState') {
             andStatements.add(
                 'CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Advisor Outreach\''
             );
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.outlookScore)) {
+        if (shouldUseFilter('outlookScore', filter)) {
             List<Decimal> scores = new List<Decimal>();
 
             for (String s : filter.outlookScore.split(';')) {
@@ -1108,7 +1094,7 @@ public class AdvisorPortalFilterSectionController {
             andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(scores));
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.outlookChange)) {
+        if (shouldUseFilter('outlookChange', filter)) {
             List<Decimal> changeDirections = new List<Decimal>();
 
             for (String s : filter.outlookChange.split(';')) {
@@ -1120,37 +1106,37 @@ public class AdvisorPortalFilterSectionController {
             andStatements.add('Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(changeDirections));
         }
 
-        if (!String.isBlank(filter.createdFromDate)) {
+        if (shouldUseFilter('createdFromDate', filter)) {
             andStatements.add(
                 'CreatedDate >= ' +
                 Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
             );
         }
 
-        if (!String.isBlank(filter.createdToDate)) {
+        if (shouldUseFilter('createdToDate', filter)) {
             andStatements.add(
                 'CreatedDate <= ' +
                 Datetime.valueOf(filter.createdToDate + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
             );
         }
 
-        if (!String.isBlank(filter.followUpFromDate)) {
+        if (shouldUseFilter('followUpFromDate', filter)) {
             andStatements.add('Followup_Date__c >= ' + filter.followUpFromDate);
         }
 
-        if (!String.isBlank(filter.followUpToDate)) {
+        if (shouldUseFilter('followUpToDate', filter)) {
             andStatements.add('Followup_Date__c <= ' + filter.followUpToDate);
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.persistenceFromDate)) {
+        if (shouldUseFilter('persistenceFromDate', filter)) {
             andStatements.add('Change_Date__c >= ' + filter.persistenceFromDate);
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.persistenceToDate)) {
+        if (shouldUseFilter('persistenceToDate', filter)) {
             andStatements.add('Change_Date__c <= ' + filter.persistenceToDate);
         }
 
-        if (!String.isBlank(filter.studentString)) {
+        if (shouldUseFilter('studentString', filter)) {
             String nameQuery =
                 '(' +
                 'Contact.Preferred_Full_Name__c = \'' +
@@ -1213,7 +1199,7 @@ public class AdvisorPortalFilterSectionController {
 
         andStatements.add('Id IN (' + generateSuccessStudentFilterString(ownerIds) + ')');
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.outlookScore)) {
+        if (shouldUseFilter('outlookScore', filter)) {
             List<Decimal> scores = new List<Decimal>();
 
             for (String s : filter.outlookScore.split(';')) {
@@ -1225,7 +1211,7 @@ public class AdvisorPortalFilterSectionController {
             andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(scores));
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.outlookChange)) {
+        if (shouldUseFilter('outlookChange', filter)) {
             List<Decimal> changeDirections = new List<Decimal>();
 
             for (String s : filter.outlookChange.split(';')) {
@@ -1237,15 +1223,15 @@ public class AdvisorPortalFilterSectionController {
             andStatements.add('Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(changeDirections));
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.persistenceFromDate)) {
+        if (shouldUseFilter('persistenceFromDate', filter)) {
             andStatements.add('Change_Date__c >= ' + filter.persistenceFromDate);
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.persistenceToDate)) {
+        if (shouldUseFilter('persistenceToDate', filter)) {
             andStatements.add('Change_Date__c <= ' + filter.persistenceToDate);
         }
 
-        if (!String.isBlank(filter.studentString)) {
+        if (shouldUseFilter('studentString', filter)) {
             String nameQuery =
                 '(' +
                 'Preferred_Full_Name__c = \'' +
@@ -1287,7 +1273,7 @@ public class AdvisorPortalFilterSectionController {
      */
     private static String generateStudentGroupFilterString(AdvisorPortalFilter filter) {
         String queryString = null;
-        if (filter.career != 'GRD' && !String.isBlank(filter.studentGroupCode)) {
+        if (shouldUseFilter('studentGroupCode', filter)) {
             queryString =
                 'SELECT SG_Contact__c FROM Student_Group__c WHERE' +
                 ' SG_Effective_Date__c <= TODAY' +
@@ -1315,7 +1301,7 @@ public class AdvisorPortalFilterSectionController {
             queryString += ' Career__c != \'Graduate\'';
         }
 
-        if (filter.career == 'GRD' && !String.isBlank(filter.degreeLevel)) {
+        if (shouldUseFilter('degreeLevel', filter)) {
             List<String> degreeLevels = filter.degreeLevel.split(';');
             List<String> degreeLevelQueryComponents = new List<String>();
 
@@ -1337,37 +1323,37 @@ public class AdvisorPortalFilterSectionController {
             }
         }
 
-        if (filter.career == 'GRD' && !String.isBlank(filter.academicProgram)) {
+        if (shouldUseFilter('academicProgram', filter)) {
             List<String> academicPrograms = filter.academicProgram.split(';');
             queryString += ' AND Program_Code__c IN ' + getSoqlListString(academicPrograms);
         }
 
-        if (filter.career == 'GRD' && !String.isBlank(filter.schoolDepartment)) {
+        if (shouldUseFilter('schoolDepartment', filter)) {
             List<String> schoolDepartments = filter.schoolDepartment.split(';');
             queryString += ' AND Organization_Code__r.Organization_Code__c IN ' + getSoqlListString(schoolDepartments);
         }
 
-        if (filter.career == 'GRD' && !String.isBlank(filter.academicPlan)) {
+        if (shouldUseFilter('academicPlan', filter)) {
             List<String> academicPlans = filter.academicPlan.split(';');
             queryString += ' AND Plan_Code__c IN ' + getSoqlListString(academicPlans);
         }
 
-        if (filter.career == 'GRD' && !String.isBlank(filter.admitTermFrom)) {
+        if (shouldUseFilter('admitTermFrom', filter)) {
             queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c >= \'' + filter.admitTermFrom + '\'';
             queryString += ' OR Requirement_Term__c >= \'' + filter.admitTermFrom + '\')';
         }
 
-        if (filter.career == 'GRD' && !String.isBlank(filter.admitTermTo)) {
+        if (shouldUseFilter('admitTermTo', filter)) {
             queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c <= \'' + filter.admitTermTo + '\'';
             queryString += ' OR Requirement_Term__c <= \'' + filter.admitTermTo + '\')';
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.academicLevel)) {
+        if (shouldUseFilter('academicLevel', filter)) {
             List<String> academicLevels = filter.academicLevel.split(';');
             queryString += ' AND Cohort__c IN ' + getSoqlListString(academicLevels);
         }
 
-        if (filter.career != 'GRD' && !String.isBlank(filter.major)) {
+        if (shouldUseFilter('major', filter)) {
             queryString +=
                 ' AND  Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
                 filter.major +
@@ -1376,12 +1362,12 @@ public class AdvisorPortalFilterSectionController {
                 '%\' )';
         }
 
-        if (!String.isBlank(filter.campus)) {
+        if (shouldUseFilter('campus', filter)) {
             List<String> campuses = filter.campus.split(';');
             queryString += ' AND Campus__r.Location_Code__c IN ' + getSoqlListString(campuses);
         }
 
-        if (!String.isBlank(filter.residency)) {
+        if (shouldUseFilter('residency', filter)) {
             List<String> residencies = filter.residency.split(';');
             queryString += ' AND Residency__c IN ' + getSoqlListString(residencies);
         }
@@ -1419,6 +1405,114 @@ public class AdvisorPortalFilterSectionController {
     private static String getCurrentPeoplesoftTermCode() {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         return currentTermData.CurrTerm__c;
+    }
+
+    private static Boolean shouldUseFilter(String filterName, AdvisorPortalFilter filter) {
+        Boolean useThisFilter = true;
+
+        // career should NEVER be null
+        if (filter.career == null)
+            return false;
+
+        /** Check if this filter is used with this career (some filters are only allowed for GRD or UGRD and not the other) */
+        if (filter.career == 'GRD') {
+            useThisFilter &= new List<String>{
+                    'studentString',
+                    'campus',
+                    'degreeLevel',
+                    'academicProgram',
+                    'schoolDepartment',
+                    'academicPlan',
+                    'admitTermFrom',
+                    'admitTermTo',
+                    'residency',
+                    'caseStatus',
+                    'caseCategory',
+                    'specialPopulation',
+                    'caseCount',
+                    'createdFromDate',
+                    'createdToDate',
+                    'followUpFromDate',
+                    'followUpToDate'
+                }
+                .contains(filterName);
+        } else {
+            useThisFilter &= new List<String>{
+                    'studentString',
+                    'campus',
+                    'academicLevel',
+                    'studentGroupCode',
+                    'major',
+                    'residency',
+                    'caseStatus',
+                    'caseCategory',
+                    'caseSubject',
+                    'outlookScore',
+                    'outlookChange',
+                    'caseCount',
+                    'createdFromDate',
+                    'createdToDate',
+                    'followUpFromDate',
+                    'followUpToDate',
+                    'persistenceFromDate',
+                    'persistenceToDate'
+                }
+                .contains(filterName);
+        }
+
+        /** Check if filter is actually set */
+        if (filter == 'studentString')
+            useThisFilter &= !String.isBlank(filter.studentString);
+        else if (filter == 'campus')
+            useThisFilter &= !String.isBlank(filter.campus);
+        else if (filter == 'academicLevel')
+            useThisFilter &= !String.isBlank(filter.academicLevel);
+        else if (filter == 'studentGroupCode')
+            useThisFilter &= !String.isBlank(filter.studentGroupCode);
+        else if (filter == 'major')
+            useThisFilter &= !String.isBlank(filter.major);
+        else if (filter == 'degreeLevel')
+            useThisFilter &= !String.isBlank(filter.degreeLevel);
+        else if (filter == 'academicProgram')
+            useThisFilter &= !String.isBlank(filter.academicProgram);
+        else if (filter == 'schoolDepartment')
+            useThisFilter &= !String.isBlank(filter.schoolDepartment);
+        else if (filter == 'academicPlan')
+            useThisFilter &= !String.isBlank(filter.academicPlan);
+        else if (filter == 'admitTermFrom')
+            useThisFilter &= !String.isBlank(filter.admitTermFrom);
+        else if (filter == 'admitTermTo')
+            useThisFilter &= !String.isBlank(filter.admitTermTo);
+        else if (filter == 'residency')
+            useThisFilter &= !String.isBlank(filter.residency);
+        else if (filter == 'caseStatus')
+            useThisFilter &= !String.isBlank(filter.caseStatus);
+        else if (filter == 'caseCategory')
+            useThisFilter &= !String.isBlank(filter.caseCategory);
+        else if (filter == 'caseSubject')
+            useThisFilter &= !String.isBlank(filter.caseSubject);
+        else if (filter == 'specialPopulation')
+            useThisFilter &= !String.isBlank(filter.specialPopulation);
+        else if (filter == 'outlookScore')
+            useThisFilter &= !String.isBlank(filter.outlookScore);
+        else if (filter == 'outlookChange')
+            useThisFilter &= !String.isBlank(filter.outlookChange);
+        else if (filter == 'caseCount')
+            useFilter &= !String.isBlank(filter.caseCount) && Integer.valueOf(filter.caseCount) > 0;
+        else if (filter == 'createdFromDate')
+            useThisFilter &= !String.isBlank(filter.createdFromDate);
+        else if (filter == 'createdToDate')
+            useThisFilter &= !String.isBlank(filter.createdToDate);
+        else if (filter == 'followUpFromDate')
+            useThisFilter &= !String.isBlank(filter.followUpFromDate);
+        else if (filter == 'followUpToDate')
+            useThisFilter &= !String.isBlank(filter.followUpToDate);
+        else if (filter == 'persistenceFromDate')
+            useThisFilter &= !String.isBlank(filter.persistenceFromDate);
+        else if (filter == 'persistenceFromDate')
+            useThisFilter &= !String.isBlank(filter.persistenceToDate);
+
+        return useThisFilter;
     }
 
     public class AdvisorPortalException extends Exception {

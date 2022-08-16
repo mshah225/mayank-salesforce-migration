@@ -1498,7 +1498,7 @@ public class AdvisorPortalFilterSectionController {
         else if (filter == 'outlookChange')
             useThisFilter &= !String.isBlank(filter.outlookChange);
         else if (filter == 'caseCount')
-            useFilter &= !String.isBlank(filter.caseCount) && Integer.valueOf(filter.caseCount) > 0;
+            useThisFilter &= !String.isBlank(filter.caseCount) && Integer.valueOf(filter.caseCount) > 0;
         else if (filter == 'createdFromDate')
             useThisFilter &= !String.isBlank(filter.createdFromDate);
         else if (filter == 'createdToDate')

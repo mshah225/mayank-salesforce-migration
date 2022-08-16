@@ -1,11 +1,11 @@
 @isTest
 public class MarketingCloudTextOptInCalloutMock implements HttpCalloutMock {
-    public static Boolean shouldFindExistingContact = true;
-    public static Boolean shouldFailAuthorization = false;
-    public static Boolean shouldReturnNoId = false;
-    public static Boolean shouldReturnMalformedContact = false;
-    public static Boolean shouldReturnEmptyWhenCreatingContact = false;
-    public static Boolean shouldReturnEmptyWhenOptIn = false;
+    public Boolean shouldFindExistingContact = true;
+    public Boolean shouldFailAuthorization = false;
+    public Boolean shouldReturnNoId = false;
+    public Boolean shouldReturnMalformedContact = false;
+    public Boolean shouldReturnEmptyWhenCreatingContact = false;
+    public Boolean shouldReturnEmptyWhenOptIn = false;
 
     /**
      * Default interface method containing logic to handle GET, POST, etc.

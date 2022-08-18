@@ -154,15 +154,13 @@
                     }
 
                     if (this.findByAuraId(component, 'recommendedActions').get('v.value')) {
+                        theCase.Recommended_Actions__c = '';
+
                         for (
                             let i = 0;
                             i < this.findByAuraId(component, 'recommendedActions').get('v.value').length;
                             i++
                         ) {
-                            if (!theCase.Recommended_Actions__c) {
-                                theCase.Recommended_Actions__c = '';
-                            }
-
                             if (this.findByAuraId(component, 'recommendedActions').get('v.value')[i]) {
                                 theCase.Recommended_Actions__c +=
                                     this.findByAuraId(component, 'recommendedActions').get('v.value')[i] + ';';
@@ -177,7 +175,7 @@
                         }
                     }
 
-                    if (component.get('v.RenderRecommendedActionOther')) {
+                    if (component.get('v.RecommendedActionOther')) {
                         theCase.Recommended_Actions_Other__c = component.get('v.RecommendedActionOther');
                     }
 
@@ -206,7 +204,7 @@
                         }
                     }
 
-                    if (component.get('v.RenderNotReturningOther')) {
+                    if (component.get('v.NotReturningOther')) {
                         theCase.Reasons_Not_Returning_Other__c = component.get('v.NotReturningOther');
                     }
 
@@ -218,7 +216,7 @@
                         theCase.Student_Presented_Risk_for__c = component.get('v.StudentRisk');
                     }
 
-                    if (component.get('v.StudentRisk') === 'Other') {
+                    if (component.get('v.StudentRiskOther')) {
                         theCase.Student_Presented_Risk_for_Other__c = component.get('v.StudentRiskOther');
                     }
 

@@ -104,6 +104,17 @@ global with sharing class StudentProfileController {
         set;
     }
 
+    public List<FinancialAidChecklistWrapper.FinancialAidChecklists> financialAidChecklists {
+        get {
+            if (financialAidCheckLists == null) {
+                financialAidCheckLists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
+            }
+
+            return financialAidCheckLists;
+        }
+        set;
+    }
+
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');

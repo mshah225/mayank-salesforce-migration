@@ -42,7 +42,7 @@ public with sharing class StudentProfileCallout {
         }
 
         for (FinancialAidChecklistWrapper.FinancialAidChecklists checklist : checklistWrapper.FinancialAidChecklists) {
-            checklists.add(siw);
+            checklists.add(checklist);
         }
 
         return checklists;

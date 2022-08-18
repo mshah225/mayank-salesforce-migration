@@ -15,6 +15,6 @@ public class StudentProfileCalloutTest {
         List<FinancialAidChecklistWrapper.FinancialAidChecklists> checklists = StudentProfileCallout.getFinancialAidChecklists(
             '1221449333'
         );
-        System.assertEquals(0, 0);
+        System.assertEquals(checklists[0].checklist_cd, 'FTNOTI');
     }
 }

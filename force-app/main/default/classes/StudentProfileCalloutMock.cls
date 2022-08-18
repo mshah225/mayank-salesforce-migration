@@ -1,8 +1,25 @@
 @isTest
 global class StudentProfileCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
-        HttpResponse res = new HttpResponse();
+        if (req.getEndpoint().contains('fin')) {
+            return getFinancialAidChecklists();
+        } else if (req.getMethod().equals('serviceindicators')) {
+            return getServiceIndicators();
+        }
+        return null;
+    }
 
+    private HTTPResponse getFinancialAidChecklists() {
+        HttpResponse res = new HttpResponse();
+        json = '{}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getServiceIndicators() {
+        HttpResponse res = new HttpResponse();
         String json =
             '{' +
             '    \"Emplid\": \"1206104779\",' +

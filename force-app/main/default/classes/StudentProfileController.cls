@@ -41,8 +41,8 @@ global with sharing class StudentProfileController {
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
     public String serviceIndicatorTerm { get; set; }
-    public Decimal undergradGPA {get; set; }
-    public Decimal gradGPA {get; set; }
+    public Decimal undergradGPA { get; set; }
+    public Decimal gradGPA { get; set; }
     public List<String> financialAidIndicators { get; set; }
     public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
@@ -53,7 +53,7 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateAcademicsMessages { get; set; }
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
-    public List<String> graduateIndicatorsMessages { get; set; }    
+    public List<String> graduateIndicatorsMessages { get; set; }
 
     public Student_Program_Plan__c ugStudentProgram {
         get {
@@ -95,13 +95,12 @@ global with sharing class StudentProfileController {
 
     public List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent {
         get {
-            if (serviceIndicatorsForStudent == null) {                
-                serviceIndicatorsForStudent = StudentProfileCalloutService.getServiceIndicators(theContact.EmplId__c);
+            if (serviceIndicatorsForStudent == null) {
+                serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
             }
 
             return serviceIndicatorsForStudent;
         }
-
         set;
     }
 
@@ -245,7 +244,7 @@ global with sharing class StudentProfileController {
             financialAidIndicators.add('--');
         } else {
             String financialAidIndicator = theContact.Financial_Aid_Indicator__c;
-            financialAidIndicator = financialAidIndicator.replace('\\n', ';');            
+            financialAidIndicator = financialAidIndicator.replace('\\n', ';');
             financialAidIndicators = financialAidIndicator.split(';');
         }
     }
@@ -305,23 +304,23 @@ global with sharing class StudentProfileController {
         }
     }
 
-    public void setStudentProfileMessages () {
+    public void setStudentProfileMessages() {
         generalMessages = new List<String>();
         classesMessages = new List<String>();
         financesMessages = new List<String>();
         commentsMessages = new List<String>();
-        careerDevelopmentMessages = new List<String>(); 
+        careerDevelopmentMessages = new List<String>();
         undergraduateAcademicsMessages = new List<String>();
         undergraduateIndicatorsMessages = new List<String>();
         graduateAcademicsMessages = new List<String>();
         graduateIndicatorsMessages = new List<String>();
-        
+
         List<Student_Profile_Message__mdt> messages = [
-            SELECT Message_to_Display__c, Student_Profile_Tab__c 
-            FROM Student_Profile_Message__mdt 
-            WHERE Is_Active__c = true
-        ]; 
-        
+            SELECT Message_to_Display__c, Student_Profile_Tab__c
+            FROM Student_Profile_Message__mdt
+            WHERE Is_Active__c = TRUE
+        ];
+
         for (Student_Profile_Message__mdt message : messages) {
             if (message.Student_Profile_Tab__c == 'General') {
                 generalMessages.add(message.Message_to_Display__c);
@@ -342,7 +341,6 @@ global with sharing class StudentProfileController {
             } else if (message.Student_Profile_Tab__c == 'Graduate Indicators') {
                 graduateIndicatorsMessages.add(message.Message_to_Display__c);
             }
-             
         }
     }
 
@@ -485,7 +483,7 @@ global with sharing class StudentProfileController {
         setGPA();
     }
 
-    private void setGPA () {
+    private void setGPA() {
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
             if (gppw.gradProgramPlan.Primary_Flag__c && gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
                 gradGPA = gppw.gradProgramPlan.Cum_GPA__c;
@@ -901,20 +899,21 @@ global with sharing class StudentProfileController {
 
     private void setCIIndex() {
         List<Opportunity> studentOpp = [
-            SELECT CI_Score__c  
-            FROM Opportunity 
-            WHERE Contact__r.EMPLID__c =: theContact.EMPLID__c AND 
-            Career__c = 'Undergraduate' AND 
-            Application_Number__c != '' AND 
-            RecordType.Name = 'Undergraduate Application'
+            SELECT CI_Score__c
+            FROM Opportunity
+            WHERE
+                Contact__r.EMPLID__c = :theContact.EMPLID__c
+                AND Career__c = 'Undergraduate'
+                AND Application_Number__c != ''
+                AND RecordType.Name = 'Undergraduate Application'
             ORDER BY CreatedDate
             LIMIT 1
         ];
-        
+
         if (studentOpp.size() > 0 && studentOpp[0].CI_Score__c != null) {
             ciIndex = '' + studentOpp[0].CI_Score__c;
         } else {
-            ciIndex = '--'; 
+            ciIndex = '--';
         }
     }
 

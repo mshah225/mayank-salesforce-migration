@@ -23,8 +23,28 @@ public with sharing class StudentProfileCallout {
             serviceIndicatorsForStudent.add(siw);
         }
 
-        serviceIndicatorsForStudent.sort();
+        return serviceIndicatorsForStudent.sort();
+    }
 
-        return serviceIndicatorsForStudent;
+    public static List<FinancialAidChecklistWrapper.FinancialAidChecklists> getFinancialAidChecklists(String emplid) {
+        FinancialAidChecklistWrapper checklistWrapper;
+        List<FinancialAidChecklistWrapper.FinancialAidChecklists> checklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklists>();
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Checklists/fin?emplid=' + emplid);
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            checklistWrapper = FinancialAidChecklistWrapper.parse(responseBody);
+        }
+
+        for (FinancialAidChecklistWrapper.FinancialAidChecklists checklist : checklistWrapper.FinancialAidChecklists) {
+            checklists.add(siw);
+        }
+
+        return checklists;
     }
 }

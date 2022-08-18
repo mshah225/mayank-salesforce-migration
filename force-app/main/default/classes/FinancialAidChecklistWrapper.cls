@@ -3,7 +3,7 @@ public class FinancialAidChecklistWrapper {
     public List<FinancialAidChecklists> FinancialAidChecklists;
 
     public class FinancialAidChecklists {
-        public String sequence { get; set; }
+        public String seq_3c { get; set; }
         public String checklist_cd { get; set; }
         public String status { get; set; }
         public String status_code { get; set; }

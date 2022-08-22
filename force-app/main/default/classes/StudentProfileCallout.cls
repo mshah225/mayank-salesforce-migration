@@ -1,6 +1,6 @@
 public with sharing class StudentProfileCallout {
     public static List<ServiceIndicatorWrapper.ServiceIndicators> getServiceIndicators(String emplid) {
-        ServiceIndicatorWrapper dataWrapper;
+        ServiceIndicatorWrapper indicatorWrapper;
         List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();
 
         HttpRequest req = new HttpRequest();
@@ -12,17 +12,16 @@ public with sharing class StudentProfileCallout {
         String responseBody = res.getBody();
 
         if (responseBody != null) {
-            dataWrapper = ServiceIndicatorWrapper.parse(responseBody);
+            indicatorWrapper = ServiceIndicatorWrapper.parse(responseBody);
         }
 
-        if (dataWrapper.ServiceIndicators == null) {
-            return serviceIndicatorsForStudent;
-        }
-
-        for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
+        for (ServiceIndicatorWrapper.ServiceIndicators siw : indicatorWrapper.ServiceIndicators) {
             serviceIndicatorsForStudent.add(siw);
         }
-        serviceIndicatorsForStudent = serviceIndicatorsForStudent.sort();
+
+        if (indicatorWrapper.ServiceIndicators != null) {
+            serviceIndicatorsForStudent = serviceIndicatorsForStudent.sort();
+        }
 
         return serviceIndicatorsForStudent;
     }

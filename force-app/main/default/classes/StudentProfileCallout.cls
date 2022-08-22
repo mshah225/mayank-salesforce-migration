@@ -1,4 +1,7 @@
 public with sharing class StudentProfileCallout {
+    public StudentProfileCallout() {
+    }
+
     public static List<ServiceIndicatorWrapper.ServiceIndicators> getServiceIndicators(String emplid) {
         ServiceIndicatorWrapper indicatorWrapper;
         List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();
@@ -20,7 +23,7 @@ public with sharing class StudentProfileCallout {
         }
 
         if (indicatorWrapper.ServiceIndicators != null) {
-            serviceIndicatorsForStudent = serviceIndicatorsForStudent.sort();
+            serviceIndicatorsForStudent.sort();
         }
 
         return serviceIndicatorsForStudent;

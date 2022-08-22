@@ -48,7 +48,7 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getFinancialAidChecklists() {
         HttpResponse res = new HttpResponse();
-        json =
+        String json =
             '{' +
             '    \"empl_id\": \"1221449333\",' +
             '    \"checklist_items\": [' +

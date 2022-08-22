@@ -184,7 +184,7 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             '            \"institution\": \"ASU00\",' +
             '            \"aid_year\": \"2022\",' +
             '            \"admin_function\": \"FINT\"' +
-            '        },' +
+            '        }' +
             '    ]' +
             '}';
         res.setHeader('Content-Type', 'application/json');

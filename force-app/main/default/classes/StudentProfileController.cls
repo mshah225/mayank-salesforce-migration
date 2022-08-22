@@ -98,22 +98,20 @@ global with sharing class StudentProfileController {
             if (serviceIndicatorsForStudent == null) {
                 serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
             }
-
             return serviceIndicatorsForStudent;
         }
         set;
     }
 
-    public List<FinancialAidChecklistWrapper.FinancialAidChecklists> financialAidChecklists {
-        get {
-            if (financialAidCheckLists == null) {
-                financialAidCheckLists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
-            }
-
-            return financialAidCheckLists;
-        }
-        set;
-    }
+    // public List<FinancialAidChecklistWrapper.FinancialAidChecklists> financialAidChecklists {
+    //     get {
+    //         if (financialAidCheckLists == null) {
+    //             financialAidCheckLists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
+    //         }
+    //         return financialAidCheckLists;
+    //     }
+    //     set;
+    // }
 
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {

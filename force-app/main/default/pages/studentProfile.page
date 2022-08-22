@@ -1391,7 +1391,7 @@
                                     </div>
                                 </div>
 
-                                <div class="page-header-smaller">
+                                <!-- <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
                                         &nbsp;Financial Aid Checklist | Financing Tasks
@@ -1400,7 +1400,7 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="ps_financial_aid_checklist">
-                                        <!-- <apex:form>
+                                        <apex:form>
                                             <apex:dataTable
                                                 id="financial-aid-checklist-table"
                                                 rendered="{!financialAidChecklists.size != 0}"
@@ -1444,9 +1444,9 @@
                                             <div style="{!IF(financialAidChecklists.size == 0, '', 'display: none;')}">
                                                 There are no financial aid checklist items for this student.
                                             </div>
-                                        </apex:form> -->
+                                        </apex:form>
                                     </div>
-                                </div>
+                                </div> -->
                             </apex:pageBlock>
                         </div>
 

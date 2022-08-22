@@ -22,8 +22,9 @@ public with sharing class StudentProfileCallout {
         for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
             serviceIndicatorsForStudent.add(siw);
         }
+        serviceIndicatorsForStudent = serviceIndicatorsForStudent.sort();
 
-        return serviceIndicatorsForStudent.sort();
+        return serviceIndicatorsForStudent;
     }
 
     public static List<FinancialAidChecklistWrapper.FinancialAidChecklists> getFinancialAidChecklists(String emplid) {

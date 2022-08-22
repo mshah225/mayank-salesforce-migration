@@ -105,10 +105,10 @@ global with sharing class StudentProfileController {
 
     public List<FinancialAidChecklistWrapper.FinancialAidChecklists> financialAidChecklists {
         get {
-            if (financialAidCheckLists == null) {
-                financialAidCheckLists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
+            if (financialAidChecklists == null) {
+                financialAidChecklists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
             }
-            return financialAidCheckLists;
+            return financialAidChecklists;
         }
         set;
     }

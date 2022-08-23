@@ -79,6 +79,11 @@
                 width: 165px;
             }
 
+            #ps_financial_aid_checklist_note {
+                font-weight: 900;
+                margin-bottom: 0.5em;
+            }
+
             @media screen and (max-width: 767px) {
                 .browser {
                     display: none;
@@ -1398,9 +1403,17 @@
                                     </h4>
                                 </div>
 
-                                <div style="overflow: auto; max-height: 225px">
+                                <div style="overflow: auto; max-height: 250px">
                                     <div id="ps_financial_aid_checklist">
                                         <apex:form>
+                                            <div
+                                                id="ps_financial_aid_checklist_note"
+                                                style="{!IF(financialAidChecklists.size != 0, '', 'display: none;')}"
+                                            >
+                                                NOTE: This section shows Financial Aid Checklist Items in real time -
+                                                this data may differ from the Checklist Items that display on the
+                                                Salesforce Contact Record
+                                            </div>
                                             <apex:dataTable
                                                 id="financial-aid-checklist-table"
                                                 rendered="{!financialAidChecklists.size != 0}"

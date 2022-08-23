@@ -20,7 +20,7 @@ public class ServiceIndicatorWrapper {
         public List<ServiceImpact> ServiceImpacts;
 
         public Integer compareTo(Object comparison) {
-            ServiceIndicators compareToSI = (ServiceIndicators) comparison;
+            ServiceIndicator compareToSI = (ServiceIndicator) comparison;
 
             return ServiceIndicatorCode.compareTo(compareToSI.ServiceIndicatorCode);
         }

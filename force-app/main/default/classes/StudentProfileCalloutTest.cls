@@ -12,7 +12,7 @@ public class StudentProfileCalloutTest {
     @isTest
     public static void testFinancialAidChecklists() {
         Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
-        List<FinancialAidChecklistWrapper.FinancialAidChecklists> checklists = StudentProfileCallout.getFinancialAidChecklists(
+        List<FinancialAidChecklistWrapper.FinancialAidChecklist> checklists = StudentProfileCallout.getFinancialAidChecklists(
             '1221449333'
         );
         System.assertEquals(checklists[0].checklist_cd, 'FTNOTI');

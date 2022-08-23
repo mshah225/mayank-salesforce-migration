@@ -103,7 +103,7 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<FinancialAidChecklistWrapper.FinancialAidChecklists> financialAidChecklists {
+    public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists {
         get {
             if (financialAidChecklists == null) {
                 financialAidChecklists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);

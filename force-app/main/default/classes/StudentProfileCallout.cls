@@ -31,9 +31,9 @@ public with sharing class StudentProfileCallout {
         return serviceIndicatorsForStudent;
     }
 
-    public static List<FinancialAidChecklistWrapper.FinancialAidChecklists> getFinancialAidChecklists(String emplid) {
+    public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklists(String emplid) {
         FinancialAidChecklistWrapper checklistWrapper;
-        List<FinancialAidChecklistWrapper.FinancialAidChecklists> checklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklists>();
+        List<FinancialAidChecklistWrapper.FinancialAidChecklist> checklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklist>();
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Student_Checklists/fin?emplid=' + emplid);
@@ -46,7 +46,7 @@ public with sharing class StudentProfileCallout {
             checklistWrapper = FinancialAidChecklistWrapper.parse(responseBody);
         }
 
-        for (FinancialAidChecklistWrapper.FinancialAidChecklists checklist : checklistWrapper.FinancialAidChecklists) {
+        for (FinancialAidChecklistWrapper.FinancialAidChecklist checklist : checklistWrapper.checklist_items) {
             checklists.add(checklist);
         }
 

@@ -93,7 +93,7 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent {
+    public List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent {
         get {
             if (serviceIndicatorsForStudent == null) {
                 serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);

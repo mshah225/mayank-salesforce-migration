@@ -2,9 +2,9 @@ public with sharing class StudentProfileCallout {
     public StudentProfileCallout() {
     }
 
-    public static List<ServiceIndicatorWrapper.ServiceIndicators> getServiceIndicators(String emplid) {
+    public static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicators(String emplid) {
         ServiceIndicatorWrapper dataWrapper;
-        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicators>();
+        List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicator>();
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Service_Indicator/serviceindicators?emplid=' + emplid);
@@ -22,7 +22,7 @@ public with sharing class StudentProfileCallout {
             return serviceIndicatorsForStudent;
         }
 
-        for (ServiceIndicatorWrapper.ServiceIndicators siw : dataWrapper.ServiceIndicators) {
+        for (ServiceIndicatorWrapper.ServiceIndicator siw : dataWrapper.ServiceIndicators) {
             serviceIndicatorsForStudent.add(siw);
         }
 

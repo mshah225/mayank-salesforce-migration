@@ -3,7 +3,7 @@ public class StudentProfileCalloutTest {
     @isTest
     public static void testServiceIndicators() {
         Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
-        List<ServiceIndicatorWrapper.ServiceIndicators> serviceIndicators = StudentProfileCallout.getServiceIndicators(
+        List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicators = StudentProfileCallout.getServiceIndicators(
             '1206104779'
         );
         System.assertEquals(serviceIndicators[0].ServiceIndicatorCode, 'A15');

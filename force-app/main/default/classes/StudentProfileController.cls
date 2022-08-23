@@ -952,7 +952,7 @@ global with sharing class StudentProfileController {
     ) {
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> unresolvedChecklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklist>();
         for (FinancialAidChecklistWrapper.FinancialAidChecklist checklist : financialAidChecklists) {
-            if (checklist.admin_function == 'FINA') {
+            if (checklist.admin_function == 'FINA' && checklist.status != 'Completed') {
                 unresolvedChecklists.add(checklist);
             }
         }

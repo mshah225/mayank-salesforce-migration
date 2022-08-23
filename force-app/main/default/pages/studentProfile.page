@@ -1398,7 +1398,7 @@
                                     </h4>
                                 </div>
 
-                                <div style="overflow: auto; max-height: 400px">
+                                <div style="overflow: auto; max-height: 225px">
                                     <div id="ps_financial_aid_checklist">
                                         <apex:form>
                                             <apex:dataTable

@@ -1,6 +1,6 @@
 public class FinancialAidChecklistWrapper {
-    public String emplid;
-    public List<FinancialAidChecklists> FinancialAidChecklists;
+    public String empl_id;
+    public List<FinancialAidChecklists> checklist_items;
 
     public class FinancialAidChecklists {
         public String seq_3c { get; set; }

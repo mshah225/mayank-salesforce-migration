@@ -1391,7 +1391,7 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class="page-header-smaller">
+                                <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
                                         &nbsp;Financial Aid Checklist | Financing Tasks
@@ -1446,7 +1446,7 @@
                                             </div>
                                         </apex:form>
                                     </div>
-                                </div> -->
+                                </div>
                             </apex:pageBlock>
                         </div>
 

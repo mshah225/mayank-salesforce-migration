@@ -113,6 +113,16 @@ global with sharing class StudentProfileController {
         set;
     }
 
+    public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidUnresolvedChecklists {
+        get {
+            if (financialAidUnresolvedChecklists == null && financialAidChecklists != null) {
+                financialAidUnresolvedChecklists = filterFinancialAidUnresolvedItems(financialAidChecklists);
+            }
+            return financialAidUnresolvedChecklists;
+        }
+        set;
+    }
+
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -935,6 +945,18 @@ global with sharing class StudentProfileController {
         }
 
         eAdvisorStatus = 'No Status';
+    }
+
+    private List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
+        List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists
+    ) {
+        List<FinancialAidChecklistWrapper.FinancialAidChecklist> unresolvedChecklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklist>();
+        for (FinancialAidChecklistWrapper.FinancialAidChecklist checklist : financialAidChecklists) {
+            if (checklist.admin_function == 'FINA') {
+                unresolvedChecklists.add(checklist);
+            }
+        }
+        return unresolvedChecklists;
     }
 
     @RemoteAction

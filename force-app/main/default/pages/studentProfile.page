@@ -1431,7 +1431,7 @@
                                                 </apex:column>
                                                 <apex:column>
                                                     <apex:facet name="header">Item Description</apex:facet>
-                                                    {!checklist.descrption}
+                                                    {!checklist.description}
                                                 </apex:column>
                                                 <apex:column>
                                                     <apex:facet name="header">Checklist Code</apex:facet>
@@ -2282,7 +2282,7 @@
                                                                                 <apex:facet name="header"
                                                                                     >Description</apex:facet
                                                                                 >
-                                                                                {!checklist.descrption}
+                                                                                {!checklist.description}
                                                                             </apex:column>
                                                                             <apex:column>
                                                                                 <apex:facet name="header"

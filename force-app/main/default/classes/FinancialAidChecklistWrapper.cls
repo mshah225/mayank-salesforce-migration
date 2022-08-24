@@ -40,7 +40,7 @@ public class FinancialAidChecklistWrapper {
             }
             set;
         }
-        public String descrption { get; set; }
+        public String description { get; set; }
         public String institution { get; set; }
         public String aid_year { get; set; }
         public String admin_function { get; set; }

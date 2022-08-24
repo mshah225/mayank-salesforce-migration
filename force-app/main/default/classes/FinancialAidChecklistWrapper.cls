@@ -29,9 +29,9 @@ public class FinancialAidChecklistWrapper {
             }
             set;
         }
-        public String initialize_dt { get; set; }
         public String asu_fa_status_rsn { get; set; }
-        public String strm {
+        public String strm_code { get; set; }
+        public String term {
             get {
                 if (strm == null) {
                     strm = '--';

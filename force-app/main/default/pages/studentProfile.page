@@ -1427,7 +1427,7 @@
                                                 </apex:column>
                                                 <apex:column>
                                                     <apex:facet name="header">Term</apex:facet>
-                                                    {!checklist.strm}
+                                                    {!checklist.term}
                                                 </apex:column>
                                                 <apex:column>
                                                     <apex:facet name="header">Item Description</apex:facet>

@@ -4,7 +4,12 @@ public class AdvisorPortalTopLevelFilterController {
         Map<String, String> viewAsOptions = new Map<String, String>();
 
         // Insert myself
-        viewAsOptions.put(UserInfo.getName(), UserInfo.getUserId());
+        User currentUser = [SELECT Id, Name, Alias FROM User WHERE Id = :UserInfo.getUserId()];
+        String currentUserLabel = currentUser.Name;
+        if (currentUser.Alias != null && currentUser.Alias != '')
+            currentUserLabel += ' - ' + currentUser.Alias;
+
+        viewAsOptions.put(currentUserLabel, UserInfo.getUserId());
 
         // Insert My Committees
         if (myCommittees.size() > 0) {
@@ -266,7 +271,10 @@ public class AdvisorPortalTopLevelFilterController {
                 Success_Resource__r.Resource__r.Alias,
                 Success_Resource__r.IsActive__c
             FROM Success_Resource_Pod_Association__c
-            WHERE Success_Resource__r.IsActive__c = TRUE AND Success_Pod__c IN :podIds
+            WHERE
+                Success_Resource__r.IsActive__c = TRUE
+                AND Success_Pod__c IN :podIds
+                AND Success_Resource__r.Resource__c != :UserInfo.getUserId()
             ORDER BY Success_Resource__r.Resource__r.Name ASC
         ];
 

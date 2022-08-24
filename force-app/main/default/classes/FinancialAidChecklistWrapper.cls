@@ -33,10 +33,10 @@ public class FinancialAidChecklistWrapper {
         public String strm_code { get; set; }
         public String term {
             get {
-                if (strm == null) {
-                    strm = '--';
+                if (term == null) {
+                    term = '--';
                 }
-                return strm;
+                return term;
             }
             set;
         }

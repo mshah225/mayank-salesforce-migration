@@ -24,7 +24,7 @@ public class LeadDispatcher implements TriggerDispatcherInterface {
     }
     public void afterInsert() {
         LeadService.queueHashIdAssignment(newMap);
-        LeadService.determineLeadsToConvert(newList);
+        LeadService.determineLeadsToConvert(newList, oldMap);
     }
     public void afterUpdate() {
         LeadService.determineLeadsToConvert(newList, oldMap);

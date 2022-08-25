@@ -327,31 +327,29 @@ public class LeadService {
         update leadsToUpdate;
     }
 
-    public static void determineLeadsToConvert(List<Lead> newLeads) {
+    public static void determineLeadsToConvert(List<Lead> newLeads, Map<Id, Lead> oldLeadsMap) {
         List<Lead> leadsToConvert = new List<Lead>();
-
-        for (Lead newLead : newLeads) {
-            if (newLead.Convert_Perform_Conversion__c) {
-                leadsToConvert.add(newLead);
+        if (oldLeadsMap == null) {
+            for (Lead newLead : newLeads) {
+                if (newLead.Convert_Perform_Conversion__c) {
+                    leadsToConvert.add(newLead);
+                }
             }
-        }
-        if (leadsToConvert.size() > 0) {
-            convertLeads(leadsToConvert);
-        }
-    }
-
-    public static void determineLeadsToConvert(List<Lead> updatedLeads, Map<Id, Lead> previousLeadsMap) {
-        List<Lead> leadsToConvert = new List<Lead>();
-        for (Lead updatedLead : updatedLeads) {
-            Lead previousLead = previousLeadsMap.get(updatedLead.Id);
-            if (updatedLead.Convert_Perform_Conversion__c && previousLead.Convert_Perform_Conversion__c == false) {
-                leadsToConvert.add(updatedLead);
+            if (leadsToConvert.size() > 0) {
+                convertLeads(leadsToConvert);
             }
-        }
-        if (leadsToConvert.size() > 0 && !ranLeadConversion) {
-            ranLeadConversion = true;
-            convertLeads(leadsToConvert);
-            ranLeadConversion = false;
+        } else {
+            for (Lead newLead : newLeads) {
+                Lead previousLead = oldLeadsMap.get(newLead.Id);
+                if (newLead.Convert_Perform_Conversion__c && previousLead.Convert_Perform_Conversion__c == false) {
+                    leadsToConvert.add(newLead);
+                }
+            }
+            if (leadsToConvert.size() > 0 && !ranLeadConversion) {
+                ranLeadConversion = true;
+                convertLeads(leadsToConvert);
+                ranLeadConversion = false;
+            }
         }
     }
 

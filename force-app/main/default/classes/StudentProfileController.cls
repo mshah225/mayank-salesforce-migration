@@ -2,9 +2,9 @@ global with sharing class StudentProfileController {
     private static List<String> vars = new List<String>();
 
     private Boolean isContactId;
-    private String contactId { get; set; }
     private String aidYear;
 
+    public String contactId { get; set; }
     public boolean urlParamsExistAndAreValid { get; set; }
     public String contactName { get; set; }
     public Contact theContact { get; set; }

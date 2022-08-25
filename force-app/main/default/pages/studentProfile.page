@@ -1400,7 +1400,7 @@
 
                                 <div style="overflow: auto; max-height: 250px">
                                     <div id="ps_financial_aid_communications">
-                                        <a href="{!$Label.Financial_Aid_Communications_URL}{!contactId}"
+                                        <a href="{!$Label.Financial_Aid_Communications_URL}{!contactId}" target="_blank"
                                             >PeopleSoft Link to Outgoing Financial Aid Communications</a
                                         >
                                         <br />

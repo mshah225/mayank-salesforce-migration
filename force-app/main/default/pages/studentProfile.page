@@ -2294,7 +2294,7 @@
                                                                                 <apex:facet name="header"
                                                                                     >Status</apex:facet
                                                                                 >
-                                                                                {!checklist.status}
+                                                                                {!checklist.item_status}
                                                                             </apex:column>
                                                                         </apex:dataTable>
                                                                     </apex:form>

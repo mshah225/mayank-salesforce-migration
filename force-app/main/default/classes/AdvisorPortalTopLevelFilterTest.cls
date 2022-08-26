@@ -13,8 +13,17 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Act
         Test.startTest();
-        Map<String, String> viewAsOptionMap = AdvisorPortalTopLevelFilterController.viewAsOptions();
+        String viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
         Test.stopTest();
+
+        List<OrderedMapStringToString.LabelValue> labelValueList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
+            viewAsOptionListStr,
+            List<OrderedMapStringToString.LabelValue>.class
+        );
+        Map<String, String> viewAsOptionMap = new Map<String, String>();
+        for (OrderedMapStringToString.LabelValue labelValue : labelValueList) {
+            viewAsOptionMap.put(labelValue.label, labelValue.value);
+        }
 
         // Assert
         System.assert(
@@ -30,8 +39,17 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Act
         Test.startTest();
-        Map<String, String> viewAsOptionMap = AdvisorPortalTopLevelFilterController.viewAsOptions();
+        String viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
         Test.stopTest();
+
+        List<OrderedMapStringToString.LabelValue> labelValueList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
+            viewAsOptionListStr,
+            List<OrderedMapStringToString.LabelValue>.class
+        );
+        Map<String, String> viewAsOptionMap = new Map<String, String>();
+        for (OrderedMapStringToString.LabelValue labelValue : labelValueList) {
+            viewAsOptionMap.put(labelValue.label, labelValue.value);
+        }
 
         // Assert
         System.assert(
@@ -47,8 +65,17 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Act
         Test.startTest();
-        Map<String, String> viewAsOptionMap = AdvisorPortalTopLevelFilterController.viewAsOptions();
+        String viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
         Test.stopTest();
+
+        List<OrderedMapStringToString.LabelValue> labelValueList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
+            viewAsOptionListStr,
+            List<OrderedMapStringToString.LabelValue>.class
+        );
+        Map<String, String> viewAsOptionMap = new Map<String, String>();
+        for (OrderedMapStringToString.LabelValue labelValue : labelValueList) {
+            viewAsOptionMap.put(labelValue.label, labelValue.value);
+        }
 
         // Assert
         System.assert(
@@ -97,8 +124,17 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Act
         Test.startTest();
-        Map<String, String> viewAsOptionMap = AdvisorPortalTopLevelFilterController.viewAsOptions();
+        String viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
         Test.stopTest();
+
+        List<OrderedMapStringToString.LabelValue> labelValueList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
+            viewAsOptionListStr,
+            List<OrderedMapStringToString.LabelValue>.class
+        );
+        Map<String, String> viewAsOptionMap = new Map<String, String>();
+        for (OrderedMapStringToString.LabelValue labelValue : labelValueList) {
+            viewAsOptionMap.put(labelValue.label, labelValue.value);
+        }
 
         // Assert
         System.assert(

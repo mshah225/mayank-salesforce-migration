@@ -50,13 +50,16 @@ export default class AdvisorPortalA extends LightningElement {
             let firstSelectionFound = false;
             let allUsers = [];
 
-            const keys = Object.keys(data);
+            const viewAsOptions = JSON.parse(data);
 
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                let option = {label: key, value: data[key], isHeader: false, isSelected: false};
+            for (let i = 0; i < viewAsOptions.length; i++) {
+                const opt = viewAsOptions[i];
+                const label = opt.label;
+                const value = opt.value;
 
-                if (key.includes('--')) {
+                let option = {label, value, isHeader: false, isSelected: false};
+
+                if (option.label.includes('--')) {
                     option.label = option.label.replace(/--/g, '');
                     option.isHeader = true;
                 }

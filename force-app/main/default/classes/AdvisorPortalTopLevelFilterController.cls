@@ -1,7 +1,7 @@
 public class AdvisorPortalTopLevelFilterController {
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> viewAsOptions() {
-        Map<String, String> viewAsOptions = new Map<String, String>();
+    public static String viewAsOptions() {
+        OrderedMapStringToString viewAsOptions = new OrderedMapStringToString();
 
         // Insert myself
         User currentUser = [SELECT Id, Name, Alias FROM User WHERE Id = :UserInfo.getUserId()];
@@ -55,7 +55,7 @@ public class AdvisorPortalTopLevelFilterController {
             }
         }
 
-        return viewAsOptions;
+        return JSON.serialize(viewAsOptions.getOrderedList());
     }
 
     public static Map<Id, String> myCommittees {

@@ -5,6 +5,12 @@ public class OrderedMapStringToString {
     public OrderedMapStringToString() {
     }
 
+    public OrderedMapStringToString(List<LabelValue> labelValueList) {
+        for (LabelValue labelValue : labelValueList) {
+            put(labelValue.label, labelValue.value);
+        }
+    }
+
     public void clear() {
         mapping.clear();
         keyInsertOrder.clear();

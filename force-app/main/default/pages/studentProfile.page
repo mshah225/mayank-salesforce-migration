@@ -83,6 +83,11 @@
                 margin-top: 0.5em;
             }
 
+            #ps_financial_aid_communications a,
+            #ps_financial_aid_communications a:hover {
+                color: #9f2b50;
+            }
+
             @media screen and (max-width: 767px) {
                 .browser {
                     display: none;

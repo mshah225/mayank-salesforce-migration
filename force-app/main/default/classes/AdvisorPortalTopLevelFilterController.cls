@@ -1,7 +1,18 @@
 public class AdvisorPortalTopLevelFilterController {
+    public static String successPodRecordId;
+    public static String successResourceRecordId;
+
     @AuraEnabled(cacheable=true)
-    public static String viewAsOptions() {
+    public static String viewAsOptions(Boolean gradOnly) {
         OrderedMapStringToString viewAsOptions = new OrderedMapStringToString();
+
+        if (gradOnly) {
+            successPodRecordId = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Grad');
+            successResourceRecordId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Grad');
+        } else {
+            successPodRecordId = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Advisor');
+            successResourceRecordId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor');
+        }
 
         // Insert myself
         User currentUser = [SELECT Id, Name, Alias FROM User WHERE Id = :UserInfo.getUserId()];
@@ -150,13 +161,14 @@ public class AdvisorPortalTopLevelFilterController {
                                 Success_Pod__r.Name,
                                 Success_Pod__r.Committee__c
                             FROM Success_Resource_Pod_Associations__r
+                            WHERE Success_Pod__r.RecordTypeId = :successPodRecordId
                             ORDER BY Success_Pod__r.Name
                         )
                     FROM Success_Resource__c
                     WHERE
                         Resource__c = :UserInfo.getUserId()
                         AND IsActive__c = TRUE
-                        AND RecordTypeId IN :new List<String>{ AdvisorResourceRTID, GradAdvisorResourceRTID }
+                        AND RecordTypeId = :successResourceRecordId
                 ];
             }
 
@@ -181,28 +193,6 @@ public class AdvisorPortalTopLevelFilterController {
             }
 
             return myRole;
-        }
-        set;
-    }
-
-    private static Id AdvisorResourceRTID {
-        get {
-            if (AdvisorResourceRTID == null) {
-                AdvisorResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Advisor');
-            }
-
-            return AdvisorResourceRTID;
-        }
-        set;
-    }
-
-    private static Id GradAdvisorResourceRTID {
-        get {
-            if (GradAdvisorResourceRTID == null) {
-                GradAdvisorResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Grad');
-            }
-
-            return GradAdvisorResourceRTID;
         }
         set;
     }
@@ -274,7 +264,9 @@ public class AdvisorPortalTopLevelFilterController {
             WHERE
                 Success_Resource__r.IsActive__c = TRUE
                 AND Success_Pod__c IN :podIds
+                AND Success_Pod__r.RecordTypeId = :successPodRecordId
                 AND Success_Resource__r.Resource__c != :UserInfo.getUserId()
+                AND Success_Resource__r.RecordTypeId = :successResourceRecordId
             ORDER BY Success_Resource__r.Resource__r.Name ASC
         ];
 

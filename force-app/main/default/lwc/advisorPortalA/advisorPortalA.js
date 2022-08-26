@@ -43,7 +43,10 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     // Retrieve all user options
-    @wire(viewAsOptions, {})
+    get gradToggleSelected() {
+        return this.currentFilter != null && this.currentFilter.career != null && this.currentFilter.career === 'GRD';
+    }
+    @wire(viewAsOptions, {gradOnly: gradToggleSelected})
     gotViewAsOptions(result) {
         let {data, error} = result;
         if (data != null) {
@@ -121,6 +124,19 @@ export default class AdvisorPortalA extends LightningElement {
                 console.error(err);
             });
     }
+
+    // getViewAsOptions() {
+    //     this.loadMore();
+    //     this.getViewAsOptions({filterJSON: JSON.stringify(this.currentFilter)})
+    //         .then((val) => {})
+    //         .catch((err) => {
+    //             // eslint-disable-next-line no-console
+    //             console.error(err);
+    //         })
+    //         .finally(() => {
+    //             this.loadLess();
+    //         });
+    // }
 
     updateFilter(e) {
         this.currentFilter[e.detail.name] = e.detail.value;

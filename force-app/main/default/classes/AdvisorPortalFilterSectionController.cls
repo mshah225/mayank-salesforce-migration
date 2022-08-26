@@ -86,13 +86,18 @@ public class AdvisorPortalFilterSectionController {
      * @return caseSubjectValuesByLabel, a Map of Case Subjects.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
+    public static Map<String, String> getCaseSubjectPicklistValues(String filterJSON, List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
+        List<String> recordTypeIds = new List<String>();
 
-        List<String> recordTypeIds = new List<String>{
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
-        };
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+            if (filter != null && filter.career != null && filter.career == 'GRD') {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+            } else {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+            }
+        }
 
         for (AggregateResult result : [
             SELECT Subject
@@ -116,13 +121,19 @@ public class AdvisorPortalFilterSectionController {
      * @return caseClassificationValuesByLabel, a Map of Case Subjects.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
+    public static Map<String, String> getCaseClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
+        List<String> recordTypeIds = new List<String>();
 
-        List<String> recordTypeIds = new List<String>{
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
-        };
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+            if (filter != null && filter.career != null && filter.career == 'GRD') {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+            } else {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+            }
+        }
+
         for (AggregateResult result : [
             SELECT CC_Category__r.Name CategoryName
             FROM Case
@@ -455,7 +466,7 @@ public class AdvisorPortalFilterSectionController {
 
         if (contactIds == null) {
             // contacts restricted by which students are owned
-            contactConstrictingStatement = '(' + generateSuccessStudentFilterString(ownerIds) + ')';
+            contactConstrictingStatement = '(' + generateSuccessStudentFilterString(filter, ownerIds) + ')';
         } else {
             // use specified contactIds constriction
             List<String> contactIdList = new List<String>();
@@ -605,7 +616,7 @@ public class AdvisorPortalFilterSectionController {
             'SELECT SG_Contact__c' +
             ' FROM Student_Group__c' +
             ' WHERE SG_Contact__c IN (' +
-            generateSuccessStudentFilterString(ownerIds) +
+            generateSuccessStudentFilterString(filter, ownerIds) +
             ')' +
             ' AND SG_Status__c = TRUE' +
             ' AND SG_Effective_Date__c <= TODAY';
@@ -746,7 +757,7 @@ public class AdvisorPortalFilterSectionController {
             'SELECT Contact__c, Career__c, Status__c, Degree_Chkout_Stat_Code__c' +
             ' FROM Student_Program_Plan__c WHERE' +
             ' Contact__c IN (' +
-            generateSuccessStudentFilterString(ownerIds) +
+            generateSuccessStudentFilterString(filter, ownerIds) +
             ')' +
             ' AND (Career__c IN :dualEnrollmentCareers' +
             ' OR (Career__c = \'Graduate\'' +
@@ -868,7 +879,7 @@ public class AdvisorPortalFilterSectionController {
                         String queryString =
                             'SELECT Contact__c FROM Student_Milestone__c WHERE' +
                             ' Contact__c IN (' +
-                            generateSuccessStudentFilterString(ownerIds) +
+                            generateSuccessStudentFilterString(filter, ownerIds) +
                             ')' +
                             ' AND Milestone__c = \'GRFORMAT\'' +
                             ' AND Effdt__c <= TODAY' +
@@ -969,7 +980,10 @@ public class AdvisorPortalFilterSectionController {
                     String currentPSCode = getCurrentPeoplesoftTermCode();
 
                     String queryString = 'SELECT SI_Contact__c FROM Service_Indicator__c';
-                    queryString += ' WHERE SI_Contact__c IN (' + generateSuccessStudentFilterString(ownerIds) + ')';
+                    queryString +=
+                        ' WHERE SI_Contact__c IN (' +
+                        generateSuccessStudentFilterString(filter, ownerIds) +
+                        ')';
                     queryString += ' AND SI_Start_Term__r.PeopleSoft_Code__c <= :currentPSCode';
                     queryString += ' AND SI_End_Term__r.PeopleSoft_Code__c >= :currentPSCode';
 
@@ -1053,10 +1067,12 @@ public class AdvisorPortalFilterSectionController {
 
         andStatements.add('IsClosed = FALSE');
 
-        List<String> recordTypeIds = new List<String>{
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'),
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
-        };
+        List<String> recordTypeIds = new List<String>();
+        if (filter != null && filter.career != null && filter.career == 'GRD') {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+        } else {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+        }
         andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
 
         if (shouldUseFilter('caseCategory', filter)) {
@@ -1197,7 +1213,7 @@ public class AdvisorPortalFilterSectionController {
 
         List<String> andStatements = new List<String>();
 
-        andStatements.add('Id IN (' + generateSuccessStudentFilterString(ownerIds) + ')');
+        andStatements.add('Id IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
 
         if (shouldUseFilter('outlookScore', filter)) {
             List<Decimal> scores = new List<Decimal>();
@@ -1375,10 +1391,21 @@ public class AdvisorPortalFilterSectionController {
         return queryString;
     }
 
-    private static String generateSuccessStudentFilterString(List<Id> ownerIds) {
-        return 'SELECT Student__c FROM Success_Student__c WHERE Success_Pod__r.OwnerId IN ' +
+    private static String generateSuccessStudentFilterString(AdvisorPortalFilter filter, List<Id> ownerIds) {
+        String queryString =
+            'SELECT Student__c FROM Success_Student__c WHERE Success_Pod__r.OwnerId IN ' +
             getSoqlListString(ownerIds) +
             ' AND Is_Active__c = TRUE';
+
+        List<String> recordTypeIds = new List<String>();
+        if (filter != null && filter.career != null && filter.career == 'GRD') {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad'));
+        } else {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor'));
+        }
+        queryString += ' AND RecordTypeId IN ' + getSoqlListString(recordTypeIds);
+
+        return queryString;
     }
 
     private static String getSoqlListString(List<String> values) {

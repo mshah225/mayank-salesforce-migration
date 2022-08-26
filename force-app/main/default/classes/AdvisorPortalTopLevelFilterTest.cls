@@ -17,6 +17,7 @@ private class AdvisorPortalTopLevelFilterTest {
 
     @TestSetup
     static void setup() {
+        // Setup objects diagram:  https://asudev.jira.com/wiki/spaces/SFD/pages/2815590423/AdvisorPortalTopLevelFilterTest+Setup+Objects
         User runAsUser = new User(Id = UserInfo.getUserId());
 
         // Create all the users
@@ -140,7 +141,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -148,16 +149,11 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(3, viewAsOptionMap.size(), 'Should contain 2 options (+1 because 1 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 1
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 1'
-        );
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, groupIds, null, null);
     }
 
     @isTest
@@ -177,7 +173,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -185,16 +181,11 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(3, viewAsOptionMap.size(), 'Should contain 2 options (+1 because 1 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 2
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 2'
-        );
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, groupIds, null, null);
     }
 
     @isTest
@@ -225,7 +216,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -233,19 +224,17 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(7, viewAsOptionMap.size(), 'Should contain 5 options (+2 because 2 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 2
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 2'
-        );
-        // Has subordinates
-        for (User u : users)
-            System.assert(viewAsOptionMap.values().contains(u.Id), 'List should contain the users subordinates');
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        List<String> subordinateUserIds = new List<String>();
+        for (User u : users) {
+            if (u.Id == testUser.Id)
+                continue;
+            subordinateUserIds.add(u.Id);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, groupIds, subordinateUserIds);
     }
 
     @isTest
@@ -276,7 +265,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -284,19 +273,17 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(7, viewAsOptionMap.size(), 'Should contain 5 options (+2 because 2 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 2
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 2'
-        );
-        // Has subordinates
-        for (User u : users)
-            System.assert(viewAsOptionMap.values().contains(u.Id), 'List should contain the users subordinates');
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        List<String> subordinateUserIds = new List<String>();
+        for (User u : users) {
+            if (u.Id == testUser.Id)
+                continue;
+            subordinateUserIds.add(u.Id);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, groupIds, subordinateUserIds);
     }
 
     @isTest
@@ -316,7 +303,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -324,16 +311,7 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(1, viewAsOptionMap.size(), 'Should contain 1 option (+0 because 0 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 2
-        System.assertEquals(1, underGradSRPAs.size(), 'Should only have one SRPA');
-        System.assert(
-            !viewAsOptionMap.values().contains(underGradSRPAs[0].Success_Pod__r.OwnerId),
-            'List should NOT contain the owner of pod 2 (since that is a ugrad pod)'
-        );
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, null, null);
     }
 
     @isTest
@@ -353,7 +331,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -361,16 +339,11 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(3, viewAsOptionMap.size(), 'Should contain 2 options (+1 because 1 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 3
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 3'
-        );
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, groupIds, null, null);
     }
 
     @isTest
@@ -390,7 +363,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -398,16 +371,11 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(3, viewAsOptionMap.size(), 'Should contain 2 options (+1 because 1 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 4
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 4'
-        );
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, groupIds, null, null);
     }
 
     @isTest
@@ -438,7 +406,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -446,20 +414,17 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(8, viewAsOptionMap.size(), 'Should contain 6 options (+2 because 2 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 4
-        System.assertEquals(2, srpas.size(), 'Should have two SRPAs');
-        for (Success_Resource_Pod_Association__c srpa : srpas)
-            System.assert(
-                viewAsOptionMap.values().contains(srpa.Success_Pod__r.OwnerId),
-                'List should contain the owner of each pod'
-            );
-        // Has subordinates
-        for (User u : users)
-            System.assert(viewAsOptionMap.values().contains(u.Id), 'List should contain the users subordinates');
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        List<String> subordinateUserIds = new List<String>();
+        for (User u : users) {
+            if (u.Id == testUser.Id)
+                continue;
+            subordinateUserIds.add(u.Id);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, groupIds, subordinateUserIds);
     }
 
     @isTest
@@ -490,7 +455,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -498,19 +463,17 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(7, viewAsOptionMap.size(), 'Should contain 5 options (+2 because 2 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 4
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 2'
-        );
-        // Has subordinates
-        for (User u : users)
-            System.assert(viewAsOptionMap.values().contains(u.Id), 'List should contain the users subordinates');
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        List<String> subordinateUserIds = new List<String>();
+        for (User u : users) {
+            if (u.Id == testUser.Id)
+                continue;
+            subordinateUserIds.add(u.Id);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, groupIds, subordinateUserIds);
     }
 
     @isTest
@@ -541,7 +504,7 @@ private class AdvisorPortalTopLevelFilterTest {
         String viewAsOptionListStr;
         List<OrderedMapStringToString.LabelValue> viewAsOptionList;
         System.runAs(testUser) {
-            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions();
+            viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
         viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
             viewAsOptionListStr,
@@ -549,19 +512,17 @@ private class AdvisorPortalTopLevelFilterTest {
         );
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
-        // Has correct number of options
-        System.assertEquals(6, viewAsOptionMap.size(), 'Should contain 4 options (+2 because 2 headers)');
-        // Has self
-        System.assert(viewAsOptionMap.values().contains(testUser.Id), 'List should contain the user themself');
-        // Has success pod 4
-        System.assertEquals(1, srpas.size(), 'Should only have one SRPA');
-        System.assert(
-            viewAsOptionMap.values().contains(srpas[0].Success_Pod__r.OwnerId),
-            'List should contain the owner of pod 4'
-        );
-        // Has subordinates
-        for (User u : users)
-            System.assert(viewAsOptionMap.values().contains(u.Id), 'List should contain the users subordinates');
+        List<String> groupIds = new List<String>();
+        for (Success_Resource_Pod_Association__c srpa : srpas) {
+            groupIds.add(srpa.Success_Pod__r.OwnerId);
+        }
+        List<String> subordinateUserIds = new List<String>();
+        for (User u : users) {
+            if (u.Id == testUser.Id)
+                continue;
+            subordinateUserIds.add(u.Id);
+        }
+        assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, groupIds, subordinateUserIds);
     }
 
     private static void assertContainsAllOptionsInProperOrder(
@@ -572,8 +533,18 @@ private class AdvisorPortalTopLevelFilterTest {
         List<String> subordinateIds
     ) {
         Boolean atStart = true, inPodsSection = false, inManagedPodsSection = false, inSubordinateSection = false;
-        Boolean foundSelf = false;
+        Boolean foundSelf = false,
+            foundPodsHeader = false,
+            foundManagedPodsHeader = false,
+            foundSubordinateHeader = false;
         Integer podCount = 0, managedPodsCount = 0, subordinateCount = 0;
+
+        if (ownersOfPods == null)
+            ownersOfPods = new List<String>();
+        if (ownersOfManagedPods == null)
+            ownersOfManagedPods = new List<String>();
+        if (subordinateIds == null)
+            subordinateIds = new List<String>();
 
         for (OrderedMapStringToString.LabelValue labelValue : optionsList) {
             String label = labelValue.label;
@@ -585,18 +556,21 @@ private class AdvisorPortalTopLevelFilterTest {
                 inPodsSection = true;
                 inManagedPodsSection = false;
                 inSubordinateSection = false;
+                foundPodsHeader = true;
                 continue;
             } else if (label == '--Department Committees--' || label == '--College Committees--') {
                 atStart = false;
                 inPodsSection = false;
                 inManagedPodsSection = true;
                 inSubordinateSection = false;
+                foundManagedPodsHeader = true;
                 continue;
             } else if (label == '--Department Advisors--' || label == '--College Advisors--') {
                 atStart = false;
                 inPodsSection = false;
                 inManagedPodsSection = false;
                 inSubordinateSection = true;
+                foundSubordinateHeader = true;
                 continue;
             }
 
@@ -604,7 +578,6 @@ private class AdvisorPortalTopLevelFilterTest {
                 // First should be the user themself, ALWAYS
                 foundSelf = value == userId;
                 atStart = false;
-                continue;
             } else if (inPodsSection) {
                 // These are all pods the user is in
                 podCount += ownersOfPods.contains(value) ? 1 : 0;
@@ -617,9 +590,42 @@ private class AdvisorPortalTopLevelFilterTest {
             }
         }
 
+        System.debug('==================');
+
+        for (OrderedMapStringToString.LabelValue labelValue : optionsList) {
+            System.debug(labelValue);
+        }
+        System.debug('---');
+        System.debug(foundSelf);
+        System.debug(ownersOfPods);
+        System.debug(foundPodsHeader);
+        System.debug(podCount);
+        System.debug(ownersOfManagedPods);
+        System.debug(foundManagedPodsHeader);
+        System.debug(managedPodsCount);
+        System.debug(subordinateIds);
+        System.debug(foundSubordinateHeader);
+        System.debug(subordinateCount);
+        System.debug('==================');
+
         System.assert(foundSelf, 'The user themself should ALWAYS be the first option in the list');
+        System.assertEquals(
+            !ownersOfPods.isEmpty(),
+            foundPodsHeader,
+            'If-and-only-if there some pods specified should the header be included'
+        );
         System.assertEquals(ownersOfPods.size(), podCount);
+        System.assertEquals(
+            !ownersOfManagedPods.isEmpty(),
+            foundManagedPodsHeader,
+            'If-and-only-if there some pods specified should the header be included'
+        );
         System.assertEquals(ownersOfManagedPods.size(), managedPodsCount);
+        System.assertEquals(
+            !subordinateIds.isEmpty(),
+            foundSubordinateHeader,
+            'If-and-only-if there some subordinates specified should the header be included'
+        );
         System.assertEquals(subordinateIds.size(), subordinateCount);
     }
 

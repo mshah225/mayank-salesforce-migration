@@ -391,10 +391,11 @@ public without sharing class CampaignMemberService {
                 ACCEPTABLE_MAJORS.contains(member.Campaign_Type__c) &&
                 campaignRecordTypesById.get(member.CampaignId) == 'Interest' &&
                 member.Status != 'No Longer Interested'
-            )
+            ) {
                 if (!campaignMembersByContact.containsKey(member.ContactId))
                     campaignMembersByContact.put(member.ContactId, new List<CampaignMember>());
-            campaignMembersByContact.get(member.ContactId).add(member);
+                campaignMembersByContact.get(member.ContactId).add(member);
+            }
         }
 
         for (CampaignMember member : membersInTriggerWithLeads) {

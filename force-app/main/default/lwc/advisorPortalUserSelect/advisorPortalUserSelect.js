@@ -3,7 +3,17 @@ import {LightningElement, api, track} from 'lwc';
 export default class AdvisorPortalUserSelect extends LightningElement {
     @api set allUserOptions(options) {
         this._allUserOptions = JSON.parse(JSON.stringify(options));
+
+        // Reset all components to default values
+        this.previousFilterValue = '';
+        this.filterValue = '';
         this.filterResults = this._allUserOptions;
+        if (this.closeModalTimeout != null) clearTimeout(this.closeModalTimeout);
+        this.closeModalTimeout = null;
+        this.setDropdownState(false);
+
+        // and apply this set of users
+        this.applyChanges();
     }
     get allUserOptions() {
         return this._allUserOptions;
@@ -201,21 +211,23 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         const openClass = 'slds-is-open';
 
         const dropdown = this.template.querySelector('.slds-dropdown-trigger');
-        const isOpen = dropdown.classList.contains(openClass);
-        if (shouldOpen == null) {
-            if (isOpen) {
-                dropdown.classList.remove(openClass);
-            } else {
-                dropdown.classList.add(openClass);
-            }
-        } else {
-            if (shouldOpen) {
-                if (!isOpen) {
+        if (dropdown != null) {
+            const isOpen = dropdown.classList.contains(openClass);
+            if (shouldOpen == null) {
+                if (isOpen) {
+                    dropdown.classList.remove(openClass);
+                } else {
                     dropdown.classList.add(openClass);
                 }
             } else {
-                if (isOpen) {
-                    dropdown.classList.remove(openClass);
+                if (shouldOpen) {
+                    if (!isOpen) {
+                        dropdown.classList.add(openClass);
+                    }
+                } else {
+                    if (isOpen) {
+                        dropdown.classList.remove(openClass);
+                    }
                 }
             }
         }

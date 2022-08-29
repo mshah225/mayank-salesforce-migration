@@ -67,6 +67,7 @@ export default class AdvisorPortalA extends LightningElement {
         this.loadLess();
     }
 
+    // Get the view as options
     getViewAsOptions() {
         this.loadMore();
 
@@ -102,11 +103,11 @@ export default class AdvisorPortalA extends LightningElement {
                 }
 
                 this.allUsers = allUsers;
-                this.showFauxView = false; // the first time this will run will be after all async has loaded in
+                if (this.showFauxView) this.showFauxView = false; // the first time this will run will be after all async has loaded in
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
-                console.error(error);
+                console.error(err);
             })
             .finally(() => {
                 this.loadLess();
@@ -129,8 +130,14 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     updateFilter(e) {
-        this.currentFilter[e.detail.name] = e.detail.value;
+        const field = e.detail.name;
+        const oldValue = this.currentFilter[field];
+        const newValue = e.detail.value;
+        if (oldValue === newValue) return;
+        this.currentFilter[field] = e.detail.value;
         this.triggerCurrentFilterChanges();
+
+        if (field === 'career') this.getViewAsOptions();
     }
 
     getCases() {
@@ -162,18 +169,13 @@ export default class AdvisorPortalA extends LightningElement {
 
     filterVisibility = true;
     toggleFilterVisibility() {
-        if (this.filterVisibility) {
-            this.filterVisibility = false;
-        } else {
-            this.filterVisibility = true;
-        }
-
-        const elem = this.template.querySelector('.filterSectionWrapper');
-        if (this.filterVisibility) {
-            elem.classList.remove('d-none');
-        } else {
-            elem.classList.add('d-none');
-        }
+        this.filterVisibility = !this.filterVisibility;
+    }
+    get filterSectionDivClasses() {
+        const baseClasses = 'slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small';
+        let allClasses = baseClasses;
+        if (this.filterVisibility == false) allClasses += ' d-none';
+        return allClasses;
     }
 
     navigate(e) {

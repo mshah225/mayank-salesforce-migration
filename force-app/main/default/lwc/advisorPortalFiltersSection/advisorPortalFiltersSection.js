@@ -27,15 +27,10 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
                 this._currentFilter = newFilter;
 
                 if (oldCareer !== newCareer) {
-                    // throw change back a cycle to get rendering order nice
-                    this.sendLoadingEvent(true);
-                    this.throwBackARenderCycle(() => {
-                        this.isGraduateOnly = newCareer === 'GRD';
-                        this.sendLoadingEvent(false);
-                    });
-                    // apply change
-                    this.applyFilters();
-                    // update conditionals
+                    // Mostly just need to update visuals.
+                    // Whenever career is changed it'll trigger the UserSelect component to raise a changeusers event,
+                    // which will, in turn set our viewAsUsers, cause us to reapply the filters
+                    this.isGraduateOnly = newCareer === 'GRD';
                     this.updateConditionalFields('career');
                 } else if (oldStateType !== newStateType) {
                     this.applyFilters();

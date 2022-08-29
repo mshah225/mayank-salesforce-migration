@@ -1,5 +1,5 @@
 import {LightningElement, wire} from 'lwc';
-import checkIfAllowedToUse from '@salesforce/apex/AdvisorPortalMassTransferController.checkIfAllowedToUse';
+import checkIfAllowedToUseMassTransfer from '@salesforce/apex/AdvisorPortalMassTransferController.checkIfAllowedToUse';
 import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
 import getDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.getDefaultFilter';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
@@ -32,8 +32,8 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     allowedToUseMassTransfer;
-    @wire(checkIfAllowedToUse, {})
-    checkedIfAllowedToUse(result) {
+    @wire(checkIfAllowedToUseMassTransfer, {})
+    checkedIfAllowedToUseMassTransfer(result) {
         let {data, error} = result;
         if (data != null) {
             this.allowedToUseMassTransfer = data;
@@ -42,52 +42,6 @@ export default class AdvisorPortalA extends LightningElement {
             console.error(error);
         }
         this.loadLess();
-    }
-
-    // Retrieve all user options
-    get gradToggleSelected() {
-        return this.currentFilter != null && this.currentFilter.career != null && this.currentFilter.career === 'GRD';
-    }
-    @wire(viewAsOptions, {gradOnly: '$gradToggleSelected'})
-    gotViewAsOptions(result) {
-        let {data, error} = result;
-        if (data != null) {
-            let firstSelectionFound = false;
-            let allUsers = [];
-
-            const viewAsOptions = JSON.parse(data);
-
-            for (let i = 0; i < viewAsOptions.length; i++) {
-                const opt = viewAsOptions[i];
-                const label = opt.label;
-                const value = opt.value;
-
-                let option = {label, value, isHeader: false, isSelected: false};
-
-                if (option.label.includes('--')) {
-                    option.label = option.label.replace(/--/g, '');
-                    option.isHeader = true;
-                }
-
-                if (!option.isHeader) {
-                    if (!firstSelectionFound) {
-                        this.myQueueId = option.value;
-                        option.isSelected = true;
-                        firstSelectionFound = true;
-                        this.selectedUsers = [this.myQueueId];
-                    }
-                }
-
-                allUsers.push(option);
-            }
-
-            this.allUsers = allUsers;
-            this.loadLess();
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error(error);
-            this.loadLess();
-        }
     }
 
     // Retrieve default filter
@@ -106,14 +60,61 @@ export default class AdvisorPortalA extends LightningElement {
             // default filter settings if none exists
             if (this.currentFilter.caseTypeState == null) this.currentFilter.caseTypeState = 'ProactiveCasesState';
             if (this.currentFilter.career == null) this.currentFilter.career = 'UGRD';
+
+            this.getViewAsOptions(); // once the default filter is loaded - we can get the view as options
         }
 
         this.loadLess();
     }
 
+    getViewAsOptions() {
+        this.loadMore();
+
+        viewAsOptions({
+            gradOnly: this.currentFilter.career === 'GRD',
+        })
+            .then((val) => {
+                let firstSelectionFound = false;
+                let allUsers = [];
+                const viewAsOptions = JSON.parse(val);
+                for (let i = 0; i < viewAsOptions.length; i++) {
+                    const opt = viewAsOptions[i];
+                    const label = opt.label;
+                    const value = opt.value;
+
+                    let option = {label, value, isHeader: false, isSelected: false};
+
+                    if (option.label.includes('--')) {
+                        option.label = option.label.replace(/--/g, '');
+                        option.isHeader = true;
+                    }
+
+                    if (!option.isHeader) {
+                        if (!firstSelectionFound) {
+                            this.myQueueId = option.value;
+                            option.isSelected = true;
+                            firstSelectionFound = true;
+                            this.selectedUsers = [this.myQueueId];
+                        }
+                    }
+
+                    allUsers.push(option);
+                }
+
+                this.allUsers = allUsers;
+                this.showFauxView = false; // the first time this will run will be after all async has loaded in
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error(error);
+            })
+            .finally(() => {
+                this.loadLess();
+            });
+    }
+
     // One loading for each wire
     connectedCallback() {
-        this.loadMore(); // loadMore for retrieving user options
         this.loadMore(); // loadMore for retrieving allowed to use mass transfer
         this.loadMore(); // loadMore for retrieving default filter
 
@@ -126,19 +127,6 @@ export default class AdvisorPortalA extends LightningElement {
                 console.error(err);
             });
     }
-
-    // getViewAsOptions() {
-    //     this.loadMore();
-    //     this.getViewAsOptions({filterJSON: JSON.stringify(this.currentFilter)})
-    //         .then((val) => {})
-    //         .catch((err) => {
-    //             // eslint-disable-next-line no-console
-    //             console.error(err);
-    //         })
-    //         .finally(() => {
-    //             this.loadLess();
-    //         });
-    // }
 
     updateFilter(e) {
         this.currentFilter[e.detail.name] = e.detail.value;

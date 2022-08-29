@@ -1,52 +1,31 @@
-import {LightningElement, api, wire} from 'lwc';
-import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
+import {LightningElement, api} from 'lwc';
 import transferCasesStr from '@salesforce/apex/AdvisorPortalMassTransferController.transferCasesStr';
 
 export default class AdvisorPortalModalMassTransfer extends LightningElement {
+    @api set options(val) {
+        this._options = [...val];
+
+        this.questions = [
+            {
+                key: 'transferTo',
+                question: 'New Owner',
+                options: this.options,
+                type: 'combobox',
+                subtype: 'single',
+                required: true,
+            },
+        ];
+    }
+    get options() {
+        return this._options;
+    }
+    @api selectedContactWrappers = [];
+    _options = [];
+
     questions = [];
     buttons = [];
 
     transferTo = '';
-    options = [];
-    selectedContactWrappers = [];
-
-    @wire(viewAsOptions, {})
-    gotViewAsOptions(result) {
-        let {data, error} = result;
-        if (data != null) {
-            let allUserOptions = [];
-
-            const keys = Object.keys(data);
-
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i];
-                let option = {label: key, value: data[key], isLabel: false};
-
-                if (key.includes('--')) {
-                    option.label = option.label.replace(/--/g, '');
-                    option.isLabel = true;
-                }
-
-                allUserOptions.push(option);
-            }
-
-            this.options = allUserOptions;
-
-            this.questions = [
-                {
-                    key: 'transferTo',
-                    question: 'New Owner',
-                    options: this.options,
-                    type: 'combobox',
-                    subtype: 'single',
-                    required: true,
-                },
-            ];
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error(error);
-        }
-    }
 
     connectedCallback() {
         this.buttons = [

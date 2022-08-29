@@ -169,7 +169,8 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     // Imperative rather than wire to gain more precise control over when this triggers
     caseSubjectPicklistValues = [];
     refreshCaseSubjectPicklistValues() {
-        return getCaseSubjectPicklistValues({viewAsOptions: this.viewAsUsers})
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
             .then((val) => {
                 this.caseSubjectPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -182,7 +183,8 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     // Imperative rather than wire to gain more precise control over when this triggers
     caseCategoryPicklistValues = [];
     refreshCaseClassificationPicklistValues() {
-        return getCaseClassificationPicklistValues({viewAsOptions: this.viewAsUsers})
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
             .then((val) => {
                 this.caseCategoryPicklistValues = this.buildPicklistOptionsArray(val);
             })
@@ -476,15 +478,6 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
                 this.loadingAcadPlan = false;
             });
         }
-    }
-
-    /**
-     * Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before
-     * running this code (we primarily use this to ensure the parent either begins/stops the loading circle during otherwise blocking operations)
-     * @param {Function} fn
-     */
-    throwBackARenderCycle(fn) {
-        setTimeout(fn, 1);
     }
 
     /**

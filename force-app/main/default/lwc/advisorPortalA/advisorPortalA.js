@@ -13,6 +13,8 @@ export default class AdvisorPortalA extends LightningElement {
 
     currentFilter = null;
 
+    showFauxView = true;
+
     allResults = [];
     selectedResults = [];
 
@@ -46,7 +48,7 @@ export default class AdvisorPortalA extends LightningElement {
     get gradToggleSelected() {
         return this.currentFilter != null && this.currentFilter.career != null && this.currentFilter.career === 'GRD';
     }
-    @wire(viewAsOptions, {gradOnly: gradToggleSelected})
+    @wire(viewAsOptions, {gradOnly: '$gradToggleSelected'})
     gotViewAsOptions(result) {
         let {data, error} = result;
         if (data != null) {

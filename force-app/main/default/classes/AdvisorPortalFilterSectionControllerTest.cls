@@ -5,7 +5,7 @@ private class AdvisorPortalFilterSectionControllerTest {
     /**
      * Test data is setup in setup as follows
      *
-     * 2 users
+     * 1 user
      * +-------------------+-------------+
      * |     FirstName     |  LastName   |
      * +-------------------+-------------+
@@ -275,47 +275,49 @@ private class AdvisorPortalFilterSectionControllerTest {
         testContacts.add(mitchKeane);
         insert testContacts;
 
+        String ssGrad = RecordIdHelper.getRecordName('Success_Student__c', 'Grad');
+
         // Add success students for all of them
         List<Success_Student__c> testSuccessStudents = new List<Success_Student__c>();
-        Success_Student__c ryanCastelliStudent = newSuccessStudent(ryanCastelli, testSuccessPod);
+        Success_Student__c ryanCastelliStudent = newSuccessStudent(ryanCastelli, testSuccessPod, ssGrad);
         testSuccessStudents.add(ryanCastelliStudent);
-        Success_Student__c chaseBurgessStudent = newSuccessStudent(chaseBurgess, testSuccessPod);
+        Success_Student__c chaseBurgessStudent = newSuccessStudent(chaseBurgess, testSuccessPod, ssGrad);
         testSuccessStudents.add(chaseBurgessStudent);
-        Success_Student__c morganStraussStudent = newSuccessStudent(morganStrauss, testSuccessPod);
+        Success_Student__c morganStraussStudent = newSuccessStudent(morganStrauss, testSuccessPod, ssGrad);
         testSuccessStudents.add(morganStraussStudent);
-        Success_Student__c benHellsigStudent = newSuccessStudent(benHellsig, testSuccessPod);
+        Success_Student__c benHellsigStudent = newSuccessStudent(benHellsig, testSuccessPod, ssGrad);
         testSuccessStudents.add(benHellsigStudent);
-        Success_Student__c marisaBarillaStudent = newSuccessStudent(marisaBarilla, testSuccessPod);
+        Success_Student__c marisaBarillaStudent = newSuccessStudent(marisaBarilla, testSuccessPod, ssGrad);
         testSuccessStudents.add(marisaBarillaStudent);
-        Success_Student__c sarahDurisekStudent = newSuccessStudent(sarahDurisek, testSuccessPod);
+        Success_Student__c sarahDurisekStudent = newSuccessStudent(sarahDurisek, testSuccessPod, ssGrad);
         testSuccessStudents.add(sarahDurisekStudent);
-        Success_Student__c jamesBairStudent = newSuccessStudent(jamesBair, testSuccessPod);
+        Success_Student__c jamesBairStudent = newSuccessStudent(jamesBair, testSuccessPod, ssGrad);
         testSuccessStudents.add(jamesBairStudent);
-        Success_Student__c zacharyNoellerStudent = newSuccessStudent(zacharyNoeller, testSuccessPod);
+        Success_Student__c zacharyNoellerStudent = newSuccessStudent(zacharyNoeller, testSuccessPod, ssGrad);
         testSuccessStudents.add(zacharyNoellerStudent);
-        Success_Student__c morganDiegelStudent = newSuccessStudent(morganDiegel, testSuccessPod);
+        Success_Student__c morganDiegelStudent = newSuccessStudent(morganDiegel, testSuccessPod, ssGrad);
         testSuccessStudents.add(morganDiegelStudent);
-        Success_Student__c aaronAssafStudent = newSuccessStudent(aaronAssaf, testSuccessPod);
+        Success_Student__c aaronAssafStudent = newSuccessStudent(aaronAssaf, testSuccessPod, ssGrad);
         testSuccessStudents.add(aaronAssafStudent);
-        Success_Student__c simonKirkseyStudent = newSuccessStudent(simonKirksey, testSuccessPod);
+        Success_Student__c simonKirkseyStudent = newSuccessStudent(simonKirksey, testSuccessPod, ssGrad);
         testSuccessStudents.add(simonKirkseyStudent);
-        Success_Student__c seanPhillipsStudent = newSuccessStudent(seanPhillips, testSuccessPod);
+        Success_Student__c seanPhillipsStudent = newSuccessStudent(seanPhillips, testSuccessPod, ssGrad);
         testSuccessStudents.add(seanPhillipsStudent);
-        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod);
+        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod, ssGrad);
         testSuccessStudents.add(annaPhillipsStudent);
-        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod);
+        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod, ssGrad);
         testSuccessStudents.add(carlPorterStudent);
-        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod);
+        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod, ssGrad);
         testSuccessStudents.add(devinMcCainStudent);
-        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod);
+        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod, ssGrad);
         testSuccessStudents.add(anyaSimmsStudent);
-        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod);
+        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod, ssGrad);
         testSuccessStudents.add(coreyNickoletteStudent);
-        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod);
+        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod, ssGrad);
         testSuccessStudents.add(maddyThomasStudent);
-        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod);
+        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod, ssGrad);
         testSuccessStudents.add(charlieDorseyWardStudent);
-        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod);
+        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod, ssGrad);
         testSuccessStudents.add(mitchKeaneStudent);
         insert testSuccessStudents;
 
@@ -961,9 +963,13 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         List<Case> testCases = [SELECT Id, Subject FROM Case WHERE OwnerId = :testUser.Id];
 
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRAD';
+
         // Act
         Test.startTest();
         Map<String, String> subjectMap = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(
+            JSON.serialize(filter),
             new List<String>{ testUser.Id }
         );
         Test.stopTest();
@@ -988,8 +994,12 @@ private class AdvisorPortalFilterSectionControllerTest {
                 AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
         ];
 
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRAD';
+
         Test.startTest();
         Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
+            JSON.serialize(filter),
             new List<String>{ testUser.Id }
         );
         Test.stopTest();
@@ -3000,12 +3010,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         return classification;
     }
 
-    private static Success_Student__c newSuccessStudent(Contact con, Success_Pod__c pod) {
+    private static Success_Student__c newSuccessStudent(Contact con, Success_Pod__c pod, String recTypeId) {
         return new Success_Student__c(
             Is_Active__c = true,
             Success_Pod__c = pod.Id,
             Student__c = con.Id,
-            Coaching_Student__c = false
+            Coaching_Student__c = false,
+            RecordTypeId = recTypeId
         );
     }
 

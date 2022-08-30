@@ -26,7 +26,7 @@ private class BulkMessageComponentControllerTest {
         studentGrp.SG_PeopleSoft_Code__c = 'R100';
         Database.insert(studentGrp);
 
-        FYSStudentWrapper studentWrap = BulkMessageComponentController.studentList(UserInfo.getUserId());
+        SuccessStudentWrapper studentWrap = BulkMessageComponentController.studentList(UserInfo.getUserId());
         System.assertEquals(true, studentWrap != null);
         System.assertEquals(1, studentWrap.students.size());
     }

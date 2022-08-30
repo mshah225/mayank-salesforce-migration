@@ -116,6 +116,19 @@
                     <c-advisor-portal-filters-section
                         current-filter={currentFilter}
                         view-as-users={selectedUsers}
+                        loading-campus-values={loadingCampusValues}
+                        loading-school-department={loadingSchoolDepartment}
+                        loading-acad-plan={loadingAcadPlan}
+                        loading-case-status={loadingCaseStatus}
+                        loading-case-category={loadingCaseCategory}
+                        residency-picklist-values={residencyPicklistValues}
+                        case-status-picklist-values={caseStatusPicklistValues}
+                        campus-picklist-values={campusPicklistValues}
+                        case-subject-picklist-values={caseSubjectPicklistValues}
+                        case-category-picklist-values={caseCategoryPicklistValues}
+                        academic-program-options={academicProgramOptions}
+                        school-department-options={schoolDepartmentOptions}
+                        academic-plan-options={academicPlanOptions}
                         onchange={updateFilter}
                         onsubmit={getCases}
                         onloading={handleLoading}

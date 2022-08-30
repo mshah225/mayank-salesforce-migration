@@ -3,20 +3,46 @@ import checkIfAllowedToUseMassTransfer from '@salesforce/apex/AdvisorPortalMassT
 import viewAsOptions from '@salesforce/apex/AdvisorPortalTopLevelFilterController.viewAsOptions';
 import getDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.getDefaultFilter';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
+import getPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getPicklistValues';
+import getCampusValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCampusValues';
+import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
+import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
+import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
+import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
+import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
+import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
+import {buildPicklistOptionsArray} from 'c/helperFunctions';
 
 export default class AdvisorPortalA extends LightningElement {
+    // For the top level user select filter
     allUsers = [];
     myQueueId = null;
     selectedUsers = [];
 
+    // For the main filter section
     currentFilter = null;
+    loadingCampusValues = false;
+    loadingSchoolDepartment = false;
+    loadingAcadPlan = false;
+    loadingCaseStatus = false;
+    loadingCaseCategory = false;
+    residencyPicklistValues = [];
+    caseStatusPicklistValues = [];
+    campusPicklistValues = [];
+    caseSubjectPicklistValues = [];
+    caseCategoryPicklistValues = [];
+    academicProgramOptions = [];
+    schoolDepartmentOptions = [];
+    academicPlanOptions = [];
 
-    showFauxView = true;
-
+    // For the display section
     allResults = [];
     selectedResults = [];
+
+    // Shared variables for determining what to show
+    showFauxView = true;
 
     loadingCounter = 0;
     sforce = {
@@ -31,6 +57,7 @@ export default class AdvisorPortalA extends LightningElement {
         return this.loadingCounter > 0;
     }
 
+    // Check if allowed to use the mass transfer functionality
     allowedToUseMassTransfer;
     @wire(checkIfAllowedToUseMassTransfer, {})
     checkedIfAllowedToUseMassTransfer(result) {
@@ -62,6 +89,15 @@ export default class AdvisorPortalA extends LightningElement {
             if (this.currentFilter.career == null) this.currentFilter.career = 'UGRD';
 
             this.getViewAsOptions(); // once the default filter is loaded - we can get the view as options
+
+            this.loadMore(); // for any picklist options that depend on filter being set
+            Promise.all([
+                this.refreshCampusValues(),
+                this.refreshSchoolDepartmentPicklistVaues(),
+                this.refreshAcademicPlanPicklistValues,
+            ]).then(() => {
+                this.loadLess();
+            });
         }
 
         this.loadLess();
@@ -71,13 +107,10 @@ export default class AdvisorPortalA extends LightningElement {
     getViewAsOptions() {
         this.loadMore();
 
-        console.log('getViewAsOptions 1');
-
         viewAsOptions({
             gradOnly: this.currentFilter.career === 'GRD',
         })
             .then((val) => {
-                console.log('getViewAsOptions 2');
                 let firstSelectionFound = false;
                 let allUsers = [];
                 const viewAsOptions = JSON.parse(val);
@@ -130,26 +163,162 @@ export default class AdvisorPortalA extends LightningElement {
             .catch((err) => {
                 console.error(err);
             });
+
+        this.loadMore(); // for any picklist options that don't depend on anything
+        Promise.all([
+            this.refreshResidencyPicklistValues(),
+            this.refreshCaseStatusSettings(),
+            this.refreshAcademicProgramPicklistValues(),
+        ]).then(() => {
+            this.loadLess();
+        });
     }
 
+    // The filter has changed
     updateFilter(e) {
-        console.log('updateFilter', e);
         const field = e.detail.name;
         const oldValue = this.currentFilter[field];
         const newValue = e.detail.value;
         if (oldValue === newValue) return;
         this.currentFilter[field] = e.detail.value;
-        this.triggerCurrentFilterChanges();
+        this.updateConditionalFields(field).then(() => {
+            this.triggerCurrentFilterChanges();
+        });
 
         if (field === 'career') this.getViewAsOptions();
     }
 
+    /**
+     * Update any filter fields where the options are dependent on the selection in some other picklist
+     * @param {String} changedField
+     */
+    updateConditionalFields(changedField) {
+        let prm = Promise.resolve();
+
+        if (changedField === 'career') {
+            this.loadingCampusValues = true;
+            prm = this.refreshCampusValues().then(() => {
+                this.loadingCampusValues = false;
+            });
+        } else if (changedField === 'degreeLevel') {
+            this.loadingAcadPlan = true;
+            this.refreshAcademicPlanPicklistValues().then(() => {
+                this.loadingAcadPlan = false;
+            });
+        } else if (changedField === 'academicProgram') {
+            this.loadingSchoolDepartment = true;
+            this.loadingAcadPlan = true;
+
+            prm = Promise.all([
+                this.refreshSchoolDepartmentPicklistVaues().then(() => {
+                    this.loadingSchoolDepartment = false;
+                }),
+                this.refreshAcademicPlanPicklistValues().then(() => {
+                    this.loadingAcadPlan = false;
+                }),
+            ]);
+        } else if (changedField === 'schoolDepartment') {
+            this.loadingAcadPlan = true;
+            prm = this.refreshAcademicPlanPicklistValues().then(() => {
+                this.loadingAcadPlan = false;
+            });
+        }
+
+        return prm;
+    }
+
+    // Imperative rather than wire to gain more precise control over when these trigger
+    refreshResidencyPicklistValues() {
+        return getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
+            .then((val) => {
+                this.residencyPicklistValues = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshResidencyPicklistValues', err);
+            });
+    }
+    refreshCaseStatusSettings() {
+        return getCaseStatusSettings()
+            .then((val) => {
+                this.caseStatusPicklistValues = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseStatusSettings', err);
+            });
+    }
+    refreshCampusValues() {
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getCampusValues({filterJSON})
+            .then((val) => {
+                this.campusPicklistValues = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCampusValues', err);
+            });
+    }
+    refreshCaseSubjectPicklistValues() {
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
+            .then((val) => {
+                this.caseSubjectPicklistValues = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseSubjectPicklistValues', err);
+            });
+    }
+    refreshCaseClassificationPicklistValues() {
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
+            .then((val) => {
+                this.caseCategoryPicklistValues = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseClassificationPicklistValues', err);
+            });
+    }
+    refreshAcademicProgramPicklistValues() {
+        return getAcademicProgramPicklistValues()
+            .then((val) => {
+                this.academicProgramOptions = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshAcademicProgramPicklistValues', err);
+            });
+    }
+    refreshSchoolDepartmentPicklistVaues() {
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getSchoolDepartmentPicklistVaues({filterJSON})
+            .then((val) => {
+                this.schoolDepartmentOptions = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshSchoolDepartmentPicklistVaues', err);
+            });
+    }
+    refreshAcademicPlanPicklistValues() {
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getAcademicPlanPicklistValues({filterJSON})
+            .then((val) => {
+                this.academicPlanOptions = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('gotAcademicPlanPicklistValues', err);
+            });
+    }
+
+    // Search for cases
     getCases() {
-        console.log('getCases 1');
         this.loadMore();
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
-                console.log('getCases 2');
                 this.allResults = JSON.parse(val);
             })
             .catch((err) => {
@@ -161,19 +330,40 @@ export default class AdvisorPortalA extends LightningElement {
             });
     }
 
+    // The selected users has changed (now re-search stuff)
     changeSelectedUsers(e) {
-        console.log('changeSelectedUsers');
         this.selectedUsers = [...e.detail];
+
+        this.loadingCaseStatus = true;
+        this.loadingCaseCategory = true;
+        this.loadMore();
+        Promise.all([
+            this.refreshCaseSubjectPicklistValues().then(() => {
+                this.loadingCaseStatus = false;
+            }),
+            this.refreshCaseClassificationPicklistValues().then(() => {
+                this.loadingCaseCategory = false;
+            }),
+        ])
+            .then(() => {
+                this.getCases();
+            })
+            .then(() => {
+                this.loadLess();
+            });
     }
 
+    // Update shown results
     updateSelectedResults(e) {
         this.selectedResults = [...e.detail];
     }
 
+    // Triggers the filter changes to ripple down to child components
     triggerCurrentFilterChanges() {
         this.currentFilter = {...this.currentFilter};
     }
 
+    // Should we show the filter section?
     filterVisibility = true;
     toggleFilterVisibility() {
         this.filterVisibility = !this.filterVisibility;
@@ -185,6 +375,7 @@ export default class AdvisorPortalA extends LightningElement {
         return allClasses;
     }
 
+    // Navigate handler to navigate to other sections
     navigate(e) {
         const detail = e.detail;
 
@@ -291,10 +482,12 @@ export default class AdvisorPortalA extends LightningElement {
         }
     }
 
+    // Reload
     reloadContacts() {
         this.getCases();
     }
 
+    // Modal openers
     openModalMassEmail() {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
@@ -317,6 +510,7 @@ export default class AdvisorPortalA extends LightningElement {
         }
     }
 
+    // Loading handlers
     handleLoading(e) {
         const loadMore = e.detail;
         if (loadMore) {
@@ -333,6 +527,7 @@ export default class AdvisorPortalA extends LightningElement {
         if (this.loadingCounter < 0) this.loadingCounter = 0;
     }
 
+    // Toast handlers
     handleToast(e) {
         const title = e.detail.title;
         const message = e.detail.message;

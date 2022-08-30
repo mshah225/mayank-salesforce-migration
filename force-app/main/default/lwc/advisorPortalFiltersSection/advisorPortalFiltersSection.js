@@ -1,12 +1,4 @@
 import {LightningElement, api} from 'lwc';
-import getPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getPicklistValues';
-import getCampusValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCampusValues';
-import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
-import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
-import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
-import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
-import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
-import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 
 export default class AdvisorPortalFiltersSection extends LightningElement {
     // Loaded because default filter - and from career/viewstate that are controlled in other components
@@ -14,29 +6,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     @api set currentFilter(val) {
         if (val != null) {
             const newFilter = JSON.parse(JSON.stringify(val));
-            if (!this.hasDoneInitialAsyncLoad) {
-                // if first time
-                this._currentFilter = newFilter;
-                this.loadAfterAsyncComponents();
-            } else {
-                // subsequent times
-                const oldCareer = this.currentFilter.career;
-                const oldStateType = this.currentFilter.caseTypeState;
-                const newCareer = newFilter.career;
-                const newStateType = newFilter.caseTypeState;
-
-                this._currentFilter = newFilter;
-
-                if (oldCareer !== newCareer) {
-                    // Mostly just need to update visuals.
-                    // Whenever career is changed it'll trigger the UserSelect component to raise a changeusers event,
-                    // which will, in turn set our viewAsUsers, cause us to reapply the filters
-                    this.isGraduateOnly = newCareer === 'GRD';
-                    this.updateConditionalFields('career');
-                } else if (oldStateType !== newStateType) {
-                    this.applyFilters();
-                }
-            }
+            this._currentFilter = newFilter;
         }
     }
     get currentFilter() {
@@ -45,202 +15,31 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     _currentFilter = null;
 
     @api set viewAsUsers(val) {
-        console.log('set viewAsUsers', val);
         this._viewAsUsers = JSON.parse(JSON.stringify(val));
-        if (!this.hasDoneInitialAsyncLoad) {
-            // if first time
-            this.loadAfterAsyncComponents();
-        } else {
-            // subsequent times
-            this.loadingCaseStatus = true;
-            this.loadingCaseCategory = true;
-
-            this.sendLoadingEvent(true);
-            Promise.all([
-                this.refreshCaseSubjectPicklistValues().then(() => {
-                    this.loadingCaseStatus = false;
-                }),
-                this.refreshCaseClassificationPicklistValues().then(() => {
-                    this.loadingCaseCategory = false;
-                }),
-            ])
-                .then(() => {
-                    this.applyFilters();
-                })
-                .then(() => {
-                    this.sendLoadingEvent(false);
-                });
-        }
     }
     get viewAsUsers() {
         return this._viewAsUsers;
     }
     _viewAsUsers = null;
 
-    // will run once all async components are loaded in
-    hasDoneInitialAsyncLoad = false;
-    loadAfterAsyncComponents() {
-        if (this.hasDoneInitialAsyncLoad) return;
-        if (this.viewAsUsers === null) return;
-        if (this.currentFilter === null) return;
-        // Set filter as the default
-        this.isGraduateOnly = this.currentFilter.career === 'GRD';
-
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        this.sendLoadingEvent(true);
-        Promise.all([
-            this.refreshResidencyPicklistValues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshCaseStatusSettings().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshCampusValues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshCaseSubjectPicklistValues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshCaseClassificationPicklistValues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshAcademicProgramPicklistValues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshSchoolDepartmentPicklistVaues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-            this.refreshAcademicPlanPicklistValues().then(() => {
-                this.sendLoadingEvent(false);
-            }),
-        ]).then(() => {
-            this.hasDoneInitialAsyncLoad = true;
-            this.applyFilters();
-        });
+    get isGraduateOnly() {
+        return this.currentFilter != null && this.currentFilter.career === 'GRD';
     }
 
-    isGraduateOnly = false;
+    @api loadingCampusValues = false;
+    @api loadingSchoolDepartment = false;
+    @api loadingAcadPlan = false;
+    @api loadingCaseStatus = false;
+    @api loadingCaseCategory = false;
 
-    loadingCampusValues = false;
-    loadingSchoolDepartment = false;
-    loadingAcadPlan = false;
-    loadingCaseStatus = false;
-    loadingCaseCategory = false;
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    residencyPicklistValues = [];
-    refreshResidencyPicklistValues() {
-        return getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
-            .then((val) => {
-                this.residencyPicklistValues = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshResidencyPicklistValues', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    caseStatusPicklistValues = [];
-    refreshCaseStatusSettings() {
-        return getCaseStatusSettings()
-            .then((val) => {
-                this.caseStatusPicklistValues = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshCaseStatusSettings', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    campusPicklistValues = [];
-    refreshCampusValues() {
-        const filterJSON = JSON.stringify(this.currentFilter);
-        return getCampusValues({filterJSON})
-            .then((val) => {
-                this.campusPicklistValues = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshCampusValues', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    caseSubjectPicklistValues = [];
-    refreshCaseSubjectPicklistValues() {
-        const filterJSON = JSON.stringify(this.currentFilter);
-        return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
-            .then((val) => {
-                this.caseSubjectPicklistValues = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshCaseSubjectPicklistValues', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    caseCategoryPicklistValues = [];
-    refreshCaseClassificationPicklistValues() {
-        const filterJSON = JSON.stringify(this.currentFilter);
-        return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
-            .then((val) => {
-                this.caseCategoryPicklistValues = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshCaseClassificationPicklistValues', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    academicProgramOptions = [];
-    refreshAcademicProgramPicklistValues() {
-        return getAcademicProgramPicklistValues()
-            .then((val) => {
-                this.academicProgramOptions = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshAcademicProgramPicklistValues', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    schoolDepartmentOptions = [];
-    refreshSchoolDepartmentPicklistVaues() {
-        const filterJSON = JSON.stringify(this.currentFilter);
-        return getSchoolDepartmentPicklistVaues({filterJSON})
-            .then((val) => {
-                this.schoolDepartmentOptions = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('refreshSchoolDepartmentPicklistVaues', err);
-            });
-    }
-
-    // Imperative rather than wire to gain more precise control over when this triggers
-    academicPlanOptions = [];
-    refreshAcademicPlanPicklistValues() {
-        const filterJSON = JSON.stringify(this.currentFilter);
-        return getAcademicPlanPicklistValues({filterJSON})
-            .then((val) => {
-                this.academicPlanOptions = this.buildPicklistOptionsArray(val);
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error('gotAcademicPlanPicklistValues', err);
-            });
-    }
+    @api residencyPicklistValues = [];
+    @api caseStatusPicklistValues = [];
+    @api campusPicklistValues = [];
+    @api caseSubjectPicklistValues = [];
+    @api caseCategoryPicklistValues = [];
+    @api academicProgramOptions = [];
+    @api schoolDepartmentOptions = [];
+    @api academicPlanOptions = [];
 
     academicLevelPicklistValues = [
         {label: 'Freshman', value: 'Freshman'},
@@ -289,7 +88,6 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         const oldValue = this.currentFilter[fieldChanged];
         if (oldValue !== newValue) {
             this.currentFilter[fieldChanged] = newValue;
-            this.updateConditionalFields(fieldChanged);
             this.updateValidityChecks(fieldChanged);
             this.sendChangeFilterEvent(fieldChanged, newValue);
         }
@@ -349,8 +147,10 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         return valid;
     }
 
+    /**
+     * Raises a "submit" event to apply the current filters
+     */
     applyFilters() {
-        console.log('applyFilters - raise submit');
         this.dispatchEvent(new CustomEvent('submit', {detail: {}}));
     }
 
@@ -454,54 +254,6 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     followUptoDateForRangeCheck;
     persistenceFromDateForRangeCheck;
     persistenceToDateForRangeCheck;
-
-    /**
-     * Update any filter fields where the options are dependent on the selection in some other picklist
-     * @param {String} changedField
-     */
-    updateConditionalFields(changedField) {
-        if (changedField === 'career') {
-            this.loadingCampusValues = true;
-            this.refreshCampusValues().then(() => {
-                this.loadingCampusValues = false;
-            });
-        } else if (changedField === 'degreeLevel') {
-            this.loadingAcadPlan = true;
-            this.refreshAcademicPlanPicklistValues().then(() => {
-                this.loadingAcadPlan = false;
-            });
-        } else if (changedField === 'academicProgram') {
-            this.loadingSchoolDepartment = true;
-            this.refreshSchoolDepartmentPicklistVaues().then(() => {
-                this.loadingSchoolDepartment = false;
-            });
-
-            this.loadingAcadPlan = true;
-            this.refreshAcademicPlanPicklistValues().then(() => {
-                this.loadingAcadPlan = false;
-            });
-        } else if (changedField === 'schoolDepartment') {
-            this.loadingAcadPlan = true;
-            this.refreshAcademicPlanPicklistValues().then(() => {
-                this.loadingAcadPlan = false;
-            });
-        }
-    }
-
-    /**
-     * Convert returned picklist map into array of options for comboboxes
-     * @param {Map} optionsMap
-     * @returns label-value array
-     */
-    buildPicklistOptionsArray(optionsMap) {
-        let optionsList = [];
-
-        Object.keys(optionsMap).forEach(function (key) {
-            optionsList.push({label: key, value: optionsMap[key]});
-        });
-
-        return optionsList;
-    }
 
     /**
      * Generate an "empty" filter object, with default values

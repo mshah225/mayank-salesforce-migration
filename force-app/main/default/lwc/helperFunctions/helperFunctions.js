@@ -6,3 +6,18 @@
 export function throwBackARenderCycle(fn) {
     setTimeout(fn, 1);
 }
+
+/**
+ * Convert returned picklist map into array of options for comboboxes
+ * @param {Map} optionsMap
+ * @returns label-value array
+ */
+export function buildPicklistOptionsArray(optionsMap) {
+    let optionsList = [];
+
+    Object.keys(optionsMap).forEach(function (key) {
+        optionsList.push({label: key, value: optionsMap[key]});
+    });
+
+    return optionsList;
+}

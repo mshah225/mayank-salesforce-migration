@@ -1,486 +1,394 @@
 <template>
-    <template if:true={hasDoneInitialAsyncLoad}>
-        <!-- Version that is used once everything async has loaded -->
-        <div class="slds-grid slds-gutters slds-wrap">
+    <div class="slds-grid slds-gutters slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <lightning-input
+                label="Student"
+                type="text"
+                name="studentString"
+                data-name="studentString"
+                oncommit={changeField}
+                onchange={stopEvent}
+                value={currentFilter.studentString}
+            ></lightning-input>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <c-lightning-combo-box
+                label="Campus"
+                data-name="campus"
+                name="campus"
+                multi-select="true"
+                options={campusPicklistValues}
+                value={currentFilter.campus}
+                oncommit={changeField}
+                onchange={stopEvent}
+            ></c-lightning-combo-box>
+            <lightning-spinner
+                if:true={loadingCampusValues}
+                class="fieldLoadingCircle"
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
+        </div>
+
+        <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-input
-                    label="Student"
-                    type="text"
-                    name="studentString"
-                    data-name="studentString"
+                <c-lightning-combo-box
+                    label="Degree Level"
+                    data-name="degreeLevel"
+                    name="degreeLevel"
+                    multi-select="true"
+                    options={degreeLevelOptions}
+                    value={currentFilter.degreeLevel}
                     oncommit={changeField}
                     onchange={stopEvent}
-                    value={currentFilter.studentString}
-                ></lightning-input>
+                ></c-lightning-combo-box>
             </div>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box
-                    label="Campus"
-                    data-name="campus"
-                    name="campus"
+                    label="Academic Program"
+                    data-name="academicProgram"
+                    name="academicProgram"
                     multi-select="true"
-                    options={campusPicklistValues}
-                    value={currentFilter.campus}
+                    options={academicProgramOptions}
+                    value={currentFilter.academicProgram}
                     oncommit={changeField}
                     onchange={stopEvent}
                 ></c-lightning-combo-box>
                 <lightning-spinner
-                    if:true={loadingCampusValues}
+                    if:true={loadingAcadProgram}
                     class="fieldLoadingCircle"
                     alternative-text="Loading"
                     size="small"
                 ></lightning-spinner>
             </div>
-
-            <template if:true={isGraduateOnly}>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Degree Level"
-                        data-name="degreeLevel"
-                        name="degreeLevel"
-                        multi-select="true"
-                        options={degreeLevelOptions}
-                        value={currentFilter.degreeLevel}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Academic Program"
-                        data-name="academicProgram"
-                        name="academicProgram"
-                        multi-select="true"
-                        options={academicProgramOptions}
-                        value={currentFilter.academicProgram}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                    <lightning-spinner
-                        if:true={loadingAcadProgram}
-                        class="fieldLoadingCircle"
-                        alternative-text="Loading"
-                        size="small"
-                    ></lightning-spinner>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="School/Department"
-                        data-name="schoolDepartment"
-                        name="schoolDepartment"
-                        multi-select="true"
-                        options={schoolDepartmentOptions}
-                        value={currentFilter.schoolDepartment}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                    <lightning-spinner
-                        if:true={loadingSchoolDepartment}
-                        class="fieldLoadingCircle"
-                        alternative-text="Loading"
-                        size="small"
-                    ></lightning-spinner>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Academic Plan"
-                        data-name="academicPlan"
-                        name="academicPlan"
-                        multi-select="true"
-                        options={academicPlanOptions}
-                        value={currentFilter.academicPlan}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                    <lightning-spinner
-                        if:true={loadingAcadPlan}
-                        class="fieldLoadingCircle"
-                        alternative-text="Loading"
-                        size="small"
-                    ></lightning-spinner>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <fieldset class="slds-form-element slds-form-element_compound">
-                        <label class="slds-form-element__label">Admit Term</label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                    <lightning-input
-                                        type="text"
-                                        label="From"
-                                        name="admitTermFrom"
-                                        data-name="admitTermFrom"
-                                        oncommit={changeField}
-                                        onchange={stopEvent}
-                                        pattern={admitTermFromPattern}
-                                        title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 2217 is 2(0)21, fall semester)"
-                                        message-when-pattern-mismatch={admitTermFromPatternMismatchError}
-                                        value={currentFilter.admitTermFrom}
-                                    ></lightning-input>
-                                </div>
-                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                    <lightning-input
-                                        type="text"
-                                        label="To"
-                                        name="admitTermTo"
-                                        data-name="admitTermTo"
-                                        oncommit={changeField}
-                                        onchange={stopEvent}
-                                        pattern={admitTermToPattern}
-                                        title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 1984 is 1(9)98, summer semester)"
-                                        message-when-pattern-mismatch={admitTermToPatternMismatchError}
-                                        value={currentFilter.admitTermTo}
-                                    ></lightning-input>
-                                </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
+                    label="School/Department"
+                    data-name="schoolDepartment"
+                    name="schoolDepartment"
+                    multi-select="true"
+                    options={schoolDepartmentOptions}
+                    value={currentFilter.schoolDepartment}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+                <lightning-spinner
+                    if:true={loadingSchoolDepartment}
+                    class="fieldLoadingCircle"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
+                    label="Academic Plan"
+                    data-name="academicPlan"
+                    name="academicPlan"
+                    multi-select="true"
+                    options={academicPlanOptions}
+                    value={currentFilter.academicPlan}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+                <lightning-spinner
+                    if:true={loadingAcadPlan}
+                    class="fieldLoadingCircle"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <fieldset class="slds-form-element slds-form-element_compound">
+                    <label class="slds-form-element__label">Admit Term</label>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element__row">
+                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                <lightning-input
+                                    type="text"
+                                    label="From"
+                                    name="admitTermFrom"
+                                    data-name="admitTermFrom"
+                                    oncommit={changeField}
+                                    onchange={stopEvent}
+                                    pattern={admitTermFromPattern}
+                                    title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 2217 is 2(0)21, fall semester)"
+                                    message-when-pattern-mismatch={admitTermFromPatternMismatchError}
+                                    value={currentFilter.admitTermFrom}
+                                ></lightning-input>
+                            </div>
+                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                <lightning-input
+                                    type="text"
+                                    label="To"
+                                    name="admitTermTo"
+                                    data-name="admitTermTo"
+                                    oncommit={changeField}
+                                    onchange={stopEvent}
+                                    pattern={admitTermToPattern}
+                                    title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 1984 is 1(9)98, summer semester)"
+                                    message-when-pattern-mismatch={admitTermToPatternMismatchError}
+                                    value={currentFilter.admitTermTo}
+                                ></lightning-input>
                             </div>
                         </div>
-                    </fieldset>
-                </div>
-            </template>
-            <template if:false={isGraduateOnly}>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Academic Level"
-                        data-name="academicLevel"
-                        name="academicLevel"
-                        multi-select="true"
-                        options={academicLevelPicklistValues}
-                        value={currentFilter.academicLevel}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <lightning-input
-                        type="text"
-                        label="Student Group"
-                        name="studentGroupCode"
-                        data-name="studentGroupCode"
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                        value={currentFilter.studentGroupCode}
-                    ></lightning-input>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <lightning-input
-                        type="text"
-                        label="Major"
-                        name="major"
-                        data-name="major"
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                        value={currentFilter.major}
-                    ></lightning-input>
-                </div>
-            </template>
-
+                    </div>
+                </fieldset>
+            </div>
+        </template>
+        <template if:false={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box
-                    label="Residency"
-                    data-name="residency"
-                    name="residency"
+                    label="Academic Level"
+                    data-name="academicLevel"
+                    name="academicLevel"
                     multi-select="true"
-                    options={residencyPicklistValues}
-                    value={currentFilter.residency}
+                    options={academicLevelPicklistValues}
+                    value={currentFilter.academicLevel}
                     oncommit={changeField}
                     onchange={stopEvent}
                 ></c-lightning-combo-box>
             </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box
-                    label="Case Status"
-                    data-name="caseStatus"
-                    name="caseStatus"
-                    multi-select="true"
-                    options={caseStatusPicklistValues}
-                    value={currentFilter.caseStatus}
-                    oncommit={changeField}
-                    onchange={stopEvent}
-                ></c-lightning-combo-box>
-                <lightning-spinner
-                    if:true={loadingCaseStatus}
-                    class="fieldLoadingCircle"
-                    alternative-text="Loading"
-                    size="small"
-                ></lightning-spinner>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <c-lightning-combo-box
-                    label="Case Category"
-                    data-name="caseCategory"
-                    name="caseCategory"
-                    multi-select="true"
-                    options={caseCategoryPicklistValues}
-                    value={currentFilter.caseCategory}
-                    oncommit={changeField}
-                    onchange={stopEvent}
-                ></c-lightning-combo-box>
-                <lightning-spinner
-                    if:true={loadingCaseCategory}
-                    class="fieldLoadingCircle"
-                    alternative-text="Loading"
-                    size="small"
-                ></lightning-spinner>
-            </div>
-
-            <template if:true={isGraduateOnly}>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Special Population"
-                        data-name="specialPopulation"
-                        name="specialPopulation"
-                        multi-select="true"
-                        options={specialPopulationOptions}
-                        value={currentFilter.specialPopulation}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                </div>
-            </template>
-            <template if:false={isGraduateOnly}>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Case Subject"
-                        data-name="caseSubject"
-                        name="caseSubject"
-                        multi-select="true"
-                        options={caseSubjectPicklistValues}
-                        value={currentFilter.caseSubject}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Outlook Score"
-                        data-name="outlookScore"
-                        name="outlookScore"
-                        multi-select="true"
-                        options={outlookScoreOptions}
-                        value={currentFilter.outlookScore}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                </div>
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                    <c-lightning-combo-box
-                        label="Outlook Change"
-                        data-name="outlookChange"
-                        name="outlookChange"
-                        multi-select="true"
-                        options={outlookChangeOptions}
-                        value={currentFilter.outlookChange}
-                        oncommit={changeField}
-                        onchange={stopEvent}
-                    ></c-lightning-combo-box>
-                </div>
-            </template>
-
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <lightning-input
                     type="text"
-                    label="Case Count"
-                    name="caseCount"
-                    data-name="caseCount"
+                    label="Student Group"
+                    name="studentGroupCode"
+                    data-name="studentGroupCode"
                     oncommit={changeField}
                     onchange={stopEvent}
-                    value={currentFilter.caseCount}
+                    value={currentFilter.studentGroupCode}
                 ></lightning-input>
             </div>
-        </div>
-        <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-size_1-of-3">
-                <fieldset class="slds-form-element slds-form-element_compound">
-                    <label class="slds-form-element__label">Created Date</label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-form-element__row">
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input
-                                    type="date"
-                                    label="From"
-                                    name="createdFromDate"
-                                    data-name="createdFromDate"
-                                    oncommit={changeField}
-                                    value={currentFilter.createdFromDate}
-                                    max={createdToDateForRangeCheck}
-                                    message-when-range-overflow="Must be before the to date"
-                                ></lightning-input>
-                            </div>
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input
-                                    type="date"
-                                    label="To"
-                                    name="createdToDate"
-                                    data-name="createdToDate"
-                                    oncommit={changeField}
-                                    value={currentFilter.createdToDate}
-                                    min={createdFromDateForRangeCheck}
-                                    message-when-range-underflow="Must be after the from date"
-                                ></lightning-input>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="slds-col slds-size_1-of-3">
-                <fieldset class="slds-form-element slds-form-element_compound">
-                    <label class="slds-form-element__label">Follow Up Date</label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-form-element__row">
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input
-                                    type="date"
-                                    label="From"
-                                    name="followUpFromDate"
-                                    data-name="followUpFromDate"
-                                    oncommit={changeField}
-                                    value={currentFilter.followUpFromDate}
-                                    max={followUpToDateForRangeCheck}
-                                    message-when-range-overflow="Must be before the to date"
-                                ></lightning-input>
-                            </div>
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input
-                                    type="date"
-                                    label="To"
-                                    name="followUpToDate"
-                                    data-name="followUpToDate"
-                                    oncommit={changeField}
-                                    value={currentFilter.followUpToDate}
-                                    min={followUpFromDateForRangeCheck}
-                                    message-when-range-underflow="Must be after the from date"
-                                ></lightning-input>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-            <template if:false={isGraduateOnly}>
-                <div class="slds-col slds-size_1-of-3">
-                    <fieldset class="slds-form-element slds-form-element_compound">
-                        <label class="slds-form-element__label">Persistence Change Date</label>
-                        <div class="slds-form-element__control">
-                            <div class="slds-form-element__row">
-                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                    <lightning-input
-                                        type="date"
-                                        label="From"
-                                        name="persistenceFromDate"
-                                        data-name="persistenceFromDate"
-                                        oncommit={changeField}
-                                        value={currentFilter.persistenceFromDate}
-                                        max={persistenceToDateForRangeCheck}
-                                        message-when-range-overflow="Must be before the to date"
-                                    ></lightning-input>
-                                </div>
-                                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                    <lightning-input
-                                        type="date"
-                                        label="To"
-                                        name="persistenceToDate"
-                                        data-name="persistenceToDate"
-                                        oncommit={changeField}
-                                        value={currentFilter.persistenceToDate}
-                                        min={persistenceFromDateForRangeCheck}
-                                        message-when-range-underflow="Must be after the from date"
-                                    ></lightning-input>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-            </template>
-        </div>
-    </template>
-    <template if:false={hasDoneInitialAsyncLoad}>
-        <!-- Fake version for spacing during loading -->
-        <div class="slds-grid slds-gutters slds-wrap">
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-input label="Student" type="text" value=""></lightning-input>
+                <lightning-input
+                    type="text"
+                    label="Major"
+                    name="major"
+                    data-name="major"
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                    value={currentFilter.major}
+                ></lightning-input>
             </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Campus" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Academic Level" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-input label="Student Group" type="text" value=""></lightning-input>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-input label="Major" type="text" value=""></lightning-input>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Residency" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Case Status" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Case Category" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Case Subject" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Outlook Score" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-combobox label="Outlook Change" placeholder="Select an Option" value=""></lightning-combobox>
-            </div>
+        </template>
 
-            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
-                <lightning-input label="Case Count" type="text" value=""></lightning-input>
-            </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <c-lightning-combo-box
+                label="Residency"
+                data-name="residency"
+                name="residency"
+                multi-select="true"
+                options={residencyPicklistValues}
+                value={currentFilter.residency}
+                oncommit={changeField}
+                onchange={stopEvent}
+            ></c-lightning-combo-box>
         </div>
-        <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-size_1-of-3">
-                <fieldset class="slds-form-element slds-form-element_compound">
-                    <label class="slds-form-element__label">Created Date</label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-form-element__row">
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="From" value=""></lightning-input>
-                            </div>
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="To" value=""></lightning-input>
-                            </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <c-lightning-combo-box
+                label="Case Status"
+                data-name="caseStatus"
+                name="caseStatus"
+                multi-select="true"
+                options={caseStatusPicklistValues}
+                value={currentFilter.caseStatus}
+                oncommit={changeField}
+                onchange={stopEvent}
+            ></c-lightning-combo-box>
+            <lightning-spinner
+                if:true={loadingCaseStatus}
+                class="fieldLoadingCircle"
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <c-lightning-combo-box
+                label="Case Category"
+                data-name="caseCategory"
+                name="caseCategory"
+                multi-select="true"
+                options={caseCategoryPicklistValues}
+                value={currentFilter.caseCategory}
+                oncommit={changeField}
+                onchange={stopEvent}
+            ></c-lightning-combo-box>
+            <lightning-spinner
+                if:true={loadingCaseCategory}
+                class="fieldLoadingCircle"
+                alternative-text="Loading"
+                size="small"
+            ></lightning-spinner>
+        </div>
+
+        <template if:true={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
+                    label="Special Population"
+                    data-name="specialPopulation"
+                    name="specialPopulation"
+                    multi-select="true"
+                    options={specialPopulationOptions}
+                    value={currentFilter.specialPopulation}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+            </div>
+        </template>
+        <template if:false={isGraduateOnly}>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
+                    label="Case Subject"
+                    data-name="caseSubject"
+                    name="caseSubject"
+                    multi-select="true"
+                    options={caseSubjectPicklistValues}
+                    value={currentFilter.caseSubject}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
+                    label="Outlook Score"
+                    data-name="outlookScore"
+                    name="outlookScore"
+                    multi-select="true"
+                    options={outlookScoreOptions}
+                    value={currentFilter.outlookScore}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
+                    label="Outlook Change"
+                    data-name="outlookChange"
+                    name="outlookChange"
+                    multi-select="true"
+                    options={outlookChangeOptions}
+                    value={currentFilter.outlookChange}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+            </div>
+        </template>
+
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+            <lightning-input
+                type="text"
+                label="Case Count"
+                name="caseCount"
+                data-name="caseCount"
+                oncommit={changeField}
+                onchange={stopEvent}
+                value={currentFilter.caseCount}
+            ></lightning-input>
+        </div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-3">
+            <fieldset class="slds-form-element slds-form-element_compound">
+                <label class="slds-form-element__label">Created Date</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input
+                                type="date"
+                                label="From"
+                                name="createdFromDate"
+                                data-name="createdFromDate"
+                                oncommit={changeField}
+                                value={currentFilter.createdFromDate}
+                                max={createdToDateForRangeCheck}
+                                message-when-range-overflow="Must be before the to date"
+                            ></lightning-input>
+                        </div>
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input
+                                type="date"
+                                label="To"
+                                name="createdToDate"
+                                data-name="createdToDate"
+                                oncommit={changeField}
+                                value={currentFilter.createdToDate}
+                                min={createdFromDateForRangeCheck}
+                                message-when-range-underflow="Must be after the from date"
+                            ></lightning-input>
                         </div>
                     </div>
-                </fieldset>
-            </div>
-            <div class="slds-col slds-size_1-of-3">
-                <fieldset class="slds-form-element slds-form-element_compound">
-                    <label class="slds-form-element__label">Follow Up Date</label>
-                    <div class="slds-form-element__control">
-                        <div class="slds-form-element__row">
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="From" value=""></lightning-input>
-                            </div>
-                            <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="To" value=""></lightning-input>
-                            </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="slds-col slds-size_1-of-3">
+            <fieldset class="slds-form-element slds-form-element_compound">
+                <label class="slds-form-element__label">Follow Up Date</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input
+                                type="date"
+                                label="From"
+                                name="followUpFromDate"
+                                data-name="followUpFromDate"
+                                oncommit={changeField}
+                                value={currentFilter.followUpFromDate}
+                                max={followUpToDateForRangeCheck}
+                                message-when-range-overflow="Must be before the to date"
+                            ></lightning-input>
+                        </div>
+                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                            <lightning-input
+                                type="date"
+                                label="To"
+                                name="followUpToDate"
+                                data-name="followUpToDate"
+                                oncommit={changeField}
+                                value={currentFilter.followUpToDate}
+                                min={followUpFromDateForRangeCheck}
+                                message-when-range-underflow="Must be after the from date"
+                            ></lightning-input>
                         </div>
                     </div>
-                </fieldset>
-            </div>
+                </div>
+            </fieldset>
+        </div>
+        <template if:false={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-3">
                 <fieldset class="slds-form-element slds-form-element_compound">
                     <label class="slds-form-element__label">Persistence Change Date</label>
                     <div class="slds-form-element__control">
                         <div class="slds-form-element__row">
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="From" value=""></lightning-input>
+                                <lightning-input
+                                    type="date"
+                                    label="From"
+                                    name="persistenceFromDate"
+                                    data-name="persistenceFromDate"
+                                    oncommit={changeField}
+                                    value={currentFilter.persistenceFromDate}
+                                    max={persistenceToDateForRangeCheck}
+                                    message-when-range-overflow="Must be before the to date"
+                                ></lightning-input>
                             </div>
                             <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
-                                <lightning-input type="date" label="To" value=""></lightning-input>
+                                <lightning-input
+                                    type="date"
+                                    label="To"
+                                    name="persistenceToDate"
+                                    data-name="persistenceToDate"
+                                    oncommit={changeField}
+                                    value={currentFilter.persistenceToDate}
+                                    min={persistenceFromDateForRangeCheck}
+                                    message-when-range-underflow="Must be after the from date"
+                                ></lightning-input>
                             </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
-        </div>
-    </template>
+        </template>
+    </div>
     <div class="slds-grid slds-wrap slds-gutters_x-small slds-var-m-top_small">
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
             <lightning-button label="Clear Filters" title="Clear Filters" onclick={clearFilters}></lightning-button>

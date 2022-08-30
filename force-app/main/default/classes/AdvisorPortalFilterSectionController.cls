@@ -1311,12 +1311,6 @@ public class AdvisorPortalFilterSectionController {
     private static String generateStudentProgramPlanFilterString(AdvisorPortalFilter filter) {
         String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE';
 
-        if (filter.career == 'GRD') {
-            queryString += ' Career__c = \'Graduate\'';
-        } else {
-            queryString += ' Career__c != \'Graduate\'';
-        }
-
         if (shouldUseFilter('degreeLevel', filter)) {
             List<String> degreeLevels = filter.degreeLevel.split(';');
             List<String> degreeLevelQueryComponents = new List<String>();

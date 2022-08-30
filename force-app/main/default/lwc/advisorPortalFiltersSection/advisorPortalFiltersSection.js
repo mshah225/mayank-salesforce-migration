@@ -9,7 +9,8 @@ import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilt
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 
 export default class AdvisorPortalFiltersSection extends LightningElement {
-    // only load the default filter once
+    // Loaded because default filter - and from career/viewstate that are controlled in other components
+    // whenever filter is set, we might need to act depending on what changed
     @api set currentFilter(val) {
         if (val != null) {
             const newFilter = JSON.parse(JSON.stringify(val));
@@ -44,6 +45,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     _currentFilter = null;
 
     @api set viewAsUsers(val) {
+        console.log('set viewAsUsers', val);
         this._viewAsUsers = JSON.parse(JSON.stringify(val));
         if (!this.hasDoneInitialAsyncLoad) {
             // if first time
@@ -53,6 +55,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
             this.loadingCaseStatus = true;
             this.loadingCaseCategory = true;
 
+            this.sendLoadingEvent(true);
             Promise.all([
                 this.refreshCaseSubjectPicklistValues().then(() => {
                     this.loadingCaseStatus = false;
@@ -60,9 +63,13 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
                 this.refreshCaseClassificationPicklistValues().then(() => {
                     this.loadingCaseCategory = false;
                 }),
-            ]).then(() => {
-                this.applyFilters();
-            });
+            ])
+                .then(() => {
+                    this.applyFilters();
+                })
+                .then(() => {
+                    this.sendLoadingEvent(false);
+                });
         }
     }
     get viewAsUsers() {
@@ -343,6 +350,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     }
 
     applyFilters() {
+        console.log('applyFilters - raise submit');
         this.dispatchEvent(new CustomEvent('submit', {detail: {}}));
     }
 

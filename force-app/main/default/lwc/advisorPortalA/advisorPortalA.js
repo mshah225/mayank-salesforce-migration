@@ -71,10 +71,13 @@ export default class AdvisorPortalA extends LightningElement {
     getViewAsOptions() {
         this.loadMore();
 
+        console.log('getViewAsOptions 1');
+
         viewAsOptions({
             gradOnly: this.currentFilter.career === 'GRD',
         })
             .then((val) => {
+                console.log('getViewAsOptions 2');
                 let firstSelectionFound = false;
                 let allUsers = [];
                 const viewAsOptions = JSON.parse(val);
@@ -130,6 +133,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     updateFilter(e) {
+        console.log('updateFilter', e);
         const field = e.detail.name;
         const oldValue = this.currentFilter[field];
         const newValue = e.detail.value;
@@ -141,9 +145,11 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     getCases() {
+        console.log('getCases 1');
         this.loadMore();
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
+                console.log('getCases 2');
                 this.allResults = JSON.parse(val);
             })
             .catch((err) => {
@@ -156,6 +162,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     changeSelectedUsers(e) {
+        console.log('changeSelectedUsers');
         this.selectedUsers = [...e.detail];
     }
 

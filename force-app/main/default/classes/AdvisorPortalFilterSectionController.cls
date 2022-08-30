@@ -1309,7 +1309,8 @@ public class AdvisorPortalFilterSectionController {
      * @return Query string for student program plans, or null if it shouldn't be used
      */
     private static String generateStudentProgramPlanFilterString(AdvisorPortalFilter filter) {
-        String queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE';
+        String queryString = null;
+        List<String> andStatements = new List<String>();
 
         if (shouldUseFilter('degreeLevel', filter)) {
             List<String> degreeLevels = filter.degreeLevel.split(';');
@@ -1329,57 +1330,72 @@ public class AdvisorPortalFilterSectionController {
             }
 
             if (!degreeLevelQueryComponents.isEmpty()) {
-                queryString += ' AND (' + String.join(degreeLevelQueryComponents, ' OR ') + ')';
+                andStatements.add('(' + String.join(degreeLevelQueryComponents, ' OR ') + ')');
             }
         }
 
         if (shouldUseFilter('academicProgram', filter)) {
             List<String> academicPrograms = filter.academicProgram.split(';');
-            queryString += ' AND Program_Code__c IN ' + getSoqlListString(academicPrograms);
+            andStatements.add('Program_Code__c IN ' + getSoqlListString(academicPrograms));
         }
 
         if (shouldUseFilter('schoolDepartment', filter)) {
             List<String> schoolDepartments = filter.schoolDepartment.split(';');
-            queryString += ' AND Organization_Code__r.Organization_Code__c IN ' + getSoqlListString(schoolDepartments);
+            andStatements.add('Organization_Code__r.Organization_Code__c IN ' + getSoqlListString(schoolDepartments));
         }
 
         if (shouldUseFilter('academicPlan', filter)) {
             List<String> academicPlans = filter.academicPlan.split(';');
-            queryString += ' AND Plan_Code__c IN ' + getSoqlListString(academicPlans);
+            andStatements.add('Plan_Code__c IN ' + getSoqlListString(academicPlans));
         }
 
         if (shouldUseFilter('admitTermFrom', filter)) {
-            queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c >= \'' + filter.admitTermFrom + '\'';
-            queryString += ' OR Requirement_Term__c >= \'' + filter.admitTermFrom + '\')';
+            String fromTermStatement =
+                '(Admit_Term__r.PeopleSoft_Code__c >= \'' +
+                filter.admitTermFrom +
+                '\' OR Requirement_Term__c >= \'' +
+                filter.admitTermFrom +
+                '\')';
+            andStatements.add(fromTermStatement);
         }
 
         if (shouldUseFilter('admitTermTo', filter)) {
-            queryString += ' AND (Admit_Term__r.PeopleSoft_Code__c <= \'' + filter.admitTermTo + '\'';
-            queryString += ' OR Requirement_Term__c <= \'' + filter.admitTermTo + '\')';
+            String toTermStatement =
+                '(Admit_Term__r.PeopleSoft_Code__c <= \'' +
+                filter.admitTermTo +
+                '\' OR Requirement_Term__c <= \'' +
+                filter.admitTermTo +
+                '\')';
+            andStatements.add(toTermStatement);
         }
 
         if (shouldUseFilter('academicLevel', filter)) {
             List<String> academicLevels = filter.academicLevel.split(';');
-            queryString += ' AND Cohort__c IN ' + getSoqlListString(academicLevels);
+            andStatements.add('Cohort__c IN ' + getSoqlListString(academicLevels));
         }
 
         if (shouldUseFilter('major', filter)) {
-            queryString +=
-                ' AND  Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
+            String majorStatement =
+                '(Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
                 filter.major +
                 '%\' OR Plan_Code__c LIKE \'%' +
                 filter.major +
-                '%\' )';
+                '%\' ))';
+            andStatements.add(majorStatement);
         }
 
         if (shouldUseFilter('campus', filter)) {
             List<String> campuses = filter.campus.split(';');
-            queryString += ' AND Campus__r.Location_Code__c IN ' + getSoqlListString(campuses);
+            andStatements.add('Campus__r.Location_Code__c IN ' + getSoqlListString(campuses));
         }
 
         if (shouldUseFilter('residency', filter)) {
             List<String> residencies = filter.residency.split(';');
-            queryString += ' AND Residency__c IN ' + getSoqlListString(residencies);
+            andStatements.add('Residency__c IN ' + getSoqlListString(residencies));
+        }
+
+        if (!andStatements.isEmpty()) {
+            queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE ' + String.join(andStatements, ' AND ');
         }
 
         return queryString;

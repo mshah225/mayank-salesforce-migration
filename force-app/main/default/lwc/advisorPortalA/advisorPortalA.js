@@ -94,7 +94,7 @@ export default class AdvisorPortalA extends LightningElement {
             Promise.all([
                 this.refreshCampusValues(),
                 this.refreshSchoolDepartmentPicklistVaues(),
-                this.refreshAcademicPlanPicklistValues,
+                this.refreshAcademicPlanPicklistValues(),
             ]).then(() => {
                 this.loadLess();
             });

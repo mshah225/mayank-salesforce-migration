@@ -275,7 +275,8 @@ private class AdvisorPortalFilterSectionControllerTest {
         testContacts.add(mitchKeane);
         insert testContacts;
 
-        String ssGrad = RecordIdHelper.getRecordName('Success_Student__c', 'Grad');
+        String ssGrad = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad');
+        String ssUGrad = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor');
 
         // Add success students for all of them
         List<Success_Student__c> testSuccessStudents = new List<Success_Student__c>();
@@ -303,21 +304,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         testSuccessStudents.add(simonKirkseyStudent);
         Success_Student__c seanPhillipsStudent = newSuccessStudent(seanPhillips, testSuccessPod, ssGrad);
         testSuccessStudents.add(seanPhillipsStudent);
-        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod, ssGrad);
+        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod, ssUGrad);
         testSuccessStudents.add(annaPhillipsStudent);
-        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod, ssGrad);
+        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod, ssUGrad);
         testSuccessStudents.add(carlPorterStudent);
-        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod, ssGrad);
+        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod, ssUGrad);
         testSuccessStudents.add(devinMcCainStudent);
-        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod, ssGrad);
+        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod, ssUGrad);
         testSuccessStudents.add(anyaSimmsStudent);
-        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod, ssGrad);
+        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod, ssUGrad);
         testSuccessStudents.add(coreyNickoletteStudent);
-        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod, ssGrad);
+        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod, ssUGrad);
         testSuccessStudents.add(maddyThomasStudent);
-        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod, ssGrad);
+        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod, ssUGrad);
         testSuccessStudents.add(charlieDorseyWardStudent);
-        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod, ssGrad);
+        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod, ssUGrad);
         testSuccessStudents.add(mitchKeaneStudent);
         insert testSuccessStudents;
 
@@ -774,7 +775,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         insert new List<Case_Classification__c>{ watchlistCategory, category1, category2, category3, category4 };
 
         // And then the cases
-        String caseRecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        String caseUGrad = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
         List<Case> testCases = new List<Case>();
         Case testCase1 = new Case(
             ContactId = ryanCastelli.Id,
@@ -784,7 +785,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus5d,
             CreatedDate = tMinus5d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase1);
         Case testCase2 = new Case(
@@ -795,7 +796,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus9d,
             CreatedDate = tMinus9d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase2);
         Case testCase3 = new Case(
@@ -806,7 +807,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus10d,
             CreatedDate = tMinus10d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase3);
         Case testCase4 = new Case(
@@ -817,7 +818,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase4);
         Case testCase5 = new Case(
@@ -828,7 +829,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase5);
         Case testCase6 = new Case(
@@ -839,7 +840,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase6);
         Case testCase7 = new Case(
@@ -850,7 +851,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase7);
         Case testCase8 = new Case(
@@ -861,7 +862,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase8);
         Case testCase9 = new Case(
@@ -872,7 +873,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus1d,
             CreatedDate = tMinus1d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase9);
         Case testCase10 = new Case(
@@ -883,7 +884,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus1d,
             CreatedDate = tMinus1d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase10);
         Case testCase11 = new Case(
@@ -895,7 +896,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Followup_Date__c = tPlus1d,
             CreatedDate = tMinus1d,
             OwnerId = testUser.Id,
-            RecordTypeId = caseRecordTypeId
+            RecordTypeId = caseUGrad
         );
         testCases.add(testCase11);
 
@@ -906,7 +907,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         Term__c termInDB = new Term__c(
             PeopleSoft_Code__c = '2221',
             Year__c = '2221',
-            Session_A_C_Close_Date__c = Date.Today()
+            Term_Begin_Date__c = Date.Today()
         );
         insert termInDB;
 

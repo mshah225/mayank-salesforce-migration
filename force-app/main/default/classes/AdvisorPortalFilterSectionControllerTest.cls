@@ -164,17 +164,6 @@ private class AdvisorPortalFilterSectionControllerTest {
         );
         insert testUser;
 
-        // // Make a test group
-        // Group testGroup = new Group(Name = 'TestGroupName1', Type = 'Queue');
-
-        // // And make the queues
-        // List<QueueSobject> testQueues = new List<QueueSobject>();
-        // testQueues.add(new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Success_Pod__c'));
-        // testQueues.add(new QueueSobject(QueueId = testGroup.Id, SobjectType = 'Case'));
-        // System.runAs(new User(Id = UserInfo.getUserId())) {
-        //     insert testQueues;
-        // }
-
         // and their success pod
         Success_Pod__c testSuccessPod = new Success_Pod__c(
             OwnerId = testUser.Id,
@@ -284,45 +273,45 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         // Add success students for all of them
         List<Success_Student__c> testSuccessStudents = new List<Success_Student__c>();
-        Success_Student__c ryanCastelliStudent = newSuccessStudent(ryanCastelli, testSuccessPod, ssGrad);
+        Success_Student__c ryanCastelliStudent = newSuccessStudent(ryanCastelli, testSuccessPod, ssUGrad);
         testSuccessStudents.add(ryanCastelliStudent);
-        Success_Student__c chaseBurgessStudent = newSuccessStudent(chaseBurgess, testSuccessPod, ssGrad);
+        Success_Student__c chaseBurgessStudent = newSuccessStudent(chaseBurgess, testSuccessPod, ssUGrad);
         testSuccessStudents.add(chaseBurgessStudent);
-        Success_Student__c morganStraussStudent = newSuccessStudent(morganStrauss, testSuccessPod, ssGrad);
+        Success_Student__c morganStraussStudent = newSuccessStudent(morganStrauss, testSuccessPod, ssUGrad);
         testSuccessStudents.add(morganStraussStudent);
-        Success_Student__c benHellsigStudent = newSuccessStudent(benHellsig, testSuccessPod, ssGrad);
+        Success_Student__c benHellsigStudent = newSuccessStudent(benHellsig, testSuccessPod, ssUGrad);
         testSuccessStudents.add(benHellsigStudent);
-        Success_Student__c marisaBarillaStudent = newSuccessStudent(marisaBarilla, testSuccessPod, ssGrad);
+        Success_Student__c marisaBarillaStudent = newSuccessStudent(marisaBarilla, testSuccessPod, ssUGrad);
         testSuccessStudents.add(marisaBarillaStudent);
-        Success_Student__c sarahDurisekStudent = newSuccessStudent(sarahDurisek, testSuccessPod, ssGrad);
+        Success_Student__c sarahDurisekStudent = newSuccessStudent(sarahDurisek, testSuccessPod, ssUGrad);
         testSuccessStudents.add(sarahDurisekStudent);
-        Success_Student__c jamesBairStudent = newSuccessStudent(jamesBair, testSuccessPod, ssGrad);
+        Success_Student__c jamesBairStudent = newSuccessStudent(jamesBair, testSuccessPod, ssUGrad);
         testSuccessStudents.add(jamesBairStudent);
-        Success_Student__c zacharyNoellerStudent = newSuccessStudent(zacharyNoeller, testSuccessPod, ssGrad);
+        Success_Student__c zacharyNoellerStudent = newSuccessStudent(zacharyNoeller, testSuccessPod, ssUGrad);
         testSuccessStudents.add(zacharyNoellerStudent);
-        Success_Student__c morganDiegelStudent = newSuccessStudent(morganDiegel, testSuccessPod, ssGrad);
+        Success_Student__c morganDiegelStudent = newSuccessStudent(morganDiegel, testSuccessPod, ssUGrad);
         testSuccessStudents.add(morganDiegelStudent);
-        Success_Student__c aaronAssafStudent = newSuccessStudent(aaronAssaf, testSuccessPod, ssGrad);
+        Success_Student__c aaronAssafStudent = newSuccessStudent(aaronAssaf, testSuccessPod, ssUGrad);
         testSuccessStudents.add(aaronAssafStudent);
-        Success_Student__c simonKirkseyStudent = newSuccessStudent(simonKirksey, testSuccessPod, ssGrad);
+        Success_Student__c simonKirkseyStudent = newSuccessStudent(simonKirksey, testSuccessPod, ssUGrad);
         testSuccessStudents.add(simonKirkseyStudent);
-        Success_Student__c seanPhillipsStudent = newSuccessStudent(seanPhillips, testSuccessPod, ssGrad);
+        Success_Student__c seanPhillipsStudent = newSuccessStudent(seanPhillips, testSuccessPod, ssUGrad);
         testSuccessStudents.add(seanPhillipsStudent);
-        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod, ssUGrad);
+        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod, ssGrad);
         testSuccessStudents.add(annaPhillipsStudent);
-        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod, ssUGrad);
+        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod, ssGrad);
         testSuccessStudents.add(carlPorterStudent);
-        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod, ssUGrad);
+        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod, ssGrad);
         testSuccessStudents.add(devinMcCainStudent);
-        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod, ssUGrad);
+        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod, ssGrad);
         testSuccessStudents.add(anyaSimmsStudent);
-        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod, ssUGrad);
+        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod, ssGrad);
         testSuccessStudents.add(coreyNickoletteStudent);
-        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod, ssUGrad);
+        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod, ssGrad);
         testSuccessStudents.add(maddyThomasStudent);
-        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod, ssUGrad);
+        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod, ssGrad);
         testSuccessStudents.add(charlieDorseyWardStudent);
-        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod, ssUGrad);
+        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod, ssGrad);
         testSuccessStudents.add(mitchKeaneStudent);
         insert testSuccessStudents;
 

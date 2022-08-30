@@ -1,5 +1,6 @@
 import {LightningElement, api} from 'lwc';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class AdvisorPortalTable extends LightningElement {
     @api set currentFilter(val) {
@@ -18,7 +19,7 @@ export default class AdvisorPortalTable extends LightningElement {
 
     @api set allResults(val) {
         // deep copy the results to allow us to modify our copy
-        const newVal = JSON.parse(JSON.stringify(val));
+        const newVal = cloneObj(val);
         for (let i = 0; i < newVal.length; i++) {
             const v = newVal[i];
 
@@ -172,7 +173,7 @@ export default class AdvisorPortalTable extends LightningElement {
             }
         }
 
-        this.shownContactWrappers = JSON.parse(JSON.stringify(shownResults));
+        this.shownContactWrappers = cloneObj(shownResults);
     }
 
     updateSelected(e) {

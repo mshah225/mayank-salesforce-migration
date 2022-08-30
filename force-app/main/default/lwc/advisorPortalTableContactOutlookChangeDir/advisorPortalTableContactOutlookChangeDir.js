@@ -1,9 +1,10 @@
 import {LightningElement, api} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class AdvisorPortalTableContactOutlookChangeDir extends LightningElement {
     @api set contactWrapper(val) {
         // make a deep copy so we can modify
-        this._contactWrapper = JSON.parse(JSON.stringify(val));
+        this._contactWrapper = cloneObj(val);
     }
     get contactWrapper() {
         return this._contactWrapper;

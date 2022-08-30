@@ -1,8 +1,9 @@
 import {LightningElement, api, track} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class AdvisorPortalUserSelect extends LightningElement {
     @api set allUserOptions(options) {
-        this._allUserOptions = JSON.parse(JSON.stringify(options));
+        this._allUserOptions = cloneObj(options);
 
         // Reset all components to default values
         this.previousFilterValue = '';
@@ -118,7 +119,7 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         let previousFilterValue = this.previousFilterValue;
 
         if (filterValue === '') {
-            this.filterResults = JSON.parse(JSON.stringify(this.allUserOptions));
+            this.filterResults = cloneObj(this.allUserOptions);
         } else {
             let optionsToConsider = [];
             let optionsToUse = [];

@@ -21,3 +21,14 @@ export function buildPicklistOptionsArray(optionsMap) {
 
     return optionsList;
 }
+
+/**
+ * Perform a deep copy of the specified object
+ * @param {Object} obj
+ * @returns a deep copy of obj
+ * @warning obj cannot be more than one proxy-object deep.  Never let it be a Proxy object of a Proxy object.
+ *          More than one layer of Proxies makes JSON.stringify unusably slow
+ */
+export function cloneObj(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}

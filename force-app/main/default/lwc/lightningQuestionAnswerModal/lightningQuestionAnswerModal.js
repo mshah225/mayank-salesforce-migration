@@ -1,10 +1,11 @@
 import {LightningElement, api} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class LightningQuestionAnswerModal extends LightningElement {
     @api title = '';
 
     @api set questions(val) {
-        this._questions = JSON.parse(JSON.stringify(val));
+        this._questions = cloneObj(val);
     }
     get questions() {
         return this._questions;

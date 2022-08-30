@@ -1,11 +1,12 @@
 import {LightningElement, api} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class AdvisorPortalFiltersSection extends LightningElement {
     // Loaded because default filter - and from career/viewstate that are controlled in other components
     // whenever filter is set, we might need to act depending on what changed
     @api set currentFilter(val) {
         if (val != null) {
-            const newFilter = JSON.parse(JSON.stringify(val));
+            const newFilter = cloneObj(val);
             this._currentFilter = newFilter;
         }
     }
@@ -15,7 +16,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     _currentFilter = null;
 
     @api set viewAsUsers(val) {
-        this._viewAsUsers = JSON.parse(JSON.stringify(val));
+        this._viewAsUsers = cloneObj(val);
     }
     get viewAsUsers() {
         return this._viewAsUsers;
@@ -37,56 +38,56 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     // before passing it to the lightningComboBox.  If we don't when the array gets to the lightningComboBox
     // it'll be a Proxy of a Proxy of an array (rather than just a Proxy of an array) which is unuseably slow
     @api set residencyPicklistValues(val) {
-        this._residencyPicklistValues = JSON.parse(JSON.stringify(val));
+        this._residencyPicklistValues = cloneObj(val);
     }
     get residencyPicklistValues() {
         return this._residencyPicklistValues;
     }
     _residencyPicklistValues = [];
     @api set caseStatusPicklistValues(val) {
-        this._caseStatusPicklistValues = JSON.parse(JSON.stringify(val));
+        this._caseStatusPicklistValues = cloneObj(val);
     }
     get caseStatusPicklistValues() {
         return this._caseStatusPicklistValues;
     }
     _caseStatusPicklistValues = [];
     @api set campusPicklistValues(val) {
-        this._campusPicklistValues = JSON.parse(JSON.stringify(val));
+        this._campusPicklistValues = cloneObj(val);
     }
     get campusPicklistValues() {
         return this._campusPicklistValues;
     }
     _campusPicklistValues = [];
     @api set caseSubjectPicklistValues(val) {
-        this._caseSubjectPicklistValues = JSON.parse(JSON.stringify(val));
+        this._caseSubjectPicklistValues = cloneObj(val);
     }
     get caseSubjectPicklistValues() {
         return this._caseSubjectPicklistValues;
     }
     _caseSubjectPicklistValues = [];
     @api set caseCategoryPicklistValues(val) {
-        this._caseCategoryPicklistValues = JSON.parse(JSON.stringify(val));
+        this._caseCategoryPicklistValues = cloneObj(val);
     }
     get caseCategoryPicklistValues() {
         return this._caseCategoryPicklistValues;
     }
     _caseCategoryPicklistValues = [];
     @api set academicProgramOptions(val) {
-        this._academicProgramOptions = JSON.parse(JSON.stringify(val));
+        this._academicProgramOptions = cloneObj(val);
     }
     get academicProgramOptions() {
         return this._academicProgramOptions;
     }
     _academicProgramOptions = [];
     @api set schoolDepartmentOptions(val) {
-        this._schoolDepartmentOptions = JSON.parse(JSON.stringify(val));
+        this._schoolDepartmentOptions = cloneObj(val);
     }
     get schoolDepartmentOptions() {
         return this._schoolDepartmentOptions;
     }
     _schoolDepartmentOptions = [];
     @api set academicPlanOptions(val) {
-        this._academicPlanOptions = JSON.parse(JSON.stringify(val));
+        this._academicPlanOptions = cloneObj(val);
     }
     get academicPlanOptions() {
         return this._academicPlanOptions;

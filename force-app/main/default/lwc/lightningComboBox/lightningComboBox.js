@@ -1,4 +1,5 @@
 import {LightningElement, api} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class LightningComboBox extends LightningElement {
     @api label;
@@ -45,7 +46,7 @@ export default class LightningComboBox extends LightningElement {
      * @warning the value should not be a Proxy object of a Proxy object.  More than one layer of Proxies makes JSON.stringify unusably slow
      */
     @api set options(val) {
-        const optionsClone = JSON.parse(JSON.stringify(val));
+        const optionsClone = cloneObj(val);
 
         // add extra attributes
         for (let i = 0; i < optionsClone.length; i++) {
@@ -155,7 +156,7 @@ export default class LightningComboBox extends LightningElement {
      * @param {int} indx
      */
     toggleItemByIndex(indx) {
-        let options = JSON.parse(JSON.stringify(this._options));
+        let options = cloneObj(this._options);
 
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
@@ -290,7 +291,7 @@ export default class LightningComboBox extends LightningElement {
      * Update hover data attributes
      */
     updateHoverStates() {
-        const options = JSON.parse(JSON.stringify(this._options));
+        const options = cloneObj(this._options);
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
             if (this.hoveredIndex === opt.index) opt.isHovered = true;
@@ -305,7 +306,7 @@ export default class LightningComboBox extends LightningElement {
      */
     forceSelectedStatesToMatchValue() {
         const parentDeclaredValues = this._value == null ? [] : this._value.split(';');
-        const options = JSON.parse(JSON.stringify(this._options));
+        const options = cloneObj(this._options);
         const newValues = [];
         let madeAChange = false;
 

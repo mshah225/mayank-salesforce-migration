@@ -144,6 +144,10 @@ private class AdvisorPortalFilterSectionControllerTest {
         Date tPlus9d = System.today().addDays(9);
         Date tPlus10d = System.today().addDays(10);
 
+        // Turn off autosubscriber service since the Subscription IDs in the custom metadata reference objects
+        // that don't exist in a test context
+        AutoSubscriberService.disableAutoSubscriberService = true;
+
         // Test user
         User testUser = new User(
             FirstName = 'Test User Richard',

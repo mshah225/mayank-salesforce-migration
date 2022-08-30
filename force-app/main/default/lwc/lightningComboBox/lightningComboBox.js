@@ -41,6 +41,8 @@ export default class LightningComboBox extends LightningElement {
     /**
      * option: { label: "John", value: "c-01", isLabel: false, isSelected: false }
      * @param {List<option>} val
+     *
+     * @warning the value should not be a Proxy object of a Proxy object.  More than one layer of Proxies makes JSON.stringify unusably slow
      */
     @api set options(val) {
         const optionsClone = JSON.parse(JSON.stringify(val));

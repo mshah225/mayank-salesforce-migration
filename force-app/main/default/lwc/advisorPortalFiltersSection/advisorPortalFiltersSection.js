@@ -26,20 +26,72 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         return this.currentFilter != null && this.currentFilter.career === 'GRD';
     }
 
+    // Flags to set the loading circle next to each section
     @api loadingCampusValues = false;
     @api loadingSchoolDepartment = false;
     @api loadingAcadPlan = false;
     @api loadingCaseStatus = false;
     @api loadingCaseCategory = false;
 
-    @api residencyPicklistValues = [];
-    @api caseStatusPicklistValues = [];
-    @api campusPicklistValues = [];
-    @api caseSubjectPicklistValues = [];
-    @api caseCategoryPicklistValues = [];
-    @api academicProgramOptions = [];
-    @api schoolDepartmentOptions = [];
-    @api academicPlanOptions = [];
+    // For each of the @api specified picklist options we MUST convert the proxy object to a non-proxy object
+    // before passing it to the lightningComboBox.  If we don't when the array gets to the lightningComboBox
+    // it'll be a Proxy of a Proxy of an array (rather than just a Proxy of an array) which is unuseably slow
+    @api set residencyPicklistValues(val) {
+        this._residencyPicklistValues = JSON.parse(JSON.stringify(val));
+    }
+    get residencyPicklistValues() {
+        return this._residencyPicklistValues;
+    }
+    _residencyPicklistValues = [];
+    @api set caseStatusPicklistValues(val) {
+        this._caseStatusPicklistValues = JSON.parse(JSON.stringify(val));
+    }
+    get caseStatusPicklistValues() {
+        return this._caseStatusPicklistValues;
+    }
+    _caseStatusPicklistValues = [];
+    @api set campusPicklistValues(val) {
+        this._campusPicklistValues = JSON.parse(JSON.stringify(val));
+    }
+    get campusPicklistValues() {
+        return this._campusPicklistValues;
+    }
+    _campusPicklistValues = [];
+    @api set caseSubjectPicklistValues(val) {
+        this._caseSubjectPicklistValues = JSON.parse(JSON.stringify(val));
+    }
+    get caseSubjectPicklistValues() {
+        return this._caseSubjectPicklistValues;
+    }
+    _caseSubjectPicklistValues = [];
+    @api set caseCategoryPicklistValues(val) {
+        this._caseCategoryPicklistValues = JSON.parse(JSON.stringify(val));
+    }
+    get caseCategoryPicklistValues() {
+        return this._caseCategoryPicklistValues;
+    }
+    _caseCategoryPicklistValues = [];
+    @api set academicProgramOptions(val) {
+        this._academicProgramOptions = JSON.parse(JSON.stringify(val));
+    }
+    get academicProgramOptions() {
+        return this._academicProgramOptions;
+    }
+    _academicProgramOptions = [];
+    @api set schoolDepartmentOptions(val) {
+        this._schoolDepartmentOptions = JSON.parse(JSON.stringify(val));
+    }
+    get schoolDepartmentOptions() {
+        return this._schoolDepartmentOptions;
+    }
+    _schoolDepartmentOptions = [];
+    @api set academicPlanOptions(val) {
+        this._academicPlanOptions = JSON.parse(JSON.stringify(val));
+    }
+    get academicPlanOptions() {
+        return this._academicPlanOptions;
+    }
+    _academicPlanOptions = [];
 
     academicLevelPicklistValues = [
         {label: 'Freshman', value: 'Freshman'},

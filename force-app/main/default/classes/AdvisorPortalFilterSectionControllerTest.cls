@@ -1106,10 +1106,10 @@ private class AdvisorPortalFilterSectionControllerTest {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
-            SELECT Contact__c ContactId__alias
-            FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate'
-            GROUP BY Contact__c
+            SELECT Student__c ContactId__alias
+            FROM Success_Student__c
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+            GROUP BY Student__c
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
@@ -1138,10 +1138,10 @@ private class AdvisorPortalFilterSectionControllerTest {
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
-            SELECT Contact__c ContactId__alias
-            FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate'
-            GROUP BY Contact__c
+            SELECT Student__c ContactId__alias
+            FROM Success_Student__c
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+            GROUP BY Student__c
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
@@ -1249,14 +1249,26 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Campus__r.Location_Code__c = '0011221101'
+            WHERE
+                Campus__r.Location_Code__c = '0011221101'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 
         List<AggregateResult> expectedStudents2 = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Campus__r.Location_Code__c IN ('0011221101', '0011221102')
+            WHERE
+                Campus__r.Location_Code__c IN ('0011221101', '0011221102')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1308,13 +1320,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Cohort__c = 'Freshman'
+            WHERE
+                Cohort__c = 'Freshman'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
         List<AggregateResult> expectedStudents2 = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Cohort__c IN ('Freshman', 'Junior')
+            WHERE
+                Cohort__c IN ('Freshman', 'Junior')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1424,7 +1448,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Plan_Code__c = 'COMPSCI'
+            WHERE
+                Plan_Code__c = 'COMPSCI'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1476,7 +1506,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate' AND Plan_Type_Text__c = 'MAJ' AND Education_Level__c = '17'
+            WHERE
+                Plan_Type_Text__c = 'MAJ'
+                AND Education_Level__c = '17'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1484,10 +1521,14 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c = 'Graduate'
-                AND ((Plan_Type_Text__c = 'MAJ'
+                ((Plan_Type_Text__c = 'MAJ'
                 AND Education_Level__c = '17')
                 OR Plan_Type_Text__c = 'CER')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1539,14 +1580,26 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate' AND Program_Code__c = 'IRAAFUL'
+            WHERE
+                Program_Code__c = 'IRAAFUL'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
         List<AggregateResult> expectedStudents2 = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate' AND Program_Code__c IN ('IRAAFUL', 'PREMED')
+            WHERE
+                Program_Code__c IN ('IRAAFUL', 'PREMED')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1603,14 +1656,26 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate' AND Plan_Code__c = 'TVFILM'
+            WHERE
+                Plan_Code__c = 'TVFILM'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
         List<AggregateResult> expectedStudents2 = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate' AND Plan_Code__c IN ('BUSNESS', 'TVFILM')
+            WHERE
+                Plan_Code__c IN ('BUSNESS', 'TVFILM')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1663,11 +1728,15 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c = 'Graduate'
-                AND (Admit_Term__r.PeopleSoft_Code__c <= '2187'
+                (Admit_Term__r.PeopleSoft_Code__c <= '2187'
                 OR Requirement_Term__c <= '2187')
                 AND (Admit_Term__r.PeopleSoft_Code__c >= '2144'
                 OR Requirement_Term__c >= '2144')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1675,9 +1744,13 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c = 'Graduate'
-                AND (Admit_Term__r.PeopleSoft_Code__c <= '2191'
+                (Admit_Term__r.PeopleSoft_Code__c <= '2191'
                 OR Requirement_Term__c <= '2191')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1685,9 +1758,13 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c = 'Graduate'
-                AND (Admit_Term__r.PeopleSoft_Code__c >= '2191'
+                (Admit_Term__r.PeopleSoft_Code__c >= '2191'
                 OR Requirement_Term__c >= '2191')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1759,14 +1836,26 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Residency__c = 'International'
+            WHERE
+                Residency__c = 'International'
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 
         List<AggregateResult> expectedStudents2 = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Career__c != 'Graduate' AND Residency__c IN ('Resident', 'International')
+            WHERE
+                Residency__c IN ('Resident', 'International')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 
@@ -1820,7 +1909,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Status = 'Email Sent'
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -1829,7 +1918,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Status IN ('Email Sent', 'Busy Signal')
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -1883,7 +1972,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CC_Category__r.Name = 'CAT-3'
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -1892,7 +1981,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CC_Category__r.Name IN ('CAT-4', 'CAT-3')
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -1946,7 +2035,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Subject = 'Tailwind'
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -1955,7 +2044,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Subject IN ('Tailwind', 'Bee girl')
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2013,7 +2102,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                     FROM Persistence_Outlook__c
                     WHERE Curr_Cont_Prediction_Level__c IN (0, 1, 2, 3)
                 )
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2026,7 +2115,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                     FROM Persistence_Outlook__c
                     WHERE Curr_Cont_Prediction_Level__c IN (0, 1, 2, 3, 4, 5)
                 )
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2080,7 +2169,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Contact.Most_Recent_Outlook_Change_Direction__c = 1
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2089,7 +2178,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Contact.Most_Recent_Outlook_Change_Direction__c IN (1, 0)
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2142,11 +2231,15 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c = 'Graduate'
-                AND Contact__c IN (
+                Contact__c IN (
                     SELECT SG_Contact__c
                     FROM Student_Group__c
                     WHERE SG_PeopleSoft_Code__c IN ('GRAH', 'GRAI', 'ADIP', 'SR1B', 'SR1D')
+                )
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
                 )
             GROUP BY Contact__c
         ];
@@ -2155,11 +2248,15 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c = 'Graduate'
-                AND Contact__c IN (
+                Contact__c IN (
                     SELECT SG_Contact__c
                     FROM Student_Group__c
                     WHERE SG_PeopleSoft_Code__c IN ('SRKY', 'ADAD', 'ADAM', 'SRSA')
+                )
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
                 )
             GROUP BY Contact__c
         ];
@@ -2174,12 +2271,23 @@ private class AdvisorPortalFilterSectionControllerTest {
                     FROM Student_Group__c
                     WHERE SG_PeopleSoft_Code__c IN ('ADAD', 'ADAM', 'SRSA')
                 )
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
         List<AggregateResult> expectedStudents3b = [
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
-            WHERE Degree_Chkout_Stat_Code__c IN :appliedToGraduateCodes
+            WHERE
+                Degree_Chkout_Stat_Code__c IN :appliedToGraduateCodes
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
         List<AggregateResult> expectedStudents3c = new List<AggregateResult>();
@@ -2205,7 +2313,12 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents4 = [
             SELECT Contact__c ContactId__alias, Count(Id)
             FROM Student_Program_Plan__c
-            WHERE Career__c = 'Graduate'
+            WHERE
+                Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
             HAVING Count(Id) > 1
         ];
@@ -2223,6 +2336,11 @@ private class AdvisorPortalFilterSectionControllerTest {
                         AND Effdt__c <= TODAY
                         AND Term_Required__r.PeopleSoft_Code__c >= :currentPSCode
                 )
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
+                )
             GROUP BY Contact__c
         ];
         List<AggregateResult> expectedStudents5b = [
@@ -2238,6 +2356,11 @@ private class AdvisorPortalFilterSectionControllerTest {
                         AND SI_Code__c = 'AD4'
                         AND SI_Reason__c = 'PROV'
                         AND SI_Positive_Service_Indicator__c = TRUE
+                )
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
                 )
             GROUP BY Contact__c
         ];
@@ -2273,6 +2396,11 @@ private class AdvisorPortalFilterSectionControllerTest {
                         AND SI_End_Term__r.PeopleSoft_Code__c >= :currentPSCode
                         AND Enrollment_Impact__c = TRUE
                         AND SI_Positive_Service_Indicator__c = FALSE
+                )
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
                 )
             GROUP BY Contact__c
         ];
@@ -2401,7 +2529,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT ContactId ContactId__alias, COUNT(Id)
             FROM Case
-            WHERE ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
             HAVING COUNT(Id) = 1
         ];
@@ -2409,7 +2537,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents2 = [
             SELECT ContactId ContactId__alias, COUNT(Id)
             FROM Case
-            WHERE ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
             HAVING COUNT(Id) = 4
         ];
@@ -2482,7 +2610,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             WHERE
                 CreatedDate <= :endOftMinus3d
                 AND CreatedDate >= :startOftMinus9d
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2491,7 +2619,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CreatedDate >= :startOftMinus3d
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2500,7 +2628,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CreatedDate <= :endOftMinus3d
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2585,7 +2713,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             WHERE
                 Followup_Date__c <= :tPlus9d
                 AND Followup_Date__c >= :tPlus3d
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2594,7 +2722,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Followup_Date__c >= :tPlus3d
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2603,7 +2731,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Followup_Date__c <= :tPlus3d
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
             GROUP BY ContactId
         ];
 
@@ -2678,8 +2806,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT ContactId ContactId__alias
             FROM Case
-            WHERE
-                ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
                 AND ContactId IN (
                     SELECT Contact__c
                     FROM Persistence_Outlook__c
@@ -2691,8 +2818,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents2 = [
             SELECT ContactId ContactId__alias
             FROM Case
-            WHERE
-                ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
                 AND ContactId IN (SELECT Contact__c FROM Persistence_Outlook__c WHERE Change_Date__c >= :tMinus4d)
             GROUP BY ContactId
         ];
@@ -2701,7 +2827,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT ContactId ContactId__alias
             FROM Case
             WHERE
-                ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
                 AND ContactId IN (SELECT Contact__c FROM Persistence_Outlook__c WHERE Change_Date__C <= :tMinus4d)
             GROUP BY ContactId
         ];
@@ -2774,14 +2900,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT Student__c ContactId__alias
             FROM Success_Student__c
-            WHERE Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
             GROUP BY Student__c
         ];
 
         List<AggregateResult> expectedStudents2 = [
             SELECT Student__c ContactId__alias
             FROM Success_Student__c
-            WHERE Student__c IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c = 'Graduate')
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad')
             GROUP BY Student__c
         ];
 
@@ -2833,7 +2959,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CC_Category__r.Name = 'Watchlist'
-                AND ContactId IN (SELECT Contact__c FROM Student_Program_Plan__c WHERE Career__c != 'Graduate')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2874,9 +3000,13 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Career__c != 'Graduate'
-                AND Cohort__c = 'Junior'
+                Cohort__c = 'Junior'
                 AND Contact__c IN (SELECT SG_Contact__c FROM Student_Group__c WHERE SG_PeopleSoft_Code__c = 'STGRP4')
+                AND Contact__c IN (
+                    SELECT Student__c
+                    FROM Success_Student__c
+                    WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor')
+                )
             GROUP BY Contact__c
         ];
 

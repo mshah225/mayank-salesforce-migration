@@ -236,7 +236,7 @@ public with sharing class ConversationService {
                 errorLogObj.smagicinteract__Error_Type__c = 'Fatal';
                 errorLogObj.smagicinteract__Object__c = 'smagicinteract__Conversation__share';
                 errorLogObj.smagicinteract__Fields__c = String.valueOf(err.getFields());
-                errorLogObj.smagicinteract__Line_number__c = 206;
+                errorLogObj.smagicinteract__Line_number__c = 207;
                 errorLogObj.smagicinteract__User__c = UserInfo.getUserId();
                 errorLogs.add(errorLogObj);
             }

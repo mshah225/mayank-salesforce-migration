@@ -136,7 +136,7 @@ private class ConversationTriggerTest {
     }
 
     @isTest
-    public static void testExecute() {
+    private static void testExecute() {
         smagicinteract__SMS_SenderId__c smsSender = new smagicinteract__SMS_SenderId__c();
         smsSender.SenderIdUnit__c = 'FYS';
         smsSender.smagicinteract__senderId__c = '12345';
@@ -183,20 +183,32 @@ private class ConversationTriggerTest {
     }
 
     @isTest
-    public static void testErrorLogging() {
-        smagicinteract__Conversation__c conversation = new smagicinteract__Conversation__c(
-            smagicinteract__Inbound_Number__c = '123456789123456789123456789'
+    private static void testErrorLogging() {
+        Database.SaveResult[] lsr = Database.insert(
+            new List<smagicinteract__Conversation__c>{
+                new smagicinteract__Conversation__c(smagicinteract__Inbound_Number__c = '123456789123456789123456789')
+            },
+            false
         );
-        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{ conversation }, false);
+        ConversationService uc = new ConversationService();
+        uc.checkForErrors(lsr);
 
-        ConversationService service = new ConversationService();
-        service.checkForErrors(lsr);
         List<smagicinteract__Error_Log__c> errorLogList = [SELECT Id FROM smagicinteract__Error_Log__c];
         System.assertEquals(1, errorLogList.size());
+    }
+
+    @isTest
+    private static void testErrorLogger() {
+        smagicinteract__Conversation__c conversation = new smagicinteract__Conversation__c();
+        conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456789';
+        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{ conversation }, false);
+        ConversationService service = new ConversationService();
+        service.processDatabaseResults(lsr);
 
         conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456780';
         Database.SaveResult[] lsr = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
         service.processDatabaseResults(lsr);
+
         Integer errorCaseCount = [SELECT COUNT() FROM Case];
         System.assertEquals(2, errorCaseCount);
     }

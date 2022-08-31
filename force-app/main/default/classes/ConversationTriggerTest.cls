@@ -209,7 +209,6 @@ private class ConversationTriggerTest {
         Database.SaveResult[] lsr = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
         service.processDatabaseResults(lsr);
 
-        Integer errorCaseCount = [SELECT COUNT() FROM Case];
-        System.assertEquals(2, errorCaseCount);
+        System.assertEquals(2, [SELECT COUNT() FROM Case]);
     }
 }

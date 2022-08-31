@@ -22,7 +22,7 @@
             allAlertsJS.push({
                 severity: "{!alert.severity}",
                 title: "{!if(alert.title != null, alert.title, if(alert.severity = 'CONFIRM', 'Success! ', IF(alert.severity = 'INFO', 'Information! ', IF(alert.severity = 'WARNING', 'Alert! ', 'Error! '))))}",
-                message: "{!alert.message}",
+                message: "{!JSENCODE(alert.message)}",
                 link: "{!alert.link}"
             });
         </script>

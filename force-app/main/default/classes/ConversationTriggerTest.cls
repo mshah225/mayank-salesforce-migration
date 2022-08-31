@@ -191,9 +191,13 @@ private class ConversationTriggerTest {
             false
         );
         ConversationService uc = new ConversationService();
-        uc.checkForErrors(lsr);
 
+        uc.checkForErrors(lsr);
         List<smagicinteract__Error_Log__c> errorLogList = [SELECT Id FROM smagicinteract__Error_Log__c];
         System.assertEquals(1, errorLogList.size());
+
+        uc.processDatabaseResults(lsr);
+        Integer errorCaseCount = [SELECT COUNT() FROM Case];
+        System.assertEquals(1, errorCaseCount);
     }
 }

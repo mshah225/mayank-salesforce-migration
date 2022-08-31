@@ -216,7 +216,8 @@ public with sharing class ConversationService {
         );
     }
 
-    public void checkForErrors(Database.SaveResult[] lsr) {
+    @TestVisible
+    private void checkForErrors(Database.SaveResult[] lsr) {
         List<smagicinteract__Error_Log__c> errorLogs = new List<smagicinteract__Error_Log__c>();
         // Process the save results
         for (Database.SaveResult sr : lsr) {
@@ -246,6 +247,7 @@ public with sharing class ConversationService {
         }
     }
 
+    @TestVisible
     private void processDatabaseResults(Database.SaveResult[] lsr) {
         for (Database.SaveResult sr : lsr) {
             if (!sr.isSuccess()) {

@@ -285,6 +285,6 @@ public with sharing class ConversationService {
         }
     }
 
-    public class ConversationServiceException extends Exception {
+    private class ConversationServiceException extends Exception {
     }
 }

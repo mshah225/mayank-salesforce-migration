@@ -206,8 +206,8 @@ private class ConversationTriggerTest {
         service.processDatabaseResults(lsr);
 
         conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456780';
-        Database.SaveResult[] lsr = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
-        service.processDatabaseResults(lsr);
+        Database.SaveResult[] lsr2 = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
+        service.processDatabaseResults(lsr2);
 
         System.assertEquals(2, [SELECT COUNT() FROM Case]);
     }

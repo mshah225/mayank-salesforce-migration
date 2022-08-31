@@ -184,20 +184,20 @@ private class ConversationTriggerTest {
 
     @isTest
     public static void testErrorLogging() {
-        Database.SaveResult[] lsr = Database.insert(
-            new List<smagicinteract__Conversation__c>{
-                new smagicinteract__Conversation__c(smagicinteract__Inbound_Number__c = '123456789123456789123456789')
-            },
-            false
+        smagicinteract__Conversation__c conversation = new smagicinteract__Conversation__c(
+            smagicinteract__Inbound_Number__c = '123456789123456789123456789'
         );
-        ConversationService uc = new ConversationService();
+        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{ conversation }, false);
 
-        uc.checkForErrors(lsr);
+        ConversationService service = new ConversationService();
+        service.checkForErrors(lsr);
         List<smagicinteract__Error_Log__c> errorLogList = [SELECT Id FROM smagicinteract__Error_Log__c];
         System.assertEquals(1, errorLogList.size());
 
-        uc.processDatabaseResults(lsr);
+        conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456780';
+        Database.SaveResult[] lsr = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
+        service.processDatabaseResults(lsr);
         Integer errorCaseCount = [SELECT COUNT() FROM Case];
-        System.assertEquals(1, errorCaseCount);
+        System.assertEquals(2, errorCaseCount);
     }
 }

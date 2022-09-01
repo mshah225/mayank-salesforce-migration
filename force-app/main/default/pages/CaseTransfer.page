@@ -353,6 +353,7 @@
             <apex:outputPanel id="completePage" rendered="{!IF(page = 5,true,false)}">
                 Successfully Transferred Case to {!selectedGroupName}.
                 <br />
+                <br />
                 You may now close this tab.
                 <hr />
                 <br />

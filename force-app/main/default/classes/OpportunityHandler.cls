@@ -88,6 +88,8 @@ public without sharing class OpportunityHandler implements ITrigger {
                 }
             }
         }
+
+        OpportunityService.updateAccountIdFromContact(Trigger.new, Trigger.oldMap);
     }
 
     /**
@@ -151,8 +153,6 @@ public without sharing class OpportunityHandler implements ITrigger {
         if (oppToContactMap.containsKey(o.Id)) {
             o.contact__c = oppToContactMap.get(o.Id);
         }
-
-        OpportunityService.updateAccountIdFromContact(Trigger.new, Trigger.oldMap);
     }
 
     /**
@@ -171,6 +171,9 @@ public without sharing class OpportunityHandler implements ITrigger {
      * any bulk operations for a BEFORE trigger.
      */
     public void beforeFinally() {
+        if (Trigger.isUpdate) {
+            OpportunityService.updateAccountIdFromContact(Trigger.new, Trigger.oldMap);
+        }
     }
 
     /**

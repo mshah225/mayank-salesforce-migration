@@ -202,6 +202,31 @@ public class OpportunityService {
         }
     }
 
+    public static void insertCollegePlan(List<Opportunity> newOpportunities) {
+        List<Id> planIds = new List<Id>();
+        Map<Id, Id> programColleges = new Map<Id, Id>();
+        for (Opportunity newOpportunity : newOpportunities) {
+            if (newOpportunity.Academic_Plan__c != null) {
+                planIds.add(newOpportunity.Academic_Plan__c);
+            }
+            if (newOpportunity.Admitted_Plan__c != null) {
+                planIds.add(newOpportunity.Admitted_Plan__c);
+            }
+        }
+
+        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
+            programColleges.put(plan.Id, plan.Program__c);
+        }
+
+        for (Opportunity newOpportunity : newOpportunities) {
+            if (newOpportunity.Admitted_Plan__c != null) {
+                newOpportunity.College__c = programColleges.get(newOpportunity.Admitted_Plan__c);
+            } else if (newOpportunity.Academic_Plan__c != null) {
+                newOpportunity.College__c = programColleges.get(newOpportunity.Academic_Plan__c);
+            }
+        }
+    }
+
     public static void updateCollegeIfPlanChanged(
         List<Opportunity> updatedOpportunities,
         Map<Id, Opportunity> previousOpportunitiesMap

@@ -1093,9 +1093,15 @@ public class AdvisorPortalFilterSectionController {
         andStatements.add('OwnerId IN ' + getSoqlListString(ownerIds));
 
         if (filter.caseTypeState == 'WatchlistCasesState') {
-            andStatements.add(
-                'CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Advisor Outreach\''
-            );
+            if (filter.career == 'GRD') {
+                andStatements.add(
+                    'CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Graduate Advisor Portal\''
+                );
+            } else {
+                andStatements.add(
+                    'CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Advisor Outreach\''
+                );
+            }
         }
 
         if (shouldUseFilter('outlookScore', filter)) {

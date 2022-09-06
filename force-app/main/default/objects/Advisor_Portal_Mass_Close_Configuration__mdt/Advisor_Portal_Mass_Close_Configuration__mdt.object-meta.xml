@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Configuration options for the mass close modal in the advisor portal.  Including dropdown options and conditionally required fields.  See https://asudev.jira.com/wiki/spaces/SFD/pages/2122383951/Custom+Metadata#Advisor-Portal-Mass-Close-Configuration for clear documentation on how to use.</description>
-    <label>Advisor Portal Mass Close Configuration</label>
-    <pluralLabel>Advisor Portal Mass Close Configurations</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

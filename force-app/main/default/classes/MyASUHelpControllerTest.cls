@@ -837,7 +837,7 @@ private class MyASUHelpControllerTest {
             WHERE Alias = :testUserAliasBase + '0'
         ];
         Case caseOnTestUser = [SELECT Id, OwnerId FROM Case WHERE ContactId = :testUser.ContactId LIMIT 1];
-        caseOnTestUser.Intended_Recipient__c = 'testEmail@test.com';
+        caseOnTestUser.Initial_Request_Sent_To_Addresses__c = 'testEmail@test.com';
         update caseOnTestUser;
 
         PageReference viewCase = Page.viewcase;

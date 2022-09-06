@@ -1,91 +1,76 @@
 ({
     doInit: function (component, event, helper) {
-        helper.getOptionsValue(component, 'populateClosedCaseStatusOptions', 'CaseStatusOptions');
         helper.getOptionsLabelAndValue(component, 'populateRecommendedActionOptions', 'RecommendedActionOptions');
-        helper.getOptionsValue(component, 'populateStudentIntentionOptions', 'StudentsIntentionOptions');
         helper.getOptionsLabelAndValue(component, 'populateReturnTermOptions', 'StudentReturnTermOptions');
         helper.getOptionsLabelAndValue(component, 'populateStudentRiskOptions', 'StudentRiskOptions');
         helper.getOptionsLabelAndValue(component, 'populateReasonNotReturningOptions', 'NotReturningOptions');
+        helper.loadCustomMetadata(component);
     },
 
-    updateDynamicFieldVisibility: function (component) {
-        // Dependent on Case Status
-        if (component.find('caseStatus') && component.find('caseStatus').get('v.value')) {
-            if (component.find('caseStatus').get('v.value') === 'Closed: Administratively Resolved (No Outreach)') {
-                component.set('v.RenderRequireReasonsAdministrativelyClosed', true);
-            } else {
-                component.set('v.RenderRequireReasonsAdministrativelyClosed', false);
-            }
+    updateDynamicFieldVisibility: function (component, event, helper) {
+        // String expected in custom metadata mapped to the required booleans
+        const componentIdToRequiredBoolean = {
+            reasonsAdminClosed: 'v.RenderRequireReasonsAdministrativelyClosed',
+            recommendedActions: 'v.RequireRecommendedAction',
+            recommendedActionOther: 'v.RenderRequireRecommendedActionOther',
+            studentIntent: 'v.RequireStudentIntent',
+            notReturning: 'v.RenderRequireNotReturning',
+            notReturningOther: 'v.RenderRequireNotReturningOther',
+            returnTerm: 'v.RequireReturnTerm',
+            studentRisk: 'v.RequireStudentRisk',
+            studentRiskOther: 'v.RenderRequireStudentRiskOther',
+        };
+        const dropdownNameToDropdownType = {
+            caseStatus: 'dropdown',
+            recommendedActions: 'dualListBox',
+            studentIntent: 'dropdown',
+            notReturning: 'dualListBox',
+            returnTerm: 'dropdown',
+            studentRisk: 'dropdown',
+        };
 
+        let componentIdToRequiredStatus = {};
+
+        for (let componentId in componentIdToRequiredBoolean) {
+            componentIdToRequiredStatus[componentId] = false;
+        }
+
+        const requirements = component.get('v.DynamicallyGeneratedRequirements');
+        for (let dropdownName in requirements) {
+            // For each dropdown, in the requirements, check if value changes required fields
             if (
-                component.find('caseStatus').get('v.value') === 'Conferred with Student by Phone' ||
-                component.find('caseStatus').get('v.value') === 'Conferred with Student by Email' ||
-                component.find('caseStatus').get('v.value') === 'In Person Meeting'
+                helper.findByAuraId(component, dropdownName) &&
+                helper.findByAuraId(component, dropdownName).get('v.value')
             ) {
-                component.set('v.RequireRecommendedAction', true);
-                component.set('v.RequireStudentIntent', true);
-            } else {
-                component.set('v.RequireRecommendedAction', false);
-                component.set('v.RequireStudentIntent', false);
+                for (let value in requirements[dropdownName]) {
+                    // If it has a value specified in the custom metadata ...
+                    let addRequirements = false;
+
+                    // How to check depends on dropdown type
+                    if (dropdownNameToDropdownType[dropdownName] == 'dropdown') {
+                        if (helper.findByAuraId(component, dropdownName).get('v.value') == value) {
+                            addRequirements = true;
+                        }
+                    } else if (dropdownNameToDropdownType[dropdownName] == 'dualListBox') {
+                        if (helper.findByAuraId(component, dropdownName).get('v.value').indexOf(value) !== -1) {
+                            addRequirements = true;
+                        }
+                    }
+
+                    // ... Then require the requirements
+                    if (addRequirements) {
+                        for (let i in requirements[dropdownName][value]) {
+                            let requirement = requirements[dropdownName][value][i];
+                            componentIdToRequiredStatus[requirement] = true;
+                        }
+                    }
+                }
             }
         }
 
-        // Dependent on Recommended Actions
-        if (component.find('recommendedActions') && component.find('recommendedActions').get('v.value')) {
-            if (component.find('recommendedActions').get('v.value').indexOf('other') !== -1) {
-                component.set('v.RenderRequireRecommendedActionOther', true);
-            } else {
-                component.set('v.RenderRequireRecommendedActionOther', false);
-            }
-        }
-
-        // Dependent on Student Intent
-        if (component.find('studentIntent') && component.find('studentIntent').get('v.value')) {
-            if (
-                component.find('studentIntent').get('v.value') === 'Not returning ever' ||
-                component.find('studentIntent').get('v.value') === 'Not returning temporarily'
-            ) {
-                component.set('v.RenderRequireNotReturning', true);
-            } else {
-                component.set('v.RenderRequireNotReturning', false);
-            }
-
-            if (component.find('studentIntent').get('v.value') === 'Not returning temporarily') {
-                component.set('v.RequireReturnTerm', true);
-            } else {
-                component.set('v.RequireReturnTerm', false);
-            }
-
-            if (component.find('studentIntent').get('v.value') === 'Enrolled') {
-                component.set('v.RequireStudentRisk', true);
-            } else {
-                component.set('v.RequireStudentRisk', false);
-            }
-        }
-
-        // Dependent on Not Returning Reason (also check student intent to see if any reason is still needed)
-        if (
-            component.find('notReturning') &&
-            component.find('notReturning').get('v.value') &&
-            component.find('studentIntent') &&
-            component.find('studentIntent').get('v.value')
-        ) {
-            if (
-                component.find('notReturning').get('v.value').indexOf('Other') !== -1 &&
-                component.find('studentIntent').get('v.value') !== 'Enrolled'
-            ) {
-                component.set('v.RenderRequireNotReturningOther', true);
-            } else {
-                component.set('v.RenderRequireNotReturningOther', false);
-            }
-        }
-
-        // Dependent on Student Risk
-        if (component.find('studentRisk') && component.find('studentRisk').get('v.value')) {
-            if (component.find('studentRisk').get('v.value') === 'Other') {
-                component.set('v.RenderRequireStudentRiskOther', true);
-            } else {
-                component.set('v.RenderRequireStudentRiskOther', false);
+        for (let componentId in componentIdToRequiredStatus) {
+            if (component.get(componentIdToRequiredBoolean[componentId]) != componentIdToRequiredStatus[componentId]) {
+                component.set(componentIdToRequiredBoolean[componentId], componentIdToRequiredStatus[componentId]);
             }
         }
     },

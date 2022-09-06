@@ -296,7 +296,7 @@ public class CaseService {
             );
         }
 
-        Case_Assignment_Rule__c defaultCar = [
+        List<Case_Assignment_Rule__c> defaultCarList = [
             SELECT
                 Id,
                 Queue_ID__c,
@@ -308,6 +308,7 @@ public class CaseService {
             FROM Case_Assignment_Rule__c
             WHERE Email_Address__c = 'admissions@asu.edu'
         ];
+        Case_Assignment_Rule__c defaultCar = defaultCarList.isEmpty() ? null : defaultCarList[0];
 
         for (Case newCase : newList) {
             if (newCase.Status == 'Processing') {
@@ -573,7 +574,7 @@ public class CaseService {
                 newCase.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' &&
                 newCase.Associate_Case_to_Active_Opportunity__c == true
             ) {
-                if (useOppForTerritoryManager(opp)) {
+                if (useOppForEnrollmentCoach(opp)) {
                     ownerId = opp.Enrollment_Coach__c;
                 }
             }
@@ -592,7 +593,7 @@ public class CaseService {
                     typeOfAdditionalAssignment = 'Territory Manager';
                 }
             } else if (car.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
-                if (useOppForTerritoryManager(opp)) {
+                if (useOppForEnrollmentCoach(opp)) {
                     ownerId = opp.Enrollment_Coach__c;
                     typeOfAdditionalAssignment = 'Enrollment Coach';
                 }
@@ -613,7 +614,7 @@ public class CaseService {
         }
 
         private void setFieldsFromCar(Case_Assignment_Rule__c car) {
-            if (car.Queue_ID__c != null)
+            if (ownerId == null && car.Queue_ID__c != null)
                 ownerId = ID.valueOf(car.Queue_ID__c);
             if (car.Origin__c != null)
                 origin = car.Origin__c;

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>intent option 2</label>
+    <protected>false</protected>
+    <values>
+        <field>Dropdown__c</field>
+        <value xsi:type="xsd:string">studentIntent</value>
+    </values>
+    <values>
+        <field>Enabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Required_Fields__c</field>
+        <value xsi:type="xsd:string">notReturning, returnTerm</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">Not returning temporarily</value>
+    </values>
+</CustomMetadata>

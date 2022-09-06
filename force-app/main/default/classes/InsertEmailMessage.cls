@@ -11,7 +11,9 @@ global class InsertEmailMessage {
     ) {
         Messaging.InboundEmail emailResponse = new Messaging.InboundEmail();
         List<String> toAddressAsList = new List<String>();
-        toAddressAsList.add(toAddress);
+        // toAddress might be comma separated list off addresses
+        for (String eachToAddress : toAddress.split(','))
+            toAddressAsList.add(eachToAddress.trim());
         emailResponse.fromAddress = fromAddress;
         emailResponse.fromName = fromName;
         emailResponse.plainTextBody =

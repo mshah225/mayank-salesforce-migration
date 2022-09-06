@@ -1,17 +1,4 @@
 ({
-    getOptionsValue: function (component, apexMethod, componentAttribute) {
-        let action = component.get('c.' + apexMethod);
-        action.setCallback(this, function (response) {
-            if (response.getState() !== 'SUCCESS') {
-                this.fireToast('Error', response.getError()[0].message, 'error');
-                return;
-            }
-
-            component.set('v.' + componentAttribute, response.getReturnValue());
-        });
-        $A.enqueueAction(action);
-    },
-
     getOptionsLabelAndValue: function (component, apexMethod, componentAttribute) {
         let action = component.get('c.' + apexMethod);
         action.setCallback(this, function (response) {
@@ -49,10 +36,10 @@
             return;
         }
 
-        $A.util.toggleClass(component.find('modalBackdrop'), 'slds-backdrop_open');
-        $A.util.toggleClass(component.find('massUpdateModal'), 'slds-fade-in-open');
+        $A.util.toggleClass(this.findByAuraId(component, 'modalBackdrop'), 'slds-backdrop_open');
+        $A.util.toggleClass(this.findByAuraId(component, 'massUpdateModal'), 'slds-fade-in-open');
 
-        if ($A.util.hasClass(component.find('massUpdateModal'), 'slds-fade-in-open')) {
+        if ($A.util.hasClass(this.findByAuraId(component, 'massUpdateModal'), 'slds-fade-in-open')) {
             this.resetComponentValues(component);
         }
 
@@ -63,86 +50,89 @@
         let isValid = true;
 
         if (!component.get('v.CaseStatus')) {
-            component.find('caseStatus').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'caseStatus').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RenderRequireReasonsAdministrativelyClosed') &&
-            component.find('reasonsAdminClosed') &&
+            this.findByAuraId(component, 'reasonsAdminClosed') &&
             !component.get('v.ReasonsAdministrativelyClosed')
         ) {
-            component.find('reasonsAdminClosed').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'reasonsAdminClosed').showHelpMessageIfInvalid();
             isValid = false;
         }
-
         if (
             component.get('v.RequireRecommendedAction') &&
-            component.find('recommendedActions') &&
-            (component.find('recommendedActions').get('v.value') === undefined ||
-                component.find('recommendedActions').get('v.value').length === 0)
+            this.findByAuraId(component, 'recommendedActions') &&
+            (this.findByAuraId(component, 'recommendedActions').get('v.value') === undefined ||
+                this.findByAuraId(component, 'recommendedActions').get('v.value').length === 0)
         ) {
-            component.find('recommendedActions').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'recommendedActions').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RenderRequireRecommendedActionOther') &&
-            component.find('recommendedActionOther') &&
+            this.findByAuraId(component, 'recommendedActionOther') &&
             !component.get('v.RecommendedActionOther')
         ) {
-            component.find('recommendedActionOther').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'recommendedActionOther').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RequireStudentIntent') &&
-            component.find('studentIntent') &&
+            this.findByAuraId(component, 'studentIntent') &&
             !component.get('v.StudentsIntentions')
         ) {
-            component.find('studentIntent').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'studentIntent').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RenderRequireNotReturning') &&
-            component.find('notReturning') &&
-            (component.find('notReturning').get('v.value') === undefined ||
-                component.find('notReturning').get('v.value').length === 0)
+            this.findByAuraId(component, 'notReturning') &&
+            (this.findByAuraId(component, 'notReturning').get('v.value') === undefined ||
+                this.findByAuraId(component, 'notReturning').get('v.value').length === 0)
         ) {
-            component.find('notReturning').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'notReturning').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RenderRequireNotReturningOther') &&
-            component.find('notReturningOther') &&
+            this.findByAuraId(component, 'notReturningOther') &&
             !component.get('v.NotReturningOther')
         ) {
-            component.find('notReturningOther').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'notReturningOther').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RequireReturnTerm') &&
-            component.find('returnTerm') &&
+            this.findByAuraId(component, 'returnTerm') &&
             !component.get('v.StudentReturnTerm')
         ) {
-            component.find('returnTerm').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'returnTerm').showHelpMessageIfInvalid();
             isValid = false;
         }
 
-        if (component.get('v.RequireStudentRisk') && component.find('studentRisk') && !component.get('v.StudentRisk')) {
-            component.find('studentRisk').showHelpMessageIfInvalid();
+        if (
+            component.get('v.RequireStudentRisk') &&
+            this.findByAuraId(component, 'studentRisk') &&
+            !component.get('v.StudentRisk')
+        ) {
+            this.findByAuraId(component, 'studentRisk').showHelpMessageIfInvalid();
             isValid = false;
         }
 
         if (
             component.get('v.RenderRequireStudentRiskOther') &&
-            component.find('studentRiskOther') &&
+            this.findByAuraId(component, 'studentRiskOther') &&
             !component.get('v.StudentRiskOther')
         ) {
-            component.find('studentRiskOther').showHelpMessageIfInvalid();
+            this.findByAuraId(component, 'studentRiskOther').showHelpMessageIfInvalid();
             isValid = false;
         }
 
@@ -163,15 +153,17 @@
                         theCase.Reason_Administratively_Closed__c = component.get('v.ReasonsAdministrativelyClosed');
                     }
 
-                    if (component.find('recommendedActions').get('v.value')) {
-                        for (let i = 0; i < component.find('recommendedActions').get('v.value').length; i++) {
-                            if (!theCase.Recommended_Actions__c) {
-                                theCase.Recommended_Actions__c = '';
-                            }
+                    if (this.findByAuraId(component, 'recommendedActions').get('v.value')) {
+                        theCase.Recommended_Actions__c = '';
 
-                            if (component.find('recommendedActions').get('v.value')[i]) {
+                        for (
+                            let i = 0;
+                            i < this.findByAuraId(component, 'recommendedActions').get('v.value').length;
+                            i++
+                        ) {
+                            if (this.findByAuraId(component, 'recommendedActions').get('v.value')[i]) {
                                 theCase.Recommended_Actions__c +=
-                                    component.find('recommendedActions').get('v.value')[i] + ';';
+                                    this.findByAuraId(component, 'recommendedActions').get('v.value')[i] + ';';
                             }
                         }
 
@@ -183,7 +175,7 @@
                         }
                     }
 
-                    if (component.get('v.RenderRecommendedActionOther')) {
+                    if (component.get('v.RecommendedActionOther')) {
                         theCase.Recommended_Actions_Other__c = component.get('v.RecommendedActionOther');
                     }
 
@@ -191,13 +183,16 @@
                         theCase.Student_Intention__c = component.get('v.StudentsIntentions');
                     }
 
-                    if (component.find('notReturning') && component.find('notReturning').get('v.value')) {
+                    if (
+                        this.findByAuraId(component, 'notReturning') &&
+                        this.findByAuraId(component, 'notReturning').get('v.value')
+                    ) {
                         theCase.Reasons_Not_Returning__c = '';
 
-                        for (let i = 0; i < component.find('notReturning').get('v.value').length; i++) {
-                            if (component.find('notReturning').get('v.value')[i]) {
+                        for (let i = 0; i < this.findByAuraId(component, 'notReturning').get('v.value').length; i++) {
+                            if (this.findByAuraId(component, 'notReturning').get('v.value')[i]) {
                                 theCase.Reasons_Not_Returning__c +=
-                                    component.find('notReturning').get('v.value')[i] + ';';
+                                    this.findByAuraId(component, 'notReturning').get('v.value')[i] + ';';
                             }
                         }
 
@@ -209,7 +204,7 @@
                         }
                     }
 
-                    if (component.get('v.RenderNotReturningOther')) {
+                    if (component.get('v.NotReturningOther')) {
                         theCase.Reasons_Not_Returning_Other__c = component.get('v.NotReturningOther');
                     }
 
@@ -221,7 +216,7 @@
                         theCase.Student_Presented_Risk_for__c = component.get('v.StudentRisk');
                     }
 
-                    if (component.get('v.StudentRisk') === 'Other') {
+                    if (component.get('v.StudentRiskOther')) {
                         theCase.Student_Presented_Risk_for_Other__c = component.get('v.StudentRiskOther');
                     }
 
@@ -283,12 +278,12 @@
         component.set('v.StudentRiskOther', '');
         component.set('v.NotReturningOther', '');
 
-        if (component.find('recommendedActions')) {
-            component.find('recommendedActions').set('v.value', []);
+        if (this.findByAuraId(component, 'recommendedActions')) {
+            this.findByAuraId(component, 'recommendedActions').set('v.value', []);
         }
 
-        if (component.find('notReturning')) {
-            component.find('notReturning').set('v.value', []);
+        if (this.findByAuraId(component, 'notReturning')) {
+            this.findByAuraId(component, 'notReturning').set('v.value', []);
         }
 
         component.set('v.RenderRequireReasonsAdministrativelyClosed', false);
@@ -300,5 +295,63 @@
         component.set('v.RenderRequireRecommendedActionOther', false);
         component.set('v.RenderRequireNotReturningOther', false);
         component.set('v.RenderRequireStudentRiskOther', false);
+    },
+
+    loadCustomMetadata: function (component) {
+        // Names of component ids mapped to the variables that contain their options
+        const componentIdToOptionsArrayName = {
+            caseStatus: 'v.CaseStatusOptions',
+            recommendedActions: 'v.RecommendedActionOptions',
+            studentIntent: 'v.StudentsIntentionOptions',
+            notReturning: 'v.NotReturningOptions',
+            returnTerm: 'v.StudentReturnTermOptions',
+            studentRisk: 'v.StudentRiskOptions',
+        };
+
+        let action = component.get('c.getCustomMetadata');
+        action.setCallback(this, function (response) {
+            if (response.getState() !== 'SUCCESS') {
+                this.fireToast('Error', response.getError()[0].message, 'error');
+                return;
+            }
+
+            let results = response.getReturnValue();
+
+            let optionsStatus = [];
+            let optionsIntent = [];
+            let generatedRequirements = {};
+
+            for (let key in results) {
+                if (key == 'caseStatus') {
+                    for (let key2 in results[key]) {
+                        optionsStatus.push(key2);
+                    }
+                } else if (key == 'studentIntent') {
+                    for (let key2 in results[key]) {
+                        optionsIntent.push(key2);
+                    }
+                }
+
+                generatedRequirements[key] = {};
+
+                for (let key2 in results[key]) {
+                    generatedRequirements[key][key2] = results[key][key2];
+                }
+            }
+
+            component.set(componentIdToOptionsArrayName['caseStatus'], optionsStatus);
+            component.set(componentIdToOptionsArrayName['studentIntent'], optionsIntent);
+            component.set('v.DynamicallyGeneratedRequirements', generatedRequirements);
+        });
+        $A.enqueueAction(action);
+    },
+
+    findByAuraId: function (component, auraId) {
+        let c = component.find(auraId);
+        if (Array.isArray(c)) {
+            if (c.length > 0) c = c[0];
+            else c = null;
+        }
+        return c;
     },
 });

@@ -46,6 +46,10 @@ public with sharing class StudentProfileCallout {
             checklistWrapper = FinancialAidChecklistWrapper.parse(responseBody);
         }
 
+        if (checklistWrapper == null || checklistWrapper.checklist_items == null) {
+            return checklists;
+        }
+
         for (FinancialAidChecklistWrapper.FinancialAidChecklist checklist : checklistWrapper.checklist_items) {
             checklists.add(checklist);
         }

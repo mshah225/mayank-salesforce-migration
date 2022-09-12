@@ -70,17 +70,17 @@ private class AdvisorPortalFilterSectionControllerTest {
      * |   Simon Kirksey      |   UGRAD  |  CAMP6   |  Junior   |  STGRP4  | PURMATH |  NRES |             |           |             |            |            |           |                        |
      * |   Sean Phillips      |   UGRAD  |  CAMP6   |  Graduate |  STGRP4  | TVFILM  |  RES  |             |           |             |            |            |           |                        |
      * |   Anna Phillips      |   GRAD   |  CAMP1   |           |          |         |       |   Masters   |  IRAAFUL  |             |  ELECENG   |    2161    |    2201   |  4+1 Accel, ApplGrd    |
-     * |   Carl Porter        |   GRAD   |  CAMP1   |           |          |         |       |  Doctorate  |  IRAAFUL  |             |  CIVLENG   |    2201    |    2241   |  4+1 Intl Accel        |
-     * |   Devin McCain       |   LAW    |  CAMP1   |           |          |         |       |   Masters   |  LAW      |             |  LAWYER    |    2191    |    2231   |                        |
-     * |   Devin McCain       |   LAW    |  CAMP5   |           |          |         |       | Certificate |  LAW      |             |  JUDGE     |    2191    |    2231   |                        |
-     * |   Anya Simms         |   GRAD   |  CAMP2   |           |          |         |       |  Doctorate  |  SCL_SOC  |             |  SOCWORK   |    2201    |    2241   |  ProvAd, ConCur        |
-     * |   Anya Simms         |   GRAD   |  CAMP2   |           |          |         |       |  Doctorate  |  WP_CAR   |             |  BUSNESS   |    2204    |    2244   |  ProvAd, ConCur        |
+     * |   Carl Porter        |   GRAD   |  CAMP1   |           |          |         |       |  Doctorate  |  IRAAFUL  |             |  CIVLENG   |    2201    |    2241   |  4+1 Intl Accel, RA    |
+     * |   Devin McCain       |   LAW    |  CAMP1   |           |          |         |       |   Masters   |  LAW      |             |  LAWYER    |    2191    |    2231   |  ConCur, RA            |
+     * |   Devin McCain       |   LAW    |  CAMP5   |           |          |         |       | Certificate |  LAW      |             |  JUDGE     |    2191    |    2231   |  ConCur, RA            |
+     * |   Anya Simms         |   GRAD   |  CAMP2   |           |          |         |       |  Doctorate  |  SCL_SOC  |             |  SOCWORK   |    2201    |    2241   |  ProvAd, ConCur, TA    |
+     * |   Anya Simms         |   GRAD   |  CAMP2   |           |          |         |       |  Doctorate  |  WP_CAR   |             |  BUSNESS   |    2204    |    2244   |  ProvAd, ConCur, TA    |
      * |   Corey Nickolette   |   GRAD   |  CAMP2   |           |          |         |       |   Masters   |  CRONKITE |             |  TVFILM    |    2167    |    2207   |  Format, RegHold       |
      * |   Maddy Thomas       |   GRAD   |  CAMP3   |           |          |         |       | Non-Degree  |  IRAAFUL  |             |  COMPSCI   |    2144    |    2184   |  Mayo, Cintana, ConCur |
      * |   Maddy Thomas       |   GRAD   |  CAMP3   |           |          |         |       | Non-Degree  |  CRONKITE |             |  JOURNAL   |    2147    |    2187   |  Mayo, Cintana, ConCur |
      * |   Maddy Thomas       |   GRAD   |  CAMP4   |           |          |         |       | Non-Degree  |  PREMED   |             |  PREMED    |    2141    |    2181   |  Mayo, Cintana, ConCur |
      * |   Charlie DorseyWard |   GRAD   |  CAMP4   |           |          |         |       |   Masters   |  WP_CAR   |             |  BUSNESS   |    2191    |    2231   |  Veteran, Cintana      |
-     * |   Mitch Keane        |   GRAD   |  CAMP4   |           |          |         |       | Certificate |  CRONKITE |             |  TVFILM    |    2107    |    2147   |  Veteran, ApplGrd      |
+     * |   Mitch Keane        |   GRAD   |  CAMP4   |           |          |         |       | Certificate |  CRONKITE |             |  TVFILM    |    2107    |    2147   |  Veteran, ApplGrd, TA  |
      * +----------------------+----------+----------+-----------+----------+---------+-------+-------------+-----------+-------------+------------+------------+-----------+------------------------+
      *
      *
@@ -148,6 +148,12 @@ private class AdvisorPortalFilterSectionControllerTest {
         // that don't exist in a test context
         AutoSubscriberService.disableAutoSubscriberService = true;
 
+        // Also create some case classifications for the success student trigger to use
+        Case_Classification__c asuCoachOutreachFuncGrp = newFunctionalGroup('ASU Coach Outreach');
+        insert asuCoachOutreachFuncGrp;
+        Case_Classification__c coachAdHocCategory = newCaseClassification('Ad Hoc', asuCoachOutreachFuncGrp.Id);
+        insert coachAdHocCategory;
+
         // Test user
         User testUser = new User(
             FirstName = 'Test User Richard',
@@ -172,7 +178,14 @@ private class AdvisorPortalFilterSectionControllerTest {
             Name = 'Test Pod ',
             Committee__c = 'tp'
         );
-        insert testSuccessPod;
+        Success_Pod__c testSuccessPod2 = new Success_Pod__c(
+            OwnerId = testUser.Id,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Pod__c', 'Grad'),
+            Primary_Email__c = testUser.Email,
+            Name = 'Grad Pod ',
+            Committee__c = 'gp'
+        );
+        insert new List<Success_Pod__c>{ testSuccessPod, testSuccessPod2 };
 
         // And 6 locations
         Location__c testCampus1 = newLocation('camp1', '0011221101', true);
@@ -250,11 +263,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         Contact annaPhillips = newContact('Anna', 'Phillips');
         testContacts.add(annaPhillips);
         Contact carlPorter = newContact('Carl', 'Porter');
+        carlPorter.Research_Assistant__c = true;
         testContacts.add(carlPorter);
         Contact devinMcCain = newContact('Devin', 'McCain');
+        devinMcCain.Research_Assistant__c = true;
         testContacts.add(devinMcCain);
         Contact anyaSimms = newContact('Anya', 'Simms');
         anyaSimms.PS_Preferred_First_Name__c = 'Anastasia';
+        anyaSimms.Teaching_Assistant__c = true;
         anyaSimms.EmplId__c = '1200889090';
         anyaSimms.ASURite_ID__c = 'asimms4';
         testContacts.add(anyaSimms);
@@ -265,6 +281,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         Contact charlieDorseyWard = newContact('Charlie', 'DorseyWard');
         testContacts.add(charlieDorseyWard);
         Contact mitchKeane = newContact('Mitch', 'Keane');
+        mitchKeane.Teaching_Assistant__c = true;
         testContacts.add(mitchKeane);
         insert testContacts;
 
@@ -297,21 +314,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         testSuccessStudents.add(simonKirkseyStudent);
         Success_Student__c seanPhillipsStudent = newSuccessStudent(seanPhillips, testSuccessPod, ssUGrad);
         testSuccessStudents.add(seanPhillipsStudent);
-        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod, ssGrad);
+        Success_Student__c annaPhillipsStudent = newSuccessStudent(annaPhillips, testSuccessPod2, ssGrad);
         testSuccessStudents.add(annaPhillipsStudent);
-        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod, ssGrad);
+        Success_Student__c carlPorterStudent = newSuccessStudent(carlPorter, testSuccessPod2, ssGrad);
         testSuccessStudents.add(carlPorterStudent);
-        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod, ssGrad);
+        Success_Student__c devinMcCainStudent = newSuccessStudent(devinMcCain, testSuccessPod2, ssGrad);
         testSuccessStudents.add(devinMcCainStudent);
-        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod, ssGrad);
+        Success_Student__c anyaSimmsStudent = newSuccessStudent(anyaSimms, testSuccessPod2, ssGrad);
         testSuccessStudents.add(anyaSimmsStudent);
-        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod, ssGrad);
+        Success_Student__c coreyNickoletteStudent = newSuccessStudent(coreyNickolette, testSuccessPod2, ssGrad);
         testSuccessStudents.add(coreyNickoletteStudent);
-        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod, ssGrad);
+        Success_Student__c maddyThomasStudent = newSuccessStudent(maddyThomas, testSuccessPod2, ssGrad);
         testSuccessStudents.add(maddyThomasStudent);
-        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod, ssGrad);
+        Success_Student__c charlieDorseyWardStudent = newSuccessStudent(charlieDorseyWard, testSuccessPod2, ssGrad);
         testSuccessStudents.add(charlieDorseyWardStudent);
-        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod, ssGrad);
+        Success_Student__c mitchKeaneStudent = newSuccessStudent(mitchKeane, testSuccessPod2, ssGrad);
         testSuccessStudents.add(mitchKeaneStudent);
         insert testSuccessStudents;
 
@@ -486,6 +503,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Program_Code__c = 'IRAAFUL',
             Plan_Code__c = 'ELECENG',
             Admit_Term__c = term2161.Id,
+            Degree_Chkout_Stat_Code__c = 'AG', // applied to graduate code
             Requirement_Term__c = '2201',
             Status__c = 'Active in Program',
             Effective_Date__c = tMinus3d
@@ -1909,7 +1927,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Status = 'Email Sent'
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -1918,7 +1936,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Status IN ('Email Sent', 'Busy Signal')
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -1972,7 +1990,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CC_Category__r.Name = 'CAT-3'
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -1981,7 +1999,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CC_Category__r.Name IN ('CAT-4', 'CAT-3')
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2035,7 +2053,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Subject = 'Tailwind'
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2044,7 +2062,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Subject IN ('Tailwind', 'Bee girl')
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2102,7 +2120,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                     FROM Persistence_Outlook__c
                     WHERE Curr_Cont_Prediction_Level__c IN (0, 1, 2, 3)
                 )
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2115,7 +2133,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                     FROM Persistence_Outlook__c
                     WHERE Curr_Cont_Prediction_Level__c IN (0, 1, 2, 3, 4, 5)
                 )
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2169,7 +2187,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Contact.Most_Recent_Outlook_Change_Direction__c = 1
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2178,7 +2196,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Contact.Most_Recent_Outlook_Change_Direction__c IN (1, 0)
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2221,6 +2239,369 @@ private class AdvisorPortalFilterSectionControllerTest {
         System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents2.size(), results2.size());
         assertCorrectReturned(expectedStudents2, results2);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationAccel4Plus1Degree() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Anna Phillips', 'Carl Porter')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'accelerated 4+1 degrees';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationFormatStudents() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Corey Nickolette')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'format students';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationProvStudents() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Anya Simms')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'provivisional admits, not met yet';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationVeterans() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Charlie Dorseyward', 'Mitch Keane')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'veterans';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationApplToGraduate() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Anna Phillips', 'Mitch Keane')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'applied to graduate';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationMayoStudents() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Maddy Thomas')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'mayo students';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationCintanaStudents() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Maddy Thomas', 'Charlie Dorseyward')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'cintana students';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationResearchAssists() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Devin McCain', 'Carl Porter')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'research assistants';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulationTeachingAssists() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Anya Simms', 'Mitch Keane')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'teaching assistants';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulatioConcurEnrol() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Anya Simms', 'Maddy Thomas', 'Devin McCain')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'concurrent enrollment';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+    }
+
+    @isTest
+    private static void testFilterSpecialPopulatioRegHold() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT Contact__c ContactId__alias
+            FROM Student_Program_Plan__c
+            WHERE Contact__r.Name IN ('Corey Nickolette')
+            GROUP BY Contact__c
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.career = 'GRD';
+        filter.caseTypeState = 'AllCasesState';
+        filter.specialPopulation = 'active students with registation hold';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
     }
 
     @isTest
@@ -2529,7 +2910,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT ContactId ContactId__alias, COUNT(Id)
             FROM Case
-            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
             HAVING COUNT(Id) = 1
         ];
@@ -2537,7 +2918,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents2 = [
             SELECT ContactId ContactId__alias, COUNT(Id)
             FROM Case
-            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
             HAVING COUNT(Id) = 4
         ];
@@ -2610,7 +2991,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             WHERE
                 CreatedDate <= :endOftMinus3d
                 AND CreatedDate >= :startOftMinus9d
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2619,7 +3000,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CreatedDate >= :startOftMinus3d
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2628,7 +3009,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 CreatedDate <= :endOftMinus3d
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2713,7 +3094,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             WHERE
                 Followup_Date__c <= :tPlus9d
                 AND Followup_Date__c >= :tPlus3d
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2722,7 +3103,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Followup_Date__c >= :tPlus3d
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2731,7 +3112,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             FROM Case
             WHERE
                 Followup_Date__c <= :tPlus3d
-                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
             GROUP BY ContactId
         ];
 
@@ -2806,7 +3187,8 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents = [
             SELECT ContactId ContactId__alias
             FROM Case
-            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
                 AND ContactId IN (
                     SELECT Contact__c
                     FROM Persistence_Outlook__c
@@ -2818,7 +3200,8 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<AggregateResult> expectedStudents2 = [
             SELECT ContactId ContactId__alias
             FROM Case
-            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') 
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
                 AND ContactId IN (SELECT Contact__c FROM Persistence_Outlook__c WHERE Change_Date__c >= :tMinus4d)
             GROUP BY ContactId
         ];

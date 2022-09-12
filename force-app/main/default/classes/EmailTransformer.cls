@@ -4,7 +4,7 @@ public class EmailTransformer {
     public List<EmailReplySuffix__mdt> emailSuffixes {
         get {
             if (emailSuffixes == null) {
-                emailSuffixes = [SELECT MasterLabel FROM EmailReplySuffix__mdt];
+                emailSuffixes = [SELECT MasterLabel, Cleaned_Suffix__c FROM EmailReplySuffix__mdt];
             }
             return emailSuffixes;
         }
@@ -17,8 +17,7 @@ public class EmailTransformer {
             for (EmailReplySuffix__mdt suffixToCheckFor : emailSuffixes) {
                 if (cleanEmailAddress.contains(suffixToCheckFor.MasterLabel)) {
                     try {
-                        cleanEmailAddress = removeSuffixFromEmail(cleanEmailAddress, suffixToCheckFor.MasterLabel);
-                        cleanEmailAddress = findAndReplaceSecondToLastPeriod(cleanEmailAddress);
+                        cleanEmailAddress = removeSuffixFromEmail(cleanEmailAddress, suffixToCheckFor.MasterLabel, suffixToCheckFor.Cleaned_Suffix__c);
                     } catch (Exception e) {
                         throw new EmailTransformerException('Email does not match expected format:\n' + e.getMessage());
                     }
@@ -37,18 +36,9 @@ public class EmailTransformer {
         return cleanEmailAddress.toLowerCase();
     }
 
-    private String removeSuffixFromEmail(String emailWithSuffix, String suffixToRemove) {
-        Integer positionOfSuffix = emailWithSuffix.indexOf(suffixToRemove);
-        String emailWithoutSuffix = emailWithSuffix.subString(0, positionOfSuffix);
-        return emailWithoutSuffix;
-    }
-
-    private String findAndReplaceSecondToLastPeriod(String emailToClean) {
-        String reverseEmail = emailToClean.reverse();
-        Integer posOfPeriod = reverseEmail.indexOf('.', reverseEmail.indexOf('.') + 1);
-        reverseEmail = reverseEmail.subString(0, posOfPeriod) + '@' + reverseEmail.subString(posOfPeriod + 1);
-        reverseEmail = reverseEmail.reverse();
-        return reverseEmail;
+    private String removeSuffixFromEmail(String emailWithSuffix, String suffixToRemove, String suffixToAdd) {
+        String emailWithNewSuffix = emailWithSuffix.replace(suffixToRemove, suffixToAdd);
+        return emailWithNewSuffix;
     }
 
     public class EmailTransformerException extends Exception {

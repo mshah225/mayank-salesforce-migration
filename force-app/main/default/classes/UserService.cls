@@ -1,33 +1,46 @@
 public class UserService {
-    public static User createTestUser() {
-        User testUser = new User();
-        testUser.FirstName = 'Test';
-        testUser.LastName = 'User';
-        testUser.Username = 'test.user.emperor.of.Byzantium@test.example.com';
-        testUser.Email = 'test.user@test.example.com';
-        testUser.Alias = 'testuser';
-        testUser.CommunityNickname = 'testuserCom';
-        testUser.TimeZoneSidKey = 'America/Phoenix';
-        testUser.LocaleSidKey = 'en_US';
-        testUser.EmailEncodingKey = 'ISO-8859-1';
-        testUser.LanguageLocaleKey = 'en_US';
+    public static void populateContactsUsingAsurite(List<User> userList) {
+        Id communityProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Community'].Id;
+        Id communityCapProfileId = [SELECT Id FROM Profile WHERE Name = 'ASU Community CAP'].Id;
+        Map<String, Contact> asuritesToContact = new Map<String, Contact>();
+        Map<String, User> asuritesToUser = new Map<String, User>();
 
-        return testUser;
+        for (User u : userList) {
+            if (u.FederationIdentifier != null && u.ProfileId == communityProfileId) {
+                asuritesToUser.put(u.FederationIdentifier.split('@').get(0), u);
+                System.debug(u.FederationIdentifier.split('@').get(0));
+            }
+        }
+
+        if (!asuritesToUser.isEmpty()) {
+            List<Contact> contactsForAsurites = [
+                SELECT Id, ASURITE_Id__c, CAP__c
+                FROM Contact
+                WHERE ASURITE_Id__c IN :asuritesToUser.keySet()
+            ];
+            for (Contact c : contactsForAsurites) {
+                asuritesToContact.put(c.ASURITE_Id__c, c);
+            }
+
+            for (String asurite : asuritesToUser.keySet()) {
+                Contact c = asuritesToContact.get(asurite);
+                User u = asuritesToUser.get(asurite);
+                u.ContactId = c.Id;
+
+                if (c.CAP__c != null) {
+                    u.ProfileId = communityCapProfileId;
+                }
+            }
+        }
     }
 
-    public static List<User> createMultipleTestUsers(Integer numUsers) {
-        List<User> userList = new List<User>();
-
-        for (Integer i = 0; i < numUsers; i++) {
-            User tUser = createTestUser();
-            tUser.FirstName = 'Test' + i;
-            tUser.LastName = 'User' + i;
-            tUser.Username = 'test.user.emperor.of.Byzantium' + i + '@test.example.com';
-            tUser.Email = 'test.user' + i + '@test.example.com';
-            tUser.Alias = 'test' + i;
-            tUser.CommunityNickname = 'testuser' + i;
-            userList.add(tUser);
+    public static void populateRoles(List<User> userList) {
+        for (User u : userList) {
+            if (u.UserPermissionsKnowledgeUser) {
+                u.Role_Knowledge__c = true;
+            } else {
+                u.Role_Knowledge__c = false;
+            }
         }
-        return userList;
     }
 }

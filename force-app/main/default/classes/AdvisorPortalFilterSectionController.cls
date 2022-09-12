@@ -484,10 +484,14 @@ public class AdvisorPortalFilterSectionController {
         contactConstrictingStatement = getSoqlListString(contactIdList);
 
         Set<Id> filteredContactIds = new Set<Id>();
-        String queryString =
-            'SELECT SG_Contact__c FROM Student_Group__c WHERE SG_Contact__c IN ' +
-            getSoqlListString(contactIdList) +
-            '';
+
+        String queryString = 'SELECT SG_Contact__c FROM Student_Group__c WHERE';
+
+        if (contactIdList.isEmpty()) {
+            queryString += ' SG_Contact__c = \'\'';
+        } else {
+            queryString += ' SG_Contact__c IN ' + getSoqlListString(contactIdList);
+        }
 
         if (filter.career != null) {
             // if statement for using either undergrad filtering
@@ -576,7 +580,10 @@ public class AdvisorPortalFilterSectionController {
         List<String> andStatements = new List<String>();
 
         if (contactIds != null) {
-            andStatements.add('SG_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+            if (contactIds.isEmpty())
+                andStatements.add('SG_Contact__c = \'\'');
+            else
+                andStatements.add('SG_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
         } else {
             andStatements.add('SG_Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
         }
@@ -656,7 +663,10 @@ public class AdvisorPortalFilterSectionController {
         List<String> andStatements = new List<String>();
 
         if (contactIds != null) {
-            andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
+            if (contactIds.isEmpty())
+                andStatements.add('Id = \'\'');
+            else
+                andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
         } else {
             andStatements.add('Id IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
         }
@@ -722,7 +732,10 @@ public class AdvisorPortalFilterSectionController {
 
         // Add filter for contact id
         if (contactIds != null) {
-            andStatements.add('Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+            if (contactIds.isEmpty())
+                andStatements.add('Contact__c = \'\'');
+            else
+                andStatements.add('Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
         } else {
             andStatements.add('Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
         }
@@ -827,7 +840,10 @@ public class AdvisorPortalFilterSectionController {
         List<String> andStatements = new List<String>();
 
         if (contactIds != null) {
-            andStatements.add('Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+            if (contactIds.isEmpty())
+                andStatements.add('Contact__c = \'\'');
+            else
+                andStatements.add('Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
         } else {
             andStatements.add('Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
         }
@@ -885,7 +901,10 @@ public class AdvisorPortalFilterSectionController {
         List<String> andStatements = new List<String>();
 
         if (contactIds != null) {
-            andStatements.add('SI_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+            if (contactIds.isEmpty())
+                andStatements.add('SI_Contact__c = \'\'');
+            else
+                andStatements.add('SI_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
         } else {
             andStatements.add('SI_Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
         }
@@ -1188,8 +1207,12 @@ public class AdvisorPortalFilterSectionController {
 
         // contactIds should be the valid student groups, since we are limited to 2 Semi-joins and can't do it using semi-join in this case
         // if Salesforce ever increases that limit, then we can do semi-join here rather than passing in the possible ids
-        if (contactIds != null)
-            andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('Id = \'\'');
+            else
+                andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
+        }
 
         queryString += ' ' + String.join(andStatements, ' AND ');
 

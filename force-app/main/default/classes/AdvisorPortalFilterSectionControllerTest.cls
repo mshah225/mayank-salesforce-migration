@@ -930,6 +930,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testGetResidencyOptions() {
+        LogSuite.activateTestFlowSuite('testGetResidencyOptions');
         Test.startTest();
         Map<String, String> options = AdvisorPortalFilterSectionController.getPicklistValues(
             'Student_Program_Plan__c',
@@ -945,6 +946,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     static void testGetCaseStatusOptions() {
+        LogSuite.activateTestFlowSuite('testGetCaseStatusOptions');
         List<Advisor_Portal_Case_Status__mdt> validStatuses = [
             SELECT Label, Value__c
             FROM Advisor_Portal_Case_Status__mdt
@@ -971,6 +973,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testGetCaseSubjectPicklistValues() {
+        LogSuite.activateTestFlowSuite('testGetCaseSubjectPicklistValues');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<Case> testCases = [SELECT Id, Subject FROM Case WHERE OwnerId = :testUser.Id];
@@ -996,6 +999,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testGetCaseCategoryPicklistValues() {
+        LogSuite.activateTestFlowSuite('testGetCaseCategoryPicklistValues');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<Case> testCases = [
@@ -1026,6 +1030,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testGetCampusPicklistValues() {
+        LogSuite.activateTestFlowSuite('testGetCampusPicklistValues');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<Location__c> ugradCampuses = [SELECT Name FROM Location__c];
@@ -1056,6 +1061,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testGetAcademicProgramPicklistValues() {
+        LogSuite.activateTestFlowSuite('testGetAcademicProgramPicklistValues');
         List<Program__c> testPrograms = [SELECT Id, Name, Program_Code__c FROM Program__c WHERE Career__c = 'Graduate'];
 
         Test.startTest();
@@ -1076,6 +1082,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testGetAcademicPlanPicklistValues() {
+        LogSuite.activateTestFlowSuite('testGetAcademicPlanPicklistValues');
         List<Plan__c> testPlans = [
             SELECT Id, Name, Plan_Code__c, Program__r.Program_Code__c
             FROM Plan__c
@@ -1121,6 +1128,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterUndergraduate() {
+        LogSuite.activateTestFlowSuite('testFilterUndergraduate');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1153,6 +1161,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterGraduate() {
+        LogSuite.activateTestFlowSuite('testFilterGraduate');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1185,6 +1194,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterName() {
+        LogSuite.activateTestFlowSuite('testFilterName');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         // Search name
@@ -1262,6 +1272,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterCampus() {
+        LogSuite.activateTestFlowSuite('testFilterCampus');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1333,6 +1344,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterAcademicLevel() {
+        LogSuite.activateTestFlowSuite('testFilterAcademicLevel');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1403,6 +1415,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterStudentGroup() {
+        LogSuite.activateTestFlowSuite('testFilterStudentGroup');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1461,6 +1474,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterMajor() {
+        LogSuite.activateTestFlowSuite('testFilterMajor');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1519,6 +1533,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterDegreeLevel() {
+        LogSuite.activateTestFlowSuite('testFilterDegreeLevel');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1593,6 +1608,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterAcademicProgram() {
+        LogSuite.activateTestFlowSuite('testFilterAcademicProgram');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1669,6 +1685,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterAcademicPlan() {
+        LogSuite.activateTestFlowSuite('testFilterAcademicPlan');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1740,6 +1757,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterAdmitTerm() {
+        LogSuite.activateTestFlowSuite('testFilterAdmitTerm');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1849,6 +1867,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterResidency() {
+        LogSuite.activateTestFlowSuite('testFilterResidency');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1920,6 +1939,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterCaseStatus() {
+        LogSuite.activateTestFlowSuite('testFilterCaseStatus');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -1983,6 +2003,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterCaseCategory() {
+        LogSuite.activateTestFlowSuite('testFilterCaseCategory');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2046,6 +2067,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterCaseSubject() {
+        LogSuite.activateTestFlowSuite('testFilterCaseSubject');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2109,6 +2131,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterOutlookScore() {
+        LogSuite.activateTestFlowSuite('testFilterOutlookScore');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2180,6 +2203,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterOutlookChange() {
+        LogSuite.activateTestFlowSuite('testFilterOutlookChange');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2243,6 +2267,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationAccel4Plus1Degree() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationAccel4Plus1Degree');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2276,6 +2301,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationFormatStudents() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationFormatStudents');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2309,6 +2335,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationProvStudents() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationProvStudents');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2342,6 +2369,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationVeterans() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationVeterans');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2375,6 +2403,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationApplToGraduate() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationApplToGraduate');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2408,6 +2437,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationMayoStudents() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationMayoStudents');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2441,6 +2471,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationCintanaStudents() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationCintanaStudents');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2474,6 +2505,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationResearchAssists() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationResearchAssists');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2507,6 +2539,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulationTeachingAssists() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationTeachingAssists');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2539,7 +2572,8 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @isTest
-    private static void testFilterSpecialPopulatioConcurEnrol() {
+    private static void testFilterSpecialPopulationConcurEnrol() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationConcurEnrol');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2572,7 +2606,8 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @isTest
-    private static void testFilterSpecialPopulatioRegHold() {
+    private static void testFilterSpecialPopulationRegHold() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulationRegHold');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2606,6 +2641,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @isTest
     private static void testFilterSpecialPopulation() {
+        LogSuite.activateTestFlowSuite('testFilterSpecialPopulation');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2905,6 +2941,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterCaseCount() {
+        LogSuite.activateTestFlowSuite('testFilterCaseCount');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -2966,6 +3003,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterCreatedDate() {
+        LogSuite.activateTestFlowSuite('testFilterCreatedDate');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         Datetime startOftMinus3d = System.now().addDays(-3);
@@ -3083,6 +3121,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterFollowupDate() {
+        LogSuite.activateTestFlowSuite('testFilterFollowupDate');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         Date tPlus3d = System.today().addDays(3);
@@ -3179,6 +3218,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterPersistanceChangeDate() {
+        LogSuite.activateTestFlowSuite('testFilterPersistanceChangeDate');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         Date tMinus4d = System.today().addDays(-4);
@@ -3278,6 +3318,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterAllStudents() {
+        LogSuite.activateTestFlowSuite('testFilterAllStudents');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -3335,6 +3376,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     private static void testFilterWatchlistCases() {
+        LogSuite.activateTestFlowSuite('testFilterWatchlistCases');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [
@@ -3369,6 +3411,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
     @IsTest
     static void testMutlipleFiltersAtOnce() {
+        LogSuite.activateTestFlowSuite('testMutlipleFiltersAtOnce');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<AggregateResult> expectedStudents = [

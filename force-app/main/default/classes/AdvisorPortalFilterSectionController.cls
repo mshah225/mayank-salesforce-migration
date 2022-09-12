@@ -222,6 +222,7 @@ public class AdvisorPortalFilterSectionController {
             ' HAVING MAX(Plan_Effective_Date__c) <= TODAY AND MAX(Organization__r.Effective_Date__c) <= TODAY' +
             ' ORDER BY MAX(Organization__r.Organization_Code__c) ASC';
 
+        LogSuite.log('Database.query', queryString);
         for (AggregateResult plan : Database.query(queryString)) {
             String label = (String) plan.get('expr1') + ' / ' + (String) plan.get('expr0');
             String value = (String) plan.get('expr1');
@@ -289,6 +290,7 @@ public class AdvisorPortalFilterSectionController {
 
         queryString += ' ORDER BY Plan_Code__c ASC';
 
+        LogSuite.log('Database.query', queryString);
         for (Plan__c plan : Database.query(queryString)) {
             labelToValueMap.put(plan.Plan_Code__c + ' / ' + plan.Name, plan.Plan_Code__c);
         }
@@ -331,6 +333,7 @@ public class AdvisorPortalFilterSectionController {
         String caseQueryString = generateCaseSearchString(filter, viewAsOptions, possibleContactIds);
 
         // Get all possible results
+        LogSuite.log('Database.query', caseQueryString);
         List<Case> allCases = Database.query(caseQueryString);
 
         Set<Id> contactIds = new Set<Id>();
@@ -399,6 +402,7 @@ public class AdvisorPortalFilterSectionController {
         // Query success students and filter down from there
         String successStudentFilterString = generateSuccessStudentFilterString(filter, viewAsOptions);
         Set<Id> possibleContactIds = new Set<Id>();
+        LogSuite.log('Database.query', successStudentFilterString);
         for (Success_Student__c sucStu : Database.query(successStudentFilterString)) {
             possibleContactIds.add(sucStu.Student__c);
         }
@@ -414,6 +418,7 @@ public class AdvisorPortalFilterSectionController {
         String studentQueryString = generateStudentSearchString(filter, viewAsOptions, possibleContactIds);
 
         // Get all possible results
+        LogSuite.log('Database.query', studentQueryString);
         List<Contact> allContacts = Database.query(studentQueryString);
 
         Set<Id> contactIds = new Set<Id>();
@@ -501,6 +506,7 @@ public class AdvisorPortalFilterSectionController {
 
         // make query to filter - or return intial set of contactIds if no filtering is needed
         if (useQueryString) {
+            LogSuite.log('Database.query', queryString);
             for (AggregateResult studentPlanResult : Database.query(queryString)) {
                 filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
             }
@@ -619,9 +625,11 @@ public class AdvisorPortalFilterSectionController {
             String.join(andStatements, ' AND ') +
             ' GROUP BY SG_Contact__c LIMIT 2000';
 
-        if (useFilter)
+        if (useFilter) {
+            LogSuite.log('Database.query', queryString);
             for (AggregateResult serviceIndicator : Database.query(queryString))
                 filteredContactIds.add((Id) serviceIndicator.get('SG_Contact__c'));
+        }
 
         return filteredContactIds;
     }
@@ -676,9 +684,11 @@ public class AdvisorPortalFilterSectionController {
 
         String queryString = 'SELECT Id FROM Contact WHERE ' + String.join(andStatements, ' AND ');
 
-        if (useFilter)
+        if (useFilter) {
+            LogSuite.log('Database.query', queryString);
             for (Contact con : Database.query(queryString))
                 filteredContactIds.add(con.Id);
+        }
 
         return filteredContactIds;
     }
@@ -754,6 +764,7 @@ public class AdvisorPortalFilterSectionController {
 
         if (useFilter) {
             // Query and filter down to matching items
+            LogSuite.log('Database.query', queryString);
             List<Student_Program_Plan__c> potentialMatches = Database.query(queryString);
 
             // Need to do extra work to figure out which, of the two filters are met (since dual enrollment is requires us to count to determine if met)
@@ -843,10 +854,11 @@ public class AdvisorPortalFilterSectionController {
             String.join(andStatements, ' AND ') +
             ' GROUP BY Contact__c LIMIT 2000';
 
-        System.debug(queryString);
-        if (useFilter)
+        if (useFilter) {
+            LogSuite.log('Database.query', queryString);
             for (AggregateResult studentMilestone : Database.query(queryString))
                 filteredContactIds.add((Id) studentMilestone.get('Contact__c'));
+        }
 
         return filteredContactIds;
     }
@@ -910,9 +922,11 @@ public class AdvisorPortalFilterSectionController {
             String.join(andStatements, ' AND ') +
             ' GROUP BY SI_Contact__c LIMIT 2000';
 
-        if (useFilter)
+        if (useFilter) {
+            LogSuite.log('Database.query', queryString);
             for (AggregateResult serviceIndicator : Database.query(queryString))
                 filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
+        }
 
         return filteredContactIds;
     }

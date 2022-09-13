@@ -4,7 +4,7 @@ public class EmailTransformer {
     public List<EmailReplySuffix__mdt> emailSuffixes {
         get {
             if (emailSuffixes == null) {
-                emailSuffixes = [SELECT MasterLabel, Cleaned_Suffix__c FROM EmailReplySuffix__mdt];
+                emailSuffixes = [SELECT MasterLabel FROM EmailReplySuffix__mdt];
             }
             return emailSuffixes;
         }

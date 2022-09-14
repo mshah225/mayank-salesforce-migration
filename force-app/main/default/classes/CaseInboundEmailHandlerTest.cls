@@ -1333,7 +1333,7 @@ public with sharing class CaseInboundEmailHandlerTest {
         Contact contactAfterTest = [SELECT Email, Last_Case_Email_Used__c FROM Contact];
 
         System.assertNotEquals(email.toAddresses[0], contactAfterTest.Email);
-        System.assertEquals('test.test.com@asu.edu', contactAfterTest.Email);
+        System.assertEquals(testContact[0].Email, contactAfterTest.Email);
         System.assertEquals(null, contactAfterTest.Last_Case_Email_Used__c);
     }
 

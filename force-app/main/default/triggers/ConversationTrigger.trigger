@@ -1,4 +1,4 @@
-trigger UpdateConvSharingTrigger on smagicinteract__Conversation__c(
+trigger ConversationTrigger on smagicinteract__Conversation__c(
     before insert,
     before update,
     before delete,

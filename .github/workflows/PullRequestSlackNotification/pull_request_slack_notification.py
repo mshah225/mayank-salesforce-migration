@@ -6,7 +6,7 @@ from github import Github
 
 def post_message_to_slack(blocks=None):
     slack_token = "xoxb-5106578285-2024746179665-6YM7l23Gti2SVlEGZivXUYH5"
-    slack_channel = "#uto-salesforce-devs"
+    slack_channel = "#et-salesforce-dev-team"
     return requests.post(
         "https://slack.com/api/chat.postMessage",
         {

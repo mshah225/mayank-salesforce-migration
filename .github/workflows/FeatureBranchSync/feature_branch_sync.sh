@@ -4,10 +4,13 @@ git config pull.rebase false && git config user.name "GitHub Actions" && git con
 
 cleanMergeCount=0
 abortedMergeCount=0
+deletedBranchCount=0
 cleanMergeArray=()
 abortedMergeArray=()
+deletedBranchArray=()
 cleanBranchText=""
 abortedBranchText=""
+deletedBranchText=""
 
 for remote in $(git branch -r); do
     if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
@@ -19,6 +22,16 @@ for remote in $(git branch -r); do
             git push -f origin $branch
             cleanMergeArray+=("$branch")
             cleanMergeCount=$((cleanMergeCount + 1))
+            continue
+        fi
+
+        if git diff-index --quiet origin/main --; then
+            sha=$(git rev-parse --short HEAD)
+            git checkout -f main
+            # git branch -D $branch
+            # git push origin --delete $branch
+            deletedBranchArray+=("$branch [$sha]")
+            deletedBranchCount=$((deletedBranchCount + 1))
             continue
         fi
 
@@ -44,4 +57,4 @@ for value in "${abortedMergeArray[@]}"; do
     abortedBranchText="$abortedBranchText- $value\n"
 done
 
-curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":partywizard: Syncing Feature Branches [DONE]","emoji":true}},{"type":"section","fields":[{"type":"mrkdwn","text":":canvas-check: *merges:* '"$cleanMergeCount"'"},{"type":"mrkdwn","text":":x: *merges:* '"$abortedMergeCount"'"}]},{"type":"section","fields":[{"type":"mrkdwn","text":"'"$cleanBranchText"'"},{"type":"mrkdwn","text":"'"$abortedBranchText"'"}]},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":partywizard: Syncing Feature Branches [DONE]","emoji":true}},{"type":"section","fields":[{"type":"mrkdwn","text":":canvas-check: *clean merges:* '"$cleanMergeCount"'"},{"type":"mrkdwn","text":":exclamation: *aborted merges:* '"$abortedMergeCount"'"},{"type":"mrkdwn","text":":x: *deletes:* '"$deletedBranchCount"'"}]},{"type":"section","fields":[{"type":"mrkdwn","text":"'"$cleanBranchText"'"},{"type":"mrkdwn","text":"'"$abortedBranchText"'"},{"type":"mrkdwn","text":"'"$deletedBranchText"'"}]},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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

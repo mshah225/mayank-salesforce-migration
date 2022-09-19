@@ -1,5 +1,56 @@
 @isTest
-private class ConversationServiceTest {
+private class ConversationTriggerTest {
+    @isTest
+    private static void testMethod1() {
+        ConversationDispatcher dispatcher = new ConversationDispatcher(null, null, null, null);
+        RecordType recordTypeForContact = [
+            SELECT Id, Name
+            FROM RecordType
+            WHERE sobjecttype = 'Contact' AND Name = 'External Mastered'
+            LIMIT 1
+        ];
+        Contact con = new Contact();
+        con.RecordTypeId = recordTypeForContact.Id;
+        con.EMPLID__c = '12345';
+        con.LastName = 'Test SMS';
+        Database.insert(con);
+
+        smagicinteract__Conversation__c conv = new smagicinteract__Conversation__c();
+        conv.Name = 'Conversation 1';
+        conv.smagicinteract__Contact__c = con.Id;
+        Database.insert(conv);
+
+        Profile p = [SELECT id FROM profile WHERE name = 'System Administrator'];
+        User u1 = new User(
+            Alias = 'test1',
+            MobilePhone = '9960231818',
+            TimeZoneSidKey = 'GMT',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'ISO-8859-1',
+            ProfileId = p.Id,
+            LanguageLocaleKey = 'en_US',
+            lastname = 'test1',
+            email = 'test2@test.com',
+            username = 'test4@test.screenmagic.com'
+        );
+        Database.insert(u1);
+        conv.Success_Coach__c = u1.Id;
+
+        Test.startTest();
+        Database.upsert(conv);
+        Test.stopTest();
+
+        List<smagicinteract__Conversation__Share> convShareList = [
+            SELECT Id, RowCause, UserOrGroupId, ParentId
+            FROM smagicinteract__Conversation__Share
+            WHERE ParentId = :conv.Id
+        ];
+        system.assertEquals(2, convShareList.size());
+
+        delete (conv);
+        undelete (conv);
+    }
+
     @isTest
     private static void updateSharingTest() {
         //Test for change in Success Coach
@@ -85,7 +136,7 @@ private class ConversationServiceTest {
     }
 
     @isTest
-    public static void testExecute() {
+    private static void testExecute() {
         smagicinteract__SMS_SenderId__c smsSender = new smagicinteract__SMS_SenderId__c();
         smsSender.SenderIdUnit__c = 'FYS';
         smsSender.smagicinteract__senderId__c = '12345';
@@ -132,17 +183,32 @@ private class ConversationServiceTest {
     }
 
     @isTest
-    public static void testErrorLogging() {
+    private static void testErrorLogging() {
         Database.SaveResult[] lsr = Database.insert(
             new List<smagicinteract__Conversation__c>{
                 new smagicinteract__Conversation__c(smagicinteract__Inbound_Number__c = '123456789123456789123456789')
             },
             false
         );
-        ConversationServicer uc = new ConversationServicer();
+        ConversationService uc = new ConversationService();
         uc.checkForErrors(lsr);
 
         List<smagicinteract__Error_Log__c> errorLogList = [SELECT Id FROM smagicinteract__Error_Log__c];
         System.assertEquals(1, errorLogList.size());
+    }
+
+    @isTest
+    private static void testErrorLogger() {
+        smagicinteract__Conversation__c conversation = new smagicinteract__Conversation__c();
+        conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456789';
+        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{ conversation }, false);
+        ConversationService service = new ConversationService();
+        service.processDatabaseResults(lsr);
+
+        conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456780';
+        Database.SaveResult[] lsr2 = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
+        service.processDatabaseResults(lsr2);
+
+        System.assertEquals(2, [SELECT COUNT() FROM Case]);
     }
 }

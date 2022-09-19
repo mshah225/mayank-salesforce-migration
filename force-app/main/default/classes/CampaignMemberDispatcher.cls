@@ -17,28 +17,82 @@ public class CampaignMemberDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        CampaignMemberService service = new CampaignMemberService();
-        service.processNewMembers(newList);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
+        if (!CampaignMemberService.ranCampaignMembersUpdatePrimary) {
+            cms.updateLastMemberStatusChange();
+            cms.processingBefore();
+            cms.addInTriggerToContactAndLeadMap();
+            if (!cms.isMembersByContactsEmpty()) {
+                cms.processContacts();
+            }
+            if (!cms.isMembersByLeadsEmpty()) {
+                cms.processLeads();
+            }
+        }
+        cms.markAffectedMembersPrimaryAndOpportunties();
     }
+
     public void beforeUpdate() {
-        CampaignMemberService service = new CampaignMemberService();
-        service.processOldMembers(newList, newMap, oldList);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
+        if (!CampaignMemberService.ranCampaignMembersUpdatePrimary) {
+            cms.updateLastMemberStatusChange();
+            cms.processingBefore();
+            cms.addInTriggerToContactAndLeadMap();
+            if (!cms.isMembersByContactsEmpty()) {
+                cms.processContacts();
+            }
+            if (!cms.isMembersByLeadsEmpty()) {
+                cms.processLeads();
+            }
+        }
+        cms.markAffectedMembersPrimaryAndOpportunties();
     }
+
     public void beforeDelete() {
-        CampaignMemberService service = new CampaignMemberService();
-        service.processAffectedMembers(oldList);
+        CampaignMemberService cms = new CampaignMemberService(oldList, oldMap);
+        if (!CampaignMemberService.ranCampaignMembersUpdatePrimary) {
+            cms.processingBefore();
+
+            if (!cms.isMembersByContactsEmpty()) {
+                cms.processContacts();
+            }
+            if (!cms.isMembersByLeadsEmpty()) {
+                cms.processLeads();
+            }
+        }
     }
+
     public void afterInsert() {
-        CampaignMemberService service = new CampaignMemberService();
-        service.updateRelatedRecords(newMap, newList);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
+        cms.assignNationalMeritFlag(newMap.keySet());
+        List<CampaignMember> campaignMembersToUpdate = cms.setPrimaryInterestOnCampaignMembers();
+        cms.updateOpportunities();
+        cms.updateLeads();
+        cms.updateCampaignMembers(campaignMembersToUpdate);
+        cms.clearDataAfter();
+
+        AutoSubscriberService autoSubService = new AutoSubscriberService(newList, 'CampaignMember');
+        autoSubService.processCampaignMemberRecords();
     }
+
     public void afterUpdate() {
-        CampaignMemberService service = new CampaignMemberService();
-        service.updateRelatedRecords(newMap);
+        CampaignMemberService cms = new CampaignMemberService(newList, oldMap);
+        cms.assignNationalMeritFlag(newMap.keySet());
+        List<CampaignMember> campaignMembersToUpdate = cms.setPrimaryInterestOnCampaignMembers();
+        cms.updateOpportunities();
+        cms.updateLeads();
+        cms.updateCampaignMembers(campaignMembersToUpdate);
+        cms.clearDataAfter();
     }
+
     public void afterDelete() {
-        CampaignMemberService service = new CampaignMemberService();
-        service.updateRelatedRecords(oldMap);
+        CampaignMemberService cms = new CampaignMemberService(oldList, oldMap);
+        cms.assignNationalMeritFlag(oldMap.keySet());
+        List<CampaignMember> campaignMembersToUpdate = cms.setPrimaryInterestOnCampaignMembers();
+        cms.updateOpportunities();
+        cms.updateLeads();
+        cms.updateCampaignMembers(campaignMembersToUpdate);
+        cms.clearDataAfter();
     }
     public void afterUndelete() {
     }

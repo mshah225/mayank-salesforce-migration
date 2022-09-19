@@ -1,11 +1,11 @@
-public with sharing class ConversationServicer {
+public with sharing class ConversationService {
     public void execute(List<smagicinteract__Conversation__c> senders) {
-        Map<Id, Set<smagicinteract__conversation__c>> contactConversationMap = getContactConversationMap(senders);
+        Map<Id, Set<smagicinteract__Conversation__c>> contactConversationMap = getContactConversationMap(senders);
 
         if (contactConversationMap != null && !contactConversationMap.isEmpty()) {
             Map<String, Set<Id>> codeContactMap = getCodeContactMapping(contactConversationMap);
             System.debug('@@--codeContactMap : ' + codeContactMap);
-            Map<Id, smagicinteract__conversation__c> convsMap = new Map<Id, smagicinteract__conversation__c>();
+            Map<Id, smagicinteract__Conversation__c> convsMap = new Map<Id, smagicinteract__Conversation__c>();
             Map<String, Success_Coach_Mapping__c> codeMapping = new Map<String, Success_Coach_Mapping__c>();
             if (codeContactMap != null & !codeContactMap.isEmpty()) {
                 for (Success_Coach_Mapping__c mapping : [
@@ -30,12 +30,12 @@ public with sharing class ConversationServicer {
                     System.debug('@@-- contactIds : ' + contactIds);
                     if (contactIds != null && contactIds.size() > 0) {
                         for (Id contactId : contactIds) {
-                            Set<smagicinteract__conversation__c> conversations = contactConversationMap.get(contactId);
-                            for (smagicinteract__conversation__c conversation : conversations) {
+                            Set<smagicinteract__Conversation__c> conversations = contactConversationMap.get(contactId);
+                            for (smagicinteract__Conversation__c conversation : conversations) {
                                 if (!convsMap.containsKey(conversation.id)) {
                                     convsMap.put(
                                         conversation.id,
-                                        new smagicinteract__conversation__c(
+                                        new smagicinteract__Conversation__c(
                                             id = conversation.id,
                                             PeopleSoft_Code__c = code,
                                             Success_Coach__c = mapping.Success_Coach__c,
@@ -52,14 +52,15 @@ public with sharing class ConversationServicer {
             System.debug('@@-- convsMap : ' + convsMap);
             if (convsMap != null && !convsMap.values().isEmpty()) {
                 Database.SaveResult[] lsr = database.update(convsMap.values(), false);
+                processDatabaseResults(lsr);
             }
         }
     }
 
-    private Map<Id, Set<smagicinteract__conversation__c>> getContactConversationMap(
+    private Map<Id, Set<smagicinteract__Conversation__c>> getContactConversationMap(
         List<smagicinteract__Conversation__c> senders
     ) {
-        Map<Id, Set<smagicinteract__conversation__c>> contactConversationMap = new Map<Id, Set<smagicinteract__conversation__c>>();
+        Map<Id, Set<smagicinteract__Conversation__c>> contactConversationMap = new Map<Id, Set<smagicinteract__Conversation__c>>();
         for (smagicinteract__Conversation__c c : [
             SELECT id, smagicinteract__Contact__c
             FROM smagicinteract__Conversation__c
@@ -73,7 +74,7 @@ public with sharing class ConversationServicer {
             if (contactConversationMap.containsKey(c.smagicinteract__Contact__c)) {
                 contactConversationMap.get(c.smagicinteract__Contact__c).add(c);
             } else {
-                contactConversationMap.put(c.smagicinteract__Contact__c, new Set<smagicinteract__conversation__c>{ c });
+                contactConversationMap.put(c.smagicinteract__Contact__c, new Set<smagicinteract__Conversation__c>{ c });
             }
         }
         System.debug('@@-- contactConversationMap : ' + contactConversationMap);
@@ -81,7 +82,7 @@ public with sharing class ConversationServicer {
     }
 
     private Map<String, Set<ID>> getCodeContactMapping(
-        Map<Id, Set<smagicinteract__conversation__c>> contactConversationMap
+        Map<Id, Set<smagicinteract__Conversation__c>> contactConversationMap
     ) {
         Map<String, Set<Id>> codeContactMap = new Map<String, Set<Id>>();
         if (contactConversationMap != null && !contactConversationMap.isEmpty()) {
@@ -123,6 +124,7 @@ public with sharing class ConversationServicer {
             if (convShareListNew != null && !convShareListNew.isEmpty()) {
                 Database.SaveResult[] lsr = Database.insert(convShareListNew, false);
                 checkForErrors(lsr);
+                processDatabaseResults(lsr);
             }
         }
     }
@@ -214,7 +216,8 @@ public with sharing class ConversationServicer {
         );
     }
 
-    public void checkForErrors(Database.SaveResult[] lsr) {
+    @TestVisible
+    private void checkForErrors(Database.SaveResult[] lsr) {
         List<smagicinteract__Error_Log__c> errorLogs = new List<smagicinteract__Error_Log__c>();
         // Process the save results
         for (Database.SaveResult sr : lsr) {
@@ -228,20 +231,62 @@ public with sharing class ConversationServicer {
                 // These sharing records are not required and thus an insert exception is
                 // acceptable.
                 smagicinteract__Error_Log__c errorLogObj = new smagicinteract__Error_Log__c();
-                errorLogObj.smagicinteract__Class_Name__c = 'ConversationServicer';
+                errorLogObj.smagicinteract__Class_Name__c = 'ConversationService';
                 errorLogObj.smagicinteract__Error_Message__c = err.getMessage();
                 errorLogObj.smagicinteract__Error_Status_Code__c = String.valueOf(err.getStatusCode());
                 errorLogObj.smagicinteract__Error_Type__c = 'Fatal';
                 errorLogObj.smagicinteract__Object__c = 'smagicinteract__Conversation__share';
                 errorLogObj.smagicinteract__Fields__c = String.valueOf(err.getFields());
-                errorLogObj.smagicinteract__Line_number__c = 205;
+                errorLogObj.smagicinteract__Line_number__c = 207;
                 errorLogObj.smagicinteract__User__c = UserInfo.getUserId();
-
                 errorLogs.add(errorLogObj);
             }
         }
         if (!errorLogs.isEmpty()) {
             Database.insert(errorLogs, false);
         }
+    }
+
+    @TestVisible
+    private void processDatabaseResults(Database.SaveResult[] lsr) {
+        for (Database.SaveResult sr : lsr) {
+            if (!sr.isSuccess()) {
+                for (Database.Error err : sr.getErrors()) {
+                    try {
+                        throw new ConversationServiceException('There was an issue running ConversationService.');
+                    } catch (Exception ex) {
+                        List<String> vars = new List<String>();
+                        vars.add(
+                            ErrorLogger.convertStringToJSON('smagicinteract__Class_Name__c', 'ConversationService')
+                        );
+                        vars.add(ErrorLogger.convertStringToJSON('smagicinteract__Error_Message__c', err.getMessage()));
+                        vars.add(
+                            ErrorLogger.convertStringToJSON(
+                                'smagicinteract__Error_Status_Code__c',
+                                String.valueOf(err.getStatusCode())
+                            )
+                        );
+                        vars.add(ErrorLogger.convertStringToJSON('smagicinteract__Error_Type__c', 'Fatal'));
+                        vars.add(
+                            ErrorLogger.convertStringToJSON(
+                                'smagicinteract__Object__c',
+                                'smagicinteract__Conversation__share'
+                            )
+                        );
+                        vars.add(
+                            ErrorLogger.convertStringToJSON(
+                                'smagicinteract__Fields__c',
+                                String.valueOf(err.getFields())
+                            )
+                        );
+                        vars.add(ErrorLogger.convertIdToJSON('smagicinteract__User__c', UserInfo.getUserId()));
+                        ErrorLogger.log(ex, vars, false);
+                    }
+                }
+            }
+        }
+    }
+
+    private class ConversationServiceException extends Exception {
     }
 }

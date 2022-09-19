@@ -1,12 +1,12 @@
 public class BulkMessageComponentController {
     @AuraEnabled
-    public static FYSStudentWrapper studentList(Id userId) {
+    public static SuccessStudentWrapper studentList(Id userId) {
         Boolean firstLoad = false;
         if (userId == null) {
             userId = UserInfo.getUserId();
             firstLoad = true;
         }
-        FYSStudentWrapper wrapper = new FYSStudentWrapper();
+        SuccessStudentWrapper wrapper = new SuccessStudentWrapper();
         Set<User> coaches = new Set<User>();
         String deviceType = '';
         Set<String> fieldsToSelect = new Set<String>();

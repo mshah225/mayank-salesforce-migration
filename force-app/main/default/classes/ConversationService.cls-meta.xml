@@ -3,7 +3,7 @@
     <apiVersion>48.0</apiVersion>
     <packageVersions>
         <majorNumber>1</majorNumber>
-        <minorNumber>55</minorNumber>
+        <minorNumber>60</minorNumber>
         <namespace>smagicinteract</namespace>
     </packageVersions>
     <status>Active</status>

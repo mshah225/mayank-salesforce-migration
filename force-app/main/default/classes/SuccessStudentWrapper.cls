@@ -1,6 +1,6 @@
-public class FYSStudentWrapper {
+public class SuccessStudentWrapper {
     @AuraEnabled
-    public List<StudentFieldWrapper> fieldDetailsResult { get; set; }
+    public List<SuccessStudentDetails> fieldDetailsResult { get; set; }
     @AuraEnabled
     public List<Contact> students { get; set; }
     @AuraEnabled
@@ -15,12 +15,12 @@ public class FYSStudentWrapper {
     public void addFieldDetailEntry(String label, String fieldName, String fieldType) {
         if (String.isNotBlank(label) && String.isNotBlank(fieldName) && String.isNotBlank(fieldType)) {
             if (this.fieldDetailsResult == null) {
-                this.fieldDetailsResult = new List<StudentFieldWrapper>();
+                this.fieldDetailsResult = new List<SuccessStudentDetails>();
             }
             if (fieldDataTypeConversion.containsKey(fieldType.toUpperCase())) {
                 fieldType = fieldDataTypeConversion.get(fieldType.toUpperCase());
             }
-            this.fieldDetailsResult.add(new StudentFieldWrapper(label, fieldName, fieldType));
+            this.fieldDetailsResult.add(new SuccessStudentDetails(label, fieldName, fieldType));
         }
     }
 
@@ -31,10 +31,10 @@ public class FYSStudentWrapper {
         actionDetail.add('Show Detail');
         actionsList.add(actionDetail);
 
-        this.fieldDetailsResult.add(new StudentFieldWrapper(actionsList));
+        this.fieldDetailsResult.add(new SuccessStudentDetails(actionsList));
     }
 
-    public class StudentFieldWrapper {
+    public class SuccessStudentDetails {
         @AuraEnabled
         public String label { get; set; }
         @AuraEnabled
@@ -44,11 +44,11 @@ public class FYSStudentWrapper {
         @AuraEnabled
         public typeAttributes typeAttributes { get; set; }
 
-        public StudentFieldWrapper(List<List<String>> actionsList) {
+        public SuccessStudentDetails(List<List<String>> actionsList) {
             this.type = 'action';
             this.typeAttributes = new typeAttributes(actionsList);
         }
-        public StudentFieldWrapper(String label, String fieldName, String fieldType) {
+        public SuccessStudentDetails(String label, String fieldName, String fieldType) {
             this.label = label;
             this.fieldName = fieldName;
             this.type = fieldType;

@@ -41,7 +41,7 @@ export default class AdvisorPortalUserSelectOption extends LightningElement {
 
         this.dispatchEvent(
             new CustomEvent('toggleoption', {
-                detail: {key: this.option.label + ';' + this.option.value, isSelected: this.isSelected},
+                detail: {key: this.option.key, isSelected: this.isSelected},
             })
         );
     }

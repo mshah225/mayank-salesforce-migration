@@ -178,7 +178,7 @@ export default class AdvisorPortalUserSelect extends LightningElement {
 
         for (let i = 0, len = this.allUserOptions.length; i < len; i++) {
             const opt = this.allUserOptions[i];
-            if (opt.label + ';' + opt.value === key) {
+            if (opt.key === key) {
                 opt.isSelected = isSelected;
             }
         }

@@ -118,8 +118,9 @@ export default class AdvisorPortalA extends LightningElement {
                     const opt = viewAsOptions[i];
                     const label = opt.label;
                     const value = opt.value;
+                    const key = label + ';' + value;
 
-                    let option = {label, value, isHeader: false, isSelected: false};
+                    let option = {label, value, key, isHeader: false, isSelected: false};
 
                     if (option.label.includes('--')) {
                         option.label = option.label.replace(/--/g, '');

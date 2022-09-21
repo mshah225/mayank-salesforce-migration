@@ -1021,7 +1021,10 @@ public class AdvisorPortalFilterSectionController {
             andStatements.add('Status IN ' + getSoqlListString(statuses));
         }
 
-        andStatements.add('OwnerId IN ' + getSoqlListString(ownerIds));
+        if (ownerIds.isEmpty())
+            andStatements.add('OwnerId = \'\'');
+        else
+            andStatements.add('OwnerId IN ' + getSoqlListString(ownerIds));
 
         if (filter.caseTypeState == 'WatchlistCasesState') {
             if (filter.career == 'GRD') {
@@ -1343,10 +1346,15 @@ public class AdvisorPortalFilterSectionController {
     }
 
     private static String generateSuccessStudentFilterString(AdvisorPortalFilter filter, List<Id> ownerIds) {
-        String queryString =
-            'SELECT Student__c FROM Success_Student__c WHERE Success_Pod__r.OwnerId IN ' +
-            getSoqlListString(ownerIds) +
-            ' AND Is_Active__c = TRUE';
+        String queryString = null;
+        List<String> andStatements = new List<String>();
+
+        andStatements.add('Is_Active__c = TRUE');
+
+        if (ownerIds.isEmpty())
+            andStatements.add('Success_Pod__r.OwnerId = \'\'');
+        else
+            andStatements.add('Success_Pod__r.OwnerId IN ' + getSoqlListString(ownerIds));
 
         List<String> recordTypeIds = new List<String>();
         if (filter != null && filter.career != null && filter.career == 'GRD') {
@@ -1354,7 +1362,12 @@ public class AdvisorPortalFilterSectionController {
         } else {
             recordTypeIds.add(RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor'));
         }
-        queryString += ' AND RecordTypeId IN ' + getSoqlListString(recordTypeIds);
+
+        andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
+
+        if (!andStatements.isEmpty()) {
+            queryString = 'SELECT Student__c FROM Success_Student__c WHERE ' + String.join(andStatements, ' AND ');
+        }
 
         return queryString;
     }

@@ -298,7 +298,7 @@
                                 label="From"
                                 name="createdFromDate"
                                 data-name="createdFromDate"
-                                oncommit={changeField}
+                                onchange={changeField}
                                 value={currentFilter.createdFromDate}
                                 max={createdToDateForRangeCheck}
                                 message-when-range-overflow="Must be before the to date"
@@ -310,7 +310,7 @@
                                 label="To"
                                 name="createdToDate"
                                 data-name="createdToDate"
-                                oncommit={changeField}
+                                onchange={changeField}
                                 value={currentFilter.createdToDate}
                                 min={createdFromDateForRangeCheck}
                                 message-when-range-underflow="Must be after the from date"
@@ -331,7 +331,7 @@
                                 label="From"
                                 name="followUpFromDate"
                                 data-name="followUpFromDate"
-                                oncommit={changeField}
+                                onchange={changeField}
                                 value={currentFilter.followUpFromDate}
                                 max={followUpToDateForRangeCheck}
                                 message-when-range-overflow="Must be before the to date"
@@ -343,7 +343,7 @@
                                 label="To"
                                 name="followUpToDate"
                                 data-name="followUpToDate"
-                                oncommit={changeField}
+                                onchange={changeField}
                                 value={currentFilter.followUpToDate}
                                 min={followUpFromDateForRangeCheck}
                                 message-when-range-underflow="Must be after the from date"
@@ -365,7 +365,7 @@
                                     label="From"
                                     name="persistenceFromDate"
                                     data-name="persistenceFromDate"
-                                    oncommit={changeField}
+                                    onchange={changeField}
                                     value={currentFilter.persistenceFromDate}
                                     max={persistenceToDateForRangeCheck}
                                     message-when-range-overflow="Must be before the to date"
@@ -377,7 +377,7 @@
                                     label="To"
                                     name="persistenceToDate"
                                     data-name="persistenceToDate"
-                                    oncommit={changeField}
+                                    onchange={changeField}
                                     value={currentFilter.persistenceToDate}
                                     min={persistenceFromDateForRangeCheck}
                                     message-when-range-underflow="Must be after the from date"

@@ -262,7 +262,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
     refreshCaseSubjectPicklistValues() {
         const filterJSON = JSON.stringify(this.currentFilter);
-        return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
+        return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
                 this.caseSubjectPicklistValues = buildPicklistOptionsArray(val);
             })
@@ -273,7 +273,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
     refreshCaseClassificationPicklistValues() {
         const filterJSON = JSON.stringify(this.currentFilter);
-        return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.viewAsUsers})
+        return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
                 this.caseCategoryPicklistValues = buildPicklistOptionsArray(val);
             })

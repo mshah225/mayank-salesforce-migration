@@ -84,6 +84,15 @@
                 margin-bottom: 0.5em;
             }
 
+            #ps_financial_aid_communications_note {
+                margin-top: 0.5em;
+            }
+
+            #ps_financial_aid_communications a,
+            #ps_financial_aid_communications a:hover {
+                color: #9f2b50;
+            }
+
             @media screen and (max-width: 767px) {
                 .browser {
                     display: none;
@@ -1458,6 +1467,25 @@
                                                 There are no financial aid checklist items for this student.
                                             </div>
                                         </apex:form>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Financial Aid Communications
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 250px">
+                                    <div id="ps_financial_aid_communications">
+                                        <a href="{!$Label.Financial_Aid_Communications_URL}{!contactId}" target="_blank"
+                                            >PeopleSoft Link to Outgoing Financial Aid Communications</a
+                                        >
+                                        <div id="ps_financial_aid_communications_note">
+                                            <strong>NOTE:</strong> The above link will take you to PeopleSoft and
+                                            display a filtered list of Financial Aid Comm Gen emails.
+                                        </div>
                                     </div>
                                 </div>
                             </apex:pageBlock>

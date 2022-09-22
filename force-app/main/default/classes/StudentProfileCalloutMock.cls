@@ -1,9 +1,9 @@
 @isTest
 global class StudentProfileCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
-        if (req.getMethod().equals('/service-indicator/serviceindicators')) {
+        if (req.getEndpoint().contains('/serviceindicators')) {
             return getServiceIndicators();
-        } else if (req.getEndpoint().contains('/cs_checklist/fin')) {
+        } else if (req.getEndpoint().contains('Student_Checklists')) {
             return getFinancialAidChecklists();
         }
         return null;

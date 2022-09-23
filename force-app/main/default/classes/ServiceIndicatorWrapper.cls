@@ -1,43 +1,41 @@
 public class ServiceIndicatorWrapper {
+    public String EmplId;
+    public List<ServiceIndicator> ServiceIndicators;
 
-	public String EmplId;
-	public List<ServiceIndicators> ServiceIndicators;
+    public class ServiceIndicator implements Comparable {
+        public String Institution { get; set; }
+        public String ServiceIndicatorCode { get; set; }
+        public String ServiceIndicatorReason { get; set; }
+        public String ServiceIndicatorActiveTerm;
+        public String ServiceIndicatorActiveDate { get; set; }
+        public String ServiceIndicatorEndTerm;
+        public String ServiceIndicatorEndDate;
+        public String PositiveServiceIndicator { get; set; }
+        public String Comments;
+        public String ServiceIndicatorDateTime;
+        public String ServiceIndicatorCodeDescr { get; set; }
+        public String DisplayInSS;
+        public String ServiceIndReasonCodeDescr { get; set; }
+        public String ServiceIndReasonCodeDescrLong;
+        public List<ServiceImpact> ServiceImpacts;
 
-	public class ServiceIndicators  implements Comparable {
-        public String Institution {get; set;}
-		public String ServiceIndicatorCode {get; set;}
-		public String ServiceIndicatorReason {get; set;}
-		public String ServiceIndicatorActiveTerm;
-		public String ServiceIndicatorActiveDate {get; set;}
-		public String ServiceIndicatorEndTerm;
-		public String ServiceIndicatorEndDate;
-		public String PositiveServiceIndicator {get; set;}
-		public String Comments;
-		public String ServiceIndicatorDateTime;
-		public String ServiceIndicatorCodeDescr {get; set;}
-		public String DisplayInSS;
-		public String ServiceIndReasonCodeDescr {get; set;}
-		public String ServiceIndReasonCodeDescrLong;
-		public List<ServiceImpact> ServiceImpacts;
-        
-        public Integer compareTo (Object comparison) {
-            ServiceIndicators compareToSI = (ServiceIndicators)comparison;
-            
+        public Integer compareTo(Object comparison) {
+            ServiceIndicator compareToSI = (ServiceIndicator) comparison;
+
             return ServiceIndicatorCode.compareTo(compareToSI.ServiceIndicatorCode);
         }
-	}
+    }
 
-	public class ServiceImpact {
-		public String ServiceImpactCode;
-		public String ServiceImpactDescription;
-	}
+    public class ServiceImpact {
+        public String ServiceImpactCode;
+        public String ServiceImpactDescription;
+    }
 
-	
-	public static ServiceIndicatorWrapper parse(String json) {
-		try {
-			return (ServiceIndicatorWrapper) System.JSON.deserialize(json, ServiceIndicatorWrapper.class);
+    public static ServiceIndicatorWrapper parse(String json) {
+        try {
+            return (ServiceIndicatorWrapper) System.JSON.deserialize(json, ServiceIndicatorWrapper.class);
         } catch (Exception e) {
             return new ServiceIndicatorWrapper();
         }
-	}
+    }
 }

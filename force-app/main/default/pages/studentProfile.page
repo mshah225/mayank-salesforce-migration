@@ -1,5 +1,4 @@
-<apex:page
-    id="studentProfile"
+<apex:page id="studentProfile"
     controller="StudentProfileController"
     cache="true"
     showHeader="false"
@@ -23,8 +22,7 @@
             crossorigin="anonymous"
         />
         <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
-        <apex:stylesheet
-            value="{!URLFOR($Resource.MyASUHeader4_3,
+        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
                 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
         />
         <c:StudentProfileStyles />
@@ -301,8 +299,7 @@
                                 {!theContact.ASURite_ID__c}
                             </h4>
 
-                            <apex:outputPanel
-                                rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}"
+                            <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}"
                             >
                                 <h4 class="intro" style="color: #6e7d83 !important">{!studentProgram.Career__c}</h4>
 
@@ -562,8 +559,7 @@
                             </div>
 
                             <div class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <apex:dataTable
-                                    rendered="{!openCases.size > 0}"
+                                <apex:dataTable rendered="{!openCases.size > 0}"
                                     styleClass="table"
                                     value="{!openCases}"
                                     var="oc"
@@ -580,15 +576,13 @@
                                     <apex:column headerValue="Subject">
                                         <!--a href="/{!oc.Id}" target="_blank"-->
                                         <a href="#" onclick="openNewSubtab('/{!oc.Id}','null');return false">
-                                            <apex:outputText
-                                                rendered="{!IF(LEN(oc.Subject) > 100
+                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) > 100
                                                 , true, false)}"
                                             >
                                                 {!LEFT(oc.Subject, 100)}
                                             </apex:outputText>
 
-                                            <apex:outputText
-                                                rendered="{!IF(LEN(oc.Subject) < 100
+                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) < 100
                                                 , true, false)}"
                                             >
                                                 {!oc.Subject}
@@ -627,31 +621,30 @@
                             </div>
 
                             <div class="hide">
-                                <apex:form>
-                                    <apex:dataTable
-                                        id="serviceIndicatorTable"
+                                <apex:form >
+                                    <apex:dataTable id="serviceIndicatorTable"
                                         rendered="{!serviceIndicatorsForStudent.size != 0}"
                                         value="{!serviceIndicatorsForStudent}"
                                         var="serviceIndicator"
                                         styleClass="table table-striped table-bordered"
                                     >
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Start Date</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorActiveDate}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Code</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorCode}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Description</apex:facet>
                                             {!serviceIndicator.ServiceIndicatorCodeDescr}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Reason</apex:facet>
                                             {!serviceIndicator.ServiceIndReasonCodeDescr}
                                         </apex:column>
-                                        <apex:column>
+                                        <apex:column >
                                             <apex:facet name="header">Positive Indicator</apex:facet>
                                             {!serviceIndicator.PositiveServiceIndicator}
                                         </apex:column>
@@ -699,8 +692,7 @@
                             </div>
 
                             <div class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <apex:dataTable
-                                    rendered="{!sGroupList.size > 0}"
+                                <apex:dataTable rendered="{!sGroupList.size > 0}"
                                     styleClass="table"
                                     value="{!sGroupList}"
                                     var="sg"
@@ -715,8 +707,7 @@
                                     </apex:column>
                                     <apex:column headerValue="Code" value="{!sg.SG_PeopleSoft_Code__c}" />
                                     <apex:column headerValue="Description">
-                                        <apex:outputText
-                                            value="{!LEFT(sg.SG_Description__c, 100)}
+                                        <apex:outputText value="{!LEFT(sg.SG_Description__c, 100)}
                                     ..."
                                         />
                                     </apex:column>
@@ -1176,8 +1167,7 @@
                                                         <td>
                                                             {!IF(ISBLANK(studentProgram.Appt_Dt_Pending__c), '--', '')}
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param
-                                                                    value="{!studentProgram.Appt_Dt_Pending__c}"
+                                                                <apex:param value="{!studentProgram.Appt_Dt_Pending__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1279,8 +1269,7 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <apex:outputPanel
-                                        id="ps_financial_aid_summary"
+                                    <apex:outputPanel id="ps_financial_aid_summary"
                                         layout="block"
                                         rendered="{!IF(faWrapper.summaryRecords.size > 0, true, false)}"
                                     >
@@ -1297,8 +1286,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <apex:repeat
-                                                        value="{!faWrapper.summaryRecords}"
+                                                    <apex:repeat value="{!faWrapper.summaryRecords}"
                                                         var="financialSummary"
                                                     >
                                                         <tr>
@@ -1307,22 +1295,19 @@
                                                             <td>{!financialSummary.Descr_Category__c}</td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}">
-                                                                    <apex:param
-                                                                        value="{!financialSummary.Offer_Amount__c}"
+                                                                    <apex:param value="{!financialSummary.Offer_Amount__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}">
-                                                                    <apex:param
-                                                                        value="{!financialSummary.Accept_Amount__c}"
+                                                                    <apex:param value="{!financialSummary.Accept_Amount__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,currency}">
-                                                                    <apex:param
-                                                                        value="{!financialSummary.Disbursed_Amount__c}"
+                                                                    <apex:param value="{!financialSummary.Disbursed_Amount__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>
@@ -1344,8 +1329,7 @@
                                             </table>
                                         </div>
                                     </apex:outputPanel>
-                                    <apex:outputPanel
-                                        id="psFinancialAidSummaryErrors"
+                                    <apex:outputPanel id="psFinancialAidSummaryErrors"
                                         rendered="{!IF(faWrapper.summaryRecords.size > 0, false, true)}"
                                     >
                                         No Financial Aid data found.
@@ -1379,8 +1363,7 @@
                                                         <td id="account_balance_outstanding">
                                                             {!IF(ISBLANK(studentAccount.Account_Balance__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
-                                                                <apex:param
-                                                                    value="{!studentAccount.Account_Balance__c}"
+                                                                <apex:param value="{!studentAccount.Account_Balance__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1391,8 +1374,7 @@
                                                             {!IF(ISBLANK(studentAccount.Account_Balance__c +
                                                             studentAccount.Future_Balance__c),'--','')}
                                                             <apex:outputText value="{0, number, currency}">
-                                                                <apex:param
-                                                                    value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"
+                                                                <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1414,7 +1396,7 @@
 
                                 <div style="overflow: auto; max-height: 250px">
                                     <div id="ps_financial_aid_checklist">
-                                        <apex:form>
+                                        <apex:form >
                                             <div
                                                 id="ps_financial_aid_checklist_note"
                                                 style="{!IF(financialAidChecklists.size != 0, '', 'display: none;')}"
@@ -1423,42 +1405,41 @@
                                                 this data may differ from the Checklist Items that display on the
                                                 Salesforce Contact Record
                                             </div>
-                                            <apex:dataTable
-                                                id="financial-aid-checklist-table"
+                                            <apex:dataTable id="financial-aid-checklist-table"
                                                 rendered="{!financialAidChecklists.size != 0}"
                                                 value="{!financialAidChecklists}"
                                                 var="checklist"
                                                 styleClass="table table-striped table-bordered"
                                             >
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Aid Year</apex:facet>
                                                     {!checklist.aid_year}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Term</apex:facet>
                                                     {!checklist.term}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Item Description</apex:facet>
                                                     {!checklist.description}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Checklist Code</apex:facet>
                                                     {!checklist.checklist_cd}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Checklist Status</apex:facet>
                                                     {!checklist.status}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Checklist Item Code</apex:facet>
                                                     {!checklist.checklistitemcd}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Checklist Item Status</apex:facet>
                                                     {!checklist.item_status}
                                                 </apex:column>
-                                                <apex:column>
+                                                <apex:column >
                                                     <apex:facet name="header">Checklist Item Status Date</apex:facet>
                                                     {!checklist.status_dt}
                                                 </apex:column>
@@ -1579,15 +1560,13 @@
                                         &nbsp;me3@ASU Results
                                     </h4>
                                 </div>
-                                <apex:outputPanel
-                                    layout="block"
+                                <apex:outputPanel layout="block"
                                     rendered="{!ISNULL(me3Results.Test_Completed_Date__c)}"
                                 >
                                     No me3 results found.
                                 </apex:outputPanel>
                                 <div id="Me3Results" style="width: 100%">
-                                    <apex:outputPanel
-                                        layout="block"
+                                    <apex:outputPanel layout="block"
                                         rendered="{!NOT(ISNULL(me3Results.Test_Completed_Date__c))}"
                                     >
                                         <div class="row">
@@ -1597,8 +1576,7 @@
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_completion_date">
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param
-                                                                    value="{!me3Results.Test_Completed_Date__c}"
+                                                                <apex:param value="{!me3Results.Test_Completed_Date__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1684,15 +1662,13 @@
                                             <div class="table-responsive">
                                                 <table id="career_dev_table" class="table table-striped table-bordered">
                                                     <tbody>
-                                                        <apex:repeat
-                                                            value="{!me3Results.me3_Careers__r}"
+                                                        <apex:repeat value="{!me3Results.me3_Careers__r}"
                                                             var="me3Career"
                                                         >
                                                             <tr style="font-weight: normal">
                                                                 <td style="min-width: 75px">
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param
-                                                                            value="{!me3Career.Updated_Date__c}"
+                                                                        <apex:param value="{!me3Career.Updated_Date__c}"
                                                                         />
                                                                     </apex:outputText>
                                                                 </td>
@@ -1730,15 +1706,13 @@
                                         &nbsp;me3 High School Results
                                     </h4>
                                 </div>
-                                <apex:outputPanel
-                                    layout="block"
+                                <apex:outputPanel layout="block"
                                     rendered="{!ISNULL(me3HighSchoolResults.Test_Completed_Date__c)}"
                                 >
                                     No me3 high school results found.
                                 </apex:outputPanel>
                                 <div id="Me3HighSschoolResults" style="width: 100%">
-                                    <apex:outputPanel
-                                        layout="block"
+                                    <apex:outputPanel layout="block"
                                         rendered="{!NOT(ISNULL(me3HighSchoolResults.Test_Completed_Date__c))}"
                                     >
                                         <div class="row">
@@ -1748,8 +1722,7 @@
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_hs_completion_date">
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.Test_Completed_Date__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.Test_Completed_Date__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1770,8 +1743,7 @@
                                                         <th>Realistic (R) Score</th>
                                                         <td id="me3_hs_r_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.R_Score__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.R_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1781,8 +1753,7 @@
                                                         <th>Investigative (I) Score</th>
                                                         <td id="me3_hs_i_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.I_Score__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.I_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1796,8 +1767,7 @@
                                                         <th>Artistic (A) Score</th>
                                                         <td id="me3_hs_a_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.A_Score__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.A_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1807,8 +1777,7 @@
                                                         <th>Social (S) Score</th>
                                                         <td id="me3_hs_s_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.S_Score__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.S_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1822,8 +1791,7 @@
                                                         <th>Enterprising (E) Score</th>
                                                         <td id="me3_hs_e_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.E_Score__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.E_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1833,8 +1801,7 @@
                                                         <th>Conventional (C) Score</th>
                                                         <td id="me3_hs_c_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param
-                                                                    value="{!me3HighSchoolResults.C_Score__c}"
+                                                                <apex:param value="{!me3HighSchoolResults.C_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1847,15 +1814,13 @@
                                             <div class="table-responsive">
                                                 <table id="career_dev_table" class="table table-striped table-bordered">
                                                     <tbody>
-                                                        <apex:repeat
-                                                            value="{!me3HighSchoolResults.me3_Careers__r}"
+                                                        <apex:repeat value="{!me3HighSchoolResults.me3_Careers__r}"
                                                             var="me3Career"
                                                         >
                                                             <tr style="font-weight: normal">
                                                                 <td style="min-width: 75px">
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param
-                                                                            value="{!me3Career.Updated_Date__c}"
+                                                                        <apex:param value="{!me3Career.Updated_Date__c}"
                                                                         />
                                                                     </apex:outputText>
                                                                 </td>
@@ -1904,8 +1869,7 @@
                                     </div>
 
                                     <div class="table-responsive">
-                                        <apex:dataTable
-                                            styleClass="table table-striped table-bordered"
+                                        <apex:dataTable styleClass="table table-striped table-bordered"
                                             value="{!ugProgramPlans}"
                                             var="app"
                                             rendered="{!IF(ugProgramPlans.size > 0,true,false)}"
@@ -1918,12 +1882,10 @@
                                                 </apex:outputLink>
                                             </apex:column>
                                             <apex:column headerValue="Sub-Plan">
-                                                <apex:outputText
-                                                    rendered="{!IF(subPlanString==null,false,true)}"
+                                                <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
                                                     value="{!subPlanString}"
                                                 />
-                                                <apex:outputText
-                                                    rendered="{!IF(subPlanString==null,true,false)}"
+                                                <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
                                                     value="--"
                                                 />
                                             </apex:column>
@@ -1935,8 +1897,7 @@
                                         </apex:dataTable>
                                     </div>
 
-                                    <apex:outputText
-                                        rendered="{!IF(ugProgramPlans.size > 0, false, true)}"
+                                    <apex:outputText rendered="{!IF(ugProgramPlans.size > 0, false, true)}"
                                         value="No undergraduate programs/plans found."
                                     />
 
@@ -1973,8 +1934,7 @@
                                                         <td id="ugap_cumulative_hours">
                                                             {!IF(ISBLANK(ugStudentProgram.Tot_Cumulative__c), '--', '')}
                                                             <apex:outputText value="{0,number,####}">
-                                                                <apex:param
-                                                                    value="{!ugStudentProgram.Tot_Cumulative__c}"
+                                                                <apex:param value="{!ugStudentProgram.Tot_Cumulative__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1994,8 +1954,7 @@
                                                         <th>Advisors</th>
                                                         <td id="ugap_advisors">
                                                             {!IF(ugStudentProgramAdvisors.size > 0, '', '--')}
-                                                            <apex:repeat
-                                                                value="{!ugStudentProgramAdvisors}"
+                                                            <apex:repeat value="{!ugStudentProgramAdvisors}"
                                                                 var="advisors"
                                                             >
                                                                 <a href="mailto:{!advisors.Advisor_Email__c}">
@@ -2037,8 +1996,7 @@
                                                             <td>{!testScore.Test_Component__c}</td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,##.##}">
-                                                                    <apex:param
-                                                                        value="{!testScore.Test_Component_Score__c}"
+                                                                    <apex:param value="{!testScore.Test_Component_Score__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>
@@ -2049,8 +2007,7 @@
                                                             </td>
                                                         </tr>
                                                     </apex:repeat>
-                                                    <apex:outputPanel
-                                                        rendered="{!IF(testUndergradScoreList.size > 0, false, true)}"
+                                                    <apex:outputPanel rendered="{!IF(testUndergradScoreList.size > 0, false, true)}"
                                                     >
                                                         <div>No undergraduate test scores found.</div>
                                                     </apex:outputPanel>
@@ -2089,11 +2046,9 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <apex:outputPanel
-                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}"
+                                                        <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}"
                                                         >
-                                                            <apex:repeat
-                                                                value="{!studentMilestonesUGrad}"
+                                                            <apex:repeat value="{!studentMilestonesUGrad}"
                                                                 var="milestone"
                                                             >
                                                                 <tr>
@@ -2144,8 +2099,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                            <apex:param
-                                                                                value="{!milestone.Date_Completed__c}"
+                                                                            <apex:param value="{!milestone.Date_Completed__c}"
                                                                             />
                                                                         </apex:outputText>
                                                                     </td>
@@ -2155,8 +2109,7 @@
                                                                 </tr>
                                                             </apex:repeat>
                                                         </apex:outputPanel>
-                                                        <apex:outputPanel
-                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
+                                                        <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
                                                         >
                                                             <div>No undergraduate milestones found.</div>
                                                         </apex:outputPanel>
@@ -2198,8 +2151,7 @@
                                                                     {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Dt__c), '--',
                                                                     '')}
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param
-                                                                            value="{!ugStudentProgram.Adm_Appl_Dt__c}"
+                                                                        <apex:param value="{!ugStudentProgram.Adm_Appl_Dt__c}"
                                                                         />
                                                                     </apex:outputText>
                                                                 </td>
@@ -2270,8 +2222,7 @@
                                                     <tr>
                                                         <th>Financial Aid Issue</th>
                                                         <td id="sr_finAid_issue">
-                                                            <apex:repeat
-                                                                value="{!financialAidIndicators}"
+                                                            <apex:repeat value="{!financialAidIndicators}"
                                                                 var="indicator"
                                                             >
                                                                 <p>{!indicator}</p>
@@ -2286,42 +2237,36 @@
                                                             <br />
                                                             <div style="overflow: auto; max-height: 225px">
                                                                 <div id="ps_financial_aid_checklist_unresolved">
-                                                                    <apex:form>
-                                                                        <apex:dataTable
-                                                                            id="financial-aid-checklist-unresolved-table"
+                                                                    <apex:form >
+                                                                        <apex:dataTable id="financial-aid-checklist-unresolved-table"
                                                                             rendered="{!financialAidUnresolvedChecklists.size != 0}"
                                                                             value="{!financialAidUnresolvedChecklists}"
                                                                             var="checklist"
                                                                             styleClass="table table-striped table-bordered"
                                                                         >
-                                                                            <apex:column>
+                                                                            <apex:column >
                                                                                 <apex:facet name="header"
-                                                                                    >Checklist Code</apex:facet
-                                                                                >
+                                                                                    >Checklist Code</apex:facet>
                                                                                 {!checklist.checklist_cd}
                                                                             </apex:column>
-                                                                            <apex:column>
+                                                                            <apex:column >
                                                                                 <apex:facet name="header"
-                                                                                    >Checklist Item Code</apex:facet
-                                                                                >
+                                                                                    >Checklist Item Code</apex:facet>
                                                                                 {!checklist.checklistitemcd}
                                                                             </apex:column>
-                                                                            <apex:column>
+                                                                            <apex:column >
                                                                                 <apex:facet name="header"
-                                                                                    >Description</apex:facet
-                                                                                >
+                                                                                    >Description</apex:facet>
                                                                                 {!checklist.description}
                                                                             </apex:column>
-                                                                            <apex:column>
+                                                                            <apex:column >
                                                                                 <apex:facet name="header"
-                                                                                    >Status Date</apex:facet
-                                                                                >
+                                                                                    >Status Date</apex:facet>
                                                                                 {!checklist.status_dt}
                                                                             </apex:column>
-                                                                            <apex:column>
+                                                                            <apex:column >
                                                                                 <apex:facet name="header"
-                                                                                    >Status</apex:facet
-                                                                                >
+                                                                                    >Status</apex:facet>
                                                                                 {!checklist.item_status}
                                                                             </apex:column>
                                                                         </apex:dataTable>
@@ -2529,8 +2474,7 @@
                                                 </th>
                                                 <td colspan="2" class="gradTD">
                                                     {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
-                                                    <apex:outputText
-                                                        value="{0,number,####.00}"
+                                                    <apex:outputText value="{0,number,####.00}"
                                                         style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}"
                                                     >
                                                         <apex:param value="{!gradProgram.gradProgramPlan.Cum_GPA__c}" />
@@ -2589,12 +2533,10 @@
                                                     {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null,
                                                     gradProgram.gradMilestoneDiss.Format_Document_Type__c==null), '--',
                                                     '')}
-                                                    <apex:outputText
-                                                        rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}"
+                                                    <apex:outputText rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}"
                                                         value="{0, date, MM'/'dd'/'yyyy}"
                                                     >
-                                                        <apex:param
-                                                            value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}"
+                                                        <apex:param value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}"
                                                         />
                                                     </apex:outputText>
                                                 </td>
@@ -2633,8 +2575,7 @@
                                                     {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null,
                                                     '--', '')}
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
-                                                        <apex:param
-                                                            value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}"
+                                                        <apex:param value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}"
                                                         />
                                                     </apex:outputText>
                                                 </td>
@@ -2700,8 +2641,7 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2724,8 +2664,7 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2758,8 +2697,7 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}"
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2771,8 +2709,7 @@
                                                     {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null,
                                                     '--', '')}
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
-                                                        <apex:param
-                                                            value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}"
+                                                        <apex:param value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}"
                                                         />
                                                     </apex:outputText>
                                                 </td>
@@ -2790,8 +2727,7 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}"
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2809,8 +2745,7 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param
-                                                                value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"
+                                                            <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -3038,8 +2973,7 @@
                                     </table>
                                 </div>
 
-                                <apex:outputText
-                                    rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
+                                <apex:outputText rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
                                     value="No active graduate programs/plans found."
                                 />
 
@@ -3086,8 +3020,7 @@
                                     </table>
                                 </div>
 
-                                <apex:outputText
-                                    rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
+                                <apex:outputText rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
                                     value="No completed graduate programs/plans found."
                                 />
 
@@ -3116,8 +3049,7 @@
                                                         <td>{!testScore.Test_Component__c}</td>
                                                         <td>
                                                             <apex:outputText value="{0,number,##.##}">
-                                                                <apex:param
-                                                                    value="{!testScore.Test_Component_Score__c}"
+                                                                <apex:param value="{!testScore.Test_Component_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -3128,8 +3060,7 @@
                                                         </td>
                                                     </tr>
                                                 </apex:repeat>
-                                                <apex:outputPanel
-                                                    rendered="{!IF(testGradScoreList.size > 0, false, true)}"
+                                                <apex:outputPanel rendered="{!IF(testGradScoreList.size > 0, false, true)}"
                                                 >
                                                     <div>No graduate test scores found.</div>
                                                 </apex:outputPanel>
@@ -3173,8 +3104,7 @@
                                                                 {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Dt__c), '--',
                                                                 '')}
                                                                 <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                    <apex:param
-                                                                        value="{!gradStudentProgram.Adm_Appl_Dt__c}"
+                                                                    <apex:param value="{!gradStudentProgram.Adm_Appl_Dt__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>

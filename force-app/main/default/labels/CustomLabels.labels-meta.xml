@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Financial_Aid_Communications_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Financial_Aid_Communications_URL</shortDescription>
+        <value>https://asucsdev.psdev.asu.edu/asucsdev/asusignon.html?dest=/EMPLOYEE/CAMP/c/ASU_FINANCIAL_AID.ASU_FA_SF_COMM.GBL?EMPLID=</value>
+    </labels>
+</CustomLabels>

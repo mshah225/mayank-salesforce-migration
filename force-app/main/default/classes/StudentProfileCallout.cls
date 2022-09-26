@@ -56,4 +56,56 @@ public with sharing class StudentProfileCallout {
 
         return checklists;
     }
+
+    public static List<FinancialAidYearWrapper.cls_aid_years> getAidYears(String emplid) {
+        FinancialAidYearWrapper aidYearsForStudent;
+        List<FinancialAidYearWrapper.cls_aid_years> aidYears = new List<FinancialAidYearWrapper.cls_aid_years>();
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/aid-years');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            aidYearsForStudent = FinancialAidYearWrapper.parse(responseBody);
+        }
+
+        if (aidYearsForStudent == null || aidYearsForStudent.cls_aid_years == null) {
+            return aidYears;
+        }
+
+        for (FinancialAidYearWrapper.cls_aid_years aidYearsEntry : aidYearsForStudent.cls_aid_years) {
+            aidYears.add(aidYearsEntry);
+        }
+
+        return aidYears;
+    }
+
+    public static List<FinancialAidAwardWrapper.awards> getAidYears(String emplid, String aidYear) {
+        FinancialAidAwardWrapper awardsForStudent;
+        List<FinancialAidAwardWrapper.awards> awards = new List<FinancialAidAwardWrapper.awards>();
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/awards-status?aidyear=' + aidYear);
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            awardsForStudent = FinancialAidAwardWrapper.parse(responseBody);
+        }
+
+        if (awardsForStudent == null || awardsForStudent.awards == null) {
+            return awards;
+        }
+
+        for (FinancialAidAwardWrapper.awards awardEntry : awardsForStudent.awards) {
+            awards.add(awardEntry);
+        }
+
+        return awards;
+    }
 }

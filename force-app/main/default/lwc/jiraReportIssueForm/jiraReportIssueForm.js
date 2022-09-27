@@ -20,7 +20,10 @@ export default class JiraReportIssueForm extends LightningElement {
     disabledButton = false;
 
     connectedCallback() {
-        this.configurableQuestions = JSON.parse(this.questionListJSON);
+        if (this.questionListJSON != null && this.questionListJSON != '') {
+            this.configurableQuestions = JSON.parse(this.questionListJSON);
+        }
+
         for (let i = 0; i < this.configurableQuestions.length; i++) {
             const question = this.configurableQuestions[i];
             question.key = 'key-' + i;

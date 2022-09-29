@@ -399,13 +399,11 @@ public class AdvisorPortalFilterSectionController {
         List<Id> viewAsOptions,
         AdvisorPortalFilter filter
     ) {
-        // Query success students and filter down from there
-        String successStudentFilterString = generateSuccessStudentFilterString(filter, viewAsOptions);
-        Set<Id> possibleContactIds = new Set<Id>();
-        LogSuite.log('query', successStudentFilterString);
-        for (Success_Student__c sucStu : Database.query(successStudentFilterString)) {
-            possibleContactIds.add(sucStu.Student__c);
-        }
+        Set<Id> possibleContactIds = null;
+        // We must be careful of the order and when we filter to avoid hitting query limits when viewAsOptions is a large selection.
+        // We do the success student as a semi-join ASAP to limit results without immediately retrieving 10s of thousands of results
+        // but, since we can't know which filters will actually be used, each checks if possibleContactIds is null or not - if it is null
+        // it tries using the success student filter to limit contacts returned rather than using the possibleContactIds list
 
         // The query already has 2 semi-joins, so we need to do this separately
         possibleContactIds = filterStudentGroups(filter, viewAsOptions, possibleContactIds);
@@ -474,23 +472,20 @@ public class AdvisorPortalFilterSectionController {
      */
     @TestVisible
     private static Set<Id> filterStudentGroups(AdvisorPortalFilter filter, List<Id> ownerIds, Set<Id> contactIds) {
-        String contactConstrictingStatement;
         Boolean useQueryString = false;
-
-        // limit to just the specified contactIds
-        List<String> contactIdList = new List<String>();
-        for (Id contactId : contactIds)
-            contactIdList.add(contactId);
-        contactConstrictingStatement = getSoqlListString(contactIdList);
 
         Set<Id> filteredContactIds = new Set<Id>();
 
-        String queryString = 'SELECT SG_Contact__c FROM Student_Group__c WHERE';
+        List<String> andStatements = new List<String>();
 
-        if (contactIdList.isEmpty()) {
-            queryString += ' SG_Contact__c = \'\'';
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('SG_Contact__c = \'\'');
+            else
+                andStatements.add('SG_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
         } else {
-            queryString += ' SG_Contact__c IN ' + getSoqlListString(contactIdList);
+            andStatements.add('SG_Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
         }
 
         if (filter.career != null) {
@@ -500,13 +495,17 @@ public class AdvisorPortalFilterSectionController {
             // need to be applied as a UNION rather than an INTERSECTION
             if (shouldUseFilter('studentGroupCode', filter)) {
                 useQueryString = true;
-                queryString += ' AND SG_PeopleSoft_Code__c = \'' + filter.studentGroupCode + '\'';
+                andStatements.add('SG_PeopleSoft_Code__c = \'' + filter.studentGroupCode + '\'');
             }
 
-            queryString += ' AND SG_Effective_Date__c <= TODAY';
-            queryString += ' AND SG_Status__c = TRUE';
-            queryString += ' GROUP BY SG_Contact__c LIMIT 4000';
+            andStatements.add('SG_Effective_Date__c <= TODAY');
+            andStatements.add('SG_Status__c = TRUE');
         }
+
+        String queryString =
+            'SELECT SG_Contact__c FROM Student_Group__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' GROUP BY SG_Contact__c LIMIT 4000';
 
         // make query to filter - or return intial set of contactIds if no filtering is needed
         if (useQueryString) {
@@ -579,6 +578,7 @@ public class AdvisorPortalFilterSectionController {
         Set<Id> filteredContactIds = new Set<Id>();
         List<String> andStatements = new List<String>();
 
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
         if (contactIds != null) {
             if (contactIds.isEmpty())
                 andStatements.add('SG_Contact__c = \'\'');
@@ -662,6 +662,7 @@ public class AdvisorPortalFilterSectionController {
         Set<Id> filteredContactIds = new Set<Id>();
         List<String> andStatements = new List<String>();
 
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
         if (contactIds != null) {
             if (contactIds.isEmpty())
                 andStatements.add('Id = \'\'');
@@ -730,7 +731,7 @@ public class AdvisorPortalFilterSectionController {
 
         List<String> andStatements = new List<String>();
 
-        // Add filter for contact id
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
         if (contactIds != null) {
             if (contactIds.isEmpty())
                 andStatements.add('Contact__c = \'\'');
@@ -839,6 +840,7 @@ public class AdvisorPortalFilterSectionController {
         Set<Id> filteredContactIds = new Set<Id>();
         List<String> andStatements = new List<String>();
 
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
         if (contactIds != null) {
             if (contactIds.isEmpty())
                 andStatements.add('Contact__c = \'\'');
@@ -900,6 +902,7 @@ public class AdvisorPortalFilterSectionController {
         Set<Id> filteredContactIds = new Set<Id>();
         List<String> andStatements = new List<String>();
 
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
         if (contactIds != null) {
             if (contactIds.isEmpty())
                 andStatements.add('SI_Contact__c = \'\'');

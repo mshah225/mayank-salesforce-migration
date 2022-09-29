@@ -37,18 +37,6 @@ export default class AdvisorPortalTable extends LightningElement {
                 v.isSelected = false;
             }
 
-            // mark states about how many cases
-            if (v.cases.length > 0) {
-                v.hasCases = true;
-                if (v.cases.length > 1) {
-                    v.hasMultipleCases = true;
-                } else {
-                    v.hasMultipleCases = false;
-                }
-            } else {
-                v.hasCases = false;
-            }
-
             // Select cases if needed
             for (let j = 0; j < v.cases.length; j++) {
                 const c = v.cases[j];

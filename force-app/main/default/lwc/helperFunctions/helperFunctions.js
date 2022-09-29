@@ -32,3 +32,18 @@ export function buildPicklistOptionsArray(optionsMap) {
 export function cloneObj(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
+
+/**
+ * Check if this is a real wire run, or a false one.
+ * False wire runs occur on page load and have {data:null, error:null}.
+ * When this happens - usually we want to do nothing.
+ * This function checks if this is a false run
+ *
+ * @param {*} obj Wire result - is destructured in {data, error}
+ * @returns true when this IS a false run
+ */
+export function falseWireRun(obj) {
+    let {data, error} = obj;
+
+    return data == null && error == null;
+}

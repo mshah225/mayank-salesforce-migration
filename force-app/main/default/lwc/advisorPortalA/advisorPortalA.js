@@ -13,7 +13,7 @@ import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilt
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
-import {buildPicklistOptionsArray} from 'c/helperFunctions';
+import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
 
 export default class AdvisorPortalA extends LightningElement {
     // For the top level user select filter
@@ -61,19 +61,26 @@ export default class AdvisorPortalA extends LightningElement {
     allowedToUseMassTransfer;
     @wire(checkIfAllowedToUseMassTransfer, {})
     checkedIfAllowedToUseMassTransfer(result) {
+        if (falseWireRun(result)) return; // Sometimes the wire is run with null data and error - this should be considered a fake run and nothing should happen
+
         let {data, error} = result;
+
         if (data != null) {
-            this.allowedToUseMassTransfer = data;
+            this.allowedToUseMassTransfer = true;
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error(error);
         }
+
+        console.log('load less');
         this.loadLess();
     }
 
     // Retrieve default filter
     @wire(getDefaultFilter, {})
     gotDefaultFilter(result) {
+        if (falseWireRun(result)) return; // Sometimes the wire is run with null data and error - this should be considered a fake run and nothing should happen
+
         let {data, error} = result;
         if (data != null) {
             this.currentFilter = JSON.parse(data);
@@ -100,6 +107,7 @@ export default class AdvisorPortalA extends LightningElement {
             });
         }
 
+        console.log('load less');
         this.loadLess();
     }
 

@@ -37,7 +37,42 @@ export default class LightningQuestionAnswerModal extends LightningElement {
     @api returnFocusTo = null;
     @api noEscape = false;
 
+    @api styleFlags = null;
+
     showModal = false;
+
+    get wrapperClasses() {
+        let classes = ['slds-modal', 'slds-fade-in-open']; // start with default classes
+
+        if (this.styleFlags != null && this.styleFlags != '') {
+            const styleFlagArr = this.styleFlags.split(' ');
+            for (let i = 0; i < styleFlagArr.length; i++) {
+                const styleFlag = styleFlagArr[i];
+
+                switch (styleFlag) {
+                    case 'mnh-20':
+                        classes.push('content-mnh-20');
+                        break;
+                    case 'mnh-40':
+                        classes.push('content-mnh-40');
+                        break;
+                    case 'mnh-60':
+                        classes.push('content-mnh-60');
+                        break;
+                    case 'mnh-80':
+                        classes.push('content-mnh-80');
+                        break;
+                    case 'of-visible':
+                        classes.push('content-of-visible');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return classes.join(' ');
+    }
 
     // Need to set focus into modal when it opens
     needToSetFocus = true;

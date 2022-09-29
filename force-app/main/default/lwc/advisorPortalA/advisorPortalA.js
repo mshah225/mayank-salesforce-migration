@@ -72,7 +72,6 @@ export default class AdvisorPortalA extends LightningElement {
             console.error(error);
         }
 
-        console.log('load less');
         this.loadLess();
     }
 
@@ -107,7 +106,6 @@ export default class AdvisorPortalA extends LightningElement {
             });
         }
 
-        console.log('load less');
         this.loadLess();
     }
 

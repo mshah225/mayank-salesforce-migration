@@ -66,7 +66,7 @@ export default class AdvisorPortalA extends LightningElement {
         let {data, error} = result;
 
         if (data != null) {
-            this.allowedToUseMassTransfer = true;
+            this.allowedToUseMassTransfer = data;
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error(error);

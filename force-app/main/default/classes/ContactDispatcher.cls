@@ -1,4 +1,4 @@
-public with sharing class ContactDispatcher implements TriggerDispatcherInterface {
+public without sharing class ContactDispatcher implements TriggerDispatcherInterface {
     private List<Contact> newList;
     private Map<Id, Contact> newMap;
     private List<Contact> oldList;

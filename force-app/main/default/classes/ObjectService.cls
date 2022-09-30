@@ -152,6 +152,100 @@ public class ObjectService {
     }
 
     /**
+     * Use this method to update the version of an SObject in a map
+     * If the SObject is not in the map (Key is ID), then insert it
+     * Otherwise update the fields of the version in the map, with the values set on the sObjDetails
+     *
+     * @param sObjMap Map<String, SObject> key to SObject map. We want to either insert into this map, or update the SObjects in this map
+     * @param sObjDetails The SObject that has details we want to copy over into the version in sObjMap
+     */
+    public static void updateSObjectInMap(Map<Id, SObject> sObjMap, SObject sObjDetails) {
+        Map<String, SObject> sObjMapWithStrKeys = new Map<String, SObject>();
+        Map<String, SObject> sObjDetailsInMap = new Map<String, SObject>();
+
+        // make sObjMap with string keys
+        for (Id key : sObjMap.keySet())
+            sObjMapWithStrKeys.put((String) key, sObjMap.get(key));
+
+        // Create map for sObjDetails
+        sObjDetailsInMap.put((String) (sObjDetails.Id), sObjDetails);
+
+        // Do the copy over
+        updateSObjectInMap(sObjMapWithStrKeys, sObjDetailsInMap);
+
+        // copy back into id-keyed map
+        for (String key : sObjMapWithStrKeys.keySet()) {
+            sObjMap.put((Id) key, sObjMapWithStrKeys.get(key));
+        }
+    }
+
+    /**
+     * Use this method to update the version of an SObject in a map
+     * For each item in newSObjDetailsMap, if it exists in sObjMap copy the non-null fields from the version in
+     * newSObjDetailsMap to the version in sObjMap. If it does not exist, insert the item into sObjMap
+     *
+     * @param sObjMap Map<String, SObject> key to SObject map. We want to either insert into this map, or update the SObjects in this map
+     * @param newSObjDetailsMap Map<String, SObject> key to SObject map. We want to copy the non-null fields for the SObjects in this map
+     *                          to their corresponding copy in the sObjMap
+     */
+    public static void updateSObjectInMap(Map<String, SObject> sObjMap, Map<String, SObject> newSObjDetailsMap) {
+        for (String key : newSObjDetailsMap.keySet()) {
+            if (!sObjMap.containsKey(key)) {
+                // Insert if there is no existing match
+                sObjMap.put(key, newSObjDetailsMap.get(key));
+            } else {
+                // Copy over the details to existing match
+                SObject newSObjDetails = newSObjDetailsMap.get(key);
+                SObject curSObjDetails = sObjMap.get(key);
+
+                updateNonNullFields(curSObjDetails, newSObjDetails);
+            }
+        }
+    }
+
+    /**
+     * Copy any non-null fields from sObjDetails to sObjBase
+     * @param sObjBase SObject the object that we want to modify
+     * @param sObjDetails SObject the object that contains values we want to copy over to sObjBase
+     */
+    public static void updateNonNullFields(SObject sObjBase, SObject sObjDetails) {
+        Schema.SObjectType objectType = sObjDetails.getSObjectType();
+        Map<String, Schema.SObjectField> fieldMap = objectType.getDescribe().fields.getMap();
+        // check each field on object
+        for (Schema.SObjectField field : fieldMap.values()) {
+            String fieldName = field.getDescribe().getName(); // field name
+            Object newValue = null;
+            Object curValue = null;
+
+            try {
+                newValue = sObjDetails.get(fieldName); // new value for field
+                curValue = sObjBase.get(fieldName); // current value for field
+            } catch (System.SObjectException ex) {
+                // SObject row was retrieved via SOQL without the field - that's fine
+            }
+
+            // If being changed to something other than null, set it on the SObject in the map
+            if (newValue != null && newValue != curValue) {
+                sObjBase.put(fieldName, newValue);
+            }
+        }
+    }
+
+    /**
+     * Waits a given number of milliseconds - this should only be used in test code when we need
+     * to ensure certain timestamps are certain times apart. Production code should not use
+     * waiting for any reason.
+     */
+    public static void wait(Integer millisecondsToWait) {
+        Long startTime = DateTime.now().getTime();
+        Long finalTime = DateTime.now().getTime();
+
+        while (finalTime - startTime < millisecondsToWait) {
+            finalTime = DateTime.now().getTime();
+        }
+    }
+
+    /**
      * Get the map of the active picklist values from the picklist field of some object
      * this maps the label of each entry to it's respective value (repeated labels would cause issues)
      */

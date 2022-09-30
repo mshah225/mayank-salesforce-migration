@@ -1,27 +1,24 @@
 public without sharing class TerritoryAssignmentPreviousEducation {
     public static Boolean assignTerritoryDone = false;
+    List<Previous_Education__c> peTriggerList;
+
+    public TerritoryAssignmentPreviousEducation(List<Previous_Education__c> peTriggerList) {
+        this.peTriggerList = peTriggerList;
+    }
 
     public void assignTerritory() {
-        if (assignTerritoryDone) {
+        if (assignTerritoryDone)
             return;
-        }
         assignTerritoryDone = true;
 
-        List<Previous_Education__c> peTriggerList = new List<Previous_Education__c>();
+        // Get all contact ids for these Previous Educations
         Set<Id> contactIdSet = new Set<Id>();
-
-        if (Trigger.IsDelete) {
-            peTriggerList = (List<Previous_Education__c>) Trigger.old;
-        } else {
-            peTriggerList = (List<Previous_Education__c>) Trigger.new;
-        }
-
-        for (Previous_Education__c PE : peTriggerList) {
+        for (Previous_Education__c PE : peTriggerList)
             contactIdSet.add(PE.Contact__c);
-        }
 
-        if (contactIdSet.size() > 0 && (Trigger.IsInsert || Trigger.isUpdate || Trigger.isDelete)) {
-            List<Opportunity> opp = new List<Opportunity>(
+        // If these Previous Educations had some contact lookups - we need to update the territory assignment for their Opportunities
+        if (!contactIdSet.isEmpty()) {
+            List<Opportunity> oppList = new List<Opportunity>(
                 [
                     SELECT
                         Id,
@@ -38,14 +35,13 @@ public without sharing class TerritoryAssignmentPreviousEducation {
 
             List<Opportunity> oppToUpdate = new List<Opportunity>();
 
-            for (Opportunity o : opp) {
+            for (Opportunity o : oppList) {
                 o.Territory_Assignment_Required__c = true;
                 oppToUpdate.add(o);
             }
 
-            if (oppToUpdate.size() > 0) {
+            if (!oppToUpdate.isEmpty())
                 TerritoryAssignmentService.updateOpportunityList(oppToUpdate);
-            }
         }
     }
 }

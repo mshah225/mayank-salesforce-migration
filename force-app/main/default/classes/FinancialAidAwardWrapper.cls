@@ -2,12 +2,12 @@ public class FinancialAidAwardWrapper {
 	public String emplid;
 	public List<cls_awards> awards;
 
-	class cls_awards {
+	public class cls_awards {
 		public String aid_year;	
 		public cls_year_awards year_awards;
 	}
 
-	class cls_year_awards {
+	public class cls_year_awards {
 		public String term_description;	
 		public Integer total_offer_amount;	
 		public Integer total_accepted_amount;	
@@ -15,7 +15,7 @@ public class FinancialAidAwardWrapper {
 		public List<cls_term_awards> term_awards;
 	}
 
-	class cls_term_awards {
+	public class cls_term_awards {
 		public String term;	
 		public String term_description;	
 		public String item_type;	

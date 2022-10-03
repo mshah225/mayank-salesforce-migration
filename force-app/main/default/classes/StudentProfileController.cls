@@ -103,16 +103,6 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent {
-        get {
-            if (serviceIndicatorsForStudent == null) {
-                serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
-            }
-            return serviceIndicatorsForStudent;
-        }
-        set;
-    }
-
     public List<String> aidYearForAwards {
         get {
             if (aidYearForAwards == null) {

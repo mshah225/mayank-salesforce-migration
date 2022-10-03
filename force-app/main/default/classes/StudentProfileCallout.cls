@@ -72,20 +72,20 @@ public with sharing class StudentProfileCallout {
             aidYearsForStudent = FinancialAidYearWrapper.parse(responseBody);
         }
 
-        if (aidYearsForStudent == null || aidYearsForStudent.cls_aid_years == null) {
+        if (aidYearsForStudent == null || aidYearsForStudent.aid_years == null) {
             return aidYears;
         }
 
-        for (FinancialAidYearWrapper.cls_aid_years aidYearsEntry : aidYearsForStudent.cls_aid_years) {
+        for (FinancialAidYearWrapper.cls_aid_years aidYearsEntry : aidYearsForStudent.aid_years) {
             aidYears.add(aidYearsEntry.aid_year);
         }
 
         return aidYears;
     }
 
-    public static List<FinancialAidAwardWrapper.awards> getAwards(String emplid, String aidYear) {
+    public static List<FinancialAidAwardWrapper.cls_awards> getAwards(String emplid, String aidYear) {
         FinancialAidAwardWrapper awardsForStudent;
-        List<FinancialAidAwardWrapper.awards> awards = new List<FinancialAidAwardWrapper.awards>();
+        List<FinancialAidAwardWrapper.cls_awards> awards = new List<FinancialAidAwardWrapper.cls_awards>();
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/awards-status?aidyear=' + aidYear);
@@ -102,7 +102,7 @@ public with sharing class StudentProfileCallout {
             return awards;
         }
 
-        for (FinancialAidAwardWrapper.awards awardEntry : awardsForStudent.awards) {
+        for (FinancialAidAwardWrapper.cls_awards awardEntry : awardsForStudent.awards) {
             awards.add(awardEntry);
         }
 

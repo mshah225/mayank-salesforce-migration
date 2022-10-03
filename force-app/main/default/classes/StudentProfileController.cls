@@ -53,7 +53,7 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateAcademicsMessages { get; set; }
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
-    public List<String> graduateIndicatorsMessages { get; set; }
+    public List<String> graduateIndicatorsMessages { get; set; }    
 
     public Student_Program_Plan__c ugStudentProgram {
         get {
@@ -99,6 +99,26 @@ global with sharing class StudentProfileController {
                 serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
             }
             return serviceIndicatorsForStudent;
+        }
+        set;
+    }
+
+    public List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent {
+        get {
+            if (serviceIndicatorsForStudent == null) {
+                serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
+            }
+            return serviceIndicatorsForStudent;
+        }
+        set;
+    }
+
+    public List<String> aidYearForAwards {
+        get {
+            if (aidYearForAwards == null) {
+                aidYearForAwards = StudentProfileCallout.getAidYears(theContact.EmplId__c);
+            }
+            return aidYearForAwards;
         }
         set;
     }

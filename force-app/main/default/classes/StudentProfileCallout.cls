@@ -57,9 +57,9 @@ public with sharing class StudentProfileCallout {
         return checklists;
     }
 
-    public static List<FinancialAidYearWrapper.cls_aid_years> getAidYears(String emplid) {
+    public static List<String> getAidYears(String emplid) {
         FinancialAidYearWrapper aidYearsForStudent;
-        List<FinancialAidYearWrapper.cls_aid_years> aidYears = new List<FinancialAidYearWrapper.cls_aid_years>();
+        List<String> aidYears = new List<String>();
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/aid-years');
@@ -77,13 +77,13 @@ public with sharing class StudentProfileCallout {
         }
 
         for (FinancialAidYearWrapper.cls_aid_years aidYearsEntry : aidYearsForStudent.cls_aid_years) {
-            aidYears.add(aidYearsEntry);
+            aidYears.add(aidYearsEntry.aid_year);
         }
 
         return aidYears;
     }
 
-    public static List<FinancialAidAwardWrapper.awards> getAidYears(String emplid, String aidYear) {
+    public static List<FinancialAidAwardWrapper.awards> getAwards(String emplid, String aidYear) {
         FinancialAidAwardWrapper awardsForStudent;
         List<FinancialAidAwardWrapper.awards> awards = new List<FinancialAidAwardWrapper.awards>();
 

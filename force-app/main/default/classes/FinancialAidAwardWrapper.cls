@@ -1,4 +1,4 @@
-public class FinancialAidAwardWrapper{
+public class FinancialAidAwardWrapper {
 	public String emplid;
 	public List<cls_awards> awards;
 
@@ -29,7 +29,7 @@ public class FinancialAidAwardWrapper{
 		public String category_description;	
 	}
 
-	public static FinancialAidAwardWrapper parse(String json){
+	public static FinancialAidAwardWrapper parse(String json) {
 		return (FinancialAidAwardWrapper) System.JSON.deserialize(json, FinancialAidAwardWrapper.class);
 	}
 }

@@ -1144,16 +1144,49 @@ public class AdvisorPortalFilterSectionController {
         List<Id> ownerIds,
         Set<Id> contactIds
     ) {
-        String queryString =
-            'SELECT Id, Name, FirstName, Preferred_Full_Name__c, Preferred_First_Name__c, ' +
-            'LastName, EmplId__c, ASURite_Id__c, US_Citizen__c, Change_Date__c, ' +
-            'Most_Recent_Outlook_Change_Direction__c, Curr_Cont_Prediction_Level__c, ' +
-            '(SELECT Id, CaseNumber, Subject, Status, Followup_Date__c, OwnerId, Owner.Name, ' +
-            'CreatedDate, CC_Category__r.Name, CC_Category__r.Parent__r.Name, RecordType.Name, ' +
-            'Change_Date__c, Curr_Cont_Prediction_Level__c, ' +
-            'Most_Recent_Outlook_Change_Direction__c, Most_Recent_Queue__c, Priority FROM Cases)' +
-            ' FROM Contact WHERE';
+        // Construct case level filters
+        List<String> caseAndStatements = new List<String>();
 
+        caseAndStatements.add('IsClosed = FALSE');
+
+        if (shouldUseFilter('caseCategory', filter)) {
+            List<String> categories = filter.caseCategory.split(';');
+            caseAndStatements.add('CC_Category__r.Name IN ' + getSoqlListString(categories));
+        }
+
+        if (shouldUseFilter('caseSubject', filter)) {
+            List<String> subjects = filter.caseSubject.split(';');
+            caseAndStatements.add('Subject IN ' + getSoqlListString(subjects));
+        }
+
+        if (shouldUseFilter('caseStatus', filter)) {
+            List<String> statuses = filter.caseStatus.split(';');
+            caseAndStatements.add('Status IN ' + getSoqlListString(statuses));
+        }
+
+        if (shouldUseFilter('createdFromDate', filter)) {
+            caseAndStatements.add(
+                'CreatedDate >= ' +
+                Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
+            );
+        }
+
+        if (shouldUseFilter('createdToDate', filter)) {
+            caseAndStatements.add(
+                'CreatedDate <= ' +
+                Datetime.valueOf(filter.createdToDate + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
+            );
+        }
+
+        if (shouldUseFilter('followUpFromDate', filter)) {
+            caseAndStatements.add('Followup_Date__c >= ' + filter.followUpFromDate);
+        }
+
+        if (shouldUseFilter('followUpToDate', filter)) {
+            caseAndStatements.add('Followup_Date__c <= ' + filter.followUpToDate);
+        }
+
+        // Add all contact-level filters
         List<String> andStatements = new List<String>();
 
         andStatements.add('Id IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
@@ -1219,6 +1252,22 @@ public class AdvisorPortalFilterSectionController {
             else
                 andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
         }
+
+        // Generate the query string
+        String queryString =
+            'SELECT Id, Name, FirstName, Preferred_Full_Name__c, Preferred_First_Name__c, ' +
+            'LastName, EmplId__c, ASURite_Id__c, US_Citizen__c, Change_Date__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, Curr_Cont_Prediction_Level__c, ' +
+            '(SELECT Id, CaseNumber, Subject, Status, Followup_Date__c, OwnerId, Owner.Name, ' +
+            'CreatedDate, CC_Category__r.Name, CC_Category__r.Parent__r.Name, RecordType.Name, ' +
+            'Change_Date__c, Curr_Cont_Prediction_Level__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, Most_Recent_Queue__c, Priority FROM Cases';
+
+        // Add case filter section is needed
+        if (!caseAndStatements.isEmpty())
+            queryString += ' WHERE ' + String.join(caseAndStatements, ' AND ');
+
+        queryString += ') FROM Contact WHERE';
 
         queryString += ' ' + String.join(andStatements, ' AND ');
 

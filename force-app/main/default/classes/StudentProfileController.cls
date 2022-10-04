@@ -41,6 +41,7 @@ global with sharing class StudentProfileController {
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
     public String serviceIndicatorTerm { get; set; }
+    public String selectedAidYearForAward { get; set; }
     public Decimal undergradGPA { get; set; }
     public Decimal gradGPA { get; set; }
     public List<String> financialAidIndicators { get; set; }
@@ -110,6 +111,17 @@ global with sharing class StudentProfileController {
             }
             return aidYearForAwards;
         }
+        set;
+    }
+
+    public List<FinancialAidAwardWrapper.condensed_award_list> awardsForSelectedTerm {
+        get {
+            FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c, selectedAidYearForAward);
+            awardsForSelectedTerm = FinancialAidAwardWrapper.convertToCondensed(awardWrapper);
+
+            return awardsForSelectedTerm;
+        }
+
         set;
     }
 

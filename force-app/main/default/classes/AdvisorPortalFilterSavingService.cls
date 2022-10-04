@@ -20,7 +20,7 @@ public inherited sharing class AdvisorPortalFilterSavingService {
 
     @AuraEnabled
     public static void setDefaultFilter(String json) {
-        if (json.length() > 2048) {
+        if (json.length() > Schema.SObjectType.Success_Resource__c.fields.Default_Filter__c.getLength()) {
             throw new AdvisorPortalFilterSavingException('Filter too large. Try selecting fewer filters');
         }
         List<Success_Resource__c> activeResources = [

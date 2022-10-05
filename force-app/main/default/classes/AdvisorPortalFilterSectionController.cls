@@ -1,18 +1,4 @@
 public class AdvisorPortalFilterSectionController {
-    private static Map<String, Set<Decimal>> outlookScoresByLabels = new Map<String, Set<Decimal>>{
-        'very low' => new Set<Decimal>{ 0, 1, 2, 3 },
-        'low' => new Set<Decimal>{ 4, 5 },
-        'moderate' => new Set<Decimal>{ 6 },
-        'high' => new Set<Decimal>{ 7 },
-        'very high' => new Set<Decimal>{ 8, 9, 10 }
-    };
-
-    private static Map<String, Decimal> outlookChangeByLabels = new Map<String, Decimal>{
-        'up' => 1,
-        'down' => 0,
-        'no change' => -1
-    };
-
     /**
      * Gets active picklist values for a provided Object and Field name.
      *
@@ -107,7 +93,9 @@ public class AdvisorPortalFilterSectionController {
             LIMIT 2000
         ]) {
             if (result.get('Subject') != null) {
-                caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
+                String label = (String) result.get('Subject');
+                String value = EncodingUtil.base64Encode(Blob.valueOf(label));
+                caseSubjectValuesByLabel.put(label, value);
             }
         }
 
@@ -146,10 +134,9 @@ public class AdvisorPortalFilterSectionController {
             LIMIT 2000
         ]) {
             if (result.get('CategoryName') != null) {
-                caseClassificationValuesByLabel.put(
-                    (String) result.get('CategoryName'),
-                    (String) result.get('CategoryName')
-                );
+                String label = (String) result.get('CategoryName');
+                String value = EncodingUtil.base64Encode(Blob.valueOf(label));
+                caseClassificationValuesByLabel.put(label, value);
             }
         }
 
@@ -356,8 +343,8 @@ public class AdvisorPortalFilterSectionController {
                 break;
 
             // Skip contact if we filter by Case count, but there aren't correct amount
-            if (shouldUseFilter('caseCount', filter))
-                if (contactIdToCasesMap.get(contactId).size() != Integer.valueOf(filter.caseCount))
+            if (filter.shouldUse('caseCount'))
+                if (contactIdToCasesMap.get(contactId).size() != filter.getCaseCount())
                     continue;
 
             // Create the corresponding contact object from the contact of this case
@@ -434,8 +421,8 @@ public class AdvisorPortalFilterSectionController {
                 break;
 
             // Skip contact if we filter by Case count, but there aren't correct amount
-            if (shouldUseFilter('caseCount', filter))
-                if (contact.cases.size() != Integer.valueOf(filter.caseCount))
+            if (filter.shouldUse('caseCount'))
+                if (contact.cases.size() != filter.getCaseCount())
                     continue;
 
             AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
@@ -493,9 +480,9 @@ public class AdvisorPortalFilterSectionController {
             // if grad filtering, there still might be some of student group filters to apply
             // (for special populations), but they happen in a different place since they
             // need to be applied as a UNION rather than an INTERSECTION
-            if (shouldUseFilter('studentGroupCode', filter)) {
+            if (filter.shouldUse('studentGroupCode')) {
                 useQueryString = true;
-                andStatements.add('SG_PeopleSoft_Code__c = \'' + filter.studentGroupCode + '\'');
+                andStatements.add('SG_PeopleSoft_Code__c = \'' + filter.getStudentGroupCode() + '\'');
             }
 
             andStatements.add('SG_Effective_Date__c <= TODAY');
@@ -526,7 +513,7 @@ public class AdvisorPortalFilterSectionController {
         Boolean didFiltering = false;
         Set<Id> filteredContactIds = new Set<Id>();
         // note, these are all aditive, so we should UNION the results of all the special population filters
-        if (shouldUseFilter('specialPopulation', filter)) {
+        if (filter.shouldUse('specialPopulation')) {
             didFiltering = true;
 
             Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(
@@ -1009,19 +996,16 @@ public class AdvisorPortalFilterSectionController {
         }
         andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
 
-        if (shouldUseFilter('caseCategory', filter)) {
-            List<String> categories = filter.caseCategory.split(';');
-            andStatements.add('CC_Category__r.Name IN ' + getSoqlListString(categories));
+        if (filter.shouldUse('caseCategory')) {
+            andStatements.add('CC_Category__r.Name IN ' + getSoqlListString(filter.getCaseCategories()));
         }
 
-        if (shouldUseFilter('caseSubject', filter)) {
-            List<String> subjects = filter.caseSubject.split(';');
-            andStatements.add('Subject IN ' + getSoqlListString(subjects));
+        if (filter.shouldUse('caseSubject')) {
+            andStatements.add('Subject IN ' + getSoqlListString(filter.getCaseSubjects()));
         }
 
-        if (shouldUseFilter('caseStatus', filter)) {
-            List<String> statuses = filter.caseStatus.split(';');
-            andStatements.add('Status IN ' + getSoqlListString(statuses));
+        if (filter.shouldUse('caseStatus')) {
+            andStatements.add('Status IN ' + getSoqlListString(filter.getCaseStatuses()));
         }
 
         if (ownerIds.isEmpty())
@@ -1041,71 +1025,51 @@ public class AdvisorPortalFilterSectionController {
             }
         }
 
-        if (shouldUseFilter('outlookScore', filter)) {
-            List<Decimal> scores = new List<Decimal>();
-
-            for (String s : filter.outlookScore.split(';')) {
-                if (outlookScoresByLabels.containsKey(s)) {
-                    scores.addAll(outlookScoresByLabels.get(s));
-                }
-            }
-
-            andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(scores));
+        if (filter.shouldUse('outlookScore')) {
+            andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(filter.getOutlookScores()));
         }
 
-        if (shouldUseFilter('outlookChange', filter)) {
-            List<Decimal> changeDirections = new List<Decimal>();
-
-            for (String s : filter.outlookChange.split(';')) {
-                if (outlookChangeByLabels.containsKey(s)) {
-                    changeDirections.add(outlookChangeByLabels.get(s));
-                }
-            }
-
-            andStatements.add('Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(changeDirections));
-        }
-
-        if (shouldUseFilter('createdFromDate', filter)) {
+        if (filter.shouldUse('outlookChange')) {
             andStatements.add(
-                'CreatedDate >= ' +
-                Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
+                'Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(filter.getOutlookChanges())
             );
         }
 
-        if (shouldUseFilter('createdToDate', filter)) {
-            andStatements.add(
-                'CreatedDate <= ' +
-                Datetime.valueOf(filter.createdToDate + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
-            );
+        if (filter.shouldUse('createdFromDate')) {
+            andStatements.add('CreatedDate >= ' + filter.getCreatedFromDate());
         }
 
-        if (shouldUseFilter('followUpFromDate', filter)) {
-            andStatements.add('Followup_Date__c >= ' + filter.followUpFromDate);
+        if (filter.shouldUse('createdToDate')) {
+            andStatements.add('CreatedDate <= ' + filter.getCreatedToDate());
         }
 
-        if (shouldUseFilter('followUpToDate', filter)) {
-            andStatements.add('Followup_Date__c <= ' + filter.followUpToDate);
+        if (filter.shouldUse('followUpFromDate')) {
+            andStatements.add('Followup_Date__c >= ' + filter.getFollowUpFromDate());
         }
 
-        if (shouldUseFilter('persistenceFromDate', filter)) {
-            andStatements.add('Change_Date__c >= ' + filter.persistenceFromDate);
+        if (filter.shouldUse('followUpToDate')) {
+            andStatements.add('Followup_Date__c <= ' + filter.getFollowUpToDate());
         }
 
-        if (shouldUseFilter('persistenceToDate', filter)) {
-            andStatements.add('Change_Date__c <= ' + filter.persistenceToDate);
+        if (filter.shouldUse('persistenceFromDate')) {
+            andStatements.add('Change_Date__c >= ' + filter.getPersistenceFromDate());
         }
 
-        if (shouldUseFilter('studentString', filter)) {
+        if (filter.shouldUse('persistenceToDate')) {
+            andStatements.add('Change_Date__c <= ' + filter.getPersistenceToDate());
+        }
+
+        if (filter.shouldUse('studentString')) {
             String nameQuery =
                 '(' +
                 'Contact.Preferred_Full_Name__c = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\' OR Contact.Name = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\' OR Contact.EmplId__c = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\' OR Contact.ASURite_ID__c = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\') ';
 
             andStatements.add(nameQuery);
@@ -1149,41 +1113,35 @@ public class AdvisorPortalFilterSectionController {
 
         caseAndStatements.add('IsClosed = FALSE');
 
-        if (shouldUseFilter('caseCategory', filter)) {
+        if (filter.shouldUse('caseCategory')) {
             List<String> categories = filter.caseCategory.split(';');
-            caseAndStatements.add('CC_Category__r.Name IN ' + getSoqlListString(categories));
+            caseAndStatements.add('CC_Category__r.Name IN ' + getSoqlListString(filter.getCaseCategories()));
         }
 
-        if (shouldUseFilter('caseSubject', filter)) {
+        if (filter.shouldUse('caseSubject')) {
             List<String> subjects = filter.caseSubject.split(';');
-            caseAndStatements.add('Subject IN ' + getSoqlListString(subjects));
+            caseAndStatements.add('Subject IN ' + getSoqlListString(filter.getCaseSubjects()));
         }
 
-        if (shouldUseFilter('caseStatus', filter)) {
+        if (filter.shouldUse('caseStatus')) {
             List<String> statuses = filter.caseStatus.split(';');
-            caseAndStatements.add('Status IN ' + getSoqlListString(statuses));
+            caseAndStatements.add('Status IN ' + getSoqlListString(filter.getCaseStatuses()));
         }
 
-        if (shouldUseFilter('createdFromDate', filter)) {
-            caseAndStatements.add(
-                'CreatedDate >= ' +
-                Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
-            );
+        if (filter.shouldUse('createdFromDate')) {
+            caseAndStatements.add('CreatedDate >= ' + filter.getCreatedFromDate());
         }
 
-        if (shouldUseFilter('createdToDate', filter)) {
-            caseAndStatements.add(
-                'CreatedDate <= ' +
-                Datetime.valueOf(filter.createdToDate + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
-            );
+        if (filter.shouldUse('createdToDate')) {
+            caseAndStatements.add('CreatedDate <= ' + filter.getCreatedToDate());
         }
 
-        if (shouldUseFilter('followUpFromDate', filter)) {
-            caseAndStatements.add('Followup_Date__c >= ' + filter.followUpFromDate);
+        if (filter.shouldUse('followUpFromDate')) {
+            caseAndStatements.add('Followup_Date__c >= ' + filter.getFollowUpFromDate());
         }
 
-        if (shouldUseFilter('followUpToDate', filter)) {
-            caseAndStatements.add('Followup_Date__c <= ' + filter.followUpToDate);
+        if (filter.shouldUse('followUpToDate')) {
+            caseAndStatements.add('Followup_Date__c <= ' + filter.getFollowUpToDate());
         }
 
         // Add all contact-level filters
@@ -1191,49 +1149,35 @@ public class AdvisorPortalFilterSectionController {
 
         andStatements.add('Id IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
 
-        if (shouldUseFilter('outlookScore', filter)) {
-            List<Decimal> scores = new List<Decimal>();
-
-            for (String s : filter.outlookScore.split(';')) {
-                if (outlookScoresByLabels.containsKey(s)) {
-                    scores.addAll(outlookScoresByLabels.get(s));
-                }
-            }
-
-            andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(scores));
+        if (filter.shouldUse('outlookScore')) {
+            andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(filter.getOutlookScores()));
         }
 
-        if (shouldUseFilter('outlookChange', filter)) {
-            List<Decimal> changeDirections = new List<Decimal>();
-
-            for (String s : filter.outlookChange.split(';')) {
-                if (outlookChangeByLabels.containsKey(s)) {
-                    changeDirections.add(outlookChangeByLabels.get(s));
-                }
-            }
-
-            andStatements.add('Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(changeDirections));
+        if (filter.shouldUse('outlookChange')) {
+            andStatements.add(
+                'Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(filter.getOutlookChanges())
+            );
         }
 
-        if (shouldUseFilter('persistenceFromDate', filter)) {
-            andStatements.add('Change_Date__c >= ' + filter.persistenceFromDate);
+        if (filter.shouldUse('persistenceFromDate')) {
+            andStatements.add('Change_Date__c >= ' + filter.getPersistenceFromDate());
         }
 
-        if (shouldUseFilter('persistenceToDate', filter)) {
-            andStatements.add('Change_Date__c <= ' + filter.persistenceToDate);
+        if (filter.shouldUse('persistenceToDate')) {
+            andStatements.add('Change_Date__c <= ' + filter.getPersistenceToDate());
         }
 
-        if (shouldUseFilter('studentString', filter)) {
+        if (filter.shouldUse('studentString')) {
             String nameQuery =
                 '(' +
                 'Preferred_Full_Name__c = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\' OR Name = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\' OR EmplId__c = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\' OR ASURite_ID__c = \'' +
-                filter.studentString +
+                filter.getStudentString() +
                 '\') ';
 
             andStatements.add(nameQuery);
@@ -1285,13 +1229,13 @@ public class AdvisorPortalFilterSectionController {
      */
     private static String generateStudentGroupFilterString(AdvisorPortalFilter filter) {
         String queryString = null;
-        if (shouldUseFilter('studentGroupCode', filter)) {
+        if (filter.shouldUse('studentGroupCode')) {
             queryString =
                 'SELECT SG_Contact__c FROM Student_Group__c WHERE' +
                 ' SG_Effective_Date__c <= TODAY' +
                 ' AND SG_Status__c = TRUE' +
                 ' AND SG_PeopleSoft_Code__c = \'' +
-                filter.studentGroupCode +
+                filter.getStudentGroupCode() +
                 '\'';
         }
         return queryString;
@@ -1308,8 +1252,8 @@ public class AdvisorPortalFilterSectionController {
         String queryString = null;
         List<String> andStatements = new List<String>();
 
-        if (shouldUseFilter('degreeLevel', filter)) {
-            List<String> degreeLevels = filter.degreeLevel.split(';');
+        if (filter.shouldUse('degreeLevel')) {
+            List<String> degreeLevels = filter.getDegreeLevels();
             List<String> degreeLevelQueryComponents = new List<String>();
 
             if (degreeLevels.contains('masters')) {
@@ -1330,63 +1274,63 @@ public class AdvisorPortalFilterSectionController {
             }
         }
 
-        if (shouldUseFilter('academicProgram', filter)) {
-            List<String> academicPrograms = filter.academicProgram.split(';');
+        if (filter.shouldUse('academicProgram')) {
+            List<String> academicPrograms = filter.getAcademicPrograms();
             andStatements.add('Program_Code__c IN ' + getSoqlListString(academicPrograms));
         }
 
-        if (shouldUseFilter('schoolDepartment', filter)) {
-            List<String> schoolDepartments = filter.schoolDepartment.split(';');
+        if (filter.shouldUse('schoolDepartment')) {
+            List<String> schoolDepartments = filter.getSchoolDepartments();
             andStatements.add('Organization_Code__r.Organization_Code__c IN ' + getSoqlListString(schoolDepartments));
         }
 
-        if (shouldUseFilter('academicPlan', filter)) {
-            List<String> academicPlans = filter.academicPlan.split(';');
+        if (filter.shouldUse('academicPlan')) {
+            List<String> academicPlans = filter.getAcademicPlans();
             andStatements.add('Plan_Code__c IN ' + getSoqlListString(academicPlans));
         }
 
-        if (shouldUseFilter('admitTermFrom', filter)) {
+        if (filter.shouldUse('admitTermFrom')) {
             String fromTermStatement =
                 '(Admit_Term__r.PeopleSoft_Code__c >= \'' +
-                filter.admitTermFrom +
+                filter.getAdmitTermFrom() +
                 '\' OR Requirement_Term__c >= \'' +
-                filter.admitTermFrom +
+                filter.getAdmitTermFrom() +
                 '\')';
             andStatements.add(fromTermStatement);
         }
 
-        if (shouldUseFilter('admitTermTo', filter)) {
+        if (filter.shouldUse('admitTermTo')) {
             String toTermStatement =
                 '(Admit_Term__r.PeopleSoft_Code__c <= \'' +
-                filter.admitTermTo +
+                filter.getAdmitTermTo() +
                 '\' OR Requirement_Term__c <= \'' +
-                filter.admitTermTo +
+                filter.getAdmitTermTo() +
                 '\')';
             andStatements.add(toTermStatement);
         }
 
-        if (shouldUseFilter('academicLevel', filter)) {
-            List<String> academicLevels = filter.academicLevel.split(';');
+        if (filter.shouldUse('academicLevel')) {
+            List<String> academicLevels = filter.getAcademicLevels();
             andStatements.add('Cohort__c IN ' + getSoqlListString(academicLevels));
         }
 
-        if (shouldUseFilter('major', filter)) {
+        if (filter.shouldUse('major')) {
             String majorStatement =
                 '(Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
-                filter.major +
+                filter.getMajor() +
                 '%\' OR Plan_Code__c LIKE \'%' +
-                filter.major +
+                filter.getMajor() +
                 '%\' ))';
             andStatements.add(majorStatement);
         }
 
-        if (shouldUseFilter('campus', filter)) {
-            List<String> campuses = filter.campus.split(';');
+        if (filter.shouldUse('campus')) {
+            List<String> campuses = filter.getCampuses();
             andStatements.add('Campus__r.Location_Code__c IN ' + getSoqlListString(campuses));
         }
 
-        if (shouldUseFilter('residency', filter)) {
-            List<String> residencies = filter.residency.split(';');
+        if (filter.shouldUse('residency')) {
+            List<String> residencies = filter.getResidencies();
             andStatements.add('Residency__c IN ' + getSoqlListString(residencies));
         }
 
@@ -1448,114 +1392,6 @@ public class AdvisorPortalFilterSectionController {
     private static String getCurrentPeoplesoftTermCode() {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         return currentTermData.CurrTerm__c;
-    }
-
-    private static Boolean shouldUseFilter(String filterName, AdvisorPortalFilter filter) {
-        Boolean useThisFilter = true;
-
-        // career should NEVER be null
-        if (filter.career == null)
-            return false;
-
-        /** Check if this filter is used with this career (some filters are only allowed for GRD or UGRD and not the other) */
-        if (filter.career == 'GRD') {
-            useThisFilter &= new List<String>{
-                    'studentString',
-                    'campus',
-                    'degreeLevel',
-                    'academicProgram',
-                    'schoolDepartment',
-                    'academicPlan',
-                    'admitTermFrom',
-                    'admitTermTo',
-                    'residency',
-                    'caseStatus',
-                    'caseCategory',
-                    'specialPopulation',
-                    'caseCount',
-                    'createdFromDate',
-                    'createdToDate',
-                    'followUpFromDate',
-                    'followUpToDate'
-                }
-                .contains(filterName);
-        } else {
-            useThisFilter &= new List<String>{
-                    'studentString',
-                    'campus',
-                    'academicLevel',
-                    'studentGroupCode',
-                    'major',
-                    'residency',
-                    'caseStatus',
-                    'caseCategory',
-                    'caseSubject',
-                    'outlookScore',
-                    'outlookChange',
-                    'caseCount',
-                    'createdFromDate',
-                    'createdToDate',
-                    'followUpFromDate',
-                    'followUpToDate',
-                    'persistenceFromDate',
-                    'persistenceToDate'
-                }
-                .contains(filterName);
-        }
-
-        /** Check if filter is actually set */
-        if (filterName == 'studentString')
-            useThisFilter &= !String.isBlank(filter.studentString);
-        else if (filterName == 'campus')
-            useThisFilter &= !String.isBlank(filter.campus);
-        else if (filterName == 'academicLevel')
-            useThisFilter &= !String.isBlank(filter.academicLevel);
-        else if (filterName == 'studentGroupCode')
-            useThisFilter &= !String.isBlank(filter.studentGroupCode);
-        else if (filterName == 'major')
-            useThisFilter &= !String.isBlank(filter.major);
-        else if (filterName == 'degreeLevel')
-            useThisFilter &= !String.isBlank(filter.degreeLevel);
-        else if (filterName == 'academicProgram')
-            useThisFilter &= !String.isBlank(filter.academicProgram);
-        else if (filterName == 'schoolDepartment')
-            useThisFilter &= !String.isBlank(filter.schoolDepartment);
-        else if (filterName == 'academicPlan')
-            useThisFilter &= !String.isBlank(filter.academicPlan);
-        else if (filterName == 'admitTermFrom')
-            useThisFilter &= !String.isBlank(filter.admitTermFrom);
-        else if (filterName == 'admitTermTo')
-            useThisFilter &= !String.isBlank(filter.admitTermTo);
-        else if (filterName == 'residency')
-            useThisFilter &= !String.isBlank(filter.residency);
-        else if (filterName == 'caseStatus')
-            useThisFilter &= !String.isBlank(filter.caseStatus);
-        else if (filterName == 'caseCategory')
-            useThisFilter &= !String.isBlank(filter.caseCategory);
-        else if (filterName == 'caseSubject')
-            useThisFilter &= !String.isBlank(filter.caseSubject);
-        else if (filterName == 'specialPopulation')
-            useThisFilter &= !String.isBlank(filter.specialPopulation);
-        else if (filterName == 'outlookScore')
-            useThisFilter &= !String.isBlank(filter.outlookScore);
-        else if (filterName == 'outlookChange')
-            useThisFilter &= !String.isBlank(filter.outlookChange);
-        else if (filterName == 'caseCount')
-            useThisFilter &= !String.isBlank(filter.caseCount) && Integer.valueOf(filter.caseCount) > 0;
-        else if (filterName == 'createdFromDate')
-            useThisFilter &= !String.isBlank(filter.createdFromDate);
-        else if (filterName == 'createdToDate')
-            useThisFilter &= !String.isBlank(filter.createdToDate);
-        else if (filterName == 'followUpFromDate')
-            useThisFilter &= !String.isBlank(filter.followUpFromDate);
-        else if (filterName == 'followUpToDate')
-            useThisFilter &= !String.isBlank(filter.followUpToDate);
-        else if (filterName == 'persistenceFromDate')
-            useThisFilter &= !String.isBlank(filter.persistenceFromDate);
-        else if (filterName == 'persistenceToDate')
-            useThisFilter &= !String.isBlank(filter.persistenceToDate);
-
-        return useThisFilter;
     }
 
     public class AdvisorPortalException extends Exception {

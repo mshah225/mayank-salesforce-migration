@@ -979,6 +979,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<Case> testCases = [SELECT Id, Subject FROM Case WHERE OwnerId = :testUser.Id];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRAD';
 
         // Act
@@ -1011,6 +1012,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRAD';
 
         Test.startTest();
@@ -1037,9 +1039,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<Location__c> gradCampuses = [SELECT Name FROM Location__c WHERE Graduate_Enabled__c = TRUE];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
 
         Test.startTest();
@@ -1139,6 +1143,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
 
@@ -1172,6 +1177,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
 
@@ -1199,24 +1205,28 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         // Search name
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.studentString = 'Anya Simms';
 
         // Search preferred name
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.studentString = 'Anastasia Simms';
 
         // Search emplid
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
         filter3.career = 'GRD';
         filter3.caseTypeState = 'AllCasesState';
         filter3.studentString = '1200889090';
 
         // Search asurite
         AdvisorPortalFilter filter4 = new AdvisorPortalFilter();
+        filter4.version = 'v1';
         filter4.career = 'GRD';
         filter4.caseTypeState = 'AllCasesState';
         filter4.studentString = 'asimms4';
@@ -1302,11 +1312,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.campus = '0011221101';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.campus = '0011221101;0011221102';
@@ -1373,11 +1385,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.academicLevel = 'Freshman';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicLevel = 'Freshman;Junior';
@@ -1432,11 +1446,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.studentGroupCode = 'STGRP1';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.studentGroupCode = 'STGRP2';
@@ -1491,11 +1507,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.major = 'COMPSCI';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.major = 'Computer Science';
@@ -1566,11 +1584,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.degreeLevel = 'masters';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.degreeLevel = 'masters;certificate';
@@ -1638,11 +1658,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.academicProgram = 'IRAAFUL';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicProgram = 'IRAAFUL;PREMED';
@@ -1715,11 +1737,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.academicPlan = 'TVFILM';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicPlan = 'BUSNESS;TVFILM';
@@ -1805,17 +1829,20 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.admitTermFrom = '2144';
         filter.admitTermTo = '2187';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.admitTermTo = '2191';
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
         filter3.career = 'GRD';
         filter3.caseTypeState = 'AllCasesState';
         filter3.admitTermFrom = '2191';
@@ -1897,11 +1924,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.residency = 'International';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.residency = 'Resident;International';
@@ -1961,11 +1990,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseStatus = 'Email Sent';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseStatus = 'Email Sent;Busy Signal';
@@ -2025,14 +2056,85 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCategory = 'CAT-3';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseCategory = 'CAT-4;CAT-3';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+    }
+
+    @IsTest
+    private static void testFilterCaseCategory_FilterV2() {
+        LogSuite.activateTestFlowSuite('testFilterCaseCategory');
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name = 'CAT-3'
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name IN ('CAT-4', 'CAT-3')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v2';
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.caseCategory = EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v2';
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.caseCategory =
+            EncodingUtil.base64Encode(Blob.valueOf('CAT-4')) +
+            ';' +
+            EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
@@ -2089,14 +2191,85 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseSubject = 'Tailwind';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseSubject = 'Tailwind;Bee girl';
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+    }
+
+    @IsTest
+    private static void testFilterCaseSubject_FilterV2() {
+        LogSuite.activateTestFlowSuite('testFilterCaseSubject');
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                Subject = 'Tailwind'
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                Subject IN ('Tailwind', 'Bee girl')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v2';
+        filter.career = 'UGRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.caseSubject = EncodingUtil.base64Encode(Blob.valueOf('Tailwind'));
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v2';
+        filter2.career = 'UGRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.caseSubject =
+            EncodingUtil.base64Encode(Blob.valueOf('Tailwind')) +
+            ';' +
+            EncodingUtil.base64Encode(Blob.valueOf('Bee girl'));
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
@@ -2161,11 +2334,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.outlookScore = 'very low';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.outlookScore = 'very low;low';
@@ -2225,11 +2400,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.outlookChange = 'up';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.outlookChange = 'down;up';
@@ -2278,6 +2455,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'accelerated 4+1 degrees';
@@ -2312,6 +2490,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'format students';
@@ -2346,6 +2525,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'provivisional admits, not met yet';
@@ -2380,6 +2560,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'veterans';
@@ -2414,6 +2595,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'applied to graduate';
@@ -2448,6 +2630,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'mayo students';
@@ -2482,6 +2665,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'cintana students';
@@ -2516,6 +2700,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'research assistants';
@@ -2550,6 +2735,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'teaching assistants';
@@ -2584,6 +2770,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'concurrent enrollment';
@@ -2618,6 +2805,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'active students with registation hold';
@@ -2823,31 +3011,37 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'accelerated 4+1 degrees;veterans';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.specialPopulation = 'mayo students;cintana students';
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
         filter3.career = 'GRD';
         filter3.caseTypeState = 'AllCasesState';
         filter3.specialPopulation = 'applied to graduate;cintana students';
 
         AdvisorPortalFilter filter4 = new AdvisorPortalFilter();
+        filter4.version = 'v1';
         filter4.career = 'GRD';
         filter4.caseTypeState = 'AllCasesState';
         filter4.specialPopulation = 'concurrent enrollment';
 
         AdvisorPortalFilter filter5 = new AdvisorPortalFilter();
+        filter5.version = 'v1';
         filter5.career = 'GRD';
         filter5.caseTypeState = 'AllCasesState';
         filter5.specialPopulation = 'format students;provivisional admits, not met yet';
 
         AdvisorPortalFilter filter6 = new AdvisorPortalFilter();
+        filter6.version = 'v1';
         filter6.career = 'GRD';
         filter6.caseTypeState = 'AllCasesState';
         filter6.specialPopulation = 'active students with registation hold';
@@ -2961,11 +3155,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCount = '1';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseCount = '4';
@@ -3059,17 +3255,20 @@ private class AdvisorPortalFilterSectionControllerTest {
         endOftMinus9d = endOftMinus9d.addHours(-7);
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.createdFromDate = startOftMinus9d.format('yyyy-MM-dd');
         filter.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.createdFromDate = startOftMinus3d.format('yyyy-MM-dd');
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
         filter3.career = 'UGRD';
         filter3.caseTypeState = 'ProactiveCasesState';
         filter3.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
@@ -3156,17 +3355,20 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.followUpFromDate = String.valueof(tPlus3d);
         filter.followUpToDate = String.valueof(tPlus9d);
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.followUpFromDate = String.valueof(tPlus3d);
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
         filter3.career = 'UGRD';
         filter3.caseTypeState = 'ProactiveCasesState';
         filter3.followUpToDate = String.valueof(tPlus3d);
@@ -3256,17 +3458,20 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.persistenceFromDate = String.valueof(tMinus6d);
         filter.persistenceToDate = String.valueof(tMinus4d);
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.persistenceFromDate = String.valueof(tMinus4d);
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
         filter3.career = 'UGRD';
         filter3.caseTypeState = 'ProactiveCasesState';
         filter3.persistenceToDate = String.valueof(tMinus4d);
@@ -3336,10 +3541,12 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
 
@@ -3389,6 +3596,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'WatchlistCasesState';
 
@@ -3437,12 +3645,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.studentString = 'Ryan Castelli';
         filter.caseSubject = 'Found bug';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicLevel = 'Junior';

@@ -1,4 +1,4 @@
-public inherited sharing class AdvisorPortalFilterSavingService {
+public class AdvisorPortalFilterSavingService {
     @AuraEnabled(cacheable=true)
     public static String getDefaultFilter() {
         String json = null;
@@ -8,12 +8,25 @@ public inherited sharing class AdvisorPortalFilterSavingService {
             WHERE Resource__c = :UserInfo.getUserId() AND IsActive__c = TRUE
         ];
 
-        if (!activeResources.isEmpty())
+        if (!activeResources.isEmpty()) {
             json = activeResources[0].Default_Filter__c;
-        else
+
+            // Convert the saved filter to the most current format (needed in case format has changed between when they saved the filter and now)
+            try {
+                AdvisorPortalFilter filter = (AdvisorPortalFilter) System.JSON.deserialize(
+                    json,
+                    AdvisorPortalFilter.class
+                );
+                filter.upgradeToMostRecentVersion();
+                json = System.JSON.serialize(filter);
+            } catch (Exception ex) {
+                throw new AdvisorPortalFilterSavingException('This user has a filter - but it\'s format is corrupted');
+            }
+        } else {
             throw new AdvisorPortalFilterSavingException(
                 'This user doesn\'t have a success resource and can\'t use the save filters feature'
             );
+        }
 
         return json == null ? '{}' : json;
     }

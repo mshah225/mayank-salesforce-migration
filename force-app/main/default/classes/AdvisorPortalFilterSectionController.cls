@@ -230,59 +230,52 @@ public class AdvisorPortalFilterSectionController {
     @AuraEnabled(cacheable=true)
     public static Map<String, String> getAcademicPlanPicklistValues(String filterJSON) {
         Map<String, String> labelToValueMap = new Map<String, String>();
-        String queryString =
-            'SELECT Name, Plan_Code__c' +
-            ' FROM Plan__c' +
-            ' WHERE Plan_Status__c = TRUE' +
-            ' AND Plan_Effective_Date__c <= TODAY' +
-            ' AND Program__r.Career__c = \'Graduate\'' +
-            ' AND Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')';
+        List<String> andStatements = new List<String>();
+        andStatements.add('Plan_Status__c = TRUE');
+        andStatements.add('Plan_Effective_Date__c <= TODAY');
+        andStatements.add('Program__r.Career__c = \'Graduate\'');
+        andStatements.add('Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')');
 
         if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
             AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
 
             if (!String.isBlank(filter.degreeLevel)) {
+                List<String> requirements = new List<String>();
                 List<String> degreeLevels = filter.degreeLevel.split(';');
-                Set<String> planTypesSet = new Set<String>();
-                Set<String> degreeLevelsSet = new Set<String>();
 
                 if (degreeLevels.contains('masters')) {
-                    planTypesSet.add('MAJ');
-                    degreeLevelsSet.add('Masters');
+                    requirements.add('(Plan_Type__c = \'MAJ\' AND Degree_Level__c=\'Masters\')');
                 }
                 if (degreeLevels.contains('doctorate')) {
-                    planTypesSet.add('MAJ');
-                    degreeLevelsSet.add('Doctorate');
+                    requirements.add('(Plan_Type__c = \'MAJ\' AND Degree_Level__c=\'Doctorate\')');
                 }
                 if (degreeLevels.contains('certificate')) {
-                    planTypesSet.add('CER');
+                    requirements.add('(Plan_Type__c = \'CER\')');
                 }
                 if (degreeLevels.contains('non-degree')) {
-                    planTypesSet.add('NDG');
+                    requirements.add('(Plan_Type__c = \'NDG\')');
                 }
 
-                if (!planTypesSet.isEmpty()) {
-                    List<String> planTypesList = new List<String>(planTypesSet);
-                    queryString += ' AND Plan_Type__c IN :planTypesList';
-                }
-                if (!degreeLevelsSet.isEmpty()) {
-                    List<String> degreeLevelsList = new List<String>(degreeLevelsSet);
-                    queryString += ' AND Degree_Level__c IN :degreeLevelsList';
+                if (!requirements.isEmpty()) {
+                    andStatements.add('(' + String.join(requirements, ' OR ') + ')');
                 }
             }
 
             if (!String.isBlank(filter.academicProgram)) {
                 List<String> academicPrograms = filter.academicProgram.split(';');
-                queryString += ' AND Program__r.Program_Code__c IN :academicPrograms';
+                andStatements.add('Program__r.Program_Code__c IN :academicPrograms');
             }
 
             if (!String.isBlank(filter.schoolDepartment)) {
                 List<String> schoolDepartments = filter.schoolDepartment.split(';');
-                queryString += ' AND Organization__r.Organization_Code__c IN :schoolDepartments';
+                andStatements.add('Organization__r.Organization_Code__c IN :schoolDepartments');
             }
         }
 
-        queryString += ' ORDER BY Plan_Code__c ASC';
+        String queryString =
+            'SELECT Name, Plan_Code__c FROM Plan__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' ORDER BY Plan_Code__c ASC';
 
         LogSuite.log('query', queryString);
         for (Plan__c plan : Database.query(queryString)) {

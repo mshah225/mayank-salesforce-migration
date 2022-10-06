@@ -104,10 +104,19 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<String> aidYearForAwards {
+    public List<SelectOption> aidYearForAwards {
         get {
             if (aidYearForAwards == null) {
-                aidYearForAwards = StudentProfileCallout.getAidYears(theContact.EmplId__c);
+                List<String> aidYearStringForAward = StudentProfileCallout.getAidYears(theContact.EmplId__c);
+                if (aidYearStringForAward == null) {
+                    return null;
+                }
+                
+                aidYearStringForAward.sort();
+                aidYearForAwards = new List<SelectOption>();
+                for (Integer i = aidYearStringForAward.size() - 1; i >= 0; i--) {
+                    aidYearForAwards.add(new SelectOption(aidYearStringForAward[i], aidYearStringForAward[i]));
+                }
             }
             return aidYearForAwards;
         }

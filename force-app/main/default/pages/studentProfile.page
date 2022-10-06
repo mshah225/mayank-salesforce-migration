@@ -1397,6 +1397,20 @@
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="awardErrors"></div>
                                     <div id="award_list">
+                                        <apex:form>
+                                            <apex:selectList value="{!selectedAidYearForAward}" size = "1">
+                                                <apex:selectOptions value="{!aidYearForAwards}"/>
+                                            </apex:selectList><p/>                                            
+                                        </apex:form>
+                                    </div>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="awardErrors"></div>
+                                    <div id="award_list">
+                                        <apex:selectList value="{!selectedAidYearForAward}" >
+                                                <apex:selectOptions value="{!aidYearForAwards}"/>
+                                        </apex:selectList>
                                         <apex:form >
                                             <apex:repeat var="awardsByTerm" value = "{!awardsForSelectedTerm}">
                                                 <apex:dataTable id="awardTable"

@@ -83,9 +83,8 @@ public with sharing class StudentProfileCallout {
         return aidYears;
     }
 
-    public static List<FinancialAidAwardWrapper.cls_awards> getAwards(String emplid, String aidYear) {
+    public static FinancialAidAwardWrapper getAwards(String emplid, String aidYear) {
         FinancialAidAwardWrapper awardsForStudent;
-        List<FinancialAidAwardWrapper.cls_awards> awards = new List<FinancialAidAwardWrapper.cls_awards>();
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/awards-status?aidyear=' + aidYear);
@@ -98,14 +97,6 @@ public with sharing class StudentProfileCallout {
             awardsForStudent = FinancialAidAwardWrapper.parse(responseBody);
         }
 
-        if (awardsForStudent == null || awardsForStudent.awards == null) {
-            return awards;
-        }
-
-        for (FinancialAidAwardWrapper.cls_awards awardEntry : awardsForStudent.awards) {
-            awards.add(awardEntry);
-        }
-
-        return awards;
+        return awardsForStudent;
     }
 }

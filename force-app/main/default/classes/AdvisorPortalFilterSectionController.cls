@@ -199,7 +199,7 @@ public class AdvisorPortalFilterSectionController {
             AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
 
             if (!String.isBlank(filter.academicProgram)) {
-                List<String> academicPrograms = filter.academicProgram.split(';');
+                List<String> academicPrograms = filter.getAcademicPrograms();
                 queryString += ' AND Program__r.Program_Code__c IN :academicPrograms';
             }
         }
@@ -241,7 +241,7 @@ public class AdvisorPortalFilterSectionController {
 
             if (!String.isBlank(filter.degreeLevel)) {
                 List<String> requirements = new List<String>();
-                List<String> degreeLevels = filter.degreeLevel.split(';');
+                List<String> degreeLevels = filter.getDegreeLevels();
 
                 if (degreeLevels.contains('masters')) {
                     requirements.add('(Plan_Type__c = \'MAJ\' AND Degree_Level__c=\'Masters\')');
@@ -262,12 +262,12 @@ public class AdvisorPortalFilterSectionController {
             }
 
             if (!String.isBlank(filter.academicProgram)) {
-                List<String> academicPrograms = filter.academicProgram.split(';');
+                List<String> academicPrograms = filter.getAcademicPrograms();
                 andStatements.add('Program__r.Program_Code__c IN :academicPrograms');
             }
 
             if (!String.isBlank(filter.schoolDepartment)) {
-                List<String> schoolDepartments = filter.schoolDepartment.split(';');
+                List<String> schoolDepartments = filter.getSchoolDepartments();
                 andStatements.add('Organization__r.Organization_Code__c IN :schoolDepartments');
             }
         }
@@ -579,7 +579,7 @@ public class AdvisorPortalFilterSectionController {
             if (filter.career == 'GRD') {
                 if (!String.isBlank(filter.specialPopulation)) {
                     Set<String> acceptablePeoplesoftCodesSet = new Set<String>();
-                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    List<String> specialPopulations = filter.getSpecialPopulations();
 
                     if (specialPopulations.contains('accelerated 4+1 degrees')) {
                         acceptablePeoplesoftCodesSet.add('GRAH'); // Active undergrad, 4 + 1 applicant
@@ -663,7 +663,7 @@ public class AdvisorPortalFilterSectionController {
             if (filter.career == 'GRD') {
                 if (!String.isBlank(filter.specialPopulation)) {
                     List<String> orStatement = new List<String>();
-                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    List<String> specialPopulations = filter.getSpecialPopulations();
 
                     if (specialPopulations.contains('teaching assistants')) {
                         orStatement.add('Teaching_Assistant__c = TRUE');
@@ -732,7 +732,7 @@ public class AdvisorPortalFilterSectionController {
             if (filter.career == 'GRD') {
                 if (!String.isBlank(filter.specialPopulation)) {
                     List<String> orStatements = new List<String>();
-                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    List<String> specialPopulations = filter.getSpecialPopulations();
 
                     if (specialPopulations.contains('applied to graduate')) {
                         lookForApplToGrad = true;
@@ -843,7 +843,7 @@ public class AdvisorPortalFilterSectionController {
         if (filter.career != null) {
             if (filter.career == 'GRD') {
                 if (!String.isBlank(filter.specialPopulation)) {
-                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    List<String> specialPopulations = filter.getSpecialPopulations();
 
                     if (specialPopulations.contains('format students')) {
                         useFilter = true;
@@ -903,7 +903,7 @@ public class AdvisorPortalFilterSectionController {
             if (filter.career == 'GRD') {
                 if (!String.isBlank(filter.specialPopulation)) {
                     List<String> orStatement = new List<String>();
-                    List<String> specialPopulations = filter.specialPopulation.split(';');
+                    List<String> specialPopulations = filter.getSpecialPopulations();
 
                     if (specialPopulations.contains('provivisional admits, not met yet')) {
                         orStatement.add(
@@ -1114,17 +1114,14 @@ public class AdvisorPortalFilterSectionController {
         caseAndStatements.add('IsClosed = FALSE');
 
         if (filter.shouldUse('caseCategory')) {
-            List<String> categories = filter.caseCategory.split(';');
             caseAndStatements.add('CC_Category__r.Name IN ' + getSoqlListString(filter.getCaseCategories()));
         }
 
         if (filter.shouldUse('caseSubject')) {
-            List<String> subjects = filter.caseSubject.split(';');
             caseAndStatements.add('Subject IN ' + getSoqlListString(filter.getCaseSubjects()));
         }
 
         if (filter.shouldUse('caseStatus')) {
-            List<String> statuses = filter.caseStatus.split(';');
             caseAndStatements.add('Status IN ' + getSoqlListString(filter.getCaseStatuses()));
         }
 

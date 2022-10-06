@@ -244,12 +244,15 @@ public class AdvisorPortalFilterSectionController {
             if (!String.isBlank(filter.degreeLevel)) {
                 List<String> degreeLevels = filter.degreeLevel.split(';');
                 Set<String> planTypesSet = new Set<String>();
+                Set<String> degreeLevelsSet = new Set<String>();
 
                 if (degreeLevels.contains('masters')) {
                     planTypesSet.add('MAJ');
+                    degreeLevelsSet.add('Masters');
                 }
                 if (degreeLevels.contains('doctorate')) {
                     planTypesSet.add('MAJ');
+                    degreeLevelsSet.add('Doctorate');
                 }
                 if (degreeLevels.contains('certificate')) {
                     planTypesSet.add('CER');
@@ -261,6 +264,10 @@ public class AdvisorPortalFilterSectionController {
                 if (!planTypesSet.isEmpty()) {
                     List<String> planTypesList = new List<String>(planTypesSet);
                     queryString += ' AND Plan_Type__c IN :planTypesList';
+                }
+                if (!degreeLevelsSet.isEmpty()) {
+                    List<String> degreeLevelsList = new List<String>(degreeLevelsSet);
+                    queryString += ' AND Degree_Level__c IN :degreeLevelsList';
                 }
             }
 

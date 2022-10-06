@@ -120,9 +120,9 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         {label: 'Non-degree', value: 'non-degree'},
     ];
     specialPopulationOptions = [
-        {label: 'Accelerated 4+1 Degrees', value: 'accelerated 4+1 degrees'},
+        {label: 'Accelerated Masters', value: 'accelerated 4+1 degrees'},
         {label: 'Format Students', value: 'format students'},
-        {label: 'Provivisional Admits, not met yet', value: 'provivisional admits, not met yet'},
+        {label: 'Provisional Admits, not met yet', value: 'provivisional admits, not met yet'},
         {label: 'Veterans', value: 'veterans'},
         {label: 'Applied to Graduate', value: 'applied to graduate'},
         {label: 'Mayo Students', value: 'mayo students'},

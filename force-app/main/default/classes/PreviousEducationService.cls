@@ -1,4 +1,4 @@
-public with sharing class PreviousEducationService {
+public without sharing class PreviousEducationService {
     /**
      * Update the Previous Educations' Contacts' Last_HS_Attended__c and Last_College_Attended__c
      * This expects to run once ALL Previous Eductions are retrievable via SOQL (so in the AFTER triggers)

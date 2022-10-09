@@ -41,7 +41,6 @@ global with sharing class StudentProfileController {
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
     public String serviceIndicatorTerm { get; set; }
-    public String selectedAidYearForAward { get; set; }
     public Decimal undergradGPA { get; set; }
     public Decimal gradGPA { get; set; }
     public List<String> financialAidIndicators { get; set; }
@@ -123,14 +122,27 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<FinancialAidAwardWrapper> awardsForSelectedTerm {
+    public List<FinancialAidAwardWrapper.cls_term_awards> awardsForSelectedTerm {
         get {
             FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c, selectedAidYearForAward);
 
-            return awardsForSelectedTerm;
+            return awardWrapper.term_awards;
         }
 
         set;
+    }
+
+    public String selectedAidYearForAward { 
+        get {
+            if (selectedAidYearForAward == null) {
+                if (aidYearForAwards != null && aidYearForAwards.size() > 0) {
+                	return aidYearForAwards[0].getValue();
+                }
+            }
+            return null;
+        }
+        
+        set; 
     }
 
     public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists {

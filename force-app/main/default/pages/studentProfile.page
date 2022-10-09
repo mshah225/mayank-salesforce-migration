@@ -1400,12 +1400,63 @@
                                         <apex:form>
                                             <apex:selectList value="{!selectedAidYearForAward}" size = "1">
                                                 <apex:selectOptions value="{!aidYearForAwards}"/>
-                                            </apex:selectList><p/>                                            
+                                                <apex:actionSupport event="onchange" reRender="awardsTable" />
+                                            </apex:selectList><p/>              
+                                            <apex:repeat var="awardsByTerm" value = "{!awardsForSelectedTerm}">
+                                                <table class="table table-striped" id="awardsTable">
+                                                    <tr>
+                                                        <th> {!awardsByTerm.term_description}</th>
+                                                        <th> Category</th>
+                                                        <th> Current Offer</th>
+                                                        <th> Accepted Amount</th>
+                                                        <th> Disbursed Amount</th>
+                                                        <th> Status</th>
+                                                    </tr>
+                                                    <apex:repeat var="specificAwardForTerm" value = "{!awardsByTerm.award_details}">
+                                                        <tr>
+                                                            <td>{!specificAwardForTerm.award_name}</td>
+                                                            <td>{!specificAwardForTerm.category_description}</td>                                                            
+                                                            <td>
+                                                                <apex:outputText value="{0, number, Currency}">
+                                                                    <apex:param value="{!specificAwardForTerm.offer_balance}"/>
+                                                                </apex:outputText>
+                                                            </td>
+                                                            <td>
+                                                                <apex:outputText value="{0, number, Currency}">
+                                                                    <apex:param value="{!specificAwardForTerm.accept_balance}"/>
+                                                                </apex:outputText>
+                                                            </td>
+                                                            <td>
+                                                                <apex:outputText value="{0, number, Currency}">
+                                                                    <apex:param value="{!specificAwardForTerm.disbursed_balance}"/>
+                                                                </apex:outputText>
+                                                            </td>
+                                                            <td>{!specificAwardForTerm.disbursement_status}</td>
+                                                        </tr>
+                                                    </apex:repeat>
+                                                    <tr>
+                                                        <th colspan="2">Total</th>
+                                                        <th>
+                                                            <apex:outputText value="{0, number, Currency}">
+                                                                <apex:param value="{!awardsByTerm.total_offer_amount}"/>
+                                                            </apex:outputText>
+                                                        </th>
+                                                        <th>
+                                                            <apex:outputText value="{0, number, Currency}">
+                                                                <apex:param value="{!awardsByTerm.total_accepted_amount}"/>
+                                                            </apex:outputText>
+                                                        </th>
+                                                        <th>
+                                                            <apex:outputText value="{0, number, Currency}">
+                                                                <apex:param value="{!awardsByTerm.total_disbursed_amount}"/>
+                                                            </apex:outputText>
+                                                        </th>
+                                                    </tr>
+                                                </table>
+                                            </apex:repeat>                         
                                         </apex:form>
                                     </div>
                                 </div>
-
-                               
 
                                 <div class="page-header-smaller">
                                     <h4>

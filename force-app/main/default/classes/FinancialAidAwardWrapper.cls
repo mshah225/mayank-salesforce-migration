@@ -1,21 +1,21 @@
 public class FinancialAidAwardWrapper {
 	public List<cls_term_awards> term_awards;
 
-	class cls_term_awards {
-		public String term_description;	
-		public Integer total_offer_amount;	
-		public Integer total_accepted_amount;	
-		public Integer total_disbursed_amount;	
-		public List<cls_award_details> award_details;
+	public class cls_term_awards {
+        public String term_description {get; set;}	
+		public Integer total_offer_amount {get; set;}	
+		public Integer total_accepted_amount {get; set;}
+		public Integer total_disbursed_amount {get; set;}	
+		public List<cls_award_details> award_details {get; set;}
 	}
 
-	class cls_award_details {
-		public String award_name;	
-		public Integer offer_balance;	
-		public Integer accept_balance;	
-		public Integer disbursed_balance;	
-		public String disbursement_status;	
-		public String category_description;	
+	public class cls_award_details {
+		public String award_name {get; set;}	
+		public Integer offer_balance {get; set;}	
+		public Integer accept_balance {get; set;}	
+		public Integer disbursed_balance {get; set;}	
+		public String disbursement_status {get; set;}	
+		public String category_description {get; set;}	
 	}
 	
 	public static FinancialAidAwardWrapper parse(String json) {

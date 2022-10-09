@@ -1405,52 +1405,7 @@
                                     </div>
                                 </div>
 
-                                <div style="overflow: auto; max-height: 400px">
-                                    <div id="awardErrors"></div>
-                                    <div id="award_list">
-                                        <apex:selectList value="{!selectedAidYearForAward}" >
-                                                <apex:selectOptions value="{!aidYearForAwards}"/>
-                                        </apex:selectList>
-                                        <apex:form >
-                                            <apex:repeat var="awardsByTerm" value = "{!awardsForSelectedTerm}">
-                                                <apex:dataTable id="awardTable"
-                                                    rendered="{!serviceIndicatorsForStudent.size != 0}"
-                                                    value="awardsByTerm"
-                                                    var="awards"
-                                                    styleClass="table table-striped table-bordered"
-                                                >
-                                                    <apex:column >
-                                                        <apex:facet name="header">awards.termDescription</apex:facet>
-                                                        {!awards.category}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">Category</apex:facet>
-                                                        {!awards.category}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">Current Offer</apex:facet>
-                                                        {!awards.currentOffer}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">Accepted Amount</apex:facet>
-                                                        {!awards.accecptedAmount}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">Disbursed Amount</apex:facet>
-                                                        {!awards.disbursedAmount}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">Status</apex:facet>
-                                                        {!awards.status}
-                                                    </apex:column>
-                                                </apex:dataTable>
-                                            </apex:repeat>
-                                            <div style="{!IF(serviceIndicatorsForStudent.size != 0, 'display: none;', '')}">
-                                                There are no service indicators available for this student.
-                                            </div>
-                                        </apex:form>
-                                    </div>
-                                </div>
+                               
 
                                 <div class="page-header-smaller">
                                     <h4>

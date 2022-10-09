@@ -123,10 +123,9 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<FinancialAidAwardWrapper.condensed_award_list> awardsForSelectedTerm {
+    public List<FinancialAidAwardWrapper> awardsForSelectedTerm {
         get {
             FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c, selectedAidYearForAward);
-            awardsForSelectedTerm = FinancialAidAwardWrapper.convertToCondensed(awardWrapper);
 
             return awardsForSelectedTerm;
         }

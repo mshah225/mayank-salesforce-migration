@@ -1401,7 +1401,7 @@
                                             <apex:selectList value="{!selectedAidYearForAward}" size = "1">
                                                 <apex:selectOptions value="{!aidYearForAwards}"/>
                                                 <apex:actionSupport event="onchange" reRender="awardsTable" />
-                                            </apex:selectList><p/>              
+                                            </apex:selectList>             
                                             <apex:repeat var="awardsByTerm" value = "{!awardsForSelectedTerm}">
                                                 <table class="table table-striped" id="awardsTable">
                                                     <tr>

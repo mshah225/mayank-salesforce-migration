@@ -126,6 +126,10 @@ global with sharing class StudentProfileController {
         get {
             FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c, selectedAidYearForAward);
 
+            if (awardWrapper == null) {
+                return null;
+            }
+            
             return awardWrapper.term_awards;
         }
 

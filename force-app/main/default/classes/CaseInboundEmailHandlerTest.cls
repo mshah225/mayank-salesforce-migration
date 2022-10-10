@@ -468,8 +468,54 @@ public with sharing class CaseInboundEmailHandlerTest {
             Email = 'user@work.com.test',
             ASU_Gmail__c = 'user@acme.com.test'
         );
-        insert c1;
-        insert c2;
+        insert new List<Contact>{ c1, c2 };
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId IN (:c1.Id, :c2.Id) 
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assert(
+            createdCase.Description.contains('Note: there is more than one Contact with this email address.')
+        );
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+
+    @isTest
+    static void multipleExistingContactsOnlyOneExactMatch() {
+        Test.startTest();
+        Contact c1 = new Contact(FirstName = 'First', LastName = 'Last', Email = 'user@acme.com.test');
+        Contact c2 = new Contact(
+            FirstName = 'First',
+            LastName = 'Last2',
+            Email = 'user@work.com.test',
+            ASU_Gmail__c = 'user@acme.com.test'
+        );
+        insert new List<Contact>{ c1, c2 };
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
@@ -497,6 +543,9 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
+        System.assert(
+            createdCase.Description.contains('Note: there is more than one Contact with this email address.')
+        );
         Test.stopTest();
 
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];

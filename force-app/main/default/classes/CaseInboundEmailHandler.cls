@@ -289,14 +289,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     // If there are no contacts that also match on first name and last name
                     // then we will need to make a new Contact
                     for (Contact c : contacts) {
-                        if (
-                            (c.FirstName != null &&
-                            c.LastName != null) &&
-                            c.FirstName.toLowerCase() == fname.toLowerCase() &&
-                            c.LastName.toLowerCase() == lname.toLowerCase()
-                        ) {
+                        // Contstruct the email from name and contact from name while ignoring parts that are null
+                        List<String> emailFromNameArr = new List<String>();
+                        List<String> contactNameArr = new List<String>();
+
+                        if (c.FirstName != null && c.FirstName != '')
+                            contactNameArr.add(c.FirstName.toLowerCase());
+                        if (c.LastName != null && c.LastName != '')
+                            contactNameArr.add(c.LastName.toLowerCase());
+
+                        if (fname != null && fname != '')
+                            emailFromNameArr.add(fname.toLowerCase());
+                        if (lname != null && lname != '')
+                            emailFromNameArr.add(lname.toLowerCase());
+
+                        String emailFromName = String.join(emailFromNameArr, ' ');
+                        String contactName = String.join(contactNameArr, ' ');
+
+                        // If they match - great news!
+                        if (emailFromName == contactName)
                             filteredContacts.add(c);
-                        }
                     }
 
                     contacts.clear();

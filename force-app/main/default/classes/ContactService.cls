@@ -285,7 +285,7 @@ public class ContactService {
             if (
                 newCon.RecordTypeId == extMasteredContactRecTypeId &&
                 (newCon.FirstName != oldCon.FirstName ||
-                newCon.FirstName != oldCon.FirstName)
+                newCon.LastName != oldCon.LastName)
             )
                 contactIdsToUpdateRelatedUsers.add(newCon.Id);
         }

@@ -67,9 +67,7 @@ export default class AdvisorPortalModalMassTransfer extends LightningElement {
                 const contactWrapper = this.selectedContactWrappers[i];
                 for (let j = 0; j < contactWrapper.cases.length; j++) {
                     const caseWrapper = contactWrapper.cases[j];
-                    if (caseWrapper.isSelected) {
-                        caseIds.push(caseWrapper.portalCase.Id);
-                    }
+                    caseIds.push(caseWrapper.caseId);
                 }
             }
 

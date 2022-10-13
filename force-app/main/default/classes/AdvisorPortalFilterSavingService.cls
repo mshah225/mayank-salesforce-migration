@@ -11,16 +11,20 @@ public class AdvisorPortalFilterSavingService {
         if (!activeResources.isEmpty()) {
             json = activeResources[0].Default_Filter__c;
 
-            // Convert the saved filter to the most current format (needed in case format has changed between when they saved the filter and now)
-            try {
-                AdvisorPortalFilter filter = (AdvisorPortalFilter) System.JSON.deserialize(
-                    json,
-                    AdvisorPortalFilter.class
-                );
-                filter.upgradeToMostRecentVersion();
-                json = System.JSON.serialize(filter);
-            } catch (Exception ex) {
-                throw new AdvisorPortalFilterSavingException('This user has a filter - but it\'s format is corrupted');
+            if (json != '') {
+                // Convert the saved filter to the most current format (needed in case format has changed between when they saved the filter and now)
+                try {
+                    AdvisorPortalFilter filter = (AdvisorPortalFilter) System.JSON.deserialize(
+                        json,
+                        AdvisorPortalFilter.class
+                    );
+                    filter.upgradeToMostRecentVersion();
+                    json = System.JSON.serialize(filter);
+                } catch (Exception ex) {
+                    throw new AdvisorPortalFilterSavingException(
+                        'This user has a filter - but it\'s format is corrupted'
+                    );
+                }
             }
         } else {
             throw new AdvisorPortalFilterSavingException(

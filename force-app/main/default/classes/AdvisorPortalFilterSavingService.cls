@@ -11,7 +11,7 @@ public class AdvisorPortalFilterSavingService {
         if (!activeResources.isEmpty()) {
             json = activeResources[0].Default_Filter__c;
 
-            if (json != '') {
+            if (json != null && json != '') {
                 // Convert the saved filter to the most current format (needed in case format has changed between when they saved the filter and now)
                 try {
                     AdvisorPortalFilter filter = (AdvisorPortalFilter) System.JSON.deserialize(

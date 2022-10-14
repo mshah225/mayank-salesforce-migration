@@ -1,0 +1,293 @@
+<apex:page showHeader="false" standardStylesheets="false">
+
+    <head>
+        <title>My ASU | Chat!</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+        <c:MyASUHelpStyles />
+
+        <style>
+            /* The overall design should be a column with three sections (header, main body, and resposne bar) */
+
+            #liveAgentClientChat {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+
+            /* Hide queue position when no one in queue and show loading label */
+
+            .loading #liveAgentQueuePosition,
+            .loading .nextInQueueLabel {
+                display: none;
+            }
+
+            .showPosition .loadingQueueLabel,
+            .showPosition .nextInQueueLabel {
+                display: none;
+            }
+
+            .nextInQueue #liveAgentQueuePosition,
+            .nextInQueue .loadingQueueLabel {
+                display: none;
+            }
+
+            /* Operator respsones on left in blue bubble */
+
+            #liveAgentChatLogText .operator {
+                text-align: left;
+                display: block;
+            }
+
+            #liveAgentChatLogText .operator .messageText {
+                background-color: #d8ecf7;
+            }
+
+            #liveAgentChatLogText .operator+.timestamp {
+                text-align: left;
+                display: block;
+            }
+
+            /* Client respsones on right in white bubble */
+
+            #liveAgentChatLogText .client {
+                text-align: right;
+                display: block;
+            }
+
+            #liveAgentChatLogText .client .messageText {
+                background: white;
+            }
+
+            #liveAgentChatLogText .client+.timestamp {
+                text-align: right;
+                display: block;
+            }
+
+            /* General response formatting */
+
+            #liveAgentChatLogText .name,
+            #liveAgentChatLogText .name {
+                display: block
+            }
+
+            #liveAgentChatLogText .messageText,
+            #liveAgentChatLogText .messageText {
+                display: inline-block;
+                border: 1px solid #bbb;
+                border-radius: 0.2rem;
+                padding: 0.35rem;
+            }
+
+            #liveAgentChatLogText .timestamp,
+            #liveAgentChatLogText .timestamp {
+                font-size: 0.9em;
+                color: gray;
+            }
+
+            /* When to show/hide stuff */
+
+            #liveAgentClientChat.liveAgentStateWaiting .hideBefore {
+                /* Hide before chat has started */
+                display: none !important;
+            }
+
+            #liveAgentClientChat:not(.liveAgentStateWaiting):not(.liveAgentStateEnded) .hideDuring {
+                /* Hide once chat has started */
+                display: none !important;
+            }
+
+            #liveAgentClientChat.liveAgentStateEnded .hideAfter {
+                /* Hide after chat has started */
+                display: none !important;
+            }
+
+            /* Custom generics */
+
+            .noFocusHighlight:focus {
+                outline: none !important;
+                border: none !important;
+                box-shadow: 0 0 0px #ffffff !important;
+            }
+
+            .bg-darkgray {
+                background-color: #333;
+            }
+
+            .mnh-100 {
+                min-height: 100%
+            }
+
+            body {
+                font-size: 0.9rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <liveAgent:clientChat>
+            <div id="topBar">
+                <div class="d-flex justify-content-between px-2 p-1 bg-darkgray">
+                    <div class="hideBefore hideAfter">
+                        <liveAgent:clientChatSaveButton />
+                    </div>
+                    <div class="hideBefore hideAfter">
+                        <liveAgent:clientChatEndButton />
+                    </div>
+                    <div class="text-white hideDuring hideAfter">
+                        Connecting to Agent...
+                    </div>
+                </div>
+                <div>
+                    <apex:image value="{!$Resource.LiveAgentlogo}" />
+                </div>
+            </div>
+            <div id="mainContent" class="flex-grow-1 overflow-auto">
+                <div class="w-100 h-100">
+                    <div class="d-flex justify-content-center h-100 hideDuring hideAfter">
+                        <div id="waitingMessage" class="text-center my-auto">
+                            <div>
+                                Please hold while we connect you to an agent.
+                            </div>
+                            <div class="spinner-border text-maroon" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <liveAgent:clientChatQueuePosition label="Queue position is: " />
+                            <div>
+                                <liveAgent:clientChatCancelButton />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-light p-1 mnh-100 hideBefore hideAfter">
+                        <liveAgent:clientChatLog showTimeStamp="true" />
+                    </div>
+                    <div class="bg-light p-1 hideBefore hideDuring">
+                        <liveAgent:clientChatAlertMessage />
+                        <liveAgent:clientChatStatusMessage />
+                    </div>
+                </div>
+            </div>
+            <div id="responseBar" class="d-flex pr-1 border-top hideBefore hideAfter">
+                <liveagent:clientChatInput />
+                <liveAgent:clientChatSendButton />
+            </div>
+        </liveAgent:clientChat>
+
+        <script>
+            // Add styles to buttons at top
+            document.querySelectorAll('.liveAgentSaveButton').forEach(n => {
+                n.classList.add('btn');
+                n.classList.add('btn-sm');
+                n.classList.add('btn-gold');
+            });
+            document.querySelectorAll('.liveAgentEndButton').forEach(n => {
+                n.classList.add('btn');
+                n.classList.add('btn-sm');
+                n.classList.add('btn-maroon');
+            });
+
+            // Styles for midsection
+            document.querySelectorAll('.liveAgentCancelButton').forEach(n => {
+                n.classList.add('btn');
+                n.classList.add('btn-sm');
+                n.classList.add('btn-light');
+                n.classList.add('mt-1');
+            });
+
+            // And styles to response at the bottom
+            document.querySelectorAll('.liveAgentChatInput').forEach(n => {
+                n.parentElement.classList.add('flex-grow-1');
+                n.classList.add('border-0');
+                n.classList.add('w-100');
+                n.classList.add('noFocusHighlight');
+                n.classList.add('pl-1');
+                n.classList.add('py-1');
+            });
+            document.querySelectorAll('.liveAgentSendButton').forEach(n => {
+                n.classList.add('btn');
+                n.classList.add('btn-sm');
+                n.classList.add('btn-maroon');
+                n.classList.add('my-1');
+            });
+
+            // Add extra labels to show queue position information
+            document.querySelectorAll('#liveAgentQueuePosition').forEach(n => {
+                const loadingLabel = document.createElement('div');
+                loadingLabel.classList.add('loadingQueueLabel');
+                loadingLabel.innerText = 'Loading queue information';
+                n.parentNode.appendChild(loadingLabel);
+                const nextLabel = document.createElement('div');
+                nextLabel.classList.add('nextInQueueLabel');
+                nextLabel.innerText = 'You are next in the queue';
+                n.parentNode.appendChild(nextLabel);
+            })
+
+            // And logic to determine which queue label to show 
+            let state = 'loading';
+            const setQueuePositionClass = () => {
+                document.querySelectorAll('#liveAgentQueuePosition').forEach(n => {
+                    if (state == 'loading') {
+                        if (!n.parentNode.classList.contains('loading')) {
+                            n.parentNode.classList.add('loading');
+                            n.parentNode.classList.remove('showPosition');
+                            n.parentNode.classList.remove('nextInQueue');
+                        }
+                    } else if (state == 'showPosition') {
+                        if (!n.parentNode.classList.contains('showPosition')) {
+                            n.parentNode.classList.remove('loading');
+                            n.parentNode.classList.add('showPosition');
+                            n.parentNode.classList.remove('nextInQueue');
+                        }
+                    } else if (state == 'nextInQueue') {
+                        if (!n.parentNode.classList.contains('nextInQueue')) {
+                            n.parentNode.classList.remove('loading');
+                            n.parentNode.classList.remove('showPosition');
+                            n.parentNode.classList.add('nextInQueue');
+                        }
+                    }
+                });
+            }
+            setQueuePositionClass();
+            // Track what state of queue position information we can show
+            document.querySelectorAll('#liveAgentQueuePosition > .liveAgentQueuePosition').forEach(n => {
+                const observerForQueuePosNum = new MutationObserver((evnts) => {
+                    // Get the final state of the change
+                    let finalChildListEvnt = evnts[evnts.length - 1];
+
+                    if (state == 'loading') {
+                        if (finalChildListEvnt.target && finalChildListEvnt.target.innerHTML != '') {
+                            // we have loaded our position in the queue and should now show this element
+                            state = 'showPosition'
+                        }
+                    } else if (state == 'showPosition') {
+                        if (finalChildListEvnt.target && finalChildListEvnt.target.innerHTML == '') {
+                            // we have loaded our position in the queue and should now show this element
+                            state = 'nextInQueue'
+                        }
+                    }
+                    setQueuePositionClass();
+                });
+                observerForQueuePosNum.observe(n, { childList: true });
+            });
+
+            // Automatically add/remove details for chat as chat happens
+            const chatLog = document.querySelector('#liveAgentChatLogText');
+            const observer = new MutationObserver((evnts) => {
+                evnts.forEach((eachEvnt) => {
+                    if (eachEvnt.type == 'childList') {
+                        eachEvnt.addedNodes.forEach(n => {
+                            // Remove colon from name
+                            n.querySelectorAll('.name strong').forEach(n2 => {
+                                n2.innerHTML = n2.innerHTML.replace(':', '');
+                            })
+                        });
+                    }
+                }
+                );
+            });
+
+            observer.observe(chatLog, { childList: true });
+        </script>
+    </body>
+</apex:page>

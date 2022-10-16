@@ -57,37 +57,11 @@ public with sharing class StudentProfileCallout {
         return checklists;
     }
 
-    public static List<String> getAidYears(String emplid) {
-        FinancialAidYearWrapper aidYearsForStudent;
-        List<String> aidYears = new List<String>();
-
-        HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/aid-years');
-        req.setMethod('GET');
-        Http http = new Http();
-        HTTPResponse res = http.send(req);
-        String responseBody = res.getBody();
-
-        if (responseBody != null) {
-            aidYearsForStudent = FinancialAidYearWrapper.parse(responseBody);
-        }
-
-        if (aidYearsForStudent == null || aidYearsForStudent.aid_years == null) {
-            return aidYears;
-        }
-
-        for (FinancialAidYearWrapper.cls_aid_years aidYearsEntry : aidYearsForStudent.aid_years) {
-            aidYears.add(aidYearsEntry.aid_year);
-        }
-
-        return aidYears;
-    }
-
-    public static FinancialAidAwardWrapper getAwards(String emplid, String aidYear) {
+    public static FinancialAidAwardWrapper getAwards(String emplid) {
         FinancialAidAwardWrapper awardsForStudent;
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/awards-status?aidyear=' + aidYear);
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/awards-status');
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);

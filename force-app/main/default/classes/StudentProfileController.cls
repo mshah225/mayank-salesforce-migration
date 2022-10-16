@@ -44,7 +44,7 @@ global with sharing class StudentProfileController {
     public Decimal undergradGPA { get; set; }
     public Decimal gradGPA { get; set; }
     public List<String> financialAidIndicators { get; set; }
-    public Map<String, String> termToName { get; set; }
+    public Map<String, String> termToName { get; set; }    
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }
     public List<String> financesMessages { get; set; }
@@ -103,10 +103,22 @@ global with sharing class StudentProfileController {
         set;
     }
 
+    public Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward { 
+        get {
+            if (aidYearToAward == null) {
+                setupAwardStatusMap();
+            }
+
+            return aidYearToAward;
+        }
+
+        set; 
+    }
+
     public List<SelectOption> aidYearForAwards {
         get {
             if (aidYearForAwards == null) {
-                List<String> aidYearStringForAward = StudentProfileCallout.getAidYears(theContact.EmplId__c);
+                List<String> aidYearStringForAward = new List<String>(aidYearToAward.keyset());
                 if (aidYearStringForAward == null) {
                     return null;
                 }
@@ -124,13 +136,9 @@ global with sharing class StudentProfileController {
 
     public List<FinancialAidAwardWrapper.cls_term_awards> awardsForSelectedTerm {
         get {
-            FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c, selectedAidYearForAward);
-
-            if (awardWrapper == null) {
-                return null;
-            }
-            
-            return awardWrapper.term_awards;
+            awardsForSelectedTerm = aidYearToAward.get(selectedAidYearForAward);
+           
+            return awardsForSelectedTerm;
         }
 
         set;
@@ -143,7 +151,7 @@ global with sharing class StudentProfileController {
                 	return aidYearForAwards[0].getValue();
                 }
             }
-            return null;
+            return selectedAidYearForAward;
         }
         
         set; 
@@ -1003,6 +1011,21 @@ global with sharing class StudentProfileController {
             }
         }
         return unresolvedChecklists;
+    }
+
+    private void setupAwardStatusMap() {
+        FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c);
+        
+        aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
+
+        if (awardWrapper == null) {
+            return;
+        }
+
+        for (FinancialAidAwardWrapper.cls_aid_years yearsWithAwards : awardWrapper.aid_years) {
+            aidYearToAward.put(yearsWithAwards.financial_year, yearsWithAwards.term_awards);
+        }
+
     }
 
     @RemoteAction

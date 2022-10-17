@@ -1,0 +1,13 @@
+<template>
+    <template if:true={handleLoadingYourself}>
+        <template if:true={isLoading}>
+            <lightning-spinner class="slds-is-fixed" alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+    </template>
+    <c-lightning-question-answer-modal
+        title="Transfer Case"
+        style-flags="of-visible"
+        questions={questions}
+        buttons={buttons}
+    ></c-lightning-question-answer-modal>
+</template>

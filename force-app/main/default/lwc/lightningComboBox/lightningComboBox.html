@@ -2,9 +2,11 @@
     <div class="slds-form-element">
         <template if:true={label}>
             <template if:true={required}>
-                <span style="color: red">*&nbsp;</span>
+                <span data-testid="required-flag" style="color: red">*&nbsp;</span>
             </template>
-            <label class="slds-form-element__label" for="combobox-id" id="combobox-label">{label}</label>
+            <label class="slds-form-element__label" for="combobox-id" id="combobox-label" data-testid="combobox-label">
+                {label}
+            </label>
         </template>
         <div class="slds-combobox_container">
             <div class={comboboxClasses} aria-expanded="true" aria-haspopup="listbox" role="combobox">
@@ -49,7 +51,12 @@
                     <ul class="slds-listbox slds-listbox_vertical recordListBox" role="presentation">
                         <template for:each={options} for:item="option">
                             <template if:true={option.isLabel}>
-                                <li key={option.value} role="presentation" class="slds-listbox__item">
+                                <li
+                                    key={option.value}
+                                    role="presentation"
+                                    class="slds-listbox__item"
+                                    data-testid="dropdown-label"
+                                >
                                     <div class="slds-listbox__option_plain slds-listbox__option-header"></div>
                                     <div
                                         class="slds-listbox__option_plain slds-listbox__option-header"
@@ -67,6 +74,7 @@
                                     data-id={option.value}
                                     data-index={option.index}
                                     data-hover={option.isHovered}
+                                    data-testid="dropdown-option"
                                     onmousemove={hoverElement}
                                     onmousedown={toggleItem}
                                     class="slds-listbox__item eachItem"
@@ -91,7 +99,7 @@
             </div>
         </div>
         <template if:true={hasError}>
-            <div class="slds-form-element__help" role="alert">Complete this field.</div>
+            <div data-testid="error-warning" class="slds-form-element__help" role="alert">Complete this field.</div>
         </template>
     </div>
 </template>

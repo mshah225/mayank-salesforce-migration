@@ -13,7 +13,7 @@ public without sharing class ErrorLogger {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
         caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;
         className = '';
-        Contact loggedInContact = ContactService.getLoggedInContact();
+        Id loggedInContactId = ContactService.getLoggedInContactId();
         if (loggedInContact != null) {
             caseToCreate.ContactId = loggedInContact.Id;
         }

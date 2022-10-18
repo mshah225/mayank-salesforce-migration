@@ -98,6 +98,31 @@ public class ContactService {
         return loggedInContact;
     }
 
+    public static Id getLoggedInContactId() {
+        Id loggedInContactId = null;
+        String employeeId = null;
+        Id contactByEmplid = null;
+
+        try {
+            loggedInContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
+            if (loggedInContactId == null) {
+                employeeId = [SELECT EmployeeNumber FROM User WHERE Id = :userInfo.getUserId()].EmployeeNumber;
+                if (employeeId != null && employeeId != '') {
+                    contactByEmplid = [SELECT Id FROM Contact WHERE EmplId__c = :employeeId LIMIT 1].Id;
+                    if (contactByEmplid != null) {
+                        loggedInContactId = contactByEmplid.Id;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ContactServiceException(
+                '!!!ERROR!!!: An error occurred trying to get the logged in Contact ID\n' + e.getMessage()
+            );
+        }
+
+        return loggedInContactId;
+    }
+
     /**
      * The contact to view as in the service center.
      * @param The asurite from the My ASU webservice you want to view as

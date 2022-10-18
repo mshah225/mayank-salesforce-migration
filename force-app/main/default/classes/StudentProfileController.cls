@@ -1023,7 +1023,11 @@ global with sharing class StudentProfileController {
         }
 
         for (FinancialAidAwardWrapper.cls_aid_years yearsWithAwards : awardWrapper.aid_years) {
+            yearsWithAwards.term_awards.sort();
             aidYearToAward.put(yearsWithAwards.financial_year, yearsWithAwards.term_awards);
+            for (FinancialAidAwardWrapper.cls_term_awards specificTerm : yearsWithAwards.term_awards) {
+                specificTerm.award_details.sort();
+            }
         }
 
     }

@@ -21,8 +21,6 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
     fetchedUser(result) {
         if (falseWireRun(result)) return;
 
-        console.log(result);
-
         let {data, error} = result;
         if (data != null) {
             this.myname = data.Name;

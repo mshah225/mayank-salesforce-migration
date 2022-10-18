@@ -101,16 +101,16 @@ public class ContactService {
     public static Id getLoggedInContactId() {
         Id loggedInContactId = null;
         String employeeId = null;
-        Id contactByEmplid = null;
+        List<Contact> loggedInContactList;
 
         try {
             loggedInContactId = [SELECT ContactId FROM User WHERE Id = :UserInfo.getUserId()].ContactId;
             if (loggedInContactId == null) {
                 employeeId = [SELECT EmployeeNumber FROM User WHERE Id = :userInfo.getUserId()].EmployeeNumber;
                 if (employeeId != null && employeeId != '') {
-                    contactByEmplid = [SELECT Id FROM Contact WHERE EmplId__c = :employeeId LIMIT 1].Id;
-                    if (contactByEmplid != null) {
-                        loggedInContactId = contactByEmplid;
+                    loggedInContactList = [SELECT Id FROM Contact WHERE EmplId__c = :employeeId LIMIT 1];
+                    if (loggedInContactList != null && loggedInContactList.size() > 0) {
+                        loggedInContactId = loggedInContactList[0].Id;
                     }
                 }
             }

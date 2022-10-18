@@ -3,6 +3,7 @@
 import {LightningElement, api} from 'lwc';
 import setDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.setDefaultFilter';
 import clearDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.clearDefaultFilter';
+import LightningQuestionAnswerModal from 'c/lightningQuestionAnswerModal';
 
 export default class AdvisorPortalSaveFilters extends LightningElement {
     @api currentFilter;
@@ -26,85 +27,67 @@ export default class AdvisorPortalSaveFilters extends LightningElement {
         },
     ];
 
-    saveFilters() {
-        setDefaultFilter({json: JSON.stringify(this.currentFilter)})
-            .then(() => {
-                this.makeToast('success', 'Success', 'Filters saved as default.');
-            })
-            .catch((err) => {
-                console.error(err);
-                this.makeToast('error', 'Error', err.body.message);
-            })
-            .finally(() => {
-                this.template.querySelector('c-lightning-question-answer-modal.save-modal').closeModal();
-            });
-    }
-
-    resetSavedFilters() {
-        this.makeToast('loading', '', '');
-        clearDefaultFilter()
-            .then(() => {
-                this.dispatchEvent(
-                    new CustomEvent('clearappliedfilters', {
-                        detail: {},
-                    })
-                );
-                this.makeToast('success', 'Success', 'Default filter cleared.');
-            })
-            .catch((err) => {
-                this.makeToast('error', 'Error', err.body.message);
-            })
-            .finally(() => {
-                this.template.querySelector('c-lightning-question-answer-modal.reset-modal').closeModal();
-            });
-    }
-
     openSaveModal() {
-        const modalSelector = 'c-lightning-question-answer-modal.save-modal';
+        LightningQuestionAnswerModal.open({
+            size: 'small',
+            description: 'Do you want to save your filters?',
+            title: 'Save Filters?',
+            questions: this.saveQuestions,
+            buttonDescription: {
+                okButtonLabel: 'Save my Default Filters',
+                cancelButtonLabel: 'Cancel',
+                awaitBeforeClosing: (resp) => {
+                    if (resp.state === 'success') {
+                        this.makeToast('loading', '', '');
 
-        if (this.saveButtons.length === 0) {
-            // add buttons for save modal
-            this.saveButtons = [
-                {
-                    label: 'Cancel',
-                    onClick: () => {
-                        this.template.querySelector(modalSelector).closeModal();
-                    },
-                    classes: 'slds-button slds-button_neutral',
+                        return setDefaultFilter({json: JSON.stringify(this.currentFilter)})
+                            .then(() => {
+                                this.makeToast('success', 'Success', 'Filters saved as default.');
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                                this.makeToast('error', 'Error', err.body.message);
+                            });
+                    } else {
+                        return Promise.resolve();
+                    }
                 },
-                {
-                    label: 'Save my Default Filters',
-                    onClick: () => {
-                        this.saveFilters();
-                    },
-                    classes: 'slds-button slds-button_brand',
-                },
-            ];
-        }
-        this.template.querySelector(modalSelector).openModal();
+            },
+        });
     }
+
     openResetModal() {
-        const modalSelector = 'c-lightning-question-answer-modal.reset-modal';
-        if (this.resetButtons.length === 0) {
-            // add buttons for reset modal
-            this.resetButtons = [
-                {
-                    label: 'Cancel',
-                    onClick: () => {
-                        this.template.querySelector(modalSelector).closeModal();
-                    },
-                    classes: 'slds-button slds-button_neutral',
+        LightningQuestionAnswerModal.open({
+            size: 'small',
+            description: 'Do you want to clear your saved filters??',
+            title: 'Delete Saved Filters?',
+            questions: this.resetQuestions,
+            buttonDescription: {
+                okButtonLabel: 'Reset my Default Filters',
+                cancelButtonLabel: 'Cancel',
+                awaitBeforeClosing: (resp) => {
+                    if (resp.state === 'success') {
+                        this.makeToast('loading', '', '');
+
+                        return clearDefaultFilter()
+                            .then(() => {
+                                this.dispatchEvent(
+                                    new CustomEvent('clearappliedfilters', {
+                                        detail: {},
+                                    })
+                                );
+                                this.makeToast('success', 'Success', 'Default filter cleared.');
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                                this.makeToast('error', 'Error', err.body.message);
+                            });
+                    } else {
+                        return Promise.resolve();
+                    }
                 },
-                {
-                    label: 'Reset my Default Filters',
-                    onClick: () => {
-                        this.resetSavedFilters();
-                    },
-                    classes: 'slds-button slds-button_brand',
-                },
-            ];
-        }
-        this.template.querySelector(modalSelector).openModal();
+            },
+        });
     }
 
     makeToast(type, title, body) {

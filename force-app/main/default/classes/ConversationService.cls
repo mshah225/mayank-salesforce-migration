@@ -52,7 +52,6 @@ public with sharing class ConversationService {
             System.debug('@@-- convsMap : ' + convsMap);
             if (convsMap != null && !convsMap.values().isEmpty()) {
                 Database.SaveResult[] lsr = database.update(convsMap.values(), false);
-                processDatabaseResults(lsr);
             }
         }
     }
@@ -124,7 +123,6 @@ public with sharing class ConversationService {
             if (convShareListNew != null && !convShareListNew.isEmpty()) {
                 Database.SaveResult[] lsr = Database.insert(convShareListNew, false);
                 checkForErrors(lsr);
-                processDatabaseResults(lsr);
             }
         }
     }
@@ -245,48 +243,5 @@ public with sharing class ConversationService {
         if (!errorLogs.isEmpty()) {
             Database.insert(errorLogs, false);
         }
-    }
-
-    @TestVisible
-    private void processDatabaseResults(Database.SaveResult[] lsr) {
-        for (Database.SaveResult sr : lsr) {
-            if (!sr.isSuccess()) {
-                for (Database.Error err : sr.getErrors()) {
-                    try {
-                        throw new ConversationServiceException('There was an issue running ConversationService.');
-                    } catch (Exception ex) {
-                        List<String> vars = new List<String>();
-                        vars.add(
-                            ErrorLogger.convertStringToJSON('smagicinteract__Class_Name__c', 'ConversationService')
-                        );
-                        vars.add(ErrorLogger.convertStringToJSON('smagicinteract__Error_Message__c', err.getMessage()));
-                        vars.add(
-                            ErrorLogger.convertStringToJSON(
-                                'smagicinteract__Error_Status_Code__c',
-                                String.valueOf(err.getStatusCode())
-                            )
-                        );
-                        vars.add(ErrorLogger.convertStringToJSON('smagicinteract__Error_Type__c', 'Fatal'));
-                        vars.add(
-                            ErrorLogger.convertStringToJSON(
-                                'smagicinteract__Object__c',
-                                'smagicinteract__Conversation__share'
-                            )
-                        );
-                        vars.add(
-                            ErrorLogger.convertStringToJSON(
-                                'smagicinteract__Fields__c',
-                                String.valueOf(err.getFields())
-                            )
-                        );
-                        vars.add(ErrorLogger.convertIdToJSON('smagicinteract__User__c', UserInfo.getUserId()));
-                        ErrorLogger.log(ex, vars, false);
-                    }
-                }
-            }
-        }
-    }
-
-    private class ConversationServiceException extends Exception {
     }
 }

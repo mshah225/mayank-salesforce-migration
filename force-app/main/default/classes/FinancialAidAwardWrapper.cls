@@ -17,11 +17,11 @@ public class FinancialAidAwardWrapper {
 			cls_term_awards compareToAward = (cls_term_awards) compareTo;
 
 			if (term_description.contains('Fall') || compareToAward.term_description.contains('Summer')) { 
-				return 1;
+				return -1;
 			}
 
 			if (compareToAward.term_description.contains('Fall') || term_description.contains('Summer') ) {
-				return -1;
+				return 1;
 			} 
 
 			return 0;

@@ -14,8 +14,8 @@ public without sharing class ErrorLogger {
         caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;
         className = '';
         Id loggedInContactId = ContactService.getLoggedInContactId();
-        if (loggedInContact != null) {
-            caseToCreate.ContactId = loggedInContact.Id;
+        if (loggedInContactId != null) {
+            caseToCreate.ContactId = loggedInContactId;
         }
         allowRepeats = false;
     }

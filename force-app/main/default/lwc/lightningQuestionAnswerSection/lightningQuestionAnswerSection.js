@@ -89,5 +89,5 @@ export default class LightningQuestionAnswerSection extends LightningElement {
         firstInput.focus();
     }
 
-    allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box';
+    allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box, lightning-dual-listbox';
 }

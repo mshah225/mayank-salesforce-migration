@@ -110,7 +110,7 @@ public class ContactService {
                 if (employeeId != null && employeeId != '') {
                     contactByEmplid = [SELECT Id FROM Contact WHERE EmplId__c = :employeeId LIMIT 1].Id;
                     if (contactByEmplid != null) {
-                        loggedInContactId = contactByEmplid.Id;
+                        loggedInContactId = contactByEmplid;
                     }
                 }
             }

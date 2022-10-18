@@ -88,6 +88,10 @@ export class QAModalResponse {
     state = null;
     body = null;
 
+    /**
+     * @param state Describes if this is completing as a part of a 'success' or a 'cancel'
+     * @param body Passed message (such as the body of the question and answers for the QA section)
+     */
     constructor(state, body) {
         this.state = state;
         this.body = body;

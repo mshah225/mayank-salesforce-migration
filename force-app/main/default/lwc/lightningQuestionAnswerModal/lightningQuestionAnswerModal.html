@@ -1,6 +1,8 @@
 <template>
     <lightning-modal-header label={title}></lightning-modal-header>
     <lightning-modal-body>
+        <!-- Fake tab-able item so that focus always goes to the same place -->
+        <div tabindex="0" style="outline: none"></div>
         <c-lightning-question-answer-section
             questions={questions}
             onchange={changeAnswer}
@@ -13,6 +15,12 @@
                 variant="neutral"
                 onclick={handleCancel}
             ></lightning-button>
+        </template>
+        <template if:true={buttonDescription.cancelButtonLabel}>
+            <template if:true={buttonDescription.okButtonLabel}>
+                <!-- Only add padding if there are both buttons -->
+                <span style="display: inline-block; width: 1rem"></span>
+            </template>
         </template>
         <template if:true={buttonDescription.okButtonLabel}>
             <lightning-button

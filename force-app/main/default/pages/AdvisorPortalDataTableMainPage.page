@@ -10,8 +10,10 @@
     <div id="AdvisorPortalDataTable" style="min-height: 95vh; padding-left: 5px; padding-right: 5px"></div>
 
     <script>
-        $Lightning.use('c:AdvisorPortalDataTableApp', function () {
-            $Lightning.createComponent('c:AdvisorPortalA', {}, 'AdvisorPortalDataTable', function (cmp) { });
+        $Lightning.use('c:AdvisorPortalDataTableApp', () => {
+            $Lightning.createComponent('c:AdvisorPortalA', {}, 'AdvisorPortalDataTable', (cmp) => { 
+                document.querySelector('html').classList.add('slds-scope');  // ensure rendered page has SLDS scope tag to ensure SLDS styles are applied
+             });
         });
     </script>
 </apex:page>

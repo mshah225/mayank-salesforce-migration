@@ -36,7 +36,7 @@ public class FinancialAidAwardWrapper {
 		public String disbursement_status {get; set;}	
 		public String category_description {get; set;}	
 		public String aid_year {get; set;}
-		public String item_type {get; get;}
+		public String item_type {get; set;}
 
 		public Integer compareTo(Object compareTo) {
 			cls_award_details compareToAward = (cls_award_details) compareTo;

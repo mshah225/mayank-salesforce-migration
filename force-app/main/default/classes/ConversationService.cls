@@ -1,4 +1,4 @@
-public with sharing class ConversationService {
+public without sharing class ConversationService {
     public void execute(List<smagicinteract__Conversation__c> senders) {
         Map<Id, Set<smagicinteract__Conversation__c>> contactConversationMap = getContactConversationMap(senders);
 

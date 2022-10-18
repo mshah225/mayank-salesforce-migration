@@ -14,6 +14,9 @@ import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterS
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
+import AdvisorPortalModalMassTransfer from 'c/advisorPortalModalMassTransfer';
+import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
+import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
 
 export default class AdvisorPortalA extends LightningElement {
     // For the top level user select filter
@@ -499,21 +502,51 @@ export default class AdvisorPortalA extends LightningElement {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            this.template.querySelector('c-advisor-portal-modal-mass-email').openModal();
+            AdvisorPortalModalMassEmail.open({
+                size: 'medium',
+                description: 'Email all selected contacts/cases',
+                selectedContactWrappers: this.selectedResults,
+                loadingCb: (e) => {
+                    this.handleLoading(e);
+                },
+                toastCb: (e) => {
+                    this.handleToast(e);
+                },
+            });
         }
     }
     openModalMassTransfer() {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            this.template.querySelector('c-advisor-portal-modal-mass-transfer').openModal();
+            AdvisorPortalModalMassTransfer.open({
+                size: 'medium',
+                description: 'Transfer all selected cases',
+                selectedContactWrappers: this.selectedResults,
+                loadingCb: (e) => {
+                    this.handleLoading(e);
+                },
+                toastCb: (e) => {
+                    this.handleToast(e);
+                },
+            });
         }
     }
     openModalMassClose() {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            this.template.querySelector('c-advisor-portal-modal-mass-close').openModal();
+            AdvisorPortalModalMassClose.open({
+                size: 'medium',
+                description: 'Close all selected cases',
+                selectedContactWrappers: this.selectedResults,
+                loadingCb: (e) => {
+                    this.handleLoading(e);
+                },
+                toastCb: (e) => {
+                    this.handleToast(e);
+                },
+            });
         }
     }
 

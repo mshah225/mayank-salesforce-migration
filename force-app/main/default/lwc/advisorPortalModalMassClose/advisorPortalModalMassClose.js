@@ -1,20 +1,27 @@
-import {LightningElement, api, wire} from 'lwc';
+import {api, wire} from 'lwc';
 import populateRecommendedActionOptions from '@salesforce/apex/AdvisorPortalMassUpdateController.populateRecommendedActionOptions';
 import populateReturnTermOptions from '@salesforce/apex/AdvisorPortalMassUpdateController.populateReturnTermOptions';
 import populateStudentRiskOptions from '@salesforce/apex/AdvisorPortalMassUpdateController.populateStudentRiskOptions';
 import populateReasonNotReturningOptions from '@salesforce/apex/AdvisorPortalMassUpdateController.populateReasonNotReturningOptions';
 import getCustomMetadata from '@salesforce/apex/AdvisorPortalMassUpdateController.getCustomMetadata';
 import updateCasesStr from '@salesforce/apex/AdvisorPortalMassUpdateController.updateCasesStr';
+import LightningModal from 'lightning/modal';
+import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
 
-export default class AdvisorPortalModalMassClose extends LightningElement {
+export default class AdvisorPortalModalMassClose extends LightningModal {
     @api selectedContactWrappers = [];
+
+    @api loadingCb;
+    @api toastCb;
 
     recommendedActionOptions;
     @wire(populateRecommendedActionOptions, {})
     populatedRecommendedActionOptions(result) {
+        if (falseWireRun(result)) return;
+
         let {data, error} = result;
         if (data != null) {
-            this.recommendedActionOptions = this.buildPicklistOptionsArray(data);
+            this.recommendedActionOptions = buildPicklistOptionsArray(data);
             this.intialSetupQuestionOptionsWhenReady();
         } else if (error != null) {
             // eslint-disable-next-line no-console
@@ -25,9 +32,11 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
     returnTermOptions;
     @wire(populateReturnTermOptions, {})
     populatedReturnTermOptions(result) {
+        if (falseWireRun(result)) return;
+
         let {data, error} = result;
         if (data != null) {
-            this.returnTermOptions = this.buildPicklistOptionsArray(data);
+            this.returnTermOptions = buildPicklistOptionsArray(data);
             this.intialSetupQuestionOptionsWhenReady();
         } else if (error != null) {
             // eslint-disable-next-line no-console
@@ -38,9 +47,11 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
     studentRiskOptions;
     @wire(populateStudentRiskOptions, {})
     populatedStudentRiskOptions(result) {
+        if (falseWireRun(result)) return;
+
         let {data, error} = result;
         if (data != null) {
-            this.studentRiskOptions = this.buildPicklistOptionsArray(data);
+            this.studentRiskOptions = buildPicklistOptionsArray(data);
             this.intialSetupQuestionOptionsWhenReady();
         } else if (error != null) {
             // eslint-disable-next-line no-console
@@ -51,9 +62,11 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
     reasonNotReturningOptions;
     @wire(populateReasonNotReturningOptions, {})
     populatedReasonNotReturningOptions(result) {
+        if (falseWireRun(result)) return;
+
         let {data, error} = result;
         if (data != null) {
-            this.reasonNotReturningOptions = this.buildPicklistOptionsArray(data);
+            this.reasonNotReturningOptions = buildPicklistOptionsArray(data);
             this.intialSetupQuestionOptionsWhenReady();
         } else if (error != null) {
             // eslint-disable-next-line no-console
@@ -66,6 +79,8 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
     generatedRequirements;
     @wire(getCustomMetadata, {})
     gotCustomMetadata(result) {
+        if (falseWireRun(result)) return;
+
         let {data, error} = result;
         if (data != null) {
             const optionsStatus = [];
@@ -115,28 +130,7 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
 
     buttons = [];
 
-    connectedCallback() {
-        this.buttons = [
-            {
-                key: 'close',
-                ariaLabel: 'Cancel',
-                label: 'Cancel',
-                onClick: () => {
-                    this.closeModal();
-                },
-                classes: 'slds-button slds-button_neutral',
-            },
-            {
-                key: 'submit',
-                ariaLabel: 'Close',
-                label: 'Close',
-                onClick: () => {
-                    this.closeCases();
-                },
-                classes: 'slds-button slds-button_brand',
-            },
-        ];
-    }
+    isSubmitting = false;
 
     updateDynamicRequirements(e) {
         /* Update value */
@@ -201,15 +195,12 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
         this.updateRequiredStatuses();
     }
 
-    @api openModal() {
-        this.template.querySelector('c-lightning-question-answer-modal').openModal();
-    }
-    @api closeModal() {
-        this.template.querySelector('c-lightning-question-answer-modal').closeModal();
+    closeModal() {
+        this.close();
     }
 
     closeCases() {
-        if (this.template.querySelector('c-lightning-question-answer-modal').reportValidity()) {
+        if (this.template.querySelector('c-lightning-question-answer-section').reportValidity()) {
             let cases = [];
             for (let i = 0; i < this.selectedContactWrappers.length; i++) {
                 const contact = this.selectedContactWrappers[i];
@@ -270,7 +261,11 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
             }
 
             if (cases.length > 0) {
+                this.disableClose = true;
+                this.isSubmitting = true;
+                console.log(cases);
                 this.sendLoadingEvent(true);
+                console.log('asd');
                 updateCasesStr({caseStrsToUpdate: cases})
                     .then(() => {
                         this.makeToast('success', 'Success!', 'Closed cases.');
@@ -281,8 +276,10 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
                         console.error(err);
                     })
                     .finally(() => {
-                        this.template.querySelector('c-lightning-question-answer-modal').closeModal();
+                        this.disableClose = false;
+                        this.isSubmitting = false;
                         this.sendLoadingEvent(false);
+                        this.closeModal();
                     });
             }
         }
@@ -290,21 +287,22 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
 
     // Send a loading event
     sendLoadingEvent(loadMore) {
-        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
+        if (this.loadingCb != null) this.loadingCb(new CustomEvent('loading', {detail: loadMore}));
     }
 
     // Raise a toast event
     makeToast(type, title, body) {
-        this.dispatchEvent(
-            new CustomEvent('showtoast', {
-                detail: {
-                    title: title,
-                    message: body,
-                    type: type,
-                    duration: 5000,
-                },
-            })
-        );
+        if (this.toastCb != null)
+            this.toastCb(
+                new CustomEvent('showtoast', {
+                    detail: {
+                        title: title,
+                        message: body,
+                        type: type,
+                        duration: 5000,
+                    },
+                })
+            );
     }
 
     // Update required/not required status for all questions
@@ -442,16 +440,5 @@ export default class AdvisorPortalModalMassClose extends LightningElement {
             }
         }
         return null;
-    }
-
-    // Convert returned picklist map into array of options for comboboxes
-    buildPicklistOptionsArray(optionsMap) {
-        let optionsList = [];
-
-        Object.keys(optionsMap).forEach(function (key) {
-            optionsList.push({label: key, value: optionsMap[key]});
-        });
-
-        return optionsList;
     }
 }

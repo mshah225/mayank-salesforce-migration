@@ -44,7 +44,6 @@ export default class LightningCaseTransferView extends LightningElement {
             const options = [];
 
             const parsedData = JSON.parse(data);
-            console.log(parsedData);
             let firstOption = null;
 
             for (let i = 0; i < parsedData.length; i++) {
@@ -77,11 +76,9 @@ export default class LightningCaseTransferView extends LightningElement {
 
     changeNewOwner(e) {
         this.newOwner = e.detail.value;
-        console.log('changeNewOwner', this.newOwner);
     }
 
     @api transferCases() {
-        console.log('transferCases', this.caseIds, this.newOwner);
         return transferMultipleCases({caseIds: this.caseIds, ownerId: this.newOwner});
     }
 }

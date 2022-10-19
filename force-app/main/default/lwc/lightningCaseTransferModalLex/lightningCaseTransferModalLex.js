@@ -12,7 +12,7 @@ export default class LightningCaseTransferModalLex extends LightningElement {
         return [this.recordId];
     }
 
-    cancel() {
+    closeModal() {
         this.dispatchEvent(new CloseActionScreenEvent());
     }
 
@@ -24,30 +24,28 @@ export default class LightningCaseTransferModalLex extends LightningElement {
         viewElem
             .transferCases()
             .then(() => {
-                this.dispatchEvent(new CloseActionScreenEvent());
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Success',
-                        message: 'Case transferred!',
-                        variant: 'success',
-                    })
-                );
+                this.closeModal();
+                this.sendToast('Success', 'Case transferred!', 'success');
                 getRecordNotifyChange([{recordId: this.recordId}]); // trigger Lightning Experience tab refresh
             })
             .catch((err) => {
-                this.dispatchEvent(new CloseActionScreenEvent());
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Failure',
-                        message: 'Could not transfer case!',
-                        variant: 'error',
-                    })
-                );
+                this.closeModal();
+                this.sendToast('Failure', 'Could not transfer case!', 'error');
                 // eslint-disable-next-line no-console
                 console.error(err);
             })
             .finally(() => {
                 this.disabled = false;
             });
+    }
+
+    sendToast(title, message, variant) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant,
+            })
+        );
     }
 }

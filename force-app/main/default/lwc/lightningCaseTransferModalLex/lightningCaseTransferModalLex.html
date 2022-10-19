@@ -1,0 +1,24 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-quick-action-panel header="Transfer Case">
+        <template if:true={caseIds}>
+            <div class="mnh-300px">
+                <c-lightning-case-transfer-view
+                    mass-transfer="false"
+                    case-ids={caseIds}
+                ></c-lightning-case-transfer-view>
+            </div>
+        </template>
+        <div slot="footer">
+            <lightning-button variant="neutral" label="Cancel" onclick={cancel}></lightning-button>
+            <lightning-button
+                variant="brand"
+                class="slds-m-left_x-small"
+                label="Transfer"
+                type="submit"
+                onclick={transferCases}
+                disabled={disabled}
+            ></lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

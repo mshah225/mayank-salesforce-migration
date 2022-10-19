@@ -14,7 +14,7 @@ import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterS
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
-import AdvisorPortalModalMassTransfer from 'c/advisorPortalModalMassTransfer';
+import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
 import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
 import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
 
@@ -69,7 +69,7 @@ export default class AdvisorPortalA extends LightningElement {
         let {data, error} = result;
 
         if (data != null) {
-            this.allowedToUseMassTransfer = data;
+            this.allowedToUseMassTransfer = true;
         } else if (error != null) {
             // eslint-disable-next-line no-console
             console.error(error);
@@ -519,10 +519,25 @@ export default class AdvisorPortalA extends LightningElement {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            AdvisorPortalModalMassTransfer.open({
+            // Get all case ids
+            const caseIds = [];
+            for (let i = 0; i < this.selectedResults.length; i++) {
+                const contact = this.selectedResults[i];
+
+                for (let j = 0; j < contact.cases.length; j++) {
+                    const c = contact.cases[j];
+
+                    caseIds.push(c.caseId);
+                }
+            }
+
+            // Open a modal that is ready to transfer them
+            LightningCaseTransferModal.open({
                 size: 'medium',
                 description: 'Transfer all selected cases',
-                selectedContactWrappers: this.selectedResults,
+                massTransfer: true,
+                grad: this.currentFilter.career === 'GRD',
+                selectedContactWrappers: caseIds,
                 loadingCb: (e) => {
                     this.handleLoading(e);
                 },

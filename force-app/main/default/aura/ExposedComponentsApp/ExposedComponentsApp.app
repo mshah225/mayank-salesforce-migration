@@ -1,3 +1,3 @@
 <aura:application extends="ltng:outApp">
-    <aura:dependency resource="c:lightningCaseTransfer" />
+    <aura:dependency resource="c:lightningCaseTransferModalConsole" />
 </aura:application>

@@ -1,15 +1,25 @@
 public without sharing class AdvisorCaseTransferService {
-    /**
-     * Get a string representing the transfer options for the current user if they are transferring a case for a specific contact
-     *
-     * @param contactId Which student are they transferring a case for?
-     * @param grad Are they transferring in a grad context or a ugrad context? (Impacts with PODs/Resources/default queues we consider)
-     */
+    private static final String GRAD_CASE_RECORD_TYPE_NAME = 'ASU_Graduate_Advisor_Portal';
+
     @AuraEnabled(cacheable=true)
-    public static String getTransferToOptionsForCurrentUserAndStudentStr(String contactId, Boolean grad) {
-        return JSON.serialize(
-            getTransferToOptionsByUserAndStudent(UserInfo.getUserId(), contactId, grad).getOrderedList()
-        );
+    public static String getTransferOptions(List<String> caseIds, Boolean massTransfer, Boolean grad) {
+        if (massTransfer) {
+            // Get the user's transfer options
+            return JSON.serialize(getTransferToOptionsByUser(UserInfo.getUserId(), grad).getOrderedList());
+        } else {
+            Case c = [SELECT Id, ContactId, RecordType.DeveloperName FROM Case WHERE Id = :caseIds[0]][0];
+
+            grad = (c.RecordType.DeveloperName == GRAD_CASE_RECORD_TYPE_NAME); // grad is set by record id if only one case
+            if (String.isEmpty(c.ContactId)) {
+                // Get the user's transfer options
+                return JSON.serialize(getTransferToOptionsByUser(UserInfo.getUserId(), grad).getOrderedList());
+            } else {
+                // Get the user's transfer options, plus the student's committees
+                return JSON.serialize(
+                    getTransferToOptionsByUserAndStudent(UserInfo.getUserId(), c.ContactId, grad).getOrderedList()
+                );
+            }
+        }
     }
 
     /**
@@ -60,16 +70,6 @@ public without sharing class AdvisorCaseTransferService {
         }
 
         return labelValueMap;
-    }
-
-    /**
-     * Get a string representing the transfer options for the current user
-     *
-     * @param grad Are they transferring in a grad context or a ugrad context? (Impacts with PODs/Resources we consider)
-     */
-    @AuraEnabled(cacheable=true)
-    public static String getTransferToOptionsForCurrentUserStr(Boolean grad) {
-        return JSON.serialize(getTransferToOptionsByUser(UserInfo.getUserId(), grad).getOrderedList());
     }
 
     /**

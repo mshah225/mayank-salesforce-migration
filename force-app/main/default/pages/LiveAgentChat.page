@@ -126,7 +126,7 @@
     </head>
 
     <body>
-        <liveAgent:clientChat>
+        <liveAgent:clientChat >
             <div id="topBar">
                 <div class="d-flex justify-content-between px-2 p-1 bg-darkgray">
                     <div class="hideBefore hideAfter">

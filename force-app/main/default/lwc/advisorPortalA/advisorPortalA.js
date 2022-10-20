@@ -544,7 +544,7 @@ export default class AdvisorPortalA extends LightningElement {
                 description: 'Transfer all selected cases',
                 massTransfer: true,
                 grad: this.currentFilter.career === 'GRD',
-                selectedContactWrappers: caseIds,
+                caseIds: caseIds,
                 loadingCb: (e) => {
                     this.handleLoading(e);
                 },

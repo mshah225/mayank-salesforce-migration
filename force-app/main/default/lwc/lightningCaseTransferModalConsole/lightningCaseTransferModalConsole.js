@@ -1,5 +1,6 @@
 import {LightningElement, api} from 'lwc';
 import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
+import {niceLog} from 'c/helperFunctions';
 
 export default class LightningCaseTransferModalConsole extends LightningElement {
     @api caseIds = [];
@@ -36,7 +37,13 @@ export default class LightningCaseTransferModalConsole extends LightningElement 
         }
     }
 
-    handleToast(e) {}
+    handleToast(e) {
+        const title = e.detail.title;
+        const message = e.detail.message;
+        const type = e.detail.type;
+
+        niceLog(title, message, type);
+    }
 
     navigate(e) {
         const detail = e.detail;

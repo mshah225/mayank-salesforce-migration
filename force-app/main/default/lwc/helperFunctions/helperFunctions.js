@@ -61,3 +61,31 @@ export function parseBoolean(obj) {
     else if (typeof obj === 'string') return obj === 'true' || obj === 'TRUE';
     else return false;
 }
+
+/**
+ * Logging functionality that applies the correct console.log type
+ * Can be used along with a toast that way, printing the console as well as exposing it to the user with a toast
+ *
+ * @param {String} title The title of the message
+ * @param {String} message The body of the message
+ * @param {"info"|"success"|"warning"|"error"|"loading"} type The type of message this is
+ */
+export function niceLog(title, message, type) {
+    // eslint-disable-next-line no-console
+    let loggingFunc = console.log;
+
+    if (type === 'error') {
+        // eslint-disable-next-line no-console
+        loggingFunc = console.error;
+    } else if (type === 'warning') {
+        // eslint-disable-next-line no-console
+        loggingFunc = console.warn;
+    } else if (type === 'info') {
+        // eslint-disable-next-line no-console
+        loggingFunc = console.info;
+    } else if (type === 'loading') {
+        title = '↺ ' + title;
+    }
+
+    loggingFunc(title, message);
+}

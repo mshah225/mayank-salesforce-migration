@@ -22,15 +22,15 @@ repo = github.get_repo("ASU/crm-salesforce-enterprise")
 
 if repo.name == "crm-salesforce-enterprise" and repo.owner.login == "ASU":
     for pull in repo.get_pulls():
-        hasAliusedLabel = False
+        isSentToSlack = False
         hasReviewers = False
         reviewersString = ""
         headerMergeableEmoji = ""
         if pull.draft == False:
             for label in pull.labels:
-                if label.name == "Aliused":
-                    hasAliusedLabel = True
-            if not hasAliusedLabel:
+                if label.name == "Sent to Slack":
+                    isSentToSlack = True
+            if not isSentToSlack:
                 requestedReviewers = pull.get_review_requests()[0]
                 if requestedReviewers:
                     isFirstReviewer = True
@@ -105,4 +105,4 @@ if repo.name == "crm-salesforce-enterprise" and repo.owner.login == "ASU":
                     ]
                     response = json.loads(json.dumps(post_message_to_slack(blocks)))
                     if response["ok"] == True:
-                        pull.add_to_labels("Aliused")
+                        pull.add_to_labels("Sent to Slack")

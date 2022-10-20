@@ -48,12 +48,10 @@ export default class LightningCaseTransferModal extends LightningModal {
         viewElem
             .transferCases()
             .then(() => {
-                this.closeModal();
                 this.sendToast('Success', 'Case transferred!', 'success');
                 this.navigate('%reload%', {});
             })
             .catch((err) => {
-                this.closeModal();
                 this.sendToast('Failure', 'Could not transfer case!', 'error');
                 // eslint-disable-next-line no-console
                 console.error(err);
@@ -62,6 +60,7 @@ export default class LightningCaseTransferModal extends LightningModal {
                 this.disableClose = false;
                 this.isSubmitting = false;
                 this.sendLoadingEvent(false);
+                this.closeModal();
             });
     }
 

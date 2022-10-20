@@ -4,7 +4,10 @@ import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
 export default class LightningCaseTransferModalConsole extends LightningElement {
     @api caseIds = [];
 
-    firstRender = true;
+    loadingCounter = 0;
+    get isLoading() {
+        return this.loadingCounter > 0;
+    }
 
     connectedCallback() {
         LightningCaseTransferModal.open({
@@ -24,7 +27,14 @@ export default class LightningCaseTransferModalConsole extends LightningElement 
         });
     }
 
-    handleLoading(e) {}
+    handleLoading(e) {
+        const loadMore = e.detail;
+        if (loadMore) {
+            this.loadingCounter++;
+        } else {
+            this.loadingCounter--;
+        }
+    }
 
     handleToast(e) {}
 

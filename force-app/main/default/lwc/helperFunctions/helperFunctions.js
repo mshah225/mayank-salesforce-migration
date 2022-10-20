@@ -47,3 +47,45 @@ export function falseWireRun(obj) {
 
     return data == null && error == null;
 }
+
+/**
+ * Gets the boolean equilvalent of a passed object
+ * Useful for any boolean @api params, since we want to allow
+ * specifying them in the parent as a string
+ *
+ * @param {*} obj Parse this JS item as a boolean
+ * @returns TRUE when either the obj is a string with value "true" or "TRUE" or when the obj is a boolean with value true
+ */
+export function parseBoolean(obj) {
+    if (typeof obj === 'boolean') return obj;
+    else if (typeof obj === 'string') return obj === 'true' || obj === 'TRUE';
+    else return false;
+}
+
+/**
+ * Logging functionality that applies the correct console.log type
+ * Can be used along with a toast that way, printing the console as well as exposing it to the user with a toast
+ *
+ * @param {String} title The title of the message
+ * @param {String} message The body of the message
+ * @param {"info"|"success"|"warning"|"error"|"loading"} type The type of message this is
+ */
+export function niceLog(title, message, type) {
+    // eslint-disable-next-line no-console
+    let loggingFunc = console.log;
+
+    if (type === 'error') {
+        // eslint-disable-next-line no-console
+        loggingFunc = console.error;
+    } else if (type === 'warning') {
+        // eslint-disable-next-line no-console
+        loggingFunc = console.warn;
+    } else if (type === 'info') {
+        // eslint-disable-next-line no-console
+        loggingFunc = console.info;
+    } else if (type === 'loading') {
+        title = '↺ ' + title;
+    }
+
+    loggingFunc(title, message);
+}

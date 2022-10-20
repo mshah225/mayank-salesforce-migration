@@ -1,47 +1,78 @@
-import {LightningElement, api, wire} from 'lwc';
+import {api, wire} from 'lwc';
 import fetchUser from '@salesforce/apex/AdvisorPortalMassEmailModalController.fetchUser';
 import createPortalEmailsStr from '@salesforce/apex/AdvisorPortalMassEmailModalController.createPortalEmailsStr';
+import {falseWireRun} from 'c/helperFunctions';
+import LightningModal from 'lightning/modal';
 
-export default class AdvisorPortalModalMassEmail extends LightningElement {
+export default class AdvisorPortalModalMassEmail extends LightningModal {
     @api selectedContactWrappers = [];
+    @api loadingCb;
+    @api toastCb;
+    @api navCb;
 
-    myname = 'Your Name';
+    // What is the user's name?
+    myname = '%Your Name%';
 
-    questions = [];
-    buttons = [];
-
+    // State variables to track current subject and body
     subject = '';
     body = '';
 
-    connectedCallback() {
-        this.goToStageOne(); // just in case fetch user takes too long to resolve
+    isSubmitting = false;
 
-        fetchUser()
-            .then((data) => {
-                this.myname = data.Name;
-                this.goToStageOne(); // causes updates to fields in stage one modal
-            })
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error(err);
-            });
-    }
+    // Retrieve the current user and update the questions with the user's name
+    @wire(fetchUser, {})
+    fetchedUser(result) {
+        if (falseWireRun(result)) return;
 
-    @api openModal() {
-        this.template.querySelector('c-lightning-question-answer-modal').openModal();
-    }
-    @api closeModal() {
-        this.template.querySelector('c-lightning-question-answer-modal').closeModal();
-    }
-
-    previewEmails() {
-        const modal = this.template.querySelector('c-lightning-question-answer-modal');
-        if (modal.reportValidity()) {
-            this.subject = modal.questions[0].answer;
-            this.body = modal.questions[1].answer;
-            this.goToStageTwo();
+        let {data, error} = result;
+        if (data != null) {
+            this.myname = data.Name;
+        } else if (error != null) {
         }
     }
+
+    // Track which "page" of the modal we are on
+    stage = 'writing';
+    get writingStage() {
+        return this.stage === 'writing';
+    }
+    get previewStage() {
+        return this.stage === 'preview';
+    }
+
+    // Send label should say approx how many emails will be sent
+    get sendLabel() {
+        return 'Send (' + this.getEstimateOnNumberOfEmails() + ')';
+    }
+
+    // Close the modal
+    closeModal() {
+        this.close();
+    }
+
+    // Preview the email (go to the preview stage)
+    previewEmails() {
+        const formElements = this.template.querySelectorAll(
+            'lightning-modal-body lightning-input, lightning-modal-body lightning-textarea'
+        );
+
+        let isValid = true;
+
+        for (let i = 0; i < formElements.length; i++) {
+            isValid &= formElements[i].reportValidity();
+        }
+
+        if (isValid) {
+            this.stage = 'preview';
+        }
+    }
+
+    // Go back to the writing stage
+    goBack() {
+        this.stage = 'writing';
+    }
+
+    // Send the emails!
     sendEmails() {
         const jsonWrappers = [];
         for (let i = 0; i < this.selectedContactWrappers.length; i++) {
@@ -60,6 +91,8 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
         }
 
         this.sendLoadingEvent(true);
+        this.disableClose = true;
+        this.isSubmitting = true;
         createPortalEmailsStr({
             contactWrappersJSONList: jsonWrappers,
             subject: this.subject,
@@ -75,93 +108,23 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
                 this.makeToast('error', 'Failures', 'Emails were unable to be sent.');
             })
             .finally(() => {
+                this.disableClose = false;
+                this.isSubmitting = false;
                 this.closeModal();
                 this.sendLoadingEvent(false);
             });
     }
 
-    goToStageOne() {
-        this.questions = this.getStageOneModalQuestions();
-        this.buttons = this.getStageOneModalButtons();
-    }
-    goToStageTwo() {
-        this.questions = this.getStageTwoModalQuestions();
-        this.buttons = this.getStageTwoModalButtons();
+    // Record changes to the body and subject
+    changeSubject(e) {
+        this.subject = e.detail.value;
     }
 
-    getStageOneModalQuestions() {
-        return [
-            {key: 'subject', question: 'Subject', answer: this.subject, required: true, type: 'text'},
-            {key: 'body', question: 'Dear StudentFirstName,', answer: this.body, required: true, type: 'textarea'},
-            {key: 'note', question: 'Sincerely, ' + this.myname, type: 'label'},
-        ];
-    }
-    getStageOneModalButtons() {
-        return [
-            {
-                key: 'close',
-                ariaLabel: 'Cancel',
-                label: 'Cancel',
-                onClick: () => {
-                    this.closeModal();
-                },
-                classes: 'slds-button slds-button_neutral',
-            },
-            {
-                key: 'next',
-                ariaLabel: 'Preview',
-                label: 'Preview',
-                onClick: () => {
-                    this.previewEmails();
-                },
-                classes: 'slds-button slds-button_brand',
-            },
-        ];
+    changeBody(e) {
+        this.body = e.detail.value;
     }
 
-    getStageTwoModalQuestions() {
-        return [
-            {key: 'subject', question: this.subject, type: 'label', subtype: 'bold'},
-            {key: 'spacer-1', question: '', type: 'spacer', subtype: 'slds-m-top_small'},
-            {key: 'body-prefix', question: 'Dear StudentFirstName,', type: 'label'},
-            {key: 'spacer-1', question: '', type: 'spacer', subtype: 'slds-m-top_small'},
-            {key: 'body', question: this.body, type: 'label'},
-            {key: 'spacer-1', question: '', type: 'spacer', subtype: 'slds-m-top_small'},
-            {key: 'body-suffix', question: 'Sincerely, ' + this.myname, type: 'label'},
-        ];
-    }
-    getStageTwoModalButtons() {
-        let sendLabel = 'Send (';
-        const numberOfEmails = this.getEstimateOnNumberOfEmails();
-        if (numberOfEmails > 1) {
-            sendLabel += numberOfEmails + ' Emails';
-        } else {
-            sendLabel += '1 Email';
-        }
-        sendLabel += ')';
-
-        return [
-            {
-                key: 'back',
-                ariaLabel: 'Go Back',
-                label: 'Go Back',
-                onClick: () => {
-                    this.goToStageOne();
-                },
-                classes: 'slds-button slds-button_neutral',
-            },
-            {
-                key: 'submit',
-                ariaLabel: sendLabel,
-                label: sendLabel,
-                onClick: () => {
-                    this.sendEmails();
-                },
-                classes: 'slds-button slds-button_brand',
-            },
-        ];
-    }
-
+    // Estimate the number of emails by counting number of cases per contact
     getEstimateOnNumberOfEmails() {
         let count = 0;
         for (let i = 0; i < this.selectedContactWrappers.length; i++) {
@@ -174,20 +137,37 @@ export default class AdvisorPortalModalMassEmail extends LightningElement {
         return count;
     }
 
+    // Call the loadingCb
     sendLoadingEvent(loadMore) {
-        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
+        if (this.loadingCb != null) this.loadingCb(new CustomEvent('loading', {detail: loadMore}));
     }
 
+    // Call the toastCb
     makeToast(type, title, body) {
-        this.dispatchEvent(
-            new CustomEvent('showtoast', {
-                detail: {
-                    title: title,
-                    message: body,
-                    type: type,
-                    duration: 5000,
-                },
-            })
-        );
+        if (this.toastCb != null)
+            this.toastCb(
+                new CustomEvent('showtoast', {
+                    detail: {
+                        title: title,
+                        message: body,
+                        type: type,
+                        duration: 5000,
+                    },
+                })
+            );
+    }
+
+    // Call the navCb
+    navigate(location, params) {
+        if (this.navCb != null) {
+            this.navCb(
+                new CustomEvent('navigate', {
+                    detail: {
+                        location: location,
+                        params: params,
+                    },
+                })
+            );
+        }
     }
 }

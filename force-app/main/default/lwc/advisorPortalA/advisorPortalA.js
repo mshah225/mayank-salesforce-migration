@@ -14,6 +14,9 @@ import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterS
 import {loadScript} from 'lightning/platformResourceLoader';
 import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
+import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
+import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
+import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
 
 export default class AdvisorPortalA extends LightningElement {
     // For the top level user select filter
@@ -419,7 +422,11 @@ export default class AdvisorPortalA extends LightningElement {
                     false
                 );
                 break;
+            case '%reload%':
+                this.reloadContacts(); // refresh the shown contacts
+                break;
             default:
+                // eslint-disable-next-line no-console
                 console.error('navagation location unsupported', event);
                 break;
         }
@@ -499,21 +506,75 @@ export default class AdvisorPortalA extends LightningElement {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            this.template.querySelector('c-advisor-portal-modal-mass-email').openModal();
+            AdvisorPortalModalMassEmail.open({
+                size: 'medium',
+                description: 'Email all selected contacts/cases',
+                selectedContactWrappers: this.selectedResults,
+                loadingCb: (e) => {
+                    this.handleLoading(e);
+                },
+                toastCb: (e) => {
+                    this.handleToast(e);
+                },
+                navCb: (e) => {
+                    this.navigate(e);
+                },
+            });
         }
     }
     openModalMassTransfer() {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            this.template.querySelector('c-advisor-portal-modal-mass-transfer').openModal();
+            // Get all case ids
+            const caseIds = [];
+            for (let i = 0; i < this.selectedResults.length; i++) {
+                const contact = this.selectedResults[i];
+
+                for (let j = 0; j < contact.cases.length; j++) {
+                    const c = contact.cases[j];
+
+                    caseIds.push(c.caseId);
+                }
+            }
+
+            // Open a modal that is ready to transfer them
+            LightningCaseTransferModal.open({
+                size: 'medium',
+                description: 'Transfer all selected cases',
+                massTransfer: true,
+                grad: this.currentFilter.career === 'GRD',
+                caseIds: caseIds,
+                loadingCb: (e) => {
+                    this.handleLoading(e);
+                },
+                toastCb: (e) => {
+                    this.handleToast(e);
+                },
+                navCb: (e) => {
+                    this.navigate(e);
+                },
+            });
         }
     }
     openModalMassClose() {
         if (this.selectedResults.length === 0) {
             this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
         } else {
-            this.template.querySelector('c-advisor-portal-modal-mass-close').openModal();
+            AdvisorPortalModalMassClose.open({
+                size: 'medium',
+                description: 'Close all selected cases',
+                selectedContactWrappers: this.selectedResults,
+                loadingCb: (e) => {
+                    this.handleLoading(e);
+                },
+                toastCb: (e) => {
+                    this.handleToast(e);
+                },
+                navCb: (e) => {
+                    this.navigate(e);
+                },
+            });
         }
     }
 

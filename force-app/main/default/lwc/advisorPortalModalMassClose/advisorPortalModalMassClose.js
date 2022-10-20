@@ -264,9 +264,7 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
             if (cases.length > 0) {
                 this.disableClose = true;
                 this.isSubmitting = true;
-                console.log(cases);
                 this.sendLoadingEvent(true);
-                console.log('asd');
                 updateCasesStr({caseStrsToUpdate: cases})
                     .then(() => {
                         this.makeToast('success', 'Success!', 'Closed cases.');

@@ -7,42 +7,40 @@ export default class LightningCaseTransferModalConsole extends LightningElement 
     firstRender = true;
 
     connectedCallback() {
-        // LightningCaseTransferModal.open({
-        //     size: 'medium',
-        //     description: 'Transfer Case',
-        //     massTransfer: false,
-        //     caseIds: this.caseIds,
-        //     loadingCb: (e) => {
-        //         console.debug('loadingDb', e);
-        //         this.handleLoading(e);
-        //     },
-        //     toastCb: (e) => {
-        //         console.debug('toastCb', e);
-        //         this.handleToast(e);
-        //     },
-        // });
-    }
-
-    renderedCallback() {
-        if (this.firstRender) {
-            console.log(this.firstRender);
-            this.firstRender = false;
-            this.template.querySelector('c-lightning-case-transfer-modal-custom').open({
-                massTransfer: false,
-                caseIds: this.caseIds,
-                loadingCb: (e) => {
-                    console.debug('loadingDb', e);
-                    this.handleLoading(e);
-                },
-                toastCb: (e) => {
-                    console.debug('toastCb', e);
-                    this.handleToast(e);
-                },
-            });
-        }
+        LightningCaseTransferModal.open({
+            size: 'medium',
+            description: 'Transfer Case',
+            massTransfer: false,
+            caseIds: this.caseIds,
+            loadingCb: (e) => {
+                this.handleLoading(e);
+            },
+            toastCb: (e) => {
+                this.handleToast(e);
+            },
+            navCb: (e) => {
+                this.navigate(e);
+            },
+        });
     }
 
     handleLoading(e) {}
 
     handleToast(e) {}
+
+    navigate(e) {
+        const detail = e.detail;
+
+        const navLocation = detail.location;
+
+        switch (navLocation) {
+            case '%reload%':
+                location.reload(); // reload the page to update the record owner
+                break;
+            default:
+                // eslint-disable-next-line no-console
+                console.error('navagation location unsupported', event);
+                break;
+        }
+    }
 }

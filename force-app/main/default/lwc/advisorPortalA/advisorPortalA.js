@@ -422,7 +422,11 @@ export default class AdvisorPortalA extends LightningElement {
                     false
                 );
                 break;
+            case '%reload%':
+                this.reloadContacts(); // refresh the shown contacts
+                break;
             default:
+                // eslint-disable-next-line no-console
                 console.error('navagation location unsupported', event);
                 break;
         }
@@ -512,6 +516,9 @@ export default class AdvisorPortalA extends LightningElement {
                 toastCb: (e) => {
                     this.handleToast(e);
                 },
+                navCb: (e) => {
+                    this.navigate(e);
+                },
             });
         }
     }
@@ -544,6 +551,9 @@ export default class AdvisorPortalA extends LightningElement {
                 toastCb: (e) => {
                     this.handleToast(e);
                 },
+                navCb: (e) => {
+                    this.navigate(e);
+                },
             });
         }
     }
@@ -560,6 +570,9 @@ export default class AdvisorPortalA extends LightningElement {
                 },
                 toastCb: (e) => {
                     this.handleToast(e);
+                },
+                navCb: (e) => {
+                    this.navigate(e);
                 },
             });
         }

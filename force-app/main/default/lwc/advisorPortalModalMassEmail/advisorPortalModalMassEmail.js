@@ -8,6 +8,7 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
     @api selectedContactWrappers = [];
     @api loadingCb;
     @api toastCb;
+    @api navCb;
 
     // What is the user's name?
     myname = '%Your Name%';
@@ -15,6 +16,8 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
     // State variables to track current subject and body
     subject = '';
     body = '';
+
+    isSubmitting = false;
 
     // Retrieve the current user and update the questions with the user's name
     @wire(fetchUser, {})
@@ -88,6 +91,8 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
         }
 
         this.sendLoadingEvent(true);
+        this.disableClose = true;
+        this.isSubmitting = true;
         createPortalEmailsStr({
             contactWrappersJSONList: jsonWrappers,
             subject: this.subject,
@@ -103,6 +108,8 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
                 this.makeToast('error', 'Failures', 'Emails were unable to be sent.');
             })
             .finally(() => {
+                this.disableClose = false;
+                this.isSubmitting = false;
                 this.closeModal();
                 this.sendLoadingEvent(false);
             });
@@ -148,5 +155,19 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
                     },
                 })
             );
+    }
+
+    // Call the navCb
+    navigate(location, params) {
+        if (this.navCb != null) {
+            this.navCb(
+                new CustomEvent('navigate', {
+                    detail: {
+                        location: location,
+                        params: params,
+                    },
+                })
+            );
+        }
     }
 }

@@ -13,6 +13,7 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
 
     @api loadingCb;
     @api toastCb;
+    @api navCb;
 
     recommendedActionOptions;
     @wire(populateRecommendedActionOptions, {})
@@ -285,12 +286,12 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
         }
     }
 
-    // Send a loading event
+    // Call the loadingCb
     sendLoadingEvent(loadMore) {
         if (this.loadingCb != null) this.loadingCb(new CustomEvent('loading', {detail: loadMore}));
     }
 
-    // Raise a toast event
+    // Call the toastCb
     makeToast(type, title, body) {
         if (this.toastCb != null)
             this.toastCb(
@@ -303,6 +304,20 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
                     },
                 })
             );
+    }
+
+    // Call the navCb
+    navigate(location, params) {
+        if (this.navCb != null) {
+            this.navCb(
+                new CustomEvent('navigate', {
+                    detail: {
+                        location: location,
+                        params: params,
+                    },
+                })
+            );
+        }
     }
 
     // Update required/not required status for all questions

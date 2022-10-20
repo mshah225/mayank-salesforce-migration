@@ -6,6 +6,7 @@ export default class LightningCaseTransferModal extends LightningModal {
     // Callbacks for things that would be events if it were not a modal
     @api loadingCb;
     @api toastCb;
+    @api navCb;
 
     // Support both mass transfer mode, and (when false) single transfer mode
     @api set massTransfer(val) {
@@ -32,6 +33,8 @@ export default class LightningCaseTransferModal extends LightningModal {
         return this.massTransfer ? 'Mass Transfer' : 'Transfer Case';
     }
 
+    isSubmitting = false;
+
     closeModal() {
         this.close();
     }
@@ -40,11 +43,14 @@ export default class LightningCaseTransferModal extends LightningModal {
         const viewElem = this.template.querySelector('c-lightning-case-transfer-view');
 
         this.sendLoadingEvent(true);
+        this.disableClose = true;
+        this.isSubmitting = true;
         viewElem
             .transferCases()
             .then(() => {
                 this.closeModal();
                 this.sendToast('Success', 'Case transferred!', 'success');
+                this.navigate('%reload%', {});
             })
             .catch((err) => {
                 this.closeModal();
@@ -53,19 +59,13 @@ export default class LightningCaseTransferModal extends LightningModal {
                 console.error(err);
             })
             .finally(() => {
+                this.disableClose = false;
+                this.isSubmitting = false;
                 this.sendLoadingEvent(false);
-                this.disabled = false;
             });
     }
 
-    renderedCallback() {
-        console.log('renderedCallaback', document);
-    }
-
-    addAllowOverflowCSSRule() {
-        // slds-modal__content
-    }
-
+    // Call the loadingCb
     sendLoadingEvent(loadMore) {
         if (this.loadingCb != null) this.loadingCb(new CustomEvent('loading', {detail: loadMore}));
     }
@@ -83,5 +83,19 @@ export default class LightningCaseTransferModal extends LightningModal {
                     },
                 })
             );
+    }
+
+    // Call the navCb
+    navigate(location, params) {
+        if (this.navCb != null) {
+            this.navCb(
+                new CustomEvent('navigate', {
+                    detail: {
+                        location: location,
+                        params: params,
+                    },
+                })
+            );
+        }
     }
 }

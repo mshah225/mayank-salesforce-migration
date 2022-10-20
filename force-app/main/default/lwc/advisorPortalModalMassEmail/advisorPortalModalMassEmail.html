@@ -32,8 +32,12 @@
     <lightning-modal-footer>
         <template if:true={writingStage}>
             <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
-            <span style="display: inline-block; width: 1rem"></span>
-            <lightning-button label="Preview" variant="brand" onclick={previewEmails}></lightning-button>
+            <lightning-button
+                label="Preview"
+                variant="brand"
+                onclick={previewEmails}
+                style="margin-left: 1rem"
+            ></lightning-button>
         </template>
         <template if:true={previewStage}>
             <lightning-button label="Go Back" variant="neutral" onclick={goBack}></lightning-button>
@@ -43,6 +47,7 @@
                 variant="brand"
                 onclick={sendEmails}
                 disabled={isSubmitting}
+                style="margin-left: 1rem"
             ></lightning-button>
         </template>
     </lightning-modal-footer>

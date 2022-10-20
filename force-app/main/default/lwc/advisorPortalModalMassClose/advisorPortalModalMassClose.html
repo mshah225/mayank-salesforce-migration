@@ -11,7 +11,12 @@
     </lightning-modal-body>
     <lightning-modal-footer>
         <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
-        <span style="display: inline-block; width: 1rem"></span>
-        <lightning-button label="Close" variant="brand" onclick={closeCases} disabled={isSubmitting}></lightning-button>
+        <lightning-button
+            label="Close"
+            variant="brand"
+            onclick={closeCases}
+            disabled={isSubmitting}
+            style="margin-left: 1rem"
+        ></lightning-button>
     </lightning-modal-footer>
 </template>

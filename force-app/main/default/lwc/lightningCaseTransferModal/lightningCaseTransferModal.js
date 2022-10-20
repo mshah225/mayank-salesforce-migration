@@ -58,9 +58,9 @@ export default class LightningCaseTransferModal extends LightningModal {
             })
             .finally(() => {
                 this.disableClose = false;
+                this.closeModal();
                 this.isSubmitting = false;
                 this.sendLoadingEvent(false);
-                this.closeModal();
             });
     }
 

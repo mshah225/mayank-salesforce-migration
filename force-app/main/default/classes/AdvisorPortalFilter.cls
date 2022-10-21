@@ -15,7 +15,14 @@ public class AdvisorPortalFilter {
     };
 
     // Control variables
-    public String version = 'v2'; // Since we must support saving filters in the advisor portal, we must have some versioning in case we ever drastically change this class
+    public String version {
+        get {
+            // Since we must support saving filters in the advisor portal, we must have some versioning in case we ever drastically change this class
+            // Default to the most recent version
+            return version == null ? mostRecentVersion : version;
+        }
+        set;
+    }
 
     // Some fields that are always set
     public String caseTypeState; // "AllCasesState" | "ProactiveCasesState" | "WatchlistCasesState"

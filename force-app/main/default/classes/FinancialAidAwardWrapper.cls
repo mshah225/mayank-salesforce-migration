@@ -8,7 +8,7 @@ public class FinancialAidAwardWrapper {
 
 	public class cls_term_awards implements Comparable {
 		public String term_description {get; set;}
-		public Decimal total_offer_amount {get; set;}
+		public Decimal total_current_amount {get; set;}
 		public Decimal total_accepted_amount {get; set;}	
 		public Decimal total_disbursed_amount {get; set;}	
 		public List<cls_award_details> award_details {get; set;}
@@ -30,7 +30,7 @@ public class FinancialAidAwardWrapper {
 
 	public class cls_award_details implements Comparable {
 		public String award_name {get; set;}	
-		public Decimal offer_balance {get; set;}	
+		public Decimal current_offer {get; set;}	
 		public Decimal accept_balance {get; set;}	
 		public Decimal disbursed_balance {get; set;}
 		public String disbursement_status {get; set;}	

@@ -1337,7 +1337,7 @@
                                                                 <td>{!specificAwardForTerm.category_description}</td>                                                            
                                                                 <td>
                                                                     <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.offer_balance}"/>
+                                                                        <apex:param value="{!specificAwardForTerm.current_offer}"/>
                                                                     </apex:outputText>
                                                                 </td>
                                                                 <td>
@@ -1357,7 +1357,7 @@
                                                             <th colspan="2">Total</th>
                                                             <th>
                                                                 <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_offer_amount}"/>
+                                                                    <apex:param value="{!awardsByTerm.total_current_amount}"/>
                                                                 </apex:outputText>
                                                             </th>
                                                             <th>

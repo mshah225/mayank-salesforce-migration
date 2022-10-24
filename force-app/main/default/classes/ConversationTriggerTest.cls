@@ -196,19 +196,4 @@ private class ConversationTriggerTest {
         List<smagicinteract__Error_Log__c> errorLogList = [SELECT Id FROM smagicinteract__Error_Log__c];
         System.assertEquals(1, errorLogList.size());
     }
-
-    @isTest
-    private static void testErrorLogger() {
-        smagicinteract__Conversation__c conversation = new smagicinteract__Conversation__c();
-        conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456789';
-        Database.SaveResult[] lsr = Database.insert(new List<smagicinteract__Conversation__c>{ conversation }, false);
-        ConversationService service = new ConversationService();
-        service.processDatabaseResults(lsr);
-
-        conversation.smagicinteract__Inbound_Number__c = '123456789123456789123456780';
-        Database.SaveResult[] lsr2 = Database.update(new List<smagicinteract__Conversation__c>{ conversation }, false);
-        service.processDatabaseResults(lsr2);
-
-        System.assertEquals(2, [SELECT COUNT() FROM Case]);
-    }
 }

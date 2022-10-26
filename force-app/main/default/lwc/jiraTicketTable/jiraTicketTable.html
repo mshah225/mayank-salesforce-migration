@@ -47,7 +47,6 @@
                                 title="Testing Form"
                                 value={ticket.key}
                                 onclick={openTestFormModal}
-                                onfocus={setFocusHere}
                             ></lightning-button>
                         </div>
                     </td>
@@ -59,7 +58,6 @@
                                 title="Tech Review Form"
                                 value={ticket.key}
                                 onclick={openTechReviewFormModal}
-                                onfocus={setFocusHere}
                             ></lightning-button>
                         </div>
                     </td>
@@ -67,14 +65,4 @@
             </template>
         </tbody>
     </table>
-    <c-lightning-question-answer-modal
-        class="testing-form-modal"
-        questions={testFormQuestions}
-        oncomplete={submitTestForm}
-    ></c-lightning-question-answer-modal>
-    <c-lightning-question-answer-modal
-        class="tech-review-form-modal"
-        questions={techReviewFormQuestions}
-        oncomplete={submitTechReviewForm}
-    ></c-lightning-question-answer-modal>
 </template>

@@ -1,5 +1,6 @@
 import {LightningElement, api} from 'lwc';
 import submitForm from '@salesforce/apex/JiraAddCommentFormController.submitForm';
+import LightningQuestionAnswerModal from 'c/lightningQuestionAnswerModal';
 
 export default class JiraTicketTable extends LightningElement {
     @api tickets;
@@ -24,74 +25,75 @@ export default class JiraTicketTable extends LightningElement {
         {key: 'documentation', question: 'Future state documentaion (with explanation of changes):', type: 'textarea'},
     ];
 
-    currentlyHasFocus;
-    setFocusHere(e) {
-        this.currentlyHasFocus = e.target;
-    }
+    async openTestFormModal(e) {
+        const issueKey = e.target.value;
 
-    openTestFormModal(e) {
-        const modal = this.template.querySelector('.testing-form-modal');
-        modal.title = 'Testing Form for ' + e.target.value;
-        modal.dataset.issueKey = e.target.value;
-        modal.returnFocusTo = this.currentlyHasFocus;
-        modal.openModal();
+        const result = await LightningQuestionAnswerModal.open({
+            size: 'medium',
+            description: 'Submit test form',
+            title: 'Testing Form for ' + issueKey,
+            questions: this.testFormQuestions,
+        });
+
+        // If submitted
+        if (result.state === 'success') {
+            let comment = '';
+            for (let i = 0; i < result.body.length; i++) {
+                const formDetail = result.body[i];
+                comment += this.addToTicketComment(formDetail.question, formDetail.answer);
+            }
+
+            submitForm({jiraKey: issueKey, ticketComment: comment, status: 'In Testing'})
+                .then(() => {})
+                .catch((err) => {
+                    // eslint-disable-next-line no-console
+                    console.error(err);
+                })
+                .finally(() => {});
+        }
     }
     openTestFormModalKeyboard(e) {
         if (this.isSelectionKey(e.which)) this.openTestFormModal(e);
     }
-    submitTestForm(e) {
-        const issueKey = e.originalTarget.dataset.issueKey;
-        const formDetails = JSON.parse(e.detail);
-        let comment = '';
-        for (let i = 0; i < formDetails.length; i++) {
-            const formDetail = formDetails[i];
-            comment += this.addToTicketComment(formDetail.question, formDetail.answer);
+
+    async openTechReviewFormModal(e) {
+        const issueKey = e.target.value;
+
+        const result = await LightningQuestionAnswerModal.open({
+            size: 'medium',
+            description: 'Submit tech review form',
+            title: 'Tech Form for ' + issueKey,
+            questions: this.techReviewFormQuestions,
+        });
+
+        // If submitted
+        if (result.state === 'success') {
+            let comment = '';
+            for (let i = 0; i < result.body.length; i++) {
+                const formDetail = result.body[i];
+                comment += this.addToTicketComment(formDetail.question, formDetail.answer);
+            }
+
+            submitForm({jiraKey: issueKey, ticketComment: comment, status: 'Technical Review'})
+                .then(() => {})
+                .catch((err) => {
+                    // eslint-disable-next-line no-console
+                    console.error(err);
+                })
+                .finally(() => {});
         }
-
-        console.log(issueKey);
-        console.log(formDetails);
-        console.log(comment);
-
-        console.log({jiraKey: issueKey, ticketComment: comment, status: 'In Testing'});
-
-        submitForm({jiraKey: issueKey, ticketComment: comment, status: 'In Testing'})
-            .then(() => {})
-            .catch((err) => {
-                // eslint-disable-next-line no-console
-                console.error(err);
-            })
-            .finally(() => {});
-    }
-
-    openTechReviewFormModal(e) {
-        const modal = this.template.querySelector('.tech-review-form-modal');
-        modal.title = 'Tech Form for ' + e.target.value;
-        modal.dataset.issueKey = e.target.value;
-        modal.returnFocusTo = this.currentlyHasFocus;
-        modal.openModal();
     }
     openTechReviewFormModalKeyboard(e) {
         if (this.isSelectionKey(e.which)) this.openTechReviewFormModal(e);
     }
-    submitTechReviewForm(e) {
-        const issueKey = e.originalTarget.dataset.issueKey;
-        const formDetails = JSON.parse(e.detail);
-        let comment = '';
-        for (let i = 0; i < formDetails.length; i++) {
-            const formDetail = formDetails[i];
-            comment += this.addToTicketComment(formDetail.question, formDetail.answer);
-        }
 
-        console.log(issueKey);
-        console.log(formDetails);
-        console.log(comment);
-
-        submitForm({jiraKey: issueKey, ticketComment: comment, status: 'Technical Review'})
-            .then(() => {})
-            .catch(() => {})
-            .finally(() => {});
-    }
-
+    /**
+     * Nicely formats a question-answer pair to be submitted as a comment in JIRA
+     *
+     * @param {String} question The question asked
+     * @param {String} answer The answer provided
+     * @returns
+     */
     addToTicketComment(question, answer) {
         if (question != null && answer != null) {
             return (
@@ -106,6 +108,11 @@ export default class JiraTicketTable extends LightningElement {
         return '';
     }
 
+    /**
+     * Is this keycode a selection type key?
+     * @param {Integer} code
+     * @returns True is the pressed key is a selection type button (enter or space)
+     */
     isSelectionKey(code) {
         return code === 13 /*enter*/ || code === 32 /*space*/;
     }

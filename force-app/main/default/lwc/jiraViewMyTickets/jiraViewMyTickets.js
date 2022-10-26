@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import {LightningElement, wire} from 'lwc';
 import getIssuesForCurrentUser from '@salesforce/apex/JiraViewAllIssuesController.getIssuesForCurrentUser';
 import getWatchedIssuesForCurrentUser from '@salesforce/apex/JiraViewAllIssuesController.getWatchedIssuesForCurrentUser';
@@ -14,7 +15,7 @@ export default class JiraViewMyTickets extends LightningElement {
             let parsedData = JSON.parse(data);
             for (let i = 0; i < parsedData.issues.length; i++) {
                 const issue = parsedData.issues[i];
-                myTickets.push(this.createTicketWrapper(issue));
+                myTickets.push(new TicketItem(issue));
             }
         } else if (error) {
             // eslint-disable-next-line no-console
@@ -31,7 +32,7 @@ export default class JiraViewMyTickets extends LightningElement {
             let parsedData = JSON.parse(data);
             for (let i = 0; i < parsedData.issues.length; i++) {
                 const issue = parsedData.issues[i];
-                watchedTickets.push(this.createTicketWrapper(issue));
+                watchedTickets.push(new TicketItem(issue));
             }
         } else if (error) {
             // eslint-disable-next-line no-console
@@ -39,15 +40,22 @@ export default class JiraViewMyTickets extends LightningElement {
         }
         this.watchedTickets = watchedTickets;
     }
+}
 
-    createTicketWrapper(parsedIssue) {
-        return {
-            issueId: parsedIssue.id,
-            key: parsedIssue.key,
-            url: 'https://asudev.jira.com/browse/' + parsedIssue.key,
-            issueType: parsedIssue.fields.issuetype.name,
-            summary: parsedIssue.fields.summary,
-            status: parsedIssue.fields.status.name,
-        };
+class TicketItem {
+    issueId = null;
+    key = null;
+    url = null;
+    issueType = null;
+    summary = null;
+    status = null;
+
+    constructor(parsedIssue) {
+        this.issueId = parsedIssue.id;
+        this.key = parsedIssue.key;
+        this.url = 'https://asudev.jira.com/browse/' + parsedIssue.key;
+        this.issueType = parsedIssue.fields.issuetype.name;
+        this.summary = parsedIssue.fields.summary;
+        this.status = parsedIssue.fields.status.name;
     }
 }

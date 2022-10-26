@@ -1,95 +1,74 @@
-import {LightningElement, api} from 'lwc';
+import {api} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
+import LightningModal from 'lightning/modal';
 
-export default class LightningQuestionAnswerModal extends LightningElement {
+export default class LightningQuestionAnswerModal extends LightningModal {
     @api title = '';
 
     @api set questions(val) {
-        this._questions = JSON.parse(JSON.stringify(val));
+        this._questions = cloneObj(val);
     }
     get questions() {
         return this._questions;
     }
     _questions = [];
 
-    @api buttons = [
-        {
-            key: 'negativeButton-1',
-            ariaLabel: 'Cancel',
-            label: 'Cancel',
-            onClick: () => {
-                this.closeModal();
-            },
-            classes: 'slds-button slds-button_neutral',
+    @api buttonDescription = {
+        okButtonLabel: 'Okay',
+        cancelButtonLabel: 'Cancel',
+        awaitBeforeClosing: () => {
+            return Promise.resolve();
         },
-        {
-            key: 'positiveButton-1',
-            ariaLabel: 'Save',
-            label: 'Save',
-            onClick: () => {
-                this.submitModal();
-                this.closeModal();
-            },
-            classes: 'slds-button slds-button_brand',
-        },
-    ];
+    };
 
-    @api returnFocusTo = null;
-    @api noEscape = false;
+    isSubmitting = false;
 
-    showModal = false;
+    reportValidity() {
+        const qaSection = this.template.querySelector('c-lightning-question-answer-section');
+        return qaSection.reportValidity();
+    }
 
-    // Need to set focus into modal when it opens
-    needToSetFocus = true;
-    renderedCallback() {
-        if (this.showModal && this.needToSetFocus) {
-            this.focus();
-            this.needToSetFocus = false;
+    handleOkay() {
+        if (!this.reportValidity()) {
+            return; // Cannot complete if required fields aren't filled in
+        }
+
+        let response = new QAModalResponse('success', this.questions);
+
+        if (this.buttonDescription.awaitBeforeClosing != null) {
+            this.disableClose = true;
+            this.isSubmitting = true;
+            this.buttonDescription
+                .awaitBeforeClosing(response)
+                .finally(() => {
+                    this.disableClose = false;
+                    this.isSubmitting = false;
+                })
+                .then(() => {
+                    this.close(response);
+                });
+        } else {
+            this.close(response);
         }
     }
 
-    @api openModal() {
-        this.showModal = true;
-    }
-    @api closeModal() {
-        this.showModal = false;
-        this.needToSetFocus = true;
-        if (this.returnFocusTo != null) this.returnFocusTo.focus();
-    }
+    handleCancel() {
+        let response = new QAModalResponse('cancel', null);
 
-    @api focus() {
-        this.template.querySelector('.slds-modal').focus();
-    }
-
-    currentlyFocusedElement;
-    setFocusHere(e) {
-        this.currentlyFocusedElement = e.target;
-    }
-
-    killTabKeyPressEvent(e) {
-        if (e.which === 9) {
-            e.stopPropagation();
-        }
-    }
-
-    handleKeyPress(e) {
-        if (e.which === 27) {
-            // Pressed escape - must close modal
-            if (!this.noEscape) this.closeModal();
-        } else if (e.which === 9) {
-            // Pressed tab - must keep within modal
-            const allFocusableInModal = this.template.querySelectorAll('button, lightning-button-icon');
-            const firstFocusableInModal = allFocusableInModal[0];
-            const finalFocusableInModal = allFocusableInModal[allFocusableInModal.length - 1];
-
-            if (this.currentlyFocusedElement != null) {
-                if (this.currentlyFocusedElement.isEqualNode(finalFocusableInModal) && !e.shiftKey) {
-                    firstFocusableInModal.focus();
-                    e.preventDefault();
-                } else if (this.currentlyFocusedElement.isEqualNode(firstFocusableInModal) && e.shiftKey) {
-                    finalFocusableInModal.focus();
-                    e.preventDefault();
-                }
-            }
+        if (this.buttonDescription.awaitBeforeClosing != null) {
+            this.disableClose = true;
+            this.isSubmitting = true;
+            this.buttonDescription
+                .awaitBeforeClosing(response)
+                .finally(() => {
+                    this.disableClose = false;
+                    this.isSubmitting = false;
+                })
+                .then(() => {
+                    this.close(response);
+                });
+        } else {
+            this.close(response);
         }
     }
 
@@ -102,31 +81,19 @@ export default class LightningQuestionAnswerModal extends LightningElement {
                 q.answer = ans;
             }
         }
-        this.dispatchEvent(
-            new CustomEvent('change', {
-                detail: {key: key, answer: ans},
-            })
-        );
     }
+}
 
-    @api reportValidity() {
-        const qaSection = this.template.querySelector('c-lightning-question-answer-section');
-        return qaSection.reportValidity();
-    }
+export class QAModalResponse {
+    state = null;
+    body = null;
 
-    submitModal() {
-        if (!this.reportValidity()) {
-            return; // Cannot complete if required fields aren't filled in
-        }
-
-        // Fill in empty strings for all optional questions
-        for (let i = 0; i < this.questions.length; i++) {
-            const q = this.questions[i];
-            if (q.answer == null && q.type != null) {
-                q.answer = '';
-            }
-        }
-
-        this.dispatchEvent(new CustomEvent('complete', {detail: JSON.stringify(this.questions)}));
+    /**
+     * @param state Describes if this is completing as a part of a 'success' or a 'cancel'
+     * @param body Passed message (such as the body of the question and answers for the QA section)
+     */
+    constructor(state, body) {
+        this.state = state;
+        this.body = body;
     }
 }

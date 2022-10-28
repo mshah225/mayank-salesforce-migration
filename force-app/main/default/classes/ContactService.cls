@@ -240,4 +240,241 @@ public class ContactService {
 
     public class ContactServiceException extends Exception {
     }
+
+    /** Everything above here is pre trigger refactor and we likely should work towards removing it */
+
+    /**
+     * Set the self service pin (Self_Service_PIN__c) on the contacts.
+     *
+     * @param contacts The list of contacts that need their Self_Service_PIN__c set
+     */
+    public static void setSelfServicePins(List<Contact> contacts) {
+        for (Contact con : contacts) {
+            con.Self_Service_PIN__c = generateRandomPin(con.Birthdate);
+        }
+    }
+
+    /**
+     * Set the record type on each contact depending on if it has EMPLID__c specified.
+     *
+     * @param contacts The list of contacts
+     */
+    public static void setRecordTypes(List<Contact> contacts) {
+        Id extMasteredContactRecTypeId = RecordIdHelper.getRecordTypeId('Contact', 'External_Mastered');
+        Id sfMasteredContactRecTypeId = RecordIdHelper.getRecordTypeId('Contact', 'SF_Mastered');
+
+        for (Contact con : contacts)
+            con.RecordTypeId = (con.EMPLID__c == null ? sfMasteredContactRecTypeId : extMasteredContactRecTypeId);
+    }
+
+    /**
+     * For each contact, if the Contact is Externally_Mastered and its firstname/lastname changes, then update
+     * the firstname/lastname of the Users that lookup to this Contact (User.Contact__c == Contact.Id).
+     *
+     * @param contacts The new list of contacts
+     * @param oldContactsMap The map of old contacts
+     */
+    public static void syncUsers(List<Contact> contacts, Map<Id, Contact> oldContactsMap) {
+        Id extMasteredContactRecTypeId = RecordIdHelper.getRecordTypeId('Contact', 'External_Mastered');
+        Set<Id> contactIdsToUpdateRelatedUsers = new Set<Id>();
+        Map<Id, User> contactIdToUserMap = new Map<Id, User>();
+
+        // Get a set of contact ids to search user
+        for (Contact newCon : contacts) {
+            Contact oldCon = oldContactsMap.get(newCon.Id);
+            if (
+                newCon.RecordTypeId == extMasteredContactRecTypeId &&
+                (newCon.FirstName != oldCon.FirstName ||
+                newCon.LastName != oldCon.LastName)
+            )
+                contactIdsToUpdateRelatedUsers.add(newCon.Id);
+        }
+
+        // Map each contact id to its associated user
+        List<User> usersToUpdate = [
+            SELECT ContactId, FirstName, LastName
+            FROM User
+            WHERE ContactId IN :contactIdsToUpdateRelatedUsers
+        ];
+        for (User u : usersToUpdate)
+            contactIdToUserMap.put(u.ContactId, u);
+
+        // Update the name on the user
+        for (Contact con : contacts) {
+            // Update each user's first and last name to match
+            if (contactIdToUserMap.containsKey(con.Id)) {
+                User associatedUser = contactIdToUserMap.get(con.Id);
+
+                associatedUser.FirstName = con.FirstName;
+                associatedUser.LastName = con.LastName;
+            }
+        }
+
+        // Update the users
+        if (!usersToUpdate.isEmpty())
+            update usersToUpdate;
+    }
+
+    /**
+     * The first half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
+     * and creating a new account if needed.  Should be run in the before trigger since it'll set the AccountId
+     * lookup on the Contact
+     *
+     * @param contacts The new list of contacts
+     */
+    public static void beforeTriggerSyncAccounts(List<Contact> contacts) {
+        Map<Contact, Account> contactToNewAccountMap = new Map<Contact, Account>(); // Map of new accounts
+
+        // Get the Id for the old bucket Account to check against
+        Id bucketAccountId = null;
+        List<Account> bucketAccountList = [SELECT Id FROM Account WHERE Name = 'Arizona State University' LIMIT 1];
+        if (!bucketAccountList.isEmpty())
+            bucketAccountId = bucketAccountList[0].Id;
+
+        /** Preparation complete - now let's do the sync */
+
+        for (Contact con : contacts) {
+            // Make a new account if needed
+            if (con.AccountId == null || con.AccountId == bucketAccountId)
+                contactToNewAccountMap.put(con, createAccount(con)); // Create an Account for the Contact
+        }
+
+        // Insert new contacts
+        if (!contactToNewAccountMap.isEmpty())
+            insert contactToNewAccountMap.values();
+
+        // Set Account lookup on Contact for all newly created Accounts
+        for (Contact con : contacts)
+            if (contactToNewAccountMap.containsKey(con))
+                con.AccountId = contactToNewAccountMap.get(con).Id;
+    }
+
+    /**
+     * The second half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
+     * and creating a new account if needed. Should be run in the after trigger since the Contacts need to have
+     * their Ids set so that we can update the Accounts' Contact__c lookups
+     *
+     * @param contacts The new list of contacts
+     */
+    public static void afterTriggerSyncAccounts(List<Contact> contacts) {
+        // Ids for all the Contact's accounts.  At this point AccountId  must lookup to the 1-to-1 contact's account
+        Set<Id> accountIds = new Set<Id>();
+        Map<Id, Id> contactIdToAccountIdMap = new Map<Id, Id>();
+        for (Contact con : contacts) {
+            accountIds.add(con.AccountId);
+            contactIdToAccountIdMap.put(con.Id, con.AccountId);
+        }
+
+        // Get all the accounts for these contacts
+        List<Account> accountList = [
+            SELECT Id, Name, OwnerId, RecordTypeId, Contact__c
+            FROM Account
+            WHERE Id IN :accountIds
+        ];
+
+        // Map contact id to its associated account
+        Map<Id, Account> accountMap = new Map<Id, Account>();
+        for (Account acc : accountList)
+            accountMap.put(acc.Id, acc);
+
+        // And now modify each account if it has fallen out of sync
+        List<Account> accountsToUpdate = new List<Account>();
+        for (Contact con : contacts) {
+            // If this contact has an account
+            if (contactIdToAccountIdMap.containsKey(con.Id)) {
+                Id accountId = contactIdToAccountIdMap.get(con.Id);
+                // and we got the Account's details
+                if (accountMap.containsKey(accountId)) {
+                    Account acc = accountMap.get(accountId);
+                    // Check if the Account disagrees with the Contact - if so bring Account into alignment
+                    if (
+                        acc != null &&
+                        (acc.Name != con.FirstName + ' ' + con.LastName ||
+                        acc.OwnerId != con.OwnerId ||
+                        acc.RecordTypeId != getAccountRecordTypeForContactRecordType(con.RecordTypeID) ||
+                        acc.Contact__c != con.Id)
+                    ) {
+                        acc.Name = con.FirstName + ' ' + con.LastName;
+                        acc.OwnerId = con.OwnerId;
+                        acc.RecordTypeId = getAccountRecordTypeForContactRecordType(con.RecordTypeID);
+                        acc.Contact__c = con.Id;
+
+                        accountsToUpdate.add(acc);
+                    }
+                }
+            }
+        }
+
+        if (!accountsToUpdate.isEmpty())
+            update accountsToUpdate;
+    }
+
+    /**
+     * Set the HashContactID__c on each of the contacts. Does this asynchronously if not running in the future or as a batch
+     *
+     * @param contacts List of Contacts that need their hash contact id set
+     */
+    public static void setHashIds(List<Contact> contacts) {
+        List<Id> contactIdList = new List<Id>();
+        for (Contact con : contacts)
+            contactIdList.add(con.Id);
+        // Set it in the future
+        if (System.isFuture() || System.isBatch())
+            setHashIdsNow(contactIdList);
+        else
+            setHashIdsFuture(contactIdList);
+    }
+
+    @future
+    private static void setHashIdsFuture(List<Id> contactIds) {
+        setHashIdsNow(contactIds);
+    }
+
+    private static void setHashIdsNow(List<Id> contactIds) {
+        List<Contact> contactsWithNewHashes = new List<Contact>();
+        for (Id contactId : contactIds) {
+            String hashId = Hasher.hashId(contactId);
+            Contact con = new Contact(Id = contactId, HashContactID__c = hashId);
+            contactsWithNewHashes.add(con);
+        }
+        update contactsWithNewHashes;
+    }
+
+    /**
+     * Make a new Account for the specified Contact
+     *
+     * @param c The contact
+     *
+     * @return The new account
+     */
+    private static Account createAccount(Contact c) {
+        // Create the new 1:1 Account record for this Contact
+        Account a = new Account(
+            Name = c.FirstName + ' ' + c.LastName,
+            RecordTypeId = getAccountRecordTypeForContactRecordType(c.RecordTypeID),
+            OwnerId = c.OwnerId
+        );
+
+        return a;
+    }
+
+    /**
+     * Get the account record type id for the specified contact record type id
+     *
+     * @param contactRecordTypeId The contact record type id
+     *
+     * @return The account record type id
+     */
+    private static Id getAccountRecordTypeForContactRecordType(Id contactRecordTypeId) {
+        Id extMasteredContactRecTypeId = RecordIdHelper.getRecordTypeId('Contact', 'External_Mastered');
+        Id sfMasteredContactRecTypeId = RecordIdHelper.getRecordTypeId('Contact', 'SF_Mastered');
+        Id extMasteredContactAccountRecTypeId = RecordIdHelper.getRecordTypeId('Account', 'External_Mastered_Contact');
+        Id sfMasteredContactAccountRecTypeId = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Contact');
+
+        Map<Id, Id> contactToAccountRTIdMap = new Map<Id, Id>();
+        contactToAccountRTIdMap.put(extMasteredContactRecTypeId, extMasteredContactAccountRecTypeId);
+        contactToAccountRTIdMap.put(sfMasteredContactRecTypeId, sfMasteredContactAccountRecTypeId);
+
+        return contactToAccountRTIdMap.get(contactRecordTypeId);
+    }
 }

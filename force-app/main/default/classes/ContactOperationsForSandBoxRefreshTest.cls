@@ -1,16 +1,10 @@
 @isTest
 private class ContactOperationsForSandBoxRefreshTest {
-    private static final Integer ACCOUNT_NUM = 1;
     private static final Integer CONTACT_NUM = 100;
 
     @testSetup
     private static void setup() {
-        AccountFactory.DefaultAccount accountCreator = new AccountFactory.DefaultAccount();
-        List<Account> accountToLinkToContact = accountCreator.create(ACCOUNT_NUM);
-        insert accountToLinkToContact;
-        Id accountIdForContact = accountToLinkToContact[0].id;
-
-        ContactFactory.AllEmailsFilled contactCreator = new ContactFactory.AllEmailsFilled(accountIdForContact);
+        ContactFactory.AllEmailsFilled contactCreator = new ContactFactory.AllEmailsFilled();
         List<Contact> contactsCreatedForTest = contactCreator.create(CONTACT_NUM);
 
         insert contactsCreatedForTest;

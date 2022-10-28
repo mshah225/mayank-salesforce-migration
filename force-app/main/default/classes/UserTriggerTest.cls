@@ -54,7 +54,8 @@ public class UserTriggerTest {
     @isTest
     private static void bulkInsertCAPUsers() {
         Account acc = new Account(Name = 'Test Account Name');
-        insert acc;
+        Account acc2 = new Account(Name = 'Test Account Name');
+        insert new List<Account>{ acc, acc2 };
 
         List<Contact> testContacts = new List<Contact>();
         Contact testContact = ContactService.createTestContact();
@@ -70,7 +71,7 @@ public class UserTriggerTest {
         testContact.LastName = 'User';
         testContact.ASURite_ID__c = 'testuser2';
         testContact.CAP_Possible__c = true;
-        testContact.ACcountId = acc.Id;
+        testContact.ACcountId = acc2.Id;
         testContacts.add(testContact);
 
         insert testContacts;

@@ -14,6 +14,7 @@ public class FinancialEditMessageWrapper {
 		public String description;	
 		public String item_type;	
 	}
+	
 	public static FinancialEditMessageWrapper parse(String json){
 		return (FinancialEditMessageWrapper) System.JSON.deserialize(json, FinancialEditMessageWrapper.class);
 	}

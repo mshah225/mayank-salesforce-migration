@@ -2,13 +2,13 @@ public class FinancialEditMessageWrapper {
 	public String emplid;
 	public List<cls_edit_messages> edit_messages;
 
-	class cls_edit_messages {
+	public class cls_edit_messages {
 		public String academic_year {get; set;}	
 		public String aid_year {get; set;}		
 		public List<cls_message_details> message_details {get; set;}	
 	}
 
-	class cls_message_details implements Comparable {
+	public class cls_message_details implements Comparable {
 		public String term {get; set;}	
 		public String action_description {get; set;}		
 		public String description {get; set;}		

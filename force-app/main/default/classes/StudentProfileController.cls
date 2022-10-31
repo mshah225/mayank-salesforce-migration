@@ -1377,12 +1377,12 @@ global with sharing class StudentProfileController {
     }
 
     public class EditMessageWrapper {
-        public String term;	
-		public String action_description;	
-		public String description;	
-		public String item_type;
-        public String academic_year;
-		public String aid_year;	
+        public String term {get; set;}
+		public String action_description {get; set;}	
+		public String description {get; set;}	
+		public String item_type {get; set;}
+        public String academic_year {get; set;}
+		public String aid_year {get; set;}
     }
 
     private class StudentProfileException extends Exception {

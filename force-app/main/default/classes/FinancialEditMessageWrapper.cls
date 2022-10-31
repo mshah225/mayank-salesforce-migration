@@ -3,18 +3,24 @@ public class FinancialEditMessageWrapper {
 	public List<cls_edit_messages> edit_messages;
 
 	class cls_edit_messages {
-		public String academic_year;
-		public String aid_year;	
-		public List<cls_message_details> message_details;
+		public String academic_year {get; set;}	
+		public String aid_year {get; set;}		
+		public List<cls_message_details> message_details {get; set;}	
 	}
 
-	class cls_message_details {
-		public String term;	
-		public String action_description;	
-		public String description;	
-		public String item_type;	
+	class cls_message_details implements Comparable {
+		public String term {get; set;}	
+		public String action_description {get; set;}		
+		public String description {get; set;}		
+		public String item_type {get; set;}		
+
+		public Integer compareTo(Object compareTo) {
+			cls_message_details compareToMessage = (cls_message_details) compareTo;
+
+			return item_type.compareTo(compareToMessage.item_type);
+		}
 	}
-	
+
 	public static FinancialEditMessageWrapper parse(String json){
 		return (FinancialEditMessageWrapper) System.JSON.deserialize(json, FinancialEditMessageWrapper.class);
 	}

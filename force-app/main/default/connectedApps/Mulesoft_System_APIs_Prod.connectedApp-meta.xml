@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>salesforce.development@asu.edu</contactEmail>
+    <description>General Authentication App for a Mulesoft APIs in Production environments. The API user will authenticate using the Prod instance of this App. We will use preauthorized users since the user authenticating will be in the same environment as the app instanc</description>
+    <label>Mulesoft System APIs (Prod)</label>
+    <oauthConfig>
+        <callbackUrl>https://oauthdebugger.com/debug</callbackUrl>
+        <certificate>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</certificate>
+        <consumerKey>3MVG9ooRt4uZ_3TmGeDLEn3CWFF6K7gqwpDJwps9U14RE_Op25F82ER78ez3WFm9t6GaDVOrCfX2J6JjsxDVA</consumerKey>
+        <isAdminApproved>true</isAdminApproved>
+        <isConsumerSecretOptional>false</isConsumerSecretOptional>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+        <isSecretRequiredForRefreshToken>true</isSecretRequiredForRefreshToken>
+        <scopes>Api</scopes>
+        <scopes>Full</scopes>
+        <scopes>RefreshToken</scopes>
+        <scopes>OpenID</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>ENFORCE</ipRelaxation>
+        <refreshTokenPolicy>infinite</refreshTokenPolicy>
+    </oauthPolicy>
+    <permissionSetName>API Only User</permissionSetName>
+</ConnectedApp>

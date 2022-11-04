@@ -13,9 +13,9 @@ public without sharing class ErrorLogger {
         caseToCreate = CaseAssignmentRuleAccessor.getNewCaseFromCar();
         caseToCreate.Description = DEFAULT_CASE_DESCRIPTION;
         className = '';
-        Contact loggedInContact = ContactService.getLoggedInContact();
-        if (loggedInContact != null) {
-            caseToCreate.ContactId = loggedInContact.Id;
+        Id loggedInContactId = ContactService.getLoggedInContactId();
+        if (loggedInContactId != null) {
+            caseToCreate.ContactId = loggedInContactId;
         }
         allowRepeats = false;
     }

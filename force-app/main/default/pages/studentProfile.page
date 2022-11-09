@@ -1480,7 +1480,7 @@
                                             <div id="editMessageErrors" style="{!IF(aidYearForEditMessages.size == 0, '', 'display: none;')}">
                                                 No FA Edit Msgs found
                                             </div>
-                                            <apex:pageBlock id="editMessageTable">
+                                            <apex:pageBlock id="editMessageTable" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
                                                 <table class="table table-striped table-bordered">
                                                     <tr>
                                                         <th> Academic Year</th>

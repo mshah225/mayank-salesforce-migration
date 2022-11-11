@@ -17,4 +17,14 @@ public class StudentProfileCalloutTest {
         );
         System.assertEquals(checklists[0].checklist_cd, 'FTNOTI');
     }
+
+    @isTest
+    public static void testFinancialAidAwardStatus() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        FinancialAidAwardWrapper awards = StudentProfileCallout.getAwards(
+            '1221449333'
+        );
+
+        System.assertEquals(awards.aid_years[0].financial_year, '2013-2014');
+    }
 }

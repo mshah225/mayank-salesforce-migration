@@ -3400,7 +3400,6 @@
 
         $j(document).ready(function () {
             maskPhoneNumbers();
-            filterFinancialAid();
 
             loadRemoteSunCardPhoto();
             loadCommentsTab();
@@ -5146,39 +5145,6 @@
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
-        }
-
-        function filterFinancialAid() {
-            var e = document.getElementById('ps_financial_aid_year_select');
-            if (e.options[0] == null) {
-                document.getElementById('ps_financial_aid_year_picklist').innerHTML = '';
-                return;
-            }
-            var search = e.options[e.selectedIndex].text;
-            var faTable = document.getElementById('financial_aid_table');
-            var offeredTotal = 0.0;
-            var acceptedTotal = 0.0;
-            var disbursedTotal = 0.0;
-            for (var r = 1; r < faTable.rows.length; r++) {
-                var ele = faTable.rows[r].cells[6].innerHTML;
-                var displayStyle = 'none';
-                if (r == faTable.rows.length - 1) {
-                    displayStyle = 'table-row';
-                } else if (ele.indexOf(search) >= 0 || search == 'All') {
-                    displayStyle = 'table-row';
-                    offeredTotal += parseInt(faTable.rows[r].cells[3].innerHTML.replace('$', '').replace(',', ''));
-                    acceptedTotal += parseInt(faTable.rows[r].cells[4].innerHTML.replace('$', '').replace(',', ''));
-                    disbursedTotal += parseInt(faTable.rows[r].cells[5].innerHTML.replace('$', '').replace(',', ''));
-                } else {
-                    displayStyle = 'none';
-                }
-                faTable.rows[r].style.display = displayStyle;
-            }
-            var o = 'en-US';
-            var s = {style: 'currency', currency: 'USD'};
-            document.getElementById('fa_offered_total').innerHTML = offeredTotal.toLocaleString(o, s);
-            document.getElementById('fa_accepted_total').innerHTML = acceptedTotal.toLocaleString(o, s);
-            document.getElementById('fa_disbursed_total').innerHTML = disbursedTotal.toLocaleString(o, s);
         }
 
         function maskPhoneNumbers() {

@@ -56,4 +56,21 @@ public with sharing class StudentProfileCallout {
 
         return checklists;
     }
+
+    public static FinancialAidAwardWrapper getAwards(String emplid) {
+        FinancialAidAwardWrapper awardsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/awards-status');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            awardsForStudent = FinancialAidAwardWrapper.parse(responseBody);
+        }
+
+        return awardsForStudent;
+    }
 }

@@ -5,6 +5,8 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getServiceIndicators();
         } else if (req.getEndpoint().contains('Student_Checklists')) {
             return getFinancialAidChecklists();
+        } else if (req.getEndPoint().contains('awards-status')) {
+            return getFinancialAidAwardStatus();
         }
         return null;
     }
@@ -78,4 +80,68 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
         res.setStatusCode(200);
         return res;
     }
+
+    private HTTPResponse getFinancialAidAwardStatus() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+            '    "aid_years": ['+
+            '        {'+
+            '            "financial_year": "2013-2014",'+
+            '            "term_awards": ['+
+            '                {'+
+            '                    "term_description": "2013 Fall",'+
+            '                    "total_current_amount": 5000,'+
+            '                    "total_accepted_amount": 5000,'+
+            '                    "total_disbursed_amount": 5000,'+
+            '                    "award_details": ['+
+            '                        {'+
+            '                            "award_name": "NAmU - President",'+
+            '                            "current_offer": 4750,'+
+            '                            "accept_balance": 4750,'+
+            '                            "disbursed_balance": 4750,'+
+            '                            "disbursement_status": "Applied to Account",'+
+            '                            "category_description": "Scholarship",'+
+            '                            "aid_year": "2014",'+
+            '                            "item_type": "920303519344"'+
+            '                        },'+
+            '                        {'+
+            '                            "award_name": "Combs HS Booster Club Coyotes",'+
+            '                            "current_offer": 250,'+
+            '                            "accept_balance": 250,'+
+            '                            "disbursed_balance": 250,'+
+            '                            "disbursement_status": "Applied to Account",'+
+            '                            "category_description": "Scholarship",'+
+            '                            "aid_year": "2014",'+
+            '                            "item_type": "920705299992"'+
+            '                        }'+
+            '                    ]'+
+            '                },'+
+            '                {'+
+            '                    "term_description": "2014 Spring",'+
+            '                    "total_current_amount": 4750,'+
+            '                    "total_accepted_amount": 4750,'+
+            '                    "total_disbursed_amount": 4750,'+
+            '                    "award_details": ['+
+            '                        {'+
+            '                            "award_name": "NAmU - President",'+
+            '                            "current_offer": 4750,'+
+            '                            "accept_balance": 4750,'+
+            '                            "disbursed_balance": 4750,'+
+            '                            "disbursement_status": "Applied to Account",'+
+            '                            "category_description": "Scholarship",'+
+            '                            "aid_year": "2014",'+
+            '                            "item_type": "920303519344"'+
+            '                        }'+
+            '                    ]'+
+            '                }'+
+            '            ]'+
+            '        }'+
+            '    ]'+
+            '}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+    
 }

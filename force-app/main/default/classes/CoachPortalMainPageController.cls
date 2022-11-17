@@ -209,7 +209,7 @@ public with sharing class CoachPortalMainPageController {
                     'AND recordTypeId = \'' +
                     CoachCaseRTID +
                     '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 8000';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
             }
 
             return myProactiveQuery;
@@ -235,7 +235,7 @@ public with sharing class CoachPortalMainPageController {
                     'AND recordTypeId = \'' +
                     CoachCaseRTID +
                     '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 8000';
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
             }
 
             return myWatchlistQuery;
@@ -258,7 +258,7 @@ public with sharing class CoachPortalMainPageController {
                     ownerId +
                     '\' ' +
                     'AND Is_Active__c = true ' +
-                    'AND Coaching_Student__c = true ORDER BY Student_Name__c ASC LIMIT 8000';
+                    'AND Coaching_Student__c = true ORDER BY Student_Name__c ASC LIMIT 5000';
             }
 
             return myStudentsQuery;

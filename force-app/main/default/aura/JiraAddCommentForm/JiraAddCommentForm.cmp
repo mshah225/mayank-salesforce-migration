@@ -1,0 +1,96 @@
+<aura:component
+    controller="JiraAddCommentFormController"
+    implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+    access="global"
+>
+    <aura:attribute name="ticketKey" type="String" />
+    <aura:attribute name="status" type="String" />
+    <aura:attribute name="modalHeader" type="String" />
+    <aura:attribute name="questionOne" type="String" />
+    <aura:attribute name="questionTwo" type="String" />
+    <aura:attribute name="questionThree" type="String" />
+    <aura:attribute name="questionFour" type="String" />
+    <aura:attribute name="questionFive" type="String" />
+    <aura:attribute name="questionSix" type="String" />
+    <aura:attribute name="questionSeven" type="String" />
+    <aura:attribute name="answerOne" type="String" />
+    <aura:attribute name="answerTwo" type="String" />
+    <aura:attribute name="answerThree" type="String" />
+    <aura:attribute name="answerFour" type="String" />
+    <aura:attribute name="answerFive" type="String" />
+    <aura:attribute name="answerSix" type="String" />
+    <aura:attribute name="answerSeven" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:registerEvent name="statusChange" type="c.JiraIssueChange" />
+    <div aura:id="qaModal" style="position: absolute; height: 640px">
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-modal="true"
+            aria-describedby="modal-content-id-1"
+            class="slds-modal slds-fade-in-open"
+        >
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.modalHeader}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <ui:inputTextArea
+                        aura:id="questionOne"
+                        label="{!v.questionOne}"
+                        class="field"
+                        value="{!v.answerOne}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionTwo"
+                        label="{!v.questionTwo}"
+                        class="field"
+                        value="{!v.answerTwo}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionThree"
+                        label="{!v.questionThree}"
+                        class="field"
+                        value="{!v.answerThree}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionFour"
+                        label="{!v.questionFour}"
+                        class="field"
+                        value="{!v.answerFour}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionFive"
+                        label="{!v.questionFive}"
+                        class="field"
+                        value="{!v.answerFive}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionSix"
+                        label="{!v.questionSix}"
+                        class="field"
+                        value="{!v.answerSix}"
+                        updateOn="keyup"
+                    />
+                    <ui:inputTextArea
+                        aura:id="questionSeven"
+                        label="{!v.questionSeven}"
+                        class="field"
+                        value="{!v.answerSeven}"
+                        updateOn="keyup"
+                    />
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.toggleModal}">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick="{!c.submitModal}">Save</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </div>
+</aura:component>

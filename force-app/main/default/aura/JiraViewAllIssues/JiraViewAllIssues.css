@@ -1,0 +1,13 @@
+.THIS.hideModal {
+    display: none;
+}
+
+.THIS.columnHeader {
+    max-width: 200px;
+}
+
+h3.THIS,
+.THIS h3 {
+    font-weight: normal !important;
+    font-size: 1.5rem !important;
+}

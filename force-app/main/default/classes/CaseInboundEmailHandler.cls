@@ -225,11 +225,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 theCase.Description = '';
 
                 if (email.plainTextBody != null) {
-                    theCase.Description = limitLength(email.plainTextBody, 32000);
+                    theCase.Description = limitLength(email.plainTextBody, 31500);
                 } else if (email.htmlBody != null) {
                     theCase.Description =
                         'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\n' +
-                        limitLength(email.htmlBody.replaceAll('<[^>]+>', ''), 32000);
+                        limitLength(email.htmlBody.replaceAll('<[^>]+>', ''), 31500);
                 }
 
                 String toAddressConcat = '';
@@ -807,8 +807,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
         lostEmail.Sender__c = limitLength(email.fromAddress, 255);
         lostEmail.Subject__c = limitLength(email.subject, 255);
-        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 32000);
-        lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 32000);
+        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
+        lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
         lostEmail.Cause__c = limitLength(error, 255);
 
         // Convert the List into a concatenated string

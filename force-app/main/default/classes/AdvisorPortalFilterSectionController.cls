@@ -1141,6 +1141,11 @@ public class AdvisorPortalFilterSectionController {
             caseAndStatements.add('Followup_Date__c <= ' + filter.getFollowUpToDate());
         }
 
+        List<String> caseRecordTypeIds = new List<String>();
+        caseRecordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+        caseRecordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+        caseAndStatements.add('RecordTypeId IN ' + getSoqlListString(caseRecordTypeIds));
+
         // Add all contact-level filters
         List<String> andStatements = new List<String>();
 

@@ -6,7 +6,7 @@ global class JiraCalloutMock implements HttpCalloutMock {
         } else if (req.getMethod().equals('PUT')) {
             return addComment();
         } else if (req.getEndpoint().contains('api/2/issue')) {
-            return createNewIssueResponse();
+            return createNewIssueResponse(req);
         } else if (req.getEndpoint().contains('transitions')) {
             return updateStatus();
         } else if (req.getEndpoint().contains('/rest/api/2/search?jql=')) {
@@ -17,11 +17,18 @@ global class JiraCalloutMock implements HttpCalloutMock {
         return null;
     }
 
-    private HTTPResponse createNewIssueResponse() {
+    private HTTPResponse createNewIssueResponse(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
-        res.setHeader('Content-Type', 'application/json');
-        res.setBody('{"key":"TEST"}');
-        res.setStatusCode(200);
+        try {
+            JSON.deserializeUntyped(req.getBody()); //should be able to parse body as JSON
+            res.setHeader('Content-Type', 'application/json');
+            res.setBody('{"key":"TEST"}');
+            res.setStatusCode(200);
+        } catch (JSONException ex) {
+            res.setHeader('Content-Type', 'application/json');
+            res.setBody('{"errorMessages":["' + ex.getMessage() + '"]}');
+            res.setStatusCode(400);
+        }
         return res;
     }
 

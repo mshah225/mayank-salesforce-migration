@@ -163,7 +163,7 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
 
     closeCase = false;
     changeCloseCase(e) {
-        this.closeCase = e.originalTarget.checked;
+        this.closeCase = e.currentTarget.checked;
     }
 
     isValid() {

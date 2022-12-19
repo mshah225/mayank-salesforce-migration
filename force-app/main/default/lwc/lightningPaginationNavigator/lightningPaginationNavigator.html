@@ -1,0 +1,59 @@
+<template>
+    <nav role="navigation" class="slds-grid" aria-label="Contact-Cases Navigation">
+        <div class="slds-col slds-grow-none slds-text-align_left">
+            <lightning-button
+                disabled={onFirstPage}
+                variant="base"
+                label="&lt;&lt; First"
+                title="First Page"
+                onclick={navigateToFirstPage}
+            ></lightning-button>
+            <lightning-button
+                disabled={onFirstPage}
+                variant="base"
+                label="&lt; Previous"
+                title="Previous Page"
+                onclick={navigateToPreviousPage}
+            ></lightning-button>
+        </div>
+        <div class="slds-col slds-text-align_center slds-align_absolute-center">
+            <template if:false={extended}>
+                <span>
+                    Showing {startIndexOfViewingResults} - {endIndexOfViewingResults} of {resultsCount} {itemType}
+                </span>
+            </template>
+        </div>
+        <div class="slds-col slds-grow-none slds-text-align_right">
+            <lightning-button
+                disabled={onLastPage}
+                variant="base"
+                label="Next &gt;"
+                title="Next Page"
+                onclick={navigateToNextPage}
+            ></lightning-button>
+            <lightning-button
+                disabled={onLastPage}
+                variant="base"
+                label="Last &gt;&gt;"
+                title="Last Page"
+                onclick={navigateToLastPage}
+            ></lightning-button>
+        </div>
+    </nav>
+    <template if:true={extended}>
+        <div>
+            <div class="slds-align_absolute-center">
+                <lightning-combobox
+                    label="Page Size"
+                    value={pageSize}
+                    options={pageSizeOptions}
+                    onchange={changePageSize}
+                ></lightning-combobox>
+            </div>
+            <div class="slds-align_absolute-center">
+                Showing {startIndexOfViewingResults} - {endIndexOfViewingResults} of {resultsCount} {itemType}
+            </div>
+            <div class="slds-align_absolute-center">Page {currentPageStr} of {lastPageStr}</div>
+        </div>
+    </template>
+</template>

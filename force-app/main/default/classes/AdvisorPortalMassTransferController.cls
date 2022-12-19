@@ -6,6 +6,18 @@
  */
 public class AdvisorPortalMassTransferController {
     @AuraEnabled
+    public static void transferCasesStr(List<Id> portalCaseIds, String ownerId) {
+        if (portalCaseIds.isEmpty())
+            return;
+
+        List<Case> portalCases = new List<Case>();
+        for (Id portalCaseId : portalCaseIds) {
+            portalCases.add(new Case(Id = portalCaseId));
+        }
+
+        transferCases(portalCases, ownerId);
+    }
+
     public static void transferCases(List<Case> portalCases, String ownerId) {
         if (portalCases.isEmpty())
             return;
@@ -17,7 +29,7 @@ public class AdvisorPortalMassTransferController {
         update portalCases;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Boolean checkIfAllowedToUse() {
         List<Success_Resource__c> resourceForCurrentUser = [
             SELECT Role__c
@@ -29,6 +41,6 @@ public class AdvisorPortalMassTransferController {
                 AND IsActive__c = TRUE
         ];
 
-        return resourceForCurrentUser.size() > 0;
+        return  resourceForCurrentUser.size() > 0;
     }
 }

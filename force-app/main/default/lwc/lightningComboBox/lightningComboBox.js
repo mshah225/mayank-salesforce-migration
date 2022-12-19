@@ -1,4 +1,23 @@
+/**
+ * Author: Created by Robert Nordman
+ * Date: 10/17/2022
+ * Description:
+ *   A Lightning Design styled combobox.  Has multiple flags to enable/disable functionality.
+ *
+ *  @param label What label to use for the dropdown
+ *  @param placeholder What to show in the dropdown when no options are selected
+ *  @param required Is this dropdown a required field for whatever form it is on?
+ *  @param multiSelect Can more than one option be selected in the dropdown
+ *  @param value Semicolon separated list of values for each option that should be selected
+ *  @param options An array of options to show  [ { label: "John", value: "c-01", isLabel: false }, ... ]
+ *  @function quietSelect(val) Set the value without triggering change events
+ *  @function loudSelect(val) Set the value and trigger change events
+ *  @function focus() Give focus to the dropdown
+ *  @function reportValidity() Reports if the field is valid (error shown if not valid)
+ *  @function checkValidity() Check if the field is valid (i.e. if it is required, then it must have a value selected)
+ */
 import {LightningElement, api} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class LightningComboBox extends LightningElement {
     @api label;
@@ -39,11 +58,13 @@ export default class LightningComboBox extends LightningElement {
     _value = '';
 
     /**
-     * option: { label: "John", value: "c-01", isLabel: false, isSelected: false }
+     * option: { label: "John", value: "c-01", isLabel: false }
      * @param {List<option>} val
+     *
+     * @warning the value should not be a Proxy object of a Proxy object.  More than one layer of Proxies makes JSON.stringify unusably slow
      */
     @api set options(val) {
-        const optionsClone = JSON.parse(JSON.stringify(val));
+        const optionsClone = cloneObj(val);
 
         // add extra attributes
         for (let i = 0; i < optionsClone.length; i++) {
@@ -153,7 +174,7 @@ export default class LightningComboBox extends LightningElement {
      * @param {int} indx
      */
     toggleItemByIndex(indx) {
-        let options = JSON.parse(JSON.stringify(this._options));
+        let options = cloneObj(this._options);
 
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
@@ -288,7 +309,7 @@ export default class LightningComboBox extends LightningElement {
      * Update hover data attributes
      */
     updateHoverStates() {
-        const options = JSON.parse(JSON.stringify(this._options));
+        const options = cloneObj(this._options);
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
             if (this.hoveredIndex === opt.index) opt.isHovered = true;
@@ -303,7 +324,7 @@ export default class LightningComboBox extends LightningElement {
      */
     forceSelectedStatesToMatchValue() {
         const parentDeclaredValues = this._value == null ? [] : this._value.split(';');
-        const options = JSON.parse(JSON.stringify(this._options));
+        const options = cloneObj(this._options);
         const newValues = [];
         let madeAChange = false;
 

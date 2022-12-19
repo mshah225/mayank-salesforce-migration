@@ -105,5 +105,5 @@ export default class LightningQuestionAnswerSection extends LightningElement {
         }
     }
 
-    allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box';
+    allInputTypes = 'lightning-input, lightning-textarea, c-lightning-combo-box, lightning-dual-listbox';
 }

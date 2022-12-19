@@ -62,9 +62,26 @@ private class AdvisorPortalMassUpdateControllerTest {
 
     @IsTest
     static void testLoadMetadata() {
+        Advisor_Portal_Mass_Close_Configuration__mdt testMdt1 = new Advisor_Portal_Mass_Close_Configuration__mdt();
+        testMdt1.Dropdown__c = 'caseStatus';
+        testMdt1.Value__c = 'In Person Meeting';
+        testMdt1.Required_Fields__c = '';
+
+        Advisor_Portal_Mass_Close_Configuration__mdt testMdt2 = new Advisor_Portal_Mass_Close_Configuration__mdt();
+        testMdt2.Dropdown__c = 'caseStatus';
+        testMdt2.Value__c = 'Closed: Administratively Resolved (No Outreach)';
+        testMdt2.Required_Fields__c = '';
+
+        Advisor_Portal_Mass_Close_Configuration__mdt testMdt3 = new Advisor_Portal_Mass_Close_Configuration__mdt();
+        testMdt3.Dropdown__c = 'studentIntent';
+        testMdt3.Value__c = 'Not returning temporarily';
+        testMdt3.Required_Fields__c = 'notReturning, returnTerm';
+
         // Act
         Test.startTest();
-        Map<String, Map<String, List<String>>> metadata = AdvisorPortalMassUpdateController.getCustomMetadata();
+        Map<String, Map<String, List<String>>> metadata = AdvisorPortalMassUpdateController.convertMetadataToMapping(
+            new List<Advisor_Portal_Mass_Close_Configuration__mdt>{testMdt1, testMdt2,testMdt3}
+        );
         Test.stopTest();
 
         // Assert
@@ -73,6 +90,5 @@ private class AdvisorPortalMassUpdateControllerTest {
 
         System.assert(metadata.get('studentIntent').get('Not returning temporarily').contains('notReturning'));
         System.assert(metadata.get('studentIntent').get('Not returning temporarily').contains('returnTerm'));
-
     }
 }

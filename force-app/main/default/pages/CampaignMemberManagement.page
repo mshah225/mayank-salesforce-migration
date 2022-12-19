@@ -799,7 +799,9 @@
                                         <apex:column id="alius-format17">
                                             <apex:facet name="header">Email Name</apex:facet>
                                             <apex:outputText id="alius-format18">
-                                                <a href="/{!message.Id}" target="_blank">{!message.name}</a>
+                                                <apex:outputLink value="#" onclick="openNewViewTab('{!message.Id}','{!message.name}');">
+                                                    {!message.name}
+                                                </apex:outputLink>
                                             </apex:outputText>
                                         </apex:column>
 

@@ -73,4 +73,21 @@ public with sharing class StudentProfileCallout {
 
         return awardsForStudent;
     }
+
+    public static FinancialEditMessageWrapper getEditMessages(String emplid) {
+        FinancialEditMessageWrapper messagesForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/fa-messages?messagetype=E');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            messagesForStudent = FinancialEditMessageWrapper.parse(responseBody);
+        }
+
+        return messagesForStudent;
+    }
 }

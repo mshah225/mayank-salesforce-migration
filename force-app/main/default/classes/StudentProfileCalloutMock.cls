@@ -7,6 +7,8 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getFinancialAidChecklists();
         } else if (req.getEndPoint().contains('awards-status')) {
             return getFinancialAidAwardStatus();
+        } else if (req.getEndPoint().contains('fa-messages')) {
+            return getFinancialAidEditMessages();
         }
         return null;
     }
@@ -138,6 +140,32 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             '        }'+
             '    ]'+
             '}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getFinancialAidEditMessages() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+		'    "emplid": "1206104779",'+
+		'    "edit_messages": ['+
+		'        {'+
+		'            "academic_year": "2022 - 2023",'+
+		'            "aid_year": "2023",'+
+		'            "message_details": ['+
+		'                {'+
+		'                    "term": "2227",'+
+		'                    "action_description": "Action Pending",'+
+		'                    "description": "Insufficient Bananes",'+
+		'                    "item_type": "970542099901",'+
+		'                    "edit_message_type": "E"'+
+		'                }'+
+		'            ]'+
+		'        }'+
+		'    ]'+
+		'}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
         res.setStatusCode(200);

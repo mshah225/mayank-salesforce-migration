@@ -1460,6 +1460,49 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Financial Aid User Edit Messages
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="edit_message_list">
+                                        <apex:form >
+                                            <div style = "margin-bottom: 15px">
+                                                <apex:selectList value="{!selectedAidYearForEditMessage}" size="1" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
+                                                    <apex:selectOptions value="{!aidYearForEditMessages}"/>
+                                                    <apex:actionSupport event="onchange" reRender="editMessageTable"/>
+                                                </apex:selectList>
+                                            </div>
+                                            <div id="editMessageErrors" style="{!IF(aidYearForEditMessages.size == 0, '', 'display: none;')}">
+                                                No FA Edit Msgs found
+                                            </div>
+                                            <apex:pageBlock id="editMessageTable">
+                                                <table class="table table-striped table-bordered" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
+                                                    <tr>
+                                                        <th> Academic Year</th>
+                                                        <th> Aid Year</th>
+                                                        <th> Term</th>
+                                                        <th> Action Description</th>
+                                                        <th> Description</th>
+                                                    </tr>
+                                                    <apex:repeat var="editMessageEntry" value="{!editMessagesForSelectedTerm}">
+                                                        <tr>
+                                                            <td>{!editMessageEntry.academic_year}</td>
+                                                            <td>{!editMessageEntry.aid_year}</td>                                                            
+                                                            <td>{!editMessageEntry.term}</td>
+                                                            <td>{!editMessageEntry.action_description}</td>
+                                                            <td>{!editMessageEntry.description}</td>
+                                                        </tr>
+                                                    </apex:repeat>
+                                                </table>  
+                                            </apex:pageBlock>
+                                        </apex:form>
+                                    </div>
+                                </div>
                             </apex:pageBlock>
                         </div>
 

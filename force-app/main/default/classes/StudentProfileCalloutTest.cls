@@ -27,4 +27,14 @@ public class StudentProfileCalloutTest {
 
         System.assertEquals(awards.aid_years[0].financial_year, '2013-2014');
     }
+
+    @isTest
+    public static void testFinancialAidEditMessages() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        FinancialEditMessageWrapper editMessages = StudentProfileCallout.getEditMessages(
+            '1206104779'
+        );
+
+        System.assertEquals(editMessages.emplid, '1206104779');
+    }
 }

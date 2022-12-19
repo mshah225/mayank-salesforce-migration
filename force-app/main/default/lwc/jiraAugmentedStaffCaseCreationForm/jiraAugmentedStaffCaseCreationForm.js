@@ -163,7 +163,7 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
 
     closeCase = false;
     changeCloseCase(e) {
-        this.closeCase = e.originalTarget.checked;
+        this.closeCase = e.currentTarget.checked;
     }
 
     isValid() {
@@ -194,6 +194,7 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
                 .then((val) => {
                     if (val === true) {
                         this.alert = 'Case was created successfully!';
+                        this.clearFields();
                     } else {
                         this.alert = 'There was a problem trying to create the case!';
                     }
@@ -207,5 +208,14 @@ export default class JiraAugmentedStaffCaseCreationForm extends LightningElement
                     this.disabledButton = false;
                 });
         }
+    }
+
+    clearFields() {
+        // Clear text answers
+        for (let i = 0; i < this.questions.length; i++) this.questions[i].answer = '';
+        this.template.querySelector('c-lightning-question-answer-section').clearAll(); // force rerender section
+        // Clear checkbox
+        this.closeCase = false;
+        this.template.querySelector('.checkbox').checked = false; // change rendered checkbox
     }
 }

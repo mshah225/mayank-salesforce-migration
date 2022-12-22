@@ -1,0 +1,384 @@
+<template>
+    <div>
+        <div class="slds-text-align_right slds-var-m-bottom_x-small">
+            <div role="button" tabindex="0" aria-label="Provide Feedback" class="openButton">
+                <lightning-icon
+                    icon-name="utility:anywhere_chat"
+                    alternative-text="Provide Feedback"
+                    variant="inverse"
+                    size="xx-small"
+                ></lightning-icon>
+                <span>Feedback</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-max-large-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small wrapWhenSmall">
+        <div class="slds-col slds-max-large-size_1-of-1">
+            <div class="slds-card slds-var-p-around_small light-blue-background">
+                <div class="slds-var-m-bottom_medium">
+                    <div class="slds-combobox_container slds-has-selection">
+                        <div
+                            class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click"
+                            aria-expanded="false"
+                            role="combobox"
+                        >
+                            <div
+                                class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right"
+                                role="none"
+                            >
+                                <span class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default">
+                                    <lightning-icon icon-name="utility:search" size="x-small"></lightning-icon>
+                                </span>
+                                <lightning-input
+                                    label="Committee Options"
+                                    type="text"
+                                    class="slds-combobox__input slds-size_1-of-1"
+                                    placeholder="Loading..."
+                                    variant="label-hidden"
+                                >
+                                </lightning-input>
+                                <span class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default">
+                                    <lightning-icon icon-name="utility:chevrondown" size="x-small"></lightning-icon>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <lightning-button label="Select All" title="Select All"></lightning-button>
+                    <lightning-button
+                        label="My Queue"
+                        title="My Queue"
+                        class="slds-var-m-left_xx-small"
+                    ></lightning-button>
+                    <lightning-button
+                        label="Clear Selection"
+                        title="Clear Selection"
+                        class="slds-var-m-left_xx-small"
+                    ></lightning-button>
+                    <lightning-button
+                        label="Apply Selected Users"
+                        variant="brand"
+                        title="Apply"
+                        class="slds-var-m-left_xx-small"
+                    ></lightning-button>
+                </div>
+            </div>
+        </div>
+        <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
+            <div class="slds-grid slds-grid_vertical">
+                <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                    <div class="slds-card slds-var-p-around_small">
+                        <lightning-radio-group
+                            name="ViewCasesFor"
+                            label="View Cases for"
+                            options={gradToggleOptions}
+                            value={gradToggleValue}
+                            type="button"
+                        ></lightning-radio-group>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                    <div class="slds-card slds-var-p-around_small">
+                        <lightning-button
+                            variant="brand"
+                            label="Save Filters"
+                            title="Save Filters"
+                            class="slds-var-m-right_xx-small"
+                        ></lightning-button>
+                        <lightning-button
+                            variant="neutral"
+                            label="Reset Saved Filters"
+                            title="Reset Saved Filters"
+                        ></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-col">
+            <div class="slds-card slds-var-p-around_small">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-grow-none slds-max-large-size_1-of-1">
+                        <lightning-radio-group
+                            name="ShowResultsFor"
+                            label="Show Results for"
+                            options={viewStateOptions}
+                            value={viewStateValue}
+                            type="button"
+                        ></lightning-radio-group>
+                    </div>
+                    <div class="slds-col slds-grow slds-max-large-size_1-of-1"></div>
+                    <div class="slds-col slds-max-medium-size_1-of-1">
+                        <!-- sldsValidatorIgnoreNextLine -->
+                        <fieldset>
+                            <!-- sldsValidatorIgnoreNextLine -->
+                            <legend class="slds-form-element__legend slds-form-element__label">Mass Actions</legend>
+                            <div class="slds-form-element__control">
+                                <lightning-button label="Mass Email" variant="brand" class="mr-2"></lightning-button>
+                                <lightning-button label="Mass Close" variant="brand" class="mr-2"></lightning-button>
+                                <!-- sldsValidatorIgnoreNextLine -->
+                                <lightning-button-icon
+                                    icon-name="utility:refresh"
+                                    variant="brand"
+                                    alternative-text="Refresh"
+                                    size="medium"
+                                    title="Refresh"
+                                ></lightning-button-icon>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="slds-col slds-grow-none slds-max-medium-size_1-of-1 advanced-filter-button">
+                        <lightning-button label="Advanced Filters" variant="brand"></lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filterSectionWrapper slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-col">
+            <div class="slds-card slds-var-p-around_small">
+                <div>
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-input label="Student" type="text" value=""></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Campus"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Academic Level"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-input label="Student Group" type="text" value=""></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-input label="Major" type="text" value=""></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Residency"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Case Status"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Case Category"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Case Subject"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Outlook Score"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-combobox
+                                label="Outlook Change"
+                                placeholder="Select an Option"
+                                value=""
+                            ></lightning-combobox>
+                        </div>
+
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-input label="Case Count" type="text" value=""></lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-3">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <label class="slds-form-element__label">Created Date</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input type="date" label="From" value=""></lightning-input>
+                                        </div>
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input type="date" label="To" value=""></lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <label class="slds-form-element__label">Follow Up Date</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input type="date" label="From" value=""></lightning-input>
+                                        </div>
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input type="date" label="To" value=""></lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <label class="slds-form-element__label">Persistence Change Date</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input type="date" label="From" value=""></lightning-input>
+                                        </div>
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input type="date" label="To" value=""></lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-grid slds-wrap slds-gutters_x-small slds-var-m-top_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-button
+                            label="Clear Filters"
+                            title="Clear Filters"
+                            onclick={clearFilters}
+                        ></lightning-button>
+                        <lightning-button
+                            variant="brand"
+                            label="Apply Filters"
+                            title="Apply Filters"
+                            onclick={applyFilters}
+                            class="slds-var-m-left_xx-small"
+                        ></lightning-button>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
+                        <div class="slds-text-align_right slds-show_medium">† Uses full name (preferred or legal)</div>
+                        <div class="slds-var-m-top_xx-small slds-hide_medium">
+                            † Uses full name (preferred or legal)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-col">
+            <div class="slds-card slds-var-p-around_small">
+                <div class="slds-var-p-vertical_x-small">
+                    <div class="slds-var-p-bottom_small">
+                        <lightning-icon
+                            class="outreach-icn"
+                            icon-name="utility:record"
+                            variant="success"
+                            size="x-small"
+                        ></lightning-icon>
+                        = Indicates a case that needs attention because it has the status Outreach Required or Customer
+                        Replied.
+
+                        <br /><img
+                            src={persistenceIconVeryLow}
+                            alt="very low"
+                            title="Very Low"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Very Low
+                        <img
+                            src={persistenceIconLow}
+                            alt="low"
+                            title="Low"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Low
+                        <img
+                            src={persistenceChartModerate}
+                            alt="moderate"
+                            title="Moderate"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Moderate
+                        <img
+                            src={persistenceIconHigh}
+                            alt="high"
+                            title="High"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = High
+                        <img
+                            src={persistenceIconVeryHigh}
+                            alt="very high"
+                            title="Very High"
+                            class="persistence-icon legend slds-var-m-horizontal_xx-small"
+                        />
+                        = Very High
+                    </div>
+                    <div class="slds-checkbox_button-group" style="border: none">
+                        <lightning-input
+                            type="checkbox"
+                            label="Select All"
+                            checked={selectedAll}
+                            class="top-level-select"
+                            onchange={updateSelectedAll}
+                        ></lightning-input>
+                        <lightning-input
+                            type="checkbox"
+                            label="Expand All"
+                            checked={expandedAll}
+                            class="top-level-select"
+                            onchange={updateExpandedAll}
+                        ></lightning-input>
+                    </div>
+                </div>
+
+                <div class="light-gray-background px-2 py-1">
+                    <c-lightning-pagination-navigator
+                        results-count="0"
+                        page-size="20"
+                        current-page="0"
+                        item-type="Contacts"
+                    ></c-lightning-pagination-navigator>
+                </div>
+
+                <ul class="slds-accordion">
+                    <div class="loading-contacts-section">Loading...</div>
+                </ul>
+
+                <div class="light-gray-background px-2 py-1 mt-1">
+                    <c-lightning-pagination-navigator
+                        results-count="0"
+                        page-size="20"
+                        item-type="Contacts"
+                        current-page="0"
+                        extended="true"
+                    ></c-lightning-pagination-navigator>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

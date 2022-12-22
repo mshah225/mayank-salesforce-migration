@@ -1,0 +1,154 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+
+    <c-lightning-design-toast></c-lightning-design-toast>
+
+    <template if:true={showFauxView}>
+        <c-advisor-portal-faux-view></c-advisor-portal-faux-view>
+    </template>
+    <template if:false={showFauxView}>
+        <div>
+            <div class="slds-text-align_right slds-var-m-bottom_x-small">
+                <c-advisor-portal-feedback-button onshowtoast={handleToast}></c-advisor-portal-feedback-button>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-max-large-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small wrapWhenSmall">
+            <div class="slds-col slds-max-large-size_1-of-1">
+                <div class="slds-card slds-var-p-around_small light-blue-background">
+                    <c-advisor-portal-user-select
+                        my-queue-id={myQueueId}
+                        all-user-options={allUsers}
+                        onchangeusers={changeSelectedUsers}
+                        onloading={handleLoading}
+                    ></c-advisor-portal-user-select>
+                </div>
+            </div>
+            <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
+                <div class="slds-grid slds-grid_vertical">
+                    <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                        <div class="slds-card slds-var-p-around_small">
+                            <c-advisor-portal-filter-select-career
+                                current-filter={currentFilter}
+                                onchange={updateFilter}
+                            ></c-advisor-portal-filter-select-career>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
+                        <div class="slds-card slds-var-p-around_small">
+                            <c-advisor-portal-save-filters
+                                current-filter={currentFilter}
+                                onloading={handleLoading}
+                                onshowtoast={handleToast}
+                            ></c-advisor-portal-save-filters>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+            <div class="slds-col">
+                <div class="slds-card slds-var-p-around_small">
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-grow-none slds-max-large-size_1-of-1">
+                            <c-advisor-portal-filter-select-type
+                                current-filter={currentFilter}
+                                onchange={updateFilter}
+                            ></c-advisor-portal-filter-select-type>
+                        </div>
+                        <div class="slds-col slds-grow slds-max-large-size_1-of-1"></div>
+                        <div class="slds-col slds-max-medium-size_1-of-1">
+                            <!-- sldsValidatorIgnoreNextLine -->
+                            <fieldset>
+                                <!-- sldsValidatorIgnoreNextLine -->
+                                <legend class="slds-form-element__legend slds-form-element__label">Mass Actions</legend>
+                                <div class="slds-form-element__control">
+                                    <template if:true={allowedToUseMassTransfer}>
+                                        <lightning-button
+                                            label="Mass Transfer"
+                                            onclick={openModalMassTransfer}
+                                            variant="brand"
+                                            class="mr-2"
+                                        ></lightning-button>
+                                    </template>
+                                    <lightning-button
+                                        label="Mass Email"
+                                        onclick={openModalMassEmail}
+                                        variant="brand"
+                                        class="mr-2"
+                                    ></lightning-button>
+                                    <lightning-button
+                                        label="Mass Close"
+                                        onclick={openModalMassClose}
+                                        variant="brand"
+                                        class="mr-2"
+                                    ></lightning-button>
+                                    <!-- sldsValidatorIgnoreNextLine -->
+                                    <lightning-button-icon
+                                        icon-name="utility:refresh"
+                                        variant="brand"
+                                        alternative-text="Refresh"
+                                        size="medium"
+                                        title="Refresh"
+                                        onclick={reloadContacts}
+                                    ></lightning-button-icon>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="slds-col slds-grow-none slds-max-medium-size_1-of-1 advanced-filter-button">
+                            <lightning-button
+                                label="Advanced Filters"
+                                variant="brand"
+                                onclick={toggleFilterVisibility}
+                            ></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class={filterSectionDivClasses}>
+            <div class="slds-col">
+                <div class="slds-card slds-var-p-around_small">
+                    <c-advisor-portal-filters-section
+                        current-filter={currentFilter}
+                        view-as-users={selectedUsers}
+                        loading-campus-values={loadingCampusValues}
+                        loading-school-department={loadingSchoolDepartment}
+                        loading-acad-plan={loadingAcadPlan}
+                        loading-case-status={loadingCaseStatus}
+                        loading-case-category={loadingCaseCategory}
+                        residency-picklist-values={residencyPicklistValues}
+                        case-status-picklist-values={caseStatusPicklistValues}
+                        campus-picklist-values={campusPicklistValues}
+                        case-subject-picklist-values={caseSubjectPicklistValues}
+                        case-category-picklist-values={caseCategoryPicklistValues}
+                        academic-program-options={academicProgramOptions}
+                        school-department-options={schoolDepartmentOptions}
+                        academic-plan-options={academicPlanOptions}
+                        onchange={updateFilter}
+                        onsubmit={getCases}
+                        onloading={handleLoading}
+                    ></c-advisor-portal-filters-section>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+            <div class="slds-col">
+                <div class="slds-card slds-var-p-around_small">
+                    <c-advisor-portal-table
+                        current-filter={currentFilter}
+                        all-results={allResults}
+                        onnavigate={navigate}
+                        onsetselected={updateSelectedResults}
+                        onloading={handleLoading}
+                    ></c-advisor-portal-table>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

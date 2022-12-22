@@ -1,0 +1,165 @@
+<template>
+    <template if:true={contactWrapperNotNull}>
+        <div class="accordianSectionLabelWrapper">
+            <lightning-input
+                type="checkbox"
+                checked={contactWrapper.isSelected}
+                onchange={toggleContactSelect}
+                class="inline-input"
+            >
+            </lightning-input>
+            <div class="accordianSectionLabel">
+                <template if:true={contactWrapper.isOpen}>
+                    <!-- sldsValidatorIgnoreNextLine -->
+                    <lightning-button-icon
+                        icon-name="utility:chevrondown"
+                        variant="container"
+                        alternative-text="Collapse cases"
+                        size="small"
+                        title="Collapse cases"
+                        onclick={closeDropdown}
+                    ></lightning-button-icon>
+                </template>
+                <template if:false={contactWrapper.isOpen}>
+                    <!-- sldsValidatorIgnoreNextLine -->
+                    <lightning-button-icon
+                        icon-name="utility:chevronright"
+                        variant="container"
+                        alternative-text="Expand cases"
+                        size="small"
+                        title="Expand cases"
+                        onclick={openDropdown}
+                    ></lightning-button-icon>
+                </template>
+                <a role="button" onclick={openStudentProfile} class="profile-link" title="Student Profile"> Profile </a>
+                <span class="text-1rem slds-var-p-horizontal_xx-small">
+                    {contactWrapper.portalContact.LastName}, {contactWrapper.portalContact.Preferred_First_Name__c}
+                    &#124;
+                </span>
+                <span class="slds-var-m-left_xx-small">
+                    <template if:true={contactWrapper.hasCases}>
+                        <template if:true={contactWrapper.hasMultipleCases}>
+                            {contactWrapper.cases.length} cases
+                        </template>
+                        <template if:false={contactWrapper.hasMultipleCases}>
+                            {contactWrapper.cases.length} case
+                        </template>
+                    </template>
+                    <template if:false={contactWrapper.hasCases}> 0 cases </template>
+                </span>
+
+                <template if:true={contactWrapper.isOutreachCustomer}>
+                    <lightning-icon
+                        class="outreach-icn"
+                        icon-name="utility:record"
+                        variant="success"
+                        size="x-small"
+                    ></lightning-icon>
+                </template>
+
+                <template if:false={contactWrapper.isGradStudent}>
+                    <c-advisor-portal-table-contact-pred-level
+                        prediction-level={contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}
+                    ></c-advisor-portal-table-contact-pred-level>
+
+                    <c-advisor-portal-table-contact-outlook-change-dir
+                        change-direction={contactWrapper.portalContact.Most_Recent_Outlook_Change_Direction__c}
+                        change-date={contactWrapper.portalContact.Change_Date__c}
+                    ></c-advisor-portal-table-contact-outlook-change-dir>
+                </template>
+            </div>
+        </div>
+
+        <template if:true={contactWrapper.isOpen}>
+            <div class="accordianSectionBodyWrapper">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered accordianSectionBody">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="slds-text-title_caps" scope="col"></th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Case Priority">Case Priority</div>
+                            </th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Case Number">Case Number</div>
+                            </th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Case Subject">Case Subject</div>
+                            </th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Status">Status</div>
+                            </th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Followup Date">Followup Date</div>
+                            </th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Case Owner">Case Owner</div>
+                            </th>
+                            <th class="slds-text-title_caps" scope="col">
+                                <div class="slds-truncate" title="Case Created Date">Case Created Date</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={contactWrapper.cases} for:item="caseWrapper">
+                            <tr class="slds-hint-parent" key={caseWrapper.portalCase.Id}>
+                                <th data-label="" scope="row">
+                                    <div class="slds-truncate">
+                                        <lightning-input
+                                            type="checkbox"
+                                            checked={caseWrapper.isSelected}
+                                            name={caseWrapper.portalCase.Id}
+                                            onchange={toggleCaseSelect}
+                                            class="inline-input"
+                                        ></lightning-input>
+                                    </div>
+                                </th>
+                                <th data-label="Priority">
+                                    <div class="slds-truncate" title="Priority">{caseWrapper.portalCase.Priority}</div>
+                                </th>
+                                <td data-label="Case Number">
+                                    <div class="slds-truncate" title="Case Number">
+                                        {caseWrapper.portalCase.CaseNumber}
+                                    </div>
+                                </td>
+                                <td data-label="Subject">
+                                    <div class="slds-truncate" title="Subject">
+                                        <a
+                                            role="button"
+                                            data-case-id={caseWrapper.portalCase.Id}
+                                            data-case-number={caseWrapper.portalCase.CaseNumber}
+                                            onclick={openCase}
+                                        >
+                                            {caseWrapper.portalCase.Subject}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td data-label="Status">
+                                    <div class="slds-truncate" title="Status">{caseWrapper.portalCase.Status}</div>
+                                </td>
+                                <td data-label="Followup Date">
+                                    <div class="slds-truncate" title="Followup Date">
+                                        <template if:true={caseWrapper.hasFollowupDate}>
+                                            <lightning-formatted-date-time
+                                                value={caseWrapper.formattedFollowupDate}
+                                            ></lightning-formatted-date-time>
+                                        </template>
+                                    </div>
+                                </td>
+                                <td data-label="Owner">
+                                    <div class="slds-truncate" title="Owner">{caseWrapper.portalCase.Owner.Name}</div>
+                                </td>
+                                <td data-label="Created Date">
+                                    <div class="slds-truncate" title="Created Date">
+                                        <lightning-formatted-date-time
+                                            value={caseWrapper.formattedCreatedDate}
+                                        ></lightning-formatted-date-time>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+    </template>
+</template>

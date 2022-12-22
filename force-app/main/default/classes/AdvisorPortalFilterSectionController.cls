@@ -1,18 +1,4 @@
 public class AdvisorPortalFilterSectionController {
-    private static Map<String, Set<Decimal>> outlookScoresByLabels = new Map<String, Set<Decimal>>{
-        'very low' => new Set<Decimal>{ 0, 1, 2, 3 },
-        'low' => new Set<Decimal>{ 4, 5 },
-        'moderate' => new Set<Decimal>{ 6 },
-        'high' => new Set<Decimal>{ 7 },
-        'very high' => new Set<Decimal>{ 8, 9, 10 }
-    };
-
-    private static Map<String, Decimal> outlookChangeByLabels = new Map<String, Decimal>{
-        'up' => 1,
-        'down' => 0,
-        'no change' => -1
-    };
-
     /**
      * Gets active picklist values for a provided Object and Field name.
      *
@@ -21,42 +7,41 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getPicklistValues(String objectName, String fieldName) {
-        Map<String, String> picklistValuesByLabel = new Map<String, String>();
-
-        for (
-            Schema.PicklistEntry picklistValue : Schema.getGlobalDescribe()
-                .get(objectName)
-                .getDescribe()
-                .fields.getMap()
-                .get(fieldName)
-                .getDescribe()
-                .getPicklistValues()
-        ) {
-            if (picklistValue.isActive()) {
-                picklistValuesByLabel.put(picklistValue.getLabel(), picklistValue.getValue());
-            }
-        }
-
-        return picklistValuesByLabel;
+        return ObjectService.getPicklistChoicesMap(objectName, fieldName);
     }
 
     /**
      * Gets active picklist values for the Campus.
-     *     
+     * If filter is set, and indicates graduate students only, then only add graduate campuses.
      *
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
-    @AuraEnabled
-    public static Map<String, String> getCampusValues() {
-        Map<String, String> picklistValuesByLabel = new Map<String, String>();
-        List<Location__c> campusLocations = [SELECT Name FROM Location__c ORDER BY CreatedDate, Name];
-        for (Location__c campus : campusLocations) {
-            picklistValuesByLabel.put(campus.Name, campus.Name);
-        }
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCampusValues(String filterJSON) {
+        Map<String, String> campusMap = new Map<String, String>();
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
 
-        return picklistValuesByLabel;
+            List<Location__c> campusLocations = [
+                SELECT Name, Graduate_Enabled__c, Location_Code__c
+                FROM Location__c
+                ORDER BY CreatedDate, Name
+            ];
+
+            if (filter != null && filter.career != null && filter.career == 'GRD') {
+                // Load only some locations for graduate students
+                for (Location__c campus : campusLocations)
+                    if (campus.Graduate_Enabled__c)
+                        campusMap.put(campus.Name, campus.Location_Code__c);
+            } else {
+                // Load all locations for undergraduate students
+                for (Location__c campus : campusLocations)
+                    campusMap.put(campus.Name, campus.Location_Code__c);
+            }
+        }
+        return campusMap;
     }
 
     /**
@@ -64,7 +49,7 @@ public class AdvisorPortalFilterSectionController {
      *
      * @return caseStatusValuesByLabel, a Map of Advisor_Portal_Case_Status__mdt record values by label.
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> getCaseStatusSettings() {
         Map<String, String> caseStatusValuesByLabel = new Map<String, String>();
 
@@ -86,22 +71,31 @@ public class AdvisorPortalFilterSectionController {
      * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @return caseSubjectValuesByLabel, a Map of Case Subjects.
      */
-    @AuraEnabled
-    public static Map<String, String> getCaseSubjectPicklistValues(List<Id> viewAsOptions) {
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCaseSubjectPicklistValues(String filterJSON, List<Id> viewAsOptions) {
         Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
+        List<String> recordTypeIds = new List<String>();
 
-        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+            if (filter != null && filter.career != null && filter.career == 'GRD') {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+            } else {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+            }
+        }
 
         for (AggregateResult result : [
             SELECT Subject
             FROM Case
-            WHERE IsClosed = FALSE AND RecordTypeId = :recordType AND Subject != NULL AND OwnerId IN :viewAsOptions
+            WHERE IsClosed = FALSE AND RecordTypeId IN :recordTypeIds AND Subject != NULL AND OwnerId IN :viewAsOptions
             GROUP BY Subject
-            LIMIT :remainingQueries
+            LIMIT 2000
         ]) {
             if (result.get('Subject') != null) {
-                caseSubjectValuesByLabel.put((String) result.get('Subject'), (String) result.get('Subject'));
+                String label = (String) result.get('Subject');
+                String value = EncodingUtil.base64Encode(Blob.valueOf(label));
+                caseSubjectValuesByLabel.put(label, value);
             }
         }
 
@@ -114,29 +108,35 @@ public class AdvisorPortalFilterSectionController {
      * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @return caseClassificationValuesByLabel, a Map of Case Subjects.
      */
-    @AuraEnabled
-    public static Map<String, String> getCaseClassificationPicklistValues(List<Id> viewAsOptions) {
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCaseClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
         Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
+        List<String> recordTypeIds = new List<String>();
 
-        Id recordType = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-        Integer remainingQueries = Limits.getLimitQueries() - Limits.getQueries();
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+            if (filter != null && filter.career != null && filter.career == 'GRD') {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+            } else {
+                recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+            }
+        }
 
         for (AggregateResult result : [
             SELECT CC_Category__r.Name CategoryName
             FROM Case
             WHERE
                 IsClosed = FALSE
-                AND RecordTypeId = :recordType
+                AND RecordTypeId IN :recordTypeIds
                 AND CC_Category__c != NULL
                 AND OwnerId IN :viewAsOptions
             GROUP BY CC_Category__r.Name
-            LIMIT :remainingQueries
+            LIMIT 2000
         ]) {
             if (result.get('CategoryName') != null) {
-                caseClassificationValuesByLabel.put(
-                    (String) result.get('CategoryName'),
-                    (String) result.get('CategoryName')
-                );
+                String label = (String) result.get('CategoryName');
+                String value = EncodingUtil.base64Encode(Blob.valueOf(label));
+                caseClassificationValuesByLabel.put(label, value);
             }
         }
 
@@ -144,119 +144,815 @@ public class AdvisorPortalFilterSectionController {
     }
 
     /**
-     * Filters Contacts and Case wrappers on the Advisor Portal using the supplied view as options and filter.
+     * Gets active Academic Program values to display on the filter section in the Graduate Advisor Portal.
      *
-     * @param viewAsOptions, a List of User/Queue Ids to use in search.
+     * @return a map of active program names to their program codes
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getAcademicProgramPicklistValues() {
+        Map<String, String> labelToValueMap = new Map<String, String>();
+
+        // Find programs where they have at least one active plan within them by
+        // looking at all active plans and taking each unique program from there
+        List<AggregateResult> activePlans = new List<AggregateResult>(
+            [
+                SELECT MAX(Program__r.Name), MAX(Program__r.Program_Code__c)
+                FROM Plan__c
+                WHERE
+                    Plan_Status__c = TRUE
+                    AND Program__r.Career__c = 'Graduate'
+                    AND Program__r.Program_Code__c NOT IN ('GRPR', 'GCNV')
+                GROUP BY Program__c
+                HAVING MAX(Plan_Effective_Date__c) <= TODAY
+                ORDER BY MAX(Program__r.Name) ASC
+            ]
+        );
+
+        for (AggregateResult plan : activePlans) {
+            labelToValueMap.put((String) plan.get('expr0'), (String) plan.get('expr1'));
+        }
+
+        return labelToValueMap;
+    }
+
+    /**
+     * Gets active school/departments values for the School/Department filter
+     * If filter is set, and indicates an academicProgram, only return schools under that program
+     *
+     * @return labelToValueMap, a Map of picklist values by their labels.
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getSchoolDepartmentPicklistVaues(String filterJSON) {
+        Map<String, String> labelToValueMap = new Map<String, String>();
+
+        // Find organizations that have active plans and which are active themselves
+        // looking at all active plans and taking each unique organization from there
+        String queryString =
+            'SELECT MAX(Organization__r.Name), MAX(Organization__r.Organization_Code__c)' +
+            ' FROM Plan__c' +
+            ' WHERE Plan_Status__c = TRUE' +
+            ' AND Program__r.Career__c = \'Graduate\'' +
+            ' AND Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')' +
+            ' AND Organization__r.Organization_Status__c = TRUE';
+
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+            if (!String.isBlank(filter.academicProgram)) {
+                List<String> academicPrograms = filter.getAcademicPrograms();
+                queryString += ' AND Program__r.Program_Code__c IN :academicPrograms';
+            }
+        }
+
+        queryString +=
+            ' GROUP BY Organization__c' +
+            ' HAVING MAX(Plan_Effective_Date__c) <= TODAY AND MAX(Organization__r.Effective_Date__c) <= TODAY' +
+            ' ORDER BY MAX(Organization__r.Organization_Code__c) ASC';
+
+        LogSuite.log('query', queryString);
+        for (AggregateResult plan : Database.query(queryString)) {
+            String label = (String) plan.get('expr1') + ' / ' + (String) plan.get('expr0');
+            String value = (String) plan.get('expr1');
+            labelToValueMap.put(label, value);
+        }
+
+        return labelToValueMap;
+    }
+
+    /**
+     * Gets active academic plans for the Academic Plan filter
+     * If filter is set, and indicates an academicProgram, only return plans under that program
+     *                 , and indicates a schoolDepartment, only return plans under that department
+     *                 , and indicates a degree level, only return plans for that level
+     *
+     * @return labelToValueMap, a Map of picklist values by their labels.
+     */
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getAcademicPlanPicklistValues(String filterJSON) {
+        Map<String, String> labelToValueMap = new Map<String, String>();
+        List<String> andStatements = new List<String>();
+        andStatements.add('Plan_Status__c = TRUE');
+        andStatements.add('Plan_Effective_Date__c <= TODAY');
+        andStatements.add('Program__r.Career__c = \'Graduate\'');
+        andStatements.add('Program__r.Program_Code__c NOT IN (\'GRPR\', \'GCNV\')');
+
+        if (filterJSON != null && filterJSON != '' && filterJSON != '{}') {
+            AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+            if (!String.isBlank(filter.degreeLevel)) {
+                List<String> requirements = new List<String>();
+                List<String> degreeLevels = filter.getDegreeLevels();
+
+                if (degreeLevels.contains('masters')) {
+                    requirements.add('(Plan_Type__c = \'MAJ\' AND Degree_Level__c=\'Masters\')');
+                }
+                if (degreeLevels.contains('doctorate')) {
+                    requirements.add('(Plan_Type__c = \'MAJ\' AND Degree_Level__c=\'Doctorate\')');
+                }
+                if (degreeLevels.contains('certificate')) {
+                    requirements.add('(Plan_Type__c = \'CER\')');
+                }
+                if (degreeLevels.contains('non-degree')) {
+                    requirements.add('(Plan_Type__c = \'NDG\')');
+                }
+
+                if (!requirements.isEmpty()) {
+                    andStatements.add('(' + String.join(requirements, ' OR ') + ')');
+                }
+            }
+
+            if (!String.isBlank(filter.academicProgram)) {
+                List<String> academicPrograms = filter.getAcademicPrograms();
+                andStatements.add('Program__r.Program_Code__c IN :academicPrograms');
+            }
+
+            if (!String.isBlank(filter.schoolDepartment)) {
+                List<String> schoolDepartments = filter.getSchoolDepartments();
+                andStatements.add('Organization__r.Organization_Code__c IN :schoolDepartments');
+            }
+        }
+
+        String queryString =
+            'SELECT Name, Plan_Code__c FROM Plan__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' ORDER BY Plan_Code__c ASC';
+
+        LogSuite.log('query', queryString);
+        for (Plan__c plan : Database.query(queryString)) {
+            labelToValueMap.put(plan.Plan_Code__c + ' / ' + plan.Name, plan.Plan_Code__c);
+        }
+
+        return labelToValueMap;
+    }
+
+    @AuraEnabled
+    public static String getFilteredCases(List<Id> viewAsOptions, String filterJSON) {
+        AdvisorPortalFilter filter = (AdvisorPortalFilter) JSON.deserialize(filterJSON, AdvisorPortalFilter.class);
+
+        List<AdvisorPortalContact> results = new List<AdvisorPortalContact>();
+        if (filter.caseTypeState == 'AllCasesState') {
+            results = getAllContactsAndRespectiveCases(viewAsOptions, filter);
+        } else {
+            results = getCasesAndRespectiveContacts(viewAsOptions, filter);
+        }
+
+        return JSON.serialize(results);
+    }
+
+    /**
+     * Query for our cases and apply as many filters as possible
+     * Depending on searchByContactInsteadOfOwner, use idList as either a list of OwnerId's or Contacts
+     *
+     * @param viewAsOptions, a List of User/Queue OR Contact Ids to get cases by
      * @param filter, the AdvisorPortalFilter to use.
      *
      * @return shortenedAdvisorPortalContactResults, a filtered List of AdvisorPortalContact records (3000 maximum contacts/case wrappers).
      */
-    @AuraEnabled
-    public static List<AdvisorPortalContact> getContactCaseWrappersWithLessQueries(
+    private static List<AdvisorPortalContact> getCasesAndRespectiveContacts(
         List<Id> viewAsOptions,
         AdvisorPortalFilter filter
     ) {
-        Set<Contact> allCaseContacts = new Set<Contact>();
-        Set<Contact> filteredCaseContacts = new Set<Contact>();
-        Set<Id> filteredContactIds = new Set<Id>();
+        // These filters are done as separate queries due to their wide variety, and them needing to be UNIONed togther
+        // (Salesforce not nice with OR in semi-joins)
+        Set<Id> possibleContactIds = filterSpecialPopulations(filter, viewAsOptions, null);
+
+        // Generate query string
+        String caseQueryString = generateCaseSearchString(filter, viewAsOptions, possibleContactIds);
+
+        // Get all possible results
+        LogSuite.log('query', caseQueryString);
+        List<Case> allCases = Database.query(caseQueryString);
+
+        Set<Id> contactIds = new Set<Id>();
+        Map<Id, List<Case>> contactIdToCasesMap = new Map<Id, List<Case>>();
+        for (Case c : allCases) {
+            Id contactId = c.ContactId;
+            contactIds.add(contactId);
+            if (!contactIdToCasesMap.containsKey(contactId))
+                contactIdToCasesMap.put(contactId, new List<Case>());
+            contactIdToCasesMap.get(contactId).add(c);
+        }
+
         List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
-        Map<Id, List<Case>> casesByContactIds = new Map<Id, List<Case>>();
         Integer contactsLeft = 3000; // max number of contacts returned
 
-        // Query for cases owned by viewAsOptions and following cases-related filters (and some contact related ones)
-        List<Case> filteredCases = queryForCasesWithContactData(viewAsOptions, filter, false);
-
-        for (Case eachCase : filteredCases) {
-            allCaseContacts.add(eachCase.Contact);
-        }
-
-        for (Contact eachContact : allCaseContacts) {
-            if (eachContact != null && eachContact.Id != null) {
-                filteredContactIds.add(eachContact.Id);
-            }
-        }
-
-        // Filter based on Student Groups
-        filteredContactIds = filterStudentGroups(filter, filteredContactIds);
-
-        // Filter based on Student Plans
-        filteredContactIds = filterStudentPlans(filter, filteredContactIds);
-
-        // Remove cases that don't match contact filters and generate list of filteredCaseContacts
-        for (Integer i = 0; i < filteredCases.size(); i++) {
-            Case eachCase = filteredCases.get(i);
-            if (filteredContactIds.contains(eachCase.ContactId)) {
-                filteredCaseContacts.add(eachCase.Contact);
-            } else {
-                filteredCases.remove(i);
-                i--;
-            }
-        }
-
-        // Add mapping of contactId to case list
-        for (Case eachCase : filteredCases) {
-            if (!casesByContactIds.containsKey(eachCase.ContactId)) {
-                casesByContactIds.put(eachCase.ContactId, new List<Case>{ eachCase });
-            } else {
-                casesByContactIds.get(eachCase.ContactId).add(eachCase);
-            }
-        }
-
-        // Add filtered Contact/Case records to wrapper.
-        for (Contact contact : filteredCaseContacts) {
-            if (contactsLeft <= 0) {
-                break;
-            }
-
-            // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && filter.caseCount != null && filter.caseCount > 0) {
+        for (Id contactId : contactIdToCasesMap.keySet()) {
+            if (!contactIds.contains(contactId))
                 continue;
-            }
+            if (contactsLeft <= 0)
+                break;
+
+            // Skip contact if we filter by Case count, but there aren't correct amount
+            if (filter.shouldUse('caseCount'))
+                if (contactIdToCasesMap.get(contactId).size() != filter.getCaseCount())
+                    continue;
+
+            // Create the corresponding contact object from the contact of this case
+            Contact contact = contactIdToCasesMap.get(contactId)[0].Contact;
 
             AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
 
-            if (casesByContactIds.containsKey(contact.Id)) {
-                // Skip Contact if we filter by Case count and it has less than we want.
-                if (
-                    (filter.caseCount != null || filter.caseCount > 0) &&
-                    casesByContactIds.get(contact.Id).size() != filter.caseCount
-                ) {
-                    continue;
-                }
-
-                List<AdvisorPortalCase> caseWrappers = new List<AdvisorPortalCase>();
-
-                for (Case caseResult : casesByContactIds.get(contact.Id)) {
-                    caseWrappers.add(new AdvisorPortalCase(caseResult));
-                }
-
-                contactWrapper.addCases(caseWrappers);
-                advisorPortalContactResults.add(contactWrapper);
-                contactsLeft--;
+            // Mark if in grad or ugrad mode
+            if (filter.career == 'GRD') {
+                contactWrapper.isGradStudent = true;
+            } else {
+                contactWrapper.isGradStudent = false;
             }
+
+            List<AdvisorPortalCase> caseWrappers = new List<AdvisorPortalCase>();
+            for (Case c : contactIdToCasesMap.get(contact.Id)) {
+                caseWrappers.add(new AdvisorPortalCase(c));
+            }
+            if (!caseWrappers.isEmpty()) {
+                contactWrapper.addCases(caseWrappers);
+            }
+            advisorPortalContactResults.add(contactWrapper);
+            contactsLeft--;
         }
 
         return advisorPortalContactResults;
     }
 
     /**
-     * Query for our cases and apply as many filters as possible
-     * Depending on searchByContactInsteadOfUser, use idList as either a list of OwnerId's or Contacts
+     * Filters Contacts and Case wrappers on the Advisor Portal using the supplied view as options and filter.
+     * Return a list for allContacts instead of just contacts with cases.
      *
-     * @param idList, a List of User/Queue OR Contact Ids to get cases by
+     * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @param filter, the AdvisorPortalFilter to use.
-     * @param searchByContactInsteadOfUser, if idList is a list of contact id's
      *
-     * @return Database.query(queryString), the result of that query
+     * @return shortenedAdvisorPortalContactResults, a filtered List of AdvisorPortalContact records (3000 maximum contacts/case wrappers).
      */
-    private static List<Case> queryForCasesWithContactData(
-        List<Id> idList,
-        AdvisorPortalFilter filter,
-        Boolean searchByContactInsteadOfUser
+    public static List<AdvisorPortalContact> getAllContactsAndRespectiveCases(
+        List<Id> viewAsOptions,
+        AdvisorPortalFilter filter
     ) {
+        Set<Id> possibleContactIds = null;
+        // We must be careful of the order and when we filter to avoid hitting query limits when viewAsOptions is a large selection.
+        // We do the success student as a semi-join ASAP to limit results without immediately retrieving 10s of thousands of results
+        // but, since we can't know which filters will actually be used, each checks if possibleContactIds is null or not - if it is null
+        // it tries using the success student filter to limit contacts returned rather than using the possibleContactIds list
+
+        // The query already has 2 semi-joins, so we need to do this separately
+        possibleContactIds = filterStudentGroups(filter, viewAsOptions, possibleContactIds);
+
+        // These filters are done as separate queries due to their wide variety, and them needing to be UNIONed togther
+        // (Salesforce not nice with OR in semi-joins)
+        possibleContactIds = filterSpecialPopulations(filter, viewAsOptions, possibleContactIds);
+
+        // Generate query string
+        String studentQueryString = generateStudentSearchString(filter, viewAsOptions, possibleContactIds);
+
+        // Get all possible results
+        LogSuite.log('query', studentQueryString);
+        List<Contact> allContacts = Database.query(studentQueryString);
+
+        Set<Id> contactIds = new Set<Id>();
+        for (Contact c : allContacts) {
+            contactIds.add(c.Id);
+        }
+
+        List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
+        Integer contactsLeft = 3000; // max number of contacts returned
+
+        for (Contact contact : allContacts) {
+            if (!contactIds.contains(contact.Id))
+                continue;
+            if (contactsLeft <= 0)
+                break;
+
+            // Skip contact if we filter by Case count, but there aren't correct amount
+            if (filter.shouldUse('caseCount'))
+                if (contact.cases.size() != filter.getCaseCount())
+                    continue;
+
+            AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
+
+            // Mark if in grad or ugrad mode
+            if (filter.career == 'GRD') {
+                contactWrapper.isGradStudent = true;
+            } else {
+                contactWrapper.isGradStudent = false;
+            }
+
+            List<AdvisorPortalCase> caseWrappers = new List<AdvisorPortalCase>();
+            for (Case c : contact.cases) {
+                caseWrappers.add(new AdvisorPortalCase(c));
+            }
+            if (!caseWrappers.isEmpty()) {
+                contactWrapper.addCases(caseWrappers);
+            }
+            advisorPortalContactResults.add(contactWrapper);
+            contactsLeft--;
+        }
+
+        return advisorPortalContactResults;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter on Student_Group__c.
+     * We have to do this separately sometimes since you are limited to 2 Semi-joins per query
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     */
+    @TestVisible
+    private static Set<Id> filterStudentGroups(AdvisorPortalFilter filter, List<Id> ownerIds, Set<Id> contactIds) {
+        Boolean useQueryString = false;
+
+        Set<Id> filteredContactIds = new Set<Id>();
+
+        List<String> andStatements = new List<String>();
+
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('SG_Contact__c = \'\'');
+            else
+                andStatements.add('SG_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+        } else {
+            andStatements.add('SG_Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+        }
+
+        if (filter.career != null) {
+            // if statement for using either undergrad filtering
+            // if grad filtering, there still might be some of student group filters to apply
+            // (for special populations), but they happen in a different place since they
+            // need to be applied as a UNION rather than an INTERSECTION
+            if (filter.shouldUse('studentGroupCode')) {
+                useQueryString = true;
+                andStatements.add('SG_PeopleSoft_Code__c = \'' + filter.getStudentGroupCode() + '\'');
+            }
+
+            andStatements.add('SG_Effective_Date__c <= TODAY');
+            andStatements.add('SG_Status__c = TRUE');
+        }
+
         String queryString =
-            '' +
-            'SELECT Priority, ' +
+            'SELECT SG_Contact__c FROM Student_Group__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' GROUP BY SG_Contact__c LIMIT 4000';
+
+        // make query to filter - or return intial set of contactIds if no filtering is needed
+        if (useQueryString) {
+            LogSuite.log('query', queryString);
+            for (AggregateResult studentPlanResult : Database.query(queryString)) {
+                filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
+            }
+            return filteredContactIds;
+        } else {
+            return contactIds;
+        }
+    }
+
+    /**
+     * Get all contacts that match the specific special populations
+     */
+    private static Set<Id> filterSpecialPopulations(AdvisorPortalFilter filter, List<Id> ownerIds, Set<Id> contactIds) {
+        Boolean didFiltering = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        // note, these are all aditive, so we should UNION the results of all the special population filters
+        if (filter.shouldUse('specialPopulation')) {
+            didFiltering = true;
+
+            Set<Id> filteredContactIds1 = getMatchesForSpecialPopulationDualOrAppliedToGrad(
+                filter,
+                ownerIds,
+                contactIds
+            );
+            Set<Id> filteredContactIds2 = getMatchesForSpecialPopulationFormatStudents(filter, ownerIds, contactIds);
+            Set<Id> filteredContactIds3 = getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
+                filter,
+                ownerIds,
+                contactIds
+            );
+            Set<Id> filteredContactIds4 = getMatchesForSpecialPopulationStudentGroups(filter, ownerIds, contactIds);
+            Set<Id> filteredContactIds5 = getMatchesForSpecialPopulationAssistants(filter, ownerIds, contactIds);
+
+            filteredContactIds.addAll(filteredContactIds1);
+            filteredContactIds.addAll(filteredContactIds2);
+            filteredContactIds.addAll(filteredContactIds3);
+            filteredContactIds.addAll(filteredContactIds4);
+            filteredContactIds.addAll(filteredContactIds5);
+        }
+
+        if (didFiltering) {
+            return filteredContactIds;
+        } else {
+            return contactIds;
+        }
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's groups
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, the owners of the success students (we search amonngst these success students if contactIds is null)
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     *         either a subset of contactIds (those that match)
+     *         or a subset of the contacts of the success students for the ownerIds
+     */
+    private static Set<Id> getMatchesForSpecialPopulationStudentGroups(
+        AdvisorPortalFilter filter,
+        List<Id> ownerIds,
+        Set<Id> contactIds
+    ) {
+        Boolean useFilter = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        List<String> andStatements = new List<String>();
+
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('SG_Contact__c = \'\'');
+            else
+                andStatements.add('SG_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+        } else {
+            andStatements.add('SG_Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+        }
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    Set<String> acceptablePeoplesoftCodesSet = new Set<String>();
+                    List<String> specialPopulations = filter.getSpecialPopulations();
+
+                    if (specialPopulations.contains('accelerated 4+1 degrees')) {
+                        acceptablePeoplesoftCodesSet.add('GRAH'); // Active undergrad, 4 + 1 applicant
+                        acceptablePeoplesoftCodesSet.add('GRAI'); // When matriculated as a student
+                        acceptablePeoplesoftCodesSet.add('ADIP'); // International Accelerated (IADP) students
+                    }
+                    if (specialPopulations.contains('veterans')) {
+                        acceptablePeoplesoftCodesSet.add('SR1B');
+                        acceptablePeoplesoftCodesSet.add('SR1D');
+                    }
+                    if (specialPopulations.contains('mayo students')) {
+                        acceptablePeoplesoftCodesSet.add('SRKY');
+                    }
+                    if (specialPopulations.contains('cintana students')) {
+                        acceptablePeoplesoftCodesSet.add('ADAD'); // Cintana Students
+                        acceptablePeoplesoftCodesSet.add('ADAM'); // hs dual enrollment students
+                        acceptablePeoplesoftCodesSet.add('SRSA'); // teach for america students
+                    }
+
+                    if (!acceptablePeoplesoftCodesSet.isEmpty()) {
+                        useFilter = true;
+                        List<String> acceptablePeoplesoftCodesList = new List<String>(acceptablePeoplesoftCodesSet);
+                        andStatements.add(
+                            'SG_PeopleSoft_Code__c IN ' + getSoqlListString(acceptablePeoplesoftCodesList)
+                        );
+                    }
+                }
+            }
+        }
+
+        String currentPSCode = getCurrentPeoplesoftTermCode();
+        andStatements.add('SG_Status__c = TRUE');
+        andStatements.add('SG_Effective_Date__c <= TODAY');
+
+        String queryString =
+            'SELECT SG_Contact__c FROM Student_Group__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' GROUP BY SG_Contact__c LIMIT 2000';
+
+        if (useFilter) {
+            LogSuite.log('query', queryString);
+            for (AggregateResult serviceIndicator : Database.query(queryString))
+                filteredContactIds.add((Id) serviceIndicator.get('SG_Contact__c'));
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's contact record
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, the owners of the success students (we search amonngst these success students if contactIds is null)
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     *         either a subset of contactIds (those that match)
+     *         or a subset of the contacts of the success students for the ownerIds
+     */
+    private static Set<Id> getMatchesForSpecialPopulationAssistants(
+        AdvisorPortalFilter filter,
+        List<Id> ownerIds,
+        Set<Id> contactIds
+    ) {
+        Boolean useFilter = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        List<String> andStatements = new List<String>();
+
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('Id = \'\'');
+            else
+                andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
+        } else {
+            andStatements.add('Id IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+        }
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> orStatement = new List<String>();
+                    List<String> specialPopulations = filter.getSpecialPopulations();
+
+                    if (specialPopulations.contains('teaching assistants')) {
+                        orStatement.add('Teaching_Assistant__c = TRUE');
+                    }
+                    if (specialPopulations.contains('research assistants')) {
+                        orStatement.add('Research_Assistant__c = TRUE');
+                    }
+
+                    if (!orStatement.isEmpty()) {
+                        useFilter = true;
+                        andStatements.add('(' + String.join(orStatement, ' OR ') + ')');
+                    }
+                }
+            }
+        }
+
+        String queryString = 'SELECT Id FROM Contact WHERE ' + String.join(andStatements, ' AND ');
+
+        if (useFilter) {
+            LogSuite.log('query', queryString);
+            for (Contact con : Database.query(queryString))
+                filteredContactIds.add(con.Id);
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's Student_Program_Plan__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, the owners of the success students (we search amonngst these success students if contactIds is null)
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     *         either a subset of contactIds (those that match)
+     *         or a subset of the contacts of the success students for the ownerIds
+     */
+    private static Set<Id> getMatchesForSpecialPopulationDualOrAppliedToGrad(
+        AdvisorPortalFilter filter,
+        List<Id> ownerIds,
+        Set<Id> contactIds
+    ) {
+        Boolean useFilter = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        Boolean lookForDualEnrollment = false;
+        Boolean lookForApplToGrad = false;
+
+        List<String> dualEnrollmentCareers = new List<String>{ 'Graduate', 'Law' };
+        List<String> appliedToGraduateCodes = new List<String>{ 'AG', 'AP', 'GD', 'IR', 'PN' };
+
+        List<String> andStatements = new List<String>();
+
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('Contact__c = \'\'');
+            else
+                andStatements.add('Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+        } else {
+            andStatements.add('Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+        }
+        // Add filters depending on selected special populations
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> orStatements = new List<String>();
+                    List<String> specialPopulations = filter.getSpecialPopulations();
+
+                    if (specialPopulations.contains('applied to graduate')) {
+                        lookForApplToGrad = true;
+                        orStatements.add(
+                            '(Career__c = \'Graduate\' AND Degree_Chkout_Stat_Code__c IN ' +
+                            getSoqlListString(appliedToGraduateCodes) +
+                            ')'
+                        );
+                    }
+                    if (specialPopulations.contains('concurrent enrollment')) {
+                        lookForDualEnrollment = true;
+                        orStatements.add('Career__c IN ' + getSoqlListString(dualEnrollmentCareers));
+                    }
+
+                    if (!orStatements.isEmpty()) {
+                        useFilter = true;
+                        andStatements.add('(' + String.join(orStatements, ' OR ') + ')');
+                    }
+                }
+            }
+        }
+        // Add standard filters
+        andStatements.add('Effective_Date__c <= TODAY');
+        andStatements.add('Status__c = \'Active in Program\'');
+
+        String queryString =
+            'SELECT Contact__c, Career__c, Status__c, Degree_Chkout_Stat_Code__c FROM Student_Program_Plan__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' ORDER BY Contact__c, Effective_Date__c, Plan_Sequence__c DESC NULLS LAST LIMIT 2000';
+
+        if (useFilter) {
+            // Query and filter down to matching items
+            LogSuite.log('query', queryString);
+            List<Student_Program_Plan__c> potentialMatches = Database.query(queryString);
+
+            // Need to do extra work to figure out which, of the two filters are met (since dual enrollment is requires us to count to determine if met)
+            Id prevContactId = null;
+            Id currContactId = null;
+            Integer numberOfPlans = 0;
+            for (Student_Program_Plan__c programPlan : potentialMatches) {
+                prevContactId = currContactId;
+                currContactId = programPlan.Contact__c;
+
+                // first program plan for this contact, reset counter
+                if (prevContactId != currContactId)
+                    numberOfPlans = 0;
+
+                if (lookForApplToGrad) {
+                    // this is a match for the applied to graduate filter
+                    if (
+                        programPlan.Career__c == 'Graduate' &&
+                        programPlan.Status__c == 'Active in Program' &&
+                        appliedToGraduateCodes.contains(programPlan.Degree_Chkout_Stat_Code__c)
+                    ) {
+                        filteredContactIds.add(currContactId);
+                    }
+                }
+
+                if (lookForDualEnrollment) {
+                    // this is a match for the dual enrollment filter
+                    if (dualEnrollmentCareers.contains(programPlan.Career__c)) {
+                        numberOfPlans++;
+
+                        if (numberOfPlans > 1) {
+                            filteredContactIds.add(currContactId);
+                        }
+                    }
+                }
+            }
+        }
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's Student_Milestone__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, the owners of the success students (we search amonngst these success students if contactIds is null)
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     *         either a subset of contactIds (those that match)
+     *         or a subset of the contacts of the success students for the ownerIds
+     */
+    private static Set<Id> getMatchesForSpecialPopulationFormatStudents(
+        AdvisorPortalFilter filter,
+        List<Id> ownerIds,
+        Set<Id> contactIds
+    ) {
+        Boolean useFilter = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        List<String> andStatements = new List<String>();
+
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('Contact__c = \'\'');
+            else
+                andStatements.add('Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+        } else {
+            andStatements.add('Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+        }
+
+        andStatements.add('Milestone__c = \'GRFORMAT\'');
+        andStatements.add('Effdt__c <= TODAY');
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> specialPopulations = filter.getSpecialPopulations();
+
+                    if (specialPopulations.contains('format students')) {
+                        useFilter = true;
+                        String currentPSCode = getCurrentPeoplesoftTermCode();
+                        andStatements.add('Term_Required__r.PeopleSoft_Code__c >= \'' + currentPSCode + '\'');
+                    }
+                }
+            }
+        }
+
+        String queryString =
+            'SELECT Contact__c FROM Student_Milestone__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' GROUP BY Contact__c LIMIT 2000';
+
+        if (useFilter) {
+            LogSuite.log('query', queryString);
+            for (AggregateResult studentMilestone : Database.query(queryString))
+                filteredContactIds.add((Id) studentMilestone.get('Contact__c'));
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Queries for Contact Ids based on the provided filter's special populations.  This handles all the one's that can be done simply
+     * looking at the student's Service_Indicator__c
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, the owners of the success students (we search amonngst these success students if contactIds is null)
+     * @param contactIds, a Set of Contact Ids to use in the query.
+     *
+     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     *         either a subset of contactIds (those that match)
+     *         or a subset of the contacts of the success students for the ownerIds
+     */
+    private static Set<Id> getMatchesForSpecialPopulationProvisionalAdmitsAndRegistrationHold(
+        AdvisorPortalFilter filter,
+        List<Id> ownerIds,
+        Set<Id> contactIds
+    ) {
+        Boolean useFilter = false;
+        Set<Id> filteredContactIds = new Set<Id>();
+        List<String> andStatements = new List<String>();
+
+        // If we haven't determined a subset of contactIds yet - use the success student filter to limit
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('SI_Contact__c = \'\'');
+            else
+                andStatements.add('SI_Contact__c IN ' + getSoqlListString(new List<Id>(contactIds)));
+        } else {
+            andStatements.add('SI_Contact__c IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+        }
+
+        if (filter.career != null) {
+            if (filter.career == 'GRD') {
+                if (!String.isBlank(filter.specialPopulation)) {
+                    List<String> orStatement = new List<String>();
+                    List<String> specialPopulations = filter.getSpecialPopulations();
+
+                    if (specialPopulations.contains('provivisional admits, not met yet')) {
+                        orStatement.add(
+                            '(SI_Code__c = \'AD4\' AND SI_Reason__c = \'PROV\' AND SI_Positive_Service_Indicator__c = TRUE)'
+                        );
+                    }
+                    if (specialPopulations.contains('active students with registation hold')) {
+                        orStatement.add('(Enrollment_Impact__c = TRUE AND SI_Positive_Service_Indicator__c = FALSE)');
+                    }
+
+                    if (!orStatement.isEmpty()) {
+                        useFilter = true;
+                        andStatements.add('(' + String.join(orStatement, ' OR ') + ')');
+                    }
+                }
+            }
+        }
+
+        String currentPSCode = getCurrentPeoplesoftTermCode();
+        andStatements.add('SI_Start_Term__r.PeopleSoft_Code__c <= \'' + currentPSCode + '\'');
+        andStatements.add('SI_End_Term__r.PeopleSoft_Code__c >= \'' + currentPSCode + '\'');
+
+        String queryString =
+            'SELECT SI_Contact__c FROM Service_Indicator__c WHERE ' +
+            String.join(andStatements, ' AND ') +
+            ' GROUP BY SI_Contact__c LIMIT 2000';
+
+        if (useFilter) {
+            LogSuite.log('query', queryString);
+            for (AggregateResult serviceIndicator : Database.query(queryString))
+                filteredContactIds.add((Id) serviceIndicator.get('SI_Contact__c'));
+        }
+
+        return filteredContactIds;
+    }
+
+    /**
+     * Get query to search for cases, and grab student data with it
+     * This should be used for seaching caseTypeState="ProactiveCasesState"|"WatchlistCasesState"
+     *
+     * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, a Set of Owner Ids to use in the query.
+     * @param contactIds, a Set of contact Id's to limit the results to
+     *
+     * @return Query String for mostly filtered results
+     */
+    private static String generateCaseSearchString(AdvisorPortalFilter filter, List<Id> ownerIds, Set<Id> contactIds) {
+        String queryString =
+            'SELECT Id, ' +
             'CaseNumber, ' +
             'Subject, ' +
             'Status, ' +
@@ -270,9 +966,9 @@ public class AdvisorPortalFilterSectionController {
             'Curr_Cont_Prediction_Level__c, ' +
             'Most_Recent_Outlook_Change_Direction__c, ' +
             'Most_Recent_Queue__c, ' +
+            'Priority, ' +
             'OwnerId, ' +
             'ContactId, ' +
-            'Id, ' +
             'Contact.Id, ' +
             'Contact.Name, ' +
             'Contact.FirstName, ' +
@@ -286,349 +982,420 @@ public class AdvisorPortalFilterSectionController {
             'Contact.Most_Recent_Outlook_Change_Direction__c, ' +
             'Contact.Curr_Cont_Prediction_Level__c ' +
             'FROM Case ' +
-            'WHERE IsClosed = FALSE ' +
-            'AND RecordTypeId = \'' +
-            RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach') +
-            '\'';
+            'WHERE';
 
-        if (!String.isBlank(filter.caseCategory)) {
-            List<String> categories = filter.caseCategory.split(';');
-            queryString += ' AND CC_Category__r.Name IN :categories';
-        }
+        List<String> andStatements = new List<String>();
 
-        if (!String.isBlank(filter.caseSubject)) {
-            List<String> subjects = filter.caseSubject.split(';');
-            queryString += ' AND Subject IN :subjects';
-        }
+        andStatements.add('IsClosed = FALSE');
 
-        if (!String.isBlank(filter.caseStatus)) {
-            List<String> statuses = filter.caseStatus.split(';');
-            queryString += ' AND Status IN :statuses';
-        }
-
-        if (searchByContactInsteadOfUser) {
-            queryString += ' AND ContactId IN :idList';
+        List<String> recordTypeIds = new List<String>();
+        if (filter != null && filter.career != null && filter.career == 'GRD') {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
         } else {
-            queryString += ' AND OwnerId IN :idList';
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+        }
+        andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
+
+        if (filter.shouldUse('caseCategory')) {
+            andStatements.add('CC_Category__r.Name IN ' + getSoqlListString(filter.getCaseCategories()));
         }
 
-        if (filter.watchlistCasesState != null && filter.watchlistCasesState) {
-            queryString += ' AND CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Advisor Outreach\'';
+        if (filter.shouldUse('caseSubject')) {
+            andStatements.add('Subject IN ' + getSoqlListString(filter.getCaseSubjects()));
         }
 
-        if (!String.isBlank(filter.outlookScore)) {
-            List<Decimal> scores = new List<Decimal>();
+        if (filter.shouldUse('caseStatus')) {
+            andStatements.add('Status IN ' + getSoqlListString(filter.getCaseStatuses()));
+        }
 
-            for (String s : filter.outlookScore.split(';')) {
-                if (outlookScoresByLabels.containsKey(s)) {
-                    scores.addAll(outlookScoresByLabels.get(s));
-                }
+        if (ownerIds.isEmpty())
+            andStatements.add('OwnerId = \'\'');
+        else
+            andStatements.add('OwnerId IN ' + getSoqlListString(ownerIds));
+
+        if (filter.caseTypeState == 'WatchlistCasesState') {
+            if (filter.career == 'GRD') {
+                andStatements.add(
+                    'CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Graduate Advisor Portal\''
+                );
+            } else {
+                andStatements.add(
+                    'CC_Category__r.Name = \'Watchlist\' AND CC_Category__r.Parent__r.Name = \'ASU Advisor Outreach\''
+                );
             }
-
-            queryString += ' AND Curr_Cont_Prediction_Level__c IN :scores';
         }
 
-        if (!String.isBlank(filter.outlookChange)) {
-            List<Decimal> changeDirections = new List<Decimal>();
-
-            for (String s : filter.outlookChange.split(';')) {
-                if (outlookChangeByLabels.containsKey(s)) {
-                    changeDirections.add(outlookChangeByLabels.get(s));
-                }
-            }
-
-            queryString += ' AND Most_Recent_Outlook_Change_Direction__c IN :changeDirections';
+        if (filter.shouldUse('outlookScore')) {
+            andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(filter.getOutlookScores()));
         }
 
-        if (!String.isBlank(filter.createdFromDate)) {
-            queryString +=
-                ' AND CreatedDate >= ' +
-                Datetime.valueOf(filter.createdFromDate + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+        if (filter.shouldUse('outlookChange')) {
+            andStatements.add(
+                'Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(filter.getOutlookChanges())
+            );
         }
 
-        if (!String.isBlank(filter.createdToDate)) {
-            queryString +=
-                ' AND CreatedDate <= ' +
-                Datetime.valueOf(filter.createdToDate + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+        if (filter.shouldUse('createdFromDate')) {
+            andStatements.add('CreatedDate >= ' + filter.getCreatedFromDate());
         }
 
-        if (!String.isBlank(filter.followUpFromDate)) {
-            queryString += ' AND Followup_Date__c >= ' + filter.followUpFromDate;
+        if (filter.shouldUse('createdToDate')) {
+            andStatements.add('CreatedDate <= ' + filter.getCreatedToDate());
         }
 
-        if (!String.isBlank(filter.followUpToDate)) {
-            queryString += ' AND Followup_Date__c <= ' + filter.followUpToDate;
+        if (filter.shouldUse('followUpFromDate')) {
+            andStatements.add('Followup_Date__c >= ' + filter.getFollowUpFromDate());
         }
 
-        if (!String.isBlank(filter.persistenceFromDate)) {
-            queryString += ' AND Change_Date__c >= ' + filter.persistenceFromDate;
+        if (filter.shouldUse('followUpToDate')) {
+            andStatements.add('Followup_Date__c <= ' + filter.getFollowUpToDate());
         }
 
-        if (!String.isBlank(filter.persistenceToDate)) {
-            queryString += ' AND Change_Date__c <= ' + filter.persistenceToDate;
-        }
-        if (!String.isBlank(filter.studentString)) {
-            queryString += ' AND ( Contact.Preferred_Full_Name__c = \'' + filter.studentString;
-            queryString += '\' OR Contact.Name = \'' + filter.studentString;
-            queryString += '\' OR Contact.EmplId__c = \'' + filter.studentString;
-            queryString += '\' OR Contact.ASURite_ID__c = \'' + filter.studentString;
-            queryString += '\') ';
+        if (filter.shouldUse('persistenceFromDate')) {
+            andStatements.add('Change_Date__c >= ' + filter.getPersistenceFromDate());
         }
 
+        if (filter.shouldUse('persistenceToDate')) {
+            andStatements.add('Change_Date__c <= ' + filter.getPersistenceToDate());
+        }
+
+        if (filter.shouldUse('studentString')) {
+            String nameQuery =
+                '(' +
+                'Contact.Preferred_Full_Name__c = \'' +
+                filter.getStudentString() +
+                '\' OR Contact.Name = \'' +
+                filter.getStudentString() +
+                '\' OR Contact.EmplId__c = \'' +
+                filter.getStudentString() +
+                '\' OR Contact.ASURite_ID__c = \'' +
+                filter.getStudentString() +
+                '\') ';
+
+            andStatements.add(nameQuery);
+        }
+
+        String filterByStudentProgramPlanString = generateStudentProgramPlanFilterString(filter);
+        if (filterByStudentProgramPlanString != null)
+            andStatements.add('ContactId IN (' + filterByStudentProgramPlanString + ')');
+
+        String filterByStudentGroupString = generateStudentGroupFilterString(filter);
+        if (filterByStudentGroupString != null)
+            andStatements.add('ContactId IN (' + filterByStudentGroupString + ')');
+
+        if (contactIds != null)
+            andStatements.add('ContactId IN ' + getSoqlListString(new List<Id>(contactIds)));
+
+        queryString += ' ' + String.join(andStatements, ' AND ');
         queryString += ' ORDER BY Contact.LastName, Contact.Preferred_First_Name__c ASC';
         queryString += ' LIMIT 30000';
 
-        return Database.query(queryString);
+        return queryString;
     }
 
     /**
-     * Filters Contacts and Case wrappers on the Advisor Portal using the supplied view as options and filter.
-     * Return a list for allContacts instead of just contacts with cases.
+     * Get query to search for students, and grab case data with it
+     * This should be used for seaching caseTypeState="AllCasesState"
      *
-     * @param viewAsOptions, a List of User/Queue Ids to get related Contacts to use in search.
      * @param filter, the AdvisorPortalFilter to use.
+     * @param ownerIds, a Set of Owner Ids to use in the query.
      *
-     * @return shortenedAdvisorPortalContactResults, a filtered List of AdvisorPortalContact records (3000 maximum contacts/case wrappers).
+     * @return Query String for mostly filtered results
      */
-    @AuraEnabled
-    public static List<AdvisorPortalContact> getAllContactsAndRespectiveCases(
-        List<Id> viewAsOptions,
-        AdvisorPortalFilter filter
+
+    private static String generateStudentSearchString(
+        AdvisorPortalFilter filter,
+        List<Id> ownerIds,
+        Set<Id> contactIds
     ) {
-        List<Contact> contacts = getAllContacts(viewAsOptions, filter);
-        return getContactCaseWrappersFor(contacts, filter);
-    }
+        // Construct case level filters
+        List<String> caseAndStatements = new List<String>();
 
-    // Get all students for viewAsOptions, following a filter
-    private static List<Contact> getAllContacts(List<Id> viewAsOptions, AdvisorPortalFilter filter) {
-        Set<Contact> contacts = new Set<Contact>();
-        Set<Id> contactIds = new Set<Id>();
-        List<Success_Student__c> listOfStudents;
+        caseAndStatements.add('IsClosed = FALSE');
 
-        // Find all relevant contacts
-        if (String.isNotBlank(filter.studentString)) {
-            listOfStudents = [
-                SELECT
-                    Student__c,
-                    Student__r.Id,
-                    Student__r.Name,
-                    Student__r.FirstName,
-                    Student__r.Preferred_Full_Name__c,
-                    Student__r.Preferred_First_Name__c,
-                    Student__r.LastName,
-                    Student__r.EmplId__c,
-                    Student__r.ASURITE_Id__c,
-                    Student__r.US_Citizen__c,
-                    Student__r.Change_Date__c,
-                    Student__r.Most_Recent_Outlook_Change_Direction__c,
-                    Student__r.Curr_Cont_Prediction_Level__c
-                FROM Success_Student__c
-                WHERE
-                    Success_Pod__r.OwnerId IN :viewAsOptions
-                    AND Is_Active__c = TRUE
-                    AND (Student__r.Preferred_Full_Name__c = :filter.studentString
-                    OR Student__r.Name = :filter.studentString
-                    OR Student__r.EmplId__c = :filter.studentString
-                    OR Student__r.ASURite_ID__c = :filter.studentString)
-                ORDER BY Student__r.LastName, Student__r.Preferred_First_Name__c ASC
-                LIMIT 10000
-            ];
-        } else {
-            listOfStudents = [
-                SELECT
-                    Student__c,
-                    Student__r.Id,
-                    Student__r.Name,
-                    Student__r.FirstName,
-                    Student__r.Preferred_Full_Name__c,
-                    Student__r.Preferred_First_Name__c,
-                    Student__r.LastName,
-                    Student__r.EmplId__c,
-                    Student__r.ASURITE_Id__c,
-                    Student__r.US_Citizen__c,
-                    Student__r.Change_Date__c,
-                    Student__r.Most_Recent_Outlook_Change_Direction__c,
-                    Student__r.Curr_Cont_Prediction_Level__c
-                FROM Success_Student__c
-                WHERE Success_Pod__r.OwnerId IN :viewAsOptions AND Is_Active__c = TRUE
-                ORDER BY Student__r.LastName, Student__r.Preferred_First_Name__c ASC
-                LIMIT 10000
-            ];
+        if (filter.shouldUse('caseCategory')) {
+            caseAndStatements.add('CC_Category__r.Name IN ' + getSoqlListString(filter.getCaseCategories()));
         }
 
-        for (Success_Student__c student : listOfStudents) {
-            contactIds.add(student.Student__r.Id);
-            contacts.add(student.Student__r);
+        if (filter.shouldUse('caseSubject')) {
+            caseAndStatements.add('Subject IN ' + getSoqlListString(filter.getCaseSubjects()));
         }
 
-        // Filter based on Student Groups (LIMIT 2000 query, unavoidable)
-        contactIds = filterStudentGroups(filter, contactIds);
-
-        // Filter based on Student Plans (LIMIT 2000 query, unavoidable)
-        contactIds = filterStudentPlans(filter, contactIds);
-
-        for (Contact c : contacts) {
-            if (!contactIds.contains(c.Id)) {
-                contacts.remove(c);
-            }
+        if (filter.shouldUse('caseStatus')) {
+            caseAndStatements.add('Status IN ' + getSoqlListString(filter.getCaseStatuses()));
         }
 
-        return new List<Contact>(contacts);
-    }
-
-    // Get all open case for a list of students, following a filter
-    private static List<AdvisorPortalContact> getContactCaseWrappersFor(
-        List<Contact> contacts,
-        AdvisorPortalFilter filter
-    ) {
-        List<AdvisorPortalContact> advisorPortalContactResults = new List<AdvisorPortalContact>();
-        List<Id> contactIds = new List<Id>();
-        Map<Id, List<Case>> casesByContactIds = new Map<Id, List<Case>>();
-        Integer contactsLeft = 3000; // max number of contacts returned
-
-        for (Contact c : contacts) {
-            contactIds.add(c.Id);
+        if (filter.shouldUse('createdFromDate')) {
+            caseAndStatements.add('CreatedDate >= ' + filter.getCreatedFromDate());
         }
 
-        // Query for cases owned by viewAsOptions and following cases-related filters (and some contact filters)
-        List<Case> filteredCases = queryForCasesWithContactData(contactIds, filter, true);
-
-        // Add mapping of contactId to case list
-        for (Case eachCase : filteredCases) {
-            if (!casesByContactIds.containsKey(eachCase.ContactId)) {
-                casesByContactIds.put(eachCase.ContactId, new List<Case>{ eachCase });
-            } else {
-                casesByContactIds.get(eachCase.ContactId).add(eachCase);
-            }
+        if (filter.shouldUse('createdToDate')) {
+            caseAndStatements.add('CreatedDate <= ' + filter.getCreatedToDate());
         }
 
-        // Add filtered Contact/Case records to wrapper.
-        for (Contact contact : contacts) {
-            if (contactsLeft <= 0) {
-                break;
-            }
-
-            // Skip contact if we filter by Case count, but there aren't any.
-            if (!casesByContactIds.containsKey(contact.Id) && filter.caseCount != null && filter.caseCount > 0) {
-                continue;
-            }
-
-            AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
-
-            if (casesByContactIds.containsKey(contact.Id)) {
-                // Skip Contact if we filter by Case count and it has less than we want.
-                if (
-                    (filter.caseCount != null || filter.caseCount > 0) &&
-                    casesByContactIds.get(contact.Id).size() != filter.caseCount
-                ) {
-                    continue;
-                }
-
-                List<AdvisorPortalCase> caseWrappers = new List<AdvisorPortalCase>();
-
-                for (Case caseResult : casesByContactIds.get(contact.Id)) {
-                    caseWrappers.add(new AdvisorPortalCase(caseResult));
-                }
-
-                contactWrapper.addCases(caseWrappers);
-                advisorPortalContactResults.add(contactWrapper);
-                contactsLeft--;
-            } else {
-                contactWrapper.addCases(new List<AdvisorPortalCase>());
-                advisorPortalContactResults.add(contactWrapper);
-                contactsLeft--;
-            }
+        if (filter.shouldUse('followUpFromDate')) {
+            caseAndStatements.add('Followup_Date__c >= ' + filter.getFollowUpFromDate());
         }
 
-        return advisorPortalContactResults;
+        if (filter.shouldUse('followUpToDate')) {
+            caseAndStatements.add('Followup_Date__c <= ' + filter.getFollowUpToDate());
+        }
+
+        List<String> caseRecordTypeIds = new List<String>();
+        caseRecordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal'));
+        caseRecordTypeIds.add(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'));
+        caseAndStatements.add('RecordTypeId IN ' + getSoqlListString(caseRecordTypeIds));
+
+        // Add all contact-level filters
+        List<String> andStatements = new List<String>();
+
+        andStatements.add('Id IN (' + generateSuccessStudentFilterString(filter, ownerIds) + ')');
+
+        if (filter.shouldUse('outlookScore')) {
+            andStatements.add('Curr_Cont_Prediction_Level__c IN ' + getSoqlListString(filter.getOutlookScores()));
+        }
+
+        if (filter.shouldUse('outlookChange')) {
+            andStatements.add(
+                'Most_Recent_Outlook_Change_Direction__c IN ' + getSoqlListString(filter.getOutlookChanges())
+            );
+        }
+
+        if (filter.shouldUse('persistenceFromDate')) {
+            andStatements.add('Change_Date__c >= ' + filter.getPersistenceFromDate());
+        }
+
+        if (filter.shouldUse('persistenceToDate')) {
+            andStatements.add('Change_Date__c <= ' + filter.getPersistenceToDate());
+        }
+
+        if (filter.shouldUse('studentString')) {
+            String nameQuery =
+                '(' +
+                'Preferred_Full_Name__c = \'' +
+                filter.getStudentString() +
+                '\' OR Name = \'' +
+                filter.getStudentString() +
+                '\' OR EmplId__c = \'' +
+                filter.getStudentString() +
+                '\' OR ASURite_ID__c = \'' +
+                filter.getStudentString() +
+                '\') ';
+
+            andStatements.add(nameQuery);
+        }
+
+        String filterByStudentProgramPlanString = generateStudentProgramPlanFilterString(filter);
+
+        if (filterByStudentProgramPlanString != null)
+            andStatements.add('Id IN (' + filterByStudentProgramPlanString + ')');
+
+        // contactIds should be the valid student groups, since we are limited to 2 Semi-joins and can't do it using semi-join in this case
+        // if Salesforce ever increases that limit, then we can do semi-join here rather than passing in the possible ids
+        if (contactIds != null) {
+            if (contactIds.isEmpty())
+                andStatements.add('Id = \'\'');
+            else
+                andStatements.add('Id IN ' + getSoqlListString(new List<Id>(contactIds)));
+        }
+
+        // Generate the query string
+        String queryString =
+            'SELECT Id, Name, FirstName, Preferred_Full_Name__c, Preferred_First_Name__c, ' +
+            'LastName, EmplId__c, ASURite_Id__c, US_Citizen__c, Change_Date__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, Curr_Cont_Prediction_Level__c, ' +
+            '(SELECT Id, CaseNumber, Subject, Status, Followup_Date__c, OwnerId, Owner.Name, ' +
+            'CreatedDate, CC_Category__r.Name, CC_Category__r.Parent__r.Name, RecordType.Name, ' +
+            'Change_Date__c, Curr_Cont_Prediction_Level__c, ' +
+            'Most_Recent_Outlook_Change_Direction__c, Most_Recent_Queue__c, Priority FROM Cases';
+
+        // Add case filter section is needed
+        if (!caseAndStatements.isEmpty())
+            queryString += ' WHERE ' + String.join(caseAndStatements, ' AND ');
+
+        queryString += ') FROM Contact WHERE';
+
+        queryString += ' ' + String.join(andStatements, ' AND ');
+
+        queryString += ' ORDER BY LastName, Preferred_First_Name__c ASC';
+
+        return queryString;
     }
 
     /**
-     * Queries for Contact Ids based on the provided filter on Student_Group__c.
+     * Get the query to filter by student group
      *
      * @param filter, the AdvisorPortalFilter to use.
-     * @param contactIds, a Set of Contact Ids to use in the query.
      *
-     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     * @return Query string for student groups, or null if it shouldn't be used
      */
-    @TestVisible
-    private static Set<Id> filterStudentGroups(AdvisorPortalFilter filter, Set<Id> contactIds) {
-        Set<Id> filteredContactIds = new Set<Id>();
-
-        if (!String.isBlank(filter.studentGroupCode)) {
-            for (AggregateResult studentPlanResult : [
-                SELECT SG_Contact__c
-                FROM Student_Group__c
-                WHERE
-                    SG_Contact__c IN :contactIds
-                    AND SG_PeopleSoft_Code__c = :filter.studentGroupCode
-                    AND SG_Status__c = TRUE
-                GROUP BY SG_Contact__c
-                LIMIT 2000
-            ]) {
-                filteredContactIds.add((Id) studentPlanResult.get('SG_Contact__c'));
-            }
-            return filteredContactIds;
-        } else {
-            return contactIds;
+    private static String generateStudentGroupFilterString(AdvisorPortalFilter filter) {
+        String queryString = null;
+        if (filter.shouldUse('studentGroupCode')) {
+            queryString =
+                'SELECT SG_Contact__c FROM Student_Group__c WHERE' +
+                ' SG_Effective_Date__c <= TODAY' +
+                ' AND SG_Status__c = TRUE' +
+                ' AND SG_PeopleSoft_Code__c = \'' +
+                filter.getStudentGroupCode() +
+                '\'';
         }
+        return queryString;
     }
 
     /**
-     * Queries for Contact Ids based on the provided filter on Student_Plan__c.
+     * Get the query to filter by student program plans
      *
      * @param filter, the AdvisorPortalFilter to use.
-     * @param contactIds, a Set of Contact Ids to use in the query.
      *
-     * @return filteredContactIds, a filtered Set of Contact Ids matching the filter criteria.
+     * @return Query string for student program plans, or null if it shouldn't be used
      */
-    @TestVisible
-    private static Set<Id> filterStudentPlans(AdvisorPortalFilter filter, Set<Id> contactIds) {
-        if (
-            !String.isBlank(filter.academicLevel) ||
-            !String.isBlank(filter.campus) ||
-            !String.isBlank(filter.residency) ||
-            !String.isBlank(filter.major)
-        ) {
-            Set<Id> filteredContactIds = new Set<Id>();
-            String queryString =
-                '' +
-                'SELECT Contact__c ' +
-                'FROM Student_Program_Plan__c ' +
-                'WHERE Contact__c IN :contactIds';
+    private static String generateStudentProgramPlanFilterString(AdvisorPortalFilter filter) {
+        String queryString = null;
+        List<String> andStatements = new List<String>();
 
-            if (!String.isBlank(filter.academicLevel)) {
-                List<String> academicLevels = filter.academicLevel.split(';');
-                queryString += ' AND Cohort__c IN :academicLevels';
+        if (filter.shouldUse('degreeLevel')) {
+            List<String> degreeLevels = filter.getDegreeLevels();
+            List<String> degreeLevelQueryComponents = new List<String>();
+
+            if (degreeLevels.contains('masters')) {
+                degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'17\')');
+            }
+            if (degreeLevels.contains('doctorate')) {
+                degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'MAJ\' AND Education_Level__c=\'21\')');
+            }
+            if (degreeLevels.contains('certificate')) {
+                degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'CER\')');
+            }
+            if (degreeLevels.contains('non-degree')) {
+                degreeLevelQueryComponents.add('(Plan_Type_Text__c = \'NDG\')');
             }
 
-            if (!String.isBlank(filter.campus)) {
-                List<String> campuses = filter.campus.split(';');
-                queryString += ' AND Campus__r.Name IN :campuses';
+            if (!degreeLevelQueryComponents.isEmpty()) {
+                andStatements.add('(' + String.join(degreeLevelQueryComponents, ' OR ') + ')');
             }
-
-            if (!String.isBlank(filter.residency)) {
-                List<String> residencies = filter.residency.split(';');
-                queryString += ' AND Residency__c IN :residencies';
-            }
-
-            if (!String.isBlank(filter.major)) {
-                queryString +=
-                    ' AND  Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
-                    filter.major +
-                    '%\' OR Plan_Code__c LIKE \'%' +
-                    filter.major +
-                    '%\' )';
-            }
-
-            queryString += ' GROUP BY Contact__c LIMIT 2000';
-
-            for (AggregateResult studentPlanResult : Database.query(queryString)) {
-                filteredContactIds.add((Id) studentPlanResult.get('Contact__c'));
-            }
-            return filteredContactIds;
-        } else {
-            return contactIds;
         }
+
+        if (filter.shouldUse('academicProgram')) {
+            List<String> academicPrograms = filter.getAcademicPrograms();
+            andStatements.add('Program_Code__c IN ' + getSoqlListString(academicPrograms));
+        }
+
+        if (filter.shouldUse('schoolDepartment')) {
+            List<String> schoolDepartments = filter.getSchoolDepartments();
+            andStatements.add('Organization_Code__r.Organization_Code__c IN ' + getSoqlListString(schoolDepartments));
+        }
+
+        if (filter.shouldUse('academicPlan')) {
+            List<String> academicPlans = filter.getAcademicPlans();
+            andStatements.add('Plan_Code__c IN ' + getSoqlListString(academicPlans));
+        }
+
+        if (filter.shouldUse('admitTermFrom')) {
+            String fromTermStatement =
+                '(Admit_Term__r.PeopleSoft_Code__c >= \'' +
+                filter.getAdmitTermFrom() +
+                '\' OR Requirement_Term__c >= \'' +
+                filter.getAdmitTermFrom() +
+                '\')';
+            andStatements.add(fromTermStatement);
+        }
+
+        if (filter.shouldUse('admitTermTo')) {
+            String toTermStatement =
+                '(Admit_Term__r.PeopleSoft_Code__c <= \'' +
+                filter.getAdmitTermTo() +
+                '\' OR Requirement_Term__c <= \'' +
+                filter.getAdmitTermTo() +
+                '\')';
+            andStatements.add(toTermStatement);
+        }
+
+        if (filter.shouldUse('academicLevel')) {
+            List<String> academicLevels = filter.getAcademicLevels();
+            andStatements.add('Cohort__c IN ' + getSoqlListString(academicLevels));
+        }
+
+        if (filter.shouldUse('major')) {
+            String majorStatement =
+                '(Plan_Type_Text__c = \'MAJ\' AND ( Plan_Description__c LIKE \'%' +
+                filter.getMajor() +
+                '%\' OR Plan_Code__c LIKE \'%' +
+                filter.getMajor() +
+                '%\' ))';
+            andStatements.add(majorStatement);
+        }
+
+        if (filter.shouldUse('campus')) {
+            List<String> campuses = filter.getCampuses();
+            andStatements.add('Campus__r.Location_Code__c IN ' + getSoqlListString(campuses));
+        }
+
+        if (filter.shouldUse('residency')) {
+            List<String> residencies = filter.getResidencies();
+            andStatements.add('Residency__c IN ' + getSoqlListString(residencies));
+        }
+
+        if (!andStatements.isEmpty()) {
+            queryString = 'SELECT Contact__c FROM Student_Program_Plan__c WHERE ' + String.join(andStatements, ' AND ');
+        }
+
+        return queryString;
+    }
+
+    private static String generateSuccessStudentFilterString(AdvisorPortalFilter filter, List<Id> ownerIds) {
+        String queryString = null;
+        List<String> andStatements = new List<String>();
+
+        andStatements.add('Is_Active__c = TRUE');
+
+        if (ownerIds.isEmpty())
+            andStatements.add('Success_Pod__r.OwnerId = \'\'');
+        else
+            andStatements.add('Success_Pod__r.OwnerId IN ' + getSoqlListString(ownerIds));
+
+        List<String> recordTypeIds = new List<String>();
+        if (filter != null && filter.career != null && filter.career == 'GRD') {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Success_Student__c', 'Grad'));
+        } else {
+            recordTypeIds.add(RecordIdHelper.getRecordTypeId('Success_Student__c', 'Advisor'));
+        }
+
+        andStatements.add('RecordTypeId IN ' + getSoqlListString(recordTypeIds));
+
+        if (!andStatements.isEmpty()) {
+            queryString = 'SELECT Student__c FROM Success_Student__c WHERE ' + String.join(andStatements, ' AND ');
+        }
+
+        return queryString;
+    }
+
+    private static String getSoqlListString(List<String> values) {
+        List<String> quoted = new List<String>();
+        for (String v : values)
+            quoted.add('\'' + v + '\'');
+        return '(' + String.join(quoted, ', ') + ')';
+    }
+
+    private static String getSoqlListString(List<Id> values) {
+        List<String> quoted = new List<String>();
+        for (Id v : values)
+            quoted.add('\'' + v + '\'');
+        return '(' + String.join(quoted, ', ') + ')';
+    }
+
+    private static String getSoqlListString(List<Decimal> values) {
+        List<String> quoted = new List<String>();
+        for (Decimal v : values)
+            quoted.add(v.toPlainString());
+        return '(' + String.join(quoted, ', ') + ')';
+    }
+
+    private static String getCurrentPeoplesoftTermCode() {
+        StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
+        return currentTermData.CurrTerm__c;
+    }
+
+    public class AdvisorPortalException extends Exception {
     }
 }

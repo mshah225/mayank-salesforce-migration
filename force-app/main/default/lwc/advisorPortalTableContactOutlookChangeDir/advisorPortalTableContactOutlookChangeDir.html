@@ -1,0 +1,17 @@
+<template>
+    <template if:true={notEmptyChangeDirection}>
+        <span class="slds-var-p-horizontal_xx-small text-1rem">&#124;</span>
+        <span class="slds-var-m-horizontal_xx-small">
+            Last change: {directionString}
+            <template if:true={hasDate}>
+                <lightning-formatted-date-time
+                    value={changeDate}
+                    year="2-digit"
+                    month="2-digit"
+                    day="2-digit"
+                    time-zone="GMT"
+                ></lightning-formatted-date-time>
+            </template>
+        </span>
+    </template>
+</template>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>application/x-javascript</contentType>
+    <description>Copy of /support/console/54.0/integration.js for usage in LWCs where you cannot otherwise use the APIs provided within.</description>
+</StaticResource>

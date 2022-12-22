@@ -1,0 +1,16 @@
+:host .content-mnh-20 .slds-modal__content {
+    min-height: 20%;
+}
+:host .content-mnh-40 .slds-modal__content {
+    min-height: 40%;
+}
+:host .content-mnh-60 .slds-modal__content {
+    min-height: 60%;
+}
+:host .content-mnh-80 .slds-modal__content {
+    min-height: 80%;
+}
+
+:host .content-of-visible .slds-modal__content {
+    overflow: visible;
+}

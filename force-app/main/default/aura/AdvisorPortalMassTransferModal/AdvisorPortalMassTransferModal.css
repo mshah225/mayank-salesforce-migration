@@ -1,8 +1,0 @@
-.THIS .slds-modal__content {
-    overflow: visible !important;
-}
-
-.THIS .slds-dropdown-trigger .slds-dropdown {
-    height: 250px;
-    overflow: scroll;
-}

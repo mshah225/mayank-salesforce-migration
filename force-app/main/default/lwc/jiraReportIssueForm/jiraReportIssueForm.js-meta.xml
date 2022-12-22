@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>50.0</apiVersion>
+    <apiVersion>52.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>ASU Brand Header</masterLabel>
+    <masterLabel>JIRA Report Issue Form</masterLabel>
     <targets>
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
@@ -10,11 +10,8 @@
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
             <property name="title" type="String" />
-            <property name="baseUrl" type="String" />
-            <property name="navTreeStr" type="String" />
-            <property name="noAutoSpacer" type="Boolean" default="false" />
-            <property name="stationary" type="Boolean" default="false" />
-            <property name="dontLoadStyles" type="Boolean" default="false" />
+            <property name="questionListJSON" type="String" />
+            <property name="type" type="String" datasource="Report A Bug, New Development Request" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

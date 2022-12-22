@@ -1,0 +1,22 @@
+<template>
+    <lightning-modal-header label="Mass Close"></lightning-modal-header>
+    <lightning-modal-body>
+        <!-- Fake tab-able item so that focus always goes to the same place -->
+        <div tabindex="0" style="outline: none"></div>
+        <!-- Actual questions -->
+        <c-lightning-question-answer-section
+            questions={questions}
+            onchange={updateDynamicRequirements}
+        ></c-lightning-question-answer-section>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+        <lightning-button
+            label="Close"
+            variant="brand"
+            onclick={closeCases}
+            disabled={isSubmitting}
+            style="margin-left: 1rem"
+        ></lightning-button>
+    </lightning-modal-footer>
+</template>

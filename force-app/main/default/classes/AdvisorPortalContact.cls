@@ -5,20 +5,21 @@ public class AdvisorPortalContact {
         'Customer Replied'
     };
 
-    @AuraEnabled
-    public Boolean isSelected { get; set; }
+    public Contact portalContact;
 
-    @AuraEnabled
-    public Boolean isOutreachCustomer { get; set; }
+    public Boolean isSelected;
 
-    @AuraEnabled
-    public Contact portalContact { get; set; }
+    public Boolean isOutreachCustomer;
+    public Boolean isGradStudent;
+    public Boolean hasCases;
+    public Boolean hasMultipleCases;
 
     public List<AdvisorPortalCase> cases;
 
     public AdvisorPortalContact(Contact theContact) {
         this.isSelected = false;
         this.isOutreachCustomer = false;
+        this.isGradStudent = false;
         this.portalContact = theContact;
         this.cases = new List<AdvisorPortalCase>();
     }
@@ -35,9 +36,15 @@ public class AdvisorPortalContact {
         if (OUTREACH_CUSTOMER_STATUSES.contains(advisorCase.portalCase.Status)) {
             this.isOutreachCustomer = true;
         }
+
+        updateCaseStateBools(); // track quantity of cases in some state variables
     }
 
-    @AuraEnabled
+    private void updateCaseStateBools() {
+        this.hasCases = !this.cases.isEmpty();
+        this.hasMultipleCases = this.cases.size() > 1;
+    }
+    
     public List<AdvisorPortalCase> getCases() {
         return this.cases;
     }

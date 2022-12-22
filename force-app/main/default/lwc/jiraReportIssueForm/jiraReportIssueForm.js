@@ -1,0 +1,130 @@
+import {LightningElement, api} from 'lwc';
+import createIssue from '@salesforce/apex/JiraReportIssueController.callout';
+
+export default class JiraReportIssueForm extends LightningElement {
+    @api title;
+
+    alert;
+    get showAlert() {
+        return this.alert != null && this.alert !== '';
+    }
+    alertHref;
+    get showAlertLink() {
+        return this.alertHref != null && this.alertHref !== '';
+    }
+
+    @api type;
+    @api questionListJSON;
+
+    configurableQuestions = [];
+    disabledButton = false;
+
+    connectedCallback() {
+        if (this.questionListJSON != null && this.questionListJSON != '') {
+            this.configurableQuestions = JSON.parse(this.questionListJSON);
+        }
+
+        for (let i = 0; i < this.configurableQuestions.length; i++) {
+            const question = this.configurableQuestions[i];
+            question.key = 'key-' + i;
+            question.answer = '';
+        }
+    }
+
+    changeAnswers(e) {
+        const newAnswer = e.detail;
+        let questionKey = newAnswer.key;
+        let answer = newAnswer.answer;
+
+        let found = false;
+        for (let i = 0; i < this.configurableQuestions.length && !found; i++) {
+            if (this.configurableQuestions[i].key === questionKey) {
+                this.configurableQuestions[i].answer = answer;
+                found = true;
+            }
+        }
+        for (let i = 0; i < this.alwaysQuestions.length && !found; i++) {
+            if (this.alwaysQuestions[i].key === questionKey) {
+                this.alwaysQuestions[i].answer = answer;
+                found = true;
+            }
+        }
+    }
+
+    isValid() {
+        const allQuestionSections = this.template.querySelectorAll('c-lightning-question-answer-section');
+        let valid = true;
+        for (let i = 0; i < allQuestionSections.length; i++) {
+            valid &= allQuestionSections[i].reportValidity();
+        }
+        return valid;
+    }
+
+    submit() {
+        if (this.isValid()) {
+            let title = null;
+            let qaList = [];
+            let watchers = null;
+            let reqForm = null;
+
+            for (let i = 0; i < this.configurableQuestions.length; i++) {
+                const q = this.configurableQuestions[i];
+                const thisQA = '*' + q.question + '*\\n' + q.answer;
+                if (q.type === 'label') continue; // don't add labels to the body
+                if (q.action != null) {
+                    // is action is specified - then we need to do something special
+                    if (q.action === 'title') if (q.answer.length > 0) title = q.answer;
+                    if (q.action === 'watcherList') if (q.answer.length > 0) watchers = q.answer;
+                    if (q.action === 'requestForm') if (q.answer.length > 0) reqForm = q.answer;
+                    continue;
+                }
+                // for each question and answer - we add it to the qaList
+                qaList.push(thisQA);
+            }
+
+            if (reqForm != null) qaList.push('*Request Form:*\\n' + reqForm);
+
+            let description = qaList.join('\\n\\n'); // combine to make mega string
+            description = description
+                .replaceAll('\r\n', '\\n')
+                .replaceAll('\n\r', '\\n')
+                .replaceAll('\n', '\\n')
+                .replaceAll('\r', '\\n'); // remove any newlines
+
+            let type = this.type;
+
+            this.disabledButton = true;
+            createIssue({
+                title,
+                description,
+                watchers,
+                type,
+            })
+                .then((val) => {
+                    let key = val;
+                    this.alert = 'Jira Issue Successfully Created';
+                    this.alertHref = 'https://asudev.jira.com/browse/' + key;
+                    this.clearInputs();
+                })
+                .catch((err) => {
+                    console.error(err);
+                    this.alert =
+                        'Cannot create JIRA ticket, please email your request to salesforce.development@asu.edu';
+                    this.alertHref = null;
+                })
+                .finally(() => {
+                    this.disabledButton = false;
+                });
+        } else {
+            this.alert = 'Please complete the required forms below!';
+            this.alertHref = null;
+        }
+    }
+
+    clearInputs() {
+        const allQuestionSections = this.template.querySelectorAll('c-lightning-question-answer-section');
+        for (let i = 0; i < allQuestionSections.length; i++) {
+            allQuestionSections[i].clearAll();
+        }
+    }
+}

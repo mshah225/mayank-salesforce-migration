@@ -35,25 +35,39 @@ global class JiraCallout {
 
         try {
             res = http.send(req);
+            // Try without reporter if failed
             if (res.getStatusCode() == 400) {
                 setBody(req, bodyWithoutReporter);
                 res = http.send(req);
             }
-            Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-            jiraKey = (String) m.get('key');
-            if (type.equals('Bug')) {
-                updateStatus(jiraKey, 'Ready For Work');
+
+            // If response was a success (a 200-type response is success)
+            if (200 <= res.getStatusCode() && res.getStatusCode() < 300) {
+                Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+                jiraKey = (String) m.get('key');
+                if (type.equals('Bug')) {
+                    updateStatus(jiraKey, 'Ready For Work');
+                } else {
+                    updateStatus(jiraKey, 'New Development Request');
+                }
+                if (addUsers != null) {
+                    addWatchers(jiraKey, addUsers);
+                }
             } else {
-                updateStatus(jiraKey, 'New Development Request');
-            }
-            if (addUsers != null) {
-                addWatchers(jiraKey, addUsers);
+                // If there was an error response, then report that back to the end-user
+                String errorBody = '';
+                try {
+                    errorBody = res.getBody() != null ? res.getBody() : '';
+                } catch (Exception e) {
+                }
+                throw new JiraCalloutException('Error With Response Code: ' + res.getStatusCode() + '\n' + errorBody);
             }
         } catch (System.CalloutException e) {
             errorLoggerVars.add(res.toString());
             errorLoggerVars.add(req.toString());
             errorLoggerVars.add(body);
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
+            throw e;
         }
 
         return jiraKey;
@@ -273,5 +287,8 @@ global class JiraCallout {
         }
 
         return accountId;
+    }
+
+    public class JiraCalloutException extends Exception {
     }
 }

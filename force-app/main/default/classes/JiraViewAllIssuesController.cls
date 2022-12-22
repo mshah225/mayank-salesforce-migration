@@ -1,14 +1,11 @@
 public class JiraViewAllIssuesController {
-    @AuraEnabled
-    public static List<JiraIssue> getIssuesForUser(String asurite) {
-        String jiraResponse = JiraCallout.getIssues(asurite);
-        return createMapFromResponse(jiraResponse);
+    public static List<JiraIssue> getIssuesForUser() {
+        return createMapFromResponse(getIssuesForCurrentUser());
     }
 
     @AuraEnabled
-    public static List<JiraIssue> getWatchedIssuesForUser(String asurite) {
-        String jiraResponse = JiraCallout.getWatchedIssues(asurite);
-        return createMapFromResponse(jiraResponse);
+    public static List<JiraIssue> getWatchedIssuesForUser() {
+        return createMapFromResponse(getWatchedIssuesForCurrentUser());
     }
 
     @AuraEnabled(cacheable=true)

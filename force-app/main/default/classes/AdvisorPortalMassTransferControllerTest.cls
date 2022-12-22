@@ -6,36 +6,85 @@
  */
 @IsTest
 private class AdvisorPortalMassTransferControllerTest {
+    private static final String testUserAlias = 'testUsr';
+
     @TestSetup
     static void setUpTest() {
-        User testUser = TestDataFactory.createUser('Testing', [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id);
+        User testUser = new User(
+            FirstName = 'Test User',
+            LastName = 'Stark',
+            EmployeeNumber = '1348701348',
+            ASURITE_for_External_ID__c = 'tUser01',
+            Username = 'test.user@test.example.com',
+            Email = 'test.user@test.example.com',
+            Alias = testUserAlias,
+            CommunityNickname = testUserAlias,
+            TimeZoneSidKey = 'America/Phoenix',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'ISO-8859-1',
+            LanguageLocaleKey = 'en_US',
+            ProfileId = RecordIdHelper.getProfileId('Standard User')
+        );
         insert testUser;
     }
 
     @IsTest
     static void testTransferCases() {
-        // Arrange
-        Contact testContact = TestDataFactory.createContact('Stark');
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact = new Contact(FirstName = 'Mister', LastName = 'Stark');
         insert testContact;
 
-        List<Case> testCases = TestDataFactory.createCases(5);
-        for (Case testCase : testCases) {
-            testCase.ContactId = testContact.Id;
+        List<Case> testCases = new List<Case>();
+        for (Integer i = 0; i < 5; i++) {
+            testCases.add(new Case(ContactId = testContact.Id, Subject = 'test-subj-' + i, Status = 'New'));
         }
         insert testCases;
 
-        // Act
+        List<Id> testCaseIds = new List<Id>();
+        for (Case c : testCases) {
+            testCaseIds.add(c.Id);
+        }
+
         Test.startTest();
-        AdvisorPortalMassTransferController.transferCases(
-            testCases,
-            [SELECT Id FROM User WHERE LastName = 'Testing']
-            .Id
-        );
+        AdvisorPortalMassTransferController.transferCases(testCases, testUser.Id);
         Test.stopTest();
 
-        // Assert
-        User assertUser = [SELECT Id FROM User WHERE LastName = 'Testing'];
-        List<Case> assertCases = [SELECT OwnerId FROM Case];
+        User assertUser = testUser;
+        List<Case> assertCases = [SELECT OwnerId FROM Case WHERE Id IN :testCaseIds];
+        for (Case assertCase : assertCases) {
+            System.assertEquals(
+                assertUser.Id,
+                assertCase.OwnerId,
+                'The case should have been transferred to the Test User.'
+            );
+        }
+    }
+
+    @IsTest
+    static void testTransferCasesStr() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        Contact testContact = new Contact(FirstName = 'Mister', LastName = 'Stark');
+        insert testContact;
+
+        List<Case> testCases = new List<Case>();
+        for (Integer i = 0; i < 5; i++) {
+            testCases.add(new Case(ContactId = testContact.Id, Subject = 'test-subj-' + i, Status = 'New'));
+        }
+        insert testCases;
+
+        List<Id> testCaseIds = new List<Id>();
+        for (Case c : testCases) {
+            testCaseIds.add(c.Id);
+        }
+
+        Test.startTest();
+        AdvisorPortalMassTransferController.transferCasesStr(testCaseIds, testUser.Id);
+        Test.stopTest();
+
+        User assertUser = testUser;
+        List<Case> assertCases = [SELECT OwnerId FROM Case WHERE Id IN :testCaseIds];
         for (Case assertCase : assertCases) {
             System.assertEquals(
                 assertUser.Id,

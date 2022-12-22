@@ -1,0 +1,21 @@
+<template>
+    <lightning-modal-header label={modalHeader}></lightning-modal-header>
+    <lightning-modal-body>
+        <c-lightning-case-transfer-view
+            mass-transfer={massTransfer}
+            case-ids={caseIds}
+            grad={grad}
+        ></c-lightning-case-transfer-view>
+        <div class="dynamic-add-overflow-to-modal"></div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+        <lightning-button
+            label="Transfer"
+            variant="brand"
+            onclick={transferCases}
+            disabled={isSubmitting}
+            style="margin-left: 1rem"
+        ></lightning-button>
+    </lightning-modal-footer>
+</template>

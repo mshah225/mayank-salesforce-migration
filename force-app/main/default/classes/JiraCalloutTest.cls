@@ -77,4 +77,20 @@ private class JiraCalloutTest {
         System.assertEquals('111', JiraCallout.getStatusKey('Done'));
         System.assertEquals('11', JiraCallout.getStatusKey('DefaultCode'));
     }
+
+    @isTest
+    private static void throwErrorForInvalidData() {
+        Boolean threwError = false;
+
+        try {
+            Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
+            Test.startTest();
+            String key1 = JiraCallout.createNewIssue('Summary', '•\tInvalid\\n•\tJSON\\n', 'addUsers', 'Bug');
+            Test.stopTest();
+        } catch (Exception ex) {
+            threwError = true;
+        }
+
+        System.assert(threwError, 'Should have thrown an error due to invalid JSON');
+    }
 }

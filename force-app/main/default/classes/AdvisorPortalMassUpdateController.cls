@@ -1,5 +1,5 @@
 public class AdvisorPortalMassUpdateController {
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateRecommendedActionOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -15,7 +15,7 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateReturnTermOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -29,7 +29,7 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateStudentRiskOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -40,7 +40,7 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Map<String, String> populateReasonNotReturningOptions() {
         Map<String, String> optionsMap = new Map<String, String>();
 
@@ -51,28 +51,17 @@ public class AdvisorPortalMassUpdateController {
         return optionsMap;
     }
 
-    @AuraEnabled
-    public static void updateCases(List<Case> casesToUpdate) {
-        update casesToUpdate;
-    }
-
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     //               dropdown     value     required
     public static Map<String, Map<String, List<String>>> getCustomMetadata() {
-        List<Advisor_Portal_Mass_Close_Configuration__mdt> metadata = [
-            SELECT Dropdown__c, Value__c, Required_Fields__c
-            FROM Advisor_Portal_Mass_Close_Configuration__mdt
-            WHERE Enabled__c = TRUE
-        ];
+        // I split these two functions up make it easier to write the tests (since you can't insert test metadata)
+        return convertMetadataToMapping(retrieveMetadata());
+    }
 
-        if (Test.isRunningTest()) {
-            metadata = [
-                SELECT Dropdown__c, Value__c, Required_Fields__c
-                FROM Advisor_Portal_Mass_Close_Configuration__mdt
-                WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[DO NOT CHANGE]%'
-            ];
-        }
-
+    @TestVisible
+    private static Map<String, Map<String, List<String>>> convertMetadataToMapping(
+        List<Advisor_Portal_Mass_Close_Configuration__mdt> metadata
+    ) {
         Map<String, Map<String, List<String>>> returnMapping = new Map<String, Map<String, List<String>>>();
 
         for (Advisor_Portal_Mass_Close_Configuration__mdt metadatum : metadata) {
@@ -91,5 +80,30 @@ public class AdvisorPortalMassUpdateController {
         }
 
         return returnMapping;
+    }
+
+    private static List<Advisor_Portal_Mass_Close_Configuration__mdt> retrieveMetadata() {
+        List<Advisor_Portal_Mass_Close_Configuration__mdt> metadata = new List<Advisor_Portal_Mass_Close_Configuration__mdt>(
+            [
+                SELECT Dropdown__c, Value__c, Required_Fields__c
+                FROM Advisor_Portal_Mass_Close_Configuration__mdt
+                WHERE Enabled__c = TRUE
+            ]
+        );
+        return metadata;
+    }
+
+    @AuraEnabled
+    public static void updateCasesStr(List<String> caseStrsToUpdate) {
+        List<Case> cases = new List<Case>();
+        for (String caseStr : caseStrsToUpdate)
+            cases.add((Case) JSON.deserialize(caseStr, Case.class));
+        if (!cases.isEmpty())
+            updateCases(cases);
+    }
+
+    @AuraEnabled
+    public static void updateCases(List<Case> casesToUpdate) {
+        update casesToUpdate;
     }
 }

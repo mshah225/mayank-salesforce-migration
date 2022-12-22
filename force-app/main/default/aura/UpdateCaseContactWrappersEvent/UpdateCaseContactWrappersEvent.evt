@@ -1,3 +1,0 @@
-<aura:event type="COMPONENT" description="Update case-contact wrappers">
-    <aura:attribute name="caseContactWrapperList" type="List" />
-</aura:event>

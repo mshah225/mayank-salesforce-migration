@@ -13,6 +13,7 @@ export default class AsuBrandHeader extends LightningElement {
     @api buttons = [];
     @api noAutoSpacer = false;
     @api stationary = false;
+    @api dontLoadStyles = false;
     oldStyle = false;
     oldStyleSelectedTab = null;
 
@@ -24,7 +25,7 @@ export default class AsuBrandHeader extends LightningElement {
     @api viewAsStopViewAsUrl;
 
     connectedCallback() {
-        loadStyle(this, bootstrap_4_asu + '/dist/css/bootstrap-asu.min.css');
+        if (!this.dontLoadStyles) loadStyle(this, bootstrap_4_asu + '/dist/css/bootstrap-asu.min.css');
 
         const params = new URLSearchParams(window.location.search);
 

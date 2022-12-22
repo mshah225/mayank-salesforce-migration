@@ -5,7 +5,7 @@ public with sharing class JiraReportIssueControllerTest {
         Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
 
         Test.startTest();
-        String keyBug = JiraReportIssueController.callout('Summary', 'description', 'addUsers', 'New');
+        String keyBug = JiraReportIssueController.callout('Summary', 'description', 'addUsers', 'New Development Request');
         String keyNew = JiraReportIssueController.callout('Summary', 'description', 'addUsers', 'Bug');
         Test.stopTest();
 

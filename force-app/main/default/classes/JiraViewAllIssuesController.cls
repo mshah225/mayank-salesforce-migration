@@ -1,16 +1,28 @@
 public class JiraViewAllIssuesController {
     @AuraEnabled
-    public static List<JiraIssue> getIssuesForUser() {
-        String asurite = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Alias;
+    public static List<JiraIssue> getIssuesForUser(String asurite) {
         String jiraResponse = JiraCallout.getIssues(asurite);
         return createMapFromResponse(jiraResponse);
     }
 
     @AuraEnabled
-    public static List<JiraIssue> getWatchedIssuesForUser() {
-        String asurite = [SELECT Alias FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1].Alias;
+    public static List<JiraIssue> getWatchedIssuesForUser(String asurite) {
         String jiraResponse = JiraCallout.getWatchedIssues(asurite);
         return createMapFromResponse(jiraResponse);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String getIssuesForCurrentUser() {
+        return JiraCallout.getIssues(getJiraUserId());
+    }
+    @AuraEnabled(cacheable=true)
+    public static String getWatchedIssuesForCurrentUser() {
+        return JiraCallout.getWatchedIssues(getJiraUserId());
+    }
+
+    public static String getJiraUserId() {
+        User currentUser = [SELECT Id, Alias FROM User WHERE Id = :UserInfo.getUserId()];
+        return currentUser.Alias;
     }
 
     private static List<JiraIssue> createMapFromResponse(String jiraResponse) {
@@ -35,16 +47,12 @@ public class JiraViewAllIssuesController {
     }
 
     public class JiraIssue {
-        @AuraEnabled
-        public String issueId { get; set; }
-        @AuraEnabled
-        public String summary { get; set; }
-        @AuraEnabled
-        public String key { get; set; }
-        @AuraEnabled
-        public String issueType { get; set; }
-        @AuraEnabled
-        public String status { get; set; }
+        public String issueId;
+        public String summary;
+        public String key;
+        public String issueType;
+        public String status;
+        public String url;
 
         public JiraIssue(String issueId, String summary, String key, String issueType, String Status) {
             this.issueId = issueId;
@@ -52,6 +60,7 @@ public class JiraViewAllIssuesController {
             this.key = key;
             this.issueType = issueType;
             this.status = status;
+            this.url = 'https://asudev.jira.com/browse/' + this.key;
         }
     }
 }

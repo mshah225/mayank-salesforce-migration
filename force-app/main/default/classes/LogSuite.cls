@@ -41,4 +41,11 @@ public class LogSuite {
             System.debug('LOGSUITE: ' + logType.toUppercase() + ' - ' + message);
         }
     }
+
+    public static void loUntuncated(String sMsg) {
+        for (Integer i = 0; i < sMsg.length(); i = i + 300) {
+            Integer iEffectiveEnd = (i + 300 > (sMsg.length()) ? sMsg.length() : i + 300);
+            System.debug(sMsg.substring(i, iEffectiveEnd));
+        }
+    }
 }

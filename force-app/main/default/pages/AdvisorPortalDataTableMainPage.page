@@ -1,17 +1,23 @@
 <apex:page showHeader="false" sideBar="false" standardStylesheets="false" language="en_US">
-    <style>
-        html {
-            background: #fff;
-        }
-    </style>
-
-    <apex:includeLightning />
+    <head>
+        <apex:includeScript value="{!URLFOR($Resource.DynamicClassAdderForLWCModals)}" />
+        <style>
+            html {
+                background: #fff;
+            }
+        </style>
+        <apex:includeLightning />
+    </head>
 
     <div id="AdvisorPortalDataTable" style="min-height: 95vh; padding-left: 5px; padding-right: 5px"></div>
 
     <script>
-        $Lightning.use('c:AdvisorPortalDataTableApp', function () {
-            $Lightning.createComponent('c:AdvisorPortal', { label: '' }, 'AdvisorPortalDataTable', function (cmp) { });
+        addModalRelatedObservers(); // add observers that ensure modals get the needed classes
+
+        $Lightning.use('c:AdvisorPortalDataTableApp', () => {
+            $Lightning.createComponent('c:AdvisorPortalA', {}, 'AdvisorPortalDataTable', (cmp) => { 
+                document.querySelector('html').classList.add('slds-scope');  // ensure rendered page has SLDS scope tag to ensure SLDS styles are applied to modals
+             });
         });
     </script>
 </apex:page>

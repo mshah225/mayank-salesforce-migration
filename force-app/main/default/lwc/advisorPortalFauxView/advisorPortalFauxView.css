@@ -1,0 +1,92 @@
+/** Custom for just this page */
+:host .loading-contacts-section {
+    text-align: center;
+    margin-top: var(--lwc-varSpacingVerticalXLarge, 2rem);
+    margin-bottom: var(--lwc-varSpacingVerticalXLarge, 2rem);
+    color: var(--lwc-colorTextInputDisabled, gray);
+}
+
+/** From advisorPortalA.css */
+:host .light-blue-background {
+    background-color: rgba(0, 112, 210, 0.1);
+}
+
+:host .mr-2 {
+    margin-right: 0.8rem;
+}
+
+:host .d-none {
+    display: none;
+}
+
+:host .advanced-filter-button {
+    /** cheaty way to align at bottom of div but still have spacing above when vertical layout */
+    padding-top: 1rem;
+    margin-top: auto;
+}
+
+:host lightning-spinner {
+    position: fixed;
+}
+
+@media (max-width: 64em){
+    :host .slds-max-large-wrap {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+}
+
+/** From advisorPortalFeedbackButton.css */
+:host .openButton {
+    display: inline-block;
+    cursor: pointer;
+}
+
+:host .openButton > lightning-icon {
+    display: inline;
+    margin-right: 5px;
+    filter: invert(51%) sepia(11%) saturate(5749%) hue-rotate(179deg) brightness(79%) contrast(75%);
+}
+
+:host lightning-icon.slds-modal__close {
+    cursor: pointer;
+}
+
+:host .openButton:hover > lightning-icon {
+    filter: invert(72%) sepia(11%) saturate(4787%) hue-rotate(173deg) brightness(85%) contrast(83%);
+}
+
+:host lightning-spinner {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+
+/** From advisorPortalTable.css */
+:host lightning-icon.outreach-icn {
+    /* Turns gray icon into green */
+    --lwc-colorTextSuccess: green;
+}
+:host .persistence-icon {
+    width: var(--lwc-squareIconUtilityLarge, 1.5rem);
+}
+
+:host .light-gray-background {
+    background-color: rgb(250, 250, 249);
+}
+
+:host .px-2 {
+    padding-left: var(--lwc-varSpacingMedium, 1rem);
+    padding-right: var(--lwc-varSpacingMedium, 1rem);
+}
+
+:host .py-1 {
+    padding-top: var(--lwc-varSpacingXSmall, 0.5rem);
+    padding-bottom: var(--lwc-varSpacingXSmall, 0.5rem);
+}
+
+:host .mt-1 {
+    margin-top: var(--lwc-varSpacingXSmall, 0.5rem);
+}

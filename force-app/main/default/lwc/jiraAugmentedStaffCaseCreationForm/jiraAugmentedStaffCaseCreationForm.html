@@ -1,0 +1,44 @@
+<template>
+    <template if:true={hasPermission}>
+        <template if:true={showAlert}>
+            <div class="alert-wrapper">
+                {alert} <br />
+                <template if:true={showAlertLink}>
+                    <a target="_blank" href={alertHref}>{alertHref}</a>
+                </template>
+            </div>
+        </template>
+        <template if:true={showFoundStatus}>
+            <template if:true={foundStudent}>
+                <h2 class="h3 text-success text-center">EMPLID/ASURITE is Valid</h2>
+            </template>
+            <template if:false={foundStudent}>
+                <h2 class="h3 text-danger text-center">EMPLID/ASURITE was not found!</h2>
+            </template>
+        </template>
+        <c-lightning-question-answer-section
+            questions={questions}
+            onchange={changeAnswers}
+        ></c-lightning-question-answer-section>
+        <div>
+            <label id="close-case-label" class="slds-form-element__label">Close Case?</label>
+            <input
+                class="checkbox"
+                type="checkbox"
+                aria-labelledby="close-case-label"
+                onchange={changeCloseCase}
+                value={closeCase}
+            />
+        </div>
+        <div class="slds-var-m-top_small">
+            <lightning-button
+                variant="brand"
+                label="Submit"
+                title="Submit"
+                onclick={submitCase}
+                class="slds-var-m-left_x-small"
+                disabled={disabledButton}
+            ></lightning-button>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,68 @@
+<template>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Ticket Number">Ticket Number</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Ticket Type">Ticket Type</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Summary">Summary</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Status">Status</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Testing Form">Testing Form</div>
+                </th>
+                <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Second Tech Form">Technical Review Form</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={tickets} for:item="ticket">
+                <tr key={ticket.issueId} class="slds-hint-parent">
+                    <td data-label="Contact">
+                        <div class="slds-truncate">
+                            <a href={ticket.url} target="_blank">{ticket.key}</a>
+                        </div>
+                    </td>
+                    <td data-label="Contact">
+                        <div class="slds-truncate">{ticket.issueType}</div>
+                    </td>
+                    <td data-label="Contact" style="max-width: 200px">
+                        <div class="slds-truncate">{ticket.summary}</div>
+                    </td>
+                    <td data-label="Contact" style="max-width: 200px">
+                        <div class="slds-truncate">{ticket.status}</div>
+                    </td>
+                    <td data-label="QA">
+                        <div class="slds-truncate">
+                            <lightning-button
+                                variant="brand"
+                                label="Testing Form"
+                                title="Testing Form"
+                                value={ticket.key}
+                                onclick={openTestFormModal}
+                            ></lightning-button>
+                        </div>
+                    </td>
+                    <td data-label="Second Tech">
+                        <div class="slds-truncate">
+                            <lightning-button
+                                variant="brand"
+                                label="Tech Review Form"
+                                title="Tech Review Form"
+                                value={ticket.key}
+                                onclick={openTechReviewFormModal}
+                            ></lightning-button>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>

@@ -24,6 +24,7 @@
     z-index: 40;
     display: none;
     border-radius: var(--lwc-borderRadiusMedium,0.25rem);
+    width: 330px;
 }
 
 :host .tooltip-enabled-field:focus-within + .tooltip:not(.tooltip-escaped), /* Initial open when focus the related field */

@@ -9,9 +9,15 @@
                 oncommit={changeField}
                 onchange={stopEvent}
                 value={currentFilter.studentString}
-                onfocus={highlightStudentNote}
-                onblur={darkenStudentNote}
-            ></lightning-input>
+                class="tooltip-enabled-field"
+                aria-describedby="studentStringTooltip"
+                onkeydown={closeTooltipOnEscape}
+                onblur={resetTooltipState}
+            >
+            </lightning-input>
+            <div id="studentStringTooltip" role="tooltip" class="slds-is-absolute slds-text-body_small tooltip">
+                † Uses full name (preferred or legal).
+            </div>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
             <c-lightning-combo-box
@@ -392,7 +398,7 @@
         </template>
     </div>
     <div class="slds-grid slds-wrap slds-gutters_x-small slds-var-m-top_small">
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+        <div class="slds-col slds-size_1-of-1">
             <lightning-button label="Clear Filters" title="Clear Filters" onclick={clearFilters}></lightning-button>
             <lightning-button
                 variant="brand"
@@ -401,14 +407,6 @@
                 onclick={applyFilters}
                 class="slds-var-m-left_xx-small"
             ></lightning-button>
-        </div>
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
-            <div class="slds-text-align_right slds-show_medium">
-                <span class={studentNoteClasses}> † Uses full name (preferred or legal). </span>
-            </div>
-            <div class="slds-var-m-top_xx-small slds-hide_medium">
-                <span class={studentNoteClasses}> † Uses full name (preferred or legal). </span>
-            </div>
         </div>
     </div>
 </template>

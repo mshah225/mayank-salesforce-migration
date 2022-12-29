@@ -156,12 +156,19 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         e.preventDefault();
     }
 
-    studentNoteClasses = '';
-    highlightStudentNote() {
-        this.studentNoteClasses = 'highlighted';
+    closeTooltipOnEscape(e) {
+        if (e.key === 'Escape') {
+            const target = e.currentTarget;
+            const targetParent = target.parentElement;
+            const tooltip = targetParent.querySelector('.tooltip');
+            tooltip.classList.add('tooltip-escaped');
+        }
     }
-    darkenStudentNote() {
-        this.studentNoteClasses = '';
+    resetTooltipState(e) {
+        const target = e.currentTarget;
+        const targetParent = target.parentElement;
+        const tooltip = targetParent.querySelector('.tooltip');
+        tooltip.classList.remove('tooltip-escaped');
     }
 
     /**

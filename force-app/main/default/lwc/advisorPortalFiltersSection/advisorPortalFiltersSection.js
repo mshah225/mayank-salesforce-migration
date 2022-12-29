@@ -156,6 +156,14 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         e.preventDefault();
     }
 
+    studentNoteClasses = '';
+    highlightStudentNote() {
+        this.studentNoteClasses = 'highlighted';
+    }
+    darkenStudentNote() {
+        this.studentNoteClasses = '';
+    }
+
     /**
      * Clear all filters
      */

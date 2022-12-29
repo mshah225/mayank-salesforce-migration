@@ -2,13 +2,15 @@
     <div class="slds-grid slds-gutters slds-wrap">
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
             <lightning-input
-                label="Student"
+                label="Student †"
                 type="text"
                 name="studentString"
                 data-name="studentString"
                 oncommit={changeField}
                 onchange={stopEvent}
                 value={currentFilter.studentString}
+                onfocus={highlightStudentNote}
+                onblur={darkenStudentNote}
             ></lightning-input>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
@@ -401,8 +403,12 @@
             ></lightning-button>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
-            <div class="slds-text-align_right slds-show_medium">† Uses full name (preferred or legal)</div>
-            <div class="slds-var-m-top_xx-small slds-hide_medium">† Uses full name (preferred or legal)</div>
+            <div class="slds-text-align_right slds-show_medium">
+                <span class={studentNoteClasses}> † Uses full name (preferred or legal). </span>
+            </div>
+            <div class="slds-var-m-top_xx-small slds-hide_medium">
+                <span class={studentNoteClasses}> † Uses full name (preferred or legal). </span>
+            </div>
         </div>
     </div>
 </template>

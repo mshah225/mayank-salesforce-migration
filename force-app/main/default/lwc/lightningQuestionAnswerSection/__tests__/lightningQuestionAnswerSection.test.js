@@ -373,7 +373,7 @@ describe('c-lightning-question-answer-section', () => {
         expect(element.reportValidity()).toBeTruthy();
     });
 
-    test('Report validity', async () => {
+    test('Clear all', async () => {
         // Arrange
         const element = createElement('c-lightning-question-answer-section', {
             is: LightningQuestionAnswerSection,

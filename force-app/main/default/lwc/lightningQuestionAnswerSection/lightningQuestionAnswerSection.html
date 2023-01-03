@@ -1,16 +1,18 @@
 <template>
     <template for:each={questions} for:item="q">
-        <div key={q.key}>
+        <div key={q.key} data-testid="question">
             <template if:true={q.isLabel}>
                 <template if:true={q.isBoldLabel}>
-                    <b>{q.question} </b>
+                    <b data-testid="body">{q.question}</b>
                 </template>
-                <template if:true={q.isPlainLabel}> {q.question} </template>
+                <template if:true={q.isPlainLabel}>
+                    <span data-testid="body">{q.question}</span>
+                </template>
                 <template if:true={q.isCenterLabel}>
-                    <div class="slds-text-align_center">{q.question}</div>
+                    <div class="slds-text-align_center" data-testid="body">{q.question}</div>
                 </template>
                 <template if:true={q.isLink}>
-                    <a target="_blank" href={q.href}>{q.question}</a>
+                    <a target="_blank" href={q.href} data-testid="body">{q.question}</a>
                 </template>
             </template>
             <template if:true={q.isSpacer}>
@@ -24,6 +26,7 @@
                         onchange={changeAnswer}
                         value={q.answer}
                         required
+                        data-testid="body"
                     ></lightning-textarea>
                 </template>
                 <template if:false={q.required}>
@@ -32,6 +35,7 @@
                         label={q.question}
                         onchange={changeAnswer}
                         value={q.answer}
+                        data-testid="body"
                     ></lightning-textarea>
                 </template>
             </template>
@@ -45,6 +49,7 @@
                         onchange={changeAnswer}
                         multi-select={q.isMultiSelect}
                         required
+                        data-testid="body"
                     ></c-lightning-combo-box>
                 </template>
                 <template if:false={q.required}>
@@ -55,6 +60,7 @@
                         value={q.answer}
                         onchange={changeAnswer}
                         multi-select={q.isMultiSelect}
+                        data-testid="body"
                     ></c-lightning-combo-box>
                 </template>
             </template>
@@ -69,6 +75,7 @@
                         value={q.answer}
                         onchange={changeAnswer}
                         required
+                        data-testid="body"
                     ></lightning-dual-listbox>
                 </template>
                 <template if:false={q.required}>
@@ -80,6 +87,7 @@
                         options={q.options}
                         value={q.answer}
                         onchange={changeAnswer}
+                        data-testid="body"
                     ></lightning-dual-listbox>
                 </template>
             </template>
@@ -92,6 +100,7 @@
                         onchange={changeAnswer}
                         value={q.answer}
                         required
+                        data-testid="body"
                     ></lightning-input
                 ></template>
                 <template if:false={q.required}>
@@ -101,13 +110,14 @@
                         label={q.question}
                         onchange={changeAnswer}
                         value={q.answer}
+                        data-testid="body"
                     ></lightning-input
                 ></template>
             </template>
             <template if:true={q.hasSubnote}>
-                <p class="slds-text-body_small slds-text-color_weak">{q.subnote}</p>
+                <p class="slds-text-body_small slds-text-color_weak" data-testid="subnote">{q.subnote}</p>
             </template>
         </div>
     </template>
-    <div class="styleWrapper"></div>
+    <div lwc:dom="manual" class="styleWrapper" data-testid="style-injection"></div>
 </template>

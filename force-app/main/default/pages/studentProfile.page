@@ -605,7 +605,9 @@
                             <div class="page-header-smaller" style="margin: 0 0 -5px 0; border: none">
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
-                                    &nbsp;Service Indicators
+                                    <a id="serviceIndicatorHeader">
+                                        &nbsp;Service Indicators
+                                    </a>
                                 </h4>
 
                                 <div class="pull-right">
@@ -5182,9 +5184,11 @@
                         html += '</tbody></table></div>';
 
                         document.getElementById('serviceIndicatorTable').innerHTML = html;
+                        document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (' + result.length + ')';
                     } else {
                         document.getElementById('serviceIndicatorTable').innerHTML =
                             'No Indicators';
+                        document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (0)';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

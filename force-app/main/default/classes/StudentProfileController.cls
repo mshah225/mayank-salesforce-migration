@@ -147,60 +147,6 @@ global with sharing class StudentProfileController {
         set; 
     }
 
-    public Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage {
-        get {
-            if (aidYearToEditMessage == null) {
-                setupEditMessageMap();
-            }
-
-            return aidYearToEditMessage;
-        }
-
-        set; 
-    }
-
-    public List<SelectOption> aidYearForEditMessages {
-        get {
-            if (aidYearForEditMessages == null) {
-                List<String> aidYearStringsForMessage = new List<String>(aidYearToEditMessage.keyset());
-                if (aidYearStringsForMessage == null) {
-                    return null;
-                }
-                
-                aidYearStringsForMessage.sort();
-                aidYearForEditMessages = new List<SelectOption>();
-                for (Integer i = aidYearStringsForMessage.size() - 1; i >= 0; i--) {
-                    aidYearForEditMessages.add(new SelectOption(aidYearStringsForMessage[i], aidYearStringsForMessage[i]));
-                }
-            }
-            return aidYearForEditMessages;
-        }
-        set;
-    }
-
-    public List<StudentProfileController.EditMessageWrapper> editMessagesForSelectedTerm {
-        get {
-            editMessagesForSelectedTerm = aidYearToEditMessage.get(selectedAidYearForEditMessage);
-           
-            return editMessagesForSelectedTerm;
-        }
-
-        set;
-    }
-
-    public String selectedAidYearForEditMessage { 
-        get {
-            if (selectedAidYearForEditMessage == null) {
-                if (aidYearForEditMessages != null && aidYearForEditMessages.size() > 0) {
-                	return aidYearForEditMessages[0].getValue();
-                }
-            }
-            return selectedAidYearForEditMessage;
-        }
-        
-        set; 
-    }
-
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -1056,31 +1002,7 @@ global with sharing class StudentProfileController {
 
     }
 
-    private void setupEditMessageMap() {
-        FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(theContact.EmplId__c);
-        
-        aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
-
-        if (editMessageWrapperDetails == null) {
-            return;
-        }
-
-        for (FinancialEditMessageWrapper.cls_edit_messages messages : editMessageWrapperDetails.edit_messages) {
-            List<StudentProfileController.EditMessageWrapper> messagesForTerm = new List<StudentProfileController.EditMessageWrapper>();
-            messages.message_details.sort();
-            for (FinancialEditMessageWrapper.cls_message_details messageDetails : messages.message_details) {
-                StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
-                emw.academic_year = messages.academic_year;
-                emw.aid_year = messages.aid_year;
-                emw.term = messageDetails.term;	
-                emw.action_description = messageDetails.action_description;
-                emw.description = messageDetails.description;
-                emw.item_type = messageDetails.item_type;
-                messagesForTerm.add(emw);                
-            }
-            aidYearToEditMessage.put(messages.academic_year, messagesForTerm);    
-        }
-    }
+    
 
     @RemoteAction
     global static String getSunCardPhotoRA(String asurite, String emplId) {
@@ -1296,6 +1218,37 @@ global with sharing class StudentProfileController {
     @RemoteAction
     public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists) {
         return filterFinancialAidUnresolvedItems(finAidChecklists);
+    }
+
+    @RemoteAction
+    public static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
+        FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(contactEmplid);
+        
+        Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
+
+        if (editMessageWrapperDetails == null) {
+            return null;
+        }
+
+        editMessageWrapperDetails.edit_messages.sort();
+
+        for (FinancialEditMessageWrapper.cls_edit_messages messages : editMessageWrapperDetails.edit_messages) {
+            List<StudentProfileController.EditMessageWrapper> messagesForTerm = new List<StudentProfileController.EditMessageWrapper>();
+            messages.message_details.sort();
+            for (FinancialEditMessageWrapper.cls_message_details messageDetails : messages.message_details) {
+                StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
+                emw.academic_year = messages.academic_year;
+                emw.aid_year = messages.aid_year;
+                emw.term = messageDetails.term;	
+                emw.action_description = messageDetails.action_description;
+                emw.description = messageDetails.description;
+                emw.item_type = messageDetails.item_type;
+                messagesForTerm.add(emw);                
+            }
+            aidYearToEditMessage.put(messages.academic_year, messagesForTerm);    
+        }
+
+        return aidYearToEditMessage;
     }
     
 

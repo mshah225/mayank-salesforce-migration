@@ -1404,35 +1404,10 @@
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="edit_message_list">
                                         <apex:form >
-                                            <div style = "margin-bottom: 15px">
-                                                <apex:selectList value="{!selectedAidYearForEditMessage}" size="1" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
-                                                    <apex:selectOptions value="{!aidYearForEditMessages}"/>
-                                                    <apex:actionSupport event="onchange" reRender="editMessageTable"/>
-                                                </apex:selectList>
+                                            <div id="selectListForEditMessages">
+                                                <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
-                                            <div id="editMessageErrors" style="{!IF(aidYearForEditMessages.size == 0, '', 'display: none;')}">
-                                                No FA Edit Msgs found
-                                            </div>
-                                            <apex:pageBlock id="editMessageTable">
-                                                <table class="table table-striped table-bordered" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
-                                                    <tr>
-                                                        <th> Academic Year</th>
-                                                        <th> Aid Year</th>
-                                                        <th> Term</th>
-                                                        <th> Action Description</th>
-                                                        <th> Description</th>
-                                                    </tr>
-                                                    <apex:repeat var="editMessageEntry" value="{!editMessagesForSelectedTerm}">
-                                                        <tr>
-                                                            <td>{!editMessageEntry.academic_year}</td>
-                                                            <td>{!editMessageEntry.aid_year}</td>                                                            
-                                                            <td>{!editMessageEntry.term}</td>
-                                                            <td>{!editMessageEntry.action_description}</td>
-                                                            <td>{!editMessageEntry.description}</td>
-                                                        </tr>
-                                                    </apex:repeat>
-                                                </table>  
-                                            </apex:pageBlock>
+                                            <div id="editMessageTable"></div>
                                         </apex:form>
                                     </div>
                                 </div>
@@ -3313,6 +3288,7 @@
         function loadFinancialAidIndicators() {
             loadServiceIndicators();
             loadFinancialAidChecklist();
+            loadFinancialAidEditMessages();
         }
 
         
@@ -5254,6 +5230,84 @@
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
+        }
+
+        function loadFinancialAidEditMessages() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getEditMessages}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+                    for (var i = 0; i < keySet.length; i++) {
+                        editMessagesMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='editMessageSelectOptions'>Term:&nbsp;</label><select id='editMessageSelectOptions' onchange='buildEditMessageTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForEditMessages').innerHTML = selectHtml;
+                    var test = document.getElementById('editMessageSelectOptions');
+                    
+                    console.log(test.value);
+                    buildEditMessageTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildEditMessageTable() {
+            var selectedTerm = document.getElementById('editMessageSelectOptions').value;
+            var messagesForSelectedTerm = editMessagesMap.get(selectedTerm);
+            
+            var html =
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +
+                '<th>Academic Year</th>' +                            
+                '<th>Aid Year</th>' +
+                '<th>Term</th>' +
+                '<th>Action Description</th>' +
+                '<th>Description</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+            
+            for (var i = 0; i < messagesForSelectedTerm.length; i++) {
+                html +=
+                    '' +
+                    '<tr>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].academic_year +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].aid_year +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].term +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].action_description +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].description +
+                    '</td>' +
+                    '</tr>';
+            }
+            
+            html += '</tbody></table></div>';
+            
+            document.getElementById('editMessageTable').innerHTML = html;
         }
     </script>
 </apex:page>

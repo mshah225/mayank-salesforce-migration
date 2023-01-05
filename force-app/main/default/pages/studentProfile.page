@@ -2205,38 +2205,9 @@
                                                             <div style="overflow: auto; max-height: 225px">
                                                                 <div id="ps_financial_aid_checklist_unresolved">
                                                                     <apex:form >
-                                                                        <apex:dataTable id="financial-aid-checklist-unresolved-table"
-                                                                            rendered="{!financialAidUnresolvedChecklists.size != 0}"
-                                                                            value="{!financialAidUnresolvedChecklists}"
-                                                                            var="checklist"
-                                                                            styleClass="table table-striped table-bordered"
-                                                                        >
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Checklist Code</apex:facet>
-                                                                                {!checklist.checklist_cd}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Checklist Item Code</apex:facet>
-                                                                                {!checklist.checklistitemcd}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Description</apex:facet>
-                                                                                {!checklist.description}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Status Date</apex:facet>
-                                                                                {!checklist.status_dt}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Status</apex:facet>
-                                                                                {!checklist.item_status}
-                                                                            </apex:column>
-                                                                        </apex:dataTable>
+                                                                        <div id="unresolvedChecklistTable">
+                                                                            <i class="fa fa-spinner fa-pulse"></i>
+                                                                        </div>
                                                                     </apex:form>
                                                                 </div>
                                                             </div>
@@ -5217,8 +5188,69 @@
                         html += '</tbody></table></div>';
 
                         document.getElementById('financialAidChecklistTable').innerHTML = html;
+                        loadUnresolvedFinancialAidChecklist(result);
                     } else {
-                        document.getElementById('serviceIndicatorTable').innerHTML =
+                        document.getElementById('financialAidChecklistTable').innerHTML =
+                            'No Checklist Items';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function loadUnresolvedFinancialAidChecklist(checklists) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getUnresolvedFinancialAidChecklist}',
+                checklists,
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById('unresolvedChecklistTable').style.display = 'initial';
+
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Checklist Code</th>' +                            
+                            '<th>Checklist Item Code</th>' +
+                            '<th>Description</th>' +
+                            '<th>Status Date</th>' +
+                            '<th>Status</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].term == null) {
+                                result[i].term = '--';
+                            }
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result[i].checklist_cd +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].checklistitemcd +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].description +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].status_dt +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].item_status +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('unresolvedChecklistTable').innerHTML = html;
+                    } else {
+                        document.getElementById('unresolvedChecklistTable').innerHTML =
                             'No Checklist Items';
                     }
                 },

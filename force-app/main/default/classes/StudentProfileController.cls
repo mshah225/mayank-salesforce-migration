@@ -1055,7 +1055,7 @@ global with sharing class StudentProfileController {
         eAdvisorStatus = 'No Status';
     }
 
-    private List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
+    private static List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists
     ) {
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> unresolvedChecklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklist>();
@@ -1322,6 +1322,12 @@ global with sharing class StudentProfileController {
     public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(String contactEmplid) {
         return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
     }
+
+    @RemoteAction
+    public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists) {
+        return filterFinancialAidUnresolvedItems(finAidChecklists);
+    }
+    
 
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }

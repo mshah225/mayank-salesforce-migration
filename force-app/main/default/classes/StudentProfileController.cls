@@ -1313,6 +1313,11 @@ global with sharing class StudentProfileController {
         return null;
     }
 
+    @RemoteAction
+    public static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
+        return StudentProfileCallout.getServiceIndicators(contactEmplid);
+    }
+
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }
         public List<Financial_Aid_Detail__c> summaryRecords { get; set; }

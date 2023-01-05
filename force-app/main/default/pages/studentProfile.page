@@ -2196,9 +2196,7 @@
                                                             </apex:repeat>
                                                         </td>
                                                     </tr>
-                                                    <tr
-                                                        style="{!IF(financialAidUnresolvedChecklists.size != 0, 'display:table-row', 'display:none')}"
-                                                    >
+                                                    <tr>
                                                         <th colspan="2">
                                                             Financial Aid Unresolved Items
                                                             <br />

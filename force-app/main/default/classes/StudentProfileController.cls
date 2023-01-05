@@ -93,16 +93,6 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent {
-        get {
-            if (serviceIndicatorsForStudent == null) {
-                serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
-            }
-            return serviceIndicatorsForStudent;
-        }
-        set;
-    }
-
     public Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward { 
         get {
             if (aidYearToAward == null) {
@@ -209,26 +199,6 @@ global with sharing class StudentProfileController {
         }
         
         set; 
-    }
-
-    public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists {
-        get {
-            if (financialAidChecklists == null) {
-                financialAidChecklists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
-            }
-            return financialAidChecklists;
-        }
-        set;
-    }
-
-    public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidUnresolvedChecklists {
-        get {
-            if (financialAidUnresolvedChecklists == null && financialAidChecklists != null) {
-                financialAidUnresolvedChecklists = filterFinancialAidUnresolvedItems(financialAidChecklists);
-            }
-            return financialAidUnresolvedChecklists;
-        }
-        set;
     }
 
     public StudentProfileController() {

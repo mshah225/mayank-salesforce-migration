@@ -1318,6 +1318,11 @@ global with sharing class StudentProfileController {
         return StudentProfileCallout.getServiceIndicators(contactEmplid);
     }
 
+    @RemoteAction
+    public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(String contactEmplid) {
+        return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
+    }
+
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }
         public List<Financial_Aid_Detail__c> summaryRecords { get; set; }

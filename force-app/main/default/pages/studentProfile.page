@@ -2112,7 +2112,7 @@
                                                             </apex:repeat>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    <tr id="finAidUnresolvedItemSection">
                                                         <th colspan="2">
                                                             Financial Aid Unresolved Items
                                                             <br />
@@ -5033,7 +5033,7 @@
                         document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (' + result.length + ')';
                     } else {
                         document.getElementById('serviceIndicatorTable').innerHTML =
-                            'No Indicators';
+                            'There are no service indicators available for this student.';
                         document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (0)';
                     }
                 },
@@ -5107,7 +5107,8 @@
                         loadUnresolvedFinancialAidChecklist(result);
                     } else {
                         document.getElementById('financialAidChecklistTable').innerHTML =
-                            'No Checklist Items';
+                            'There are no financial aid checklist items for this student.';
+                        document.getElementById('finAidUnresolvedItemSection').style.display = 'none';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5166,8 +5167,7 @@
 
                         document.getElementById('unresolvedChecklistTable').innerHTML = html;
                     } else {
-                        document.getElementById('unresolvedChecklistTable').innerHTML =
-                            'No Checklist Items';
+                        document.getElementById('finAidUnresolvedItemSection').style.display = 'none';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5183,6 +5183,12 @@
                 function (result, event) {
                     var keySet = Object.keys(result);
                     var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForEditMessages').innerHTML = 'No FA Edit Msgs found';
+                        return;
+                    }
+                    
                     for (var i = 0; i < keySet.length; i++) {
                         editMessagesMap.set(keySet[i], valueSet[i]);
                     }
@@ -5201,7 +5207,6 @@
                     document.getElementById('selectListForEditMessages').innerHTML = selectHtml;
                     var test = document.getElementById('editMessageSelectOptions');
                     
-                    console.log(test.value);
                     buildEditMessageTable()
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5264,6 +5269,12 @@
                 function (result, event) {
                     var keySet = Object.keys(result);
                     var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForAwards').innerHTML = 'There is currently no Financial Aid / Scholarship Award information available for this student';
+                        return;
+                    }
+
                     for (var i = 0; i < keySet.length; i++) {
                         awardMap.set(keySet[i], valueSet[i]);
                     }

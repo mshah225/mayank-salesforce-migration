@@ -1,9 +1,19 @@
 public class FinancialAidAwardWrapper {
 	public List<cls_aid_years> aid_years;
 
-	public class cls_aid_years {
+	public class cls_aid_years implements Comparable {
 		public String financial_year {get; set;}	
 		public List<cls_term_awards> term_awards {get; set;}
+
+		public Integer compareTo(Object compareTo) {
+			cls_aid_years compareToMessages = (cls_aid_years) compareTo;
+
+			if (compareToMessages.financial_year > financial_year) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
 	}
 
 	public class cls_term_awards implements Comparable {

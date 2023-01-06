@@ -1286,69 +1286,10 @@
                                     <div id="awardErrors"></div>
                                     <div id="award_list">
                                         <apex:form >
-                                            <div style = "margin-bottom: 15px">
-                                                <apex:selectList value="{!selectedAidYearForAward}" size="1" style="{!IF(aidYearForAwards.size != 0, '', 'display: none;')}">
-                                                    <apex:selectOptions value="{!aidYearForAwards}"/>
-                                                    <apex:actionSupport event="onchange" reRender="awardTables"/>
-                                                </apex:selectList>
+                                            <div style = "margin-bottom: 15px" id="selectListForAwards">
+                                                <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
-                                            <div id="awardErrors" style="{!IF(aidYearForAwards.size == 0, '', 'display: none;')}">
-                                                There is currently no Financial Aid / Scholarship Award information available for this student
-                                            </div>
-                                            <apex:pageBlock id="awardTables">                                            
-                                                <apex:repeat var="awardsByTerm"  value="{!awardsForSelectedTerm}">
-                                                    <table class="table table-striped table-bordered">
-                                                        <tr>
-                                                            <th> {!awardsByTerm.term_description}</th>
-                                                            <th> Category</th>
-                                                            <th> Current Offer</th>
-                                                            <th> Accepted Amount</th>
-                                                            <th> Disbursed Amount</th>
-                                                            <th> Status</th>
-                                                        </tr>
-                                                        <apex:repeat var="specificAwardForTerm" value="{!awardsByTerm.award_details}">
-                                                            <tr>
-                                                                <td>{!specificAwardForTerm.award_name}</td>
-                                                                <td>{!specificAwardForTerm.category_description}</td>                                                            
-                                                                <td>
-                                                                    <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.current_offer}"/>
-                                                                    </apex:outputText>
-                                                                </td>
-                                                                <td>
-                                                                    <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.accept_balance}"/>
-                                                                    </apex:outputText>
-                                                                </td>
-                                                                <td>
-                                                                    <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.disbursed_balance}"/>
-                                                                    </apex:outputText>
-                                                                </td>
-                                                                <td>{!specificAwardForTerm.disbursement_status}</td>
-                                                            </tr>
-                                                        </apex:repeat>
-                                                        <tr>
-                                                            <th colspan="2">Total</th>
-                                                            <th>
-                                                                <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_current_amount}"/>
-                                                                </apex:outputText>
-                                                            </th>
-                                                            <th>
-                                                                <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_accepted_amount}"/>
-                                                                </apex:outputText>
-                                                            </th>
-                                                            <th>
-                                                                <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_disbursed_amount}"/>
-                                                                </apex:outputText>
-                                                            </th>
-                                                        </tr>
-                                                    </table>
-                                                </apex:repeat>   
-                                            </apex:pageBlock>
+                                            <div id="awardTable"></div>                                            
                                         </apex:form>
                                     </div>
                                 </div>
@@ -3289,6 +3230,7 @@
             loadServiceIndicators();
             loadFinancialAidChecklist();
             loadFinancialAidEditMessages();
+            loadFinancialAidAwards();
         }
 
         
@@ -5232,6 +5174,8 @@
             );
         }
 
+        var editMessagesMap = new Map();
+
         function loadFinancialAidEditMessages() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getEditMessages}',
@@ -5243,7 +5187,7 @@
                         editMessagesMap.set(keySet[i], valueSet[i]);
                     }
                     var selectHtml =
-                    "<label for='editMessageSelectOptions'>Term:&nbsp;</label><select id='editMessageSelectOptions' onchange='buildEditMessageTable()'>";
+                    "<label for='editMessageSelectOptions'>Academic Year:&nbsp;</label><select id='editMessageSelectOptions' onchange='buildEditMessageTable()'>";
                     for (var i = 0; i < keySet.length; i++) {
                         selectHtml += '<option ';
                         selectHtml +=
@@ -5308,6 +5252,112 @@
             html += '</tbody></table></div>';
             
             document.getElementById('editMessageTable').innerHTML = html;
+        }
+
+        //New Line
+        var awardMap = new Map();
+        
+        function loadFinancialAidAwards() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getAwardStatusMap}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+                    for (var i = 0; i < keySet.length; i++) {
+                        awardMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='awardSelectOptions'>Academic Year:&nbsp;</label><select id='awardSelectOptions' onchange='buildAwardTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForAwards').innerHTML = selectHtml;
+
+                    buildAwardTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildAwardTable() {
+            var selectedYear = document.getElementById('awardSelectOptions').value;
+            var awardsForSelectedYear = awardMap.get(selectedYear);
+            
+            var html = '';
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+            for (var i = 0; i < awardsForSelectedYear.length; i++) {
+                html +=
+                    '' +
+                    "<div class='table-responsive'>" +
+                    "<table class='table table-striped table-bordered'> " +
+                    '<thead>' +
+                    '<tr>' +
+                    '<th>' + awardsForSelectedYear[i].term_description + '</th>' +                            
+                    '<th>Category</th>' +
+                    '<th>Current Offer</th>' +
+                    '<th>Accepted Amount</th>' +
+                    '<th>Disbursed Amount</th>' +
+                    '<th>Status</th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                
+                var awardDetails = awardsForSelectedYear[i].award_details;
+
+                for (var j = 0; j < awardDetails.length; j++) {
+                    html +=
+                        '<tr>' +
+                        '<td>' +
+                        awardDetails[j].award_name +
+                        '</td>' +
+                        '<td>' +
+                        awardDetails[j].category_description +
+                        '</td>' +
+                        '<td>' +
+                        formatter.format(awardDetails[j].current_offer) +
+                        '</td>' +
+                        '<td>' +
+                        formatter.format(awardDetails[j].accept_balance) +
+                        '</td>' +
+                        '<td>' +
+                        formatter.format(awardDetails[j].disbursed_balance) +
+                        '</td>' +
+                        '<td>' +
+                        awardDetails[j].disbursement_status +
+                        '</td>' +
+                        '</tr>';
+                }
+
+                html +=
+                    '<tr>' +
+                    '<th colspan="2">Total</th>' +
+                    '<th>' +
+                    formatter.format(awardsForSelectedYear[i].total_current_amount) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(awardsForSelectedYear[i].total_accepted_amount) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(awardsForSelectedYear[i].total_disbursed_amount) +
+                    '</th>' +
+                    '</tr>';
+                
+                html += '</tbody></table></div>';
+            }
+
+            document.getElementById('awardTable').innerHTML = html;
         }
     </script>
 </apex:page>

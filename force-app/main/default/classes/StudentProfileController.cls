@@ -983,27 +983,6 @@ global with sharing class StudentProfileController {
         return unresolvedChecklists;
     }
 
-    private void setupAwardStatusMap() {
-        FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c);
-        
-        aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
-
-        if (awardWrapper == null) {
-            return;
-        }
-
-        for (FinancialAidAwardWrapper.cls_aid_years yearsWithAwards : awardWrapper.aid_years) {
-            yearsWithAwards.term_awards.sort();
-            aidYearToAward.put(yearsWithAwards.financial_year, yearsWithAwards.term_awards);
-            for (FinancialAidAwardWrapper.cls_term_awards specificTerm : yearsWithAwards.term_awards) {
-                specificTerm.award_details.sort();
-            }
-        }
-
-    }
-
-    
-
     @RemoteAction
     global static String getSunCardPhotoRA(String asurite, String emplId) {
         String suncardPhotoUrl;
@@ -1249,6 +1228,30 @@ global with sharing class StudentProfileController {
         }
 
         return aidYearToEditMessage;
+    }
+
+    @RemoteAction
+    public static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
+        FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
+
+        awardWrapper.aid_years.sort();
+        
+        Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
+
+        if (awardWrapper == null) {
+            return null;
+        }
+
+        for (FinancialAidAwardWrapper.cls_aid_years yearsWithAwards : awardWrapper.aid_years) {
+            yearsWithAwards.term_awards.sort();
+            aidYearToAward.put(yearsWithAwards.financial_year, yearsWithAwards.term_awards);
+            for (FinancialAidAwardWrapper.cls_term_awards specificTerm : yearsWithAwards.term_awards) {
+                specificTerm.award_details.sort();
+            }
+        }
+
+        return aidYearToAward;
+
     }
     
 

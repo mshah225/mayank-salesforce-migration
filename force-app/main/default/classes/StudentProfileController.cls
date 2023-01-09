@@ -93,60 +93,6 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward { 
-        get {
-            if (aidYearToAward == null) {
-                setupAwardStatusMap();
-            }
-
-            return aidYearToAward;
-        }
-
-        set; 
-    }
-
-    public List<SelectOption> aidYearForAwards {
-        get {
-            if (aidYearForAwards == null) {
-                List<String> aidYearStringForAward = new List<String>(aidYearToAward.keyset());
-                if (aidYearStringForAward == null) {
-                    return null;
-                }
-                
-                aidYearStringForAward.sort();
-                aidYearForAwards = new List<SelectOption>();
-                for (Integer i = aidYearStringForAward.size() - 1; i >= 0; i--) {
-                    aidYearForAwards.add(new SelectOption(aidYearStringForAward[i], aidYearStringForAward[i]));
-                }
-            }
-            return aidYearForAwards;
-        }
-        set;
-    }
-
-    public List<FinancialAidAwardWrapper.cls_term_awards> awardsForSelectedTerm {
-        get {
-            awardsForSelectedTerm = aidYearToAward.get(selectedAidYearForAward);
-           
-            return awardsForSelectedTerm;
-        }
-
-        set;
-    }
-
-    public String selectedAidYearForAward { 
-        get {
-            if (selectedAidYearForAward == null) {
-                if (aidYearForAwards != null && aidYearForAwards.size() > 0) {
-                	return aidYearForAwards[0].getValue();
-                }
-            }
-            return selectedAidYearForAward;
-        }
-        
-        set; 
-    }
-
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');

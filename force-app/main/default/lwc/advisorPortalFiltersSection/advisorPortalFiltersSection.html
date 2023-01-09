@@ -15,9 +15,15 @@
                 onblur={resetTooltipState}
             >
             </lightning-input>
-            <div id="studentStringTooltip" role="tooltip" class="slds-is-absolute slds-text-body_small tooltip">
-                † Search by "FirstName LastName" (must search with full<br />name, either preferred or legal),
-                "ASURITE", or "EMPLID".
+            <div class="slds-is-absolute slds-text-body_small tooltip" role="tooltip" id="studentStringTooltip">
+                <div class="slds-hide_medium">
+                    † Search by "FirstName LastName" (must search with full name, either preferred or legal), "ASURITE",
+                    or "EMPLID".
+                </div>
+                <div class="slds-show_medium">
+                    † Search by "FirstName LastName" (must search with full<br />name, either preferred or legal),
+                    "ASURITE", or "EMPLID".
+                </div>
             </div>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">

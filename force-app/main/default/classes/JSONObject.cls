@@ -48,23 +48,72 @@ public class JSONObject extends CanSerialize {
         return (JSONList) obj;
     }
 
-    public void put(String key, JSONObject val) {
+    public void put(String path, Object obj) {
+        if (path.contains('.')) {
+            List<String> pathAndKey = path.split('\\.');
+            String key = pathAndKey[pathAndKey.size() - 1]; // key is final item
+            pathAndKey.remove(pathAndKey.size() - 1); // remove key from path
+            path = String.join(pathAndKey, '.'); // remake path
+
+            setAtPath(path, key, obj);
+        } else {
+            setAtPath(null, path, obj);
+        }
+    }
+
+    private void setAtPath(String path, String key, Object obj) {
+        JSONObject route = this;
+
+        // Traverse path if specified
+        if (path != null && path != '') {
+            List<String> steps = path.split('\\.'); // split by . to traverse down key path
+
+            // Traverse path, creating objects where needed
+            for (String step : steps) {
+                if (!route.hasKey(step))
+                    route.set(step, new JSONObject());
+                route = route.getLookup(step);
+            }
+        }
+
+        // At the end of the path, insert at specified key
+        if (obj instanceof String)
+            route.set(key, (String) obj);
+        else if (obj instanceof Integer)
+            route.set(key, (Integer) obj);
+        else if (obj instanceof Double)
+            route.set(key, (Double) obj);
+        else if (obj instanceof Boolean)
+            route.set(key, (Boolean) obj);
+        else if (obj instanceof JSONList)
+            route.set(key, (JSONList) obj);
+        else if (obj instanceof JSONObject)
+            route.set(key, (JSONObject) obj);
+        else
+            throw new JSONTypeException('This object type is not supported.');
+    }
+
+    private void set(String key, JSONObject val) {
         mp.put(key, val);
     }
-    public void put(String key, String val) {
+    private void set(String key, String val) {
         mp.put(key, new JSONString(val));
     }
-    public void put(String key, Integer val) {
+    private void set(String key, Integer val) {
         mp.put(key, new JSONInteger(val));
     }
-    public void put(String key, Boolean val) {
+    private void set(String key, Boolean val) {
         mp.put(key, new JSONBoolean(val));
     }
-    public void put(String key, Double val) {
+    private void set(String key, Double val) {
         mp.put(key, new JSONDouble(val));
     }
-    public void put(String key, JSONList val) {
+    private void set(String key, JSONList val) {
         mp.put(key, val);
+    }
+
+    public Boolean hasKey(String key) {
+        return mp.containsKey(key);
     }
 
     public override String serialize() {

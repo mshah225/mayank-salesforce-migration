@@ -129,6 +129,8 @@ public class JSONObjectTest {
     public static void testGettingNonexistant() {
         JSONObject jsObj = new JSONObject();
 
+        String expectedJSON = '{}';
+
         System.assertEquals(null, jsObj.get('numberOfPeople'));
         System.assertEquals(null, jsObj.get('people'));
         System.assertEquals(null, jsObj.get('people[0]'));
@@ -137,5 +139,8 @@ public class JSONObjectTest {
         System.assertEquals(null, jsObj.get('people[0].name'));
         System.assertEquals(null, jsObj.get('people[0].name.first'));
         System.assertEquals(null, jsObj.get('people[0].name.last'));
+        System.assertEquals(null, jsObj.get('resources[0][1][3].name.last'));
+
+        System.assertEquals(expectedJSON, jsObj.serialize());
     }
 }

@@ -102,6 +102,30 @@ public class JSONObjectTest {
     }
 
     @isTest
+    public static void testLayeredArrays() {
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('people[0][0]', 'Anthony');
+        jsObj.put('people[0][1]', 'Partridge');
+        jsObj.put('people[1][0]', 'Sally');
+        jsObj.put('people[1][1]', 'Grissom');
+        jsObj.put('people[2][0]', 'Petra');
+        jsObj.put('people[2][1]', '27');
+
+        String expectedJSON = JSON.serialize(
+            JSON.deserializeUntyped('{"people":[["Anthony","Partridge"],["Sally","Grissom"],["Petra","27"]]}')
+        );
+
+        System.assertEquals('Anthony', jsObj.get('people[0][0]'));
+        System.assertEquals('Partridge', jsObj.get('people[0][1]'));
+        System.assertEquals('Sally', jsObj.get('people[1][0]'));
+        System.assertEquals('Grissom', jsObj.get('people[1][1]'));
+        System.assertEquals('Petra', jsObj.get('people[2][0]'));
+        System.assertEquals('27', jsObj.get('people[2][1]'));
+
+        System.assertEquals(expectedJSON, jsObj.serialize());
+    }
+
+    @isTest
     public static void testGettingNonexistant() {
         JSONObject jsObj = new JSONObject();
 

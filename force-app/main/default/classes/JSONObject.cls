@@ -30,6 +30,24 @@ public class JSONObject {
                 List<Object> stepArray = (List<Object>) (mp.get(stepKey));
                 padList(stepArray, stepIndx); // pad list if needed to ensure specified index exist
 
+                // Handle layer arrays
+                if (stepIsLayeredArray(step)) {
+                    String indicesStr = step.substring(step.indexOf('[') + 1, step.lastIndexOf(']'));
+                    List<String> indicesArr = indicesStr.split('\\]\\[');
+
+                    for (Integer i = 0; i < indicesArr.size() - 1; i++) {
+                        // -1 bc final layer is the object we are put-ing, don't need to traverse it only need to reach it
+
+                        // If that position in the array is currently null, create the needed object
+                        if (stepArray[stepIndx] == null)
+                            stepArray[stepIndx] = new List<Object>();
+
+                        stepArray = (List<Object>) stepArray[stepIndx]; // move into next level deep
+                        stepIndx = Integer.valueOf(indicesArr[i + 1]); // get the next indice for that level
+                        padList(stepArray, stepIndx); // pad list if needed to ensure specified index exist
+                    }
+                }
+
                 // If that position in the array is currently null, create the needed object
                 if (stepArray[stepIndx] == null)
                     stepArray[stepIndx] = new Map<String, Object>();
@@ -58,8 +76,30 @@ public class JSONObject {
                 String stepKey = extractKeyFromStep(step);
                 Integer stepIndx = extractIndxFromStep(step);
 
+                // Create array if there isn't one already
+                if (!mp.containsKey(stepKey))
+                    mp.put(stepKey, new List<Object>());
+
                 List<Object> stepArray = (List<Object>) (mp.get(stepKey));
                 padList(stepArray, stepIndx); // pad list if needed to ensure specified index exist
+
+                // Handle layer arrays
+                if (stepIsLayeredArray(step)) {
+                    String indicesStr = step.substring(step.indexOf('[') + 1, step.lastIndexOf(']'));
+                    List<String> indicesArr = indicesStr.split('\\]\\[');
+
+                    for (Integer i = 0; i < indicesArr.size() - 1; i++) {
+                        // -1 bc final layer is the object we are put-ing, don't need to traverse it only need to reach it
+
+                        // If that position in the array is currently null, create the needed object
+                        if (stepArray[stepIndx] == null)
+                            stepArray[stepIndx] = new List<Object>();
+
+                        stepArray = (List<Object>) stepArray[stepIndx]; // move into next level deep
+                        stepIndx = Integer.valueOf(indicesArr[i + 1]); // get the next indice for that level
+                        padList(stepArray, stepIndx); // pad list if needed to ensure specified index exist
+                    }
+                }
 
                 stepArray[stepIndx] = obj;
             } else {
@@ -87,6 +127,26 @@ public class JSONObject {
                     nextLevelMp = null;
                 } else {
                     List<Object> stepArray = (List<Object>) (mp.get(stepKey));
+
+                    // Handle layer arrays
+                    if (stepIsLayeredArray(step)) {
+                        String indicesStr = step.substring(step.indexOf('[') + 1, step.lastIndexOf(']'));
+                        List<String> indicesArr = indicesStr.split('\\]\\[');
+
+                        for (Integer i = 0; i < indicesArr.size() - 1; i++) {
+                            // -1 bc final layer is the object we are put-ing, don't need to traverse it only need to reach it
+
+                            // Can't go deep enough into array - sucks, too bad
+                            if (stepIndx >= stepArray.size()) {
+                                nextLevelMp = null;
+                                break;
+                            }
+
+                            stepArray = (List<Object>) stepArray[stepIndx]; // move into next level deep
+                            stepIndx = Integer.valueOf(indicesArr[i + 1]); // get the next indice for that level
+                        }
+                    }
+
                     nextLevelMp = stepIndx >= stepArray.size() ? null : (Map<String, Object>) (stepArray[stepIndx]);
                 }
             } else {
@@ -111,12 +171,31 @@ public class JSONObject {
                 // This step is an array, so we we to move into the array at the right index
                 String stepKey = extractKeyFromStep(step);
                 Integer stepIndx = extractIndxFromStep(step);
-                List<Object> stepArray;
 
                 if (!mp.containsKey(stepKey)) {
                     obj = null;
                 } else {
-                    stepArray = (List<Object>) (mp.get(stepKey));
+                    List<Object> stepArray = (List<Object>) (mp.get(stepKey));
+
+                    // Handle layer arrays
+                    if (stepIsLayeredArray(step)) {
+                        String indicesStr = step.substring(step.indexOf('[') + 1, step.lastIndexOf(']'));
+                        List<String> indicesArr = indicesStr.split('\\]\\[');
+
+                        for (Integer i = 0; i < indicesArr.size() - 1; i++) {
+                            // -1 bc final layer is the object we are put-ing, don't need to traverse it only need to reach it
+
+                            // Can't go deep enough into array - sucks, too bad
+                            if (stepIndx >= stepArray.size()) {
+                                obj = null;
+                                break;
+                            }
+
+                            stepArray = (List<Object>) stepArray[stepIndx]; // move into next level deep
+                            stepIndx = Integer.valueOf(indicesArr[i + 1]); // get the next indice for that level
+                        }
+                    }
+
                     obj = stepIndx >= stepArray.size() ? null : stepArray[stepIndx];
                 }
             } else {
@@ -149,7 +228,12 @@ public class JSONObject {
         return String.join(pathArr, '.');
     }
     private static Boolean stepIsArray(String step) {
-        return step.contains('[') && step.contains('[') && step.indexOf('[') < step.indexOf(']');
+        return step.contains('[') && step.contains(']') && step.indexOf('[') < step.indexOf(']');
+    }
+    private static Boolean stepIsLayeredArray(String step) {
+        return stepIsArray(step) &&
+            step.lastIndexOf('[') != step.indexOf('[') &&
+            step.lastIndexOf(']') != step.indexOf(']');
     }
     private static Integer extractIndxFromStep(String step) {
         return stepIsArray(step) ? Integer.valueOf(step.substringBetween('[', ']')) : null;

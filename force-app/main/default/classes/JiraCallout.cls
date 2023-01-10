@@ -13,21 +13,23 @@ global class JiraCallout {
         String bodyWithoutReporter = '';
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
 
-        body =
-            '{"fields":' +
-            '{   "project":     {      "id": "17074"      }, ' +
-            '"summary": "' +
-            summary +
-            '",  ' +
-            '"description": "' +
-            description +
-            '",  ' +
-            ' "issuetype": {  "name": "' +
-            type +
-            '"     }';
-        bodyWithoutReporter = body + '   }}';
+        // Create with reporter specified
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('fields.project.id', '17074');
+        jsObj.put('fields.summary', summary);
+        jsObj.put('fields.description', description);
+        jsObj.put('fields.issuetype.name', type);
+        jsObj.put('fields.reporter.id', getJiraAccountId(email));
 
-        body += ', "reporter": { "id": "' + getJiraAccountId(email) + '"  }' + '   }}';
+        // Create without reporter specified (used in fallback)
+        JSONObject jsObjNoReporter = new JSONObject();
+        jsObjNoReporter.put('fields.project.id', '17074');
+        jsObjNoReporter.put('fields.summary', summary);
+        jsObjNoReporter.put('fields.description', description);
+        jsObjNoReporter.put('fields.issuetype.name', type);
+
+        body = jsObj.serialize();
+        bodyWithoutReporter = jsObjNoReporter.serialize();
 
         setHeader(req);
         setEndpoint(req, endpoint, 'POST');
@@ -108,7 +110,10 @@ global class JiraCallout {
         Http http = new Http();
         HttpRequest req = new HttpRequest();
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey;
-        String body = '{"update": { "comment": [ { "add": { "body": "' + comment + '" }}]}}';
+
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('update.comment[0].add.body', comment);
+        String body = jsObj.serialize();
 
         try {
             setHeader(req);
@@ -129,7 +134,11 @@ global class JiraCallout {
         Http http = new Http();
         HttpRequest req = new HttpRequest();
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '/transitions';
-        String body = '{"transition": {"id": "' + getStatusKey(status) + '"}}';
+
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('transition.id', getStatusKey(status));
+
+        String body = jsObj.serialize();
 
         try {
             setHeader(req);

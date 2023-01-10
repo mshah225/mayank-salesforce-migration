@@ -79,7 +79,7 @@ private class JiraCalloutTest {
     }
 
     @isTest
-    private static void throwsErrorWhenReturnsNon400() {
+    private static void throwsErrorWhenReturnsNon200() {
         Boolean threwError = false;
 
         try {

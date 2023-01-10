@@ -27,6 +27,10 @@ public class JSONObject {
                 List<Object> stepArray = (List<Object>) (mp.get(stepKey));
                 padList(stepArray, stepIndx); // pad list if needed to ensure specified index exist
 
+                // If that position in the array is currently null, create the needed object
+                if (stepArray[stepIndx] == null)
+                    stepArray[stepIndx] = new Map<String, Object>();
+
                 nextLevelMp = (Map<String, Object>) (stepArray[stepIndx]);
             } else {
                 // Get the next level down
@@ -76,11 +80,11 @@ public class JSONObject {
                 String stepKey = extractKeyFromStep(step);
                 Integer stepIndx = extractIndxFromStep(step);
 
-                List<Object> stepArray = (List<Object>) (mp.get(stepKey));
-                if (stepIndx >= stepArray.size()) {
+                if (!mp.containsKey(stepKey)) {
                     nextLevelMp = null;
                 } else {
-                    nextLevelMp = (Map<String, Object>) (stepArray[stepIndx]);
+                    List<Object> stepArray = (List<Object>) (mp.get(stepKey));
+                    nextLevelMp = stepIndx >= stepArray.size() ? null : (Map<String, Object>) (stepArray[stepIndx]);
                 }
             } else {
                 // Get the next level down
@@ -104,13 +108,13 @@ public class JSONObject {
                 // This step is an array, so we we to move into the array at the right index
                 String stepKey = extractKeyFromStep(step);
                 Integer stepIndx = extractIndxFromStep(step);
+                List<Object> stepArray;
 
-                List<Object> stepArray = (List<Object>) (mp.get(stepKey));
-
-                if (stepIndx >= stepArray.size()) {
+                if (!mp.containsKey(stepKey)) {
                     obj = null;
                 } else {
-                    obj = stepArray[stepIndx];
+                    stepArray = (List<Object>) (mp.get(stepKey));
+                    obj = stepIndx >= stepArray.size() ? null : stepArray[stepIndx];
                 }
             } else {
                 // This step is an object, so we can just get from the map

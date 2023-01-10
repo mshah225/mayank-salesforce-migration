@@ -126,6 +126,48 @@ public class JSONObjectTest {
     }
 
     @isTest
+    public static void testMixedObjAndArrays() {
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('people.seasons[0][0].first', 'Anthony');
+        jsObj.put('people.seasons[0][0].last', 'Partridge');
+        jsObj.put('people.seasons[0][1].first', 'Sally');
+        jsObj.put('people.seasons[0][1].last', 'Grissom');
+        jsObj.put('people.seasons[1][0].first', 'Anthony');
+        jsObj.put('people.seasons[1][0].last', 'Partridge');
+        jsObj.put('people.seasons[1][1].first', 'Sally');
+        jsObj.put('people.seasons[1][1].last', 'Grissom');
+        jsObj.put('people.seasons[2][0].first', 'Anthony');
+        jsObj.put('people.seasons[2][0].last', 'Partridge');
+        jsObj.put('people.seasons[2][1].first', 'Sally');
+        jsObj.put('people.seasons[2][1].last', 'Grissom');
+        jsObj.put('people.seasons[2][2].first', 'Petra');
+        jsObj.put('people.seasons[2][2].last', '27');
+
+        String expectedJSON = JSON.serialize(
+            JSON.deserializeUntyped(
+                '{"people":{"seasons":[[{"first":"Anthony","last":"Partridge"},{"first":"Sally","last":"Grissom"}],[{"first":"Anthony","last":"Partridge"},{"first":"Sally","last":"Grissom"}],[{"first":"Anthony","last":"Partridge"},{"first":"Sally","last":"Grissom"},{"first":"Petra","last":"27"}]]}}'
+            )
+        );
+
+        System.assertEquals('Anthony', jsObj.get('people.seasons[0][0].first'));
+        System.assertEquals('Partridge', jsObj.get('people.seasons[0][0].last'));
+        System.assertEquals('Sally', jsObj.get('people.seasons[0][1].first'));
+        System.assertEquals('Grissom', jsObj.get('people.seasons[0][1].last'));
+        System.assertEquals('Anthony', jsObj.get('people.seasons[1][0].first'));
+        System.assertEquals('Partridge', jsObj.get('people.seasons[1][0].last'));
+        System.assertEquals('Sally', jsObj.get('people.seasons[1][1].first'));
+        System.assertEquals('Grissom', jsObj.get('people.seasons[1][1].last'));
+        System.assertEquals('Anthony', jsObj.get('people.seasons[2][0].first'));
+        System.assertEquals('Partridge', jsObj.get('people.seasons[2][0].last'));
+        System.assertEquals('Sally', jsObj.get('people.seasons[2][1].first'));
+        System.assertEquals('Grissom', jsObj.get('people.seasons[2][1].last'));
+        System.assertEquals('Petra', jsObj.get('people.seasons[2][2].first'));
+        System.assertEquals('27', jsObj.get('people.seasons[2][2].last'));
+
+        System.assertEquals(expectedJSON, jsObj.serialize());
+    }
+
+    @isTest
     public static void testGettingNonexistant() {
         JSONObject jsObj = new JSONObject();
 

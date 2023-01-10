@@ -50,12 +50,16 @@
                                 Financial aid is disbursing this week and should be completed by Jan. 13, 2023. As aid
                                 is disbursed, it will be applied to outstanding charges and then refunds will be issued.
                                 If you haven't paid your charges in full by Jan. 27, you will be placed in the
-                                <a href="https://tuition.asu.edu/billing-finances/payment-plan">ASU Payment Plan</a>.
+                                <a target="_blank" href="https://tuition.asu.edu/billing-finances/payment-plan">
+                                    ASU Payment Plan</a
+                                >.
                                 <a
+                                    target="_blank"
                                     href="https://tuition.asu.edu/contact-resources/faq"
                                     style="display: block; margin-top: 1em"
-                                    >View finance FAQs</a
                                 >
+                                    View finance FAQs
+                                </a>
                             </div>
                         </div>
                         <!-- [END] TEMPORARY ALERT FOR SFE-49536 - REMOVE AFTER JANUARY 28TH, 2023 -->

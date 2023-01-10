@@ -56,7 +56,7 @@
                                 <a
                                     target="_blank"
                                     href="https://tuition.asu.edu/contact-resources/faq"
-                                    style="display: block; margin-top: 1em"
+                                    style="display: block; margin-top: 1em; width: max-content"
                                 >
                                     View finance FAQs
                                 </a>

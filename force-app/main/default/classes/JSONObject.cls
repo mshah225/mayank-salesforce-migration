@@ -7,6 +7,9 @@ public class JSONObject {
     public JSONObject(Map<String, Object> existingMp) {
         mp = existingMp;
     }
+    public JSONObject(String jsonStr) {
+        mp = (Map<String, Object>) JSON.deserializeUntyped(jsonStr);
+    }
 
     public void put(String path, Object obj) {
         if (hasDepth(path)) {

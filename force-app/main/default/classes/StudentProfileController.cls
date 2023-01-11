@@ -1131,22 +1131,22 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    public static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
+    global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
         return StudentProfileCallout.getServiceIndicators(contactEmplid);
     }
 
     @RemoteAction
-    public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(String contactEmplid) {
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(String contactEmplid) {
         return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
     }
 
     @RemoteAction
-    public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists) {
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists) {
         return filterFinancialAidUnresolvedItems(finAidChecklists);
     }
 
     @RemoteAction
-    public static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
+    global static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
         FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(contactEmplid);
         
         Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
@@ -1177,7 +1177,7 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    public static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
+    global static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
         FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
 
         awardWrapper.aid_years.sort();

@@ -16,7 +16,7 @@ global class JiraCallout {
         // Create with reporter specified
         JSONObject jsObj = new JSONObject();
         jsObj.put('fields.project.id', '17074');
-        jsObj.put('fields.summary', summary);
+        jsObj.put('fields.summary', summary.replaceAll('[\\n*\\r*\\n*]', ' '));
         jsObj.put('fields.description', description);
         jsObj.put('fields.issuetype.name', type);
         jsObj.put('fields.reporter.id', getJiraAccountId(email));
@@ -24,7 +24,7 @@ global class JiraCallout {
         // Create without reporter specified (used in fallback)
         JSONObject jsObjNoReporter = new JSONObject();
         jsObjNoReporter.put('fields.project.id', '17074');
-        jsObjNoReporter.put('fields.summary', summary);
+        jsObjNoReporter.put('fields.summary', summary.replaceAll('[\\n*\\r*\\n*]', ' '));
         jsObjNoReporter.put('fields.description', description);
         jsObjNoReporter.put('fields.issuetype.name', type);
 

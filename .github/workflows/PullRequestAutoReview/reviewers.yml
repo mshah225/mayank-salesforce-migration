@@ -5,8 +5,6 @@ reviewers:
             - mgilardi
             - rnordmanASU
     per_author:
-        carlhussey-asu:
-            - repository-maintainers
         ShahanaASU:
             - repository-maintainers
 options:

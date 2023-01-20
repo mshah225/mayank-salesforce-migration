@@ -13,11 +13,11 @@ global class FinancialAidChargeHistoryWrapper {
 			cls_charges compareToAward = (cls_charges) compareTo;
 
 			if (term_code < compareToAward.term_code) { 
-				return -1;
+				return 1;
 			}
 
 			if (term_code > compareToAward.term_code) { 
-				return 1;
+				return -1;
 			}
 
 			return 0;

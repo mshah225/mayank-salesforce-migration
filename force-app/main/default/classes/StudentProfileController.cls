@@ -1201,13 +1201,13 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static Map<String, List<FinancialAidChargeHistoryWrapper.cls_charges>> getChargeHistoryMap(String contactEmplid) {
-        FinancialAidChargeHistoryWrapper chargeHistoryWrapper = StudentProfileCallout.getChargeHistory(theContact.EmplId__c);
+    global static Map<String, FinancialAidChargeHistoryWrapper.cls_charges> getChargeHistoryMap(String contactEmplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryWrapper = StudentProfileCallout.getChargeHistory(contactEmplid);
 
-        termToChargeHistory = new Map<String, FinancialAidChargeHistoryWrapper.cls_charges>();
+        Map<String, FinancialAidChargeHistoryWrapper.cls_charges> termToChargeHistory = new Map<String, FinancialAidChargeHistoryWrapper.cls_charges>();
 
         if (chargeHistoryWrapper == null) {
-            return;
+            return null;
         }
 
         chargeHistoryWrapper.charges.sort();
@@ -1218,7 +1218,7 @@ global with sharing class StudentProfileController {
             termToChargeHistory.put(charges.term_name, charges);
         }
 
-        return chargeHistoryWrapper;
+        return termToChargeHistory;
     }
     
 

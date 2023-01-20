@@ -1275,6 +1275,22 @@
                                     </div>
                                 </div>
 
+                                <div class"page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Charge History
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <apex:form >
+                                            <div id="selectListForChargeHistory">
+                                                <i class="fa fa-spinner fa-pulse"></i>
+                                            </div>
+                                            <div id="chargeHistoryTable"></div>
+                                        </apex:form>
+                                </div>
+
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
@@ -3231,6 +3247,7 @@
             loadFinancialAidChecklist();
             loadFinancialAidEditMessages();
             loadFinancialAidAwards();
+            loadFinancialAidChargeHistory();
         }
 
         
@@ -5369,6 +5386,99 @@
             }
 
             document.getElementById('awardTable').innerHTML = html;
+        }
+
+        //Charge History
+        var chargeHistoryMap = new Map();
+        
+        function loadFinancialAidChargeHistory() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getChargeHistoryMap}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForChargeHistory').innerHTML = 'There is currently no Charge History information available for this student';
+                        return;
+                    }
+
+                    for (var i = 0; i < keySet.length; i++) {
+                        awardMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='chargeHistorySelectOptions'>Academic Year:&nbsp;</label><select id='chargeHistorySelectOptions' onchange='buildChargeHistoryTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForChargeHistory').innerHTML = selectHtml;
+
+                    buildChargeHistoryTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildChargeHistoryTable() {
+            var selectedTerm = document.getElementById('chargeHistorySelectOptions').value;
+            var chargeHistoryForSelectedTerm = awardMap.get(selectedTerm);
+            
+            var html = '';
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+            html +=
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +                        
+                '<th>Term</th>' +
+                '<th>Description</th>' +
+                '<th>Charge</th>' +
+                '<th>Payments / Financial Aid</th>' +
+                '<th>Balance</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+            
+            var chargeHistoryDetails = chargeHistoryForSelectedTerm.charge_details;
+
+            for (var j = 0; j < chargeHistoryDetails.length; j++) {
+                html +=
+                    '<tr>' +
+                    '<td>' +
+                    chargeHistoryForSelectedTerm.term_name +
+                    '</td>' +
+                    '<td>' +
+                    chargeHistoryDetails[j].description +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].charge) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].payment) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].balance) +
+                    '</td>' +
+                    '</tr>';
+            }
+            
+            html += '</tbody></table></div>';
+            
+
+            document.getElementById('chargeHistoryTable').innerHTML = html;
         }
     </script>
 </apex:page>

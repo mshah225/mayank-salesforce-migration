@@ -91,7 +91,7 @@ global with sharing class StudentProfileCallout {
         return messagesForStudent;
     }
 
-    public static FinancialAidChargeHistoryWrapper getChargeHistory(String emplid) {
+    global static FinancialAidChargeHistoryWrapper getChargeHistory(String emplid) {
         FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
 
         HttpRequest req = new HttpRequest();
@@ -108,8 +108,8 @@ global with sharing class StudentProfileCallout {
         return chargeHistoryForStudent;
     }
 
-    public static FinancialAidChargeHistoryWrapper getAccountBalance(String emplid) {
-        FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
+    global static FinancialAidBalanceWrapper getAccountBalance(String emplid) {
+        FinancialAidBalanceWrapper accountBalanceForStudent;
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/balance');
@@ -119,14 +119,14 @@ global with sharing class StudentProfileCallout {
         String responseBody = res.getBody();
 
         if (responseBody != null) {
-            chargeHistoryForStudent = FinancialAidChargeHistoryWrapper.parse(responseBody);
+            accountBalanceForStudent = FinancialAidBalanceWrapper.parse(responseBody);
         }
 
-        return chargeHistoryForStudent;
+        return accountBalanceForStudent;
     }
 
-    public static FinancialAidChargeHistoryWrapper getRefunds(String emplid) {
-        FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
+    global static FinancialAidRefundWrapper getRefunds(String emplid) {
+        FinancialAidRefundWrapper refundsForStudent;
 
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/refunds');
@@ -136,9 +136,9 @@ global with sharing class StudentProfileCallout {
         String responseBody = res.getBody();
 
         if (responseBody != null) {
-            chargeHistoryForStudent = FinancialAidChargeHistoryWrapper.parse(responseBody);
+            refundsForStudent = FinancialAidRefundWrapper.parse(responseBody);
         }
 
-        return chargeHistoryForStudent;
+        return refundsForStudent;
     }
 }

@@ -1232,46 +1232,8 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="psAccountBalanceErrors"></div>
-                                    <div id="ps_account_balance">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Past Due Balance</th>
-                                                        <td id="account_balance_past_due_tip">
-                                                            {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Outstanding Account Balance</th>
-                                                        <td id="account_balance_outstanding">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Account_Balance__c}"
-                                                                />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Total Account Balance</th>
-                                                        <td id="account_balance_total">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c +
-                                                            studentAccount.Future_Balance__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"
-                                                                />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <b>Note:</b>&nbsp;Account balances are a day old and may not be up to
-                                                date. Please check MyASU for accurate balances.
-                                            </div>
-                                        </div>
+                                    <div id="accountBalanceTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
                                     </div>
                                 </div>
 
@@ -1284,11 +1246,11 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <apex:form >
-                                            <div id="selectListForChargeHistory">
-                                                <i class="fa fa-spinner fa-pulse"></i>
-                                            </div>
-                                            <div id="chargeHistoryTable"></div>
-                                        </apex:form>
+                                        <div id="selectListForChargeHistory">
+                                            <i class="fa fa-spinner fa-pulse"></i>
+                                        </div>
+                                        <div id="chargeHistoryTable"></div>
+                                    </apex:form>
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -3248,6 +3210,7 @@
             loadFinancialAidEditMessages();
             loadFinancialAidAwards();
             loadFinancialAidChargeHistory();
+            loadAccountBalance();
         }
 
         
@@ -5493,6 +5456,59 @@
             
 
             document.getElementById('chargeHistoryTable').innerHTML = html;
+        }
+
+        //Account Balance
+        function loadAccountBalance(checklists) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidAccountBalance}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var html = '';
+                    if (result != null) {
+                        var formatter = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                        });
+                        html +=
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            "<tr>" +
+                            "<th> Current Amount Due </th>" +
+                            "<td>" + formatter.format(result.balances.due_amount) + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Future Amount Due </th>" +
+                            "<td>" + formatter.format(result.balances.balance_amount) + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Total Account Balance </th>" +
+                            "<td>" + formatter.format(result.balances.total_amount) + "</td> </tr>";
+
+                        html += '</table></div>';
+
+                        document.getElementById('accountBalanceTable').innerHTML = html;
+                    } else {
+                        html +=
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            "<tr>" +
+                            "<th> Past Due Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Outstanding Account Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Total Account Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>";
+
+                        html += '</table></div>';
+
+                        document.getElementById('accountBalanceTable').innerHTML = html;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
         }
     </script>
 </apex:page>

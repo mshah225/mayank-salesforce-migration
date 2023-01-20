@@ -1220,6 +1220,16 @@ global with sharing class StudentProfileController {
 
         return termToChargeHistory;
     }
+
+    @RemoteAction
+    global static FinancialAidBalanceWrapper getFinancialAidAccountBalance(String contactEmplid) {
+        return StudentProfileCallout.getAccountBalance(contactEmplid);
+    }
+
+    @RemoteAction
+    global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
+        return StudentProfileCallout.getRefunds(contactEmplid);
+    }
     
 
     global class FinancialAidWrapper {

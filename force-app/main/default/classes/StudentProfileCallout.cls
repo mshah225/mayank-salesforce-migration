@@ -90,4 +90,55 @@ global with sharing class StudentProfileCallout {
 
         return messagesForStudent;
     }
+
+    public static FinancialAidChargeHistoryWrapper getChargeHistory(String emplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/charges');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            chargeHistoryForStudent = FinancialAidChargeHistoryWrapper.parse(responseBody);
+        }
+
+        return chargeHistoryForStudent;
+    }
+
+    public static FinancialAidChargeHistoryWrapper getAccountBalance(String emplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/balance');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            chargeHistoryForStudent = FinancialAidChargeHistoryWrapper.parse(responseBody);
+        }
+
+        return chargeHistoryForStudent;
+    }
+
+    public static FinancialAidChargeHistoryWrapper getRefunds(String emplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/refunds');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            chargeHistoryForStudent = FinancialAidChargeHistoryWrapper.parse(responseBody);
+        }
+
+        return chargeHistoryForStudent;
+    }
 }

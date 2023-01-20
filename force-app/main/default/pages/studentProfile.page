@@ -1240,6 +1240,19 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;Refunds (Past 14 Days)
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="refundTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Charge History
                                     </h4>
                                 </div>
@@ -3211,6 +3224,7 @@
             loadFinancialAidAwards();
             loadFinancialAidChargeHistory();
             loadAccountBalance();
+            loadRefunds();
         }
 
         
@@ -5459,13 +5473,13 @@
         }
 
         //Account Balance
-        function loadAccountBalance(checklists) {
+        function loadAccountBalance() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getFinancialAidAccountBalance}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var html = '';
-                    if (result != null) {
+                    if (Object.keys(result).length != 0) {
                         var formatter = new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'USD',
@@ -5505,6 +5519,68 @@
                         html += '</table></div>';
 
                         document.getElementById('accountBalanceTable').innerHTML = html;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        //Refunds
+        function loadRefunds() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (Object.keys(result).length != 0) {
+
+                        var html =
+                            '' +
+                            "<div style='font-weight:bold;'> Posted Refunds </div>" +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Date Paid</th>' +
+                            '<th>Refund Type</th>' +
+                            '<th>Paid Amount</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.refunds.length; i++) {
+                            var formatter = new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            });
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result.refunds[i].refund_date +
+                                '</td>' +
+                                '<td>' +
+                                    result.refunds[i].refund_type +
+                                '</td>' +
+                                '<td>' +
+                                    formatter.format(result.refunds[i].applied_amount) +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html +=
+                            '<tr>' +
+                            '<th colspan="2">Total Posted</th>' +
+                            '<th>' +
+                            formatter.format(result.total_refunds) +
+                            '</th>' +
+                            '</tr>';
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('refundTable').innerHTML = html;
+                    } else {
+                        document.getElementById('refundTable').innerHTML =
+                            'There is no Refund data available for this student.';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

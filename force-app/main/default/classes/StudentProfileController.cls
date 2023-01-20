@@ -1229,7 +1229,10 @@ global with sharing class StudentProfileController {
     @RemoteAction
     global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
         FinancialAidRefundWrapper refundWrapper = StudentProfileCallout.getRefunds(contactEmplid);
-        refundWrapper.refunds.sort();
+
+        if (refundWrapper != null && refundWrapper.refunds != null) {   
+            refundWrapper.refunds.sort();
+        }
 
         return refundWrapper;
     }

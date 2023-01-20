@@ -5474,6 +5474,20 @@
                     '</td>' +
                     '</tr>';
             }
+
+            html +=
+                    '<tr>' +
+                    '<th colspan="2">Total</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_charges) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_payment) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_balance) +
+                    '</th>' +
+                    '</tr>';
             
             html += '</tbody></table></div>';
             

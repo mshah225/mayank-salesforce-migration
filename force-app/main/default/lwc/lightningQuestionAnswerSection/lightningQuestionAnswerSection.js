@@ -12,6 +12,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
      *   sourceLabel: the source label (only allowed for dual-listboxes)
      *   selectedLabel: the selected label (only allowed for dual-listboxes)
      *   href: the link the url should go to (inly allowed for label's with subtype link)
+     *   maxLength: only allowed if the type is text or textarea (defaults to -1)
      *   subnote: 'note to go under the input field',
      *   required: true|false,
      * }
@@ -47,6 +48,7 @@ export default class LightningQuestionAnswerSection extends LightningElement {
             q.hasSubnote = q.subnote != null && q.subnote !== '';
             if (q.required == null) q.required = false;
             if (q.answer == null) q.answer = '';
+            if ((q.type === 'textarea' || q.type === 'text') && q.maxLength == null) q.maxLength = -1;
             newQuestions.push(q);
         }
         this._questions = newQuestions;

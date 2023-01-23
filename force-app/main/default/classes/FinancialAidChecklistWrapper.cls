@@ -1,15 +1,15 @@
-public class FinancialAidChecklistWrapper {
-    public String empl_id;
-    public List<FinancialAidChecklist> checklist_items;
+global class FinancialAidChecklistWrapper {
+    global String empl_id;
+    global List<FinancialAidChecklist> checklist_items;
 
-    public class FinancialAidChecklist {
-        public String seq_3c { get; set; }
-        public String checklist_cd { get; set; }
-        public String status { get; set; }
-        public String status_code { get; set; }
-        public String checklist_seq { get; set; }
-        public String checklistitemcd { get; set; }
-        public String item_status {
+    global class FinancialAidChecklist {
+        global String seq_3c { get; set; }
+        global String checklist_cd { get; set; }
+        global String status { get; set; }
+        global String status_code { get; set; }
+        global String checklist_seq { get; set; }
+        global String checklistitemcd { get; set; }
+        global String item_status {
             get {
                 if (item_status == null) {
                     item_status = '--';
@@ -18,9 +18,9 @@ public class FinancialAidChecklistWrapper {
             }
             set;
         }
-        public String item_status_code { get; set; }
-        public String due_dt { get; set; }
-        public String status_dt {
+        global String item_status_code { get; set; }
+        global String due_dt { get; set; }
+        global String status_dt {
             get {
                 if (status_dt == null) {
                     status_dt = '--';
@@ -29,9 +29,9 @@ public class FinancialAidChecklistWrapper {
             }
             set;
         }
-        public String asu_fa_status_rsn { get; set; }
-        public String strm_code { get; set; }
-        public String term {
+        global String asu_fa_status_rsn { get; set; }
+        global String strm_code { get; set; }
+        global String term {
             get {
                 if (term == null) {
                     term = '--';
@@ -40,13 +40,13 @@ public class FinancialAidChecklistWrapper {
             }
             set;
         }
-        public String description { get; set; }
-        public String institution { get; set; }
-        public String aid_year { get; set; }
-        public String admin_function { get; set; }
+        global String description { get; set; }
+        global String institution { get; set; }
+        global String aid_year { get; set; }
+        global String admin_function { get; set; }
     }
 
-    public static FinancialAidChecklistWrapper parse(String json) {
+    global static FinancialAidChecklistWrapper parse(String json) {
         try {
             return (FinancialAidChecklistWrapper) System.JSON.deserialize(json, FinancialAidChecklistWrapper.class);
         } catch (Exception e) {

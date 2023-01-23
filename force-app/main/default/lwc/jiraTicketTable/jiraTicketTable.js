@@ -96,14 +96,7 @@ export default class JiraTicketTable extends LightningElement {
      */
     addToTicketComment(question, answer) {
         if (question != null && answer != null) {
-            return (
-                '*' +
-                question +
-                '*' +
-                '\\n' +
-                answer.replace(/[\r\n]/g, '\\r').replace(new RegExp('"', 'g'), '\\"') +
-                '\\n\\n'
-            );
+            return '*' + question + '*\n' + answer + '\n\n';
         }
         return '';
     }

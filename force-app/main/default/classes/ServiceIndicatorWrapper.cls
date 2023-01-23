@@ -1,37 +1,37 @@
-public class ServiceIndicatorWrapper {
-    public String EmplId;
-    public List<ServiceIndicator> ServiceIndicators;
+global class ServiceIndicatorWrapper {
+    global String EmplId;
+    global List<ServiceIndicator> ServiceIndicators;
 
-    public class ServiceIndicator implements Comparable {
-        public String Institution { get; set; }
-        public String ServiceIndicatorCode { get; set; }
-        public String ServiceIndicatorReason { get; set; }
-        public String ServiceIndicatorActiveTerm;
-        public String ServiceIndicatorActiveDate { get; set; }
-        public String ServiceIndicatorEndTerm;
-        public String ServiceIndicatorEndDate;
-        public String PositiveServiceIndicator { get; set; }
-        public String Comments;
-        public String ServiceIndicatorDateTime;
-        public String ServiceIndicatorCodeDescr { get; set; }
-        public String DisplayInSS;
-        public String ServiceIndReasonCodeDescr { get; set; }
-        public String ServiceIndReasonCodeDescrLong;
-        public List<ServiceImpact> ServiceImpacts;
+    global class ServiceIndicator implements Comparable {
+        global String Institution { get; set; }
+        global String ServiceIndicatorCode { get; set; }
+        global String ServiceIndicatorReason { get; set; }
+        global String ServiceIndicatorActiveTerm;
+        global String ServiceIndicatorActiveDate { get; set; }
+        global String ServiceIndicatorEndTerm;
+        global String ServiceIndicatorEndDate;
+        global String PositiveServiceIndicator { get; set; }
+        global String Comments;
+        global String ServiceIndicatorDateTime;
+        global String ServiceIndicatorCodeDescr { get; set; }
+        global String DisplayInSS;
+        global String ServiceIndReasonCodeDescr { get; set; }
+        global String ServiceIndReasonCodeDescrLong;
+        global List<ServiceImpact> ServiceImpacts;
 
-        public Integer compareTo(Object comparison) {
+        global Integer compareTo(Object comparison) {
             ServiceIndicator compareToSI = (ServiceIndicator) comparison;
 
             return ServiceIndicatorCode.compareTo(compareToSI.ServiceIndicatorCode);
         }
     }
 
-    public class ServiceImpact {
-        public String ServiceImpactCode;
-        public String ServiceImpactDescription;
+    global class ServiceImpact {
+        global String ServiceImpactCode;
+        global String ServiceImpactDescription;
     }
 
-    public static ServiceIndicatorWrapper parse(String json) {
+    global static ServiceIndicatorWrapper parse(String json) {
         try {
             return (ServiceIndicatorWrapper) System.JSON.deserialize(json, ServiceIndicatorWrapper.class);
         } catch (Exception e) {

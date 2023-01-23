@@ -69,7 +69,7 @@ export default class JiraReportIssueForm extends LightningElement {
 
             for (let i = 0; i < this.configurableQuestions.length; i++) {
                 const q = this.configurableQuestions[i];
-                const thisQA = '*' + q.question + '*\\n' + q.answer;
+                const thisQA = '*' + q.question + '*\n' + q.answer;
                 if (q.type === 'label') continue; // don't add labels to the body
                 if (q.action != null) {
                     // is action is specified - then we need to do something special
@@ -82,14 +82,9 @@ export default class JiraReportIssueForm extends LightningElement {
                 qaList.push(thisQA);
             }
 
-            if (reqForm != null) qaList.push('*Request Form:*\\n' + reqForm);
+            if (reqForm != null) qaList.push('*Request Form:*\n' + reqForm);
 
-            let description = qaList.join('\\n\\n'); // combine to make mega string
-            description = description
-                .replaceAll('\r\n', '\\n')
-                .replaceAll('\n\r', '\\n')
-                .replaceAll('\n', '\\n')
-                .replaceAll('\r', '\\n'); // remove any newlines
+            let description = qaList.join('\n\n'); // combine to make mega string
 
             let type = this.type;
 

@@ -352,15 +352,10 @@
             </apex:outputPanel>
             <apex:outputPanel id="completePage" rendered="{!IF(page = 5,true,false)}">
                 Successfully Transferred Case to {!selectedGroupName}.
-                <hr />
                 <br />
-                <apex:form id="alius-format129">
-                    <apex:actionFunction name="goToSource" action="{!goBack}" />
-                    <a class="regBtn" href="#" onclick="goToSource()" target="_self">
-                        <i class="fa fa-chevron-circle-left"></i>
-                        &nbsp;&nbsp;&nbsp;Go Back to Case
-                    </a>
-                </apex:form>
+                <br />
+                You may now close this tab.
+                <hr />
                 <br />
             </apex:outputPanel>
         </div>

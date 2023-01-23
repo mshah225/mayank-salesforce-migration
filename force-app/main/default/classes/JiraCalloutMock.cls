@@ -1,7 +1,11 @@
 @isTest
 global class JiraCalloutMock implements HttpCalloutMock {
+    private Boolean throwError = false;
+
     global HTTPResponse respond(HTTPRequest req) {
-        if (req.getEndpoint().contains('watchers')) {
+        if (throwError) {
+            return createErrorResponse();
+        } else if (req.getEndpoint().contains('watchers')) {
             return addWatchers();
         } else if (req.getMethod().equals('PUT')) {
             return addComment();
@@ -17,18 +21,19 @@ global class JiraCalloutMock implements HttpCalloutMock {
         return null;
     }
 
+    private HTTPResponse createErrorResponse() {
+        HttpResponse res = new HttpResponse();
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody('{"errorMessages":["Unexpected Server Error"]}');
+        res.setStatusCode(400);
+        return res;
+    }
+
     private HTTPResponse createNewIssueResponse(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
-        try {
-            JSON.deserializeUntyped(req.getBody()); //should be able to parse body as JSON
-            res.setHeader('Content-Type', 'application/json');
-            res.setBody('{"key":"TEST"}');
-            res.setStatusCode(200);
-        } catch (JSONException ex) {
-            res.setHeader('Content-Type', 'application/json');
-            res.setBody('{"errorMessages":["' + ex.getMessage() + '"]}');
-            res.setStatusCode(400);
-        }
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody('{"key":"TEST"}');
+        res.setStatusCode(200);
         return res;
     }
 
@@ -72,5 +77,9 @@ global class JiraCalloutMock implements HttpCalloutMock {
         res.setBody('{"accountId":"557058:472c64c9-2567-4213-839b-86bf21558300"}');
         res.setStatusCode(200);
         return res;
+    }
+
+    public void setThrowError(Boolean throwError) {
+        this.throwError = throwError;
     }
 }

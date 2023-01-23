@@ -1,5 +1,5 @@
 public without sharing class AugmentedStaffCaseController {
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Boolean doesUserHavePermission() {
         List<PermissionSetAssignment> lstcurrentUserPerSet = [
             SELECT Id, PermissionSet.Name, AssigneeId
@@ -48,6 +48,46 @@ public without sharing class AugmentedStaffCaseController {
         ];
 
         return student.size() > 0;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, String> getCategoriesIdToName() {
+        Map<String, String> categoryOptions = new Map<String, String>();
+        Set<String> categoryIds = categoryToSubCategoryMap.keyset();
+        List<Case_Classification__c> categoryDetails = [
+            SELECT Id, Name
+            FROM Case_Classification__c
+            WHERE Id IN :categoryIds
+            ORDER BY Name
+        ];
+
+        for (Case_Classification__c detail : categoryDetails) {
+            String convertedId = (String) detail.Id;
+            convertedId = convertedId.left(15);
+            categoryOptions.put(convertedId, detail.Name);
+        }
+
+        return categoryOptions;
+    }
+
+    @AuraEnabled
+    public static Map<String, String> getSubCategoriesIdToName(String category) {
+        Map<String, String> subCategoryOptions = new Map<String, String>();
+        List<String> subCategoryIds = categoryToSubCategoryMap.get(category);
+        List<Case_Classification__c> subCategoryDetails = [
+            SELECT Id, Name
+            FROM Case_Classification__c
+            WHERE Id IN :subCategoryIds
+            ORDER BY Name
+        ];
+
+        for (Case_Classification__c detail : subCategoryDetails) {
+            String convertedId = (String) detail.Id;
+            convertedId = convertedId.left(15);
+            subCategoryOptions.put(convertedId, detail.Name);
+        }
+
+        return subCategoryOptions;
     }
 
     @AuraEnabled

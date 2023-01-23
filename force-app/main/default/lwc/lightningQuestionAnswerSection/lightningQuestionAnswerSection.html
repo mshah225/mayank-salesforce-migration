@@ -1,0 +1,117 @@
+<template>
+    <template for:each={questions} for:item="q">
+        <div key={q.key}>
+            <template if:true={q.isLabel}>
+                <template if:true={q.isBoldLabel}>
+                    <b>{q.question} </b>
+                </template>
+                <template if:true={q.isPlainLabel}> {q.question} </template>
+                <template if:true={q.isCenterLabel}>
+                    <div class="slds-text-align_center">{q.question}</div>
+                </template>
+                <template if:true={q.isLink}>
+                    <a target="_blank" href={q.href}>{q.question}</a>
+                </template>
+            </template>
+            <template if:true={q.isSpacer}>
+                <div class={q.subtype}></div>
+            </template>
+            <template if:true={q.isTextArea}>
+                <template if:true={q.required}>
+                    <lightning-textarea
+                        name={q.key}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                        max-length={q.maxLength}
+                        required
+                    ></lightning-textarea>
+                </template>
+                <template if:false={q.required}>
+                    <lightning-textarea
+                        name={q.key}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                        max-length={q.maxLength}
+                    ></lightning-textarea>
+                </template>
+            </template>
+            <template if:true={q.isComboBox}>
+                <template if:true={q.required}>
+                    <c-lightning-combo-box
+                        name={q.key}
+                        label={q.question}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        multi-select={q.isMultiSelect}
+                        required
+                    ></c-lightning-combo-box>
+                </template>
+                <template if:false={q.required}>
+                    <c-lightning-combo-box
+                        name={q.key}
+                        label={q.question}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        multi-select={q.isMultiSelect}
+                    ></c-lightning-combo-box>
+                </template>
+            </template>
+            <template if:true={q.isDualListbox}>
+                <template if:true={q.required}>
+                    <lightning-dual-listbox
+                        name={q.key}
+                        label={q.question}
+                        source-label={q.sourceLabel}
+                        selected-label={q.selectedLabel}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                        required
+                    ></lightning-dual-listbox>
+                </template>
+                <template if:false={q.required}>
+                    <lightning-dual-listbox
+                        name={q.key}
+                        label={q.question}
+                        source-label={q.sourceLabel}
+                        selected-label={q.selectedLabel}
+                        options={q.options}
+                        value={q.answer}
+                        onchange={changeAnswer}
+                    ></lightning-dual-listbox>
+                </template>
+            </template>
+            <template if:true={q.isInput}>
+                <template if:true={q.required}>
+                    <lightning-input
+                        name={q.key}
+                        type={q.type}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                        max-length={q.maxLength}
+                        required
+                    ></lightning-input
+                ></template>
+                <template if:false={q.required}>
+                    <lightning-input
+                        name={q.key}
+                        type={q.type}
+                        label={q.question}
+                        onchange={changeAnswer}
+                        value={q.answer}
+                        max-length={q.maxLength}
+                    ></lightning-input
+                ></template>
+            </template>
+            <template if:true={q.hasSubnote}>
+                <p class="slds-text-body_small slds-text-color_weak">{q.subnote}</p>
+            </template>
+        </div>
+    </template>
+    <div class="styleWrapper"></div>
+</template>

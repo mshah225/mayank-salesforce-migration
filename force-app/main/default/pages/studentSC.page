@@ -1,6 +1,12 @@
-<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="MyASUHelpController"
-    cache="true" extensions="MyASUHelpPaginationController">
-
+<apex:page
+    docType="html-5.0"
+    showHeader="false"
+    standardStylesheets="false"
+    sidebar="false"
+    controller="MyASUHelpController"
+    cache="true"
+    extensions="MyASUHelpPaginationController"
+>
     <head>
         <title>My ASU | Help</title>
         <meta charset="utf-8" />
@@ -9,10 +15,17 @@
         <c:GoogleTagManager />
         <c:GoogleAnalytics />
         <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
-        <script>$ = jQuery.noConflict();</script>
+        <script>
+            $ = jQuery.noConflict();
+        </script>
         <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
         <c:MyASUHelpStyles />
-        <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
+        <c:MyASUHelpBomgarService
+            asurite="{!asurite}"
+            firstName="{!firstName}"
+            lastName="{!lastName}"
+            emplId="{!emplId}"
+            viewingAs="{!viewingAs}"
         />
     </head>
 
@@ -38,7 +51,11 @@
                 </div>
                 <div class="col-lg-5">
                     <div class="mb-4">
-                        <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
+                        <c:MyASUHelpContactUs
+                            HelpBox="{!HelpBox}"
+                            NormalPhone="{!NormalPhone}"
+                            RoverPhone="{!RoverPhone}"
+                        />
                     </div>
                     <div class="mb-4">
                         <c:MyASUHelpMyRequests />
@@ -58,7 +75,8 @@
     <script>
         // Load LWCs
         const urlParams = new URLSearchParams(window.location.search);
-        let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
+        let navTreeStr =
+            '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
         let title = 'My ASU';
         let baseUrl = 'https://webapp4.asu.edu/myasu/student';
         if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
@@ -71,30 +89,25 @@
             baseUrl = undefined;
         }
 
-        $Lightning.use(
-            "c:ASUBrandApp",
-            function () {
-                $Lightning.createComponent(
-                    "c:asuBrandHeader",
-                    {
-                        title, baseUrl, navTreeStr,
-                        stationary: true,
-                        viewingAs: '{!viewingAs}',
-                        viewAsFirstName: '{!firstName}',
-                        viewAsLastName: '{!lastName}',
-                        viewAsEmplId: '{!emplId}',
-                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
-                        viewAsViewAsUrl: '{!viewAsUrl}'
-                    },
-                    "ASUBrandHeaderWrapper"
-                );
-                $Lightning.createComponent(
-                    "c:asuBrandFooter",
-                    {},
-                    "ASUBrandFooterWrapper"
-                );
-            }
-        );
+        $Lightning.use('c:ASUBrandApp', function () {
+            $Lightning.createComponent(
+                'c:asuBrandHeader',
+                {
+                    title,
+                    baseUrl,
+                    navTreeStr,
+                    stationary: true,
+                    viewingAs: '{!viewingAs}',
+                    viewAsFirstName: '{!firstName}',
+                    viewAsLastName: '{!lastName}',
+                    viewAsEmplId: '{!emplId}',
+                    viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                    viewAsViewAsUrl: '{!viewAsUrl}',
+                },
+                'ASUBrandHeaderWrapper'
+            );
+            $Lightning.createComponent('c:asuBrandFooter', {}, 'ASUBrandFooterWrapper');
+        });
         // Hide errors that appear randomly from LWC
         const observer = new MutationObserver(function (mutations) {
             const errorDiv = document.querySelector('#auraErrorMessage');
@@ -103,7 +116,7 @@
                 errorDiv.innerHTML = '';
             }
         });
-        observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+        observer.observe(document, {attributes: false, childList: true, characterData: false, subtree: true});
     </script>
     <c:MyASUHelpPageResources masqScopeIdCookie="{!masqScopeIdCookie}" viewingAs="{!viewingAs}" />
 </apex:page>

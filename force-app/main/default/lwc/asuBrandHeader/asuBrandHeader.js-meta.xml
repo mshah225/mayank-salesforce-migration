@@ -13,6 +13,8 @@
             <property name="baseUrl" type="String" />
             <property name="navTreeStr" type="String" />
             <property name="noAutoSpacer" type="Boolean" default="false" />
+            <property name="stationary" type="Boolean" default="false" />
+            <property name="dontLoadStyles" type="Boolean" default="false" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

@@ -13,21 +13,23 @@ global class JiraCallout {
         String bodyWithoutReporter = '';
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
 
-        body =
-            '{"fields":' +
-            '{   "project":     {      "id": "17074"      }, ' +
-            '"summary": "' +
-            summary +
-            '",  ' +
-            '"description": "' +
-            description +
-            '",  ' +
-            ' "issuetype": {  "name": "' +
-            type +
-            '"     }';
-        bodyWithoutReporter = body + '   }}';
+        // Create with reporter specified
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('fields.project.id', '17074');
+        jsObj.put('fields.summary', summary.replaceAll('[\\n\\r]+', ' '));
+        jsObj.put('fields.description', description);
+        jsObj.put('fields.issuetype.name', type);
+        jsObj.put('fields.reporter.id', getJiraAccountId(email));
 
-        body += ', "reporter": { "id": "' + getJiraAccountId(email) + '"  }' + '   }}';
+        // Create without reporter specified (used in fallback)
+        JSONObject jsObjNoReporter = new JSONObject();
+        jsObjNoReporter.put('fields.project.id', '17074');
+        jsObjNoReporter.put('fields.summary', summary.replaceAll('[\\n\\r]+', ' '));
+        jsObjNoReporter.put('fields.description', description);
+        jsObjNoReporter.put('fields.issuetype.name', type);
+
+        body = jsObj.serialize();
+        bodyWithoutReporter = jsObjNoReporter.serialize();
 
         setHeader(req);
         setEndpoint(req, endpoint, 'POST');
@@ -35,25 +37,39 @@ global class JiraCallout {
 
         try {
             res = http.send(req);
+            // Try without reporter if failed
             if (res.getStatusCode() == 400) {
                 setBody(req, bodyWithoutReporter);
                 res = http.send(req);
             }
-            Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
-            jiraKey = (String) m.get('key');
-            if (type.equals('Bug')) {
-                updateStatus(jiraKey, 'Ready For Work');
+
+            // If response was a success (a 200-type response is success)
+            if (200 <= res.getStatusCode() && res.getStatusCode() < 300) {
+                Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+                jiraKey = (String) m.get('key');
+                if (type.equals('Bug')) {
+                    updateStatus(jiraKey, 'Ready For Work');
+                } else {
+                    updateStatus(jiraKey, 'New Development Request');
+                }
+                if (addUsers != null) {
+                    addWatchers(jiraKey, addUsers);
+                }
             } else {
-                updateStatus(jiraKey, 'New Development Request');
-            }
-            if (addUsers != null) {
-                addWatchers(jiraKey, addUsers);
+                // If there was an error response, then report that back to the end-user
+                String errorBody = '';
+                try {
+                    errorBody = res.getBody() != null ? res.getBody() : '';
+                } catch (Exception e) {
+                }
+                throw new JiraCalloutException('Error With Response Code: ' + res.getStatusCode() + '\n' + errorBody);
             }
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(body);
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('body', body));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
+            throw e;
         }
 
         return jiraKey;
@@ -81,9 +97,9 @@ global class JiraCallout {
                 res = http.send(req);
             }
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(JSON.serialize(watchersToAdd));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('watchersToAdd', JSON.serialize(watchersToAdd)));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
     }
@@ -94,7 +110,10 @@ global class JiraCallout {
         Http http = new Http();
         HttpRequest req = new HttpRequest();
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey;
-        String body = '{"update": { "comment": [ { "add": { "body": "' + comment + '" }}]}}';
+
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('update.comment[0].add.body', comment);
+        String body = jsObj.serialize();
 
         try {
             setHeader(req);
@@ -102,9 +121,9 @@ global class JiraCallout {
             setBody(req, body);
             res = http.send(req);
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(body);
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('body', body));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
     }
@@ -115,7 +134,11 @@ global class JiraCallout {
         Http http = new Http();
         HttpRequest req = new HttpRequest();
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '/transitions';
-        String body = '{"transition": {"id": "' + getStatusKey(status) + '"}}';
+
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('transition.id', getStatusKey(status));
+
+        String body = jsObj.serialize();
 
         try {
             setHeader(req);
@@ -123,9 +146,9 @@ global class JiraCallout {
             setBody(req, body);
             res = http.send(req);
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(body);
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('body', body));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
     }
@@ -150,9 +173,9 @@ global class JiraCallout {
             res = http.send(req);
             responseBody = res.getBody();
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(endPoint);
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('endPoint', endPoint));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
         return responseBody;
@@ -180,9 +203,9 @@ global class JiraCallout {
             res = http.send(req);
             responseBody = res.getBody();
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(endPoint);
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('endPoint', endPoint));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
         return responseBody;
@@ -266,12 +289,15 @@ global class JiraCallout {
                 }
             }
         } catch (System.CalloutException e) {
-            errorLoggerVars.add(res.toString());
-            errorLoggerVars.add(req.toString());
-            errorLoggerVars.add(endPoint);
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('endPoint', endPoint));
             ErrorLogger.log(e, errorLoggerVars, DEBUG);
         }
 
         return accountId;
+    }
+
+    public class JiraCalloutException extends Exception {
     }
 }

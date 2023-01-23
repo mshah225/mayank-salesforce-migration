@@ -1,0 +1,54 @@
+<template>
+    <lightning-modal-header label="Mass Email"></lightning-modal-header>
+    <lightning-modal-body>
+        <!-- Fake tab-able item so that focus always goes to the same place -->
+        <div tabindex="0" style="outline: none"></div>
+
+        <template if:true={writingStage}>
+            <lightning-input
+                label="Subject"
+                value={subject}
+                type="text"
+                required="true"
+                onchange={changeSubject}
+            ></lightning-input>
+            <lightning-textarea
+                label="Dear StudentFirstName, "
+                value={body}
+                required="true"
+                onchange={changeBody}
+            ></lightning-textarea>
+            <div>Sincerely, {myname}</div>
+        </template>
+        <template if:true={previewStage}>
+            <div>
+                <b>{subject}</b>
+            </div>
+            <div class="slds-var-m-top_small">Dear StudentFirstName,</div>
+            <div class="slds-var-m-top_small">{body}</div>
+            <div class="slds-var-m-top_small">Sincerely, {myname}</div>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <template if:true={writingStage}>
+            <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+            <lightning-button
+                label="Preview"
+                variant="brand"
+                onclick={previewEmails}
+                style="margin-left: 1rem"
+            ></lightning-button>
+        </template>
+        <template if:true={previewStage}>
+            <lightning-button label="Go Back" variant="neutral" onclick={goBack}></lightning-button>
+            <span style="display: inline-block; width: 1rem"></span>
+            <lightning-button
+                label={sendLabel}
+                variant="brand"
+                onclick={sendEmails}
+                disabled={isSubmitting}
+                style="margin-left: 1rem"
+            ></lightning-button>
+        </template>
+    </lightning-modal-footer>
+</template>

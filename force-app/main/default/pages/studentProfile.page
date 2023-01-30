@@ -5607,7 +5607,7 @@
 
         function loadDepositStatus() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
+                '{!$RemoteAction.StudentProfileController.getDepositStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (Object.keys(result).length != 0) {
@@ -5626,7 +5626,7 @@
                             '</thead>' +
                             '<tbody>';
 
-                        for (var i = 0; i < result.refunds.length; i++) {
+                        for (var i = 0; i < result.deposits.length; i++) {
                             html +=
                                 '' +
                                 '<tr>' +

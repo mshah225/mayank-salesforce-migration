@@ -1240,6 +1240,19 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;Direct Deposit Status
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="depositTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Refunds (Past 14 Days)
                                     </h4>
                                 </div>
@@ -3225,6 +3238,7 @@
             loadFinancialAidChargeHistory();
             loadAccountBalance();
             loadRefunds();
+            loadDepositStatus();
         }
 
         
@@ -5590,5 +5604,58 @@
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
+
+        function loadDepositStatus() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (Object.keys(result).length != 0) {
+
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>MyASU Status</th>' +
+                            '<th>Last Updated Date</th>' +
+                            '<th>Prenotification Status</th>' +
+                            '<th>Prenotification Date</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.refunds.length; i++) {
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result.deposits[i].deposit_status +
+                                '</td>' +
+                                '<td>' +
+                                    result.deposits[i].last_update_date +
+                                '</td>' +
+                                '<td>' +
+                                    result.deposits[i].pre_notification_status +
+                                '</td>' +
+                                '<td>' +
+                                    result.deposits[i].pre_notification_date +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('depositTable').innerHTML = html;
+                    } else {
+                        document.getElementById('depositTable').innerHTML =
+                            'There is no Deposit Status data available for this student.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
     </script>
 </apex:page>

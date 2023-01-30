@@ -1236,6 +1236,11 @@ global with sharing class StudentProfileController {
 
         return refundWrapper;
     }
+
+    @RemoteAction
+    global static DespositStatusWrapper getDepositStatus(String contactEmplid) {
+        return StudentProfileCallout.getDespositStatus(contactEmplid);
+    }
     
 
     global class FinancialAidWrapper {

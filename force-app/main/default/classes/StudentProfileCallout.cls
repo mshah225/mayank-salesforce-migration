@@ -142,7 +142,7 @@ global with sharing class StudentProfileCallout {
         return refundsForStudent;
     }
 
-    global static DepositStatusWrapper getDespositStatus(String emplid) {
+    global static DepositStatusWrapper getDepositStatus(String emplid) {
         DepositStatusWrapper depositsForStudent;
 
         HttpRequest req = new HttpRequest();

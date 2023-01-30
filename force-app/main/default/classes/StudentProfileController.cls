@@ -1239,7 +1239,7 @@ global with sharing class StudentProfileController {
 
     @RemoteAction
     global static DepositStatusWrapper getDepositStatus(String contactEmplid) {
-        return StudentProfileCallout.getDespositStatus(contactEmplid);
+        return StudentProfileCallout.getDepositStatus(contactEmplid);
     }
     
 

@@ -1238,7 +1238,7 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static DespositStatusWrapper getDepositStatus(String contactEmplid) {
+    global static DepositStatusWrapper getDepositStatus(String contactEmplid) {
         return StudentProfileCallout.getDespositStatus(contactEmplid);
     }
     

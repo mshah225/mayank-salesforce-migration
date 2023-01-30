@@ -1,4 +1,4 @@
-global class DespositStatusWrapper {
+global class DepositStatusWrapper {
 	global String emplid;	
 	global List<cls_deposits> deposits;
 
@@ -12,8 +12,8 @@ global class DespositStatusWrapper {
 		global Integer days_since_prenote_date {get; set;}	
 	}
 
-	global static DespositStatusWrapper parse(String json) {
-		return (DespositStatusWrapper) System.JSON.deserialize(json, DespositStatusWrapper.class);
+	global static DepositStatusWrapper parse(String json) {
+		return (DepositStatusWrapper) System.JSON.deserialize(json, DepositStatusWrapper.class);
 	}
 
 	/*static testMethod void testParse() {
@@ -40,7 +40,7 @@ global class DespositStatusWrapper {
 		'        }'+
 		'    ]'+
 		'}';
-		DespositStatusWrapper obj = parse(json);
+		DepositStatusWrapper obj = parse(json);
 		System.assert(obj != null);
 	} */
 }

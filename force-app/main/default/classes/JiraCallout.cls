@@ -10,7 +10,7 @@ global class JiraCallout {
      *
      * @return A string that is the JIRA key for the create ticket
      */
-    public static String createTicket(String summary, String description, String type) {
+    public static String createTicket(String summary, String description, String type, String componentNames) {
         List<String> errorLoggerVars = new List<String>();
         String jiraKey;
         String alias = [SELECT alias FROM User WHERE Id = :UserInfo.getUserId()].alias;
@@ -22,23 +22,24 @@ global class JiraCallout {
         String bodyWithoutReporter = '';
         String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue';
 
-        // Create with reporter specified
+        // Create JSON object with all fields specified
         JSONObject jsObj = new JSONObject();
         jsObj.put('fields.project.id', '17074');
         jsObj.put('fields.summary', summary.replaceAll('[\\n\\r]+', ' '));
         jsObj.put('fields.description', description);
         jsObj.put('fields.issuetype.name', type);
+        // Add each component
+        List<String> componentNameList = componentNames.split(',');
+        for (Integer i = 0; i < componentNameList.size(); i++) {
+            String componentName = componentNameList[i];
+            jsObj.put('fields.components[' + i + '].name', componentName);
+        }
+
+        bodyWithoutReporter = jsObj.serialize(); // we use version with no reporter as a fallback
+
+        // add the reporter
         jsObj.put('fields.reporter.id', getJiraAccountId(email));
-
-        // Create without reporter specified (used in fallback)
-        JSONObject jsObjNoReporter = new JSONObject();
-        jsObjNoReporter.put('fields.project.id', '17074');
-        jsObjNoReporter.put('fields.summary', summary.replaceAll('[\\n\\r]+', ' '));
-        jsObjNoReporter.put('fields.description', description);
-        jsObjNoReporter.put('fields.issuetype.name', type);
-
-        body = jsObj.serialize();
-        bodyWithoutReporter = jsObjNoReporter.serialize();
+        body = jsObj.serialize(); // we use version with reporter ideally
 
         setHeader(req);
         setEndpoint(req, endpoint, 'POST');

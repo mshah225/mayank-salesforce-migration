@@ -36,12 +36,6 @@ export default class JiraReportIssueForm extends LightningElement {
                 found = true;
             }
         }
-        for (let i = 0; i < this.alwaysQuestions.length && !found; i++) {
-            if (this.alwaysQuestions[i].key === questionKey) {
-                this.alwaysQuestions[i].answer = answer;
-                found = true;
-            }
-        }
     }
 
     isValid() {

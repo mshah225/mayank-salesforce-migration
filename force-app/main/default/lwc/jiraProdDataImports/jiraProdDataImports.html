@@ -1,0 +1,16 @@
+<template>
+    <h1>{title}</h1>
+    <c-jira-alert message={alert} url={alertHref}></c-jira-alert>
+    <c-lightning-question-answer-section
+        questions={configurableQuestions}
+        onchange={changeAnswers}
+    ></c-lightning-question-answer-section>
+    <lightning-button
+        variant="brand"
+        label="Submit"
+        title="Submit"
+        onclick={submit}
+        class="slds-var-m-left_x-small"
+        disabled={disabledButton}
+    ></lightning-button>
+</template>

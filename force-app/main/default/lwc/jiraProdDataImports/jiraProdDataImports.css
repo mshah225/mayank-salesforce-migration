@@ -1,0 +1,22 @@
+:host {
+    --lwc-formLabelFontSize: 1.5rem;
+    --lwc-fontSize2: 0.9rem;
+
+    --slds-c-button-brand-color-background-hover: #681630;
+    --slds-c-button-brand-color-border-hover: #681630;
+    --sds-c-button-brand-text-color-hover: #ffffff;
+
+    --slds-c-button-brand-color-background-active: #681630;
+    --slds-c-button-brand-color-border-active: #681630;
+    --sds-c-button-brand-text-color-active: #ffffff;
+
+    --slds-c-button-brand-color-background: #8c1d40;
+    --slds-c-button-brand-color-border: #8c1d40;
+    --sds-c-button-brand-text-color: #ffffff;
+}
+
+:host h1 {
+    font-size: 3rem;
+    text-align: center;
+    font-weight: normal;
+}

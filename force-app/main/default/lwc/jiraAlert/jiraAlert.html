@@ -1,0 +1,10 @@
+<template>
+    <template lwc:if={message}>
+        <div class="alert-wrapper">
+            {message} <br />
+            <template lwc:if={url}>
+                <a target="_blank" href={url}>{url}</a>
+            </template>
+        </div>
+    </template>
+</template>

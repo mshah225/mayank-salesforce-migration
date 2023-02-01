@@ -3,21 +3,14 @@ import createIssue from '@salesforce/apex/JiraReportIssueController.callout';
 
 export default class JiraReportIssueForm extends LightningElement {
     @api title;
-
-    alert;
-    get showAlert() {
-        return this.alert != null && this.alert !== '';
-    }
-    alertHref;
-    get showAlertLink() {
-        return this.alertHref != null && this.alertHref !== '';
-    }
-
     @api type;
     @api questionListJSON;
 
     configurableQuestions = [];
     disabledButton = false;
+
+    alert;
+    alertHref;
 
     connectedCallback() {
         if (this.questionListJSON != null && this.questionListJSON != '') {

@@ -4993,7 +4993,7 @@
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
-                            "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
+                            "<table class='table table-striped table-bordered'> " +
                             '<thead>' +
                             '<tr>' +
                             '<th>Start Date</th>' +

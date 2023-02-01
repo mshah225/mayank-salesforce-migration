@@ -1,5 +1,6 @@
 import {LightningElement, api} from 'lwc';
-import createIssue from '@salesforce/apex/JiraReportIssueController.callout';
+import createBugReport from '@salesforce/apex/JiraReportIssueController.createBugReport';
+import createNewDevelopmentRequest from '@salesforce/apex/JiraReportIssueController.createNewDevelopmentRequest';
 
 export default class JiraReportIssueForm extends LightningElement {
     @api title;
@@ -76,11 +77,13 @@ export default class JiraReportIssueForm extends LightningElement {
             let type = this.type;
 
             this.disabledButton = true;
+
+            let createIssue = type === 'New Devlopment Request' ? createNewDevelopmentRequest : createBugReport; // determine which function to call
+
             createIssue({
                 title,
                 description,
                 watchers,
-                type,
             })
                 .then((val) => {
                     let key = val;

@@ -1,7 +1,16 @@
 global class JiraCallout {
     private static final Boolean DEBUG = false;
 
-    webService static String createNewIssue(String summary, String description, String addUsers, String type) {
+    /**
+     * Create a new ticket with summary as the title
+     *
+     * @param summary The title for the new ticket
+     * @param description The body for the new ticket
+     * @param type The type for the new ticket
+     *
+     * @return A string that is the JIRA key for the create ticket
+     */
+    public static String createTicket(String summary, String description, String type) {
         List<String> errorLoggerVars = new List<String>();
         String jiraKey;
         String alias = [SELECT alias FROM User WHERE Id = :UserInfo.getUserId()].alias;
@@ -37,24 +46,17 @@ global class JiraCallout {
 
         try {
             res = http.send(req);
+
             // Try without reporter if failed
             if (res.getStatusCode() == 400) {
                 setBody(req, bodyWithoutReporter);
                 res = http.send(req);
             }
 
-            // If response was a success (a 200-type response is success)
+            // If response was a success (a 200-type response is success) extra jira key
             if (200 <= res.getStatusCode() && res.getStatusCode() < 300) {
                 Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
                 jiraKey = (String) m.get('key');
-                if (type.equals('Bug')) {
-                    updateStatus(jiraKey, 'Ready For Work');
-                } else {
-                    updateStatus(jiraKey, 'New Development Request');
-                }
-                if (addUsers != null) {
-                    addWatchers(jiraKey, addUsers);
-                }
             } else {
                 // If there was an error response, then report that back to the end-user
                 String errorBody = '';
@@ -75,7 +77,13 @@ global class JiraCallout {
         return jiraKey;
     }
 
-    webService static void addWatchers(String jiraKey, String watchers) {
+    /**
+     * Add each user specified as watchers on the ticket
+     *
+     * @param jiraKey JIRA Key
+     * @param watchers Comma separated list of watchers to add to the ticket
+     */
+    public static void addWatchers(String jiraKey, String watchers) {
         List<String> errorLoggerVars = new List<String>();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
@@ -104,7 +112,13 @@ global class JiraCallout {
         }
     }
 
-    webService static void addComment(String jiraKey, String comment) {
+    /**
+     * Add a comment to the ticket
+     *
+     * @param jiraKey JIRA Key
+     * @param comment Comment to add
+     */
+    public static void addComment(String jiraKey, String comment) {
         List<String> errorLoggerVars = new List<String>();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
@@ -128,7 +142,13 @@ global class JiraCallout {
         }
     }
 
-    webService static void updateStatus(String jiraKey, String status) {
+    /**
+     * Change the ticket to the specified status
+     *
+     * @param jiraKey JIRA Key
+     * @param status Status to convert to
+     */
+    public static void updateStatus(String jiraKey, String status) {
         List<String> errorLoggerVars = new List<String>();
         HttpResponse res = new HttpResponse();
         Http http = new Http();
@@ -153,7 +173,14 @@ global class JiraCallout {
         }
     }
 
-    webService static String getIssues(String asurite) {
+    /**
+     * Get all issues that this user is assigned
+     *
+     * @param asurite ASURite for user
+     *
+     * @return A string which is the response from JIRA about which tickets this user is assigned
+     */
+    public static String getIssues(String asurite) {
         List<String> errorLoggerVars = new List<String>();
         String responseBody;
         String accountId = getJiraAccountId(asurite + '@asu.edu');
@@ -181,7 +208,14 @@ global class JiraCallout {
         return responseBody;
     }
 
-    webService static String getWatchedIssues(String asurite) {
+    /**
+     * Get all issues that this user is watching
+     *
+     * @param asurite ASURite for user
+     *
+     * @return A string which is the response from JIRA about which tickets this user is watching
+     */
+    public static String getWatchedIssues(String asurite) {
         List<String> errorLoggerVars = new List<String>();
         String responseBody;
         String accountId = getJiraAccountId(asurite + '@asu.edu');

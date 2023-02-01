@@ -174,6 +174,38 @@ global class JiraCallout {
     }
 
     /**
+     * Add component to the jira ticket
+     *
+     * @param jiraKey JIRA Key
+     * @param status Status to convert to
+     */
+    public static void addComponent(String jiraKey, String componentName) {
+        List<String> errorLoggerVars = new List<String>();
+        HttpResponse res = new HttpResponse();
+        Http http = new Http();
+        HttpRequest req = new HttpRequest();
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '';
+
+        JSONObject jsObj = new JSONObject();
+        jsObj.put('update.components[0].add.name', componentName);
+
+        String body = jsObj.serialize();
+
+        try {
+            setHeader(req);
+            setEndpoint(req, endPoint, 'PUT');
+            setBody(req, body);
+            res = http.send(req);
+        } catch (System.CalloutException e) {
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
+            errorLoggerVars.add(ErrorLogger.convertStringToJSON('body', body));
+            ErrorLogger.log(e, errorLoggerVars, DEBUG);
+            throw e;
+        }
+    }
+
+    /**
      * Get all issues that this user is assigned
      *
      * @param asurite ASURite for user

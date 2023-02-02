@@ -11,6 +11,8 @@
         <p class="slds-p-horizontal_small">
             <!-- Loading Indicator -->
             <template lwc:if={loading}>
+                <br />
+                <br />
                 <div class="slds-spinner_container">
                     <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
                         <span class="slds-assistive-text">Loading...</span>
@@ -20,11 +22,13 @@
                         <br />
                     </div>
                 </div>
+                <br />
+                <br />
             </template>
             <!-- / Loading Indicator -->
 
             <!-- Edit Form -->
-            <template lwc:if={editFormVisible}>
+            <template lwc:else>
                 <lightning-record-edit-form
                     record-id={recordId}
                     object-api-name="Case"
@@ -45,17 +49,6 @@
                         </div>
                     </template>
                     <!-- /Validation Error -->
-
-                    <!-- Functional Group-->
-                    <lightning-combobox
-                        name="CC_Functional_Group__c"
-                        label="Functional Group"
-                        value={selectedFunctionalGroup}
-                        placeholder="Select a Functional Group"
-                        options={functionalGroupOptions}
-                        onchange={handleFunctionalGroupChange}
-                    ></lightning-combobox>
-                    <!-- /Functional Group-->
                     <!-- Category-->
                     <lightning-combobox
                         name="CC_Category__c"
@@ -83,12 +76,6 @@
                     <div class="slds-align_absolute-center">
                         <br /><br /><br />
                         <lightning-button
-                            label="Cancel"
-                            variant="neutral"
-                            onclick={handleOnCancelButtonClick}
-                        ></lightning-button
-                        >&nbsp;
-                        <lightning-button
                             label={lwcRecordSubmitButtonLabel}
                             type="submit"
                             variant={lwcRecordSubmitButtonVariant}
@@ -98,15 +85,6 @@
                 </lightning-record-edit-form>
             </template>
             <!-- /Edit Form -->
-            <!-- Launch Button -->
-            <template lwc:if={launchButtonVisible}>
-                <lightning-button
-                    variant={lwcEditButtonVariant}
-                    label={lwcEditButtonLabel}
-                    onclick={handleOnEditButtonClick}
-                ></lightning-button>
-            </template>
-            <!-- /Launch Button -->
         </p>
         <!-- /Card Body -->
     </lightning-card>

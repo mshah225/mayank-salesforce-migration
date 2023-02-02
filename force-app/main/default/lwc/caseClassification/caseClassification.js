@@ -15,15 +15,13 @@ export default class CaseClassification extends LightningElement {
     @api recordId;
     @api lwcComponentIconName = 'standard:decision';
     @api lwcComponentName = 'Case Classification';
-    @api lwcEditButtonVariant = 'brand';
-    @api lwcEditButtonLabel = 'Edit Case Classification';
-    @api lwcRecordSubmitButtonLabel = 'Submit';
+    @api lwcRecordSubmitButtonLabel = 'Update';
     @api lwcRecordSubmitButtonVariant = 'brand';
     @api lwcToastSuccessTitle = 'Success!';
     @api lwcToastSuccessMessage = 'Case classification has been updated.';
 
     isEditFormVisible = false;
-    isLoading = false;
+    isLoading = true;
     isLaunchButtonVisible = true;
     errorDetail = '';
     record;
@@ -31,7 +29,6 @@ export default class CaseClassification extends LightningElement {
     validationError;
 
     // Holds selectable options
-    functionalGroupOptions = [];
     categoryOptions = [];
     subCategoryOptions = [];
 
@@ -165,6 +162,7 @@ export default class CaseClassification extends LightningElement {
             .then((result) => {
                 this.rawClassificationData = result;
                 this.renderDropdowns();
+                this.isLoading = false;
             })
             .catch((error) => {
                 this.rawClassificationData = undefined;
@@ -177,26 +175,8 @@ export default class CaseClassification extends LightningElement {
      * Render the initial dropdowns
      */
     renderDropdowns() {
-        this.renderFunctionalGroups();
         this.renderCategories();
         this.renderSubCategories();
-    }
-
-    /**
-     * Render the functional group dropdown options
-     */
-    renderFunctionalGroups() {
-        this.functionalGroupOptions = this.rawClassificationData
-            // Filter options by showing those with no parent (top level)
-            .filter((f) => f.Parent__c === null || !f.Parent__c)
-            .map((element) => {
-                return {
-                    label: element.Name,
-                    value: element.Id,
-                };
-            });
-        // Add empty option to remove functional group
-        this.functionalGroupOptions.unshift({label: '--', value: ''});
     }
 
     /**
@@ -262,21 +242,6 @@ export default class CaseClassification extends LightningElement {
     }
 
     /**
-     * Handle change of functional group
-     * @param {*} event
-     */
-    handleFunctionalGroupChange(event) {
-        // Reset category and sub-category
-        this.clearCategory();
-        this.clearSubCategory();
-
-        // Set functional group
-        const selectedFunctionalGroup = event.target.value;
-        this.selectedFunctionalGroup = selectedFunctionalGroup;
-        this.renderCategories();
-    }
-
-    /**
      * Handle change of the category
      * @param {*} event
      */
@@ -310,19 +275,11 @@ export default class CaseClassification extends LightningElement {
     }
 
     /**
-     * Cancel / close the edit form
-     */
-    handleOnCancelButtonClick() {
-        this.handleOnEditFormReset();
-    }
-
-    /**
      * Record edit form (onsubmit)
      */
     handleOnEditFormSubmit() {
         // Set fields for update
         const fields = {
-            CC_Functional_Group__c: this.selectedFunctionalGroup,
             CC_Category__c: this.selectedCategory,
             CC_Sub_Category__c: this.selectedSubCategory,
         };

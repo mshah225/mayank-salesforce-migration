@@ -51,6 +51,7 @@ public with sharing class JiraReportIssueControllerTest {
         System.assertEquals('description', mockCallout.mockIssue.description);
         System.assertEquals('Task', mockCallout.mockIssue.issueType);
         System.assertEquals(JiraCallout.getStatusKey('Open'), mockCallout.mockIssue.status);
+        System.assertEquals(0, mockCallout.mockIssue.watchers.size());
         System.assertEquals(1, mockCallout.mockIssue.components.size());
         System.assertEquals('DATA IMPORT', mockCallout.mockIssue.components[0]);
     }

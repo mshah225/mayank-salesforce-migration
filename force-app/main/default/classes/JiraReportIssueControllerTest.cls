@@ -10,7 +10,8 @@ public with sharing class JiraReportIssueControllerTest {
         String keyImport = JiraReportIssueController.createDataImport('Summary', 'description', 'addUsers');
         Test.stopTest();
 
-        System.assertEquals('TEST', keyNew);
-        System.assertEquals('TEST', keyBug);
+        System.assertEquals('SFE-49392', keyNew);
+        System.assertEquals('SFE-49392', keyBug);
+        System.assertEquals('SFE-49392', keyImport);
     }
 }

@@ -52,19 +52,19 @@ public class StudentProfileCalloutTest {
     public static void testFinancialAidAccountBalance() {
         Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
         FinancialAidBalanceWrapper accountBalance = StudentProfileCallout.getAccountBalance(
-            '1206104779'
+            '1226380586'
         );
 
-        System.assertEquals(accountBalance.emplid, '1206104779');
+        System.assertEquals(accountBalance.emplid, '1226380586');
     }
 
     @isTest
     public static void testFinancialAidRefunds() {
         Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
         FinancialAidRefundWrapper refunds = StudentProfileCallout.getRefunds(
-            '1206104779'
+            '1226380586'
         );
 
-        System.assertEquals(refunds.emplid, '1206104779');
+        System.assertEquals(refunds.emplid, '1226380586');
     }
 }

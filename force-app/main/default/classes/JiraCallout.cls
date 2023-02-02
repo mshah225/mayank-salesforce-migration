@@ -185,7 +185,7 @@ global class JiraCallout {
         HttpResponse res = new HttpResponse();
         Http http = new Http();
         HttpRequest req = new HttpRequest();
-        String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey + '';
+        String endPoint = 'callout:Jira_Base_URL/rest/api/2/issue/' + jiraKey;
 
         JSONObject jsObj = new JSONObject();
         jsObj.put('update.components[0].add.name', componentName);
@@ -332,6 +332,7 @@ global class JiraCallout {
         return statusKey;
     }
 
+    @TestVisible
     private static String getJiraAccountId(String email) {
         List<String> errorLoggerVars = new List<String>();
         String accountId;

@@ -1,5 +1,6 @@
 @isTest
 global class JiraCalloutMock implements HttpCalloutMock {
+    public JiraMockIssue mockIssue = new JiraMockIssue();
     private Boolean throwError = false;
 
     global HTTPResponse respond(HTTPRequest req) {
@@ -44,8 +45,21 @@ global class JiraCalloutMock implements HttpCalloutMock {
         );
         res.setStatusCode(200);
 
-        // If body is not JSON, then throw an error
-        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+        // Record details from request
+        JSONObject jsObj = new JSONObject(req.getBody());
+        mockIssue.id = '953486';
+        mockIssue.key = 'SFE-49392';
+        mockIssue.projectId = (String) (jsObj.get('fields.project.id'));
+        mockIssue.issueType = (String) (jsObj.get('fields.issuetype.name'));
+        mockIssue.summary = (String) (jsObj.get('fields.summary'));
+        mockIssue.description = (String) (jsObj.get('fields.description'));
+        if (jsObj.get('fields.components') != null) {
+            List<Object> addedComponentObjs = (List<Object>) (jsObj.get('fields.components'));
+            for (Object addedComponentObj : addedComponentObjs) {
+                Map<String, Object> addedComponent = (Map<String, Object>) addedComponentObj;
+                mockIssue.addComponent((String) (addedComponent.get('name')));
+            }
+        }
 
         return res;
     }
@@ -58,8 +72,11 @@ global class JiraCalloutMock implements HttpCalloutMock {
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
 
-        // If body is not JSON, then throw an error
-        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+        // Record details from request
+        JSONObject jsObj = new JSONObject(req.getBody());
+        String path = extractPath(req.getEndpoint());
+        mockIssue.key = path.substringAfter('/rest/api/2/issue/').substringBefore('/watchers');
+        mockIssue.addWatcher((String) (jsObj.get('')));
 
         return res;
     }
@@ -72,8 +89,11 @@ global class JiraCalloutMock implements HttpCalloutMock {
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
 
-        // If body is not JSON, then throw an error
-        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+        // Record details from request
+        JSONObject jsObj = new JSONObject(req.getBody());
+        String path = extractPath(req.getEndpoint());
+        mockIssue.key = path.substringAfter('/rest/api/2/issue/');
+        mockIssue.addComment((String) (jsObj.get('update.comment[0].add.body')));
 
         return res;
     }
@@ -86,8 +106,11 @@ global class JiraCalloutMock implements HttpCalloutMock {
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
 
-        // If body is not JSON, then throw an error
-        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+        // Record details from request
+        JSONObject jsObj = new JSONObject(req.getBody());
+        String path = extractPath(req.getEndpoint());
+        mockIssue.key = path.substringAfter('/rest/api/2/issue/');
+        mockIssue.addComponent((String) (jsObj.get('update.components[0].add.name')));
 
         return res;
     }
@@ -100,8 +123,11 @@ global class JiraCalloutMock implements HttpCalloutMock {
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
 
-        // If body is not JSON, then throw an error
-        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+        // Record details from request
+        JSONObject jsObj = new JSONObject(req.getBody());
+        String path = extractPath(req.getEndpoint());
+        mockIssue.key = path.substringAfter('/rest/api/2/issue/').substringBefore('/transitions');
+        mockIssue.status = (String) (jsObj.get('transition.id'));
 
         return res;
     }
@@ -296,5 +322,31 @@ global class JiraCalloutMock implements HttpCalloutMock {
         endpoint = endpoint.contains('#') ? endpoint.substring(0, endpoint.indexOf('#')) : endpoint;
 
         return endpoint;
+    }
+
+    /**
+     * A mock issue containing all fields that can be changed by our JIRA interactions
+     */
+    public class JiraMockIssue {
+        public String id;
+        public String key;
+        public String projectId;
+        public String issueType;
+        public String summary;
+        public String description;
+        public String status;
+        public List<String> components = new List<String>();
+        public List<String> watchers = new List<String>();
+        public List<String> comments = new List<String>();
+
+        public void addComponent(String cmp) {
+            components.add(cmp);
+        }
+        public void addWatcher(String wtc) {
+            watchers.add(wtc);
+        }
+        public void addComment(String cmt) {
+            comments.add(cmt);
+        }
     }
 }

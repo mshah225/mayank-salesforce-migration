@@ -8,19 +8,19 @@ global class JiraCalloutMock implements HttpCalloutMock {
         if (throwError) {
             return createErrorResponse();
         } else if (isCreateIssueCall(req)) {
-            return createNewIssueResponse();
+            return createNewIssueResponse(req);
         } else if (isUpdateStatusCall(req)) {
-            return updateStatus();
+            return updateStatus(req);
         } else if (isAddCommentCall(req)) {
-            return addComment();
+            return addComment(req);
         } else if (isAddComponentCall(req)) {
-            return addComponent();
+            return addComponent(req);
         } else if (isAddWatchersCall(req)) {
-            return addWatchers();
+            return addWatchers(req);
         } else if (isGetIssuesCall(req)) {
-            return getIssues();
+            return getIssues(req);
         } else if (isGetAccountIdCall(req)) {
-            return getJiraAccountId();
+            return getJiraAccountId(req);
         }
         return null;
     }
@@ -36,60 +36,80 @@ global class JiraCalloutMock implements HttpCalloutMock {
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful issue creations
      */
-    private HTTPResponse createNewIssueResponse() {
+    private HTTPResponse createNewIssueResponse(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setBody(
             '{ "id": "953486", "key": "SFE-49392", "self": "https://asudev.jira.com/rest/api/2/issue/953486", "transition": { "status": "200", "errorCollection": { "errorMessages": [], "errors": { } } } }'
         );
         res.setStatusCode(200);
+
+        // If body is not JSON, then throw an error
+        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+
         return res;
     }
 
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful comment addition
      */
-    private HTTPResponse addWatchers() {
+    private HTTPResponse addWatchers(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
+
+        // If body is not JSON, then throw an error
+        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+
         return res;
     }
 
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful comment addition
      */
-    private HTTPResponse addComment() {
+    private HTTPResponse addComment(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
+
+        // If body is not JSON, then throw an error
+        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+
         return res;
     }
 
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful comment addition
      */
-    private HTTPResponse addComponent() {
+    private HTTPResponse addComponent(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
+
+        // If body is not JSON, then throw an error
+        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+
         return res;
     }
 
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful status updates
      */
-    private HTTPResponse updateStatus() {
+    private HTTPResponse updateStatus(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setStatusCode(200);
+
+        // If body is not JSON, then throw an error
+        Object isProperlyJsonFormatted = JSON.deserializeUntyped(req.getBody());
+
         return res;
     }
 
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful issue query
      */
-    private HTTPResponse getIssues() {
+    private HTTPResponse getIssues(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setBody(
@@ -102,7 +122,7 @@ global class JiraCalloutMock implements HttpCalloutMock {
     /**
      * Create a HTTPResponse that is formatted like how JIRA responds to successful accountId query
      */
-    private HTTPResponse getJiraAccountId() {
+    private HTTPResponse getJiraAccountId(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');
         res.setBody(

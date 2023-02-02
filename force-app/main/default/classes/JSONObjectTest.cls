@@ -171,7 +171,7 @@ public class JSONObjectTest {
     public static void testGettingNonexistant() {
         JSONObject jsObj = new JSONObject();
 
-        String expectedJSON = '{}';
+        String expectedJSON = 'null';
 
         System.assertEquals(null, jsObj.get('numberOfPeople'));
         System.assertEquals(null, jsObj.get('people'));

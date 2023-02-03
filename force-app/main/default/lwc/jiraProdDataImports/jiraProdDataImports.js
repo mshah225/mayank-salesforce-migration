@@ -126,4 +126,13 @@ export default class JiraProdDataImports extends LightningElement {
             allQuestionSections[i].clearAll();
         }
     }
+
+    // @api to expose fields for testing purposes - really should only use this for tests
+    @api test__getField(fieldName) {
+        return this[fieldName];
+    }
+    // @api to expose specific function calls for testing purposes - only use this for tests
+    @api test__runFunction(funcName, params) {
+        return this[funcName].apply(this, params);
+    }
 }

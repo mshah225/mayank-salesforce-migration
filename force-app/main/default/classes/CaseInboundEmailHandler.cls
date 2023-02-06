@@ -1079,7 +1079,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     CC_Category__c,
                     CC_Sub_Category__c,
                     Email_Address__c,
-                    Customer_Notice_Email_From_Name__c,
                     Reply_To_Email_Address__c,
                     Email_Template_ID__c,
                     Case_Feed_Email_Template_Id__c,
@@ -1127,8 +1126,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             } else {
                 response.replyToAddress = assignmentRuleList[0].Email_Address__c;
             }
-
-            response.emailFromName = assignmentRuleList[0].Customer_Notice_Email_From_Name__c;
 
             if (assignmentRuleList[0].Case_Record_Type_ID__c != null) {
                 response.caseRecordTypeId = ID.valueOf(assignmentRuleList[0].Case_Record_Type_ID__c);

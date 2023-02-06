@@ -111,7 +111,7 @@ describe('c-jira-prod-data-imports', () => {
         // attach mock validity function
         element.shadowRoot.querySelector('c-lightning-question-answer-section').reportValidity = validityFunc;
         // Submit form
-        element.test__runFunction('submit', []);
+        element.shadowRoot.querySelector('lightning-button').dispatchEvent(new Event('click'), {bubbles: true});
 
         // Assert error alert shown
         expect(element.test__getField('alert')).toBeTruthy();
@@ -140,7 +140,7 @@ describe('c-jira-prod-data-imports', () => {
         // attach mock validity function
         element.shadowRoot.querySelector('c-lightning-question-answer-section').reportValidity = validityFunc;
         // Submit form
-        element.test__runFunction('submit', []);
+        element.shadowRoot.querySelector('lightning-button').dispatchEvent(new Event('click'), {bubbles: true});
         await flushPromises(); // await response
 
         // Assert success alert is shown
@@ -175,7 +175,7 @@ describe('c-jira-prod-data-imports', () => {
         // attach mock validity function
         element.shadowRoot.querySelector('c-lightning-question-answer-section').reportValidity = validityFunc;
         // Submit form
-        element.test__runFunction('submit', []);
+        element.shadowRoot.querySelector('lightning-button').dispatchEvent(new Event('click'), {bubbles: true});
         await flushPromises(); // await response
 
         // Assert error is shown

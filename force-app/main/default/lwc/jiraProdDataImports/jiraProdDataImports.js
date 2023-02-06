@@ -131,8 +131,4 @@ export default class JiraProdDataImports extends LightningElement {
     @api test__getField(fieldName) {
         return this[fieldName];
     }
-    // @api to expose specific function calls for testing purposes - only use this for tests
-    @api test__runFunction(funcName, params) {
-        return this[funcName].apply(this, params);
-    }
 }

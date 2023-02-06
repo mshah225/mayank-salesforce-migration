@@ -150,6 +150,38 @@ describe('c-jira-prod-data-imports', () => {
         expect(element.test__getField('alertHref')).toBe('https://asudev.jira.com/browse/' + createDataImportMock);
     });
 
+    test('Disable button during submit', async () => {
+        // Arrange
+        const element = createElement('c-jira-prod-data-imports', {
+            is: JiraProdDataImports,
+        });
+        // Add attributes
+        element.title = 'Request Data Import';
+        element.questionListJSON =
+            '[   {     "action": "title",     "question": "Summary (Title):",     "type": "textarea",     "subnote": "FIELD LIMIT:  This field must be less than 255 characters.",     "maxLength": 255,     "required": true   },   {     "question": "Description:",     "type": "textarea",     "subnote": "FIELD LIMIT:  This field must be less than 3000 characters.",     "maxLength": 3000,     "required": true   },   {     "action": "requestForm",     "question": "URL for import file(s):",     "type": "textarea",     "required": true   },   {     "action": "watcherList",     "question": "Watchers for the ticket:",     "type": "textarea",     "subnote": "Enter the ASURITES for each user you want to watch this ticket. Each ASURITE must be separated with a comma.",     "required": false   } ]';
+        // setup a mock response for submission
+        createDataImport.mockResolvedValue(createDataImportMock);
+        // Report the form as valid and use a mock function to count number of calls
+        const validityFunc = () => {
+            return true;
+        };
+
+        // Act
+        document.body.appendChild(element);
+        // attach mock validity function
+        element.shadowRoot.querySelector('c-lightning-question-answer-section').reportValidity = validityFunc;
+        // Submit form
+        element.shadowRoot.querySelector('lightning-button').dispatchEvent(new Event('click'), {bubbles: true});
+        expect(element.test__getField('disabledButton')).toBeTruthy(); // should be disbaled during submission
+        await flushPromises(); // await response
+
+        // Assert success alert is shown
+        expect(element.test__getField('alert')).toBeTruthy();
+        expect(element.test__getField('alert')).toBe('Jira Issue Successfully Created');
+        expect(element.test__getField('alertHref')).toBeTruthy();
+        expect(element.test__getField('alertHref')).toBe('https://asudev.jira.com/browse/' + createDataImportMock);
+    });
+
     test('Display error if failed submission', async () => {
         // Arrange
         const element = createElement('c-jira-prod-data-imports', {

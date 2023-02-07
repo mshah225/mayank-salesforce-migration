@@ -23,6 +23,7 @@ export default class JiraProdDataImports extends LightningElement {
             const question = this.configurableQuestions[i];
             question.key = 'key-' + i;
             question.answer = '';
+            // Set the label to the question if it is unspecified
             if (question.jiraLabel == null) question.jiraLabel = question.question;
         }
     }
@@ -80,6 +81,7 @@ export default class JiraProdDataImports extends LightningElement {
                     if (q.action === 'watcherList') if (q.answer.length > 0) watchers = q.answer;
                     continue;
                 }
+                if (q.answer.length === 0) continue; // skip is empty
                 // for each question and answer - we add it to the qaList
                 qaList.push(thisQA);
             }

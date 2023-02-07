@@ -162,7 +162,7 @@ export default class CaseClassification extends LightningElement {
             .then((result) => {
                 this.rawClassificationData = result;
                 this.renderDropdowns();
-                this.isLoading = false;
+                this.loading = false;
             })
             .catch((error) => {
                 this.rawClassificationData = undefined;

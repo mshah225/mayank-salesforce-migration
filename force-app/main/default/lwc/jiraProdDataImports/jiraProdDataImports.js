@@ -23,6 +23,7 @@ export default class JiraProdDataImports extends LightningElement {
             const question = this.configurableQuestions[i];
             question.key = 'key-' + i;
             question.answer = '';
+            if (question.jiraLabel == null) question.jiraLabel = question.question;
         }
     }
 
@@ -68,24 +69,20 @@ export default class JiraProdDataImports extends LightningElement {
             let title = null;
             let qaList = [];
             let watchers = null;
-            let reqForm = null;
 
             for (let i = 0; i < this.configurableQuestions.length; i++) {
                 const q = this.configurableQuestions[i];
-                const thisQA = '*' + q.question + '*\n' + q.answer;
+                const thisQA = '*' + q.jiraLabel + '*\n' + q.answer;
                 if (q.type === 'label') continue; // don't add labels to the body
                 if (q.action != null) {
                     // is action is specified - then we need to do something special
                     if (q.action === 'title') if (q.answer.length > 0) title = q.answer;
                     if (q.action === 'watcherList') if (q.answer.length > 0) watchers = q.answer;
-                    if (q.action === 'requestForm') if (q.answer.length > 0) reqForm = q.answer;
                     continue;
                 }
                 // for each question and answer - we add it to the qaList
                 qaList.push(thisQA);
             }
-
-            if (reqForm != null) qaList.push('*Import URL:*\n' + reqForm);
 
             let description = qaList.join('\n\n'); // combine to make mega string
 

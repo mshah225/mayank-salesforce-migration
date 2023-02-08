@@ -1232,47 +1232,38 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="psAccountBalanceErrors"></div>
-                                    <div id="ps_account_balance">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Past Due Balance</th>
-                                                        <td id="account_balance_past_due_tip">
-                                                            {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Outstanding Account Balance</th>
-                                                        <td id="account_balance_outstanding">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Account_Balance__c}"
-                                                                />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Total Account Balance</th>
-                                                        <td id="account_balance_total">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c +
-                                                            studentAccount.Future_Balance__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"
-                                                                />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <b>Note:</b>&nbsp;Account balances are a day old and may not be up to
-                                                date. Please check MyASU for accurate balances.
-                                            </div>
-                                        </div>
+                                    <div id="accountBalanceTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
                                     </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Refunds (Past 14 Days)
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="refundTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Charge History
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <apex:form >
+                                        <div id="selectListForChargeHistory">
+                                            <i class="fa fa-spinner fa-pulse"></i>
+                                        </div>
+                                        <div id="chargeHistoryTable"></div>
+                                    </apex:form>
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -3231,6 +3222,9 @@
             loadFinancialAidChecklist();
             loadFinancialAidEditMessages();
             loadFinancialAidAwards();
+            loadFinancialAidChargeHistory();
+            loadAccountBalance();
+            loadRefunds();
         }
 
         
@@ -5369,6 +5363,228 @@
             }
 
             document.getElementById('awardTable').innerHTML = html;
+        }
+
+        //Charge History
+        var chargeHistoryMap = new Map();
+        
+        function loadFinancialAidChargeHistory() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getChargeHistoryMap}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForChargeHistory').innerHTML = 'There is currently no Charge History information available for this student';
+                        return;
+                    }
+
+                    for (var i = 0; i < keySet.length; i++) {
+                        awardMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='chargeHistorySelectOptions'>Academic Year:&nbsp;</label><select id='chargeHistorySelectOptions' onchange='buildChargeHistoryTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForChargeHistory').innerHTML = selectHtml;
+
+                    buildChargeHistoryTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildChargeHistoryTable() {
+            var selectedTerm = document.getElementById('chargeHistorySelectOptions').value;
+            var chargeHistoryForSelectedTerm = awardMap.get(selectedTerm);
+            
+            var html = '';
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+            html +=
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +                        
+                '<th>Term</th>' +
+                '<th>Description</th>' +
+                '<th>Charge</th>' +
+                '<th>Payments / Financial Aid</th>' +
+                '<th>Balance</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+            
+            var chargeHistoryDetails = chargeHistoryForSelectedTerm.charge_details;
+
+            for (var j = 0; j < chargeHistoryDetails.length; j++) {
+                html +=
+                    '<tr>' +
+                    '<td>' +
+                    chargeHistoryForSelectedTerm.term_name +
+                    '</td>' +
+                    '<td>' +
+                    chargeHistoryDetails[j].description +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].charge) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].payment) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].balance) +
+                    '</td>' +
+                    '</tr>';
+            }
+
+            html +=
+                    '<tr>' +
+                    '<th colspan="2">Total</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_charges) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_payment) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_balance) +
+                    '</th>' +
+                    '</tr>';
+            
+            html += '</tbody></table></div>';
+            
+
+            document.getElementById('chargeHistoryTable').innerHTML = html;
+        }
+
+        //Account Balance
+        function loadAccountBalance() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidAccountBalance}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var html = '';
+                    if (Object.keys(result).length != 0) {
+                        var formatter = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                        });
+                        html +=
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            "<tr>" +
+                            "<th> Current Amount Due </th>" +
+                            "<td>" + formatter.format(result.balances.due_amount) + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Future Amount Due </th>" +
+                            "<td>" + formatter.format(result.balances.balance_amount) + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Total Account Balance </th>" +
+                            "<td>" + formatter.format(result.balances.total_amount) + "</td> </tr>";
+
+                        html += '</table></div>';
+
+                        document.getElementById('accountBalanceTable').innerHTML = html;
+                    } else {
+                        html +=
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            "<tr>" +
+                            "<th> Past Due Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Outstanding Account Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Total Account Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>";
+
+                        html += '</table></div>';
+
+                        document.getElementById('accountBalanceTable').innerHTML = html;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        //Refunds
+        function loadRefunds() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (Object.keys(result).length != 0) {
+
+                        var html =
+                            '' +
+                            "<div style='font-weight:bold;'> Posted Refunds </div>" +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Date Paid</th>' +
+                            '<th>Refund Type</th>' +
+                            '<th>Paid Amount</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.refunds.length; i++) {
+                            var formatter = new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            });
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result.refunds[i].refund_date +
+                                '</td>' +
+                                '<td>' +
+                                    result.refunds[i].refund_type +
+                                '</td>' +
+                                '<td>' +
+                                    formatter.format(result.refunds[i].applied_amount) +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html +=
+                            '<tr>' +
+                            '<th colspan="2">Total Posted</th>' +
+                            '<th>' +
+                            formatter.format(result.total_refunds) +
+                            '</th>' +
+                            '</tr>';
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('refundTable').innerHTML = html;
+                    } else {
+                        document.getElementById('refundTable').innerHTML =
+                            'There is no Refund data available for this student.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
         }
     </script>
 </apex:page>

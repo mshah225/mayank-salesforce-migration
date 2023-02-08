@@ -37,4 +37,34 @@ public class StudentProfileCalloutTest {
 
         System.assertEquals(editMessages.emplid, '1206104779');
     }
+
+    @isTest
+    public static void testfinancialAidChargeHistory() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        FinancialAidChargeHistoryWrapper chargeHistory = StudentProfileCallout.getChargeHistory(
+            '1206104779'
+        );
+
+        System.assertEquals(chargeHistory.charges.size(), 2);
+    }
+
+    @isTest
+    public static void testFinancialAidAccountBalance() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        FinancialAidBalanceWrapper accountBalance = StudentProfileCallout.getAccountBalance(
+            '1206104779'
+        );
+
+        System.assertEquals(accountBalance.emplid, '1206104779');
+    }
+
+    @isTest
+    public static void testFinancialAidRefunds() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        FinancialAidRefundWrapper refunds = StudentProfileCallout.getRefunds(
+            '1206104779'
+        );
+
+        System.assertEquals(refunds.emplid, '1206104779');
+    }
 }

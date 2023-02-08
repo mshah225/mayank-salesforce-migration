@@ -9,6 +9,12 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getFinancialAidAwardStatus();
         } else if (req.getEndPoint().contains('fa-messages')) {
             return getFinancialAidEditMessages();
+        } else if (req.getEndPoint().contains('/account/charges')) {
+            return getFinancialAidChargeHistory();
+        } else if (req.getEndPoint().contains('/account/balance')) {
+            return getFinancialAidAccountBalance();
+        } else if (req.getEndPoint().contains('/account/refunds')) {
+            return getFinancialAidRefunds();
         }
         return null;
     }
@@ -165,6 +171,103 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 		'            ]'+
 		'        }'+
 		'    ]'+
+		'}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getFinancialAidChargeHistory() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+		'    "charges": ['+
+		'        {'+
+		'            "term_name": "2022 Spring",'+
+		'            "term_code": "2221",'+
+		'            "total_charges": 10011,'+
+		'            "total_payment": 10011,'+
+		'            "total_balance": 0,'+
+		'            "charge_details": ['+
+		'                {'+
+		'                    "description": "FA Trust ASUOnline B",'+
+		'                    "charge": 27,'+
+		'                    "payment": 27,'+
+		'                    "balance": 0'+
+		'                },'+
+		'                {'+
+		'                    "description": "Undergraduate College Fee 4-B",'+
+		'                    "charge": 720,'+
+		'                    "payment": 720,'+
+		'                    "balance": 0'+
+		'                },'+
+		'                {'+
+		'                    "description": "Tuition UG NonRes Online - B",'+
+		'                    "charge": 3246,'+
+		'                    "payment": 3246,'+
+		'                    "balance": 0'+
+		'                }'+
+		'            ]'+
+		'        },'+
+		'        {'+
+		'            "term_name": "2023 Spring",'+
+		'            "term_code": "2231",'+
+		'            "total_charges": 6587,'+
+		'            "total_payment": 6587,'+
+		'            "total_balance": 0,'+
+		'            "charge_details": ['+
+		'                {'+
+		'                    "description": "Undergraduate College Fee 4-B",'+
+		'                    "charge": 60,'+
+		'                    "payment": 60,'+
+		'                    "balance": 0'+
+		'                },'+
+		'                {'+
+		'                    "description": "FA Trust ASUOnline B",'+
+		'                    "charge": 27,'+
+		'                    "payment": 27,'+
+		'                    "balance": 0'+
+		'                }'+
+		'            ]'+
+		'        }'+
+		'    ]'+
+		'}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getFinancialAidAccountBalance() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+		'    "emplid": "1206104779",'+
+		'    "balances": {'+
+		'        "due_amount": 0,'+
+		'        "balance_amount": 0,'+
+		'        "total_amount": 0'+
+		'    }'+
+		'}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getFinancialAidRefunds() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+		'    "emplid": "1206104779",'+
+		'    "refunds": ['+
+		'        {'+
+		'            "refund_date": "2023-01-13",'+
+		'            "id": 3514350,'+
+		'            "applied_amount": 2164,'+
+		'            "refund_format": "P",'+
+		'            "refund_type": "Paper Check"'+
+		'        }'+
+		'    ],'+
+		'    "total_refunds": 2164'+
 		'}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);

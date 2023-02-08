@@ -1199,6 +1199,43 @@ global with sharing class StudentProfileController {
         return aidYearToAward;
 
     }
+
+    @RemoteAction
+    global static Map<String, FinancialAidChargeHistoryWrapper.cls_charges> getChargeHistoryMap(String contactEmplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryWrapper = StudentProfileCallout.getChargeHistory(contactEmplid);
+
+        Map<String, FinancialAidChargeHistoryWrapper.cls_charges> termToChargeHistory = new Map<String, FinancialAidChargeHistoryWrapper.cls_charges>();
+
+        if (chargeHistoryWrapper == null) {
+            return null;
+        }
+
+        chargeHistoryWrapper.charges.sort();
+
+        for (FinancialAidChargeHistoryWrapper.cls_charges charges : chargeHistoryWrapper.charges) {
+            charges.charge_details.sort();
+
+            termToChargeHistory.put(charges.term_name, charges);
+        }
+
+        return termToChargeHistory;
+    }
+
+    @RemoteAction
+    global static FinancialAidBalanceWrapper getFinancialAidAccountBalance(String contactEmplid) {
+        return StudentProfileCallout.getAccountBalance(contactEmplid);
+    }
+
+    @RemoteAction
+    global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
+        FinancialAidRefundWrapper refundWrapper = StudentProfileCallout.getRefunds(contactEmplid);
+
+        if (refundWrapper != null && refundWrapper.refunds != null) {   
+            refundWrapper.refunds.sort();
+        }
+
+        return refundWrapper;
+    }
     
 
     global class FinancialAidWrapper {

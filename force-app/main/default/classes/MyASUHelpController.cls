@@ -102,6 +102,7 @@ public with sharing class MyASUHelpController {
                 SELECT Display_Message__c, url__c
                 FROM ASU_Alert_Messages__mdt
                 WHERE MasterLabel LIKE '%ASUHelpTab%' AND Is_Active__c = true
+                ORDER BY Priority__c
             ];
 
             for (ASU_Alert_Messages__mdt message : alertMessages) {

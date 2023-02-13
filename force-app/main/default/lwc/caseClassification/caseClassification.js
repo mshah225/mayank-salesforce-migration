@@ -141,7 +141,7 @@ export default class CaseClassification extends LightningElement {
         }
         if (data) {
             // Case data
-            this.record = JSON.parse(JSON.stringify(data)); // deep clone
+            this.record = data;
 
             // Set the current fields
             this.selectedFunctionalGroup = getFieldValue(this.record, FUNCTIONAL_GROUP_ID_FIELD);
